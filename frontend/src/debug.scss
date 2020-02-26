@@ -1,0 +1,77 @@
+/*
+
+  ÛÛÛÛÛÛÛÛÛ    ÛÛÛÛÛÛÛÛÛ    ÛÛÛÛÛÛÛÛÛ   ÛÛÛÛÛÛÛÛÛ     ÛÛÛÛÛÛÛÛÛÛ            ÛÛÛÛÛ
+ ÛÛÛ°°°°°ÛÛÛ  ÛÛÛ°°°°°ÛÛÛ  ÛÛÛ°°°°°ÛÛÛ ÛÛÛ°°°°°ÛÛÛ   °°ÛÛÛ°°°°ÛÛÛ          °°ÛÛÛ
+°ÛÛÛ    °°°  °ÛÛÛ    °ÛÛÛ °ÛÛÛ    °°° °ÛÛÛ    °°°     °ÛÛÛ   °°ÛÛÛ  ÛÛÛÛÛÛ  °ÛÛÛÛÛÛÛ  ÛÛÛÛÛ ÛÛÛÛ  ÛÛÛÛÛÛÛ
+°°ÛÛÛÛÛÛÛÛÛ  °ÛÛÛÛÛÛÛÛÛÛÛ °°ÛÛÛÛÛÛÛÛÛ °°ÛÛÛÛÛÛÛÛÛ     °ÛÛÛ    °ÛÛÛ ÛÛÛ°°ÛÛÛ °ÛÛÛ°°ÛÛÛ°°ÛÛÛ °ÛÛÛ  ÛÛÛ°°ÛÛÛ
+ °°°°°°°°ÛÛÛ °ÛÛÛ°°°°°ÛÛÛ  °°°°°°°°ÛÛÛ °°°°°°°°ÛÛÛ    °ÛÛÛ    °ÛÛÛ°ÛÛÛÛÛÛÛ  °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ
+ ÛÛÛ    °ÛÛÛ °ÛÛÛ    °ÛÛÛ  ÛÛÛ    °ÛÛÛ ÛÛÛ    °ÛÛÛ    °ÛÛÛ    ÛÛÛ °ÛÛÛ°°°   °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ
+°°ÛÛÛÛÛÛÛÛÛ  ÛÛÛÛÛ   ÛÛÛÛÛ°°ÛÛÛÛÛÛÛÛÛ °°ÛÛÛÛÛÛÛÛÛ     ÛÛÛÛÛÛÛÛÛÛ  °°ÛÛÛÛÛÛ  ÛÛÛÛÛÛÛÛ  °°ÛÛÛÛÛÛÛÛ°°ÛÛÛÛÛÛÛ
+ °°°°°°°°°  °°°°°   °°°°°  °°°°°°°°°   °°°°°°°°°     °°°°°°°°°°    °°°°°°  °°°°°°°°    °°°°°°°°  °°°°°ÛÛÛ
+                                                                                                 ÛÛÛ °ÛÛÛ
+                                                                                                °°ÛÛÛÛÛÛ
+                                                                                                 °°°°°°
+*/
+
+@import 'scss/denali';
+@import 'scss/mixins';
+
+// IMPORT MATERIAL THEMING SUPPORT
+@import '~@angular/material/theming';
+
+// Typography
+//$type-config: mat-typography-config();
+@import 'scss/typography/typography-mixins';
+@import 'scss/typography/roboto-mono';
+@import 'scss/typography/helvetica-neue-sans';
+
+/* TYPOGRAPHY CONFIG */
+//@include debug-map($type-config);
+$app-fontface-config: (
+    mono: generate-material-compatible-typography-config($roboto-mono-typeface-config),
+    sans: generate-material-compatible-typography-config($helvetica-neue-sans-typeface-config)
+);
+
+@each $typeface, $type-config in $app-fontface-config {
+    /**** [ FONTFACE CONFIG: #{$typeface} ] ****/
+    @include debug-map($type-config); 
+}
+
+
+// IMPORT THEME CONFIGS
+@import 'scss/themes/dark-theme';
+@import 'scss/themes/light-theme';
+@import 'scss/themes/developing-theme';
+
+// DEFINE THEME MAP
+$app-available-themes: (
+    developing: $developing-theme,
+    light: $light-theme,
+    dark: $dark-theme
+);
+
+// OUTPUT EACH PROPERTY OF THE THEME CONFIG MAP
+@each $theme-name, $theme-config in $app-available-themes {
+/*
+ * THEME - #{$theme-name}
+ */
+    @each $prop,
+    $prop-value in $theme-config {
+        /**** [ #{$theme-name} ] PROP :: #{$prop} ****/
+        @if type-of($prop-value)==map {
+            @include debug-map($prop-value);
+        }
+        @else {
+            @at-root {
+                @debug-map {
+                    __toString__: inspect($prop-value);
+                }
+            }
+        }
+    }
+}
+
+/* THEME MAP -- default */
+
+//@include debug-map(map-get($app-available-themes, dark));
+/* !!!! END DEBUG MAP !!!! */

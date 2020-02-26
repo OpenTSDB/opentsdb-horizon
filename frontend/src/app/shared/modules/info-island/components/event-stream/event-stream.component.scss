@@ -1,0 +1,317 @@
+@mixin event-stream-component-base() {
+
+    $mono-fontface: map-get($app-fontface-config, mono);
+
+    .event-stream {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 100%;
+        position: relative;
+
+        .event-stream-list {
+            //min-width: 500px;
+            //max-height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+
+            &.not-ready {
+                display: none;
+            }
+
+            //.event-accordion.mat-accordion { }
+
+            .event-panel.mat-expansion-panel {
+                @include mat-elevation(0);
+                border-radius: 0;
+
+                .mat-expansion-panel-header {
+                    flex-direction: row-reverse;
+                    cursor: pointer;
+                    border-radius: 0;
+
+                    .mat-expansion-indicator {
+                        margin-right: 12px;
+                        margin-top: -6px;
+                    }
+                }
+
+                .mat-expansion-panel-header-title {
+                    font-size: mat-font-size($mono-fontface, body-1);
+
+                    .event-time {
+                        font-family: mat-font-family($mono-fontface);
+                        margin-right: 12px;
+                    }
+
+                    //.event-count {}
+                }
+
+                .mat-expansion-panel-body {
+                    padding: 0;
+                    font-size: 12px;
+                    line-height: 12px;
+
+                    .event-description {
+                        margin-top: 5px;
+                    }
+
+                    .tag-key {
+                        font-weight: bold;
+                    }
+    
+                    .tag-value {
+                        padding-left: 4px;
+                        font-family: mat-font-family($mono-fontface);
+                        word-break: break-all;
+                    }
+    
+                    fieldset {
+                        border-radius: 5px;
+                        padding: 5px;
+                    }
+    
+                    legend {
+                        padding-left: 2px;
+                        padding-right: 2px;
+                    }
+    
+                    .event-summary {
+                        padding: 0px 24px 8px 30px;
+    
+                        .event-tags {
+                            margin-top: 5px;
+                            margin-bottom: 5px;
+                            .event-tag {
+                                float: left;
+                                margin-left: 5px;
+                                margin-bottom: 6px;
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                // padding-bottom: 5px;
+                            }
+                        }
+    
+                        .event-properties {
+                            
+                            .event-property {
+                                float: left;
+                                margin-left: 5px;
+                                margin-bottom: 6px;
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                // padding-bottom: 5px;
+                            }
+                        }              
+    
+                        .event-message {
+                            margin-top: 5px;
+                        }
+                    }
+
+                    .max-error-message {
+                        padding-left: 10px;
+                    }
+
+                    .event-summary {
+                        padding: 8px 24px 8px 46px;
+                    }
+
+                    .event-header {
+                        :not(:last-child) {
+                            margin-right: 6px;
+                        }
+                        .event-time {
+                            font-family: mat-font-family($mono-fontface);
+                            font-size: mat-font-size($mono-fontface, caption);  
+                        }
+                    }
+
+                    .event-header,
+                    .event-description,
+                    .event-namespace,
+                    .event-priority,
+                    .event-tag {
+                        span:not(:last-child),
+                        strong:not(:last-child) {
+                            margin-right: 6px;
+                        }
+                    }
+
+                    .event-tag {
+                        margin-right: 12px;
+                    }
+
+                    .event-details-wrapper {
+                        .mat-button {
+                            min-width: initial;
+                            padding: 0 4px;
+                            line-height: initial;
+                            margin: 4px 0 4px -4px;
+
+                            font-size: 12px;
+
+                            .mat-icon {
+                                @include sizeDenaliIcon(12px);
+                                margin-left: 6px;
+                            }
+                        }
+
+                        .event-details {
+                            padding: 6px;
+                            border-radius: 4px;
+                            font-family: mat-font-family($mono-fontface);
+                            font-size: mat-font-size($mono-fontface, caption);
+                        }
+                    }
+                }
+
+                // when event-panel (accordion item) is open
+                &.mat-expanded {
+                    .mat-expansion-panel-header {
+                        font-weight: bold;
+                        .mat-expansion-indicator {
+                            margin-top: 2px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MATERIAL FIXES
+    .mat-expansion-panel-header {
+        // If the panel, that the header is in, is inside an element being animated by Angular,
+        // the default behavior is to block all child animations. This means that the header's
+        // height won't kick in until the parent animation is done. We add a fallback to the
+        // header's default height. If the animations aren't blocked, these styles will be overridden
+        // by the inline styles from the animations module.
+        .ng-animating .mat-expansion-panel & {
+            min-height: 32px;
+        }
+
+        .ng-animating .mat-expansion-panel.mat-expanded & {
+            min-height: 32px;
+        }
+    }
+
+    .mat-expansion-panel-content {
+
+        // If the expansion panel is inside an element being animated by Angular,
+        // the default behavior is to block all child animations. This means that the
+        // default `height: 0` won't kick in until the parent animation is over, which
+        // will cause the panel to appear open, before it snaps into place. We don't want
+        // to set the default height to zero, because it'll break the `height: '*'` from
+        // the animation definitions. Instead we add a fallback that only applies only if
+        // it's inside a parent that is mid-animation.
+        .ng-animating .mat-expansion-panel:not(.mat-expanded) & {
+            height: 0;
+            overflow: hidden;
+        }
+    }
+
+}
+
+@mixin event-stream-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $card: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $header-bg: lighten($divider, 50%);
+
+    $is-dark: map-get($theme-config, is-dark);
+    $bg: map-get($background, background);
+    $fg: map-get($foreground, foreground);
+
+    .event-stream {
+        .event-stream-list {
+            background: $card;
+
+            .event-panel.mat-expansion-panel {
+
+                .mat-expansion-panel-header {
+                    // border-bottom: 1px solid $divider;
+                    // background: $header-bg;
+
+                    &:hover {
+                        background: darken($divider, 5%);
+                    }
+
+                    //.mat-expansion-indicator { }
+                    
+                }
+
+                .mat-expansion-panel-body {
+                    .event-summary {
+
+                        border-top: if($is-dark, 1px solid black, 1px solid #e0e0e0);
+
+                        &:not(:last-child) {
+                            border-bottom: 1px solid $header-bg;
+                        }
+
+                        &:hover {
+                            background: rgba(map-get($primary, default), .10);
+                        }
+
+                        .event-details {
+                            border: 1px solid $divider;
+                            background: $header-bg;
+                        }
+
+                        fieldset {
+                            background: if($is-dark, $bg, white);
+                            border: if($is-dark, 1px solid black, 1px solid #e0e0e0);
+                        }
+        
+                        .event-summary {
+                            background: $header-bg;
+        
+                            &:not(:last-child) {
+                                border-bottom: 1px solid $header-bg;
+                            }
+                        }
+        
+                        .event-tag {
+                            background: $header-bg;
+                            border-radius: 5px;
+                        }
+        
+                        .event-property {
+                            background: $header-bg;
+                            border-radius: 5px;
+                        }
+                    }
+                }
+
+                // when event-panel (accordion item) is open
+                &.mat-expanded {
+                    .mat-expansion-panel-header {
+                    //    .mat-expansion-indicator { }   
+                        background: $header-bg;
+                    }
+
+                    .mat-expansion-panel-body {
+                        border-bottom: 1px solid $divider;
+    
+                        .event-summary {
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

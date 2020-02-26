@@ -1,0 +1,193 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin metric-autocomplete-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-padding: map-get($widgets-common-config, edit-padding);
+
+    $row-size: 40px;
+
+    $filter-block-padding: 8px;
+
+    .metric-autocomplete {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        z-index: 2;
+        width: inherit;
+        
+    }
+
+    // CDK ITEMS - panel for "multiple" autocomplete
+    .metric-autocomplete-cdk-panel.mat-menu-panel {
+        //max-width: 400px;
+        max-width: initial;
+        min-width: initial;
+        width: 100%;
+        min-height: 50px;
+        overflow: hidden;
+
+        .mat-menu-content:not(:empty) {
+            padding: 0px;
+        }
+
+        .mat-menu-content {
+            display: flex;
+        }
+
+        .first-run-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            height: 32px;
+        }
+
+        .metric-search-result {
+            display: flex;
+            overflow: hidden;
+            max-height: 300px;
+            width:100%;
+
+            .list {
+                width: 100%;
+                display: flex;
+                max-height: 100%;
+            }
+
+            .list-all,
+            .list-selected {
+                height: 100%;
+            }
+
+            .list-all {
+                overflow: auto;
+            }
+
+            .mat-list.mat-list-base {
+                padding-top: 0;
+
+                .mat-list-item {
+                    height: 24px;
+                }
+
+                .mat-list-item-content {
+                    font-size: 14px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(10px);
+                    }
+
+                    .mat-icon:first-of-type {
+                        margin-right: 6px
+                    }
+                }
+            }
+
+            .list-selected {
+                display: flex;
+                flex-direction: column;
+
+                .selected-header {
+                    display: flex;
+                    align-items: center;
+                    font-size: 12px;
+                    padding: 4px 8px 4px 16px;
+
+                    > strong {
+                        flex: 1;
+                        margin-right: 12px
+                    }
+
+                    .mat-flat-button {
+                        font-size: 12px;
+                        min-width: auto;
+                        line-height: 16px;
+                        padding: 0 6px;
+                        
+                        .mat-icon {
+                            @include sizeDenaliIcon(12px);
+                            margin-right: 5px;
+                        }
+                    }
+                }
+
+                .mat-list.mat-list-base {
+                    width: 100%;
+                    max-height: 100%;
+                    overflow: auto;
+                }
+            }
+        }
+    }
+}
+
+@mixin metric-autocomplete-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
+    $is-dark: map-get($theme-config, is-dark);
+    $chip-bg: rgba(map-get($primary, default), .1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+
+    $widgets: map-get($theme-config, widgets);
+
+    $card-background: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $query-marker-bg: map-get($widgets, query-editor-marker);
+    $query-marker-text: map-get($widgets, query-editor-marker-text);
+    $query-block-bg: map-get($widgets, query-editor-block-bg);
+    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+
+    .metric-autocomplete {
+
+        
+        
+    }
+
+    // CDK ITEMS - panel for "multiple" autocomplete
+
+    .metric-autocomplete-cdk-panel.mat-menu-panel {
+        
+        .metric-search-result {
+
+            .list-all {
+                border-right: 1px solid map-get($foreground, divider);
+            }
+
+            .mat-list.mat-list-base {
+
+                
+
+                .mat-list-item-content {
+                    .mat-icon {
+                        color: map-get($foreground, link);
+                    }
+                }
+
+                .mat-list-item {
+                    &.is-selected {
+                        background-color: rgba(map-get($foreground, link), .08);
+
+                        .mat-icon {
+                            color: map-get($status, error);
+                        }
+                    }
+                }
+            }
+
+            .list-selected {
+                .selected-header {
+                    border-bottom: 1px solid map-get($foreground, divider);
+                }
+            }
+        }
+    }
+}

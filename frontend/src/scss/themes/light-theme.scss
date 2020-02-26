@@ -1,0 +1,86 @@
+//**************************************
+//* LIGHT THEME CONFIGURATION
+//**************************************/
+
+$light-theme: (
+    theme-name: 'light',
+    primary:  mat-palette($mat-indigo, 800, 300, 900),
+    accent:   mat-palette($mat-light-blue),
+    warn:     mat-palette($mat-pink, 600),
+    success:  mat-palette($mat-light-green, A400, A200, A700),
+    danger:   mat-palette($mat-deep-orange, A400, A100, A700),
+    is-dark:  false,
+    foreground: (
+      base:               #000000,
+      divider:            $dark-dividers,
+      dividers:           $dark-dividers,
+      disabled:           $dark-disabled-text,
+      disabled-button:    rgba(#000000, 0.26),
+      disabled-text:      $dark-disabled-text,
+      hint-text:          $dark-disabled-text,
+      secondary-text:     $dark-secondary-text,
+      icon:               rgba(#000000, 0.54),
+      icons:              rgba(#000000, 0.54),
+      link:               map-get($mat-blue, A200),
+      navbar-icons:       #ffffff,
+      navbar-text:        #ffffff,
+      text:               rgba(#000000, 0.87),
+      slider-min:         rgba(#000000, 0.87),
+      slider-off:         rgba(#000000, 0.26),
+      slider-off-active:  rgba(#000000, 0.38),
+    ),
+    background: (
+      status-bar:               map_get($mat-grey, 300),
+      ink-bar:                  #8ACFED,
+      app-bar:                  map_get($mat-grey, 100),
+      navbar:                   #172F33,
+      background:               map_get($mat-grey, 50),
+      header:                   rgba(#000000, 0.08),
+      hover:                    rgba(#000000, 0.04),
+      card:                     #ffffff,
+      card-header-hover:        rgba(map_get($mat-blue, 900), 0.08),
+      dialog:                   #ffffff,
+      disabled-button:          rgba(#000000, 0.12),
+      raised-button:            #ffffff,
+      focused-button:           $dark-focused,
+      selected-button:          map_get($mat-grey, 300),
+      selected-disabled-button: map_get($mat-grey, 400),
+      disabled-button-toggle:   map_get($mat-grey, 200),
+      unselected-chip:          map_get($mat-grey, 300),
+      disabled-list-option:     map_get($mat-grey, 200),
+      menu:                     map_get($mat-blue, 50),
+      gridster-highlight:       map_get($mat-blue-grey, 50),
+      graph-legend:             map_get($denali-red, 50)
+    ),
+    widgets: (
+        widget-icons-background: #F5F8FE,
+        widget-icons-background-hover: rgba(#3697F2, .26)
+    ),
+    ks: (
+      sidenav-background: map_get($mat-blue-grey, 800),
+      sidenav-panel: map_get($mat-blue-grey, 50),
+      sidenav-text: rgba(map_get($mat-grey,900), .85)
+    ),
+    status: (
+        success: map_get($denali-lime, A400),
+        success-contrast: #000000,
+        error: map_get($denali-red, A400),
+        error-contrast: #ffffff,
+        warning: map_get($denali-yellow, A700),
+        warning-contrast: #000000,
+        info: map_get($denali-sky, A700),
+        info-contrast: #ffffff
+    ),
+    scrollbar: (
+       padding: 2px,
+       size: 8px,
+       track-bg: map_get($mat-grey, 300),
+       thumb-bg: map_get($denali-brand-6, 500)
+    ),
+    dashboard-filters: (
+        auto-mode-bg: #33FF74,
+        auto-mode-border-color: darken(#33FF74, 15%),
+        manual-mode-bg: #d8e9fb,
+        manual-mode-border-color: darken(#d8e9fb, 15%)
+    )
+);

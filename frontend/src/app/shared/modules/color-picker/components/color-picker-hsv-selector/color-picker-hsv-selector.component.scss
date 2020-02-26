@@ -1,0 +1,51 @@
+@mixin color-picker-hsv-selector-component-base() {
+    .color-picker-hsv-selector {
+        margin: 17px 15px 0px;
+        position: relative;
+
+        .saturation-vibrance-block {
+            width: 156px;
+            height: 78px;
+            position: relative;
+            
+            background: -moz-linear-gradient(bottom, #000000 0%, rgba(0,0,0,0) 100%),
+                        -moz-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* FF3.6-15 */
+            background: -webkit-linear-gradient(bottom, #000000 0%,rgba(0,0,0,0) 100%),
+                        -webkit-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
+                        linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        }
+        
+        .picker {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid #FFF;
+            position: absolute;
+            left: 45%;
+            bottom: 45%;
+
+            &::before {
+                width: 8px;
+                height: 8px;
+                content: "";
+                position: absolute;
+                border: 1px solid #999;
+                border-radius: 50%;
+            }
+        }
+    }
+}
+
+@mixin color-picker-hsv-selector-component-theme($theme-config) {
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, menu);
+    $is-dark: map-get($theme-config, is-dark);
+
+    .color-picker-hsv-selector {
+
+    }
+}

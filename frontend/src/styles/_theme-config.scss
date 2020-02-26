@@ -1,0 +1,119 @@
+//**************************************
+//* THEME CONFIGURATIONS
+//**************************************/
+
+// NOTE: you need to include material theming support for this to work
+// since we are calling the color palletes
+
+// DEFAULT
+$app-default-primary:    mat-palette($mat-indigo, 800, 300, 900);
+$app-default-accent:     mat-palette($mat-light-blue);
+$app-default-warn:       mat-palette($mat-pink, 600);
+$app-default-theme:      mat-light-theme($app-default-primary, $app-default-accent, $app-default-warn);
+
+// light theme
+$app-light-primary:  mat-palette($mat-indigo, 800, 300, 900);
+$app-light-accent:   mat-palette($mat-light-blue);
+$app-light-warn:     mat-palette($mat-pink, 600);
+$app-light-theme:    mat-light-theme($app-light-primary, $app-light-accent, $app-light-warn);
+
+
+// dark theme
+//$app-dark-primary:   mat-palette($mat-grey, 700, 300, 900);
+//$app-dark-accent:    mat-palette($mat-blue-grey, 400);
+//$app-dark-warn:      mat-palette($mat-red, 500);
+//$app-dark-theme:     mat-dark-theme($app-dark-primary,$app-dark-accent,$app-dark-warn);
+
+
+//$app-dark-primary: mat-palette($mat-pink, 700, 500, 900);
+//$app-dark-accent:  mat-palette($mat-blue-grey, A200, A100, A400);
+//$app-dark-theme: mat-dark-theme($app-dark-primary, $app-dark-accent);
+
+
+$app-dark-theme: (
+    primary: mat-palette($mat-pink, 700, 500, 900),
+    accent: mat-palette($mat-blue-grey, A200, A100, A400),
+    warn: mat-palette($mat-orange, 600),
+    is-dark: true,
+    foreground: (
+      base:              white,
+      divider:           $light-dividers,
+      dividers:          $light-dividers,
+      disabled:          $light-disabled-text,
+      disabled-button:   rgba(white, 0.3),
+      disabled-text:     $light-disabled-text,
+      hint-text:         $light-disabled-text,
+      secondary-text:    $light-secondary-text,
+      icon:              white,
+      icons:             white,
+      text:              white,
+      slider-min:        white,
+      slider-off:        rgba(white, 0.3),
+      slider-off-active: rgba(white, 0.3),
+    ),
+    background: (
+      status-bar: black,
+      app-bar:    map_get($mat-blue-grey, 900),
+      background: #303030,
+      hover:      rgba(white, 0.04), // TODO(kara): check style with Material Design UX
+      card:       map_get($mat-grey, 800),
+      dialog:     map_get($mat-grey, 800),
+      disabled-button: rgba(white, 0.12),
+      raised-button: map-get($mat-grey, 800),
+      focused-button: $light-focused,
+      selected-button: map_get($mat-grey, 900),
+      selected-disabled-button: map_get($mat-grey, 800),
+      disabled-button-toggle: black,
+      unselected-chip: map_get($mat-grey, 700),
+      disabled-list-option: black,
+    )
+);
+
+
+// Crazy Test Theme
+$app-crazy-them: (
+  primary: mat-palette($mat-pink, 800, 300, 900),
+  accent: mat-palette($mat-pink, A400),
+  warn: mat-palette($mat-orange, 600),
+  is-dark: true,
+  foreground: (
+    base:              white,
+    divider:           $light-dividers,
+    dividers:          $light-dividers,
+    disabled:          $light-disabled-text,
+    disabled-button:   rgba(white, 0.3),
+    disabled-text:     $light-disabled-text,
+    hint-text:         $light-disabled-text,
+    secondary-text:    $light-secondary-text,
+    icon:              white,
+    icons:             white,
+    text:              white,
+    slider-min:        white,
+    slider-off:        rgba(white, 0.3),
+    slider-off-active: rgba(white, 0.3),
+  ),
+  background: (
+    status-bar: black,
+    app-bar:    map_get($mat-grey, 900),
+    background: #303030,
+    hover:      rgba(white, 0.04), // TODO(kara): check style with Material Design UX
+    card:       map_get($mat-grey, 800),
+    dialog:     map_get($mat-grey, 800),
+    disabled-button: rgba(white, 0.12),
+    raised-button: map-get($mat-grey, 800),
+    focused-button: $light-focused,
+    selected-button: map_get($mat-grey, 900),
+    selected-disabled-button: map_get($mat-grey, 800),
+    disabled-button-toggle: black,
+    unselected-chip: map_get($mat-grey, 700),
+    disabled-list-option: black,
+  ),
+);
+
+// MAP OF AVAILABLE THEMES
+$app-available-themes: (
+    //default: $app-default-theme,
+    default: $app-light-theme, // light theme
+    dark: $app-dark-theme,
+    //crazy: $app-crazy-theme
+);

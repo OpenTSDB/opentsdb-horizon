@@ -1,0 +1,338 @@
+@mixin alert-configuration-contacts-component-base() {
+
+    .alert-configuration-contacts-component {
+        position: relative;
+        display: flex;
+        flex: 1;
+
+        .mega-panel-trigger {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .mat-chip {
+            .chip-image {
+                width: 16px;
+                padding-right: 5px;
+            }
+        }
+    }
+
+    // CDK STUFF
+    // menu wrapper
+    .mega-panel-cdk-panel.mat-menu-panel {
+        min-width: calc(65vw - 250px);
+        max-width: calc(100% - 20px);
+        height: 350px;
+        display: flex;
+
+        &:not(.mat-menu-below) {
+           margin-bottom: 34px;
+        }
+
+        .mat-menu-content,
+        .mat-menu-content > div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .mat-menu-content {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+    }
+
+    // backdrop for menu dimmer
+    .mega-panel-cdk-backdrop {
+        transition: background-color 500ms ease-in-out;
+        display: none;
+    }
+
+    .mega-panel-cdk-backdrop.is-dim { 
+        display: block;
+    }
+
+    // contact controls WITHIN the CDK element
+    .mega-panel-contact-controls {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-width: 100%;
+        max-height: 100%;
+        cursor: pointer;
+
+        .mat-icon {
+            width: 14px;
+            height: 14px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .mat-toolbar {
+            height: 48px;
+            font-size: 14px;
+        }
+
+        .panel-actions {
+            display: flex;
+            height: 48px;
+            box-sizing: border-box;
+            padding: 0 16px;
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            white-space: nowrap;
+
+            button:not(:last-child) {
+                margin-right: 8px;
+            }
+        }
+
+        .contact-controls {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        // LISTS
+        .existing-contacts {
+            display: flex;
+            flex: 1;
+            max-width: 100%;
+            max-height: 100%;
+
+            .contact-list-type {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+
+                .contact-list-type-descriptor {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    height: 32px;
+                    padding: 0 16px;
+
+                    > img {
+                        width: 18px;
+                        margin-right: 6px;
+                    }
+                }
+
+                .contact-list-type-wrapper {
+                    flex: 1;
+                    overflow-x: hidden;
+                    overflow-y: auto;
+
+                    .mat-list {
+                        .mat-list-item {
+                            position: relative;
+                            height: 30px;
+
+                            &.no-highlight {
+                                pointer-events: none;
+                                cursor: initial;
+                            }
+                        }
+
+                        .recipient-label {
+                            display: inline-flex;
+                            position: relative;
+                            line-height: 12px;
+                        }
+
+                        .admin-tag {
+                            position: absolute;
+                            left: 0;
+                            //top: calc(100% - 15px);
+                            top: 100%;
+                            line-height: initial;
+                            font-size: 8px;
+                            text-transform: uppercase;
+                            color: rgba(0,0,0,0.5);
+                            background: rgba(0,0,0,0.08);
+                            padding: 2px;
+                        }
+                    }
+                }
+
+                .contact-item-actions {
+                    margin-right: -8px;
+
+                    .mat-icon-button {
+                        width: 24px;
+                        height: 24px;
+                        line-height: 24px;
+
+                        .mat-icon {
+                            margin-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // FORMS
+        .change-recipient {
+            width: 100%;
+            padding: 10px 16px;
+        }
+
+        .contacts-create-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: flex-start;
+
+            &:not(:last-child) {
+                margin-bottom: 24px;
+            }
+            
+            .form-label {
+                height: 32px;
+                width: 180px;
+                margin-right: 16px;
+                line-height: 1.2;
+                text-align: right;
+                font-size: 12px;
+
+                &.vertical-center {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                }
+
+                .indicator-square {
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    margin-right: 6px;
+                }
+            }
+
+            .wide-formfield {
+                width: 80%;
+                
+            }
+
+            .context-toggle {
+                width: 180px;
+            }
+
+            .info {
+                padding-left: 5px;
+                font-size: 12px;
+                line-height: 32px;
+            }
+        }
+    }
+
+    .mega-panel-create-recipient-menu.mat-menu-panel {
+        .mat-menu-item {
+            > img {
+                width: 18px;
+                margin-right: 6px;
+            }
+        }
+    }
+
+}
+
+@mixin alert-configuration-contacts-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+
+    /*.alert-configuration-contacts-component {
+    }*/
+
+    // CDK STUFF
+    // menu wrapper
+    // .mega-panel-cdk-panel.mat-menu-panel { }
+
+    // backdrop for menu dimmer
+    .mega-panel-cdk-backdrop {
+        background-color: rgba(0,0,0,0);
+    }
+
+    .mega-panel-cdk-backdrop.is-dim {
+        background-color: rgba(0,0,0,0.2);
+    }
+
+    // contact controls WITHIN the CDK element
+    .mega-panel-contact-controls {
+        &:hover:not([disabled]) {
+            background: transparent;
+        }
+
+        .mat-toolbar {
+            background: transparent;
+            border-bottom: 1px solid $divider;
+        }
+
+        .panel-actions {
+            border-top: 1px solid $divider;
+        }
+
+        .toolbar-actions,
+        .panel-actions{
+            color: map-get($primary, default);
+
+            .mat-stroked-button:not([disabled]) {
+                border-color: currentColor;
+            }
+
+            .mat-icon,
+            .mat-icon:not([color]) {
+                color: map-get($primary, default);
+            }
+        }
+
+        // LISTS
+        .existing-contacts {
+
+            .contact-list-type {
+                
+                &:not(:last-child) {
+                    border-right: 1px solid $divider;
+                }
+
+                .contact-list-type-wrapper {
+
+                    .add-contact,
+                    .contact-item-actions {
+                        .mat-icon,
+                        .mat-icon:not([color]) {
+                            color: map-get($primary, default);
+                        }
+                    }
+
+                    .mat-list .mat-list-item {
+                        &:hover {
+                            background: rgba(map-get($primary, default), 0.08);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+

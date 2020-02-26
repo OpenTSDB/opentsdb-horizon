@@ -1,0 +1,25 @@
+version: 4
+shared:
+  image: docker.ouroath.com:4443/paas.ynodejs.images/node10-ylinux6-slim-sd:1-CURRENT
+  environment:
+    SD_SETTING_YNPM_THREE: 1
+    NODEJS_LIB_UPDATE_VERSION_BUMP_METHOD: dynamic
+  annotations:
+    screwdriver.cd/cpu: HIGH
+    screwdriver.cd/ram: HIGH
+jobs:
+  component:
+    template: nodejs/lib@stable
+    steps:
+      - lint: echo DISABLED
+      - posttest: cp -v $SD_SOURCE_DIR/artifacts/coverage/lcov.info $SD_ARTIFACTS_DIR/coverage/
+      - postpublish: |
+            if [ ! -z $SD_PULL_REQUEST ] ; then
+              echo "Skipping DIST install"
+            else
+              npm run postpublish 
+            fi
+      - postinstall-deps: npm run install-subdirs
+    requires:
+      - ~commit
+      - ~pr

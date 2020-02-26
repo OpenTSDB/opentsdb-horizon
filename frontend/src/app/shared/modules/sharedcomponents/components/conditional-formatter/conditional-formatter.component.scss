@@ -1,0 +1,68 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin conditional-formatter-component-base() {
+    .conditional-formatter {
+        .mat-table {
+            width: 100%;
+            .mat-header-row {
+                height: 30px;
+                border-bottom: 1px solid #0000001f;
+            }
+
+            .mat-header-cell {
+                text-transform: uppercase;
+            }
+
+            .mat-row {
+                height: 50px;
+                border-bottom: 1px solid #0000001f;
+                .mat-cell:first-child {
+                    width: 70%;
+                }
+                .mat-cell {
+                    line-height: 1;
+                }
+                .mat-cell:last-child {
+                }
+            }
+        }
+        .text {
+            padding: 10px;
+        }
+
+        .operator {
+            width: 20%;
+        }
+        .value {
+            max-width: 25%;
+        }
+        .action {
+            margin-top: 20px;
+            .mat-stroked-button {
+                line-height: 30px;
+                font-size: 12px;
+            }
+
+        }
+        
+    }
+}
+
+@mixin conditional-formatter-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $good-green: if($is-dark, map-get($success, default), map-get($success, 600));
+
+    .conditional-formatter {
+    }
+}
+

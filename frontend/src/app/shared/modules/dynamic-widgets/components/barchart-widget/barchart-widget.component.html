@@ -1,0 +1,104 @@
+
+        <div class="widget-output-container" fxLayout="column" #testing>
+            <div class="widget-output"  #widgetoutput >
+                <div id="container" [style.width]="width" [style.height]="height">
+                    <canvas id="canvas"
+                        chartjs
+                        [chartType]="type"
+                        [data]="data"
+                        [options]="options"
+                        ></canvas>
+                    <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
+                    <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
+                        <img src="/assets/spinner-26x26.gif" />
+                    </div>
+                    <div class="error" *ngIf="error" (click)="showError()">
+                        <mat-icon>error</mat-icon>
+                    </div>
+                    <div class="debug" *ngIf="debugData" (click)="showDebug()">
+                        <mat-icon>info</mat-icon> {{ this.widget.id }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- NOTE: This needs to move to other component -->
+        <div class="widget-controls-container" *ngIf="editMode">
+            <div class="widget-title">
+                <span fxFlex="1 1 100%">
+                    <inline-editable class="navbar-item" 
+                        [fieldValue]="widget.settings.title"
+                        [minLength]="3"
+                        [maxLength]="100"
+                        (updatedValue)="setTitle($event)">
+                    </inline-editable>
+                </span>
+                <graph-type (change)="changeWidgetType($event)" selected="BarchartWidgetComponent"></graph-type>
+            </div>
+            <div class="widget-control-steps has-scroller">
+                <div class="is-scroller">
+                    <div class="step-section query-section is-visible">
+                        <div class="step-section-label">
+                            <span class="step-section-label-text">
+                                <span>1. Queries </span>
+                                <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            </span>
+                        </div>
+                        <div class="step-section-content" *ngIf="visibleSections.queries">
+                            <widget-config-metric-queries *ngIf="!isStackedGraph" [options]="{enableSummarizer: true, enableMultipleQueries:true}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+                        </div>
+                    </div>
+                            
+                    <div class="step-section query-section is-visible">
+                        <div class="step-section-label">
+                            <span class="step-section-label-text">
+                                <span>2. Time Configuration </span>
+                                <mat-icon fontSet="denali" (click)="toggleConfigSection('time')" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            </span>
+                        </div>
+                        <div class="step-section-content" *ngIf="visibleSections.time">
+                            <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
+                        </div>
+                    </div>
+                    <div class="step-section query-section is-visible">
+                        <div class="step-section-label">
+                            <span class="step-section-label-text">
+                                <span>3. Axes </span>
+                                <mat-icon fontSet="denali" (click)="toggleConfigSection('axes')" [fontIcon]="visibleSections.axes ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            </span>
+                        </div>
+                        <div class="step-section-content" *ngIf="visibleSections.axes">
+                            <widget-config-axes [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-axes>
+                        </div>
+                    </div>
+                    <div class="step-section query-section is-visible">
+                        <div class="step-section-label">
+                            <span class="step-section-label-text">
+                                <span>4. Visual Appearance </span>
+                                <mat-icon fontSet="denali" (click)="toggleConfigSection('visuals')" [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            </span>
+                        </div>
+                        <div class="step-section-content" *ngIf="visibleSections.visuals">
+                            <widget-config-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-visual-appearance>
+                        </div>
+                    </div>
+
+                    <div class="step-section query-section is-visible">
+                        <div class="step-section-label">
+                            <span class="step-section-label-text">
+                                <span>5. Sorting </span>
+                                <mat-icon fontSet="denali" (click)="toggleConfigSection('sorting')" [fontIcon]="visibleSections.sorting ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            </span>
+                        </div>
+                        <div class="step-section-content" *ngIf="visibleSections.sorting">
+                            <widget-config-sorting [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-sorting>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-actions"  *ngIf="!editQueryId">
+                <!-- controls to save/cancel -->
+                <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
+                <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
+            </div>
+        </div>
+

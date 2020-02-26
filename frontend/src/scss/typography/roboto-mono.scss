@@ -1,0 +1,57 @@
+$roboto-mono-typeface-config: (
+    family: 'Roboto Mono',
+    font-family: '"Roboto Mono", Monaco, monospace',
+    path: '/assets/fonts/Roboto/mono',
+    fontweight-map: (
+        light: 300,
+        medium: 500,
+        regular: 400
+    ),
+    fonts: (
+        light: (
+            local: "Roboto Mono Light",
+            local2: "Roboto Mono-Light",
+            weight: 300,
+            style: normal,
+            file-prefix: 'roboto-mono-latin-300'
+        ),
+        light-italic: (
+            local: "Roboto Mono Light italic",
+            local2: "Roboto Mono-Lightitalic",
+            weight: 300,
+            style: italic,
+            file-prefix: 'roboto-mono-latin-300italic'
+        ),
+        medium: (
+            local: "Roboto Mono Medium",
+            local2: "Roboto Mono-Medium",
+            weight: 500,
+            style: normal,
+            file-prefix: 'roboto-mono-latin-500'
+        ),
+        medium-italic: (
+            local: "Roboto Mono Medium italic",
+            local2: "Roboto Mono-Mediumitalic",
+            weight: 500,
+            style: italic,
+            file-prefix: 'roboto-mono-latin-500italic'
+        ),
+        regular: (
+            local: "Roboto Mono",
+            local2: "RobotoMono-Regular",
+            weight: 400,
+            style: normal,
+            file-prefix: 'roboto-mono-latin-400'
+        ),
+        regular-italic: (
+            local: "Roboto Mono Regular italic",
+            local2: "Roboto Mono-Regularitalic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'roboto-mono-latin-400italic'
+        )
+    )
+);
+
+
+ 

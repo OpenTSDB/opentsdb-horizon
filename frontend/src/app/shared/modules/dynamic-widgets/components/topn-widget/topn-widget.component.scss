@@ -1,0 +1,178 @@
+@mixin topn-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.topnchart-widget {
+        flex: 1;
+        display: flex;
+
+        .widget-title {
+            flex-direction: row;
+            box-sizing: border-box;
+            display: flex;
+            flex: 1 0 30px;
+            max-height: 30px;
+        }
+
+        .widget-output {
+            padding: 0px 0px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex: 1 1 0;
+            //overflow: scroll;
+
+            .loading-spinner,
+            .gif-spinner {
+                position: absolute;
+                left: 5px;
+                bottom: 5px;
+                z-index: 1;
+                /*width: 24px;
+                height: 24px;
+                background-image: url(/assets/denali-loader.svg);
+                background-color: transparent;*/
+            }
+
+            .apply-tpl-status {
+                position: absolute;
+                right: -5px;
+                top: 0px;
+                z-index: 1;
+
+                .mat-icon {
+                    font-size: 16px;
+                }
+            }
+
+            .error,
+            .debug {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+            }
+
+            /* tooltip */
+            .tooltip{
+                display: none;
+                font-size: 12px;
+                padding: 5px;
+                position: absolute;
+                min-width: 100px;
+                z-index: 10;
+                top:10px;
+                left: 10px;
+                border-radius: 3px;
+                white-space: nowrap;
+            }
+        }
+
+        #container {
+            box-sizing: border-box;
+            padding: 20px 0px 0px 0px;
+            display:flex;
+            flex: 1;
+            justify-content: center;
+
+            text {
+                font-family: 'Ubuntu';
+            }
+
+            .bar {
+                cursor: pointer;
+            }
+
+            // .axisLabel { }
+
+            .yaxis {
+                font-size: 1em;
+                font-family: ubuntu;
+                text-anchor: end;
+            }
+
+            .yaxis path,
+            .yaxis line {
+                fill: none;
+                display: none;
+            }
+
+            .label {
+                cursor: pointer;
+            }
+
+            .chart {
+                display: flex;
+                flex: 1;
+                position: relative;
+                overflow: overlay;
+            }
+            .chart svg {
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+    }
+}
+
+@mixin topn-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $bar-default-fill: if($is-dark-theme, map-get($denali-sky, 200), #dff0ff);
+
+    $tooltip-bg: if($is-dark-theme, map-get($background, menu), #f0f0f0);
+    $tooltip-border: if($is-dark-theme, lighten(map-get($background, menu), 10%) , #cccccc);
+    $tooltip-text: find-color-invert($tooltip-bg);
+
+    .widget-panel-content.topnchart-widget {
+
+        .widget-output {
+
+            .apply-tpl-status {
+                .mat-icon {
+                    color: rgb(216, 216, 215);
+                }
+            }
+
+            .error{
+                color: red;
+            }
+
+            .debug{
+                color: rgb(75, 9, 228);
+            }
+
+            /* tooltip */
+            .tooltip{
+                background: $tooltip-bg;
+                box-shadow: 0 0 5px rgba(0,0,0,.6);
+                color: $tooltip-text;
+                border: 1px solid $tooltip-border;
+            }
+        }
+
+        #container {
+
+            .bar {
+                fill: $bar-default-fill;
+            }
+
+            .label {
+                fill: #333;
+            }
+        }
+    }
+}
+

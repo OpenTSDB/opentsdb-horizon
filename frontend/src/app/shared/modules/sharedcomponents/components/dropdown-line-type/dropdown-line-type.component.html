@@ -1,0 +1,14 @@
+<mat-button-toggle-group (change)="changeLineType($event.value)" [value]="value">
+    <mat-button-toggle *ngFor="let option of lineTypeOptions" [value]="option.value">
+        <span class="line-type-preview" [ngClass]="{
+            'line-type-solid': option.value === 'solid',
+            'line-type-dotted': option.value === 'dotted',
+            'line-type-dashed': option.value === 'dashed',
+            'line-type-dot-dashed': option.value === 'dot-dashed'
+        }">
+            <span *ngIf="option.value === 'dot-dashed'"></span>
+            <span></span>
+        </span>
+        <span>{{ option.label }}</span>
+    </mat-button-toggle>
+</mat-button-toggle-group>

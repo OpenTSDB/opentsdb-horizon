@@ -1,0 +1,41 @@
+{
+    "name": "horizon_dev",
+    "version": "0.0.3",
+    "description": "A new horizon",
+    "scripts": {
+        "clean": "rm -rf node_modules && cd frontend && rm -rf node_modules && cd ../server && rm -rf node_modules && cd -",
+        "install-subdirs": "cd frontend && npm install && cd ../server && npm install && cd -",
+        "build": "cd frontend && npm run build && cd -",
+        "test": "cd frontend && npm test",
+        "cover": "./yahoo/coverage.sh",
+        "postpublish": "./yahoo/publish.sh",
+        "ci-build": "npm run build",
+        "ci-test": "npm run test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@git.ouroath.com:monitoring/horizon.git"
+    },
+    "yhint": {
+        "excludes": [
+            "frontend",
+            "server",
+            "public"
+        ]
+    },
+    "yahoo": {
+        "bugzilla": {
+            "product": "Yamas",
+            "component": "General"
+        },
+        "custodian": {
+            "email": "yamas-devel@oath.com",
+            "url": "http://yo/yamas2userguide"
+        }
+    },
+    "author": "Yahoo",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {}
+}
+

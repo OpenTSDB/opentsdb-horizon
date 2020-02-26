@@ -1,0 +1,98 @@
+@mixin events-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.events-widget {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-top: 0px;
+        overflow: hidden;
+
+        .flex {
+            display: flex;
+        }
+
+        .main-container {
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .widget-output-container {
+
+            .event-stream-title {
+                border-bottom: 1px solid lightgray;
+                line-height: 21px;
+                text-transform: uppercase;
+                font-size: 12px;
+            }
+        }
+
+        .widget-output {
+            overflow: auto;
+            align-items: flex-start;
+            padding: 0;
+
+            .widget-container {
+                width: 100%;
+            }
+
+            .event-result-title {
+                font-weight: bold;
+                padding-left: 10px;
+            }
+        }
+
+        .query-container {
+            display: flex;
+            padding: 10px;
+            padding-top: 15px;
+            flex-direction: row;
+        }
+    }
+
+    // EDIT MODE
+    .edit-view-container.is-active {
+        .widget-panel-content.events-widget {
+
+            .widget-output-container {
+                flex: 1;
+                max-height: initial;
+                height: 50px;
+            }
+
+            .widget-output {
+                height: initial;
+                max-height: initial;
+                margin-bottom: 12px;
+                align-items: flex-start;
+            }
+
+            .widget-controls-container {
+                flex: 1;
+                flex-grow: 0.25;
+                margin: 12px;
+                background-color: white;
+            }
+
+            .widget-configs .mat-tab-header .mat-tab-label:last-child {
+                margin-left: initial;
+            }
+        }
+    }
+}
+
+@mixin events-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    .events-widget {}
+
+}

@@ -1,0 +1,40 @@
+$helvetica-neue-sans-typeface-config: (
+    family: 'HelveticaNeue',
+    font-family: "'HelveticaNeue', Helvetica, Arial, sans-serif",
+    path: '/assets/fonts/Helvetica-Neue/sans',
+    fontweight-map: ( 
+        light: 300,
+        medium: 500, 
+        regular: 400
+    ),
+    fonts: (
+        light: (
+            local: "Helvetica Neue Light",
+            local2: "HelveticaNeueLight",
+            weight: 300,
+            style: normal,
+            file-prefix: 'helveticaneue-light'
+        ),
+        medium: (
+            local: "Helvetica Neue Medium",
+            local2: "HelveticaNeueMedium",
+            weight: 500,
+            style: normal,
+            file-prefix: 'helveticaneue-medium'
+        ),
+        regular: (
+            local: "Helvetica Neue Regular",
+            local2: "HelveticaNeueRegular",
+            weight: 400,
+            style: normal,
+            file-prefix: 'helveticaneue'
+        ),
+        regular-italic: (
+            local: "Helvetica Neue Regular italic",
+            local2: "HelveticaNeueRegularItalic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'helveticaneue-italic'
+        )
+    )
+);

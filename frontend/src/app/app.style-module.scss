@@ -1,0 +1,64 @@
+//* APPLICATION MODULE STYLE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// [ STEP 1 ] - IMPORT APPLICATION STYLE MODULE SCSS
+@import 'app.common';
+@import 'app.component';
+@import 'app-shell/app-shell.style-module';
+
+@import 'landing-page/landing-page.style-module';
+@import 'dashboard/dashboard.style-module';
+@import 'alerts/alerts.style-module';
+
+@import 'shared/modules/dynamic-widgets/dynamic-widgets.style-module';
+@import 'shared/modules/sharedcomponents/sharedcomponents.style-module';
+@import 'shared/modules/date-time-picker/date-time-picker.style-module';
+@import 'shared/modules/color-picker/color-picker.style-module';
+@import 'shared/modules/info-island/info-island.style-module';
+
+// [ STEP 2 ] - ADD MODULE'S BASE MIXINS (aka structure)
+@mixin app-core() {
+    @include app-common-base();
+    @include app-root-base();
+    @include app-shell-module-core();
+    @include landing-page-module-core();
+    @include dashboard-module-core();
+    @include alerts-module-core();
+    @include dynamic-widgets-module-core();
+    @include sharedcomponents-module-core();
+    @include date-time-picker-module-core();
+    @include color-picker-module-core();
+    @include info-island-module-core();
+
+    // MOBILE Fix to disale mobile browser zooming on inputs
+    @media screen and (-webkit-min-device-pixel-ratio:0) { 
+        select,
+        select:focus,
+        textarea,
+        textarea:focus,
+        input {
+            font-size: 16px;
+        }
+    }
+}
+
+// [ STEP 3 ] - ADD MODULES'S THEME MIXINS (aka look-n-feel)
+@mixin generate-app-theme ($theme-config) {
+    @include app-common-theme($theme-config);
+    @include app-root-theme($theme-config);
+    @include app-shell-module-theme($theme-config);
+    @include landing-page-module-theme($theme-config);
+    @include dashboard-module-theme($theme-config);
+    @include alerts-module-theme($theme-config);
+    @include dynamic-widgets-module-theme($theme-config);
+    @include sharedcomponents-module-theme($theme-config);
+    @include date-time-picker-module-theme($theme-config);
+    @include color-picker-module-theme($theme-config);
+    @include info-island-module-theme($theme-config);
+}

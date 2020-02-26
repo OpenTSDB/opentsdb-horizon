@@ -1,0 +1,5 @@
+<h3 class="mat-h2">Available Dashboards</h3>
+<mat-divider></mat-divider>
+<mat-nav-list>
+    <a mat-list-item href="/d/{{ db.id }}" *ngFor="let db of dashboards"> {{ db.name }} </a>
+</mat-nav-list>

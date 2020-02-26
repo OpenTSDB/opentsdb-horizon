@@ -1,0 +1,27 @@
+<button mat-flat-button class="mat-elevation-z0"
+    *ngIf="id !== '_new_'"
+    [ngClass]="{'menu-trigger-underline': actionMenuIsOpen}"
+    [matMenuTriggerFor]="dashboardActionMenu"
+    #actionMenuTrigger>
+    <span>Dashboard Actions</span>
+    <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
+</button>
+<button mat-flat-button class="save-dashboard-button" *ngIf="needsSaving" (click)="click_saveDashboard($event)">
+    <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
+</button>
+<mat-menu #dashboardActionMenu="matMenu" [overlapTrigger]="false" class="nav-bar-dropmenu dashboard-actions-menu" xPosition="before">
+    <ng-template matMenuContent>
+        <button mat-menu-item (click)="click_cloneDashboard($event)">
+            <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
+            <span>Clone</span>
+        </button>
+        <!--<button mat-menu-item (click)="click_shareDashboard($event)">
+            <mat-icon fontSet="denali" fontIcon="d-share"></mat-icon>
+            <span>Share</span>
+        </button>-->
+        <button mat-menu-item (click)="click_deleteDashboard($event)">
+            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+            <span>Move to Trash</span>
+        </button>
+    </ng-template>
+</mat-menu>

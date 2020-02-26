@@ -1,0 +1,57 @@
+@mixin alert-details-metric-period-over-period-preview-component-base() {
+
+    .period-over-period-preview {
+        height: 200px;
+        // display: flex;
+
+        .headers {
+            display: flex;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            justify-content: space-around;
+            font-weight: bold;
+        }
+
+        .graphs {
+            display: flex;
+
+            .query-preview {
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .threshold-preview {
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+        }
+
+        .preview-placeholder {
+            height: 150px;
+            padding: 10px;
+
+            .gif-spinner {
+                margin-left: 10px;
+            }
+        }
+    }
+
+}
+
+@mixin alert-details-metric-period-over-period-preview-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+
+    .period-over-period-preview { }
+
+}
+
+

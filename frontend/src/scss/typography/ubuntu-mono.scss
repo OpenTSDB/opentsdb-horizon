@@ -1,0 +1,42 @@
+$ubuntu-mono-typeface-config: (
+    family: 'Ubuntu Mono',
+    font-family: '"Ubuntu Mono", Monaco, monospace',
+    path: '/assets/fonts/Ubuntu/mono',
+    fontweight-map: (
+        light: 400,
+        medium: 700,
+        regular: 400
+    ),
+    fonts: (
+        medium: (
+            local: "Ubuntu Mono Bold",
+            local2: "Ubuntu Mono-Bold",
+            weight: 700,
+            style: normal,
+            file-prefix: 'ubuntu-mono-latin-700'
+        ),
+        medium-italic: (
+            local: "Ubuntu Mono Bold italic",
+            local2: "Ubuntu Mono-Bolditalic",
+            weight: 700,
+            style: italic,
+            file-prefix: 'ubuntu-mono-latin-700italic'
+        ),
+        regular: (
+            local: "Ubuntu Mono Regular",
+            local2: "Ubuntu Mono-Regular",
+            weight: 400,
+            style: normal,
+            file-prefix: 'ubuntu-mono-latin-400'
+        ),
+        regular-italic: (
+            local: "Ubuntu Mono Regular italic",
+            local2: "Ubuntu Mono-Regularitalic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'ubuntu-mono-latin-400italic'
+        )
+    )
+);
+
+

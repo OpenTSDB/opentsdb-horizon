@@ -1,0 +1,38 @@
+//* SHARED COMPONENTS STYLE MODULE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// NOTE: First time only after creating this file,
+// after you have completed the three steps below
+// be sure to add this file to src/app/app.style-module.scss
+// and follow the steps in that file
+
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+@import './containers/color-picker/color-picker.component';
+@import './components/color-picker-hue-slider/color-picker-hue-slider.component';
+@import './components/color-picker-hsv-selector/color-picker-hsv-selector.component';
+@import './components/color-picker-selector/color-picker-selector.component';
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin color-picker-module-core() {
+    @include color-picker-component-base();
+    @include color-picker-hsv-selector-component-base();
+    @include color-picker-hue-slider-component-base();
+    @include color-picker-selector-component-base();
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin color-picker-module-theme($theme-config) {
+    @include color-picker-component-theme($theme-config);
+    @include color-picker-hsv-selector-component-theme($theme-config);
+    @include color-picker-hue-slider-component-theme($theme-config);
+    @include color-picker-selector-component-theme($theme-config);
+}

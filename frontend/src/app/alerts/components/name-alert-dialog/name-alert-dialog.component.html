@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Name your alert</h2>
+<mat-dialog-content>
+    <mat-form-field appearance="fill" floatLabel="never" hideRequiredMarker>
+        <input matInput placeholder="Enter name for your alert" [formControl]="alertName" required (keyup.enter)="saveAlertName()">
+        <mat-error *ngIf="alertName.invalid">{{getErrorMessage()}}</mat-error>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-flat-button color="primary" (click)="saveAlertName()">Continue</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-stroked-button mat-dialog-close color="primary">Cancel</button>
+</mat-dialog-actions>

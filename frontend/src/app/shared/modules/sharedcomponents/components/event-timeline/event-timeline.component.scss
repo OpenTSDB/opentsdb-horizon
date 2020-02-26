@@ -1,0 +1,29 @@
+@mixin event-timeline-component-base() {
+
+    .event-timeline {
+
+        .tooltip{
+            position: absolute;
+            z-index: 10;
+            border: 1px solid black;
+            border-radius: 5px;
+            background: lightgrey;
+            padding: 3px;
+            max-height: 200px;
+            max-width: 300px;
+        }
+        
+    }
+}
+
+@mixin event-timeline-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+}

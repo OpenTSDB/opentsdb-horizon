@@ -1,0 +1,47 @@
+
+@mixin aura-dialog-component-base() {
+    .aura-dialog-component {
+        
+    }
+    // cdk items
+    .aura-dialog-panel.cdk-overlay-pane {
+        .mat-dialog-container {
+            padding: 0;
+        }
+
+        .mat-dialog-content {
+            margin: 0;
+            padding: 0;
+            height: calc(100% - 40px);
+            overflow: hidden;
+            iframe {
+                width:100%;
+                height: 100%;
+            }
+        }
+
+        .mat-dialog-actions {
+            padding: 0px 5px;
+            min-height: 40px;
+        }
+    }
+}
+
+@mixin aura-dialog-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+
+    .aura-dialog-component {
+
+    }
+
+
+
+}

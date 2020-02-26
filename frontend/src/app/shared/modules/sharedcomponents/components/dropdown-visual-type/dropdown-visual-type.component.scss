@@ -1,0 +1,56 @@
+@mixin dropdown-visual-type-component-base() {
+    .dropdown-visual-type {
+        display: inline-block;
+
+        .mat-form-field {
+            .mat-form-field-infix {
+                width: initial;
+                display: flex;
+            }
+        }
+
+        .mat-select {
+            display: flex;
+
+            .mat-select-trigger {
+                .mat-select-value-text {
+                    display: flex;
+                    flex: 1;
+
+                    .trigger-value-display {
+                        display: flex;
+                    }
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 14px;
+                        margin-right: 8px;
+                    } 
+                }
+
+                .mat-select-arrow-wrapper {
+                    margin-left: 8px;
+                }
+            }
+        }
+        .mat-button-toggle-group, .mat-button-toggle-standalone {
+            flex-direction: column;
+        }
+    }
+}
+
+@mixin dropdown-visual-type-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .dropdown-visual-type {
+
+    }
+}

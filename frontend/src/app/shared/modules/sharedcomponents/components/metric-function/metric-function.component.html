@@ -1,0 +1,23 @@
+<ng-template [ngIf]="!options.noVal" [ngIfElse]="noValueView">
+  <mat-form-field appearance="standard" floatLabel="never" [style.width.px]="controlWidth" [ngClass]="{'readonly-mode': !isEdit}" >
+    <div matPrefix>{{fx.fxCall}}</div>
+    <input matInput [formControl]="inputVal" (keyup.enter)="saveInput()" (click)="editInput()" [readonly]="!isEdit"
+      (blur)="saveInput()" autocomplete="off">
+    <mat-icon matSuffix fontSet="denali" fontIcon="d-close" (click)="delFx(fx.id)"></mat-icon>
+    <mat-hint *ngIf="inputVal.errors">{{getErrorMessage()}}</mat-hint>
+  </mat-form-field>
+</ng-template>
+<ng-template #noValueView>
+  <div class="mat-form-field mat-primary readonly-mode mat-form-field-type-mat-input mat-form-field-appearance-standard mat-form-field-can-float mat-form-field-should-float">
+    <div class="mat-form-field-wrapper">
+      <div class="mat-form-field-flex">
+        <div class="mat-form-field-prefix">
+          <div matPrefix>{{fx.fxCall}}</div>
+        </div>
+        <div class="mat-form-field-suffix">
+          <mat-icon matSuffix fontSet="denali" fontIcon="d-close" (click)="delFx(fx.id)"></mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,97 @@
+<mat-toolbar class="ts-legend-toolbar">
+    <mat-toolbar-row class="detail-brief">
+        <span>Total Series: showing {{visibleDataCount}} of {{data.series.length}}</span>
+        <span class="flex-spacer"></span>
+        <span class="detail-when">{{data.when}}</span>
+        <span class="flex-spacer"></span>
+        <span>Sort by {{sortActiveText}} {{(sort && sort.direction === 'asc') ? 'ascending' : 'descending'}}</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="ts-data-wrapper has-scroller">
+    <div class="is-scroller" >
+        <!--
+            NOTE: Maybe build as normal table so we can use lazy loading
+        -->
+        <table #legendTable class="ts-legend-table"
+            mat-table
+            [dataSource]="tableDataSource"
+            matSort
+            matSortActive="value"
+            matSortDirection="desc"
+            matSortDisableClear="true"
+            (matSortChange)="onMatSortChange($event)"
+            (cdkObserveContent)="tableContentChanged($event)">
+
+            <!-- Selection Column -->
+            <ng-container matColumnDef="checkbox">
+                <th mat-header-cell *matHeaderCellDef >
+                    <mat-checkbox value="" color="primary"
+                        [checked]="masterChecked"
+                        [indeterminate]="masterIndeterminate"
+                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox value="" color="primary"
+                        [checked]="currentWidgetOptions.visibility[element.srcIndex]"
+                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <!-- Metric Name Column -->
+            <ng-container matColumnDef="metric">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header >metric</th>
+                <td mat-cell *matCellDef="let element" (click)="timeseriesVisibilityBy('row', element)">
+                    <span class="color-chip" [style.color]="element.series.color"></span>
+                    <span [matTooltip]="element.series.hash">{{formattedMetricLabel(element)}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Tag Columns (dynamic) -->
+            <ng-container *ngFor="let resultTag of resultTagKeys" [matColumnDef]="resultTag">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header >{{resultTag}}</th>
+                <td mat-cell *matCellDef="let element" [ngClass]="{'tag-highlight': !multigraph && highlightTag.key === resultTag && highlightTag.value === element.series.tags[resultTag]}" (click)="timeseriesVisibilityBy('tag', {'tag': resultTag, 'value': element.series.tags[resultTag]})" (mouseover)="tableHighlightTag(resultTag, element.series.tags[resultTag]);" (mouseleave)="tableHighlightTag('', '')">
+                    <span>{{element.series.tags[resultTag]}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Value Column -->
+            <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header > Value </th>
+                <td mat-cell *matCellDef="let element">
+                    <span>{{element.formattedValue}}</span>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true" class="mat-elevation-z1"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;" [ngClass]="{'tag-highlight': !multigraph && row.series.tags[highlightTag.key] === highlightTag.value}"></tr>
+        </table>
+    </div>
+</div>
+
+<!-- this gets injected into the island window header bar
+     but context remains with this component -->
+<info-island-toolbar customClass="timeseries-legend-toolbar">
+    <div class="toolbar-item show-limit-types">
+        <span>Show:</span>
+        <button mat-flat-button [matMenuTriggerFor]="limitTypeMenu">
+            <span>{{dataLimitType}}</span>
+            <div class="mat-select-arrow-wrapper"><div class="mat-select-arrow"></div></div>
+        </button>
+        <mat-menu #limitTypeMenu="matMenu" class="show-limit-type-cdk-menu">
+            <button mat-menu-item *ngFor="let type of dataLimitTypes;" (click)="dataLimitTypeChange(type)">{{type}}</button>
+        </mat-menu>
+    </div>
+    <div class="toolbar-item show-amount-controls" *ngIf="dataLimitType !== 'All'">
+        <input type="number" [formControl]="showAmount" max-length="3" autocomplete="off" (mousedown)="$event.stopPropagation()" (mousemove)="$event.stopPropagation()">
+    </div>
+    <div class="toolbar-item logscale-controls" *ngIf="options.showLogscaleToggle">
+        <span>Logscale:</span>
+        <mat-checkbox (change)="logscaleCheckboxChange('y1',$event.checked)" [checked]="logScaleY1">Y1</mat-checkbox>
+        <mat-checkbox (change)="logscaleCheckboxChange('y2',$event.checked)" [checked]="logScaleY2">Y2</mat-checkbox>
+    </div>
+    <span class="flex-spacer" style="min-width: 30px;"></span>
+    <div class="toolbar-item">
+        <mat-checkbox (change)="trackmouseCheckboxChange($event)" [checked]="options.trackMouse" labelPosition="before">Track Mouse</mat-checkbox>
+    </div>
+</info-island-toolbar>

@@ -1,0 +1,46 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin widget-config-general-component-base() {
+
+    $default-padding: map-get($widgets-common-config, default-padding);
+
+    .widget-config-tab.general-configuration {
+        padding-left: 10px;
+        padding-top: 5px;
+
+        margin-top: ($default-padding * 2);
+        
+        // title input
+        .config-widget-title {
+            .mat-form-field {
+                min-width: 400px;
+            }
+        }
+        // description textarea
+        .config-widget-description {
+            .mat-form-field {
+                min-width: 600px;
+            }
+        }
+
+        form {
+            display: block;
+        }
+    }
+}
+
+@mixin widget-config-general-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    .widget-config-tab.general-configuration {
+        // style rules here
+    }
+
+}

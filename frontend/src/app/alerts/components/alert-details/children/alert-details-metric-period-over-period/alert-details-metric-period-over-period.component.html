@@ -1,0 +1,213 @@
+<div class="form-group sliding-window" >
+    <div class="form-label vertical-center"><strong>Sliding Window</strong></div>
+    <div class="sliding-window-form-control auto-width">
+      <span class="aggregator">
+            Average last
+      </span>
+      <span class="window-size">
+            <time-selector [presets]="slidingWindowPresets"
+            [maxSeconds]="maxSlidingWindow"
+            [timeInSeconds]="config.periodOverPeriod.slidingWindow"
+            (newTimeInSeconds)="updateConfig('slidingWindow', $event)"
+            [isViewMode]="viewMode"></time-selector>
+      </span>
+    </div>
+</div>
+
+<div class="form-group period">
+    <div class="form-label vertical-center"><strong>Period</strong></div>
+    <div class="form-control-wrap auto-width">
+      <time-selector [presets]="periodPresets"
+        [timeInSeconds]="config.periodOverPeriod.period"
+        (newTimeInSeconds)="updateConfig('period', $event)"
+        [isViewMode]="viewMode"> </time-selector>
+    </div>
+</div>
+
+<div class="form-group lookbacks" >
+  <div class="form-label vertical-center"><strong>Number of Lookbacks</strong></div>
+  <div *ngIf="viewMode">
+    {{config.periodOverPeriod.lookbacks}}
+  </div>
+  <input matInput class="lookbacks-input" *ngIf="!viewMode"
+    [ngClass]="{'blue-background': !viewMode}"
+    [formControl]="lookbacks"
+    required
+    type="number" min="1" max="10"
+    [value]="config.periodOverPeriod.lookbacks"
+    (change)="updateConfig('lookbacks', $event.target.value)">
+    <mat-error *ngIf="lookbacks.errors && (lookbacks.dirty || lookbacks.touched)">
+        Number of lookbacks required. Min = 1, Max = 10.
+    </mat-error>
+</div>
+
+<!-- Upper Threshold -->
+
+<div class="form-group upper-threshold" >
+    <span class="form-label vertical-center"><strong>Upper threshold</strong></span>
+    <span class="threshold">
+        <span class="threshold-bad-title">
+            Bad State
+        </span>
+
+        <span class="threshold-input" [ngClass]="{'blue-background': !viewMode}">
+            <input matInput
+            [readonly]="viewMode"
+            [formControl]="badUpperThreshold"
+            type="number" min="0"
+            [value]="config.periodOverPeriod.badUpperThreshold"
+            (change)="updateConfig('badUpperThreshold', $event.target.value)">
+            <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType === 'percent'">%</span>
+            <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType !== 'percent'">#</span>
+        </span>
+
+        <span class="threshold-title warning-title">
+            Warning State
+        </span>
+
+        <span class="threshold-input" [ngClass]="{'blue-background': !viewMode}">
+            <input matInput
+            [readonly]="viewMode"
+            [formControl]="warnUpperThreshold"
+            type="number" min="0"
+            [value]="config.periodOverPeriod.warnUpperThreshold"
+            (change)="updateConfig('warnUpperThreshold', $event.target.value)">
+            <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType === 'percent'">%</span>
+            <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType !== 'percent'">#</span>
+        </span>
+
+        <span class="threshold-type" *ngIf="!viewMode">
+            <mat-button-toggle-group name="upperThresholdType"
+                (change)="updateConfig('upperThresholdType', $event.value)"
+                [value]="config.periodOverPeriod.upperThresholdType">
+                <mat-button-toggle value="value">#</mat-button-toggle>
+                <mat-button-toggle value="percent">%</mat-button-toggle>
+            </mat-button-toggle-group>
+        </span>
+    </span>
+</div>
+
+<div class="error-messages">
+    <mat-error *ngIf="badUpperThreshold.errors && badUpperThreshold.value !== null && (badUpperThreshold.dirty || badUpperThreshold.touched)">
+        Bad threshold must be greater than Warn threshold and 0.
+    </mat-error>
+
+    <mat-error *ngIf="warnUpperThreshold.errors && warnUpperThreshold.value !== null && (warnUpperThreshold.dirty || warnUpperThreshold.touched)">
+        Warn threshold must be less than Bad threshold and greater than 0.
+    </mat-error>
+</div>
+
+<!-- Lower Threshold -->
+<div class="form-group lower-threshold">
+    <span class="form-label vertical-center"><strong>Lower threshold</strong></span>
+    <span class="threshold">
+        <span class="threshold-bad-title">
+            Bad State
+        </span>
+
+        <span class="threshold-input" [ngClass]="{'blue-background': !viewMode}">
+            <input matInput
+                [readonly]="viewMode"
+                [formControl]="badLowerThreshold"
+                type="number" min="0"
+                [value]="config.periodOverPeriod.badLowerThreshold"
+                (change)="updateConfig('badLowerThreshold', $event.target.value)">
+            <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType === 'percent'">%</span>
+            <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType !== 'percent'">#</span>
+        </span>
+
+        <span class="threshold-title warning-title">
+            Warning State
+        </span>
+
+        <span class="threshold-input" [ngClass]="{'blue-background': !viewMode}">
+            <input matInput
+                [readonly]="viewMode"
+                [formControl]="warnLowerThreshold"
+                type="number" min="0"
+                [value]="config.periodOverPeriod.warnLowerThreshold"
+                (change)="updateConfig('warnLowerThreshold', $event.target.value)">
+            <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType === 'percent'">%</span>
+            <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType !== 'percent'">#</span>
+        </span>
+
+        <span class="threshold-type" *ngIf="!viewMode"> 
+            <mat-button-toggle-group name="lowerThresholdType"
+                (change)="updateConfig('lowerThresholdType', $event.value)"
+                [value]="config.periodOverPeriod.lowerThresholdType">
+                <mat-button-toggle value="value">#</mat-button-toggle>
+                <mat-button-toggle value="percent">%</mat-button-toggle>
+            </mat-button-toggle-group>
+        </span>
+    </span>
+</div>
+
+<div class="error-messages">
+    <mat-error *ngIf="badLowerThreshold.errors && badLowerThreshold.value !== null && (badLowerThreshold.dirty || badLowerThreshold.touched)">
+        Bad threshold must be greater than Warn threshold and 0.
+    </mat-error>
+
+    <mat-error *ngIf="warnLowerThreshold.errors && warnLowerThreshold.value !== null && (warnLowerThreshold.dirty || warnLowerThreshold.touched)">
+        Warn threshold must be less than Bad threshold and greater than 0.
+    </mat-error>
+</div>
+
+<div class="error-messages">
+    <mat-error *ngIf="!atleastOneThresholdSet()">
+        Please select atleast 1 threshold.
+    </mat-error>
+</div>
+
+<!-- Advanced -->
+<div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced || highestOutliersToRemove.errors || lowestOutliersToRemove.errors}">
+    <div class="toggle-wrap">
+        <a class="toggle-action" (click)="showThresholdAdvanced = !showThresholdAdvanced;">
+            <mat-icon fontSet="denali" [fontIcon]="showThresholdAdvanced ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
+            <span>{{showThresholdAdvanced ? 'Hide' : 'Show'}} advanced options</span>
+        </a>
+    </div>
+
+    <div class="form-group" id="outliers-form">
+        <span class="form-label vertical-center"><strong>Outliers to remove</strong></span>
+        <span class="outliers">
+            <span class="outlier-title"> Highest </span>
+            <span class="outlier-input" [ngClass]="{'blue-background': !viewMode}">
+                <input matInput
+                    [readonly]="viewMode"
+                    [formControl]="highestOutliersToRemove"
+                    type="number" min="0"
+                    [value]="config.periodOverPeriod.highestOutliersToRemove"
+                    (change)="updateConfig('highestOutliersToRemove', $event.target.value)">
+            </span>
+
+            <span class="outlier-title"> Lowest </span>
+            <span class="outlier-input" [ngClass]="{'blue-background': !viewMode}">
+                <input matInput
+                    [readonly]="viewMode"
+                    [formControl]="lowestOutliersToRemove"
+                    type="number" min="0"
+                    [value]="config.periodOverPeriod.lowestOutliersToRemove"
+                    (change)="updateConfig('lowestOutliersToRemove', $event.target.value)">
+            </span>
+        </span>
+    </div>
+
+    <div class="error-messages">
+        <mat-error *ngIf="highestOutliersToRemove.errors || lowestOutliersToRemove.errors">
+            Removed outliers must be integers with a total less than number of lookbacks.
+        </mat-error>
+    </div>
+
+    <div class="form-group delay-evaluation">
+        <div class="form-label vertical-center"><strong>Delay evaluation by</strong></div>
+        <span class="delay-evaluation-input" [ngClass]="{'blue-background': !viewMode}">
+            <input matInput
+            [readonly]="viewMode"
+            type="number" onkeypress="return event.charCode >= 48" autocomplete="off" 
+            [placeholder]="getDelayEvalutionPlaceholder()"
+            [value]="config.periodOverPeriod.delayEvaluation"
+            (change)="updateConfig('delayEvaluation', $event.target.value)">
+        </span>
+        <mat-hint class="info-hint">mins</mat-hint>
+    </div>
+</div>

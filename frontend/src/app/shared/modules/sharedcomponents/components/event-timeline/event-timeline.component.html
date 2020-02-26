@@ -1,0 +1,46 @@
+<canvas 
+  #eventsOverlayCanvas 
+  height="20" 
+  style="border:0px dotted lightgray;" 
+  (click)="clicked($event)" 
+  (mousemove)="canvasEnter($event)" 
+  (mouseleave)="canvasLeave($event)" 
+  [ngStyle]="{ 'width' : width}">
+</canvas>
+
+<div class="tooltip" *ngIf="toolTipData.bucket" [style.left]="toolTipData.xCoord" [style.top]="toolTipHeightFromTop + toolTipData.yCoord + 37 + 'px'" >
+
+  <!-- Summarizer the individual event -->
+  <div *ngIf="toolTipData.bucket.events.length === 1">
+    <div>
+        {{toolTipData.bucket.events[0].title}}
+    </div>
+    <div>
+        {{toolTipData.bucket.events[0].source}}
+    </div>
+    <div>
+      <span>
+          {{util.buildDisplayTime(toolTipData.bucket.events[0].timestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone )}}
+      </span>
+
+      <span *ngIf="toolTipData.bucket.events[0].endTime">
+        -
+      </span>
+
+      <span *ngIf="toolTipData.bucket.events[0].endTime">
+          {{util.buildDisplayTime(toolTipData.bucket.events[0].endTimestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone)}}
+      </span>
+    </div>
+  </div>
+
+  <!-- Summarize the bucket by number of each type of event -->
+  <div *ngIf="toolTipData.bucket.events.length > 1">
+    <div>{{util.buildDisplayTime(toolTipData.bucket.endTime, startTime, endTime, false, timezone)}}</div>
+    <div *ngFor="let summary of getBucketSummary(toolTipData.bucket)">
+      {{summary[1]}} {{summary[0]}}
+      <span *ngIf="summary[1] === 1"> event </span> 
+      <span *ngIf="summary[1] > 1"> events</span>   
+    </div>
+  </div>
+  
+</div>

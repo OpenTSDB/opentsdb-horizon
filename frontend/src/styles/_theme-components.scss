@@ -1,0 +1,20 @@
+//**************************************
+// * COMPONENT THEMES
+// **************************************/
+
+@import 'mixins';
+
+// [ STEP 1 ] Import your component mixin here
+
+@import '../app/navbar/containers/navbar/navbar-theme';
+@import '../app/navbar/components/theme-picker/theme-picker-theme.scss';
+
+//@import '../app/dashboard/dboard-header/dboard-header-theme';
+
+// [ STEP 2 ] Add your component theme mixin to the list, passing the $theme
+@mixin generate-component-themes($theme, $name: default) {
+    /* -- [ COMPONENT THEMES ] -- */
+    @include nav-bar-theme($theme, $name);
+    @include theme-picker-theme($theme, $name);
+    //@include dboard-header-theme($theme, $name);
+}

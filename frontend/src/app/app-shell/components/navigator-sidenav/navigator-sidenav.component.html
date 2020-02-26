@@ -1,0 +1,16 @@
+<mat-toolbar>
+    <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+        <button mat-button class="app-home-link">
+            <img src="/assets/yamas-logo-icon-only.png" class="app-yamas-logo" />
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-nav-list class="side-nav-applications">
+    <ng-container *ngFor="let nav of navItems">
+        <a mat-list-item (click)="navigationClicked(nav)" [ngClass]="{'is-active': activeNav.section === nav.section}">
+            <mat-icon fontSet="denali" [fontIcon]="nav.icon"></mat-icon>
+            <span class="nav-label">{{nav.label}}</span>
+        </a>
+        <span class="flex-spacer" *ngIf="nav.spacerAfter"></span>
+    </ng-container>
+</mat-nav-list>

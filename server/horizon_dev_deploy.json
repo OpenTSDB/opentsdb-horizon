@@ -1,0 +1,14 @@
+{
+  "horizon_dev": {
+    "routes": [
+      {
+        "method": "get",
+        "route": "*"
+      },
+      {
+        "method": "post",
+        "route": "*"
+      }
+    ]
+  }
+}

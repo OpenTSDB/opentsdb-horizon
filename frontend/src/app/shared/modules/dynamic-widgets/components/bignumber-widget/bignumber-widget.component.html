@@ -1,0 +1,149 @@
+<div class="widget-output-container" fxLayout="column">
+    <canvas #myCanvas width="0" height="0"></canvas>
+    <div class="widget-output" #widgetoutput>
+        <div class="widget-container">
+            <div class="big-num-container"
+                [style.background]="backgroundColor"
+                [style.color]="textColor"
+                [style.font-size]="fontSizePercent + '%'"
+                [ngClass]= "{'edit-flex' : editMode}">
+
+                <div class="content-container">
+                    <div class="metric-container">
+                        <div *ngIf="widget.settings.visual.prefix"
+                            class='prefix' [ngClass]="{
+                                'top':     widget.settings.visual.prefixAlignment=='top',
+                                'middle':  widget.settings.visual.prefixAlignment=='middle',
+                                'bottom':  widget.settings.visual.prefixAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':    widget.settings.visual.prefixSize=='s',
+                                'medium':   widget.settings.visual.prefixSize=='m',
+                                'large':    widget.settings.visual.prefixSize=='l'
+                                }">{{ shortenString(widget.settings.visual.prefix, maxLabelLength) | uppercase }}</div>
+                        </div>
+
+                        <div *ngIf="bigNumber.unitPos === 0"
+                                class='left-unit unit' [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                                }">{{ shortenString(bigNumber.unit, maxLabelLength) }}</div>
+                        </div>
+
+                        <div class="big-number" *ngIf="bigNumber.num !== undefined">{{ bigNumber.num + bigNumber.postfix }}</div>
+                        <div class="big-number" *ngIf="bigNumber.num === undefined">{{noDataText}}</div>
+
+                        <div *ngIf="bigNumber.unitPos === 1"
+                                class='right-unit unit' [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                        }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                            }">{{ shortenString(bigNumber.unit, maxLabelLength) }}</div>
+                        </div>
+                        <!--
+                        <span *ngIf="widget.settings.visual.changedIndicatorEnabled" class="change-indicator">
+                            <span *ngIf="changePct >= changeThreshold">↑ {{ bigNumToChangeIndicatorValue(UN.getBigNumber(changeValue, {unit: widget.settings.visual.unit, precision: widget.settings.visual.precision})) }} </span>
+                            <span *ngIf="changePct <= -1*changeThreshold">↓ {{ bigNumToChangeIndicatorValue(UN.getBigNumber(changeValue, {unit: widget.settings.visual.unit, precision: widget.settings.visual.precision})) }} </span>
+                            <span *ngIf="changePct > -1*changeThreshold && changePct < changeThreshold">↔ </span>
+                        </span>
+                        -->
+                        <div *ngIf="aggregators.length > 1" class="aggregator" [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                            }">{{ agg | uppercase }}</div>
+                        </div>
+                    </div>
+                    <div class="caption">{{ shortenString(widget.settings.visual.caption, maxCaptionLength) }}</div>
+                </div>
+            </div>
+
+            <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
+            <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
+                <img src="/assets/spinner-26x26.gif" />
+            </div>
+            <div class="error" *ngIf="error" (click)="showError()">
+                <mat-icon>error</mat-icon>
+            </div>
+            <div class="debug" *ngIf="debugData" (click)="showDebug()">
+                <mat-icon>info</mat-icon> {{ this.widget.id }}
+            </div>
+            <div class="fully-qualified-metric" *ngIf="editMode">
+                <div class="metric-detail" *ngIf="selectedMetric">
+                    <div class="metric-label">{{ selectedMetric.metric }}</div>
+                    <div class="metric-tags">
+                        <div class="metric-tag" *ngFor="let tag of tags">
+                            <span class="tag-key">{{ tag.key }}:</span>
+                            <strong class="tag-value">{{ tag.value }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="widget-controls-container" *ngIf="editMode">
+    <div class="widget-title" fxLayout="row" fxFlex="1 1 30px">
+            <span class="flex-spacer"></span>
+            <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
+    </div>
+    <div class="widget-control-steps has-scroller">
+        <div class="is-scroller">
+            <div class="step-section query-section is-visible">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">
+                        <span>1. Queries </span>
+                        <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.queries">
+                    <widget-config-metric-queries [options]="{enableGroupBy: false, enableAlias: false, enableSummarizer: true, enableMultipleQueries:true, enableMultiMetricSelection: false}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+                </div>
+            </div>
+            <div class="step-section query-section is-visible">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">
+                        <span>2. Time Configuration </span>
+                        <mat-icon fontSet="denali" (click)="toggleConfigSection('time')" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.time">
+                    <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
+                </div>
+            </div>
+            <div class="step-section query-section is-visible">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">
+                        <span>3. Visual Appearance </span>
+                        <mat-icon fontSet="denali" (click)="toggleConfigSection('visuals')" [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.visuals">
+                    <big-number-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></big-number-visual-appearance>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="widget-actions" *ngIf="!editQueryId">
+        <!-- controls to save/cancel -->
+        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
+        <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
+    </div>
+</div>

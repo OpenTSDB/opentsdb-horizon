@@ -1,0 +1,9 @@
+<mat-button-toggle-group (change)="changeLineWeight($event.value)" [value]="value">
+    <mat-button-toggle *ngFor="let option of lineWeightOptions" [value]="option.value">
+        <span class="line-weight-preview">
+            <span [style.border-bottom-width]="option.value"></span>
+        </span>
+        <span>{{ option.label }}</span>
+    </mat-button-toggle>
+</mat-button-toggle-group>
+

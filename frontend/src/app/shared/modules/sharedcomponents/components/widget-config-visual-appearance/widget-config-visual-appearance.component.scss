@@ -1,0 +1,326 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin widget-config-visual-appearance-component-base() {
+    .widget-config-tab.visual-appearance-configuration {
+        // style rules here
+         
+        form {
+            display: block;
+        }
+
+        .mat-table {
+            width: 100%;
+        }
+
+        .column {
+            display: inline-flex;
+            flex-direction: column;
+        }
+
+        .column.linechart-container {
+            padding-left: 0;
+            padding-right: 0;
+
+            .mat-table {
+                .mat-header-row {
+                    height: 30px;
+                }
+
+                .mat-header-cell {
+                    text-transform: uppercase;
+                }
+
+                .mat-column-index {
+                    padding: 0 8px;
+                    width:30px;
+                }
+
+                .metric-group-row {
+                    height: 40px;
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 14px;
+                    }
+
+                    // column specific
+
+                    
+                    .mat-column-metric {
+                        font-weight: 500;
+                    }
+                }
+
+                .mat-row {
+                    height: 30px;
+
+                    .mat-cell {
+                        line-height: 1;
+                    }
+
+                    // specific columns
+                    .mat-column-index div {
+                        padding: 5px;
+                        background: #cccccc;
+                        font-weight: 500;
+                        width: 30px;
+                        height: 30px;
+                    }
+                    .mat-column-metric {
+                        .mat-form-field {
+                            .mat-hint {
+                                display: none;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+
+                            // modifiers
+
+                            &:hover,
+                            &.mat-focused {
+                                .mat-hint {
+                                    display: block;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .column.stack-order-container {
+            flex: 1 1 120px;
+            .config-control:first-child {
+                margin-bottom: 8px;
+                font-size: 12px;
+                font-weight: 500;
+                color: rgba(0, 0, 0, 0.54)
+            }
+        }
+
+        .column.display-modifier-container {
+            flex: 1 1 200px;
+
+            .config-control:first-child {
+                margin-bottom: 12px;
+            }
+
+            .display-modifier {
+                padding: 10px 10px;
+
+                .mat-button-toggle {
+                    .mat-icon {
+                        margin-right: 8px;
+                    }
+                }
+            }
+        }
+
+        .column.barchart-container,
+        .column.circlechart-container,
+        .column.topnchart-container,
+        .column.stackbars-container,
+        .column.stacks-container {
+            padding-left: 30px;
+
+            .config-control:first-child {
+                margin-bottom: 0;
+            }
+        
+
+            .mat-table {
+                .mat-header-row {
+                    height: 30px;
+                }
+                .mat-row {
+                    border-bottom: 0;
+
+                    .mat-cell {
+                        padding: 8px;
+                        overflow: initial
+                    }
+
+                    .mat-cell:first-child {
+                        padding-left: 0;
+                    }
+
+                    .mat-cell:last-child {
+                        width: 100%;
+                    }
+
+                    .mat-cell:not(:last-child) {
+                        flex: initial;
+                    }
+
+                    // specific columns
+                    .mat-column-settings-visual-label {
+                        width: 300px;
+
+                        .mat-form-field {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+
+            .mat-form-field {
+                .mat-form-field-subscript-wrapper {
+                    overflow: initial;
+                
+                    .mat-hint {
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+
+        .column.topnchart-container {
+            .config-control {
+                margin-top: 10px;
+            }
+        }
+
+        .column.topnchart-container {
+            padding-left: 0px;
+            flex: 0 0 25%;
+        }
+
+        .column.heatmap-metric-settings {
+            padding-right: 20px;
+            flex: 0 0 75%;
+        }
+
+        .column.heatmap-unit-settings {
+            .config-control {
+                margin-top: 20px;
+                margin-bottom: 25px;
+                color: rgba(0, 0, 0, 0.54);
+                font-weight: 450;
+            }
+        }
+
+        .column.stackbars-container {
+            flex: 1 1 450px;
+        }
+
+        .conditional-formatter {
+            margin-left: 25px;
+        }
+        
+        /* specific controls */
+
+        // display modifier
+
+        
+        ////// OLD STYLES //////
+        /*.column {
+            display: inline-flex;
+            flex-direction: row;
+        }
+        .column:nth-child(n+2):nth-last-child(n+2) {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .column:first-child {
+            width:200px;
+            padding-right: 30px;
+            flex-direction: column;
+        }
+
+        .column:last-child {
+            padding-left: 30px;
+            width: calc(100% - 250px);
+        }
+
+        .display-label {
+            display: block;
+            padding: 10px 5px;
+        }
+
+        mat-button-toggle-group {
+            background: #f0f4fe;
+            padding:10px 10px;
+        }
+
+        mat-button-toggle-group.display-toggle-group {
+            flex-direction: column;
+        }
+
+        mat-button-toggle {
+            display: block;
+            width:150px;
+            color: #84b6f1;
+        }
+
+        mat-button-toggle .mat-button-toggle-label-content {
+            display: block;
+            padding: 3px 3px;
+        }
+
+        mat-row, mat-header-row, mat-footer-row {
+            border-bottom-width: 1px;
+        }
+
+        .mat-button-toggle-checked {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        mat-cell {
+            padding-top: 5px;
+            width:300px;
+        }
+
+        mat-row mat-cell:first-child {
+            width:100px;
+            flex: initial;
+        }
+
+        mat-table {
+            width: 100%;
+        }
+        */
+        
+    }    
+}
+
+@mixin widget-config-visual-appearance-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    $input-bg: rgba(map-get($primary, default), 0.08);
+
+    .widget-config-tab.visual-appearance-configuration {
+        // style rules here
+
+        .mat-table {
+            .metric-group-row {
+                background-color: map-get($background, app-bar);
+            }
+        }
+
+        .column.display-modifier-container {
+            .display-modifier {
+                background-color: $input-bg;
+            }
+
+            .mat-button-toggle {
+                color: map-get($foreground, link);
+            }
+
+            .mat-button-toggle-checked {
+                background: map-get($background, card);
+                color: map-get($foreground, text);
+            }
+        }
+    } 
+}

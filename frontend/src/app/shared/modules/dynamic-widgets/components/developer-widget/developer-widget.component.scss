@@ -1,0 +1,26 @@
+@mixin developer-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    // .widget-panel-content.developer-widget { }
+
+    // when we are in edit view
+    // .edit-view-container.is-active { 
+    //    .widget-panel-content.developer-widget { }
+    // }
+}
+
+@mixin developer-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    // .widget-panel-content.developer-widget { }
+
+}
