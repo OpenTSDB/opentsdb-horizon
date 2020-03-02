@@ -9,13 +9,12 @@
         flex: 1;
         display: flex;
         .widget-output {
+            padding: 5px 0px;
             width: 100%;
             height: 100%;
             display: flex;
         }
         #container {
-            padding: 20px 0px 0px 0px;
-            box-sizing: border-box;
             display:inline-block;
             /*
                 this is parent containter(#container) of chartjs canvas.

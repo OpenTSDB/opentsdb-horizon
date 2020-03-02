@@ -157,13 +157,6 @@ export class UtilsService {
         widget.queries.splice(qindex, 1);
     }
 
-    updateQueryMetricVisual(widget, qid, mid, visual) {
-        // toggle the individual query metric
-        const qindex = widget.queries.findIndex(d => d.id === qid);
-        const mindex = widget.queries[qindex].metrics.findIndex(d => d.id === mid);
-        widget.queries[qindex].metrics[mindex].settings.visual = { ...widget.queries[qindex].metrics[mindex].settings.visual, ...visual };
-    }
-
     toggleQueryMetricVisibility(widget, qid, mid) {
         // toggle the individual query metric
         const qindex = widget.queries.findIndex(d => d.id === qid);

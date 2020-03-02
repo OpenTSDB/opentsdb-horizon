@@ -105,8 +105,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   debugDialog: MatDialogRef < DebugDialogComponent > | null;
   storeQuery: any;
   needRequery = false;
-  visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
-
   constructor(
       private cdRef: ChangeDetectorRef,
       private interCom: IntercomService,
@@ -237,10 +235,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             this.widget.queries = [...this.widget.queries];
             this.doRefreshData$.next(true);
             this.needRequery = true;
-            break;
-        case 'UpdateQueryMetricVisual':
-            this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
-            this.refreshData(false);
             break;
         case 'ToggleQueryMetricVisibility':
             this.toggleQueryMetricVisibility(message.id, message.payload.mid);
@@ -523,10 +517,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             payload: payload
         });
     }
-  }
-
-  toggleConfigSection(section) {
-    this.visibleSections[section] = !this.visibleSections[section];
   }
 
   changeWidgetType(type) {

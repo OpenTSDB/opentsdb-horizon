@@ -37,6 +37,7 @@
             align-items: stretch;
             justify-content: stretch;
             cursor: pointer;
+            word-break: break-all; // break the word no matter what, to avoid x-scroll
 
             .mat-icon {
                 font-size: 15px;
@@ -219,26 +220,44 @@
                     flex-direction: column;
                     align-items: stretch;
                     justify-content: stretch;
-                    max-width: 200px;
+                    max-width: 300px;
+
+                    &.tag-values {
+                        min-width: 300px;
+                    }
                 }
 
                 .tag-filter-options-column:last-child {
-                    min-width: calc(100% - 400px);
-                    .tag-value-list-item:not(:last-of-type) {
-                        // border-bottom: 1px solid #efefef;
+                    min-width: calc(100% - 500px);
+
+                    .tag-value-list-item {
+                        margin: 4px 8px;
+
+                        &:not(:last-of-type) {
+                            // border-bottom: 1px solid #efefef;
+                        }
                     }
+
                     .mat-chip-list-wrapper {
                         margin: 0px;
                     }
+
                     .mat-chip {
-                        font-weight: 300;
+                        font-weight: 400;
                     }
+
                     .mat-standard-chip {
                         // background: #eaf1fb;
                         margin: 2px;
-                        min-height: 25px;
-                        padding: 5px 8px;
+                        min-height: 18px;
+                        max-height: 18px;
+                        height: 18px;
+                        padding: 2px 6px;
+                        font-size: 10px;
+                        border-radius: 12px;
+                        line-height: 18px;
                     }
+
                     .prefix.mat-icon{
                         width: 5px;
                         height: 5px;
@@ -246,6 +265,7 @@
                         // color: #03a9f4;
                         margin-right: 2px;
                     }
+
                     .prefix.not {
                         margin-right: 2px;
                     }
@@ -256,6 +276,24 @@
                         font-size: 15px;
                     }
 
+                }
+
+                .column-output {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+
+                    .gif-spinner {
+                        width: 100%;
+                        text-align: center;
+                        margin-top: 20px;
+                        background-color: transparent;
+                    }
+
+                    &.error-info-messaging {
+                        word-break: break-all;
+                        padding: 8px;
+                    }
                 }
 
                 .tag-search-input-field {
@@ -382,9 +420,23 @@
     // .mat-menu-panel.tag-filters-menu-wrapper {}
 
     .mat-menu-panel.filter-action-cdk-menu {
+
+        .mat-menu-content {
+            padding: 4px 0;
+        }
+
         .mat-menu-item {
-            height: 32px;
-            line-height: 32px;
+            height: 24px;
+            line-height: 24px;
+            padding: 0 8px;
+            font-size: 12px;
+
+            .mat-icon {
+                font-size: 16px;
+                height: 16px;
+                width: 16px;
+                margin-right: 8px;
+            }
         }
     }
 }
@@ -517,7 +569,7 @@
 
                 .tag-filter-options-column:last-child {
                     .mat-standard-chip {
-                        background: $option-highlight-bg;
+                        background: rgba($option-highlight-text, 0.15);
 
                         &.automode {
                             color: rgba(0,0,0,.8);
@@ -596,7 +648,8 @@
     }
 
     .mat-menu-panel.filter-action-cdk-menu {
-        background-color: if($is-dark, lighten($cdk-menu-bg, 8%), darken($cdk-menu-border, 8%));
-        border: 1px solid $cdk-menu-border;
+        //background-color: if($is-dark, lighten($cdk-menu-bg, 8%), darken($cdk-menu-border, 8%));
+        background-color: if($is-dark, lighten($cdk-menu-bg, 8%), map-get($background, card));
+        border: 1px solid if($is-dark, rgba($cdk-menu-border, .6), $cdk-menu-border);
     }
 }

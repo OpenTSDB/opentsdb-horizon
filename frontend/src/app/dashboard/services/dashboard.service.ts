@@ -353,7 +353,7 @@ export class DashboardService {
             const alias = qFilter.customFilter[j].substring(hasNot ? 2 : 1, qFilter.customFilter[j].length - 1);
             const tplIdx = tplVariables.findIndex(tpl => tpl.alias === alias);
             if (tplIdx > -1) {
-              if (tplVariables[tplIdx].filter.trim() !== '' && qFilter.filter.indexOf(tplVariables[tplIdx].filter) === -1) {
+              if (tplVariables[tplIdx].filter.trim() !== '') {
                 // qFilter.filter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
                 replaceFilter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
                 if (tplVariables[tplIdx].mode === 'auto') {

@@ -165,7 +165,6 @@
                 th.mat-header-cell {
                     vertical-align: top;
                     padding: 4px 8px 0;
-                    border-bottom: 0px;
 
                     &:first-of-type {
                         padding-left: 0px;
@@ -263,7 +262,6 @@
                     }
 
                     &.metric-name,
-                    &.alias,
                     &.expression {
                         width: 100%;
 
@@ -393,7 +391,11 @@
                         .mat-flat-button {
                             padding: 0;
                             min-width: 24px;
-                            height: 24px;
+                            //height: 24px;
+                            line-height: 32px;
+                            height: 32px;
+                            padding-left: 6px;
+
                             &,
                             .mat-button-wrapper {
                                 line-height: 24px;
@@ -409,9 +411,6 @@
                                 }
                             }
 
-                            .mat-select-arrow {
-                                color: white;
-                            }
                         }
 
                         .mat-mini-fab {
@@ -534,16 +533,7 @@
             border-top: $mat-select-arrow-size solid;
             margin: 0 $mat-select-arrow-margin;
           }
-        
-        .table-visual-settings {
-            td {
-                vertical-align: top;
-                .color-picker-component-control {
-                        border-top: 0px solid #cccccc;
-                }
-            }
-        }
-        
+
 
         // HOST MODIFIERS
         &.can-disable-metrics {
@@ -750,7 +740,6 @@
             }
 
             &.metric-name,
-            &.alias,
             &.expression {
                 .display-name {
                     border: 1px solid $lighter-divider;
@@ -796,6 +785,23 @@
 
                     &:hover {
                         background-color: rgba($link, 0.1);
+                    }
+                }
+            }
+
+            &.add-function {
+                .mat-flat-button {
+                    background: if($is-dark, rgba(255,255,255, 0.08), rgba(0,0,0, 0.03));
+                    border: 1px solid $lighter-divider;
+
+                    .mat-icon {
+                        color: map-get($foreground, link);
+                    }
+
+                    .mat-select-arrow-wrapper {
+                        .mat-select-arrow {
+                            color: if($is-dark, rgba(255,255,255,0.7), rgba(0,0,0,0.7));
+                        }
                     }
                 }
             }

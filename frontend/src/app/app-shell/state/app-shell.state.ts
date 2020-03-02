@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 export interface AppShellStateModel {
     currentTheme: string;
     currentMediaQuery: string;
-    userProfile: any;
+    // userProfile: any;
     error: any;
 }
 
@@ -36,6 +36,7 @@ export class SetCurrentMediaQuery {
     constructor() {}
 }
 
+/*
 export class SSGetUserProfileSuccess {
     static readonly type = '[DashboardNavigator] Get User profile [SUCCESS]';
     constructor(
@@ -67,7 +68,7 @@ export class SSCreateUserProfileFail {
     constructor(
         public readonly error: any
     ) {}
-}
+}*/
 
 
 /** Define State */
@@ -76,9 +77,9 @@ export class SSCreateUserProfileFail {
     defaults: {
         currentTheme: 'developing',
         currentMediaQuery: '',
-        userProfile: {
-            loaded: false
-        },
+        // userProfile: {
+        //     loaded: false
+        // },
         error: false
     }
 })
@@ -107,10 +108,10 @@ export class AppShellState {
         return state.error;
     }
 
-    @Selector()
+    /*@Selector()
     static getUserProfile(state: AppShellStateModel) {
         return state.userProfile;
-    }
+    }*/
 
     @Selector()
     static getCurrentTheme(state: AppShellStateModel) {
@@ -139,6 +140,7 @@ export class AppShellState {
         ctx.setState({...state, currentMediaQuery });
     }
 
+    /*
     @Action(SSGetUserProfile)
     GetUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSGetUserProfile) {
         this.logger.state('AppShellState :: Get user profile');
@@ -207,6 +209,6 @@ export class AppShellState {
     CreateUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSCreateUserProfileFail) {
         this.logger.error('AppShellState :: Create user profile', error);
         ctx.dispatch({error: error});
-    }
+    }*/
 
 }

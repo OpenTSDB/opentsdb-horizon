@@ -26,8 +26,18 @@ import {
     Store,
 } from '@ngxs/store';
 
-import { DbfsState } from '../../state/dbfs.state';
-import { DbfsPanelsState, DbfsPanelsInitialize, DbfsAddPanel, DbfsUpdatePanels, DbfsResetPanelAction } from '../../state/dbfs-panels.state';
+import {
+    DbfsState
+} from '../../state/dbfs.state';
+
+import {
+    DbfsPanelsState,
+    DbfsPanelsInitialize,
+    DbfsAddPanel,
+    DbfsUpdatePanels,
+    DbfsResetPanelAction
+} from '../../state/dbfs-panels.state';
+
 import {
     DbfsResourcesState,
     DbfsLoadResources,
@@ -71,7 +81,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     @Select(DbfsState.getLoadedDashboardId) loadedDashboardId$: Observable<any>;
     loadedDashboardId: any = '';
 
-    @Select(DbfsResourcesState.getUser()) user$: Observable<any>;
+    @Select(DbfsState.getUser()) user$: Observable<any>;
     user: any = {};
 
     @Select(DbfsResourcesState.getFolderResources) folders$: Observable<any>;
@@ -169,7 +179,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
             if (loaded === false) {
-                this.store.dispatch(new DbfsLoadResources());
+                // should be triggered by app-shell/container
+                // this.store.dispatch(new DbfsLoadResources());
             }
             if (loaded === true) {
                 this.store.dispatch(new DbfsPanelsInitialize());

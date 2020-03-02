@@ -86,10 +86,10 @@ export class SetSideNavOpen {
         sideNavOpen: true,
         sideNavMode: 'side',
         drawerOpen: false
-    },
+    }/*,
     children: [
         DbfsState
-    ]
+    ]*/
 })
 
 export class NavigatorState {

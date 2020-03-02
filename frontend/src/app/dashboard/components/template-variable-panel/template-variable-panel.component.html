@@ -11,9 +11,6 @@
                         <input matInput formControlName="filter" placeholder="" [matAutocomplete]="filterVarValues"
                             (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
-                        <span matSuffix *ngIf="vartpl.get('filter').value.length > 0" (click)="resetFilterValue($event, i)">
-                            <mat-icon fontSet="denali" fontIcon="d-close-circle-solid"></mat-icon>
-                        </span>
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto">
                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                 {{option}}
@@ -58,10 +55,11 @@
                                 Mode
                                 <info-tooltip>
                                     <p>
-                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable.
+                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable. Overrides non-dashboard tags when value is set. OR'd with other dashboard tags. 
                                     </p>
+                                    <br/>
                                     <p>
-                                        <strong>Manual: </strong> Additional action must be taken to add tag to desired queries.
+                                        <strong>Manual: </strong> Additional action must be taken to add tag to desired queries. OR'd with other dashboard tags and non-dashboard tags.
                                     </p>
                                 </info-tooltip>
                             </th>

@@ -62,7 +62,7 @@ export class DbfsResetPanelAction {
 
 /** STATE */
 @State<DbfsPanelsModel>({
-    name: 'Panels',
+    name: 'NavPanels',
     defaults: {
         panels: [],
         curPanel: 0,

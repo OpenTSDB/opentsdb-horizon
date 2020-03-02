@@ -1,5 +1,5 @@
 import {
-    Component, OnInit, OnDestroy, OnChanges, SimpleChanges,
+    Component, OnInit, OnDestroy,
     HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef
 } from '@angular/core';
 
@@ -21,7 +21,7 @@ import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
     templateUrl: './widget-config-multigraph.component.html',
     styleUrls: []
 })
-export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDestroy {
+export class WidgetConfigMultigraphComponent implements OnInit, OnDestroy {
 
     @ViewChild('chartTable') chartTable: MatTable<any>;
     @ViewChild('tagKeyInput', { read: ElementRef }) tagKeyInput: ElementRef;
@@ -46,7 +46,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     tagKeyControlInput = new FormControl('');
 
     /** Form Group */
-    widgetConfigMultigraph: FormGroup = new FormGroup({});
+    widgetConfigMultigraph: FormGroup;
     // form control options
     layoutPresetOptions: Array<any> = [
         {
@@ -96,12 +96,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     ) { }
 
     ngOnInit() {
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if ( !changes.widget ) {
-            return;
-        }
         this.setupMultigraph();
     }
 

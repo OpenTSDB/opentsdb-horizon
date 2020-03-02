@@ -6,9 +6,9 @@
     $edit-padding: map-get($widgets-common-config, edit-padding);
 
     .widget-config-tab.metric-queries-configuration {
-        // margin: 0;
-        // display: flex;
-        // sflex-direction: column;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
 
         // config specific toolbar overrides
         .config-toolbar.time-series-toolbar {
@@ -21,7 +21,7 @@
 
         // config section that shows the selected metrics
         .query-metrics-section {
-            // @include has-scroller();
+            @include has-scroller();
             flex: 1 1 100%;
             width: 100%;
             height: 100%;
@@ -29,7 +29,7 @@
 
         // wrapper for the query metrics
         .query-metrics-wrap {
-            // @include is-scroller();
+            @include is-scroller();
             padding: 10px;
 
             &,

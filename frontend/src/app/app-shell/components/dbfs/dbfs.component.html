@@ -104,7 +104,7 @@
         <div class="dnav-folders dynamic-scroller" *ngIf="namespacesList.length > user.memberNamespaces.length">
             <mat-nav-list class="folder-list">
                 <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
-                <mat-list-item *cdkVirtualFor="let ns of namespacesDataSource; let i = index;" class="folder-nav-item" (click)="loadingItem = nsAlias; gotoTopFolder(ns.alias, 'namespace')">
+                <mat-list-item *cdkVirtualFor="let ns of namespacesDataSource; let i = index;" class="folder-nav-item" (click)="loadingItem = ns.alias; gotoTopFolder(ns.alias, 'namespace')">
                     <ng-container *ngTemplateOutlet="nsFolderDisplay;context:{data: ns, icon: 'd-dashboard-tile', loading: (loadingItem === ns.alias)}"></ng-container>
                 </mat-list-item>
                 </cdk-virtual-scroll-viewport>
@@ -376,7 +376,7 @@
         <button mat-icon-button *ngIf="!panelLock && activeMediaQuery !== 'xs'" (click)="createDashboard()">
             <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
         </button>
-        <button mat-icon-button (click)="editDashboards()" *ngIf="!panelLock && dashboards.length > 0 && activeMediaQuery !== 'xs'" style="display: none;">
+        <button mat-icon-button *ngIf="!panelLock && dashboards.length > 0 && activeMediaQuery !== 'xs'" style="display: none;">
             <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
         </button>
     </div>

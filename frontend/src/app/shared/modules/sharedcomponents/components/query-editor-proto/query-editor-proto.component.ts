@@ -94,7 +94,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     isAddExpressionProgress = false;
     editExpressionId = -1;
     editMetricId = -1;
-    editAliasId = -1;
     fg: FormGroup;
     expressionControl: FormControl;
     expressionControls: FormGroup;
@@ -361,14 +360,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     metricTableDisplayColumns: string[] = [
         'metric-index',
         'name',
-        'alias',
         'modifiers'
     ];
 
     // MAT-TABLE DATA SOURCE
     metricTableDataSource = new MatTableDataSource<any[]>([]);
 
-    visualPanelId = -1;
+
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -420,7 +418,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             'deleteQuery': false,
             'toggleQuery': false,
             'cloneQuery': false,
-            'enableAlias': true,
             'enableMetric': true,
             'toggleMetric': true,
             'enableGroupBy': true,
@@ -445,7 +442,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const metrics = [];
         this.getMetricsByType('metrics').forEach((metric, i) => {
             metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
-            metrics.push( { visual: metric.settings.visual, metric: metric});
         });
 
         // placeholder row for Add Metric form
@@ -455,7 +451,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expressions = [];
         this.getMetricsByType('expression').forEach((metric, i) => {
             expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
-            expressions.push( { visual: metric.settings.visual, metric: metric});
         });
 
         // placeholder row for Add Expression form
@@ -604,36 +599,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    toggleVisualPanel(id) {
-        this.visualPanelId = this.visualPanelId === id ? -1 : id;
-    }
-    setMetricVisual(id, key, value) {
-        const index = this.query.metrics.findIndex(d => d.id === id);
-        this.query.metrics[index].settings.visual[key] = value;
-        this.initMetricDataSource();
-        const visual = {};
-        visual[key] = value;
-        this.requestChanges('UpdateQueryMetricVisual', { mid : id, visual: visual } );
-    }
-    setVisualType(id, type) {
-        this.setMetricVisual(id, 'type', type);
-    }
-    setLineType(id, type) {
-        this.setMetricVisual(id, 'lineType', type);
-    }
-
-    setLineWeight(id, weight) {
-        this.setMetricVisual(id, 'lineWeight', weight);
-    }
-
-    setColor(id, color, key = 'color') {
-        this.setMetricVisual(id, key, color.hex);
-    }
-
-    setAxis(id, axis) {
-        this.setMetricVisual(id, 'axis', axis);
-    }
-
     getGroupByTags(id) {
         let groupByTags = [];
         const expression = this.utils.getMetricFromId(id, this.queries).expression;
@@ -734,14 +699,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         } else if (!expression && index === -1) {
             this.isAddExpressionProgress = false;
         }
-    }
-
-    updateMetricAlias(id, e) {
-        const alias = e.srcElement.value.trim();
-        const index = this.query.metrics.findIndex(d => d.id === id);
-        this.query.metrics[index].settings.visual.label = alias;
-        this.editAliasId = -1;
-        this.requestChanges('UpdateQueryMetricVisual', { mid : id, visual: { label: alias } } );
     }
 
     isValidExpression(id, expression) {
@@ -1060,6 +1017,5 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show
     checkAddMetricRow = (i: number, data: object) => data.hasOwnProperty('addMetric');
-    checkMetricVisualRow = (i: number, data: any) => data.hasOwnProperty('visual');
     checkAddExpressionRow = (i: number, data: object) => data.hasOwnProperty('addExpression');
 }

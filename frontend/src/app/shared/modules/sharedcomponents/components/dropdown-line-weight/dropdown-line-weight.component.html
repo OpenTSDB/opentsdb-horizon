@@ -1,9 +1,17 @@
-<mat-button-toggle-group (change)="changeLineWeight($event.value)" [value]="value">
-    <mat-button-toggle *ngFor="let option of lineWeightOptions" [value]="option.value">
-        <span class="line-weight-preview">
-            <span [style.border-bottom-width]="option.value"></span>
-        </span>
-        <span>{{ option.label }}</span>
-    </mat-button-toggle>
-</mat-button-toggle-group>
+<mat-form-field appearance="fill">
+    <mat-select placeholder="Line weight" panelClass="dropdown-line-weight-options" [formControl]="lineWeightControl">
+        <mat-select-trigger class="trigger-value-display">
+            <span class="line-weight-preview" >
+                <span [style.border-bottom-width]="lineWeightControl.value"></span>
+            </span>
+            <span>{{lineWeightControl.value}}</span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let option of lineWeightOptions" [value]="option.value">
+            <span class="line-weight-preview">
+                <span [style.border-bottom-width]="option.value"></span>
+            </span>
+            <span>{{ option.label }}</span>
+        </mat-option>
+    </mat-select>
+</mat-form-field>
 

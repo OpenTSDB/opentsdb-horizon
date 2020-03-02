@@ -3,7 +3,9 @@ import {
     OnInit,
     OnDestroy,
     Inject,
-    HostBinding
+    HostBinding,
+    AfterViewInit,
+    ChangeDetectionStrategy
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
@@ -12,20 +14,22 @@ import { Subscription, Observable } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';
 
 import { Select, Store } from '@ngxs/store';
-import { DbfsResourcesState, DbfsLoadResources } from '../../../app-shell/state';
+
+import { DbfsState, DbfsResourcesState, DbfsLoadResources } from '../../../app-shell/state';
 
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'dashboard-save-dialog',
     templateUrl: './dashboard-save-dialog.component.html',
-    styleUrls: []
+    styleUrls: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
+export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
 
-    @Select(DbfsResourcesState.getUser()) user$: Observable<any>;
+    @Select(DbfsState.getUser()) user$: Observable<any>;
     user: any = {};
 
     @Select(DbfsResourcesState.getFolderResources) folders$: Observable<any>;
@@ -34,10 +38,8 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
     @Select(DbfsResourcesState.getFileResources) files$: Observable<any>;
     files: any = {};
 
-    @Select(DbfsResourcesState.getUserMemberNamespaceData()) namespacesData$: Observable<any[]>;
+    @Select(DbfsState.getUserMemberNamespaceData()) namespacesData$: Observable<any[]>;
     namespaceOptions: any[] = [];
-
-
 
     @HostBinding('class.dashboard-save-dialog') private _hostClass = true;
 
@@ -51,9 +53,16 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
 
     /** Form Variables */
 
-    saveForm: FormGroup;
+    saveForm: FormGroup = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+      namespace: new FormControl(''),
+      isPersonal: new FormControl(false)
+    });
     // listenSub: Subscription;
     error: any;
+
+    // tslint:disable-next-line: no-inferrable-types
+    formReady: boolean = false;
 
     private subscription: Subscription = new Subscription();
 
@@ -62,24 +71,24 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         public dialogRef: MatDialogRef<DashboardSaveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public dbData: any
-    ) {
-      // set up form & form control validators
-      this.saveForm = this.fb.group({
-          title: new FormControl(this.dbData.title, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-          namespace: new FormControl ( { value: this.dbData.namespace, disabled: this.dbData.isPersonal }),
-          isPersonal: this.dbData.isPersonal
-      });
-      // NOTE: the form has a validator for itself that is added AFTER state resources have been loaded
+    ) {}
 
-    }
+    // form accessors should come after form initialized
+    // get title()      { return this.saveForm['controls']['title']; }
+    // get namespace()  { return this.saveForm['controls']['namespace']; }
+    // get isPersonal() { return this.saveForm['controls']['isPersonal']; }
 
     ngOnInit() {
         this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
             if (loaded === false) {
+                // resources should have been loaded already, but just in case
                 this.store.dispatch(new DbfsLoadResources());
             } else {
                 // we wait till resources have been loaded in order to set form validator
-                this.saveForm.setValidators(this.duplicateDashboard());
+                // this.saveForm.setValidators(this.duplicateDashboard());
+                setTimeout(() => {
+                  this.createForm();
+                }, 200);
             }
         }));
 
@@ -103,12 +112,37 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
             this.namespaceOptions = namespaces;
         }));
 
-        this.filteredNamespaceOptions = this.namespace.valueChanges
+
+    }
+
+    ngAfterViewInit() {}
+
+    private createForm() {
+        // set up form & form control validators
+        /*this.saveForm = new FormGroup({
+            title: new FormControl({ value: this.dbData.title }, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+            namespace: new FormControl ( { value: this.dbData.namespace || '', disabled: this.dbData.isPersonal }),
+            isPersonal: new FormControl({ value: this.dbData.isPersonal })
+        });*/
+
+        this.saveForm['controls']['title'].setValue(this.dbData.title);
+        this.saveForm['controls']['namespace'].setValue(this.dbData.namespace);
+        this.saveForm['controls']['isPersonal'].setValue(this.dbData.isPersonal);
+
+        if (this.dbData.isPersonal) {
+          this.saveForm['controls']['namespace'].disable();
+        }
+
+        this.filteredNamespaceOptions = this.saveForm['controls']['namespace'].valueChanges
             .pipe(
                 startWith(''),
                 debounceTime(300),
                 map(val => this.filterNamespace(val))
             );
+
+        this.saveForm.setValidators(this.duplicateDashboard());
+
+        this.formReady = true;
     }
 
     // Custom Validator for Duplicate
@@ -117,11 +151,12 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
     duplicateDashboard() {
       const self = this;
       return (group: FormGroup): {[key: string]: any} => {
-        const saveType = ( group.controls['namespace'].enabled ) ? 'namespace' : 'user';
+
+        const saveType = ( group['controls']['namespace'].enabled ) ? 'namespace' : 'user';
         const savePath: any = [saveType];
-        const dbName = (<string>group.controls['title'].value).toLowerCase().replace(/\s+/gmi, '-');
+        const dbName = group['controls']['title'] ? (<string>group['controls']['title'].value).toLowerCase().replace(/\s+/gmi, '-') : '';
         if (saveType === 'namespace') {
-          savePath.push(group.controls['namespace'].value.trim().toLowerCase());
+          savePath.push(group['controls']['namespace'].value.trim().toLowerCase());
         } else {
           savePath.push(self.user.alias);
         }
@@ -137,16 +172,11 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
       };
     }
 
-    // form accessors should come after form initialized
-    get title() { return this.saveForm.get('title'); }
-    get namespace() { return this.saveForm.get('namespace'); }
-    get isPersonal() { return this.saveForm.get('isPersonal'); }
-
     dashboardSaveToChanged(e: any) {
         if ('isPersonal' === e.value) {
-            this.namespace.disable(); // disable namespace control
+            this.saveForm['controls']['namespace'].disable(); // disable namespace control
         } else if ('isNamespace' === e.value){
-            this.namespace.enable(); // enable namespace control
+            this.saveForm['controls']['namespace'].enable(); // enable namespace control
         }
     }
 
@@ -165,9 +195,10 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
      * * Is this still necessary?
      */
     namespaceKeydown(event: any) {
-        const nsIndex = this.namespaceOptions.findIndex((item: any) => item.name.toLowerCase() === this.namespace.value.toLowerCase().trim());
-        if (this.namespace.valid && nsIndex >= 0) {
-            this.namespace.setValue(this.namespaceOptions[nsIndex].name);
+        // tslint:disable-next-line: max-line-length
+        const nsIndex = this.namespaceOptions.findIndex((item: any) => item.name.toLowerCase() === this.saveForm['controls']['namespace'].value.toLowerCase().trim());
+        if (this.saveForm['controls']['namespace'].valid && nsIndex >= 0) {
+            this.saveForm['controls']['namespace'].setValue(this.namespaceOptions[nsIndex].name);
             this.selectedNamespace = this.namespaceOptions[nsIndex].name;
         }
     }
@@ -175,15 +206,15 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
      * * Event fired when an autocomplete option is selected
      */
     namespaceOptionSelected(event: any) {
-        this.namespace.setValue(event.option.value);
+        this.saveForm['controls']['namespace'].setValue(event.option.value);
         this.selectedNamespace = event.option.value;
     }
 
     isValidNamespaceSelected() {
-        if ( this.namespace.status === 'DISABLED' ) {
+        if ( this.saveForm['controls']['namespace'].status === 'DISABLED' ) {
              return true;
         }
-        const namespace = this.namespace.value.toLowerCase().trim();
+        const namespace = this.saveForm['controls']['namespace'].value.toLowerCase().trim();
         const errors: any = {};
         // console.log(namespace, this.namespaceOptions.findIndex(d => namespace === d.name ));
         if ( namespace === '') {
@@ -192,7 +223,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
         if ( namespace && this.namespaceOptions.findIndex(d => namespace === d.name.toLowerCase() ) === -1 ) {
             errors.invalid = true;
         }
-        this.namespace.setErrors(Object.keys(errors).length ? errors : null);
+        this.saveForm['controls']['namespace'].setErrors(Object.keys(errors).length ? errors : null);
         // console.log(this.namespace);
 
         return Object.keys(errors).length === 0 ? true : false;
@@ -204,10 +235,10 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
             // form not good
         } else if ( this.isValidNamespaceSelected() ) {
             // form is good, save it
-            const data: any = { name: this.title.value};
-            if ( this.namespace.enabled ) {
+            const data: any = { name: this.saveForm['controls']['title'].value };
+            if ( this.saveForm['controls']['namespace'].enabled ) {
                 // find the alias to build parentPath not the name
-                const namespace = this.namespace.value.trim().toLowerCase();
+                const namespace = this.saveForm['controls']['namespace'].value.trim().toLowerCase();
                 const nsIndex = this.namespaceOptions.findIndex((item: any) => item.name.toLowerCase() === namespace);
                 const nsData = this.namespaceOptions[nsIndex];
 
@@ -226,5 +257,6 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy {
     /* ON DESTROY */
     ngOnDestroy() {
       this.subscription.unsubscribe();
+
   }
 }

@@ -2,7 +2,8 @@ import {
     State,
     StateContext,
     Action,
-    Selector
+    Selector,
+    Store
 } from '@ngxs/store';
 
 
@@ -12,6 +13,8 @@ import { forkJoin } from 'rxjs';
 
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
+import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../app-shell/state';
+import { map } from 'rxjs/operators';
 
 
 export interface AlertModel {
@@ -134,7 +137,8 @@ export class AlertsState {
         private logger: LoggerService,
         private httpService: HttpService,
         private alertsService: AlertsService,
-        private utils: UtilsService
+        private utils: UtilsService,
+        private store: Store
     ) { }
 
     /* SELECTORS */
@@ -211,7 +215,43 @@ export class AlertsState {
         const state = ctx.getState();
        if (!state.loaded.userNamespaces) {
         ctx.patchState({ loading: true, error: {} });
-            const req1 = this.alertsService.getUserNamespaces();
+
+            let req1: any;
+            let req2: any;
+
+            // check if ALL namespaces have been loaded by DBFS
+            const dynamicLoaded: any = this.store.selectSnapshot(DbfsResourcesState.getDynamicLoaded);
+
+            if (dynamicLoaded.namespace) {
+                // They have been loaded already
+                req1 = this.store.selectSnapshot(DbfsState.getUserMemberNamespaceData());
+                req2 = this.store.selectSnapshot(DbfsResourcesState.getNamespacesList);
+
+                ctx.patchState({
+                    userNamespaces: req1,
+                    allNamespaces: req2,
+                    loading: false,
+                    loaded: { userNamespaces: true, allNamespaces: true}
+                });
+            } else {
+                // they have NOT been loaded already
+                this.store.dispatch(new DbfsLoadNamespacesList({})).subscribe( (data: any) => {
+
+                    req1 = this.store.selectSnapshot(DbfsState.getUserMemberNamespaceData());
+                    req2 = this.store.selectSnapshot(DbfsResourcesState.getNamespacesList);
+
+                    ctx.patchState({
+                        userNamespaces: req1,
+                        allNamespaces: req2,
+                        loading: false,
+                        loaded: { userNamespaces: true, allNamespaces: true}
+                    });
+                }, error => {
+                    ctx.patchState({ error: error });
+                });
+            }
+
+            /* const req1 = this.alertsService.getUserNamespaces();
             const req2 = this.alertsService.getNamespaces();
 
             return forkJoin([req1,  req2]).subscribe((res: any[]) => {
@@ -231,7 +271,7 @@ export class AlertsState {
                 error => {
                     ctx.patchState({ error: error });
                 }
-            );
+            );*/
         }
     }
 
@@ -241,7 +281,7 @@ export class AlertsState {
         const userNamespaces = state.userNamespaces;
         let fixedNamespace: string = "";
 
-        state.allNamespaces.forEach(d => { 
+        state.allNamespaces.forEach(d => {
             if (d.name.toLowerCase() === namespace.toLowerCase()) { fixedNamespace = d.name; }
         });
 

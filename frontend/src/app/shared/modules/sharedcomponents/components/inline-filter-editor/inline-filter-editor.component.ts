@@ -221,6 +221,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.selectedTag = tag;
         this.tagValueTypeControl.setValue('literalor');
         this.tagValueSearchControl.setValue(null);
+        this.filteredTagValues = [];
     }
 
     // to remove tag key and all of its values

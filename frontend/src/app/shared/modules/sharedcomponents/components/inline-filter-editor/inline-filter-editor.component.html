@@ -41,26 +41,39 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div class="tag-values-count" *ngIf="filteredTagValues && filteredTagValues.length > 0">
-                                <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
-                            </div>
-                        <span class="seperator"></span>
-                        <div class="tag-values-search-results has-scroller" *ngIf="tagValueTypeControl.value==='literalor'">
-                            <div class="is-scroller">
-                                <div class="option-item" *ngFor="let option of filteredTagValues"
-                                    [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}">
-                                    <div class="option-cell add-remove">
-                                        <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1" (click)="updateTagValueSelection(selectedTag, option.name, 'add');">add_circle_outline</mat-icon>
-                                        <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1" (click)="updateTagValueSelection(selectedTag, option.name, 'remove')">remove_circle_outline</mat-icon>
-                                    </div>
-                                    <div class="option-cell label" [innerHTML]="[option.name] | formatAutoManualFilter: tplVariables.tvars"></div>
-                                </div>
-                                <div *ngIf="message.tagValueControl.message" [ngClass]="message.tagValueControl.type === 'error'? 'error': 'info'">
-                                    <mat-icon>error</mat-icon>
-                                    <span>{{ message['tagValueControl']['message'] }}</span>
-                                </div>
-                            </div>
-                        </div>
+<div class="column-output"
+    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message === undefined">
+    <div class="gif-spinner">
+        <img src="/assets/spinner-26x26.gif" />
+    </div>
+</div>
+<div class="column-output" *ngIf="filteredTagValues && filteredTagValues.length > 0">
+    <div class="tag-values-count">
+        <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag
+            {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
+    </div>
+    <span class="seperator"></span>
+    <div class="tag-values-search-results has-scroller" *ngIf="tagValueTypeControl.value==='literalor'">
+        <div class="is-scroller">
+            <div class="option-item" *ngFor="let option of filteredTagValues"
+                [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}"
+                (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
+                <div class="option-cell add-remove">
+                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1">add_circle_outline</mat-icon>
+                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">remove_circle_outline</mat-icon>
+                </div>
+                <div class="option-cell label" [innerHTML]="[option.name] | formatAutoManualFilter: tplVariables.tvars">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="column-output error-info-messaging"
+    [ngClass]="message.tagValueControl.type === 'error'? 'error': 'info'"
+    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message">
+    <mat-icon>error</mat-icon>
+    <span>{{ message['tagValueControl']['message'] }}</span>
+</div>
                     </div>
                     <div class="tag-filter-options-column tag-values-selected">
                         <div class="tag-values-selected-header">

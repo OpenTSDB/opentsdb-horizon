@@ -53,12 +53,16 @@ app.get(/^\/(d|main|a)(.*)/, function (req, res) {
     console.log('CALL ME >>>>> index.html');
     // refresh cookies if the age is >= 10 mins, 
     const now = Math.floor(Date.now() / 1000);
-    const claims = req.okta.claims;
-    if ( now - claims.iat >= 120 ) {
-        const okta     = new expressOkta.Okta(oktaConfig);
-        expressOkta.refreshAccessTokenCallback(okta.config, req, res, '', function(details) {
+    if (req.app.get('env') === 'prod') {
+        const claims = req.okta.claims;
+        if ( now - claims.iat >= 120 ) {
+            const okta     = new expressOkta.Okta(oktaConfig);
+            expressOkta.refreshAccessTokenCallback(okta.config, req, res, '', function(details) {
+                res.sendFile(path.join(__dirname + '/public/index.html'));
+            });
+        } else {
             res.sendFile(path.join(__dirname + '/public/index.html'));
-        });
+        }
     } else {
         res.sendFile(path.join(__dirname + '/public/index.html'));
     }

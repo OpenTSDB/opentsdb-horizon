@@ -9,7 +9,7 @@
             <button mat-button
                 [matMenuTriggerFor]="namespaceDropMenu"
                 [ngClass]="{'menu-open': namespaceDropMenuOpen}"
-                (menuOpened)="setNamespaceMenuOpened(true)"
+                (menuOpened)="setNamespaceMenuOpened(true); ensureNamespaceMenuWidth()"
                 (menuClosed)="setNamespaceMenuOpened(false)"
                 #namespaceDropMenuTrigger>
                 <span class="control-label">Namespace:</span>
@@ -319,11 +319,11 @@
 
 
     <mat-menu #namespaceDropMenu="matMenu" class="namespace-selector-cdk-menu">
-        <button mat-menu-item *ngFor="let namespace of userNamespaces" (click)="handleNamespaceChange(namespace.name);">{{namespace.name}}</button>
+        <button mat-menu-item *ngFor="let namespace of userNamespaces; trackBy: index" (click)="handleNamespaceChange(namespace.name);">{{namespace.name}}</button>
         <!--<button mat-menu-item>Settings</button>-->
         <mat-divider></mat-divider>
         <button mat-menu-item [matMenuTriggerFor]="namespaceMenu" >View More</button>
-        <span class="menu-shim" style="display: block; height: 1px;" [ngStyle]="{'width':ensureMenuWidth(namespaceDropMenuTrigger)}"></span>
+        <span class="menu-shim" style="display: block; height: 1px;" [style.width]="namespaceDropMenuTriggerWidth"></span>
     </mat-menu>
 
     <mat-menu #namespaceMenu="matMenu" class="namespace-selector-cdk-menu submenu" [style.maxHeight.px]="500">
@@ -333,7 +333,7 @@
                 <mat-icon matSuffix fontSet="denali" fontIcon="d-search"></mat-icon>
             </mat-form-field>
         </div>
-        <button mat-menu-item *ngFor="let ns of allNamespacesDS.filteredData; let i = index;" (click)="handleNamespaceChange(ns.name);">
+        <button mat-menu-item *ngFor="let ns of allNamespacesDS.filteredData; let i = index; trackBy: index" (click)="handleNamespaceChange(ns.name);">
             {{ns.name}}
         </button>
     </mat-menu>

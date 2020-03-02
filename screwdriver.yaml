@@ -20,6 +20,6 @@ jobs:
               npm run postpublish 
             fi
       - postinstall-deps: npm run install-subdirs
+      - git-push: echo 'DISABLED'
     requires:
       - ~commit
-      - ~pr

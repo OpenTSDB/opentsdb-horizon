@@ -68,8 +68,6 @@ import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-deta
 import { FormControl } from '@angular/forms';
 const moment = _moment;
 
-
-
 @Component({
     selector: 'app-alerts',
     templateUrl: './alerts.component.html',
@@ -95,6 +93,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.snoozesDataSource.sort = sortor;
         }
     }
+
+    @ViewChild('namespaceDropMenuTrigger', {read: ElementRef}) namespaceDropMenuTrigger: ElementRef;
+    namespaceDropMenuTriggerWidth: string = '0px';
+
     @ViewChild('confirmDeleteDialog', { read: TemplateRef }) confirmDeleteDialogRef: TemplateRef<any>;
 
     @Input() response;
@@ -716,6 +718,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     /* Utilities */
+    ensureNamespaceMenuWidth() {
+        const element = this.namespaceDropMenuTrigger.nativeElement;
+        this.namespaceDropMenuTriggerWidth = `${element.clientWidth}px`;
+    }
+
     ensureMenuWidth(element: any) {
         element = <ElementRef>element._elementRef;
         return `${element.nativeElement.clientWidth}px`;

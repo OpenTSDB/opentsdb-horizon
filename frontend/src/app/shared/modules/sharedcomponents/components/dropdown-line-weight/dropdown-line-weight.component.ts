@@ -1,19 +1,29 @@
-import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
+
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'dropdown-line-weight',
   templateUrl: './dropdown-line-weight.component.html',
-  styleUrls: []
+  styleUrls: [],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DropdownLineWeightComponent),
+      multi: true,
+    }]
 })
 
-export class DropdownLineWeightComponent {
+export class DropdownLineWeightComponent implements ControlValueAccessor, OnInit, OnDestroy {
     @HostBinding('class.dropdown-line-weight') private _hostClass = true;
 
     @Input() value;
 
     @Output()
-    change = new EventEmitter<string>();
+    valueChange = new EventEmitter<string>();
 
     lineWeightOptions: Array<object> = [
         {
@@ -46,7 +56,41 @@ export class DropdownLineWeightComponent {
         }
     ];
 
-    changeLineWeight(weight) {
-        this.change.emit(weight);
+    lineWeightControl: FormControl;
+    defaultLineWeight = '1px';
+
+    subscription: Subscription;
+
+    constructor() { }
+
+    // the method set in registerOnChange to emit changes back to the form
+    propagateChange = ( _: any ) => {};
+
+    public writeValue(v: any) {
+        if (v) {
+            this.lineWeightControl.setValue(v);
+        }
     }
+
+    public registerOnChange(fn: any) {
+        this.propagateChange = fn;
+    }
+
+    public registerOnTouched() { }
+
+    ngOnInit() {
+        if ( !this.value ) {
+            this.value = this.defaultLineWeight;
+            this.propagateChange(this.value);
+        }
+        this.lineWeightControl = new FormControl( this.value );
+        this.subscription = this.lineWeightControl.valueChanges.subscribe( data => {
+            this.propagateChange(data);
+        });
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
 }

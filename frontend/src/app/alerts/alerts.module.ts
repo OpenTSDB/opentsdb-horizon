@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
-import { GridsterModule } from 'angular2gridster';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
 
 // routing

@@ -168,9 +168,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsCount = 10000;
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
-    // tslint:disable-next-line: max-line-length
-    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'legend': false, 'multigraph': false, 'events': false };
-    eventsError = '';
+    eventsError: string = '';
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -572,21 +570,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);
-                this.widget.queries = this.utilService.deepClone(this.widget.queries);
-                this.widget = {...this.widget};
+                this.widget.queries = [...this.widget.queries];
                 this.setOptions();
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
-                break;
-            case 'UpdateQueryMetricVisual':
-                this.utilService.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
-                if ( message.payload.visual.axis ) {
-                    this.setAxesOption();
-                }
-                this.options = { ...this.options };
-                this.widget = { ...this.widget };
-                this.refreshData(false);
-                this.cdRef.detectChanges();
                 break;
             case 'SetShowEvents':
                 this.setShowEvents(message.payload.showEvents);
@@ -1257,10 +1244,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.requestCachedData();
             this.getEvents(); // todo: add events cache in-future
         }
-    }
-
-    toggleConfigSection(section) {
-        this.visibleSections[section] = !this.visibleSections[section];
     }
 
     changeWidgetType(type) {

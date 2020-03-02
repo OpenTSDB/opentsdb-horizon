@@ -203,7 +203,7 @@ export class DbfsAddPlaceholderFolder {
 /** STATE */
 
 @State<DbfsResourcesModel>({
-    name: 'Resources',
+    name: 'DataResources',
     defaults: {
         activeUser: '',
         users: {},
@@ -343,11 +343,31 @@ export class DbfsResourcesState {
       });
   }
 
-    public static getUser(userid?: string) {
+    /*public static getUser(userid?: string, fullDetail?: boolean) {
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
             // tslint:disable-next-line: prefer-const
             const id = (userid) ? userid : state.activeUser;
-            const user = state.users[id];
+            let user: any = state.users[id];
+
+            // get more detailed member namespace data, including folder
+            // user can write to these namespaces
+            if (fullDetail) {
+              let namespaces = [];
+              namespaces = user.memberNamespaces.map(item => {
+                const data = {
+                  alias: state.namespaces[item].alias,
+                  id: state.namespaces[item].id, // NAMESPACE ID - !!NOT THE NAMESPACE FOLDER ID (see folder object for namespace folder id)
+                  name: state.namespaces[item].name,
+                  enabled: state.namespaces[item].enabled,
+                  folder: {...state.folders['/folders/' + item]}
+                };
+                return data;
+              });
+              user = {...user,
+                memberNamespaces: namespaces
+              };
+            }
+
             return user;
         });
     }
@@ -361,15 +381,16 @@ export class DbfsResourcesState {
             namespaces = user.memberNamespaces.map(item => {
                 const data = {
                     alias: state.namespaces[item].alias,
-                    id: state.namespaces[item].id,
+                    id: state.namespaces[item].id, // NAMESPACE ID - !!NOT THE NAMESPACE FOLDER ID (see folder object for namespace folder id)
                     name: state.namespaces[item].name,
-                    enabled: state.namespaces[item].enabled
+                    enabled: state.namespaces[item].enabled,
+                    folder: {...state.folders['/folders/' + item]}
                 };
                 return data;
             });
             return namespaces;
         });
-    }
+    }*/
 
     /** Utils */
     private resourceLockCheck(path: string, state: any) {

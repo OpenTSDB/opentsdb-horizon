@@ -25,7 +25,8 @@ import {
     NavigatorState,
     SetSideNavOpen,
     SSGetUserProfile,
-    DbfsLoadResources
+    DbfsLoadResources,
+    DbfsInitialized
 } from '../state';
 import {
     UpdateNavigatorSideNav
@@ -53,8 +54,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     @Select(NavigatorState.getDrawerOpen) drawerOpen$: Observable<boolean>;
 
     @Select(AppShellState.getCurrentMediaQuery) mediaQuery$: Observable<string>;
-    @Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
-    userProfile: any = {};
+    //@Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
+    //userProfile: any = {};
 
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
@@ -92,7 +93,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         @Inject(DOCUMENT) private document: any
     ) {
         // prefetch the navigator first data
-        this.store.dispatch(new DbfsLoadResources());
+        const dbfsInit = this.store.dispatch(new DbfsLoadResources()).subscribe((state: any) => {
+          // logger.log('DBFS INIT COMPLETE', state);
+          this.store.dispatch(new DbfsInitialized());
+          dbfsInit.unsubscribe();
+        });
     }
 
     ngOnInit() {
@@ -108,6 +113,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             this.store.dispatch(new SetSideNavOpen((currentMediaQuery !== 'xs')));
         }));
 
+        /* TODO - change this to general selector from DBFS
         this.subscription.add(this.userProfile$.subscribe(data => {
             // console.log('[SUB] User Profile', data);
             this.userProfile = data;
@@ -115,7 +121,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             if (!data.loaded) {
                 this.store.dispatch(new SSGetUserProfile());
             }
-        }));
+        }));*/
 
         this.subscription.add(this.currentApp$.subscribe(app => {
             // console.log('[SUB] currentApp', app);

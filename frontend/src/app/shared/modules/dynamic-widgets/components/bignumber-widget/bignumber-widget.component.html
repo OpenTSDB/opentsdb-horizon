@@ -104,43 +104,41 @@
             <span class="flex-spacer"></span>
             <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
     </div>
-    <div class="widget-control-steps has-scroller">
-        <div class="is-scroller">
-            <div class="step-section query-section is-visible">
-                <div class="step-section-label">
-                    <span class="step-section-label-text">
-                        <span>1. Queries </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
-                    </span>
-                </div>
-                <div class="step-section-content" *ngIf="visibleSections.queries">
-                    <widget-config-metric-queries [options]="{enableGroupBy: false, enableAlias: false, enableSummarizer: true, enableMultipleQueries:true, enableMultiMetricSelection: false}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
-                </div>
-            </div>
-            <div class="step-section query-section is-visible">
-                <div class="step-section-label">
-                    <span class="step-section-label-text">
-                        <span>2. Time Configuration </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('time')" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
-                    </span>
-                </div>
-                <div class="step-section-content" *ngIf="visibleSections.time">
-                    <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
-                </div>
-            </div>
-            <div class="step-section query-section is-visible">
-                <div class="step-section-label">
-                    <span class="step-section-label-text">
-                        <span>3. Visual Appearance </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('visuals')" [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
-                    </span>
-                </div>
-                <div class="step-section-content" *ngIf="visibleSections.visuals">
-                    <big-number-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></big-number-visual-appearance>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- tabs with config content -->
+    <mat-tab-group class="widget-configs" selectedIndex="0" color="primary" [@.disabled]="'true'">
+        <mat-tab label="Queries" class="test">
+            <!-- ng-template is to lazy-load tab content (see: https://material.angular.io/components/tabs/overview#lazy-loading ) -->
+            <ng-template matTabContent>
+            <widget-config-metric-queries [options]="{enableGroupBy: false, enableSummarizer: true, enableMultipleQueries:true, enableMultiMetricSelection: false}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Time Configuration" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Visual Appearance" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <big-number-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></big-number-visual-appearance>
+            </ng-template>
+        </mat-tab>
+        <!-- disable meta - title for big number
+        <mat-tab label="Meta Data" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <widget-config-general [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-general>
+            </ng-template>
+        </mat-tab>
+        -->
+        <mat-tab>
+            <!-- custom tab label. (see: https://material.angular.io/components/tabs/overview#labels) -->
+            <!-- <ng-template mat-tab-label>
+                &lt;/&gt; Query Editor
+            </ng-template> -->
+            <ng-template matTabContent>
+                <widget-config-query-inspector [widget]="widget"></widget-config-query-inspector>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
     <div class="widget-actions" *ngIf="!editQueryId">
         <!-- controls to save/cancel -->
         <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
