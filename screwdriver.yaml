@@ -12,7 +12,10 @@ jobs:
     template: nodejs/lib@stable
     steps:
       - lint: echo DISABLED
+      - update-version: echo 'DISABLED'
       - posttest: cp -v $SD_SOURCE_DIR/artifacts/coverage/lcov.info $SD_ARTIFACTS_DIR/coverage/
+      - git-push: echo 'DISABLED'
+      - publish: echo 'DISABLED'
       - postpublish: |
             if [ ! -z $SD_PULL_REQUEST ] ; then
               echo "Skipping DIST install"
@@ -20,6 +23,5 @@ jobs:
               npm run postpublish 
             fi
       - postinstall-deps: npm run install-subdirs
-      - git-push: echo 'DISABLED'
     requires:
       - ~commit

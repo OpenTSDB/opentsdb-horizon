@@ -1,5 +1,5 @@
 PRODUCT_NAME = horizon_dev
-MAJOR = `grep '"version"' ./package.json | awk -F: '{print $2}' | sed 's/[", ]//g' | sed 's/-/_/g'`
+MAJOR =`git describe --abbrev=0 ||  echo '0.0.560.'${SD_BUILD_ID}`
 DATE = `date +%s`
 VERSION = "$(MAJOR)"
 SHORT_DESC = `head -1 ./README.md`
