@@ -1,0 +1,56 @@
+$ubuntu-sans-typeface-config: (
+    family: 'Ubuntu',
+    font-family: '"Ubuntu", "Helvetica Neue", Arial, sans-serif',
+    path: '/assets/fonts/Ubuntu/sans',
+    fontweight-map: (
+        light: 300,
+        medium: 500,
+        regular: 400
+    ),
+    fonts: (
+        light: (
+            local: "Ubuntu Light",
+            local2: "Ubuntu-Light",
+            weight: 300,
+            style: normal,
+            file-prefix: 'ubuntu-latin-300'
+        ),
+        light-italic: (
+            local: "Ubuntu Light italic",
+            local2: "Ubuntu-Lightitalic",
+            weight: 300,
+            style: italic,
+            file-prefix: 'ubuntu-latin-300italic'
+        ),
+        medium: (
+            local: "Ubuntu Medium",
+            local2: "Ubuntu-Medium",
+            weight: 500,
+            style: normal,
+            file-prefix: 'ubuntu-latin-500'
+        ),
+        medium-italic: (
+            local: "Ubuntu Medium italic",
+            local2: "Ubuntu-Mediumitalic",
+            weight: 700,
+            style: italic,
+            file-prefix: 'ubuntu-latin-500italic'
+        ),
+        regular: (
+            local: "Ubuntu Regular",
+            local2: "Ubuntu-Regular",
+            weight: 400,
+            style: normal,
+            file-prefix: 'ubuntu-latin-400'
+        ),
+        regular-italic: (
+            local: "Ubuntu Regular italic",
+            local2: "Ubuntu-Regularitalic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'ubuntu-latin-400italic'
+        )
+    )
+);
+
+

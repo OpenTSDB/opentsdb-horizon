@@ -1,0 +1,227 @@
+@mixin info-island-component-base() {
+
+    .info-island-container {
+
+        .mat-card {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .mat-header {
+                padding: 8px;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
+
+            .mat-card-header-text {
+                margin: 0;
+                width: 100%;
+            }
+
+            .mat-card-title {
+                margin-bottom: 0;
+                margin-left: 8px;
+                margin-right: 8px;
+                align-items: center;
+                font-size: 12px;
+
+                .title {
+                    font-size: 14px;
+                    flex: 1;
+                }
+
+                .toolbar-item {
+                    margin-right: 6px;
+                }
+
+                .close {
+                    margin-left: 0;
+                    margin-right: -8px;
+
+                    .close-button.mat-icon-button {
+                        width: 32px;
+                        height: 32px;
+                        line-height: initial;
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(18px);
+                        }
+                    }
+                }
+            }
+
+            .mat-card-actions {
+                padding: 0;
+                margin: 0;
+                margin-bottom: 0;
+            }
+
+            >.mat-card-actions:last-child {
+                margin-bottom: 0;
+            }
+
+            .mat-card-content {
+                margin: 0;
+                padding: 0;
+                flex: 1;
+                overflow: hidden;
+                display: flex;
+            }
+        }
+
+
+
+
+        // STYLES FOR RESIZABILITY
+        & {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+        }
+
+        .resizers {
+            user-select: none;
+        }
+
+        .resizer {
+
+            // border-radius: 50%; /*magic to turn square into circle*/
+            //background: white;
+            //border: 3px solid #4286f4;
+            position: absolute;
+
+            // dimensions
+            &.top-left,
+            &.top-right,
+            &.bottom-left,
+            &.bottom-right {
+                width: 10px;
+                height: 10px;
+            }
+
+            &.top,
+            &.bottom {
+                height: 10px;
+            }
+
+            &.left,
+            &.right {
+                width: 10px;
+            }
+
+            // cursors
+            &.top-left,
+            &.bottom-right {
+                cursor: nwse-resize;
+            }
+
+            &.top-right,
+            &.bottom-left {
+                cursor: nesw-resize;
+            }
+
+            &.top,
+            &.bottom {
+                cursor: ns-resize;
+            }
+
+            &.left,
+            &.right {
+                cursor: ew-resize;
+            }
+        }
+
+        .resizer.top {
+            top: -5px;
+            left: 5px;
+            right: 5px;
+        }
+
+        .resizer.bottom {
+            bottom: -5px;
+            left: 5px;
+            right: 5px;
+        }
+
+        .resizer.left {
+            left: -5px;
+            top: 5px;
+            bottom: 5px;
+        }
+
+        .resizer.right {
+            right: -5px;
+            top: 5px;
+            bottom: 5px;
+        }
+
+        .resizer.top-left {
+            left: -5px;
+            top: -5px;
+        }
+
+        .resizer.top-right {
+            right: -5px;
+            top: -5px;
+        }
+
+        .resizer.bottom-left {
+            left: -5px;
+            bottom: -5px;
+        }
+
+        .resizer.bottom-right {
+            right: -5px;
+            bottom: -5px;
+        }
+
+    }
+}
+
+@mixin info-island-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+
+    $menu-bg: if($is-dark, lighten(map-get($background, menu), 10%), map-get($background, menu));
+
+    $cdk-window-bg: $menu-bg;
+    $cdk-window-border: $divider;
+
+    $header-bg: if($is-dark, map-get($background, menu), map-get($background, navbar));
+    $text: map-get($foreground, navbar-text);
+
+    .info-island-container {
+        @include mat-elevation(4);
+
+        .mat-card {
+            background-color: $cdk-window-bg;
+
+            @if $is-dark {
+                border: 1px solid $cdk-window-border;
+            }
+        }
+
+        .mat-card-header {
+            background: $header-bg;
+            color: $text;
+            border-bottom: 1px solid $divider;
+        }
+
+        .mat-card-actions {
+            border-top: 1px solid $divider;
+        }
+    }
+}

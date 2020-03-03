@@ -1,0 +1,699 @@
+/**
+ * COMMON STYLES APPLIED APP WIDE
+ * ALSO INCLUDES SOME COMMON OVERRIDES TO MATERIAL
+ */
+@mixin app-common-base() {
+
+    // html,
+    body {
+        @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
+    }
+
+    // IMAGE PRELOADING
+    :root:before {
+        content: url(/assets/spinner-26x26.gif)
+                 url(/assets/widget-icon-sprite.png)
+                 url(/assets/email-contact.svg)
+                 url(/assets/http-contact.svg)
+                 url(/assets/oc-contact.svg)
+                 url(/assets/opsgenie-contact.svg)
+                 url(/assets/slack-contact.svg);
+        /* partial fallback */
+        background-image: url(/assets/spinner-26x26.gif);
+        visibility: hidden;
+        position: absolute;
+        left: -999em;
+    }
+
+    /* GRIDSTER OVERRIDES */
+
+    .gridster-container {
+        min-height: 100%;
+
+        .position-highlight {
+            z-index: 0;
+
+            .inner {
+                position: absolute;
+                top: 5px;
+                bottom: 5px;
+                left: 5px;
+                right: 5px;
+
+                -webkit-transition: background 3s;
+                transition: background 3s;
+                border-radius: 3px;
+
+            }
+        }
+    }
+
+    .gridster-item-prototype {
+        display: block;
+        position: relative;
+        float: left;
+        z-index: 99;
+        text-align: center;
+        font-weight: bold;
+        margin: 5px;
+        width: 80px;
+        height: 60px;
+
+        &.is-over {
+            .gridster-item-inner {
+                visibility: visible;
+            }
+        }
+
+        .gridster-item-inner {
+            position: absolute;
+            top:0;
+            left: 0;
+            overflow: auto;
+            width: 80px;
+            height: 60px;
+            visibility: hidden;
+
+            -webkit-transition: width 0.2s ease-in-out, height 0.2s ease-in-out;
+            -moz-transition: width 0.2s ease-in-out, height 0.2s ease-in-out;
+            -o-transition: width 0.2s ease-in-out, height 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out, height 0.2s ease-in-out;
+        }
+    }
+
+    .gridster-item {
+        .gridster-item-inner {
+            position: absolute;
+            border: 1px solid transparent;
+            top: 0px;
+            bottom: 5px;
+            left: 0px;
+            right: 5px;
+            -webkit-transition: background 3s;
+            transition: background 3s;
+            border-radius: 3px;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+        }
+
+        &.is-dragging {
+            .gridster-item-inner {
+                top: -3px;
+                bottom: 13px;
+            }
+        }
+        &:hover {
+            z-index: 2;
+        }
+    }
+
+    /* see https://github.com/tiberiuzuld/angular-gridster2/issues/127 */
+    .gridster .gridster-column,
+    .gridster .gridster-row,
+    .gridster-item,
+    .gridster-item.gridster-item-resizing,
+    .gridster-item.gridster-item-moving {
+        transition: unset !important;
+    }
+
+
+    /* MATERIAL OVERRIDES */
+
+    // Material Table
+    .mat-table.is-dense {
+        width: 100%;
+
+        td.mat-cell,
+        th.mat-header-cell {
+            padding: 0 8px;
+        }
+
+        td.mat-cell:first-child,
+        td.mat-footer-cell:first-child,
+        th.mat-header-cell:first-child {
+            padding-left: 16px;
+        }
+
+        td.mat-cell:last-child,
+        td.mat-footer-cell:last-child,
+        th.mat-header-cell:last-child {
+            padding-right: 16px;
+        }
+
+        tr.mat-header-row {
+            height: 30px;
+        }
+
+        th.mat-header-cell {
+            text-transform: uppercase;
+        }
+    }
+
+
+    .mat-form-field {
+
+        // if mat-form-field[floatLabel="never"
+        &.mat-form-field-hide-placeholder {
+            .mat-form-field-wrapper {
+                padding-bottom: initial;
+            }
+
+            .mat-form-field-flex {
+                line-height: 1;
+                border-radius: 4px;
+            }
+
+            .mat-form-field-infix {
+                padding: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-top: 0;
+            }
+
+            .mat-form-field-underline {
+                bottom: 0;
+            }
+
+            // MatInput
+
+            .mat-input-element {
+                padding: 0 8px;
+            }
+
+        }
+
+
+
+        // if mat-form-field[appearance="fill"]
+        &.mat-form-field-appearance-fill,
+        &.mat-form-field-appearance-outline {
+            .mat-form-field-wrapper {
+                padding-bottom: initial;
+            }
+
+            .mat-form-field-flex {
+                padding: 0;
+            }
+
+            .mat-form-field-infix {
+                padding: 8px;
+                border-top: 0;
+            }
+
+            .mat-form-field-underline {
+                bottom: 0;
+            }
+
+            .mat-form-field-ripple {
+                height: 1 !important;
+            }
+
+            .mat-form-field-subscript-wrapper {
+                top: calc(100% - .4em);
+            }
+
+            .mat-form-field-label-wrapper {
+                top: -1.1875em;
+                left: 8px;
+                padding-top: 1.1875em;
+
+                .mat-form-field-label {
+                    top: 1.1875em;
+                    margin-top: .5em;
+                }
+            }
+
+            &.mat-form-field-can-float {
+                &.mat-form-field-should-float {
+                    .mat-form-field-label {
+                        transform: translateY(-1.6875em) scale(0.75)
+                    }
+                }
+            }
+
+            // MatInput
+
+            // MatSelect
+
+            .mat-select {
+                .mat-select-trigger {
+                    width: 100%;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .mat-select-value {
+                    display: flex;
+                    width: 100%;
+                    max-width: initial;
+                }
+
+                .mat-select-arrow-wrapper {
+                    height: 100%;
+                    transform: initial;
+                    display: inline-flex;
+                    vertical-align: initial;
+                    align-items: center;
+                }
+            }
+        }
+
+        &.mat-form-field-appearance-outline {
+            .mat-form-field-outline {
+                top: 0;
+            }
+
+            .mat-form-field-outline-thick {
+                .mat-form-field-outline-end,
+                .mat-form-field-outline-gap,
+                .mat-form-field-outline-start {
+                    border-width: 1px;
+                }
+            }
+        }
+    }
+
+    .mat-list-base {
+        .mat-option {
+            /*height: 1.5em !important;
+            line-height: 1.5em !important;
+            font-size: 0.8em;
+            */
+            height: 24px;
+            line-height: 24px;
+            font-size: 14px;
+        }
+    }
+
+    .mat-autocomplete-panel {
+        .mat-option {
+            height: 24px;
+            line-height: 24px;
+            font-size: 14px;
+        }
+    }
+
+    .mat-radio-group {
+        .mat-radio-button:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+
+    /* Chart.js */
+    #chartjs-tooltip {
+        opacity: 1;
+        position: absolute;
+        background: #f0f0f0;
+        border: 1px solid #cccccc;
+        padding: 4px;
+        color: black;
+        border-radius: 5px;
+        /*
+        -webkit-transition: all .1s ease;
+        transition: all .1s ease;
+        */
+        pointer-events: none;
+        -webkit-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+        z-index:1;
+    }
+
+    .chartjs-tooltip-key {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 10px;
+    }
+
+    /* loading spinner */
+    .loading-spinner,
+    .loading-spinner:after {
+        border-radius: 50%;
+        width: 10em;
+        height: 10em;
+    }
+
+    .loading-spinner {
+        font-size: 10px;
+        position: relative;
+        text-indent: -9999em;
+
+        border-top-width: 1.1em;
+        border-right-width: 1.1em;
+        border-bottom-width: 1.1em;
+        border-left-width: 1.1em;
+
+        border-top-style: solid;
+        border-right-style: solid;
+        border-bottom-style: solid;
+        border-left-style: solid;
+
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-animation: load8 .6s infinite linear;
+        animation: loading-spinner-anim .6s infinite linear;
+
+        &.size-s {
+            &,
+            &:after {
+                width: 4em;
+                height: 4em;
+            }
+
+            font-size: 4px;
+
+            border-top-width: .8em;
+            border-right-width: .8em;
+            border-bottom-width: .8em;
+            border-left-width: .8em;
+        }
+
+        &.size-xs {
+            &,
+            &:after {
+                width: 5em;
+                height: 5em;
+            }
+
+            font-size: 2px;
+        }
+    }
+
+    @-webkit-keyframes loading-spinner-anim {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes loading-spinner-anim {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    /* animated spinner */
+    .gif-spinner {
+        width: 16px;
+        height: 16px;
+        padding: 2px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 12px;
+            min-width: 12px;
+            height: 12px;
+            min-height: 12px;
+        }
+    }
+
+    /* see https://github.com/swiety85/angular2gridster/issues/104 */
+    .prevent-animation {
+        -webkit-transition: none !important;
+        transition: none !important;
+    }
+
+}
+
+@mixin app-common-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+
+    $divider: map-get($foreground, divider);
+    /* SCROLLBAR STYLING */
+    // @include app-scrollbar($theme-config);
+
+    /* GRIDSTER OVERRIDES */
+
+    .gridster-item-prototype {
+        background-color: map-get($primary, darker);
+    }
+
+    .gridster-container {
+        .position-highlight {
+            .inner {
+                @include mat-elevation(3);
+                background-color: map-get($background, gridster-highlight);
+                border: 1px solid transparent;
+            }
+        }
+    }
+
+    .gridster-item {
+
+        &.is-dragging {
+            .gridster-item-inner {
+                @include mat-elevation(10);
+            }
+        }
+    }
+
+    /* MATERIAL OVERRIDES */
+
+    // CDK items are outside of component namespace class - be sure to give them very unique names
+    .mat-menu-panel {
+        background-color: map-get($background, menu);
+
+        .mat-menu-item.is-active {
+            .mat-icon {
+                color: map-get($accent, default);
+            }
+        }
+
+    }
+
+    .mat-autocomplete-panel {
+        background-color: map-get($background, menu);
+    }
+
+    .mat-tab-group.mat-primary .mat-ink-bar,
+    .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+        background: map-get($background, ink-bar);
+    }
+
+    .mat-datepicker-content {
+        border: 1px solid map-get($accent, default);
+        background-color: map-get($background, menu);
+    }
+
+    // Mat Form Field
+    .mat-form-field {
+        &.mat-form-field-appearance-fill {
+            .mat-form-field-flex  {
+                background-color: rgba(map-get($primary, default), 0.08);
+            }
+
+            // remove the underline... inkbar will show on focus
+            // make it transparent, because there is some sort of animation
+            .mat-form-field-underline::before {
+                background-color: rgba(0,0,0,0); // this is transparent
+            }
+
+            &:hover:not(.mat-focused) {
+                .mat-form-field-underline {
+                    background-color: rgba(0,0,0,0); // this is transparent
+
+                    .mat-form-field-ripple {
+                        background-color: rgba(map-get($primary, default),0.3);
+                    }
+                }
+            }
+
+            /*&.mat-focused,
+            &:hover {
+                @include mat-elevation(1);
+            }*/
+        }
+
+        &.mat-form-field-legacy {
+            .mat-form-field-underline {
+                background-color: rgba(0,0,0,0); // this is transparent
+            }
+        }
+
+
+        &.mat-form-field-appearance-outline {
+            .mat-form-field-outline,
+            .mat-form-field-outline-thick {
+                color: rgba(map-get($primary, default), 0.60);
+            }
+
+            &.mat-focused {
+                .mat-form-field-outline,
+                .mat-form-field-outline-thick {
+                    color: rgba(map-get($primary, default), 0.60);
+                }
+            }
+        }
+
+    }
+
+    /* loading spinner */
+    $default-color: if($is-dark, #ffffff, #000000);
+
+    .loading-spinner {
+        border-top-color: rgba($default-color, 0.2);
+        border-right-color: rgba($default-color, 0.2);
+        border-bottom-color: rgba($default-color, 0.2);
+        border-left-color: $default-color;
+
+        &.color-primary {
+            border-top-color: rgba(map-get($primary, default), 0.2);
+            border-right-color: rgba(map-get($primary, default), 0.2);
+            border-bottom-color: rgba(map-get($primary, default), 0.2);
+            border-left-color: map-get($primary, default);
+        }
+
+        &.color-accent {
+            border-top-color: rgba(map-get($accent, default), 0.2);
+            border-right-color: rgba(map-get($accent, default), 0.2);
+            border-bottom-color: rgba(map-get($accent, default), 0.2);
+            border-left-color: map-get($accent, default);
+        }
+
+        &.color-warn {
+            border-top-color: rgba(map-get($warn, default), 0.2);
+            border-right-color: rgba(map-get($warn, default), 0.2);
+            border-bottom-color: rgba(map-get($warn, default), 0.2);
+            border-left-color: map-get($warn, default);
+        }
+    }
+
+    .gif-spinner {
+        background-color: rgba(map-get($background, card), .8);
+    }
+
+    //@include app-scrollbar($theme-config);
+
+    /** scrollbar stuff **/
+
+    $scrollbar: map-get($theme-config, scrollbar);
+
+    $scrollbar-padding: map-get($scrollbar, padding);
+    $scrollbar-size: map-get($scrollbar, size);
+    $scrollbar-track: $scrollbar-size;
+    $scrollbar-radius: $scrollbar-size;
+    $scrollbar-track-bg: map-get($scrollbar, track-bg);
+    $scrollbar-thumb-bg: map-get($scrollbar, thumb-bg);
+
+    * {
+        // background of the bar itself
+        &::-webkit-scrollbar {
+            background-color: rgba(0,0,0,0.1);
+
+            &:vertical {
+                width: ($scrollbar-size + ($scrollbar-padding * 2));
+            }
+
+            &:horizontal {
+                height: ($scrollbar-size + ($scrollbar-padding * 2));
+            }
+        }
+        // draggable scrolling element resizes depending on the size of the scrollable element
+        &::-webkit-scrollbar-thumb {
+            border-radius: $scrollbar-radius;
+            -webkit-box-shadow: inset 0 0 1 darken($scrollbar-thumb-bg, 20%);
+            background: linear-gradient(left, $scrollbar-thumb-bg, darken($scrollbar-thumb-bg, 10%));
+            border: $scrollbar-padding solid $scrollbar-track-bg;
+        }
+
+        // empty space “below” the progress bar
+        &::-webkit-scrollbar-track {
+            //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 0;
+            background-color: rgba($scrollbar-track-bg, 0.6);
+            border: 1px solid darken($scrollbar-track-bg, 10%);
+        }
+
+        // bottom corner of the scrollable element, where two scrollbar meet
+        &::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+    }
+}
+
+@mixin app-scrollbar($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    /* Scrollbar config parts */
+    $scrollbar-size: 12px;
+    $scrollbar-radius: 0;
+
+    // STYLE ALL THE SCROLLBARS
+    * {
+        // background of the bar itself
+        &::-webkit-scrollbar {
+            background-color: transparent;
+            &:vertical {
+                width: $scrollbar-size;
+            }
+            &:horizontal {
+                height: $scrollbar-size;
+            }
+        }
+        //  directional buttons on the scrollbar
+        /*&::-webkit-scrollbar-button {
+            background: purple;
+            width: $scrollbar-size - 2;
+            height: $scrollbar-size - 2;
+        }*/
+        // empty space “below” the progress bar
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+            border: 0;
+            padding: 2px;
+        }
+        // top-most layer of the the progress bar not covered by the thumb
+        &::-webkit-scrollbar-track-piece {
+            //background: cyan;
+
+            &:start {
+                background-color: map-get($foreground, divider);
+            }
+            &:end {
+                background-color: map-get($foreground, divider);
+            }
+        }
+        // draggable scrolling element resizes depending on the size of the scrollable element
+        &::-webkit-scrollbar-thumb {
+            background-color: if($is-dark, map-get($primary, default), map-get($background, navbar));
+            //border-radius: $scrollbar-radius;
+        }
+        // bottom corner of the scrollable element, where two scrollbar meet
+        &::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+        // draggable resizing handle that appears above the scrollbar-corner at the bottom corner of some elements
+        /*&::-webkit-resizer {
+            background-color: transparent;
+        }*/
+    }
+}

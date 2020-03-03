@@ -1,0 +1,226 @@
+@mixin heatmap-widget-component-base() {
+
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.heatmap-widget {
+        flex: 1;
+        display: flex;
+        .hide {
+            display: none;
+        }
+        // Don't have padding for line-charts
+        .widget-output {
+            padding: 0;
+            /*position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;*/
+            width: 100%;
+            height: 100%;
+            display: flex;
+
+            .dygraph-legend {
+                display: none;
+                z-index: 1000;
+                margin-top:30px;
+                // background: #f0f0f0;
+                // border: 1px solid #cccccc;
+                padding: 4px;
+                min-width: 350px;
+                max-width: 400px;
+                position: absolute;
+                border-radius: 5px;
+                font-size: 12px;
+                font-family: Monaco, monospace;
+                // font-family: Helvetica Neue, Helvetica;
+                tr td:first-child {
+                    padding-right: 5px;
+                    text-align: right;
+                }
+                td {
+                    white-space: nowrap;
+                }
+                p {
+                    font-weight: bold;
+                }
+                table {
+                    margin-top: 5px;
+                }
+            }
+
+            .dygraph-label, .dygraph-axis-label {
+                color: slategrey;
+                font-size: 12px;
+                // font-family: Monaco, monospace;
+                font-family: Helvetica Neue, Helvetica;
+            }
+
+            .dygraph-ylabel {
+                font-weight: 400;
+            }
+
+            .graph-legend {
+                display: none;
+                position: initial; // override dygraph style
+                list-style: none;
+                height: 100%;
+                overflow: auto;
+                z-index: 0;
+                .mat-table {
+                    font-family: Monaco, monospace;
+                }
+            }
+
+            .loading-spinner,
+            .gif-spinner {
+                position: absolute;
+                left: 5px;
+                bottom: 5px;
+                z-index: 1;
+                /*width: 24px;
+                height: 24px;
+                background-image: url(/assets/denali-loader.svg);
+                background-color: transparent;*/
+            }
+
+            .apply-tpl-status {
+                position: absolute;
+                right: -5px;
+                top: 0px;
+                z-index: 1;
+                .mat-icon {
+                    font-size: 16px;
+                    color: rgb(216, 216, 215);
+                }
+            }
+
+            .error{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: red;
+            }
+
+            .debug{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: rgb(75, 9, 228);
+            }
+
+            // now for positioning of legend
+            &.display-legend-top,
+            &.display-legend-right,
+            &.display-legend-bottom,
+            &.display-legend-left {
+                .graph-legend {
+                    display: flex;
+                    .line-series{
+                        display: inline-flex;
+                        width:10px;
+                        height: 10px;
+                        margin-right: 5px;
+                    }
+                  }
+            }
+
+            &.display-legend-top{
+                flex-direction: column-reverse;
+                .graph-legend {
+                    margin-bottom: 6px;
+                }
+            }
+
+            &.display-legend-right {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            &.display-legend-bottom {
+                flex-direction: column;
+            }
+
+            &.display-legend-left {
+                flex-direction: row-reverse;
+                align-items: flex-start;
+            }
+
+            &.display-legend-left,
+            &.display-legend-right,
+            &.display-legend-top,
+            &.display-legend-bottom {
+                .graph-legend {
+                    table {
+                        flex: 1;
+                    }
+                    tr {
+                        cursor: pointer;
+                    }
+                    .mat-column-series {
+                        width: 12px;
+                        max-width: 12px;
+                    }
+                    .mat-row, .mat-header-row {
+                        height: 10px;
+                        line-height: 12px;
+                    }
+                    .mat-cell, .mat-header-cell {
+                        padding: 0px 2px;
+                        font-size: 9px;
+                        border-bottom-width: 0px;
+                    }
+                    .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+
+     // when we are in edit view
+     .edit-view-container.is-active {
+        .widget-panel-content.linechart-widget {
+            .widget-output {
+                //top: 30px;
+                padding: 8px;
+                //display: block;
+                position: relative;
+            }
+        }
+    }
+}
+
+@mixin heatmap-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $dygraph-tooltip-bg: if($is-dark-theme, map-get($background, menu), #f0f0f0);
+    $dygraph-tooltip-border: if($is-dark-theme, lighten(map-get($background, menu), 10%) , #cccccc);
+
+    .widget-panel-content.heatmap-widget {
+
+        .widget-output {
+            .dygraph-legend {
+                background: $dygraph-tooltip-bg;
+                border: 1px solid $dygraph-tooltip-border;
+            }
+        }
+    }
+
+}

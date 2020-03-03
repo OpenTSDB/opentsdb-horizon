@@ -1,0 +1,13 @@
+<!-- Navbar Theme -->
+<mat-toolbar fxFlex="1 1 100%">
+    <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+        <!-- Hamburger menu -->
+        <div class="navbar-item navbar-icon-item" *ngIf="mediaQuery === 'xs'">
+            <button mat-icon-button (click)="toggleSidenav()">
+                <mat-icon fontSet="denali" fontIcon="d-menu-hamburger"></mat-icon>
+            </button>
+        </div>
+        <!-- portal for custom navbar per module -->
+        <ng-container [cdkPortalOutlet]="cdkService.navbarPortal$ | async"></ng-container>
+    </mat-toolbar-row>
+</mat-toolbar>

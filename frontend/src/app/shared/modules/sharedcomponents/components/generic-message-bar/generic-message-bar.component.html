@@ -1,0 +1,18 @@
+<div class="generic-message-bar-wrapper" *ngIf="isVisible">
+    <div class="generic-message-item">
+        <mat-icon fontSet="denali" [fontIcon]="fontIcon"></mat-icon>
+        <strong class="message-type">{{messageType}}:</strong>
+        <span class="message-text">{{data.message}} </span>
+        <!-- tools to check what the various types look like
+        <a mat-button (click)="setTypeClass('error')">error</a>
+        <a mat-button (click)="setTypeClass('warning')">warning</a>
+        <a mat-button (click)="setTypeClass('success')">success</a>
+        <a mat-button (click)="setTypeClass('info')">info</a>
+        -->
+    </div>
+    <div class="close-action">
+        <button mat-icon-button (click)="hideMessage()">
+            <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+        </button>
+    </div>
+</div>

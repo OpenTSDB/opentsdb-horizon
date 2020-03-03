@@ -1,0 +1,23 @@
+@mixin inline-editable-component-base() {
+    .inline-editable {
+        .mat-form-field-infix {
+            padding: 0px;
+            border-top-width: 14px;
+        }
+
+        .mat-form-field-wrapper {
+            padding-bottom: 1.35em;
+        }
+    }
+}
+
+@mixin inline-editable-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+}

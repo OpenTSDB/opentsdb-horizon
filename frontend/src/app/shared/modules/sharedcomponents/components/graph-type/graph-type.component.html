@@ -1,0 +1,8 @@
+<mat-button-toggle-group  (change)="changeWidgetType($event.value)" [value]="selected">
+    <mat-button-toggle value="LinechartWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-line-chart"></span></mat-button-toggle>
+    <mat-button-toggle value="BarchartWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-bar-graph"></span></mat-button-toggle>
+    <mat-button-toggle value="HeatmapWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-heatmap"></span></mat-button-toggle>
+    <mat-button-toggle value="BignumberWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-big-number"></span></mat-button-toggle>
+    <mat-button-toggle value="TopnWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-topn-chart"></span></mat-button-toggle>
+    <mat-button-toggle value="DonutWidgetComponent" aria-label="Text align center"><span class="widget-type-icon widget-icon-donut-chart"></span></mat-button-toggle>
+</mat-button-toggle-group>

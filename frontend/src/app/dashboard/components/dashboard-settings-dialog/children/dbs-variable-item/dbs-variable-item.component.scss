@@ -1,0 +1,105 @@
+@mixin dbs-variable-item-component-base() {
+    .template-variable-item {
+        display: flex;
+        
+        &:not(:last-child) {
+            margin-bottom: 20px;
+        }
+
+        .settings-control {
+            margin-bottom: 0;
+            padding: 10px;
+            transition: background-color 500ms ease-in-out;
+
+            &:first-child {
+                padding-left: 20px;
+            }
+
+            &:last-child {
+                padding-right: 20px;
+            }
+
+            &.values-control {
+                flex: 1;
+            }
+
+            &.actions-control {
+                .mat-label {
+                    text-transform: uppercase;
+                }
+
+                .mat-button {
+                    min-width: 36px;
+                    padding: 0;
+                    margin-right: 8px;
+                }
+
+                .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 100%;
+                    transform: translateY(-2px);
+                }
+            }
+        }
+
+        .filter-values-list {
+            .mat-chip-list-wrapper {
+                .mat-standard-chip {
+                    margin: 0 4px;
+                    padding: 3px 3px 3px 9px;
+                    line-height: 14px;
+                    font-size: 12px;
+                }
+            }
+        }
+
+        // modifier
+        &.is-disabled {
+            .settings-control:not(.actions-control) {
+                opacity: .5;
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+@mixin dbs-variable-item-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $bg-color: map-get($background, background);
+
+
+    .template-variable-item {
+        border: 2px solid $bg-color;
+
+        &:first-child {
+            border-top: 0;
+        }
+
+        .settings-control {
+            background-color: rgba($bg-color, 0);
+        }
+
+        // modifier
+        &.is-disabled {
+            .settings-control:not(.actions-control){
+                background-color: $bg-color;
+            }
+        }
+
+        .filter-values-list {
+            .mat-chip-list-wrapper {
+                .mat-standard-chip {
+                    background-color: rgba(map-get($primary, default), .1);
+                }
+            }
+        }
+    }
+}

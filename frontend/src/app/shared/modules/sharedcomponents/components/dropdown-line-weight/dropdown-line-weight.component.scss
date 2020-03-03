@@ -1,0 +1,96 @@
+@mixin dropdown-line-weight-component-base() {
+    .dropdown-line-weight {
+        display: inline-block;
+
+        @include dropdown-line-weight-preview();
+
+        .mat-form-field {
+            .mat-form-field-infix {
+                width: initial;
+                display: flex;
+            }
+        }
+
+        .mat-select {
+            display: flex;
+
+            .mat-select-trigger {
+                .mat-select-value-text {
+                    display: flex;
+                    flex: 1;
+
+                    .trigger-value-display {
+                        display: flex;
+                    } 
+                }
+
+                .mat-select-arrow-wrapper {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+
+    // CDK ITEMS
+    .dropdown-line-weight-options {
+        .mat-select-content {
+            .mat-option-text {
+                display: inline-flex;
+                @include dropdown-line-weight-preview();
+            }
+        }
+    }
+}
+
+@mixin dropdown-line-weight-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .dropdown-line-weight {
+        @include dropdown-line-weight-preview-theme($foreground);
+    } 
+
+    // CDK ITEMS
+    .dropdown-line-weight-options {
+        .mat-select-content {
+            .mat-option {
+                @include dropdown-line-weight-preview-theme($foreground);
+            }
+        }
+    }
+}
+
+// UTILITY MIXINS
+@mixin dropdown-line-weight-preview() {
+    .line-weight-preview {
+        display: inline-flex;
+        align-items: center;
+        width: 20px;
+        max-width: 20px;
+        flex: 1;
+        margin-right: 8px;
+
+        span {
+            border-bottom-style: solid;
+            display: inline-block;
+            width: 100%;
+            height: 1px;
+        }
+    }
+}
+
+@mixin dropdown-line-weight-preview-theme($foreground) {
+    // theme part
+    .line-weight-preview {
+        
+        span {
+            border-bottom-color: map-get($foreground, text);
+        }
+    }
+}

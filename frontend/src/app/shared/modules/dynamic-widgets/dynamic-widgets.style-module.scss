@@ -1,0 +1,60 @@
+
+// common styles
+@import 'components/widgets.common';
+
+// widget specific
+@import 'components/bignumber-widget/bignumber-widget.component';
+@import 'components/developer-widget/developer-widget.component';
+@import 'components/donut-widget/donut-widget.component';
+@import 'components/linechart-widget/linechart-widget.component';
+@import 'components/heatmap-widget/heatmap-widget.component';
+@import 'components/barchart-widget/barchart-widget.component';
+@import 'components/topn-widget/topn-widget.component';
+@import 'components/placeholder-widget/placeholder-widget.component';
+@import 'components/status-widget/status-widget.component';
+@import 'components/bignumber-widget/children/big-number-visual-appearance/big-number-visual-appearance.component';
+@import 'components/donut-widget/children/donutchart-legend/donutchart-legend.component';
+@import 'components/markdown-widget/markdown-widget.component';
+@import 'components/markdown-widget/children/markdown-widget-visual-appearance/markdown-widget-visual-appearance.component';
+@import 'components/events-widget/events-widget.component';
+
+@mixin dynamic-widgets-module-core() {
+    // common
+    @include widgets-common-base();
+    // widgets
+    @include developer-widget-component-base();
+    @include bignumber-widget-component-base();
+    @include big-number-visual-appearance-component-base();
+    @include donut-widget-component-base();
+    @include linechart-widget-component-base();
+    @include heatmap-widget-component-base();
+    @include barchart-widget-component-base();
+    @include topn-widget-component-base();
+    @include status-widget-component-base();
+    @include placeholder-widget-component-base(); // place holder last please
+    @include barchart-widget-component-base();
+    @include donutchart-legend-component-base();
+    @include markdown-widget-component-base();
+    @include markdown-visual-appearance-widget-component-base();
+    @include events-widget-component-base();
+}
+
+@mixin dynamic-widgets-module-theme($theme-config) {
+    // common
+    @include widgets-common-theme($theme-config);
+    // widgets
+    @include developer-widget-component-theme($theme-config);
+    @include bignumber-widget-component-theme($theme-config);
+    @include big-number-visual-appearance-component-theme($theme-config);
+    @include donut-widget-component-theme($theme-config);
+    @include linechart-widget-component-theme($theme-config);
+    @include heatmap-widget-component-theme($theme-config);
+    @include barchart-widget-component-theme($theme-config);
+    @include topn-widget-component-theme($theme-config);
+    @include status-widget-component-theme($theme-config);
+    @include placeholder-widget-component-theme($theme-config); // place holder last please
+    @include donutchart-legend-component-theme($theme-config);
+    @include markdown-widget-component-theme($theme-config);
+    @include markdown-visual-appearance-widget-component-theme($theme-config);
+    @include events-widget-component-theme($theme-config);
+}

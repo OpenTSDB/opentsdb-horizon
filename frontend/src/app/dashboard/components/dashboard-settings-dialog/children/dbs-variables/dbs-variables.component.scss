@@ -1,0 +1,136 @@
+@mixin dbs-variables-component-base() {
+    .dbs-variables-component {
+        padding-top: 0 !important;
+
+        .add-template-button {
+            .mat-icon {
+                width: 14px;
+                height: 14px;
+                font-size: 100%;
+                margin-right: 8px;
+            }
+        }
+
+        .template-variable-list {
+
+            /*.template-variable-item {
+                display: flex;
+                
+                &:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+
+                .settings-control {
+                    margin-bottom: 0;
+                    padding: 10px;
+                    transition: background-color 500ms ease-in-out;
+
+                    &:first-child {
+                        padding-left: 20px;
+                    }
+
+                    &:last-child {
+                        padding-right: 20px;
+                    }
+
+                    &.values-control {
+                        flex: 1;
+                    }
+
+                    &.actions-control {
+                        .mat-label {
+                            text-transform: uppercase;
+                        }
+
+                        .mat-button {
+                            min-width: 36px;
+                            padding: 0;
+                            margin-right: 8px;
+                        }
+
+                        .mat-icon {
+                            width: 18px;
+                            height: 18px;
+                            font-size: 100%;
+                            transform: translateY(-2px);
+                        }
+                    }
+                }
+            }*/
+
+            // all items are disabled
+            &.is-disabled {
+                opacity: .5;
+                pointer-events: none;
+
+                .template-variable-item.is-disabled {
+                    .settings-control {
+                        opacity: 1;
+                    }
+                }
+            }
+
+            // individual item is disabled
+            /*&:not(.is-disabled) {
+                .template-variable-item.is-disabled {
+                    .settings-control:not(.actions-control) {
+                        opacity: .5;
+                        pointer-events: none;
+                    }
+                }
+            }*/
+            
+        }
+    }
+}
+
+@mixin dbs-variables-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $bg-color: map-get($background, background);
+
+    .dbs-variables-component {
+        .template-variable-list {
+
+            /*.template-variable-item {
+                border: 2px solid $bg-color;
+
+                &:first-child {
+                    border-top: 0;
+                }
+
+                .settings-control {
+                    background-color: rgba($bg-color, 0);
+                }
+            }
+
+            &:not(.is-disabled) {
+                .template-variable-item {
+                    // individual item is disabled
+                    &.is-disabled {
+                        .settings-control:not(.actions-control){
+                            background-color: $bg-color;
+                        }
+                    }
+                }
+            }*/
+
+            // all template items are disabled;
+            &.is-disabled {
+                .template-variable-item {
+                    .settings-control {
+                        background-color: $bg-color;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,66 @@
+
+<mat-card fxLayout="column" fxFlexFill>
+    <mat-card-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" class="panel-body">
+        <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <span class="panel-title"
+                        matTooltip="{{widget.settings.title}}"
+                        [matTooltipClass]="{'cdk-widget-title-tooltip':true}"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'BignumberWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'
+                                && widget.settings.component_type !== 'EventsWidgetComponent'">{{widget.settings.title}}</span>
+                    <span class="flex-spacer"></span>
+                    <!--<button mat-icon-button (click)="openIsland();">
+                        <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
+                    </button>-->
+                    <button mat-icon-button [matMenuTriggerFor]="widgetMenu">
+                        <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
+                    </button>
+                    <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">
+                        <ng-container *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
+                            <button mat-menu-item (click)="editWidget()">
+                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                <span>Edit View</span>
+                            </button>
+                            <button mat-menu-item (click)="widgetClone()">
+                                <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
+                                <span>Clone</span>
+                            </button>
+                            <!--<button mat-menu-item (click)="widgetShare()">
+                                <mat-icon fontSet="denali" fontIcon="d-share"></mat-icon>
+                                <span>Share</span>
+                            </button>
+                            <button mat-menu-item [matMenuTriggerFor]="subMenu">
+                                <mat-icon></mat-icon>
+                                <span>Export</span>
+                            </button>-->
+                            <span class="menu-seperator"></span>
+                        </ng-container>
+                        <button mat-menu-item (click)="widgetRemove()">
+                            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                            <span>Remove</span>
+                        </button>
+                    </mat-menu>
+                    <!--<mat-menu #subMenu="matMenu" class="widget-submenu">
+                        <button mat-menu-item (click)="widgetExportJSON()">
+                            <mat-icon fontSet="denali" fontIcon="d-upload"></mat-icon>
+                            <span>Export JSON</span>
+                        </button>
+                        <button mat-menu-item (click)="widgetExportImage()">
+                            <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                            <span>Download Image</span>
+                        </button>
+                    </mat-menu>-->
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <div widget-container></div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #islandPortalTest>
+    <strong>Info Island Template Portal Example (w/context)</strong> <br />
+    {{widget|json}}
+</ng-template>

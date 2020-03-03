@@ -1,0 +1,21 @@
+<div [formGroup]="varForm">
+    <mat-toolbar class="template-variable-toolbar">
+        <div class="toolbar-item">
+            <button mat-button class="add-template-button" (click)="addTemplateVariable()">
+                <mat-icon fontSet="denali" fontIcon="d-add-circle"></mat-icon>
+                <span>Add Template</span>
+            </button>
+        </div>
+        <div class="flex-spacer"></div>
+        <div class="toolbar-item">
+            <mat-slide-toggle [checked]="enabled.value" (change)="masterToggleChange($event)">
+                <span class="mat-caption">Dashboard Tags {{enabled.value ? 'Enabled' : 'Disabled'}}</span>
+            </mat-slide-toggle>
+        </div>
+    </mat-toolbar>
+    <div class="template-variable-list" formArrayName="tplVariables" [ngClass]="{'is-disabled': !enabled.value}">
+        <ng-container *ngFor="let tpl of tplVariables['controls']; let i=index">
+            <dbs-variable-item [formGroup]="tpl" [formGroupName]="i" [dbTagKeys]="dbData.dbTags" [selectedKeys]="selectedKeys" (remove)="removeTemplateVariable(i)"></dbs-variable-item>
+        </ng-container>
+    </div>
+</div>

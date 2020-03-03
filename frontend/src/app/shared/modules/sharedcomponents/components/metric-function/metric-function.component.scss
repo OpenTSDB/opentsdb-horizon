@@ -1,0 +1,126 @@
+
+@mixin metric-function-component-base() {
+    .metric-function-component {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+
+        .mat-form-field {
+
+            .mat-form-field-wrapper,
+            .mat-form-field-flex {
+                height: 100%;
+            }
+
+            .mat-form-field-wrapper {
+                padding-bottom: 0;
+            }
+
+            .mat-form-field-flex {
+                padding-top: 0;
+            }
+
+            .mat-form-field-underline {
+                bottom: 0;
+            }
+
+            .mat-form-field-infix {
+                border-top-width: 0;
+                padding: 0;
+                align-self: stretch;
+                display: inline-flex;
+                align-items: center;
+
+                .mat-input-element {
+                    font-family: mat-font-family(map-get($app-fontface-config, mono));
+                    padding: 0 4px;
+                    align-self: stretch;
+                    min-width: 30px;
+                }
+            }
+
+            .mat-form-field-prefix,
+            .mat-form-field-suffix {
+                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+            }
+
+            .mat-form-field-suffix {
+                opacity: 0.4;
+                transition: opacity 200ms ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            .mat-form-field-prefix {
+                padding: 0 4px;
+            }
+
+            &.readonly-mode {
+                .mat-form-field-underline {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+@mixin metric-function-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+    $chip-bg: rgba(map-get($primary, default), .1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+
+    $link: map-get($foreground, link);
+
+    $widgets: map-get($theme-config, widgets);
+
+    $card-background: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $query-marker-bg: map-get($widgets, query-editor-marker);
+    $query-marker-text: map-get($widgets, query-editor-marker-text);
+    $query-block-bg: map-get($widgets, query-editor-block-bg);
+    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+
+    $brand-color: map-get($background, navbar);
+    $brand-color-inverse: map-get($foreground, navbar-text);
+
+    $lighter-divider: rgba(0,0,0,0.04);
+
+    .metric-function-component {
+
+        .mat-form-field {
+
+            .mat-form-field-prefix {
+                background: rgba(0,0,0,0.04);
+            }
+
+            .mat-form-field-underline {
+                background-color: $link;
+            }
+
+            &.mat-focused {
+
+                &:not(.readonly-mode) {
+                    background-color: rgba($link, 0.04)
+                }
+
+                .mat-form-field-underline {
+                    background-color: $link;
+                }
+            }
+        }
+    }
+}

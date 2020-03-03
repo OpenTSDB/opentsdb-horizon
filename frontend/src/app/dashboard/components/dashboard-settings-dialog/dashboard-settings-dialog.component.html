@@ -1,0 +1,35 @@
+<mat-toolbar mat-dialog-title>
+    <span class="dialog-title">Dashboard Settings</span>
+    <span class="flex-spacer"></span>
+    <span>
+        <button mat-button color="primary" class="close-dialog-btn" mat-dialog-close>
+            <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+<mat-dialog-content>
+    <div class="content-container">
+        <mat-tab-group class="dashboard-settings" color="primary" color="primary" [@.disabled]="'true'" (selectedTabChange)="tabChangeEvent($event)">
+            <!-- <mat-tab label="Meta Data">
+                <ng-template matTabContent>
+                    <dbs-meta [dbData]="dbData" (dataModified)="settingsDataModified($event)"></dbs-meta>
+                </ng-template>
+            </mat-tab> -->
+            <mat-tab label="Theme Variables">
+                <ng-template matTabContent>
+                    <dbs-variables [dbData]="dbData" (dataModified)="settingsDataModified($event)"></dbs-variables>
+                </ng-template>
+            </mat-tab>
+            <!--<mat-tab label="JSON">
+                <ng-template matTabContent>
+                    <dbs-json [dbData]="dbData" (dataUpdated)="settingsDataUpdated($event)"></dbs-json>
+                </ng-template>
+            </mat-tab>-->
+        </mat-tab-group>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="onClick_Apply()">APPLY</button>
+    <button mat-stroked-button color="primary" class="mat-elevation-z0"  mat-dialog-close>CANCEL</button>
+</mat-dialog-actions>

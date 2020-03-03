@@ -1,0 +1,145 @@
+@mixin widget-config-multigraph-component-base() {
+    .widget-config-tab.multigraph-configuration {
+        // style rules here
+        padding: 14px 10px;
+        
+        > form {
+            flex-direction: column;
+        }
+
+        .fixed-label {
+            display: inline-block;
+            width: 75px;        
+        }
+
+        .config-control.inline-controls {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+
+            .fixed-label {
+                padding: 10px 0;
+
+                &:not(:first-child) {
+                    margin-left: 25px;
+                }
+            }
+
+            .form-field-group {
+                padding: 10px 0px;
+            }
+            .mat-checkbox {
+                margin-right: 8px;
+            }
+        }
+
+        .radio-row {
+            display: flex;
+            line-height: 48px;
+
+            .radio-inline-label {
+                .mat-form-field,
+                .mat-form-field + span {
+                    margin-right: 8px;
+                }
+            }
+        }
+
+        .mat-form-field.numeric-options {
+           .mat-form-field-infix {
+               width: 60px;
+           } 
+        }
+
+        .form-field-group.table-output {
+            width: 100%;
+
+            .mat-header-cell,
+            .mat-cell {
+                &.mat-column-x,
+                &.mat-column-y,
+                &.mat-column-g,
+                &.mat-column-order {
+                    justify-content: center;
+                }
+            }
+
+            .mat-header-cell:first-of-type
+            .mat-cell:first-of-type {
+                padding-left: 0;
+            }
+
+            .mat-header-cell.mat-column-remove,
+            .mat-cell.mat-column-remove {
+                padding-right: 6px;
+                padding-left: 6px;
+                max-width: 30px;
+
+                .mat-icon-button {
+                    width: 18px;
+                    height: 18px;
+                    line-height: 18px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                    }
+                }
+            }
+
+            .mat-cell.mat-column-order .mat-icon {
+                cursor: grab;
+            }
+        }
+
+        .add-tag-control .mat-form-field {
+            width: 100%;
+
+            .mat-form-field-prefix {
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+                margin: 0 4px 0 8px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 8px;
+                }
+            }
+        }
+    }
+
+    // cdk items
+    .multigraph-data-row.mat-row.cdk-drag-preview {
+        .mat-cell {
+            &.mat-column-x,
+            &.mat-column-y,
+            &.mat-column-g,
+            &.mat-column-order {
+                justify-content: center;
+            }
+        }
+    }
+}
+
+@mixin widget-config-multigraph-component-theme($theme-config) {
+    /* Theme config parts */    
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark-theme);
+
+    $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.04));
+
+    .widget-config-tab.multigraph-configuration {
+
+        .form-field-group.table-output {
+
+
+            .mat-row:hover {
+                background: lighten(map-get($foreground, divider), 50%);
+            }
+        }
+    }
+}

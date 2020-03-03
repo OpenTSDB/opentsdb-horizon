@@ -1,0 +1,14 @@
+<div class="widget-output-container">
+  <div class="widget-output">
+      <strong>Select a data visualization type</strong>
+      <div class="widget-types">
+          <button mat-raised-button class="widget-type-selector mat-elevation-z0"  
+          *ngFor="let wtype of availableWidgetTypes"
+          (click)="selectWidgetType(wtype)">
+              <span class="widget-type-icon {{ wtype.iconClass }}"></span>
+              <span class="widget-type-label">{{ wtype.label }}</span>
+          </button>
+      </div>
+  </div>
+</div>
+<!-- there is no config for placeholder -->

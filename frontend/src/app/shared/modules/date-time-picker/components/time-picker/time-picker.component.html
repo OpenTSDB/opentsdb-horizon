@@ -1,0 +1,40 @@
+<ng-container *ngIf="config.enableSync || config.enableRefresh">
+<button class="refresh-button" *ngIf="config.enableSync" mat-raised-button (click)="setRefresh()" matTooltip="Refresh Dashboard Now" matTooltipPosition="below">
+    <mat-icon fontSet="denali" fontIcon="d-sync-solid"></mat-icon>
+</button>
+
+<button class="refresh-button" mat-raised-button (click)="setAutoRefresh(60, $event)" *ngIf="config.enableRefresh && isRelativeTime() && !isEditMode && (!refresh || !refresh.auto)" matTooltip="Turn auto-refresh on" matTooltipPosition="below">
+    <mat-icon fontSet="denali" fontIcon="d-play-circle-solid"></mat-icon>
+</button>
+
+<button class="refresh-button auto-refresh-button" mat-raised-button (click)="setAutoRefresh(0, $event)" *ngIf="isRelativeTime() && !isEditMode && refresh && refresh.auto" matTooltip="Turn auto-refresh off" matTooltipPosition="below">
+    <mat-icon fontSet="denali" fontIcon="d-pause-circle-solid"></mat-icon>
+    <span class="refresh-text">refreshing in {{secondsRemaining}}s</span>
+</button>
+</ng-container>
+
+
+<button mat-raised-button
+    (keydown.tab)="$event.stopPropagation()"
+    [ngClass]="{'menu-trigger-underline': timerangePickerMenuIsOpen}"
+    [matMenuTriggerFor]="timerangePickerMenu" 
+    [matTooltip]="tooltipText"
+    matTooltipClass="dtp-tooltip-text"
+    #timerangePickerMenuTrigger>
+    <span> {{startTime}} to {{endTime}}</span>
+    <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
+</button>
+
+<mat-menu #timerangePickerMenu="matMenu" [overlapTrigger]="false" class="nav-bar-dropmenu timerange-picker-menu" (closed)="closeTimeRangePicker()" (keydown.tab)="$event.stopPropagation()">
+    <div mat-menu-item class="timerange-picker-container" [disableRipple]="'true'" fxLayout="column" (click)="$event.stopPropagation()" (keydown.tab)="$event.stopPropagation()">
+        <time-range-picker
+            (timeSelected)="timeReceived($event)"
+            (cancelSelected)="triggerAndCloseTimeRangePicker()"
+            [startTime]="startTime"
+            [endTime]="endTime"
+            [options]="options"
+            [timezone]="timezone"
+            (keydown.tab)="$event.stopPropagation()">
+        </time-range-picker>
+    </div>
+</mat-menu>

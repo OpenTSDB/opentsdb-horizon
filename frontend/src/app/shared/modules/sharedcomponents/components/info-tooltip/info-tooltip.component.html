@@ -1,0 +1,8 @@
+<button class="info-tooltip-trigger" mat-icon-button [matMenuTriggerFor]="infoTooltipMenu" color="primary" #infoTooltip>
+    <mat-icon [fontSet]="fontSet" [fontIcon]="fontIcon"></mat-icon>
+</button>
+<mat-menu #infoTooltipMenu="matMenu" class="info-tooltip">
+    <div class="tooltip-content">
+        <ng-content></ng-content>
+    </div>
+</mat-menu>

@@ -1,0 +1,147 @@
+<div class="widget-output-container" fxLayout="column">
+    <canvas #myCanvas width="0" height="0"></canvas>
+    <div class="widget-output" #widgetoutput>
+        <div class="widget-container">
+            <div class="big-num-container"
+                [style.background]="backgroundColor"
+                [style.color]="textColor"
+                [style.font-size]="fontSizePercent + '%'"
+                [ngClass]= "{'edit-flex' : editMode}">
+
+                <div class="content-container">
+                    <div class="metric-container">
+                        <div *ngIf="widget.settings.visual.prefix"
+                            class='prefix' [ngClass]="{
+                                'top':     widget.settings.visual.prefixAlignment=='top',
+                                'middle':  widget.settings.visual.prefixAlignment=='middle',
+                                'bottom':  widget.settings.visual.prefixAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':    widget.settings.visual.prefixSize=='s',
+                                'medium':   widget.settings.visual.prefixSize=='m',
+                                'large':    widget.settings.visual.prefixSize=='l'
+                                }">{{ shortenString(widget.settings.visual.prefix, maxLabelLength) | uppercase }}</div>
+                        </div>
+
+                        <div *ngIf="bigNumber.unitPos === 0"
+                                class='left-unit unit' [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                                }">{{ shortenString(bigNumber.unit, maxLabelLength) }}</div>
+                        </div>
+
+                        <div class="big-number" *ngIf="bigNumber.num !== undefined">{{ bigNumber.num + bigNumber.postfix }}</div>
+                        <div class="big-number" *ngIf="bigNumber.num === undefined">{{noDataText}}</div>
+
+                        <div *ngIf="bigNumber.unitPos === 1"
+                                class='right-unit unit' [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                        }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                            }">{{ shortenString(bigNumber.unit, maxLabelLength) }}</div>
+                        </div>
+                        <!--
+                        <span *ngIf="widget.settings.visual.changedIndicatorEnabled" class="change-indicator">
+                            <span *ngIf="changePct >= changeThreshold">↑ {{ bigNumToChangeIndicatorValue(UN.getBigNumber(changeValue, {unit: widget.settings.visual.unit, precision: widget.settings.visual.precision})) }} </span>
+                            <span *ngIf="changePct <= -1*changeThreshold">↓ {{ bigNumToChangeIndicatorValue(UN.getBigNumber(changeValue, {unit: widget.settings.visual.unit, precision: widget.settings.visual.precision})) }} </span>
+                            <span *ngIf="changePct > -1*changeThreshold && changePct < changeThreshold">↔ </span>
+                        </span>
+                        -->
+                        <div *ngIf="aggregators.length > 1" class="aggregator" [ngClass]="{
+                                'top':     widget.settings.visual.unitAlignment=='top',
+                                'middle':  widget.settings.visual.unitAlignment=='middle',
+                                'bottom':  widget.settings.visual.unitAlignment=='bottom'
+                            }">
+                            <div [ngClass]="{
+                                'small':   widget.settings.visual.unitSize=='s',
+                                'medium':  widget.settings.visual.unitSize=='m',
+                                'large':   widget.settings.visual.unitSize=='l'
+                            }">{{ agg | uppercase }}</div>
+                        </div>
+                    </div>
+                    <div class="caption">{{ shortenString(widget.settings.visual.caption, maxCaptionLength) }}</div>
+                </div>
+            </div>
+
+            <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
+            <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
+                <img src="/assets/spinner-26x26.gif" />
+            </div>
+            <div class="error" *ngIf="error" (click)="showError()">
+                <mat-icon>error</mat-icon>
+            </div>
+            <div class="debug" *ngIf="debugData" (click)="showDebug()">
+                <mat-icon>info</mat-icon> {{ this.widget.id }}
+            </div>
+            <div class="fully-qualified-metric" *ngIf="editMode">
+                <div class="metric-detail" *ngIf="selectedMetric">
+                    <div class="metric-label">{{ selectedMetric.metric }}</div>
+                    <div class="metric-tags">
+                        <div class="metric-tag" *ngFor="let tag of tags">
+                            <span class="tag-key">{{ tag.key }}:</span>
+                            <strong class="tag-value">{{ tag.value }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="widget-controls-container" *ngIf="editMode">
+    <div class="widget-title" fxLayout="row" fxFlex="1 1 30px">
+            <span class="flex-spacer"></span>
+            <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
+    </div>
+    <!-- tabs with config content -->
+    <mat-tab-group class="widget-configs" selectedIndex="0" color="primary" [@.disabled]="'true'">
+        <mat-tab label="Queries" class="test">
+            <!-- ng-template is to lazy-load tab content (see: https://material.angular.io/components/tabs/overview#lazy-loading ) -->
+            <ng-template matTabContent>
+            <widget-config-metric-queries [options]="{enableGroupBy: false, enableSummarizer: true, enableMultipleQueries:true, enableMultiMetricSelection: false}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Time Configuration" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Visual Appearance" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <big-number-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></big-number-visual-appearance>
+            </ng-template>
+        </mat-tab>
+        <!-- disable meta - title for big number
+        <mat-tab label="Meta Data" [disabled]="editQueryId">
+            <ng-template matTabContent>
+                <widget-config-general [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-general>
+            </ng-template>
+        </mat-tab>
+        -->
+        <mat-tab>
+            <!-- custom tab label. (see: https://material.angular.io/components/tabs/overview#labels) -->
+            <!-- <ng-template mat-tab-label>
+                &lt;/&gt; Query Editor
+            </ng-template> -->
+            <ng-template matTabContent>
+                <widget-config-query-inspector [widget]="widget"></widget-config-query-inspector>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="widget-actions" *ngIf="!editQueryId">
+        <!-- controls to save/cancel -->
+        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
+        <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
+    </div>
+</div>

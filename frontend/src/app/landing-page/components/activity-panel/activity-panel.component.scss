@@ -1,0 +1,184 @@
+/**
+ * ACTIVITY PANEL COMPONENT
+ */
+
+@mixin activity-panel-component-base() {
+    .activity-panel {
+        display: flex;
+        flex-direction: column;
+
+        .panel-header {
+
+        }
+
+        .panel-content {
+
+
+            .no-data {
+                .no-activity {
+                    margin: 15px 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+
+                    .illustration {
+                        width: 120px;
+                        height: 120px;
+                        position: relative;
+                        border-radius: 50%;
+                        background-color: rgba(0,0,0,0.06);
+                        margin-bottom: 15px;
+
+                        &::after {
+                            content: 'Illustration';
+                            font-size: 14px;
+                            font-weight: 500;
+                            display: block;
+                            line-height: 120px;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+        }
+
+        .activity-lists {
+            font-size: 12px;
+
+            .day-header {
+                text-transform: uppercase;
+            }
+
+            .mat-expansion-panel-body {
+                padding: 0 18px 12px;
+            }
+
+            // shows hour header
+            .mat-expansion-panel-header {
+                padding: 0 18px;
+
+                .mat-expansion-panel-header-title {
+                    font-size: 12px;
+                    flex-grow: initial;
+                }
+
+                .icon-array {
+                    .mat-chip {
+                        margin-right: 4px;
+                        opacity: .3;
+                    }
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 10px;
+                        padding: 2px;
+                        border-radius: initial;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        
+                    }
+                }
+
+                .event-count {
+                    .mat-chip {
+                        font-size: 10px;
+                        padding: 2px 6px;
+                        opacity: .3;
+                    }
+                }
+            }
+
+            // hour-level events
+            .mat-list {
+                padding-top: 0;
+                font-size: 12px;
+
+                .mat-list-item {
+                    height: auto;
+                    max-width: initial;
+                    font-size: 12px;
+
+                    &:not(:last-child) {
+                        margin-bottom: 12px;
+                    }
+
+                    .mat-list-item-content {
+                        padding: 0;
+                        align-items: flex-start;
+                    }
+
+                    .mat-line {
+                        white-space: initial;
+                        font-size: 12px;
+                    }
+
+                    .mat-icon {
+                        width: 18px;
+                        height: 18px;
+                        font-size: 16px;
+                        padding: 2px;
+                        border-radius: initial;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+
+
+        }
+    }
+}
+
+@mixin activity-panel-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $d-blue: map-get($denali-blue, 500);
+    $d-purple: map-get($denali-purple, 500);
+    $d-red: map-get($denali-red, 500);
+    $d-green: map-get($denali-green, 500);
+    $d-orange: map-get($denali-orange, 500);
+
+    $d-blue-accent: map-get($denali-blue, 'A100');
+    $d-purple-accent: map-get($denali-purple, 'A100');
+    $d-red-accent: map-get($denali-red, 'A100');
+    $d-green-accent: map-get($denali-green, 'A100');
+    $d-orange-accent: map-get($denali-orange, 'A100');
+
+    $activityTypes: (
+        namespace: ($d-blue, $d-blue-accent),
+        dashboard: ($d-purple, $d-purple-accent),
+        bug: ($d-red, $d-red-accent),
+        admin: ($d-green, $d-green-accent),
+        alert: ($d-orange, $d-orange-accent)
+    );
+
+    .activity-panel {
+        .activity-lists {
+            .mat-list {
+                .mat-icon {
+
+                    @each $key, $value in $activityTypes {
+                        $color: nth($value, 1);
+                        $accent: nth($value, 2);
+
+                        &.for-#{$key} {
+                            color: $color;
+                            background-color: $accent;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

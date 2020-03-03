@@ -1,0 +1,74 @@
+//* ALERTS MODULE STYLE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// NOTE: First time only after creating this file,
+// after you have completed the three steps below
+// be sure to add this file to src/app/app.style-module.scss
+// and follow the steps in that file
+
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+@import './alerts.common';
+
+// containers
+@import './containers/alerts.component'; // nothing to style yet
+
+// components
+@import  './components/snooze-details/snooze-details.component';
+@import './components/alert-details/alert-details.component';
+@import './components/name-alert-dialog/name-alert-dialog.component';
+@import './components/alert-details/children/recipients-manager/recipients-manager.component';
+@import './components/alert-details/children/alert-details-metric-period-over-period-preview/alert-details-metric-period-over-period-preview.component';
+@import './components/alert-details/children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
+@import './components/alert-details/children/alert-details-count/alert-details-count.component';
+
+// Common classes for widget components
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin alerts-module-core() {
+    // include your core mixins
+    // example: @include componentName-component-core();
+
+    @include alerts-common-base();
+
+    // containers
+    @include alerts-container-component-base(); // nothing to style yet
+
+    // components
+    @include snooze-details-component-base();
+    @include alert-details-component-base();
+    @include name-alert-dialog-component-base();
+    @include alert-configuration-contacts-component-base();
+    @include alert-details-metric-period-over-period-component-base();
+    @include alert-details-metric-period-over-period-preview-component-base();
+    @include alert-details-count-component-base();
+
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin alerts-module-theme($theme-config) {
+    // include your theme mixins, passing along the $theme-config
+    // example: @include componentName-component-theme($theme-config);
+
+    @include alerts-common-theme($theme-config);
+
+    // container
+    @include alerts-container-component-theme($theme-config); //nothing to style yet
+
+    // components
+    @include snooze-details-component-theme($theme-config);
+    @include alert-details-component-theme($theme-config);
+    @include name-alert-dialog-component-theme($theme-config);
+    @include alert-configuration-contacts-component-theme($theme-config);
+    @include alert-details-metric-period-over-period-component-theme($theme-config);
+    @include alert-details-metric-period-over-period-preview-component-theme($theme-config);
+    @include alert-details-count-component-theme($theme-config);
+}

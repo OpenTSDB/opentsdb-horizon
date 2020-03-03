@@ -1,0 +1,22 @@
+<div class="cps" [style.height]="heightOfComponent + 'px'">
+
+    <color-picker-hsv-selector [selectedColor]="selectedColor" (colorChanged)="changeColorValue($event)"></color-picker-hsv-selector>
+
+    <color-picker-hue-slider [selectedColor]="selectedColor" (hueChanged)="changeHueColor($event)"></color-picker-hue-slider>
+
+    <!-- Input Color -->
+    <div class="selected-color">
+        <div class="color-sample" [style.background]="selectedColor"></div>
+        <div [formGroup]="hexForm" class="color-form">
+            <mat-form-field appearance="fill" class="hex-input">
+                <input matInput maxlength="7" formControlName="hexCode" [value]="selectedColor" (keyup.enter)="enterKeyedOnInputBox()"/>
+            </mat-form-field>
+        </div>   
+    </div>
+
+    <!-- Apply and Cancel -->
+    <div class="button-options" *ngIf="pickerMode != embedded">
+        <button mat-button id="cancel" (click)="userClickedCancel()"> Cancel </button>
+        <button mat-button id="apply" (click)="enterKeyedOnInputBox()"> Apply </button>
+    </div>
+</div>

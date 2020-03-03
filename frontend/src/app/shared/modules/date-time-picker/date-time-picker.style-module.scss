@@ -1,0 +1,42 @@
+//* SHARED COMPONENTS STYLE MODULE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// NOTE: First time only after creating this file,
+// after you have completed the three steps below
+// be sure to add this file to src/app/app.style-module.scss
+// and follow the steps in that file
+
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+@import 'date-time-picker.common';
+@import './components/date-picker-2/datepicker.component';
+@import './components/keypad/keypad.component';
+@import './components/time-picker/time-picker.component';
+@import './components/time-range-picker/time-range-picker.component';
+
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin date-time-picker-module-core() {
+    @include date-time-picker-common-base();
+    @include date-picker-component-base();
+    @include keypad-component-base();
+    @include time-picker-component-base();
+    @include time-range-picker-component-base();
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin date-time-picker-module-theme($theme-config) {
+    @include date-time-picker-common-theme($theme-config);
+    @include date-picker-component-theme($theme-config);
+    @include keypad-component-theme($theme-config);
+    @include time-picker-component-theme($theme-config);
+    @include time-range-picker-component-theme($theme-config);
+}

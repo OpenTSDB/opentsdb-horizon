@@ -1,0 +1,17 @@
+<form [formGroup]="formGroups">
+<p class="config-control config-widget-title">
+    <mat-form-field appearance="fill">
+        <mat-label>Widget Title</mat-label>
+        <input matInput placeholder="Please enter a title for this widget" maxlength="100" formControlName="title" required>
+        <mat-hint>Max 100 characters</mat-hint>
+        <mat-hint align="end">{{widget.settings.title?.length || 0}}/100</mat-hint>
+    </mat-form-field>
+</p>
+<p class="config-control config-widget-description">
+    <mat-form-field appearance="fill">
+        <mat-label>Description</mat-label>
+        <textarea matInput matTextareaAutosize matAutosizeMinRows=4 matAutosizeMaxRows=8 placeholder="Please enter a description for this widget" formControlName="description"></textarea>
+        <mat-hint>Add an optional description of your widget</mat-hint>
+    </mat-form-field>
+</p>
+</form>

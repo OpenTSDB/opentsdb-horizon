@@ -1,0 +1,7 @@
+<section class="navigator-panel-wrapper" [ngStyle]="panelWrapperStyle">
+    <ul class="navigator-panel-inner" #navigatorPanel>
+        <li *ngFor="let item of items;" class="navigator-panel-item">
+            <ng-container [ngTemplateOutlet]="item.tpl"></ng-container>
+        </li>
+    </ul>
+</section>

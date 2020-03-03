@@ -1,0 +1,37 @@
+@mixin keypad-component-base() {
+
+    .dtp-keypad {
+        
+        .mat-button {
+
+            min-width: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        mat-grid-list {
+            display:flex;
+            justify-content:center;
+        }
+    }
+    // CDK ITEMS HERE
+}
+
+@mixin keypad-component-theme($theme-config) {
+
+  /* Theme config parts */
+  $primary: map-get($theme-config, primary);
+  $accent: map-get($theme-config, accent);
+  $warn: map-get($theme-config, warn);
+  $foreground: map-get($theme-config, foreground);
+  $background: map-get($theme-config, background);
+
+  .dtp-keypad {
+      .mat-button {
+        background-color: map-get($background, default);
+        //   color: map-get($primary, default-invert);
+      }
+  }
+}

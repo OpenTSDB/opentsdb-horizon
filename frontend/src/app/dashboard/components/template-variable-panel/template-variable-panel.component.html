@@ -1,0 +1,208 @@
+<ng-template [ngIf]="mode.view" [ngIfElse]="variableEditMode">
+    <div [formGroup]="listForm" class="variable-list-wrapper">
+        <button mat-button color="primary" class="configure-variables-button" *ngIf="!tplVariables.viewTplVariables.tvars || tplVariables.viewTplVariables.tvars.length === 0" (click)="doEdit()">
+            <mat-icon fontSet="denali" fontIcon="d-setting"></mat-icon>
+            <span>Configure dashboard tag filters</span>
+        </button>
+        <div *ngIf="tplVariables.viewTplVariables.tvars.length > 0">
+            <ul class="varlist" formArrayName="listVariables">
+                <li *ngFor="let vartpl of listVariables.controls; let i = index" [formGroupName]="i">
+                    <mat-form-field appearance="fill" color="primary" floatLabel="never" class="dashboard-template-variable" [ngStyle]="{width: calculateVariableDisplayWidth(vartpl)}" [attr.id]="'filter-tpl-'+i">
+                        <input matInput formControlName="filter" placeholder="" [matAutocomplete]="filterVarValues"
+                            (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
+                        <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
+                        <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto">
+                            <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </li>
+                <li>
+                    <button mat-button color="primary" class="edit-variables-button" (click)="doEdit()">
+                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                        <span>Edit</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</ng-template>
+<!-- NEW EDIT MODE -->
+<ng-template #variableEditMode>
+    <div [formGroup]="editForm" class="variable-edit-wrapper">
+        <div class="variable-form-wrapper">
+            <div class="namespace-column">
+                <div class="column-title">Namespaces</div>
+                <div class="namespace-input">
+                    <namespace-autocomplete  [options]="{ resetOnBlur: true }" (nschange)="addNamespace($event)"></namespace-autocomplete>
+                </div>
+                <mat-chip-list>
+                    <mat-chip *ngFor="let namespace of selectedNamespaces"
+                        [removable]="!dbNamespaces.includes(namespace)"
+                        (removed)="removeNamespace(namespace)">{{ namespace }}
+                        <mat-icon matChipRemove *ngIf="!dbNamespaces.includes(namespace)">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="filters-column">
+                <div class="column-title">Dashboard filters</div>
+                <!-- table here -->
+                <table formArrayName="formTplVariables" *ngIf="selectedNamespaces.length > 0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mode
+                                <info-tooltip>
+                                    <p>
+                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable. Overrides non-dashboard tags when value is set. OR'd with other dashboard tags. 
+                                    </p>
+                                    <br/>
+                                    <p>
+                                        <strong>Manual: </strong> Additional action must be taken to add tag to desired queries. OR'd with other dashboard tags and non-dashboard tags.
+                                    </p>
+                                </info-tooltip>
+                            </th>
+                            <th>Tag Key <sup>*</sup></th>
+                            <th>Filter Name <sup>*</sup></th>
+                            <th>Default value (optional)</th>
+                            <th>Applied</th>
+                            <info-tooltip>
+                                <p> # of widgets using dashboard tag.</p>
+                            </info-tooltip>
+                            <th>Actions</th>
+                            <th><!--empty for trash--></th>
+                            <th>Reorder</th>
+                            <!-- <th>empty for error messages</th> -->
+                        </tr>
+                    </thead>
+                    <tbody cdkDropList [cdkDropListData]="formTplVariables['controls']" [cdkDropListDisabled]="formTplVariables.controls.length < 2" (cdkDropListDropped)="dropTable($event)">
+                        <tr class="variable-edit-controls" *ngFor="let tpl of formTplVariables.controls; let i = index" [formGroupName]="i" cdkDrag [cdkDragData]="tpl"
+                            (cdkDragStarted)="dragStart($event, i)">
+                            <!-- auto/manu toggle (TODO: still have to style) -->
+                            <td>
+                                <div class="settings-control filter-mode-control">
+                                    <nav mat-tab-nav-bar class="sliding-toggle-group" [ngClass]="{'auto-mode': tpl.get('mode').value === 'auto', 'manual-mode': tpl.get('mode').value !== 'auto'}">
+                                        <a mat-tab-link
+                                            [active]="tpl.get('mode').value === 'auto'"
+                                            (click)="switchFilterMode('auto', i)">
+                                            Auto
+                                        </a>
+                                        <a mat-tab-link
+                                            [active]="tpl.get('mode').value === 'manual'"
+                                            (click)="switchFilterMode('manual', i)">
+                                            Manual
+                                        </a>
+                                    </nav>
+                                </div>
+                            </td>
+                            <!-- tag key -->
+                            <td>
+                                <div class="settings-control tag-key-control">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                        <input matInput placeholder="Enter tag key" formControlName="tagk"
+                                            [matAutocomplete]="filterKeyAuto" (focus)="onInputFocus('tagk', i)"
+                                            (blur)="onInputBlur('tagk', i)" (keydown.enter) ="onInputBlur('tagk', i)" autocomplete="off">
+                                        <mat-autocomplete #filterKeyAuto="matAutocomplete" (optionSelected)="selectTagKeyOption($event, i)" panelWidth="auto">
+                                            <mat-option *ngFor="let option of filteredKeyOptions | async" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="tpl.invalid">Tag Key is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                            <!-- filter alias/name -->
+                            <td>
+                                <div class="settings-control alias-control" style="min-width: 100px; width: 100%;">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never" style="width: 100%;" >
+                                        <input matInput placeholder="Enter name/alias" formControlName="alias" (blur)="onInputBlur('alias', i)" (focus)="onInputFocus('alias', i)" autocomplete="off">
+                                        <mat-error *ngIf="tpl.get('alias').hasError('unique'); else requiredMesg">Filter Name must be unique.</mat-error>
+                                        <ng-template #requiredMesg>
+                                            <mat-error *ngIf="tpl.invalid">Filter Name is required</mat-error>
+                                        </ng-template>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                            <!-- default value -->
+                            <td>
+                                <div class="settings-control values-control">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never" style="width: 300px;">
+                                        <input matInput placeholder="Enter default value" formControlName="filter"
+                                            (focus)="onInputFocus('filter', i)" (blur)="onInputBlur('filter', i)" (keydown.enter) ="onInputBlur('filter', i)" [matAutocomplete]="filterValueAuto">
+                                        <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
+                                            <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                            <!-- counts -->
+                            <td>
+                                <div class="settings-control counts-control">
+                                    <span>{{tpl.get('applied').value}}/{{widgets.length}}</span>
+                                </div>
+                            </td>
+                            <!-- filter actions -->
+                            <td>
+                                <div class="settings-control actions-control">
+                                    <div class="auto-message" *ngIf="tpl.get('mode').value === 'auto'">
+                                        <span>Automatically applied to queries</span>
+                                    </div>
+                                    <div class="actions" *ngIf="tpl.get('mode').value === 'manual'">
+                                        <button mat-button class="add-to-button" color="primary" (click)="addFilterToAll(i)">
+                                            <span>Add to all</span>
+                                        </button>
+                                        <button mat-button class="remove-from-button" color="primary" (click)="removeFilterFromAll(i)" [disabled]="tpl.get('applied').value === 0">
+                                            <span>Remove from all</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- trash filter -->
+                            <td>
+                                <div class="settings-control actions-control">
+                                    <div class="actions">
+                                        <button mat-icon-button class="delete-variable-button" color="primary" (click)="deleteTemplateVariable(i)">
+                                            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- drag handle for reordering -->
+                            <td>
+                                <div class="settings-control actions-control">
+                                    <div class="actions" style="cursor: grab;">
+                                        <!-- icon is drag handle for the row -->
+                                        <mat-icon *ngIf="formTplVariables.controls && formTplVariables.controls.length > 1" fontSet="denali" fontIcon="d-drag-handle" cdkDragHandle></mat-icon>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- drag-drop placeholder -->
+                            <div [ngStyle]="placeholderStyles" class="custom-tr-drag-placeholder" *cdkDragPlaceholder></div>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="new-tag-filter" *ngIf="selectedNamespaces.length > 0">
+                    <button mat-button [disabled]="formTplVariables.invalid" class="add-template-button" color="primary" (click)="addVariableTemplate()">
+                        <mat-icon fontSet="denali" fontIcon="d-add-circle"></mat-icon>
+                        <span>Add additional dashboard filter</span>
+                    </button>
+                </div>
+                <div class="namespace-required-message" *ngIf="selectedNamespaces.length === 0">
+                    <strong>Add a namespace to enable dashboard filters</strong>
+                </div>
+            </div>
+        </div>
+        <div class="variable-action-controls">
+            <div class="edit-actions">
+                <button mat-stroked-button color="primary" [disabled]="formTplVariables.invalid"
+                    class="editing-done-button" (click)="done()">
+                    <span>Done</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<input type=text #focusEl class="hidden-focus">
