@@ -23,6 +23,9 @@
             height: 100%;
             display: flex;
 
+            .graph-chart {
+                padding: 20px 0px 0px 0px;
+            }
             .dygraph-legend {
                 display: none;
                 z-index: 1000;

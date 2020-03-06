@@ -92,19 +92,6 @@
     </div>
     
     <div class="color-container column" *ngIf="widget.settings.visual">
-        <span class="mat-body-strong">Default Colors</span>
-        <div class="config-control color-picker-control mat-elevation-z1">
-            <mat-button-toggle-group #colorGroup="matButtonToggleGroup" [value]="colorType" (change)="selectedColorType(colorGroup.value)">
-                <mat-button-toggle id="text" mat-button value="text">Text</mat-button-toggle>
-                <mat-button-toggle id="backgroud" mat-button value="background">Background</mat-button-toggle>
-            </mat-button-toggle-group>
-            <div>
-                <color-picker *ngIf="colorType === 'text'" [pickerMode]="'embedded'" (newColor)="colorChanged($event)" [color]="widget.settings.visual.textColor">
-                </color-picker>
-                <color-picker *ngIf="colorType === 'background'" [pickerMode]="'embedded'" (newColor)="colorChanged($event)" [color]="widget.settings.visual.backgroundColor">
-                </color-picker>
-            </div>
-        </div>
         <span class="mat-body-strong">Conditional Background Color</span>
         <conditional-formatter [conditions]="widget.settings.visual.conditions" (conditionChange)="setVisualConditions($event)"></conditional-formatter>
     </div>

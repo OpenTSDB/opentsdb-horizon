@@ -60,6 +60,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     debugDialog: MatDialogRef < DebugDialogComponent > | null;
     storeQuery: any;
     needRequery = false;
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'sorting': false, 'legend': false };
 
     constructor(
         private interCom: IntercomService,
@@ -212,6 +213,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     updateConfig(message) {
+        console.log("donut message", message);
         switch ( message.action ) {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
@@ -241,9 +243,13 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'UpdateQuery':
                 this.util.updateQuery(this.widget, message.payload);
-                this.widget.queries = [...this.widget.queries];
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricVisual':
+                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.refreshData(false);
                 break;
             case 'ToggleQueryMetricVisibility':
                 this.util.toggleQueryMetricVisibility(this.widget, message.id, message.payload.mid);
@@ -254,6 +260,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'DeleteQueryMetric':
                 this.util.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.util.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -264,12 +271,14 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'CloneQuery':
                 this.util.cloneQuery(this.widget, message.id);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQuery':
                 this.util.deleteQuery(this.widget, message.id);
                 this.doRefreshData$.next(true);
+                this.widget = {...this.widget};
                 this.needRequery = true;
                 break;
             case 'ToggleDBFilterUsage':
@@ -319,6 +328,10 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.requestCachedData();
         }
+    }
+
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
     }
 
     changeWidgetType(type) {

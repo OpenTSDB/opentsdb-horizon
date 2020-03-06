@@ -22,7 +22,6 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
-import { rgb } from 'd3';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -168,7 +167,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsCount = 10000;
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
-    eventsError: string = '';
+    // tslint:disable-next-line: max-line-length
+    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'legend': false, 'multigraph': false, 'events': false };
+    eventsError = '';
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -483,6 +484,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         });
     }
 
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
+    }
+
     refreshLegendSource() {
         this.legendDataSource = new MatTableDataSource(this.buildLegendData());
     }
@@ -570,10 +577,21 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);
-                this.widget.queries = [...this.widget.queries];
+                this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
                 this.setOptions();
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
+                break;
+            case 'UpdateQueryMetricVisual':
+                this.utilService.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                if ( message.payload.visual.axis ) {
+                    this.setAxesOption();
+                }
+                this.options = { ...this.options };
+                this.widget = { ...this.widget };
+                this.refreshData(false);
+                this.cdRef.detectChanges();
                 break;
             case 'SetShowEvents':
                 this.setShowEvents(message.payload.showEvents);
@@ -1244,6 +1262,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.requestCachedData();
             this.getEvents(); // todo: add events cache in-future
         }
+    }
+
+    toggleConfigSection(section, e) {
+        this.visibleSections[section] = !this.visibleSections[section];
+        e.stopPropagation();
     }
 
     changeWidgetType(type) {

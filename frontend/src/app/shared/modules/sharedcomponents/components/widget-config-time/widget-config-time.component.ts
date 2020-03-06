@@ -238,6 +238,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
 
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.widget.settings.time.downsample.value === 'custom' ? true : false;
+        const customUnit = this.widget.settings.time.downsample.customUnit || this.customDownsampleUnit;
         this.widgetConfigTime = this.fb.group({
             aggregators:
                 new FormControl(this.selectedAggregators),
@@ -247,30 +248,25 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
             overrideRelativeTime: 
                 new FormControl(this.widget.settings.time.overrideRelativeTime),
             shiftTime:
-                new FormControl(this.widget.settings.time.shiftTime)
-        });
-
-        // if ( !this.widget.settings.dataSummary ) {
-            const customUnit = this.widget.settings.time.downsample.customUnit || this.customDownsampleUnit;
-            this.widgetConfigTime.addControl('downsample',
-                new FormControl(this.widget.settings.time.downsample.value || this.selectedDownsample));
-            this.widgetConfigTime.addControl('customDownsampleValue',
+                new FormControl(this.widget.settings.time.shiftTime),
+            'downsample': new FormControl(this.widget.settings.time.downsample.value || this.selectedDownsample),
+            'customDownsampleValue':
                     new FormControl(
                         {
                             value: this.widget.settings.time.downsample.customValue || this.customDownsampleValue,
                             disabled: !isCustomDownsample ? true : false
                         },
                         [Validators.min(customUnit === 's' ? 10 : 1), Validators.pattern('^[0-9]+$'), Validators.required ]
-                    )
-            );
-            this.widgetConfigTime.addControl('customDownsampleUnit',
+                    ),
+            'customDownsampleUnit':
                     new FormControl(
                         {
                             value: customUnit,
                             disabled: isCustomDownsample ? false : true
                         }
                     )
-            );
+        });
+
             this.selectedDownsample_Sub = this.widgetConfigTime.get('downsample').valueChanges.subscribe(function(data) {
                 // console.log('SELECTED DOWNSAMPLE CHANGED', data, this);
                 if (data === 'custom') {
@@ -281,7 +277,6 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                     this.widgetConfigTime.controls.customDownsampleUnit.disable();
                 }
             }.bind(this));
-        // }
 
         this.customDownsampleUnitSub = this.widgetConfigTime.controls.customDownsampleUnit.valueChanges
                                         .pipe(

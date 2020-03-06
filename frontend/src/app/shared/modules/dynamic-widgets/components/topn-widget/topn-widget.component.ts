@@ -52,6 +52,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     debugDialog: MatDialogRef < DebugDialogComponent > | null;
     storeQuery: any;
     needRequery = false;
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'sorting': false };
 
     constructor(
         private interCom: IntercomService,
@@ -158,7 +159,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.options.format.unit = this.widget.settings.visual.unit;
     }
     setSize(newSize) {
-        this.size = { width: newSize.width, height: newSize.height - 3 };
+        this.size = { width: newSize.width, height: newSize.height - 23 };
         this.cdRef.detectChanges();
     }
 
@@ -221,6 +222,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.widget.queries = [...this.widget.queries];
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricVisual':
+                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.refreshData(false);
                 break;
             case 'ToggleQueryMetricVisibility':
                 this.toggleQueryMetricVisibility(message.id, message.payload.mid);
@@ -359,6 +364,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         if ( qindex !== -1 && hasSelectedMetric !== -1  ) {
             this.widget.queries[qindex].metrics[0].settings.visual.visible = true;
         }
+    }
+
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
     }
 
     changeWidgetType(type) {

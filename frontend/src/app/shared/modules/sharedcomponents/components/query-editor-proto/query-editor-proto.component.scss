@@ -62,7 +62,7 @@
         .metric-wrapper {
             position: relative;
             overflow: auto;
-            padding: 5px;
+            // padding: 5px;
 
             .common-tags {
                 display: flex;
@@ -74,10 +74,10 @@
                 }
 
                 .common-tags-wrapper {
-                    border-radius: 4px;
+                    border-radius: 2px;
                     position: relative;
                     flex: 1;
-                    margin-left: 10px;
+                    // margin-left: 10px;
 
                     .add-tag-filter-button.mat-button {
                         line-height: 24px;
@@ -154,313 +154,282 @@
                 }
             }
 
-            .query-metric-table.mat-table {
+            
 
-                tr.mat-footer-row, tr.mat-row {
-                    height: initial;
+        }
+
+        .query-metric-table.mat-table {
+            padding: 4px;
+
+            tr.mat-footer-row, tr.mat-row {
+                height: initial;
+            }
+
+            td.mat-cell,
+            td.mat-footer-cell,
+            th.mat-header-cell {
+                vertical-align: top;
+                padding: 4px 8px 0;
+                border-bottom: 0px;
+
+                &:first-of-type {
+                    padding-left: 0px;
                 }
 
-                td.mat-cell,
-                td.mat-footer-cell,
-                th.mat-header-cell {
-                    vertical-align: top;
-                    padding: 4px 8px 0;
-
-                    &:first-of-type {
-                        padding-left: 0px;
-                    }
-
-                    &:last-of-type {
-                        padding-right: 0;
-                    }
-
-                    /*&:not(:last-child) {
-                        padding-right: 8px;
-                    }*/
-                }
-
-                .cdk-column-metric-index {
-                    max-width: 50px;
+                &:last-of-type {
+                    padding-right: 8px;
                     width: 50px;
                 }
 
-                // .cdk-column-name {}
+                /*&:not(:last-child) {
+                    padding-right: 8px;
+                }*/
+            }
 
-                .cdk-column-modifiers {
-                    flex: 1;
+            .cdk-column-metric-index {
+                max-width: 50px;
+                width: 50px;
+            }
+
+            // .cdk-column-name {}
+
+            .cdk-column-modifiers {
+                flex: 1;
+            }
+
+            .mat-header-row {
+                display: none;
+            }
+
+            .mat-header-row,
+            .mat-row {
+                min-height: initial;
+            }
+
+            .mat-cell {
+                min-height: initial;
+            }
+
+            .metric-row-data {
+                height: inherit;
+                // margin-right: 8px;
+                // margin-bottom: 4px;
+                min-height: inherit;
+                display: inline-flex;
+                align-items: center;
+                white-space: nowrap;
+
+                &.metric-index {
                 }
 
-                .mat-header-row {
-                    display: none;
+                &.metric-name,
+                &.alias,
+                &.expression {
+                    width: 100%;
+
+                    .display-name {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+                        cursor: pointer;
+                        border-radius: 4px;
+
+                        span {
+                            flex: 1;
+                            padding-left: 6px;
+                            text-overflow: ellipsis;
+                            display: inline-block;
+                            overflow: hidden;
+                        }
+
+                        .mat-icon {
+                            width: 16px;
+                            height: 16px;
+                            font-size: 12px;
+                            line-height: 16px;
+                            margin-left: 2px;
+                            opacity: 0;
+                            transition: opacity 200ms ease-in-out;
+
+
+                        }
+
+                        &:hover {
+                            .mat-icon {
+                                opacity: 1;
+                            }
+                        }
+                    }
+
+                    .mat-form-field {
+                        width: 100%;
+                    }
                 }
 
-                .mat-header-row,
-                .mat-row {
-                    min-height: initial;
+                &.metric-name.is-adding {
+                    width: 400px
                 }
 
-                .mat-cell {
-                    min-height: initial;
+                &.expression.is-adding {
+                    width: 600px
                 }
 
-                .metric-row-data {
-                    height: inherit;
-                    margin-right: 8px;
-                    margin-bottom: 4px;
-                    min-height: inherit;
+                // is this used??
+                &.aggregator {
+                    button {
+                        line-height: 25px;
+                    }
+                    span {
+                        margin-left: 5px;
+                    }
+                }
+
+                &.tag-aggregator {
+                    .tag-aggregator-wrapper {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+                        border-radius: 4px;
+
+                        .tag-aggregator-component {
+                            align-self: stretch;
+                        }
+
+                        .by-spacer {
+                            padding: 0 6px;
+                        }
+                    }
+                }
+
+                &.summarizer-selector {
+                    .summarizer-selector-wrapper {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+
+                        .summarizer-title{
+                            padding-left: 5px;
+                            padding-right: 5px;
+                        }
+
+                        .mat-button {
+                            line-height: 32px;
+
+                            .mat-button-wrapper {
+                                display: flex;
+
+                                .mat-select-arrow-wrapper {
+                                    display: flex;
+                                    align-items: center;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &.custom-function {
+                    margin-left: 5px;
+                    .custom-function-wrapper {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+                        border-radius: 4px;
+
+                        .metric-function-component {
+                            align-self: stretch;
+                        }
+                    }
+                }
+
+                &.add-function {
+                    margin-left: 8px;
                     display: inline-flex;
                     align-items: center;
-                    white-space: nowrap;
 
-                    &.metric-index {
-                        min-width: 50px;
-                        width: 50px;
-
-                        .mat-flat-button {
-                            padding: 0;
-                            min-width: 50px;
-                            // background: rgba(0,0,0,0.03);
-                            line-height: initial;
-                            width: 100%;
-
-                            .mat-button-wrapper {
-                                display: inline-flex;
-                                flex-direction: column;
-                                justify-content: center;
-                                align-items: stretch;
-                                line-height: initial;
-                                padding: 2px 0 0 !important;
-                                width: 100%;
-                            }
-
-                            .label {
-                                flex: 1;
-                                display: flex;
-                                padding: 0 6px;
-
-                                span {
-                                    flex: 1;
-                                    font-size: 12px;
-                                    padding: 2px 0;
-                                }
-
-                                .mat-icon {
-                                    width: 14px;
-                                    height: 14px;
-                                    font-size: 16px;
-                                    margin-right: 4px;
-                                }
-                            }
-
-                            .mat-select-arrow-wrapper {
-                                padding: 4px 0;
-                                display: inline-flex;
-                                justify-content: center;
-                                //border-top: 1px solid rgba(0,0,0,0.06);
-                            }
-                        }
+                    .mat-icon svg path {
+                        fill: currentColor;
                     }
 
-                    &.metric-name,
-                    &.expression {
-                        width: 100%;
+                    .mat-flat-button {
+                        padding: 0;
+                        min-width: 24px;
+                        //height: 24px;
+                        line-height: 32px;
+                        height: 32px;
+                        padding-left: 6px;
 
-                        .display-name {
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            height: 32px;
-                            cursor: pointer;
-
-                            span {
-                                flex: 1;
-                                padding-left: 6px;
-                                text-overflow: ellipsis;
-                                display: inline-block;
-                                overflow: hidden;
-                            }
-
-                            .mat-icon {
-                                width: 16px;
-                                height: 16px;
-                                font-size: 12px;
-                                line-height: 16px;
-                                margin-left: 2px;
-                                opacity: 0;
-                                transition: opacity 200ms ease-in-out;
-
-
-                            }
-
-                            &:hover {
-                                .mat-icon {
-                                    opacity: 1;
-                                }
-                            }
+                        &,
+                        .mat-button-wrapper {
+                            line-height: 24px;
                         }
 
-                        .mat-form-field {
-                            width: 100%;
-                        }
-                    }
-
-                    &.metric-name.is-adding {
-                        width: 400px
-                    }
-
-                    &.expression.is-adding {
-                        width: 600px
-                    }
-
-                    // is this used??
-                    &.aggregator {
-                        button {
-                            line-height: 25px;
-                        }
-                        span {
-                            margin-left: 5px;
-                        }
-                    }
-
-                    &.tag-aggregator {
-                        .tag-aggregator-wrapper {
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            height: 32px;
-
-                            .tag-aggregator-component {
-                                align-self: stretch;
-                            }
-
-                            .by-spacer {
-                                padding: 0 6px;
-                            }
-                        }
-                    }
-
-                    &.summarizer-selector {
-                        .summarizer-selector-wrapper {
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            height: 32px;
-
-                            .summarizer-title{
-                                padding-left: 5px;
-                                padding-right: 5px;
-                            }
-
-                            .mat-button {
-                                line-height: 32px;
-
-                                .mat-button-wrapper {
-                                    display: flex;
-
-                                    .mat-select-arrow-wrapper {
-                                        display: flex;
-                                        align-items: center;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    &.custom-function {
-                        .custom-function-wrapper {
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            height: 32px;
-
-                            .metric-function-component {
-                                align-self: stretch;
-                            }
-                        }
-                    }
-
-                    &.add-function {
-                        margin-left: 8px;
-                        display: inline-flex;
-                        align-items: center;
-
-                        .mat-icon svg path {
-                            fill: currentColor;
-                        }
-
-                        .mat-flat-button {
-                            padding: 0;
-                            min-width: 24px;
-                            //height: 24px;
-                            line-height: 32px;
-                            height: 32px;
-                            padding-left: 6px;
-
-                            &,
-                            .mat-button-wrapper {
-                                line-height: 24px;
-                            }
-
-                            .mat-icon {
-                                width: 24px;
-                                height: 24px;
-
-                                svg {
-                                    width: 90%;
-                                    height: 90%;
-                                }
-                            }
-
-                        }
-
-                        .mat-mini-fab {
-                            @include mat-elevation(2);
+                        .mat-icon {
                             width: 24px;
                             height: 24px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
 
-                            .mat-button-wrapper {
-                                padding: 0;
-                            }
-
-                            .mat-icon {
-                                width: 18px;
-                                height: 18px;
-                                font-size: 18px;
-                                margin-left: -1px;
-                                margin-top: -2px;;
+                            svg {
+                                width: 90%;
+                                height: 90%;
                             }
                         }
+
                     }
 
-                    &.expression-options {
-                        input {
-                            margin-right: 8px;
+                    .mat-mini-fab {
+                        @include mat-elevation(2);
+                        width: 24px;
+                        height: 24px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .mat-button-wrapper {
+                            padding: 0;
+                        }
+
+                        .mat-icon {
+                            width: 18px;
+                            height: 18px;
+                            font-size: 18px;
+                            margin-left: -1px;
+                            margin-top: -2px;;
                         }
                     }
                 }
 
-                tr.mat-row.add-query-item {
-                    .metric-row-data {
-                        margin-bottom: 0;
-                    }
-                }
-
-                // modifiers
-                tr.mat-row.add-query-item.is-hidden {
-                    td.mat-cell,
-                    td.mat-footer-cell,
-                    th.mat-header-cell {
-                        padding: 0;
-                        border-bottom-width: 0;
+                &.expression-options {
+                    input {
+                        margin-right: 8px;
                     }
                 }
             }
 
-        }
+            tr.mat-row.add-query-item {
+                .metric-row-data {
+                    margin-bottom: 0;
+                }
+            }
 
+            // modifiers
+            tr.mat-row.add-query-item.is-hidden {
+                td.mat-cell,
+                td.mat-footer-cell,
+                th.mat-header-cell {
+                    padding: 0;
+                    border-bottom-width: 0;
+                }
+            }
+
+            .visual-panel-dropdown-text {
+                cursor: pointer;
+                color: #b5b5b5;
+                font-size: 12px;
+            }
+        }
         .metric-action-buttons {
             display: flex;
             align-items: center;
@@ -533,7 +502,20 @@
             border-top: $mat-select-arrow-size solid;
             margin: 0 $mat-select-arrow-margin;
           }
-
+        
+        .table-visual-settings {
+            th {
+                padding-left: 12px;
+            }
+            td {
+                vertical-align: top;
+                padding: 3px 10px;
+                .color-picker-component-control {
+                        border-top: 0px solid #cccccc;
+                }
+            }
+        }
+        
 
         // HOST MODIFIERS
         &.can-disable-metrics {
@@ -666,12 +648,16 @@
 
     $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
     $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
+    $new-bg: #fff; // needs to be moved to theme
 
     .query-editor-proto {
 
 
+        .namespace-filter-wrapper {
+            background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+        }
         .namespace-bar.mat-toolbar {
-            background-color: if($is-dark, rgba(255,255,255,0.04), rgba(0,0,0,0.04));
+            background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
 
             &.is-expanded {
                 box-shadow: inset 0 -1px 0 1px map-get($background, card);
@@ -689,7 +675,7 @@
             border-right: 1px solid $lighter-divider;
 
             .common-tags {
-                background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
+                // background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
 
                 .common-tags-label {
                     color: if($is-dark, $brand-color-inverse, $brand-color);
@@ -740,9 +726,10 @@
             }
 
             &.metric-name,
+            &.alias,
             &.expression {
                 .display-name {
-                    border: 1px solid $lighter-divider;
+                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
 
                     .mat-icon {
                         color: $link;
@@ -756,7 +743,7 @@
 
             &.tag-aggregator {
                 .tag-aggregator-wrapper {
-                    border: 1px solid $lighter-divider;
+                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
 
                     &:hover {
                         background-color: rgba($link, 0.1);
@@ -780,6 +767,7 @@
             }
 
             &.custom-function {
+                background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                 .custom-function-wrapper {
                     border: 1px solid $lighter-divider;
 
@@ -791,7 +779,7 @@
 
             &.add-function {
                 .mat-flat-button {
-                    background: if($is-dark, rgba(255,255,255, 0.08), rgba(0,0,0, 0.03));
+                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                     border: 1px solid $lighter-divider;
 
                     .mat-icon {
@@ -808,8 +796,11 @@
         }
 
 
+        .metric-query-item {
+            border-top: 1px dotted $lighter-divider;
+        }
         .metric-action-buttons {
-            border: 1px solid $lighter-divider;
+            border-bottom: 1px solid $lighter-divider;
         }
 
     }
