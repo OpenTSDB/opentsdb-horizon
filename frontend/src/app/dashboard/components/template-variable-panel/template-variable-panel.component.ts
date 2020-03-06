@@ -134,7 +134,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const res = conVal.match(/^regexp\((.*)\)$/);
         let initRegVal = '';
         if (res) {
-            selControl.get('filter').setValue(res[1]);
+            selControl.get('filter').setValue(res[1], { emitEvent: false });
             initRegVal = res[1];
         }
         // only when it not there
@@ -248,32 +248,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 });
             }
         }
-
-        // comment this block for now since we not using it yet
-        /* this.editForm.statusChanges.subscribe(status => {
-            this.disableDone = status === 'VALID' ? false : true;
-            const len = this.formTplVariables.controls.length;
-            if (status === 'INVALID') {
-                for (let i = 0; i < len - 1; i++) {
-                    const invalid = this.formTplVariables.controls[i].invalid;
-                    // one of them is invalid
-                    if (invalid) {
-                        this.disableDone = true;
-                        return;
-                    }
-                }
-                // if all pass then check the last item, since we allow it can be all empty
-                const lastItem = this.formTplVariables.controls[len - 1];
-                if (lastItem && lastItem['controls']['alias'].value === '' && lastItem['controls']['tagk'].value === '') {
-                    this.disableDone = false;
-                }
-            }
-        });
-        */
     }
 
-   
- 
     initializeTplVariables(values: any[]) {
         if (values.length === 0) {
             // add an empty one if there are no values
@@ -325,26 +301,33 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         const control = <FormArray>this.listForm.controls['listVariables'];
         const selControl = control.at(index);
-        const val = selControl.get('filter').value;
-        // no check and let user enter whatever
-        let idx = -1;
-        if (this.filteredValueOptions[index]) {
-            idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
-        }
-        if (idx === -1) {
-            if (val !== '') {
-                selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false });
-            }
-        } else {
-            selControl.get('filter').setValue(this.filteredValueOptions[index][idx]);
-        }
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(()=> {
-            if (this.tplVariables.viewTplVariables.tvars[index].filter !== val) {
-                const res = val.match(/^regexp\((.*)\)$/);
-                if (!res) {
-                    selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', {emitEvent: false});
-                }
+            const val = selControl.get('filter').value;
+            // no check and let user enter whatever
+            let idx = -1;
+            if (val === '') {
+                selControl.get('filter').setValue('', { emitEvent: false });
+            } else {
+                // val will not have regexp wrapper yet here
+                // see of the original filer val has regexp
+                const res = this.tplVariables.viewTplVariables.tvars[index].filter.match(/^regexp\((.*)\)$/);
+                if ((res && res[1] === val) || (!res && this.tplVariables.viewTplVariables.tvars[index].filter === val)) {
+                    // no value change
+                    selControl.get('filter').setValue(this.tplVariables.viewTplVariables.tvars[index].filter, { emitEvent: false });
+                } else {
+                    // there is changes
+                    if (this.filteredValueOptions[index]) {
+                        idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
+                    }
+                    if (idx === -1) {
+                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false }); 
+                    } else {
+                        selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                    }                                    
+                }              
+            }
+            if (this.tplVariables.viewTplVariables.tvars[index].filter !== selControl.get('filter').value) {
                 this.tplVariables.viewTplVariables.tvars[index].filter = selControl.get('filter').value;
                 this.interCom.requestSend({
                     action: 'ApplyTplVarValue',
@@ -501,20 +484,27 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         if (cname === 'filter') {
             if (selControl.invalid) { return; }
-            // to check filter again return list
-            let idx = -1;
-            if (this.filteredValueOptions[index]) {
-                idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
-            }
-            // when they not on the list we add 'regexp' around it
-            if (idx === -1) {
-                if (val !== '') {
-                    selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false });
+            // to check filter again return list       
+            this.tagValueBlurTimeout = setTimeout(() => {              
+                let idx = -1;
+                if (val === '') {
+                    selControl.get('filter').setValue('', { eventEmit: false});
+                } else {
+                    const res = this.tplVariables.editTplVariables.tvars[index].filter.match(/^regexp\((.*)\)$/);
+                    if ((res && res[1] === val) || (!res && this.tplVariables.editTplVariables.tvars[index].filter === val)) {
+                        // no changes
+                        selControl.get('filter').setValue(this.tplVariables.editTplVariables.tvars[index].filter, { emitEvent: false});
+                    } else {
+                        if (this.filteredValueOptions[index]) {
+                            idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
+                        }
+                        if (idx === -1) {
+                            selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false });
+                        } else {
+                            selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                        }
+                    }
                 }
-            } else {
-                selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
-            }
-            this.tagValueBlurTimeout = setTimeout(() => {
                 if (this.tplVariables.editTplVariables.tvars[index].filter !== selControl.get('filter').value) {
                     this.updateState(selControl);
                 }
@@ -539,7 +529,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const prevFilter = this.tplVariables.editTplVariables.tvars[index];
         // if control is valid and the key is different
         if (selControl.valid && prevFilter && currentTagk !== prevFilter.tagk) {
-            selControl.get('filter').setValue('');
+            selControl.get('filter').setValue('', { emitEvent: false });
             selControl.get('applied').setValue(0);
             selControl.get('isNew').setValue(1);
             // remove this tag out of widget if any

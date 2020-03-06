@@ -87,10 +87,10 @@
                                         <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                                         <span>edit</span>
                                     </button>
-                                    <!--<button mat-button color="primary" (click)="cloneAlert(element)">
-                                        <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
-                                        <span>Clone</span>
-                                    </button>-->
+                                    <button mat-button color="primary" (click)="createAlertSnooze(element.id)">
+                                        <mat-icon fontSet="denali" fontIcon="d-notification-snooze"></mat-icon>
+                                        <span>Snooze</span>
+                                    </button>
                                     <button mat-button color="primary" (click)="toggleAlert(element)">
                                         <mat-icon fontSet="denali" [fontIcon]="element.enabled ? 'd-notification-disable' : 'd-notification'"></mat-icon>
                                         <span>{{element.enabled ? 'Disable' : 'Enable'}}</span>

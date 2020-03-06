@@ -55,7 +55,7 @@ export class URLOverrideService {
                         break;
                     // key doesn't start with '__' 
                     // treat it like tag key
-                    tags[k] = v;
+                    tags[k] = decodeURIComponent(v);
                     break;
             }
         }
@@ -74,9 +74,10 @@ export class URLOverrideService {
         urlObj['queryParams'] = queryParams;
         if (urlParts.length > 1) {
             // split query params
-            var qp = this.utils.decodeHTML(decodeURIComponent(urlParts[1])).split('&');
-            for(var p in qp) {
-                var s = qp[p].split('=');
+            // at this moment, do not decode before the split
+            let qp = urlParts[1].split('&');
+            for(let p in qp) {
+                let s = qp[p].split('=');
                 if (s.length > 1) {
                     queryParams[s[0]]  = s[1];
                 }
@@ -91,7 +92,7 @@ export class URLOverrideService {
                 // create param string
                 var params: string[] = [];
                 for (var q in url['queryParams']) {
-                    params.push(q + "=" + url['queryParams'][q]);
+                    params.push(q + "=" + encodeURIComponent(url['queryParams'][q]));
                 }
                 var paramString = params.join('&');
                 this.location.replaceState(url.path, paramString);

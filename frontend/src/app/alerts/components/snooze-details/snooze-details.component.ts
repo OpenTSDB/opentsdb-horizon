@@ -1,7 +1,7 @@
 
 import {
     Component,
-    OnInit, OnChanges, Input, Output, EventEmitter,
+    OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy,
     SimpleChanges,
     HostBinding,
     ViewChild, ElementRef, HostListener
@@ -38,7 +38,7 @@ import * as moment from 'moment';
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     ]
 })
-export class SnoozeDetailsComponent implements OnInit, OnChanges {
+export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     @HostBinding('class.snooze-alert-dialog-component') private _hostclass = true;
 
@@ -289,8 +289,22 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges {
     }
 
     cancelEdit() {
-        this.configChange.emit({
-            action: 'CancelSnoozeEdit'
+        // snooze created from alerts page
+        if (this.data && this.data.cancelToAlerts) {
+            this.configChange.emit({
+                action: 'CancelToAlerts'
+            });
+        } else {
+            this.configChange.emit({
+                action: 'CancelSnoozeEdit'
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        this.interCom.requestSend({
+            action: 'clearSystemMessage',
+            payload: {}
         });
     }
 
