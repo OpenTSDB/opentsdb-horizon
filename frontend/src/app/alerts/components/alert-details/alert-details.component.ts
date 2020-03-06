@@ -331,8 +331,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-        this.sub.unsubscribe();
-        this.countSub.unsubscribe();
+        if ( this.sub ) {
+            this.sub.unsubscribe();
+        }
+        if ( this.countSub ) {
+            this.countSub.unsubscribe();
+        }
         this.utils.setTabTitle();
     }
 

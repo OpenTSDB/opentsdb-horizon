@@ -11,11 +11,13 @@
                         <input matInput formControlName="filter" placeholder="" [matAutocomplete]="filterVarValues"
                             (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
+                        <!--<span matPrefix class="regexp" *ngIf="vartpl.get('filter').value.match(/^regexp\((.*)\)$/).length" >regexp</span>-->
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto">
                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                 {{option}}
                             </mat-option>
                         </mat-autocomplete>
+                        
                     </mat-form-field>
                 </li>
                 <li>

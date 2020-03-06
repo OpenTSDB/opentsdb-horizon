@@ -312,10 +312,14 @@
             margin: 16px 0;
         }
 
-        .preset-toggles {
-            .mat-button-toggle-group {
-                @include mat-elevation(0);
-            }
+        .mat-button-toggle-group {
+            @include mat-elevation(0);
+            height: 52px;
+            line-height: 52px;
+        }
+
+        datepicker2 {
+            height: 52px;
         }
     }
     

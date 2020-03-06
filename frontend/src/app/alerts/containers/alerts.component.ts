@@ -20,10 +20,8 @@ import {
     MatDialog,
     MatDialogRef,
     MatDialogConfig,
-    MatSnackBar,
-    MatInput
+    MatSnackBar
 } from '@angular/material';
-
 
 import { Observable, Subscription, Subject } from 'rxjs';
 import { delayWhen, filter, skip, distinctUntilChanged, debounce, debounceTime } from 'rxjs/operators';
@@ -186,7 +184,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // ALL namespaces are retrieved from somewhere else
     namespaces: any[] = [];
     alertFilterTypes = ['all', 'alerting', 'snoozed', 'disabled'];
-    alertsFilterRegexp = new RegExp(".*");
+    alertsFilterRegexp = new RegExp('.*');
 
     @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
     @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
@@ -287,7 +285,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             debounceTime(500)
         ).subscribe(val => {
             val = val ? val : '';
-            this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, ".*"));
+            this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
             if (this.alertsDataSource) {
                 this.alertsDataSource.filter = val;
                 this.alertsDataSource.filterPredicate = (data: AlertModel, filter: string) => {
@@ -820,6 +818,22 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.location.go('a/snooze/' + this.selectedNamespace + '/_new_');
     }
 
+    createAlertSnooze(alertId: number) {
+        if (!this.stateLoaded.alerts) {
+            this.store.dispatch(new LoadAlerts({ namespace: this.selectedNamespace }));
+        }
+        const data = {
+            id: '_new_',
+            namespace: this.selectedNamespace,
+            alertIds: [alertId],
+            cancelToAlerts: true
+        };
+        this.configurationEditData = data;
+        this.detailsView = true;
+        this.switchType('snooze');
+        this.location.go('a/snooze/' + this.selectedNamespace + '/_new_');
+    }
+
     editSnooze(element: any) {
         // console.log('****** WRITE ACCESS ******', this.hasNamespaceWriteAccess);
         // check if they have write access
@@ -862,6 +876,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.detailsView = false;
                 this.location.go('a/snooze/' + this.selectedNamespace);
                 this.setSnoozeTableDataSource();
+                break;
+           case 'CancelToAlerts':
+                this.switchType('alerts');
+                this.detailsView = false;
+                this.location.go('a/' + this.selectedNamespace);
                 break;
             default:
                 // this is when dialog is closed to return to summary page
