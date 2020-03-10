@@ -326,6 +326,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
+        this.getCount();
         this.setAlertEvaluationLink();
     }
 
@@ -1201,7 +1202,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     getCount() {
-        if (this.queries && this.queries[0] && this.data.namespace && this.data && this.data.id) {
+        if (this.data.namespace && this.data && this.data.id) {
             const countObserver = this.httpService.getAlertCount({namespace: this.data.namespace, alertId: this.data.id});
 
             if (this.countSub) {
@@ -1218,7 +1219,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                 },
                 err => {
-                    // this.error = err;
+                    this.error = err;
                 }
             );
         }
