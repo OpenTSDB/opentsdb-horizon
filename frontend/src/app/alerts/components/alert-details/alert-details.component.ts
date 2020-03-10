@@ -326,6 +326,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
+<<<<<<< 8cf89a1d17c8fba14ac810e773142027247f95a7
+=======
+
+>>>>>>> make sure aura counts show up on all types
         this.getCount();
         this.setAlertEvaluationLink();
     }
@@ -1202,7 +1206,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     getCount() {
-        if (this.data.namespace && this.data && this.data.id) {
+        if (this.data && this.data.namespace && this.data.id) {
             const countObserver = this.httpService.getAlertCount({namespace: this.data.namespace, alertId: this.data.id});
 
             if (this.countSub) {
