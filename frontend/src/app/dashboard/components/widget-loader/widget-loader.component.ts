@@ -248,6 +248,14 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
     }
 
+    createAlert() {
+        this.interCom.requestSend(<IMessage> {
+            action: 'createAlertFromWidget',
+            id: this.widget.id,
+            payload: this.widget
+        });
+    }
+
     widgetShare() {
         console.log('SHARE WIDGET CLICKED');
     }

@@ -43,17 +43,16 @@ import {
 import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState } from '../../../app-shell/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
+import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 
 import { LoggerService } from '../../../core/services/logger.service';
 import { HttpService } from '../../../core/http/http.service';
-import { ICommand, CmdManager } from '../../../core/services/CmdManager';
 import { DbfsUtilsService } from '../../../app-shell/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
 import { URLOverrideService } from '../../services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
-import { InternalDispatchedActionResults } from '@ngxs/store/src/internal/dispatcher';
 
 @Component({
     selector: 'app-dashboard',
@@ -181,6 +180,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
     dashboardDeleteDialog: MatDialogRef<DashboardDeleteDialogComponent> | null;
+    dashboardToAlertDialog: MatDialogRef<DashboardToAlertDialogComponent> | null;
     activeMediaQuery = '';
     gridsterUnitSize: any = {};
     lastWidgetUpdated: any;
@@ -332,6 +332,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     delete this.wData[message.id];
                     this.store.dispatch(new UpdateMode(message.payload));
                     this.rerender = { 'reload': true };
+                    break;
+                case 'createAlertFromWidget':
+                    this.openWidgetToAlertDialog(message);
                     break;
                 case 'getQueryData':
                     this.handleQueryPayload(message);
@@ -1284,6 +1287,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // console.log('COMPLETE');
                 });
             }
+        });
+    }
+
+    getNamespaceNames() {
+        const namespaces = [];
+        for (const ns of this.userNamespaces) {
+            namespaces.push(ns.name);
+        }
+        return namespaces;
+    }
+
+    openWidgetToAlertDialog(message) {
+        // console.log(this, message);
+        const namespaces = this.getNamespaceNames();
+        const dialogConf: MatDialogConfig = new MatDialogConfig();
+        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        dialogConf.hasBackdrop = true;
+        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        dialogConf.autoFocus = true;
+        dialogConf.data = { dbId: this.dbid, namespaces: namespaces, widgetId: message.id};
+
+        this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
+        this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
+            console.log(dialog_out);
         });
     }
 
