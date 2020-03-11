@@ -1,4 +1,4 @@
-<mat-button-toggle-group class="mat-button-toggle-group-vertical" (change)="changeVisualType($event.value)" [value]="value">
+<mat-button-toggle-group class="mat-button-toggle-group-horizontal" (change)="changeVisualType($event.value)" [value]="value">
     <mat-button-toggle mat-flat-button *ngFor="let option of visualTypeOptions" [value]="option.value">
         <mat-icon fontSet="denali" fontIcon="{{ option.icon }}"></mat-icon>
         <span>{{ option.label }}</span>

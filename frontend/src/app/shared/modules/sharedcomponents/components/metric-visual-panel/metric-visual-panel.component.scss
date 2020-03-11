@@ -1,0 +1,41 @@
+@mixin metric-visual-panel-component-base() {
+
+    .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        border: none;
+        
+        .mat-button-toggle {
+            color: #227aec;
+            background: transparent;
+        }
+        .mat-button-toggle-checked {
+            color: #000;
+        }
+        .mat-button-toggle-label-content {
+            line-height: 30px;
+            // padding: 0px;
+        }
+        .mat-button-toggle + .mat-button-toggle {
+            border-left: none;
+        }
+    }
+    .table-visual-settings{
+        .has-columns {
+            display: flex;
+            // padding: $flex-gap/2;
+
+            .column:not(:last-child) {
+                flex: 1;
+                padding-right: 10px;
+                border-right: 1px solid #dfdfdf;
+            }
+            .column:last-child {
+                padding-left: 10px;
+            }
+        }
+    }
+}
+
+@mixin metric-visual-panel-component-theme($theme-config) {
+
+ 
+}

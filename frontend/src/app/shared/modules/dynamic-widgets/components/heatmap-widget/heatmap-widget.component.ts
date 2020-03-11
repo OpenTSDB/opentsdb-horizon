@@ -222,10 +222,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             this.doRefreshData$.next(true);
             this.needRequery = true; // set flag to requery if apply to dashboard
             break;
-        case 'SetVisualization':
-            this.setVisualization(message.payload.gIndex, message.payload.data);
-            this.refreshData(false);
-            break;
         case 'SetUnit':
             this.setUnit(message.payload.data);
             this.setAxisOption();
@@ -239,7 +235,10 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             this.needRequery = true;
             break;
         case 'UpdateQueryMetricVisual':
-            this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+            this.setVisualization(message.payload.visual);
+            if ( message.payload.visual.unit ) {
+                this.setAxisOption();
+            }
             this.refreshData(false);
             break;
         case 'ToggleQueryMetricVisibility':
@@ -327,10 +326,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  setVisualization( qIndex, mconfigs ) {
-    mconfigs.forEach( (config, i) => {
-        this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
-    });
+  setVisualization( visual ) {
+    this.widget.settings.visual = {...this.widget.settings.visual, ...visual};
   }
 
   setUnit(unit) {
@@ -527,6 +524,12 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleConfigSection(section) {
     this.visibleSections[section] = !this.visibleSections[section];
+  }
+
+  scrollToElement($element): void {
+    setTimeout(() => {
+        $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+    });
   }
 
   changeWidgetType(type) {

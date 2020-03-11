@@ -71,6 +71,8 @@
                         <td mat-cell *matCellDef="let data; let i = dataIndex;">
                             <div class="metric-row-data metric-index">
                                     <span class="label">
+                                        <input type="radio" name="metric" *ngIf="!options.enableMultiMetricSelection" [checked]="data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
+                                        <mat-icon fontSet="denali" *ngIf="options.enableMultiMetricSelection && options.toggleMetric" [fontIcon]="data.metric.settings.visual.visible ? 'd-check' : 'd-minus'"></mat-icon>
                                         <span>{{ data.indexLabel}}</span>
                                     </span>
                             </div>
@@ -128,11 +130,12 @@
                                 <div class="display-name" 
                                     *ngIf="editAliasId !== data.metric.id"
                                     (click)="editAliasId = data.metric.id;">
-                                    <span> {{ 'Alias:' + (data.metric.settings.visual.label || ' - ')}}</span>
+                                    <span>Alias: </span>
+                                    <span class="alias-text"> {{ data.metric.settings.visual.label || 'Enter alias'}}</span>
                                     <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                                 </div>
                                 <mat-form-field *ngIf="editAliasId === data.metric.id" class="alias-input-field" appearance="fill" color="primary" floatLabel="never">
-                                    <input matInput placeholder="Alias"  [value]="data.metric.settings.visual.label" (blur)="updateMetricAlias(data.metric.id, $event)" (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
+                                    <input matInput placeholder="Alias"  [value]="data.metric.settings.visual.label || ''" (blur)="updateMetricAlias(data.metric.id, $event)" (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
                                     <span matPrefix>Alias</span>
                                 </mat-form-field>
                             </div>
@@ -216,7 +219,7 @@
                         <td mat-cell *matCellDef="let data; let i = dataIndex;">
                             <div class="metric-row-data action">
                                 <div class="toolbar-item action-icons">
-                                    <button mat-icon-button color="primary" *ngIf="options.toggleMetric" [disabled]="!options.enableMultiMetricSelection && data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
+                                    <button mat-icon-button color="primary" *ngIf="options.enableMultiMetricSelection" [disabled]="!options.enableMultiMetricSelection && data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
                                         <mat-icon fontSet="denali" fontIcon="d-eye-open" *ngIf="data.metric.settings.visual.visible"></mat-icon>
                                         <mat-icon fontSet="denali" fontIcon="d-eye-close" *ngIf="!data.metric.settings.visual.visible"></mat-icon>
                                     </button>
@@ -288,7 +291,8 @@
                     </ng-container>
                     <ng-container matColumnDef="visual">
                         <td mat-cell [colSpan]="metricTableDisplayColumns.length - 2" *matCellDef="let data">
-                            <div class="visual-panel-dropdown-text" (click)="toggleVisualPanel(data.metric.id)"> 
+                            
+                            <div class="visual-panel-dropdown-text" [matMenuTriggerFor]="metricVisualPanel" #metricVisualPanelTrigger="matMenuTrigger" [matMenuTriggerData]="{data: data}"> 
                                     <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                                     <span> {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
                                     <span>&nbsp;<div [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block;"></div>{{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }} </span>
@@ -298,41 +302,6 @@
                                     <span class="mat-select-arrow-wrapper" style="display: inline-block">
                                         <div class="mat-select-arrow"></div>
                                     </span>
-                            </div>
-                            <div *ngIf="visualPanelId === data.metric.id">
-                                <table class="table-visual-settings">
-                                    <tr>
-                                        <th *ngIf="type === 'LinechartWidgetComponent'">Mode</th>
-                                        <th *ngIf="type === 'LinechartWidgetComponent' && (!data.visual.type || data.visual.type !=='bar')">Line weight</th>
-                                        <th *ngIf="type === 'LinechartWidgetComponent' && (!data.visual.type || data.visual.type !=='bar')">Line type</th>
-                                        <th> {{ (type === 'BignumberWidgetComponent' ? 'Text ' : ( type === 'LinechartWidgetComponent' && (!data.visual.type || data.visual.type === 'line') ? 'Line ' : 'Fill ')) + 'color' }}</th>
-                                        <th *ngIf="type === 'BignumberWidgetComponent'">Background color</th>
-                                        <th *ngIf="type === 'LinechartWidgetComponent'">Axis</th>
-                                    </tr>
-                                    <tr>
-                                        <td *ngIf="type === 'LinechartWidgetComponent'">
-                                            <dropdown-visual-type  [value]="data.visual.type || 'line'" (valueChange)="setVisualType(data.metric.id, $event)"></dropdown-visual-type>
-                                        </td>
-                                        <td *ngIf="type === 'LinechartWidgetComponent' && (!data.visual.type || data.visual.type !=='bar')">
-                                            <dropdown-line-weight [value]="data.visual.lineWeight || '1px'" (change)="setLineWeight(data.metric.id, $event)"></dropdown-line-weight>
-                                        </td>
-                                        <td *ngIf="type === 'LinechartWidgetComponent' && (!data.visual.type || data.visual.type !=='bar')">
-                                            <dropdown-line-type [value]="data.visual.lineType || 'solid'" (change)="setLineType(data.metric.id, $event)"></dropdown-line-type>
-                                        </td>
-                                        <td>
-                                            <color-picker (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
-                                        </td>
-                                        <td *ngIf="type === 'BignumberWidgetComponent'">
-                                            <color-picker (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor" [enableAuto]="'true'"></color-picker>
-                                        </td>
-                                        <td *ngIf="type === 'LinechartWidgetComponent'">
-                                            <mat-button-toggle-group class="mat-button-toggle-group-vertical" (change)="setAxis(data.metric.id, $event.value)" [value]="data.visual.axis || 'y1'">
-                                                <mat-button-toggle  value="y1">Y1</mat-button-toggle>
-                                                <mat-button-toggle  value="y2">Y2</mat-button-toggle>
-                                            </mat-button-toggle-group>
-                                        </td>
-                                    </tr>
-                                </table> 
                             </div>
                         </td>
                     </ng-container>
@@ -346,7 +315,7 @@
                         *matRowDef="let row; columns: metricTableDisplayColumns;"
                         class="metric-query-item"
                         [ngClass]="{'metric-type': row.type === 'metric', 'expression-type': row.type === 'expression'}"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow" style="overflow: hidden"></tr>
+                    <tr class="metric-query-item-visual" mat-row *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow" style="overflow: hidden"></tr>
                     <!-- SPECIAL ROW - add metric -->
                     <tr mat-row
                         *matRowDef="let row; columns: ['add-metric']; when: checkAddMetricRow"
@@ -398,6 +367,12 @@
     <div class="filter" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" *ngIf="query.namespace">
         <inline-filter-editor [query]="query" [options]="options" (filterOutput)="updateFilters($event);" [tplVariables]="tplVariables"></inline-filter-editor>
     </div>
+    </ng-template>
+</mat-menu>
+<!-- Visual panel -->
+<mat-menu class="metric-visual-panel-wrapper" yPosition="below" #metricVisualPanel="matMenu" backDrop="false">
+    <ng-template matMenuContent let-data="data">
+        <app-metric-visual-panel [query]="query" [data]="data" [type]="type" (visualOutput)="updateVisual($event, data)"></app-metric-visual-panel>
     </ng-template>
 </mat-menu>
 <!-- FUNCTION MENU-->

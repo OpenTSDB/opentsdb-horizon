@@ -52,6 +52,7 @@ import { GraphTypeComponent } from './components/graph-type/graph-type.component
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pipe';
+import { MetricVisualPanelComponent } from './components/metric-visual-panel/metric-visual-panel.component';
 
 @NgModule({
     imports: [
@@ -100,7 +101,8 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         GraphTypeComponent,
         AuraDialogComponent,
         InfoTooltipComponent,
-        FormatAutoManualFilterPipe
+        FormatAutoManualFilterPipe,
+        MetricVisualPanelComponent
     ],
     exports: [
         ThemePickerComponent,

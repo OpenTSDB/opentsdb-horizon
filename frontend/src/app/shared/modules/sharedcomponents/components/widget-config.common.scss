@@ -132,10 +132,9 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
         }
     }
 
-    .mat-button-toggle-group-vertical {
-        &.mat-button-toggle-group, .mat-button-toggle-standalone {
-            flex-direction: column;
-        }
+    .mat-button-toggle-group-vertical,
+    .mat-button-toggle-group-horizontal {
+
         &.mat-button-toggle-group {
             &.mat-button-toggle-group-appearance-standard {
                 border: 0px;
@@ -157,6 +156,11 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
                     }
                 }
             }
+        }
+    }
+    .mat-button-toggle-group-vertical {
+        &.mat-button-toggle-group, .mat-button-toggle-standalone {
+            flex-direction: column;
         }
     }
 

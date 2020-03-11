@@ -52,7 +52,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     debugDialog: MatDialogRef < DebugDialogComponent > | null;
     storeQuery: any;
     needRequery = false;
-    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'sorting': false };
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
 
     constructor(
         private interCom: IntercomService,
@@ -200,18 +200,6 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
-            case 'SetVisualization':
-                this.setVisualization(message.payload.gIndex, message.payload.data);
-                this.refreshData(false);
-                break;
-            case 'SetVisualConditions':
-                this.setVisualConditions(message.payload.data);
-                this.refreshData(false);
-                break;
-            case 'SetUnit':
-                this.setUnit(message.payload.data);
-                this.refreshData(false);
-                break;
             case 'SetSorting':
                 this.setSorting(message.payload);
                 this.doRefreshData$.next(true);
@@ -224,7 +212,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.needRequery = true;
                 break;
             case 'UpdateQueryMetricVisual':
-                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.setVisualization(message.payload.visual);
                 this.refreshData(false);
                 break;
             case 'ToggleQueryMetricVisibility':
@@ -291,15 +279,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    setVisualization( qIndex, mconfigs ) {
-        mconfigs.forEach( (config, i) => {
-            // tslint:disable-next-line:max-line-length
-            this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
-        });
-    }
-
-    setUnit(unit) {
-        this.widget.settings.visual.unit = unit;
+    setVisualization( visual) {
+        this.widget.settings.visual = {...this.widget.settings.visual, ...visual}
     }
 
     setVisualConditions( vConditions ) {
@@ -368,6 +349,12 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     toggleConfigSection(section) {
         this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {

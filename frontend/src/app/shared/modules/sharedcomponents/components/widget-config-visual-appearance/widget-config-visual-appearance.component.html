@@ -15,62 +15,37 @@
 </ng-template>
 <!-- BAR CHART COMPONENT -->
 <ng-template [ngIf]="widget.settings.component_type==='BarchartWidgetComponent'">
-    <div class="column display-modifier-container">
+    <div class="bar-chart-visual-container">
+        <div class="mat-label">Direction</div>
         <div class="config-control">
-            <span class="mat-label mat-body-strong">Display</span>
-        </div>
-        <div class="config-control">
-            <mat-button-toggle-group class="display-modifier" vertical="true" [formControl]="displayControl">
-                <mat-button-toggle value="vertical">
+            <mat-radio-group  [formControl]="displayControl">
+                <mat-radio-button value="vertical">
                     <mat-icon fontSet="denali" fontIcon="d-chart-bar-vertical"></mat-icon>
                     <span>Vertical</span>
-                </mat-button-toggle>
-                <mat-button-toggle value="horizontal">
+                </mat-radio-button>
+                <mat-radio-button value="horizontal">
                     <mat-icon fontSet="denali" fontIcon="d-chart-bar-horizontal"></mat-icon>
                     <span>Horizontal</span>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
     </div>
 </ng-template>
 <!-- DONUT CHART COMPONENT -->
 <ng-template [ngIf]="widget.settings.component_type==='DonutWidgetComponent'">
-     <div class="column display-modifier-container">
+    <div class="donut-chart-visual-container">
+        <div class="mat-label">Style</div>
         <div class="config-control">
-            <span class="mat-label mat-body-strong">Display</span>
-        </div>
-        <div class="config-control">
-            <mat-button-toggle-group class="display-modifier" vertical="true" [formControl]="displayControl">
-                <mat-button-toggle value="pie">
+            <mat-radio-group [formControl]="displayControl">
+                <mat-radio-button value="pie">
                     <mat-icon fontSet="denali" fontIcon="d-chart-pie"></mat-icon>
                     <span>Pie Cart</span>
-                </mat-button-toggle>
-                <mat-button-toggle value="doughnut">
+                </mat-radio-button>
+                <mat-radio-button value="doughnut">
                     <mat-icon fontSet="denali" fontIcon="d-chart-donut"></mat-icon>
                     <span>Donut Chart</span>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
-    </div>
-</ng-template>
-<ng-template [ngIf]="widget.settings.component_type==='TopnWidgetComponent'">
-    <div class="config-control unit-control">
-        <div class="config-control">
-            <span class="mat-label">Unit</span>
-        </div>
-        <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.visual.unit? widget.settings.visual.unit : 'auto'" (onUnitChange)="setUnit($event)"></dropdown-unit-type>
-    </div>
-    <div class="conditional-formatter">
-        <div class="topnchart-bar-config">
-            <conditional-formatter [conditions]="widget.settings.visual.conditions" (conditionChange)="setVisualConditions($event)"></conditional-formatter>  
-        </div>
-    </div>
-</ng-template>
-<ng-template [ngIf]="widget.settings.component_type==='HeatmapWidgetComponent'">
-    <div class="heatmap-unit-settings">
-        <div class="config-control">
-            <span class="mat-label">Unit</span>
-        </div>
-        <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.visual.unit? widget.settings.visual.unit : 'auto'" (onUnitChange)="setUnit($event)"></dropdown-unit-type>
     </div>
 </ng-template>

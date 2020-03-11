@@ -264,6 +264,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     determineTextAndBackgroundColors() {
+        /*
         let qindex = -1, mindex = -1;
         for (let i = 0; i < this.widget.queries.length; i++ ) {
             for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
@@ -273,7 +274,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 }
             }
         }
-        const visual = this.widget.queries[qindex].metrics[mindex].settings.visual;
+        */
+        const visual = this.widget.settings.visual;
         this.textColor = !visual.color || visual.color === 'auto' ? this.widget.settings.visual.textColor : visual.color;
         this.backgroundColor = !visual.backgroundColor || visual.backgroundColor === 'auto' ? this.widget.settings.visual.backgroundColor : visual.backgroundColor;
         if (this.util.isNumber(this.aggregatorValues[0]) && this.widget.settings.visual.conditions) {
@@ -464,11 +466,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 this.needRequery = true;
                 break;
             case 'UpdateQueryMetricVisual':
-                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
-                if ( message.payload.mid === this.getVisibleMetricId() ) {
-                    this.determineTextAndBackgroundColors();
-                    this.refreshData(false);
-                }
+                this.widget.settings.visual = { ...this.widget.settings.visual, ...message.payload.visual};
+                this.determineTextAndBackgroundColors();
+                this.refreshData(false);
                 break;
             case 'ToggleQueryMetricVisibility':
                 this.toggleQueryMetricVisibility(message.id, message.payload.mid);
@@ -525,6 +525,12 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     toggleConfigSection(section) {
         this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {

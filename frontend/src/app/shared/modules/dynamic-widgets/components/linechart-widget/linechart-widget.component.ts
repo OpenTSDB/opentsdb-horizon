@@ -168,7 +168,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
     // tslint:disable-next-line: max-line-length
-    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'legend': false, 'multigraph': false, 'events': false };
+    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     eventsError = '';
 
     // behaviors that get passed to island legend
@@ -582,6 +582,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.setOptions();
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
+                break;
+            case 'UpdateQueryVisual':
+                this.utilService.updateQueryVisual(this.widget, message.id, message.payload.qid, message.payload.visual);
+                if ( message.payload.visual.axis ) {
+                    this.setAxesOption();
+                }
+                this.options = { ...this.options };
+                this.widget = { ...this.widget };
+                this.refreshData(false);
+                this.cdRef.detectChanges();
                 break;
             case 'UpdateQueryMetricVisual':
                 this.utilService.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);

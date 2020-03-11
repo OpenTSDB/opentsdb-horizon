@@ -60,7 +60,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     debugDialog: MatDialogRef < DebugDialogComponent > | null;
     storeQuery: any;
     needRequery = false;
-    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'sorting': false, 'legend': false };
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'legend': false };
 
     constructor(
         private interCom: IntercomService,
@@ -332,6 +332,12 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     toggleConfigSection(section) {
         this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {

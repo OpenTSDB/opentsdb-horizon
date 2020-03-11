@@ -103,7 +103,11 @@ export class DropdownUnitTypeComponent implements OnInit {
         }
     }
 
-    KeyedOnUnitInputBox(value: string) {
+    KeyedOnUnitInputBox(value: string, e: any = null) {
+        if (e) {
+            e.stopPropagation();
+            this.menuTrigger.closeMenu();
+        }
         this.onUnitChange.emit( value);
     }
 

@@ -141,6 +141,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
     handleQueryRequest(message: any) {
         switch ( message.action ) {
+            case 'UpdateQueryVisual':
+                this.widgetChange.emit(message);
+                break;
             case 'UpdateQueryMetricVisual':
                 this.widgetChange.emit(message);
                 break;

@@ -381,6 +381,12 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         this.visibleSections[section] = !this.visibleSections[section];
     }
 
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
+    }
+
     changeWidgetType(type) {
         const wConfig = this.util.deepClone(this.widget);
         wConfig.id = wConfig.id.replace('__EDIT__', '');

@@ -101,21 +101,18 @@
             }
         }
 
-        .column.display-modifier-container {
-            flex: 1 1 200px;
-
-            .config-control:first-child {
-                margin-bottom: 12px;
+        .donut-chart-visual-container,
+        .bar-chart-visual-container {
+            display: flex;
+            .mat-label {
+                width: 150px;
+                display: inline-block;
             }
-
-            .display-modifier {
-                padding: 10px 10px;
-
-                .mat-button-toggle {
-                    .mat-icon {
-                        margin-right: 8px;
-                    }
-                }
+            .mat-icon {
+                margin-right: 8px;
+                width: 14px;
+                height: 14px;
+                font-size: 14px;
             }
         }
 

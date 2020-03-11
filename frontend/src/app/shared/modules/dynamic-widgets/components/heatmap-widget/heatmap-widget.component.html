@@ -39,37 +39,26 @@
     </div>
     <div class="widget-control-steps has-scroller">
         <div class="is-scroller">
-            <div class="step-section query-section is-visible">
+            <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
-                    <span class="step-section-label-text">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
                         <span>1. Queries </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
                 <div class="step-section-content" *ngIf="visibleSections.queries">
                     <widget-config-metric-queries [widget]="widget" [options]="{enableMultiMetricSelection: false, enableMultipleQueries:true}" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
                 </div>
             </div>
-            <div class="step-section query-section is-visible">
+            <div class="step-section query-section is-visible" #steptime>
                 <div class="step-section-label">
-                    <span class="step-section-label-text">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
                         <span>2. Time Configuration </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('time')" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
                 <div class="step-section-content" *ngIf="visibleSections.time">
                     <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
-                </div>
-            </div>
-            <div class="step-section query-section is-visible">
-                <div class="step-section-label">
-                    <span class="step-section-label-text">
-                        <span>3. Visual Appearance </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('visuals')" [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
-                    </span>
-                </div>
-                <div class="step-section-content" *ngIf="visibleSections.visuals">
-                    <widget-config-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-visual-appearance>
                 </div>
             </div>
         </div>

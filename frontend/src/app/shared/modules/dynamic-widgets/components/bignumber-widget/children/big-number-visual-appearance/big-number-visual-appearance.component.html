@@ -1,9 +1,8 @@
-<div class="labels-container column" *ngIf="widget.settings.visual">
-        <span class="mat-body-strong">Labels</span>
+<div class="labels-container" *ngIf="widget.settings.visual">
         <div class="config-control prefix-control">
             <span class="mat-label">Prefix</span>
             <mat-form-field class="has-right-items" appearance="fill" floatLabel="never">
-                <input matInput #prefixBox placeholder="Enter Prefix" value="{{widget.settings.visual.prefix}}" (keyup)="KeyedOnPrefixInputBox(prefixBox.value)">
+                <input matInput #prefixBox placeholder="Enter Prefix" value="{{widget.settings.visual.prefix}}" (keyup)="KeyedOnPrefixInputBox(prefixBox.value)" autocomplete="off">
             </mat-form-field>
             <mat-button-toggle-group #prefixSizeGroup="matButtonToggleGroup"
                 [value]="widget.settings.visual.prefixSize"
@@ -25,6 +24,7 @@
                     <mat-icon fontSet="denali" fontIcon="d-page-top"></mat-icon>
                 </mat-button-toggle>
             </mat-button-toggle-group>
+            <span class="flex-spacer"></span>
         </div>
         <!--
         <div class="config-control postfix-control">
@@ -72,12 +72,13 @@
                     <mat-icon fontSet="denali" fontIcon="d-page-top"></mat-icon>
                 </mat-button-toggle>
             </mat-button-toggle-group>
+            <span class="flex-spacer"></span>
         </div>
         <div class="config-control caption-control">
             <span class="mat-label">Caption</span>
             <mat-form-field appearance="fill" floatLabel="never">
                 <input matInput #captionBox placeholder="{{captionPlaceholder}}" value="{{widget.settings.visual.caption}}"
-                    (keyup)="KeyedOnCaptionInputBox(captionBox.value)">
+                    (keyup)="KeyedOnCaptionInputBox(captionBox.value)" autocomplete="off">
             </mat-form-field>
             <span class="flex-spacer"></span>
         </div>
@@ -85,15 +86,10 @@
             <span class="mat-label">Decimals</span>
             <mat-form-field appearance="fill" floatLabel="never">
                 <input matInput #precisionBox placeholder="Enter Number of Decimals to Display [0-9]" [value]="widget.settings.visual.precision"
-                    (keyup)="KeyedOnPrecisionInputBox(precisionBox.value)">
+                    (keyup)="KeyedOnPrecisionInputBox(precisionBox.value)" autocomplete="off">
             </mat-form-field>
             <span class="flex-spacer"></span>
         </div>
-    </div>
-    
-    <div class="color-container column" *ngIf="widget.settings.visual">
-        <span class="mat-body-strong">Conditional Background Color</span>
-        <conditional-formatter [conditions]="widget.settings.visual.conditions" (conditionChange)="setVisualConditions($event)"></conditional-formatter>
     </div>
     
     <!-- <div class="options-container column" *ngIf="widget.settings.visual">

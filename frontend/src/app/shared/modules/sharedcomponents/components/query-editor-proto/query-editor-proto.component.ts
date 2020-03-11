@@ -77,10 +77,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @Input() options: IQueryEditorOptions;
     @Input() tplVariables: any;
     @Input() queries: any[]; // for cross-query
+    @Input() widget: any;
 
     @Output() queryOutput = new EventEmitter;
 
     @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
 
     @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
@@ -446,7 +448,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const metrics = [];
         this.getMetricsByType('metrics').forEach((metric, i) => {
             metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
-            metrics.push( { visual: metric.settings.visual, metric: metric});
+            // tslint:disable:max-line-length
+            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
+                metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+            }
         });
 
         // placeholder row for Add Metric form
@@ -456,7 +461,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expressions = [];
         this.getMetricsByType('expression').forEach((metric, i) => {
             expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
-            expressions.push( { visual: metric.settings.visual, metric: metric});
+            // tslint:disable:max-line-length
+            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
+                expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+            }
         });
 
         // placeholder row for Add Expression form
@@ -605,35 +613,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    toggleVisualPanel(id) {
-        this.visualPanelId = this.visualPanelId === id ? -1 : id;
-    }
-    setMetricVisual(id, key, value) {
-        const index = this.query.metrics.findIndex(d => d.id === id);
-        this.query.metrics[index].settings.visual[key] = value;
-        this.initMetricDataSource();
-        const visual = {};
-        visual[key] = value;
-        this.requestChanges('UpdateQueryMetricVisual', { mid : id, visual: visual } );
-        console.log("setMetricVisual", visual);
-    }
-    setVisualType(id, type) {
-        this.setMetricVisual(id, 'type', type);
-    }
-    setLineType(id, type) {
-        this.setMetricVisual(id, 'lineType', type);
-    }
-
-    setLineWeight(id, weight) {
-        this.setMetricVisual(id, 'lineWeight', weight);
-    }
-
-    setColor(id, color, key = 'color') {
-        this.setMetricVisual(id, key, color.hex);
-    }
-
-    setAxis(id, axis) {
-        this.setMetricVisual(id, 'axis', axis);
+    updateVisual(message, data) {
+        if ( message.action === 'ClosePanel') {
+            this.metricVisualPanelTrigger.closeMenu();
+        } else {
+            this.requestChanges(message.action, message.payload);
+            // calling the initMetricDataSource causing the visual panel closing.
+            // data visual needs to be updated reflect the changes on the readonly version
+            data.visual = { ...data.visual, ...message.payload.visual };
+        }
     }
 
     getGroupByTags(id) {

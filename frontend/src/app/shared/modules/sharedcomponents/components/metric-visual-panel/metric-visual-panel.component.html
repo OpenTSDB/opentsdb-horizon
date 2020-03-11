@@ -1,0 +1,64 @@
+<div (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+    <div class="header" *ngIf="type === 'LinechartWidgetComponent'"> 
+        <div class="title">Visual Appearance</div>
+        <div><dropdown-visual-type  [value]="this.mode || 'line'" (valueChange)="setVisualType(data.metric.id, $event)"></dropdown-visual-type></div>
+    </div>
+    <table class="table-visual-settings">
+        <tr>
+            <th *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">Line weight</th>
+            <th *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">Line type</th>
+            <th *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'"></th>
+            <th *ngIf="type !== 'BignumberWidgetComponent' && type !== 'TopnWidgetComponent'">{{ (type === 'LinechartWidgetComponent' && (!this.mode || this.mode === 'line') ? 'Line ' : 'Fill ') + 'color' }}</th>
+            <th *ngIf="type === 'HeatmapWidgetComponent'">Unit</th>
+            <th *ngIf="type === 'LinechartWidgetComponent'">Axis</th>
+        </tr>
+        <tr>
+            <td *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">
+                <dropdown-line-weight [value]="data.visual.lineWeight || '1px'" (change)="setLineWeight(data.metric.id, $event)"></dropdown-line-weight>
+            </td>
+            <td *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">
+                <dropdown-line-type [value]="data.visual.lineType || 'solid'" (change)="setLineType(data.metric.id, $event)"></dropdown-line-type>
+            </td>
+            <td class="has-columns"  *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
+                <div class="column">
+                    <mat-button-toggle-group  class="color-toggle" [(value)]="colorToggleVal" *ngIf="type === 'BignumberWidgetComponent'">
+                        <mat-button-toggle mat-button value="color">Text</mat-button-toggle>
+                        <mat-button-toggle mat-button value="background">Background</mat-button-toggle>
+                    </mat-button-toggle-group>
+                    <span *ngIf="type !== 'BignumberWidgetComponent'" class="mat-body-strong">Fill color</span>
+                    <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
+                    <color-picker *ngIf="type === 'BignumberWidgetComponent' && colorToggleVal === 'background'" (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor" [enableAuto]="'true'"></color-picker>
+                </div>
+                <div class="column" *ngIf="type === 'TopnWidgetComponent'">
+                    <span class="mat-body-strong">Unit</span>
+                    <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
+                </div>
+                <div class="column">
+                    <span class="mat-body-strong">Conditional Background Color</span>
+                    <conditional-formatter [conditions]="data.visual.conditions" (conditionChange)="setVisualConditions(data.metric.id, $event)"></conditional-formatter>
+                </div>
+            </td>
+            <td  *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent'">
+                <color-picker (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
+            </td>
+            <td *ngIf="type === 'HeatmapWidgetComponent'">
+                <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
+            </td>
+
+            <td *ngIf="type === 'LinechartWidgetComponent'">
+                <mat-button-toggle-group class="mat-button-toggle-group-vertical" (change)="setAxis(data.metric.id, $event.value)" [value]="data.visual.axis || 'y1'">
+                    <mat-button-toggle  value="y1">Y1</mat-button-toggle>
+                    <mat-button-toggle  value="y2">Y2</mat-button-toggle>
+                </mat-button-toggle-group>
+            </td>
+        </tr>
+    </table>
+    <div class="footer"> 
+        <div><button mat-stroked-button color="primary" (click)="closePanel()">Close</button></div>
+        <div *ngIf="type === 'LinechartWidgetComponent'">
+            <button mat-stroked-button color="primary" (click)="setQueryVisualType(query.id, $event)">Mode</button>
+            <button mat-stroked-button color="primary" (click)="setQueryVisualColor(query.id, $event)">Color</button>
+            <button mat-stroked-button color="primary" (click)="setQueryVisualAxis(query.id, $event)">Axis</button>
+        </div>
+    </div>
+    </div>
