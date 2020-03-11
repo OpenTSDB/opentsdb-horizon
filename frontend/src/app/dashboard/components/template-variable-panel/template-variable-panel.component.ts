@@ -130,21 +130,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const name = this.mode.view ? 'view' : 'edit';
         const selControl = arrayControl.at(index);
         if (selControl.invalid) { return; } // no go futher if no tagkey and alias defined.
-        const conVal = selControl.get('filter').value;
-        const res = conVal.match(/^regexp\((.*)\)$/);
-        let initRegVal = '';
-        if (res) {
-            // selControl.get('filter').setValue(res[1], { emitEvent: false });
-            initRegVal = res[1];
-        }
+        const val = selControl.get('display').value;
         // only when it not there
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
         } 
 
-        this.trackingSub[name + index] = selControl.get('filter').valueChanges
+        this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
-                startWith(initRegVal),
+                startWith(val),
                 distinctUntilChanged(),
                 debounceTime(200)
             ).subscribe(val => {
@@ -185,7 +179,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 if ( this.trackingSub[qid] ) {
                     this.trackingSub[qid].unsubscribe();
                 }
-                const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
                 // assign regexpStr to first element right away
                 if (this.filteredValueOptions[index]) {
                     if (this.filteredValueOptions[index].length > 1) {
