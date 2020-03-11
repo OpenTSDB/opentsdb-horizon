@@ -8,10 +8,10 @@
             <ul class="varlist" formArrayName="listVariables">
                 <li *ngFor="let vartpl of listVariables.controls; let i = index" [formGroupName]="i">
                     <mat-form-field appearance="fill" color="primary" floatLabel="never" class="dashboard-template-variable" [ngStyle]="{width: calculateVariableDisplayWidth(vartpl)}" [attr.id]="'filter-tpl-'+i">
-                        <input matInput formControlName="filter" placeholder="" [matAutocomplete]="filterVarValues"
+                        <input matInput formControlName="display" placeholder="" [matAutocomplete]="filterVarValues"
                             (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
-                        <!--<span matPrefix class="regexp" *ngIf="vartpl.get('filter').value.match(/^regexp\((.*)\)$/).length" >regexp</span>-->
+                        <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto">
                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                 {{option}}
