@@ -134,7 +134,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const res = conVal.match(/^regexp\((.*)\)$/);
         let initRegVal = '';
         if (res) {
-            selControl.get('filter').setValue(res[1], { emitEvent: false });
+            // selControl.get('filter').setValue(res[1], { emitEvent: false });
             initRegVal = res[1];
         }
         // only when it not there
@@ -219,11 +219,13 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.listForm.controls['listVariables'] = this.fb.array([]);
         if (this.tplVariables.viewTplVariables.tvars) {
             this.tplVariables.viewTplVariables.tvars.forEach((data, index) => {
+                const res = data.filter.match(/^regexp\((.*)\)$/);
                 const vardata = {
                     tagk: new FormControl((data.tagk) ? data.tagk : '', []),
                     alias: new FormControl((data.alias) ? data.alias : '', []),
                     filter: new FormControl((data.filter) ? data.filter : '', []),
                     mode: new FormControl((data.mode) ? data.mode : 'auto'),
+                    display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
                     applied: data.applied,
                     isNew: data.isNew
                 };
@@ -261,6 +263,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
     }
 
+    checkRegexp(val: string): boolean {
+        const res = val.match(/^regexp\((.*)\)$/);
+        return res ? true : false;
+    }
+
+    getDisplay(val: string): string {
+        const res = val.match(/^regexp\((.*)\)$/);
+        return res ? res[1] : val;
+    }
     // to resturn the last filter mode to use for new one.
     getLastFilterMode(): string {
         let retString = 'auto';
@@ -378,7 +389,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     private getSelectedControl(index: number, formArrayName = 'formTplVariables') {
-        const control = <FormArray>this.editForm.controls[formArrayName];
+        let control = null;
+        if (formArrayName === 'listVariables') {
+            control = <FormArray>this.listForm.controls[formArrayName];
+        } else {
+            control = <FormArray>this.editForm.controls[formArrayName];
+        }
         return control.at(index);
     }
 
@@ -612,6 +628,13 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         this.isSecondBlur = true;
         this.focusEl.nativeElement.focus();
+        // handle the display for view form
+        // while select this, we need to update the display
+        const display = this.getDisplay(event.option.value);
+        this.tplVariables.viewTplVariables.tvars[index].display = display;
+        const selControl = this.getSelectedControl(index, 'listVariables');
+        selControl.get('display').setValue(display, { eventEmit: false });
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });        
         // the event is matAutocomplete event, we deal later to clear focus
         if (this.tplVariables.viewTplVariables.tvars[index].filter !== event.option.value) {
             this.tplVariables.viewTplVariables.tvars[index].filter = event.option.value;
@@ -687,9 +710,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     calculateVariableDisplayWidth(item: FormGroup, options: any) {
-
         let minSize = (options && options.minSize) ? options.minSize : '50px';
-        const filter = item.get('filter').value;
+        const filter = item.get('display').value;
         const alias = item.get('alias').value;
         const fontFace = 'Ubuntu';
         const fontSize = 14;
