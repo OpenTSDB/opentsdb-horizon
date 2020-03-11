@@ -196,7 +196,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 }
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
-                        if (results && results.length > 0) {                    
+                        if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                             this.cdRef.markForCheck();
                         }
@@ -286,11 +286,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     // dirty = 1 means to do insert
     addVariableTemplate(data?: any) {
         data = (data) ? data : { mode: this.getLastFilterMode(), applied: 0, isNew: 1 };
+        let res = null;
+        if (data.filter) {
+            res = data.filter.match(/^regexp\((.*)\)$/);
+        }
         const varData = {
             tagk: new FormControl((data.tagk) ? data.tagk : '', [Validators.required]),
             alias: new FormControl((data.alias) ? data.alias : '', [Validators.required]),
             filter: new FormControl((data.filter) ? data.filter : '', []),
             mode: new FormControl((data.mode) ? data.mode : 'auto'),
+            display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
             applied: data.applied,
             isNew: data.isNew
         };
@@ -610,7 +615,11 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if ( this.tagValueFocusTimeout ) {
             clearTimeout(this.tagValueFocusTimeout);
         }
+        const display = this.getDisplay(event.option.value);
+        this.tplVariables.editTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index);
+        selControl.get('display').setValue(display, { eventEmit: false });
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false }); 
         this.updateState(selControl);
     }
 
