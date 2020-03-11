@@ -381,7 +381,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     });
                 } 
                 break;
-            case 'filter':
+            case 'display':
                 this.tagValueFocusTimeout = setTimeout(() => {
                     this.manageFilterControl(index);
                 }, 300);
@@ -499,13 +499,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.autoSetAlias(selControl, index);
             }, 300);
         }
-        if (cname === 'filter') {
+        if (cname === 'display') {
             if (selControl.invalid) { return; }
             // to check filter again return list       
             this.tagValueBlurTimeout = setTimeout(() => {              
                 let idx = -1;
                 if (val === '') {
-                    selControl.get('filter').setValue('', { eventEmit: false});
+                    selControl.get('filter').setValue('', { eventEmit: true});
+                    selControl.get('display').setValue('');
                 } else {
                     const res = this.tplVariables.editTplVariables.tvars[index].filter.match(/^regexp\((.*)\)$/);
                     if ((res && res[1] === val) || (!res && this.tplVariables.editTplVariables.tvars[index].filter === val)) {
@@ -516,9 +517,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                         }
                         if (idx === -1) {
-                            selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false });
+                            selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
                         } else {
-                            selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                            selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                         }
                     }
                 }
@@ -615,7 +616,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = this.getSelectedControl(index);
         selControl.get('display').setValue(display, { eventEmit: false });
         selControl.get('filter').setValue(event.option.value, { eventEmit: false }); 
-        this.updateState(selControl);
+        if (this.tplVariables.editTplVariables.tvars[index].filter !== event.option.value) {
+            this.updateState(selControl);
+        }       
     }
 
     selectVarValueOption(event: any, index: number) {

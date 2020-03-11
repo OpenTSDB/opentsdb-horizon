@@ -131,7 +131,7 @@
                                 <div class="settings-control values-control">
                                     <mat-form-field appearance="fill" color="primary" floatLabel="never" style="width: 300px;">
                                         <input matInput placeholder="Enter default value" formControlName="display"
-                                            (focus)="onInputFocus('filter', i)" (blur)="onInputBlur('filter', i)" (keydown.enter) ="onInputBlur('filter', i)" [matAutocomplete]="filterValueAuto">
+                                            (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
                                             <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
                                             <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
                                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
