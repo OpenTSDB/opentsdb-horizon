@@ -275,7 +275,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     // to resturn the last filter mode to use for new one.
     getLastFilterMode(): string {
         let retString = 'auto';
-        if (this.formTplVariables.controls.length > 0) {
+        if (this.formTplVariables.controls && this.formTplVariables.controls.length > 0) {
             const lastFilter = this.formTplVariables.controls[this.formTplVariables.controls.length -1];
             retString = lastFilter.get('mode').value;
         }
@@ -314,11 +314,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = control.at(index);
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(()=> {
-            const val = selControl.get('filter').value;
+            const val = selControl.get('display').value;
             // no check and let user enter whatever
             let idx = -1;
             if (val === '') {
-                selControl.get('filter').setValue('', { emitEvent: false });
+                selControl.get('filter').setValue('', { emitEvent: true });
+                selControl.get('display').setValue('');
             } else {
                 // val will not have regexp wrapper yet here
                 // see of the original filer val has regexp
@@ -332,9 +333,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                     }
                     if (idx === -1) {
-                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false }); 
+                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true }); 
                     } else {
-                        selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                        selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                     }                                    
                 }              
             }
