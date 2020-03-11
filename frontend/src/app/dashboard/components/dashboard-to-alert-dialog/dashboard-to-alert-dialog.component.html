@@ -1,3 +1,16 @@
-<p>
-  dashboard-to-alert-dialog works!
-</p>
+<!-- <button *ngFor="let ns of namespaces" (click)="nsSelected(ns)"> {{ns}} </button> -->
+<div>
+  Create alert in which namespace?
+</div>
+
+<mat-nav-list>
+  <mat-list-item *ngFor="let ns of namespaces" (click)="nsSelected(ns)">
+     <button mat-icon-button>
+       {{ns}}
+     </button>
+  </mat-list-item>
+</mat-nav-list>
+
+<button mat-icon-button (click)="canceled()">
+  Cancel
+</button>

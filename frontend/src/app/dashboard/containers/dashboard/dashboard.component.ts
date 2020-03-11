@@ -1299,19 +1299,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     openWidgetToAlertDialog(message) {
-        // console.log(this, message);
         const namespaces = this.getNamespaceNames();
-        const dialogConf: MatDialogConfig = new MatDialogConfig();
-        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        dialogConf.hasBackdrop = true;
-        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-        dialogConf.autoFocus = true;
-        dialogConf.data = { dbId: this.dbid, namespaces: namespaces, widgetId: message.id};
 
-        this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
-        this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
-            console.log(dialog_out);
-        });
+        // user has only 1 ns with write access
+        if (namespaces.length === 1) {
+            this.interCom.requestSend({
+                action: 'WidgetToAlert',
+                payload: {widgetId: message.id, widget: message.payload, dasboardId: this.dbid, namespace: namespaces[0]}
+            });
+        } else if (namespaces.length > 1) {
+            // user has multiple write access
+            const dialogConf: MatDialogConfig = new MatDialogConfig();
+            dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+            dialogConf.hasBackdrop = true;
+            dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+            dialogConf.autoFocus = true;
+            dialogConf.data = {namespaces: namespaces};
+
+            this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
+            this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
+                if (dialog_out.namespace) {
+                    this.interCom.requestSend({
+                        action: 'WidgetToAlert',
+                        payload: {widgetId: message.id, widget: message.payload, dasboardId: this.dbid, namespace: dialog_out.namespace}
+                    });
+                }
+            });
+        }
     }
 
     ngOnDestroy() {
