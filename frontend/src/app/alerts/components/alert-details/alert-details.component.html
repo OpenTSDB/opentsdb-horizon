@@ -623,6 +623,7 @@
                 </div>
                 <span class="flex-spacer"></span>
             </mat-toolbar>
+            <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             <div class="alert-control-steps has-scroller">
                 <div class="is-scroller">
                     <div class="step-section threshold-section is-visible" formGroupName="threshold">
