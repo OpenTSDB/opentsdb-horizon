@@ -204,8 +204,9 @@
             <input matInput
             [readonly]="viewMode"
             type="number" onkeypress="return event.charCode >= 48" autocomplete="off" 
+            min="0"
             [placeholder]="getDelayEvalutionPlaceholder()"
-            [value]="config.periodOverPeriod.delayEvaluation"
+            [value]="config.delayEvaluation"
             (change)="updateConfig('delayEvaluation', $event.target.value)">
         </span>
         <mat-hint class="info-hint">mins</mat-hint>
