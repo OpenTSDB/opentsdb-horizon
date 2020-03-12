@@ -40,6 +40,8 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
+import { DataShareService } from '../../../core/services/data-share.service';
+import { Router } from '@angular/router';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -181,6 +183,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     counts = [];
     countSub: Subscription;
 
+    // when creating alert from dashboard widget
+    dashboardToCancelTo = -1;
+
     alertOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     recoverOptions: any[] = [
                                 { label: 'Never', value: null },
@@ -261,6 +266,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     doEventQuery$ = new BehaviorSubject(['list', 'count']);
     eventQuery: any = { namespace: '', search: ''};
 
+
     constructor(
         private fb: FormBuilder,
         private queryService: QueryService,
@@ -275,7 +281,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private interCom: IntercomService,
         private alertConverter: AlertConverterService,
         private cdRef: ChangeDetectorRef,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private dataShare: DataShareService,
+        private router: Router
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -326,10 +334,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
-<<<<<<< 8cf89a1d17c8fba14ac810e773142027247f95a7
-=======
 
->>>>>>> make sure aura counts show up on all types
+        if (this.dataShare.getMessage() === 'WidgetToAlert') {
+            this.dashboardToCancelTo = this.dataShare.getData().dashboardId;
+            this.dataShare.clear();
+        }
+
         this.getCount();
         this.setAlertEvaluationLink();
     }
@@ -1459,10 +1469,14 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     cancelEdit() {
-        // emit with no event
-        this.configChange.emit({
-            action: 'CancelEdit'
-        });
+        if (this.dashboardToCancelTo > 0) {
+            this.router.navigate(['d', this.dashboardToCancelTo]);
+        } else {
+            // emit with no event
+            this.configChange.emit({
+                action: 'CancelEdit'
+            });
+        }
     }
 
     /** Events */

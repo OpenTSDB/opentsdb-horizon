@@ -15,7 +15,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { DBState, LoadDashboard, SaveDashboard, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
-//import { LoadUserNamespaces, LoadUserFolderData, UserSettingsState } from '../../state/user.settings.state';
+
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
     DeleteWidget, WidgetModel } from '../../state/widgets.state';
@@ -36,9 +36,7 @@ import {
     UpdateDashboardTimeZone,
     UpdateDashboardTitle,
     UpdateVariables,
-    UpdateMeta,
-    UpdateDashboardTimeOnZoom,
-    UpdateDashboardTimeOnZoomOut
+    UpdateMeta
 } from '../../state/settings.state';
 import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState } from '../../../app-shell/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
@@ -53,6 +51,7 @@ import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
 import { URLOverrideService } from '../../services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
+import { DataShareService } from '../../../core/services/data-share.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -223,7 +222,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private httpService: HttpService,
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
-        private urlOverrideService: URLOverrideService
+        private urlOverrideService: URLOverrideService,
+        private dataShare: DataShareService
     ) { }
 
     ngOnInit() {
@@ -1303,10 +1303,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         // user has only 1 ns with write access
         if (namespaces.length === 1) {
-            this.interCom.requestSend({
-                action: 'WidgetToAlert',
-                payload: {widgetId: message.id, widget: message.payload, dasboardId: this.dbid, namespace: namespaces[0]}
-            });
+            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
+            this.dataShare.setMessage('WidgetToAlert');
+            this.router.navigate(['a', namespaces[0], '_new_']);
         } else if (namespaces.length > 1) {
             // user has multiple write access
             const dialogConf: MatDialogConfig = new MatDialogConfig();
@@ -1319,10 +1318,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
             this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
                 if (dialog_out.namespace) {
-                    this.interCom.requestSend({
-                        action: 'WidgetToAlert',
-                        payload: {widgetId: message.id, widget: message.payload, dasboardId: this.dbid, namespace: dialog_out.namespace}
-                    });
+                    this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: dialog_out.namespace});
+                    this.dataShare.setMessage('WidgetToAlert');
+                    this.router.navigate(['a', dialog_out.namespace, '_new_']);
                 }
             });
         }

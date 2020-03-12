@@ -59,11 +59,12 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { IntercomService } from '../../core/services/intercom.service';
+import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
+import { DataShareService } from '../../core/services/data-share.service';
 const moment = _moment;
 
 @Component({
@@ -260,7 +261,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private cdkService: CdkService,
         private interCom: IntercomService,
         private logger: LoggerService,
-        private utils: UtilsService
+        private utils: UtilsService,
+        private dataShare: DataShareService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -541,7 +543,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             // this.logger.log('ROUTE CHANGE', { url });
 
-            if (url.length >= 1 && url[0].path === 'snooze') {
+            if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
+                this.createAlertFromWidget(this.dataShare.getData());
+            } else if (url.length >= 1 && url[0].path === 'snooze') {
                 this.list = 'snooze';
                 if (url.length >= 2 && this.utils.checkIfNumeric(url[1].path)) {
                     this.store.dispatch(new GetSnoozeDetailsById(parseInt(url[1].path, 10)));
@@ -793,6 +797,64 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
         this.openEditMode(data);
         this.location.go('a/' + this.selectedNamespace + '/_new_');
+    }
+
+    createAlertFromWidget(payload) {
+        const type = this.getAlertTypeFromWidget(payload.widget);
+        this.selectedNamespace = payload.namespace;
+        this.detailsMode = 'edit';
+        const data = {
+            type: type,
+            namespace: this.selectedNamespace,
+            name: 'Alert from widget ' + payload.widget.settings.title,
+            queries: {},
+            dashboardId: payload.dashboardId,
+            widgetId: payload.widget.id,
+            notification: {
+                body: 'Created from dashboard: ' + 'https://yamas.ouroath.com/d/' + payload.dashboardId
+            }
+        };
+
+        if (type === 'simple') {
+            data.queries = {
+                raw: payload.widget.queries
+            };
+        }
+        if (type === 'event') {
+            payload.widget.eventQueries = this.convertEventQueryFromDashboardToAlert(payload.widget.eventQueries);
+            data.queries = {
+                eventdb: payload.widget.eventQueries
+            };
+        }
+        this.openEditMode(data);
+        this.location.go('a/' + this.selectedNamespace + '/_new_');
+    }
+
+    getAlertTypeFromWidget(widget) {
+        const widgetType: string = widget.settings.component_type;
+        if (widgetType.toLowerCase() === 'BarchartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'LinechartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'HeatmapWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'BignumberWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'DonutWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'TopnWidgetComponent'.toLowerCase() ) {
+                return 'simple';
+        } else if (widgetType.toLowerCase() === 'EventsWidgetComponent'.toLowerCase()) {
+            return 'event';
+        } else {
+            return '';
+        } // 'healthcheck'
+    }
+
+    convertEventQueryFromDashboardToAlert(queries: any) {
+        const eventQuery = [];
+        for (const query of queries) {
+            const q: any = {};
+            q.namespace = query.namespace;
+            q.filter = query.search;
+            eventQuery.push(q);
+        }
+        return eventQuery;
     }
 
     openEditMode(data: any) {

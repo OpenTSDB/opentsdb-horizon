@@ -1,6 +1,11 @@
 @mixin dashboard-to-alert-dialog-component-base() {
     .dashboard-to-alert-dialog {
-      
+        overflow: scroll;
+
+        .mat-nav-list {
+            display: flex;
+            flex-flow: row wrap;
+        }
     }
 }
 
