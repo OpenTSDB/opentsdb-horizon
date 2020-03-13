@@ -185,6 +185,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     // when creating alert from dashboard widget
     dashboardToCancelTo = -1;
+    createdFrom = null;
 
     alertOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     recoverOptions: any[] = [
@@ -337,6 +338,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if (this.dataShare.getMessage() === 'WidgetToAlert') {
             this.dashboardToCancelTo = this.dataShare.getData().dashboardId;
+            this.createdFrom = {widgetId: this.dataShare.getData().widgetId, dashboardId: this.dataShare.getData().dashboardId };
             this.dataShare.clear();
         }
 
@@ -1462,6 +1464,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             case 'event':
                 break;
         }
+
+        // if created from dashboard and widget
+        if (this.createdFrom) {
+           data.createdFrom = this.createdFrom;
+        }
+
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert

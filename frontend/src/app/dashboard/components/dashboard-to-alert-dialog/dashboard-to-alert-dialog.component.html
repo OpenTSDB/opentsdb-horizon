@@ -3,15 +3,17 @@
 </div>
 
 <mat-nav-list #nsList>
-  <mat-list-item *ngFor="let ns of namespaces" (click)="nsSelected(ns)">
-     <button mat-icon-button>
+  <mat-list-item *ngFor="let ns of namespaces; let i = index" (click)="nsSelected(ns)" class="ns-item">
+     <button mat-icon-button [attr.id]="'ns' + i" class="ns-button">
        {{ns}}
      </button>
   </mat-list-item>
 </mat-nav-list>
 
-<div class="footer">
-  <button mat-icon-button (click)="canceled()">
-    Cancel
-  </button>
-</div>
+<mat-nav-list class="footer">
+  <mat-list-item (click)="canceled()">
+    <button mat-icon-button>
+      Cancel
+    </button>
+  </mat-list-item>
+</mat-nav-list>

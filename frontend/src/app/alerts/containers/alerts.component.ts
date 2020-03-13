@@ -808,10 +808,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             namespace: this.selectedNamespace,
             name: 'Alert from widget ' + payload.widget.settings.title,
             queries: {},
-            dashboardId: payload.dashboardId,
-            widgetId: payload.widget.id,
             notification: {
                 body: 'Created from dashboard: ' + 'https://yamas.ouroath.com/d/' + payload.dashboardId
+            },
+            createdFrom: {
+                dashboardId: payload.dashboardId,
+                widgetId: payload.widget.id,
             }
         };
 

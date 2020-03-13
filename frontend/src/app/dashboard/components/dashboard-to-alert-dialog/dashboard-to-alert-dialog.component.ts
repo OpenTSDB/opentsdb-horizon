@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject, HostBinding, Output, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatSelectionList } from '@angular/material';
+import { Component, OnInit, Inject, HostBinding, AfterViewInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -7,11 +8,11 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatSelectionList } from '@angular/materi
   templateUrl: './dashboard-to-alert-dialog.component.html',
   styleUrls: []
 })
-export class DashboardToAlertDialogComponent implements OnInit {
+export class DashboardToAlertDialogComponent implements OnInit, AfterViewInit {
   @HostBinding('class.dashboard-to-alert-dialog') private _hostClass = true;
-  @ViewChild('nsList') nsList: MatSelectionList;
 
-  constructor(public dialogRef: MatDialogRef<DashboardToAlertDialogComponent>,
+
+  constructor(private _focusMonitor: FocusMonitor, public dialogRef: MatDialogRef<DashboardToAlertDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any ) {
                 if (data.namespaces) {
                   this.namespaces = data.namespaces;
@@ -20,9 +21,11 @@ export class DashboardToAlertDialogComponent implements OnInit {
 
   namespaces: string[] = [];
 
-  ngOnInit() {
-    this.nsList.deselectAll();
-   }
+  ngOnInit() { }
+
+   ngAfterViewInit() { // remove focus from first button
+    this._focusMonitor.stopMonitoring(document.getElementById('ns0'));
+}
 
   nsSelected(ns) {
     this.dialogRef.close( {namespace : ns} );

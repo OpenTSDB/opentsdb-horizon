@@ -8,6 +8,8 @@
             left: 0;
             font-size: 16px;
             z-index: 1;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         .footer {
@@ -16,7 +18,7 @@
             bottom: 0;
             left: 0;
             z-index: 1;
-            .mat-icon-button { }
+            padding: 0px;
 
         }
 
@@ -24,7 +26,14 @@
             display: flex;
             flex-wrap: wrap;
             flex-direction: row;
-        }
+            padding: 0px;
+
+            .ns-item {
+                &.mat-list-item {
+                    height: 32px
+                }
+            }
+        }   
     }
 }
 
@@ -43,22 +52,18 @@
     $close-button-background: map-get($accent, A400);
     $close-button-text: map-get($foreground, navbar-text);
 
+    $bg: map-get($background, background);
+    $fg: map-get($foreground, foreground);
+
     .dashboard-to-alert-dialog  {
 
         .header {
-            // todo - white or black
-            background: white;
+            background: if($is-dark, #3E4955, #E1E5E5);
         }
 
         .footer {
-           // todo - white or black
-           background: white;
-
-            .mat-icon-button {
-                // :hover
-            }
-
+            border-top: 1px solid if($is-dark, black, #3E4955);
+            background: if($is-dark, $bg, white);
         }
-
     }
 }
