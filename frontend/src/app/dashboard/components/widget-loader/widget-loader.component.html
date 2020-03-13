@@ -28,7 +28,8 @@
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                                 <span>Clone</span>
                             </button>
-                            <button mat-menu-item (click)="createAlert()">
+                            <button mat-menu-item (click)="createAlert()" *ngIf="userHasWriteAccessToNamespace && widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
                                 <mat-icon fontSet="denali" fontIcon="d-notification"></mat-icon>
                                 <span>Create Alert</span>
                             </button>

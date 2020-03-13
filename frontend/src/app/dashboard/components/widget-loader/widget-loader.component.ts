@@ -35,6 +35,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     viewContainerRef: any;
     widgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
     multiLimitMessage = '';
+    userHasWriteAccessToNamespace = false;
 
     private subscription: Subscription = new Subscription();
 
@@ -51,6 +52,13 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         this.loadComponent();
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+            if (message.action) {
+                switch (message.action) {
+                    case 'WriteAccessToNamespace':
+                        this.userHasWriteAccessToNamespace = message.payload.userHasWriteAccessToNamespace;
+                }
+            }
+
             if (message.action && this.widget.id === message.id) {
                 // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
                 switch (message.action) {

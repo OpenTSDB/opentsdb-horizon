@@ -202,6 +202,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     dbOwner: string = ''; // /namespace/yamas
     user: string = '';    // /user/zb
     writeSpaces: string[] = [];
+    notifiedLoader = false;
 
     constructor(
         private store: Store,
@@ -339,6 +340,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'getQueryData':
                     this.handleQueryPayload(message);
                     this.rerender = { 'reload': true };
+                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     break;
                 case 'getEventData':
                     this.handleEventQueryPayload(message);
@@ -1210,6 +1212,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         writeSpaces.push(this.user);
         this.writeSpaces = writeSpaces;
+    }
+
+    notifyWidgetLoaderUserHasWriteAccess(userHasWriteAccessToNamespace: boolean) {
+        if (!this.notifiedLoader) {
+            this.interCom.requestSend({
+                action: 'WriteAccessToNamespace',
+                payload: {userHasWriteAccessToNamespace}
+            });
+            this.notifiedLoader = true;
+        }
     }
 
     doesUserHaveWriteAccess() {
