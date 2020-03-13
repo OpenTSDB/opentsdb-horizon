@@ -1,0 +1,68 @@
+<div class="presets" #presetsDiv>
+    <h2>Preset Time Range</h2>
+    <div class="preset-buttons" fxLayout="row" style="width: 100%;">
+        <div class="preset-button" fxFlex="1 1 50px" fxFlex.xs="1 1 20%" *ngFor="let preset of presets">
+            <!-- preset buttons  -->
+            <button mat-flat-button class="nav-bar-dropmenu time-picker-menu time-preset-button"
+                (focusout)="closePresets(preset)"
+                (focus)="closePresets(preset)"
+                [matMenuTriggerFor]="appMenu" 
+                (click)="togglePreset(preset)"
+                [ngClass]="{'is-selected': presetSelected == preset}">
+                {{preset.buttonName}}
+            </button>
+            <!-- keypad -->
+            <mat-menu #appMenu="matMenu" [overlapTrigger]="false" class="preset-picker-menu">
+                <div class="preset-picker-container">
+                    <keypad (amountSelected)="presetAmountReceived($event)" 
+                            [disableKeysAt9]="preset.name == 'quarter' ? true : false"
+                            [disableKeysAt3]="preset.name == 'year' ? true : false"
+                            [preset]="preset"> 
+                    </keypad>
+                </div>
+            </mat-menu>
+        </div>
+    </div>
+</div>
+
+<div class="custom-time-range" fxLayout="column">
+    <h2>Custom Time Range</h2>
+    <div class="time-ranges" fxLayout="row" fxLayout.xs="column">
+        <!-- start time -->
+        <datepicker2 #daytimePickerStart 
+            [timezone]="timezone"
+            [formatError]="options.startDateFormatError"
+            [maxDateError]="options.startMaxDateError"
+            [minDateError]="options.startMinDateError"
+            [placeholder]="options.startTimePlaceholder"
+            [inputBoxName]="options.startTimeInputBoxName"
+            [date]="startTime"
+            (open)="startCalendarOpened()"
+            (close)="startCalendarClosed()"
+            (onEnter)="enterKeyedOnInputBox()"
+            (onFocus)="startInputFocused()">
+        </datepicker2>
+
+        <!-- end time -->
+        <datepicker2 #daytimePickerEnd 
+            [timezone]="timezone"
+            [placeholder]="options.endTimePlaceholder"
+            [formatError]="options.endDateFormatError"
+            [maxDateError]="options.endMaxDateError"
+            [minDateError]="options.endMinDateError"
+            [inputBoxName]="options.endTimeInputBoxName"
+            [date]="endTime"
+            (open)="endCalendarOpened()"
+            (close)="endCalendarClosed()"
+            (onEnter)="enterKeyedOnInputBox()"
+            (onFocus)="endInputFocused()">
+        </datepicker2>
+
+    </div>
+
+<div class="dtp-action-controls" *ngIf="showApply" fxLayout.xs="row">
+    <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="daytimePickerStart.formFields.dateInput.errors || daytimePickerEnd.formFields.dateInput.errors">Apply</button>
+    <button mat-stroked-button color="primary" id="button-cancel" (click)="cancelClicked()" fxFlex.xs="1 1 100%">Cancel</button>
+</div>
+
+  <!-- <div class="time-range"><b>Time range:</b> {{startTimeSelected}} <b>to</b> {{endTimeSelected}}</div> -->

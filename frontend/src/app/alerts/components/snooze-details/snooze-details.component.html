@@ -1,0 +1,154 @@
+<mat-card class="snooze-configuration-wrapper mat-elevation-z0">
+    <div class="controls-wrapper">
+        <div class="snooze-control-steps" [formGroup]="snoozeForm">
+            <div class="step-section snooze-section is-visible">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">1. Snooze on</span>
+                </div>
+                <div class="step-section-content">
+                    <div class="form-group snooze-alert">
+                        <div class="form-label vertical-center"><strong>Alert</strong></div>
+                        <div class="form-control-wrap">
+                            <mat-form-field class="alert-list" (click)="showAlertPanel()" appearance="fill"
+                                floatLabel="never">
+                                <mat-chip-list #chipList>
+                                    <mat-chip *ngFor="let item of alertLabels; let index=index" selectable="true"
+                                        removable="true" (removed)="removeAlertOrLabel(index)">
+                                        {{item.label}}
+                                        <mat-icon matChipRemove>cancel</mat-icon>
+                                    </mat-chip>
+                                    <input matInput class="alert-input" placeholder="Select Alerts"
+                                        [matChipInputFor]="chipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="true" autocomplete="off" #alertInput>
+                                    <span class="mega-panel-trigger" [matMenuTriggerFor]="alertListMenu"
+                                        #alertListMenu></span>
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <mat-error *ngIf="snoozeForm.errors && snoozeForm.errors.required">Please select the
+                                Alert(s) and/or Filter(s) </mat-error>
+                        </div>
+                    </div>
+                    <div class="form-group snooze-tag-filters">
+                        <div class="form-label vertical-center"><strong>Tag Filters</strong></div>
+                        <div class="form-control-wrap">
+                            <query-editor-proto [query]="queries[0]" [queries]="queries" [options]="{
+                                                metaSource: 'aurastatus:alert',
+                                                showNamespaceBar: false,
+                                                enableMultipleQueries: false,
+                                                enableMetric: false,
+                                                toggleQuery: false, 
+                                                cloneQuery: false, 
+                                                deleteQuery: false,
+                                                enableExplicitTagMatch: false}"></query-editor-proto>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="step-section duration-section">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">2. Duration</span>
+                </div>
+                <div class="form-group snooze-duration">
+                    <div class="form-label vertical-center"><strong>Set Duration</strong></div>
+                    <div class="form-control-wrap">
+                        <mat-radio-group [value]="dateType" (change)="dateType=$event.value">
+                            <mat-radio-button value="preset">Preset</mat-radio-button>
+                            <mat-radio-button value="custom">Custom</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group snooze-duration">
+                    <div class="form-label vertical-center"></div>
+                    <div class="form-control-wrap date-range">
+                        <mat-button-toggle-group *ngIf="dateType === 'preset'" class="mat-elevation-z0" color="primary"
+                            appearance="legacy" aria-label="Font Style" [value]="timePreset"
+                            (change)="timePreset=$event.value">
+                            <mat-button-toggle *ngFor="let option of presetOptions;" [value]="option.label">
+                                {{option.label}}</mat-button-toggle>
+                        </mat-button-toggle-group>
+                        <div class="time-ranges" fxLayout="row" fxLayout.xs="column" *ngIf="dateType === 'custom'">
+                            <!-- start time -->
+                            <datepicker2 #datetimePickerStart [date]="snoozeForm.get('startTime').value"
+                                [options]="{ enableFuture: true}" [timezone]="'local'"
+                                [formatError]="pickerOptions.startDateFormatError"
+                                [maxDateError]="pickerOptions.startMaxDateError"
+                                [minDateError]="pickerOptions.startMinDateError"
+                                [placeholder]="pickerOptions.startTimePlaceholder"
+                                [inputBoxName]="pickerOptions.startTimeInputBoxName"
+                                (dateChange)="setDate('startTime', $event)">
+                            </datepicker2>
+
+                            <!-- end time -->
+                            <datepicker2 #datetimePickerEnd [date]="snoozeForm.get('endTime').value"
+                                [options]="{ enableFuture: true}" [timezone]="'local'"
+                                [placeholder]="pickerOptions.endTimePlaceholder"
+                                [formatError]="pickerOptions.endDateFormatError"
+                                [maxDateError]="pickerOptions.endMaxDateError"
+                                [minDateError]="pickerOptions.endMinDateError"
+                                [inputBoxName]="pickerOptions.endTimeInputBoxName"
+                                (dateChange)="setDate('endTime', $event)">
+                            </datepicker2>
+                            <mat-error
+                                *ngIf="snoozeForm.get('endTime').errors && snoozeForm.get('endTime').errors.greater">End
+                                Time should be greater than the Start Time </mat-error>
+                            <mat-error
+                                *ngIf="snoozeForm.get('endTime').errors && snoozeForm.get('endTime').errors.future">End
+                                Time should be in future </mat-error>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="step-section miscellaneous-section">
+                <div class="step-section-label">
+                    <span class="step-section-label-text">3. Miscellaneous</span>
+                </div>
+                <div class="step-section-content">
+                    <div class="form-group alert-message">
+                        <div class="form-label vertical-center"><strong>Reason to snooze</strong></div>
+                        <div class="message-subject-body">
+                            <mat-form-field appearance="fill" floatLabel="never">
+                                <textarea matInput autocomplete="off" formControlName="reason"
+                                    placeholder="Enter a reason"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <mat-card-actions>
+        <button mat-flat-button color="primary" type="submit" (click)="validate()" *ngIf="!readOnly">Save
+            Snooze</button>
+        <button mat-stroked-button color="primary" (click)="cancelEdit()">{{ readOnly ? 'Close' : 'Cancel' }}</button>
+    </mat-card-actions>
+</mat-card>
+
+<mat-menu class="alert-options-cdk-panel" overlapTrigger="false" [hasBackdrop]="true" #alertListMenu="matMenu"
+    backdropClass="mega-panel-cdk-backdrop" disableClose="true">
+    <ng-template matMenuContent>
+        <div (click)="$event.stopPropagation();" (keydown)="$event.stopPropagation()"
+            class="mega-panel-alert-list-controls" disableRipple>
+            <div class="alert-list-controls">
+                <!-- list view of alerts -->
+                <mat-list dense disableRipple="false">
+                    <mat-list-item *ngIf="alertListMeta.length === 0">
+                        <span class="alert-label-details">
+                            <span class="label">There are no alerts for this namespace</span>
+                        </span>
+                    </mat-list-item>
+                    <mat-list-item *ngFor="let item of alertListMeta" (click)="addAlertOrLabel(item)">
+                        <span class="add-alert-label">
+                            <mat-icon fontSet="denali" fontIcon="d-add-circle"></mat-icon>
+                        </span>
+                        <span class="alert-label-details">
+                            <span class="label">{{item.label}}</span>
+                            <span class="type">{{item.type}}</span>
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+    </ng-template>
+</mat-menu>

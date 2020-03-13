@@ -1,0 +1,85 @@
+<!-- dropDown (with button) -->
+<ng-container *ngIf="pickerMode === dropDown">
+
+    <div class="color-picker-wrapper" (click)="toggle()" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+        <div class="color-picker-flex">
+            <div class="color-picker-infix">
+                <div class="color-picker-trigger">
+                    <div class="color-preview-wrapper" *ngIf="color !== 'Auto'">
+                        <div class="color-preview-chip" [style.background]="color"></div>
+                    </div>
+                    <div class="color-hex-value">
+                        <span class="color-hex-value-text">{{colorToName(color)}}</span>
+                    </div>
+                    <div class="select-arrow-wrapper">
+                        <div class="select-arrow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template cdkConnectedOverlay
+                 cdkConnectedOverlayHasBackdrop
+                 cdkConnectedOverlayBackdropClass="color-picker-backdrop"
+                 [cdkConnectedOverlayOrigin]="trigger"
+                 [cdkConnectedOverlayOpen]="isOpen"
+                 (backdropClick)="backdropClick()">
+
+        <ng-template [cdkPortalOutlet]="overlayPanel"></ng-template>
+    </ng-template>
+
+</ng-container>
+
+<!-- dropDownNoButton-->
+<ng-container *ngIf="pickerMode === dropDownNoButton && isOpen">
+    <ng-template [cdkPortalOutlet]="overlayPanel"></ng-template>
+</ng-container>
+
+<!-- Embedded-->
+<ng-container *ngIf="pickerMode === embedded">
+    <ng-template [cdkPortalOutlet]="overlayPanel"></ng-template>
+</ng-container>
+
+<!-- Color Picker Content -->
+<ng-template cdkPortal #overlayPanel="cdkPortal">
+
+    <div *ngIf="isOpen" class="color-picker-component-control card" [ngClass]="{'mat-elevation-z4' : pickerMode != embedded}">
+
+        <!-- Default Color Selector -->
+        <div *ngIf="!selectingCustomColor">
+
+            <div *ngIf="enableAuto" class="auto-color" [ngClass]="{'isSelected' : 'Auto'==color}">
+                <button mat-raised-button class="auto-color-button" (click)="colorSelected('auto')" matTooltip="System chooses color" matTooltipPosition="below"> Auto </button>
+            </div>
+
+            <div class="grid-container">
+                <div class="grid-item" *ngFor="let _color of DefaultColors" [ngClass]="{'isSelected' : _color.value==color}">
+                    <button mat-raised-button [ngClass]="{'grey-outline' : _color.text=='White'}"
+                        [matTooltip]="_color.text" matTooltipPosition="below"
+                        class="default-color-button"
+                        [style.background-color]="_color.value" (click)="colorSelected(_color.value)">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Color Selector -->
+        <div *ngIf="selectingCustomColor">
+            <color-picker-selector [selectedColor]="color" [pickerMode]="pickerMode" (changeSelectedColor)="colorSelected($event)"
+                (clickedCancel)="backdropClick()" [height]="colorPickerSelectorHeight">
+            </color-picker-selector>
+        </div>
+
+        <!-- Toggle Default and Custom Color -->
+        <div class="toggle">
+            <button mat-button *ngIf="!selectingCustomColor" (click)="toggleSelector()">
+                <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon> Custom Color
+            </button>
+            <button mat-button *ngIf="selectingCustomColor" id="default-color" (click)="toggleSelector()">
+                <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon> Default Color
+            </button>
+        </div>
+
+    </div>
+</ng-template>

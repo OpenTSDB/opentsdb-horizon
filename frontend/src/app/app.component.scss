@@ -1,0 +1,30 @@
+/* APP COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+// core (aka structure)
+@mixin app-root-base() {
+
+    .app-root {
+        display: flex;
+        flex: 1 1 100%;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+}
+
+@mixin app-root-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    // App background on body
+    &.mat-app-background {
+        background-color: map-get($background, background);
+    }
+
+}

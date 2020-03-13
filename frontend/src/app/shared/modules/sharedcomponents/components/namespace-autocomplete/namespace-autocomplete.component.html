@@ -1,0 +1,19 @@
+<form autocomplete="off">
+<mat-form-field appearance="fill" [color]="'primary'" floatLabel="never">
+    <input matInput
+        placeholder="Namespace"
+        autocomplete="off"
+        [formControl]="namespaceControl"
+        [matAutocomplete]="namespaceAuto"
+        #trigger="matAutocompleteTrigger"
+        (keydown.enter)="namespaceKeydown($event)"
+        (focus)="resetNamespaceList()"
+        type="text"
+        #namespaceInput>
+</mat-form-field>
+<mat-autocomplete #namespaceAuto="matAutocomplete" (optionSelected)="namespaceOptionSelected($event)" class="namespace-autocomplete-cdk-menu">
+    <mat-option *ngFor="let option of filteredNamespaceOptions" [value]="option">
+        {{ option }}
+    </mat-option>
+</mat-autocomplete>
+</form>

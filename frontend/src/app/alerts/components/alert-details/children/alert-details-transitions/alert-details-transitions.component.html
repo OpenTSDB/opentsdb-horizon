@@ -1,0 +1,16 @@
+<div *ngIf="readMode">
+  <span *ngFor="let transition of possibleTransitions; let last = last">
+      {{transitionToLabel[transition]}}
+      {{(!last) ? ', ' : ''}}
+  </span>
+</div>
+
+<div class="form-control-wrap" *ngIf="!readMode">
+  <mat-selection-list class="notify-when-options">
+      <mat-list-option *ngFor="let transition of possibleTransitions" 
+        [value]="transition" 
+        [disabled]="!isEnabled(transition)" 
+        [selected]="isSelected(transition)"
+        (click)="selectionChanged(transition)">{{transitionToLabel[transition]}}</mat-list-option>
+  </mat-selection-list>
+</div>

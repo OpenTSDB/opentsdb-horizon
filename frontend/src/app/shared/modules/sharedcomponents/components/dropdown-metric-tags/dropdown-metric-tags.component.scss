@@ -1,0 +1,124 @@
+@mixin dropdown-metric-tags-component-base() {
+    .dropdown-metric-tags {
+        width: 100%;
+
+        .mat-button {
+            position: relative;
+            padding: 0;
+            display: inline-flex;
+            line-height: 32px;
+
+            .mat-button-wrapper {
+                display: inline-flex;
+                flex: 1;
+            }
+
+            .button-label {
+                position: relative;
+                z-index: 1;
+                padding: 0 16px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .menu-trigger {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 0;
+            }
+        }
+    }
+
+    // cdk items
+    .tag-options-cdk-menu.mat-menu-panel {
+        min-width: initial;
+        max-height: 300px;
+
+        .mat-menu-content {
+            padding: 0;
+
+            .filter-input {
+                width: 100%;
+                padding: 4px;
+
+                .mat-form-field {
+                    width: 100%;
+
+                    .mat-icon-button {
+                        width: 2em;
+                        height: 2em;
+                        opacity: .6;
+                        transform: translateY(2px);
+
+                        &:hover {
+                            opacity: .8;
+                        }
+                    }
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(16px);
+                    }
+                }
+            }
+
+            .mat-selection-list {
+                padding-top: 0;
+            }
+
+            .mat-list-option {
+                height: 32px;
+                line-height: 32px;
+                font-size: 14px;
+
+                /*.mat-list-item-content-reverse {
+                    flex-direction: row;
+
+                    .mat-pseudo-checkbox {
+                        margin-right: 8px;
+                    }
+                }*/
+
+                .mat-pseudo-checkbox-checked::after {
+                    top: calc(50% - 3.6px);
+                    left: calc(50% - 5px);
+                    width: 10px;
+                    height: 5px;
+                }
+            }
+        }
+    }
+}
+
+@mixin dropdown-metric-tags-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
+    $is-dark: map-get($theme-config, is-dark);
+    $chip-bg: rgba(map-get($primary, default), .1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+
+    $widgets: map-get($theme-config, widgets);
+
+    $card-background: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $query-marker-bg: map-get($widgets, query-editor-marker);
+    $query-marker-text: map-get($widgets, query-editor-marker-text);
+    $query-block-bg: map-get($widgets, query-editor-block-bg);
+    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+
+    .dropdown-metric-tags {
+
+        .mat-button {
+            color: map-get($foreground, link);
+        }
+    }
+}

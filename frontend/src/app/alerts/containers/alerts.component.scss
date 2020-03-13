@@ -1,0 +1,1055 @@
+@mixin alerts-container-component-base() {
+
+    $status-labels: ('bad', 'warn', 'good', 'unknown', 'missing', 'snoozed');
+
+    $header-chip-size: 8px;
+
+    .alerts-container-component {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        // top leve controls (namespace selector, filter, create alert button)
+        // NOTE: menus are CDK items, so they are at bottom of mixin
+        .alerts-main-controls {
+            padding: 8px 32px;
+
+            .control-item {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                &:not(:last-child) {
+                    margin-right: 16px;
+                }
+
+            }
+
+            .namespace-selector {
+                min-width: 250px;
+
+                .mat-button {
+                    width: 100%;
+                    display: inline-flex;
+
+                    .mat-button-wrapper {
+                        display: flex;
+                        flex: 1;
+                        align-items: center;
+
+                        .control-label {
+                            margin-right: 8px;
+                            font-weight: 400;
+                        }
+
+                        .selected-namespace {
+                            flex: 1;
+                            margin-right: 8px;
+                            text-align: left;
+                        }
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(18px);
+                        }
+                    }
+
+                    &:hover .mat-button-focus-overlay {
+                        opacity: 0;
+                    }
+
+                    &:hover,
+                    &.menu-open {
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+            }
+
+            .alert-filter-input {
+                width: 80%;
+                max-width: 600px;
+
+                .mat-form-field {
+                    width: 100%;
+                    line-height: 1.45;
+
+                    .mat-form-field-flex {
+                        align-items: center;
+                    }
+
+                    .mat-form-field-suffix {
+                        margin-right: 8px;
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(18px);
+                        }
+                    }
+                }
+            }
+        }
+
+        // NOTE: do we need this anymore?
+        .alert-results-tabs {
+            margin: 0 16px;
+            user-select: none;
+        }
+
+        // alert results
+        .alert-results {
+            .alert-results-wrapper {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                padding: 0;
+                overflow: hidden;
+                //height: 100px;
+
+                .alert-results-body {
+                    //display: block;
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    //overflow-y: auto;
+                    max-width: 100%;
+                    //padding-top: 16px;
+                    .message {
+                        font-weight: 500;
+                        height: 30px;
+                        text-align:center;
+                        padding: 4px;
+                    }
+                }
+
+                .mat-paginator {
+                    padding: 0 16px;
+                }
+            }
+        }
+
+        // chips
+        /* OLD
+        .header-chip {
+            border-radius: 4px;
+            padding: 4px;
+            font-weight: normal;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }*/
+
+        .header-chip {
+            padding: 4px;
+            font-weight: normal;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            &::before {
+                content: '';
+                width: $header-chip-size;
+                height: $header-chip-size;
+                border-radius: $header-chip-size / 2;
+                display: inline-block;
+                margin-right: 6px;
+            }
+        }
+
+        .group-label-chip {
+            border-radius: 4px;
+            font-size: 10px;
+            padding: 0 6px;
+            margin-right: 4px;
+            outline: none;
+        }
+
+        .batch-controls-toolbar {
+            margin: 0 16px;
+            padding: 0;
+            //width: calc(100% - 32px);
+            max-width: 100%;
+            width: initial;
+
+            &.mat-toolbar-single-row {
+                height: 48px;
+            }
+
+            .toolbar-item.batch-select-control {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            .mat-button {
+                font-size: 12px;
+
+                .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 18px;
+                    line-height: 18px;
+                }
+            }
+        }
+
+        .error {
+            color:red;
+            height: 30px;
+            text-align:center;
+            padding: 2px;
+        }
+
+        .alerts-result-table.mat-table {
+            margin: 0 16px;
+            //width: calc(100% - 32px);
+
+            tr.mat-header-row,
+            tr.mat-footer-row,
+            tr.mat-row {
+                height: 36px;
+            }
+
+            .mat-header-cell {
+                &,
+                .mat-sort-header-button {
+                    user-select: none;
+                    text-transform: uppercase;
+                }
+            }
+
+            td.mat-cell,
+            td.mat-footer-cell,
+            th.mat-header-cell {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            /*td.mat-cell:first-of-type,
+            td.mat-footer-cell:first-of-type,
+            th.mat-header-cell:first-of-type {
+                padding-left: 8px;
+                padding-right: 0;
+            }*/
+
+            td.mat-cell:last-of-type,
+            td.mat-footer-cell:last-of-type,
+            th.mat-header-cell:last-of-type {
+                padding-right: 8px;
+            }
+
+            td.mat-cell,
+            td.mat-header-cell {
+
+                &.cdk-column-name {}
+
+            }
+
+            td.mat-cell {
+                font-size: 16px;
+
+                @each $item in $status-labels {
+                    &.cdk-column-#{$item} {
+                        text-align: right;
+                    }
+                }
+            }
+
+            .cdk-column-select {
+                overflow: initial;
+            }
+
+            .cdk-column-contacts {
+
+                .contacts-menu-trigger {
+                    .mat-icon {
+                        margin-right: 6px;
+                        width: 18px;
+                        height: 18px;
+                        font-size: 18px;
+                    }
+                }
+            }
+            .cdk-column-select,
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed,
+            .cdk-column-sparkline {
+                width: 1%;
+            }
+
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed {
+                text-align: right;
+
+                .count-empty {
+                    margin-right: 24px;
+                }
+                // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
+                .count-amount {
+                    margin-right: 24px;
+                    padding: 2px;
+                    cursor: pointer;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    padding: 3px 6px;
+                    outline: none;
+                }
+            }
+
+            /*
+            .cdk-column-sparkline {
+                text-align: right;
+
+                .sparkline-wrapper {
+                    width: 100px;
+                    background: #eee;
+                    display: block;
+                    padding: 4px;
+                    text-align: center;
+                }
+
+                .sparkline-display-menu-trigger.mat-button {
+                    min-width: initial;
+                    padding: 0 6px;
+                }
+            }*/
+
+            .cdk-column-type {
+                width: 125px;
+            }
+
+            .cdk-column-contacts {
+                width: 100px;
+                text-align: center;
+                padding-left: 16px;
+                padding-right: 16px;
+
+                .contact-icon-strip {
+                    display: inline-flex;
+                    padding: 4px 4px 6px;
+                    cursor: pointer;
+
+                    .mat-icon {
+                        width: 12px;
+                        height: 12px;
+
+                        &:not(:last-child) {
+                            margin-right: 4px;
+                        }
+                    }
+                }
+            }
+
+            .cdk-column-modified {
+                width: 130px;
+            }
+
+            .cdk-column-actions {
+                width: 176px;
+
+                .mat-icon-button .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 18px;
+                    line-height: 18px;
+                }
+            }
+
+            .cdk-column-name {
+                position: relative;
+
+                span.alert-name {
+                    line-height: 48px;
+                }
+
+                .edit-actions-wrapper {
+                    position: absolute;
+                    bottom: 0;
+                    left: 2px;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 200ms ease-in-out;
+
+                    .mat-button {
+                        font-size: 8px;
+                        font-weight: 400;
+                        text-transform: uppercase;
+                        padding: 2px;
+                        min-width: initial;
+                        line-height: 10px;
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(10px);
+                        }
+
+                        span {
+                            display: inline-block;
+                            margin-top: 2px;
+                            margin-left: 2px;
+                        }
+                    }
+                }
+            }
+
+            .bulk-actions-wrapper {
+                margin-left: -8px;
+
+                .mat-button {
+                    font-size: 12px;
+                    font-weight: 400;
+                    padding: 0 8px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                        margin-right: 6px;
+                    }
+                }
+            }
+
+            tr.mat-row:hover {
+                .cdk-column-name {
+                    .edit-actions-wrapper {
+                        pointer-events: initial;
+                        opacity: 1;
+                    }
+                }
+            }
+
+            // if batch editing
+            tr.mat-header-row.is-batch-editing {
+                .mat-header-cell:nth-child(n+3) {
+                    pointer-events: none;
+                    opacity: 0;
+                }
+            }
+        }
+
+        .snooze-results {
+            .snooze-results-wrapper {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                padding: 0;
+                overflow: hidden;
+
+                .snooze-results-body {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    overflow-y: auto;
+                    max-width: 100%;
+                    padding-top: 16px;
+                    .message {
+                        font-weight: 500;
+                        height: 30px;
+                        text-align:center;
+                        padding: 4px;
+                    }
+                }
+
+                .mat-paginator {
+                    padding: 0 16px;
+                }
+            }
+        }
+        .snooze-results-table.mat-table {
+            margin: 0 16px;
+            //width: calc(100% - 32px);
+
+            tr.mat-header-row,
+            tr.mat-footer-row,
+            tr.mat-row {
+                height: 36px;
+            }
+
+            .mat-header-cell {
+                &,
+                .mat-sort-header-button {
+                    user-select: none;
+                    text-transform: uppercase;
+                }
+            }
+
+            td.mat-cell,
+            td.mat-footer-cell,
+            th.mat-header-cell {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            td.mat-cell:last-of-type,
+            td.mat-footer-cell:last-of-type,
+            th.mat-header-cell:last-of-type {
+                padding-right: 8px;
+            }
+
+            td.mat-cell,
+            td.mat-header-cell {
+
+                &.cdk-column-name {}
+
+            }
+
+            td.mat-cell {
+                font-size: 12px;
+                vertical-align: text-top;
+
+                @each $item in $status-labels {
+                    &.cdk-column-#{$item} {
+                        text-align: right;
+                    }
+                }
+            }
+
+            .cdk-column-select {
+                overflow: initial;
+            }
+
+            .cdk-column-select {
+                width: 1%;
+            }
+
+            .cdk-column-modified {
+                width: 120px ;
+            }
+
+            .cdk-column-createdBy {
+                width: 120px;
+            }
+
+            .cdk-column-scope {
+                width: 55%;
+            }
+
+            .cdk-column-reason {
+                width: 18%;
+            }
+
+
+
+            .cdk-column-name {
+                position: relative;
+
+                .edit-actions-wrapper {
+                    position: absolute;
+                    bottom: 0;
+                    left: 2px;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 200ms ease-in-out;
+
+                    .mat-button {
+                        font-size: 8px;
+                        font-weight: 400;
+                        text-transform: uppercase;
+                        padding: 2px;
+                        min-width: initial;
+                        line-height: 10px;
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(10px);
+                        }
+
+                        span {
+                            display: inline-block;
+                            margin-top: 2px;
+                            margin-left: 2px;
+                        }
+                    }
+                }
+            }
+
+            .bulk-actions-wrapper {
+                margin-left: -8px;
+
+                .mat-button {
+                    font-size: 12px;
+                    font-weight: 400;
+                    padding: 0 8px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                        margin-right: 6px;
+                    }
+                }
+            }
+
+            tr.mat-row:hover {
+                .cdk-column-name {
+                    .edit-actions-wrapper {
+                        pointer-events: initial;
+                        opacity: 1;
+                    }
+                }
+            }
+
+            // if batch editing
+            tr.mat-header-row.is-batch-editing {
+                .mat-header-cell:nth-child(n+3) {
+                    pointer-events: none;
+                    opacity: 0;
+                }
+            }
+
+            .alerts-filters-list {
+                padding: 0;
+            }
+
+            .alerts-filters-list-item {
+                display: flex;
+                width: initial;
+                height: initial;
+                min-height: 14px;
+                margin: 2px 1px;
+                border-radius: 4px;
+                border: 0;
+                font-size: 12px;
+
+                .mat-list-item-content {
+                    padding: 0;
+                    flex: 1;
+                }
+
+                .alerts-filters-list-item-detail {
+                    min-width: 0;
+                    //max-width: 85%;
+                    display: flex;
+                    //flex-direction: column;
+                    flex: 1;
+                    line-height: 14px;
+
+                    strong {
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    // CDK OVERLAY ITEMS (these are at document root level)
+    .alert-contacts-menu.mat-menu-panel {
+        //margin-left: calc(-50% + 32px);
+        min-width: initial;
+        max-width: initial;
+
+        .mat-menu-content {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .contacts-wrapper {
+            display: flex;
+
+            .contact-list-type {
+                // width: 150px;
+                min-width: 150px;
+                display: flex;
+                flex-direction: column;
+
+                .contact-list-type-descriptor {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    height: 32px;
+                    padding: 0 16px;
+
+                    .mat-icon {
+                        height: 18px;
+                        width: 18px;
+                        margin-right: 6px;
+                    }
+                }
+
+                .contact-list-type-wrapper {
+                    .mat-list {
+                        .mat-list-item {
+                            position: relative;
+                            height: 30px;
+                        }
+
+                        .recipient-label {
+                            display: inline-flex;
+                            position: relative;
+                            line-height: 12px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .mat-menu-item {
+            font-size: 12px;
+
+            .mat-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 18px;
+                line-height: 18px;
+            }
+        }
+    }
+
+    .create-alert-menu.mat-menu-panel {
+        max-width: 320px;
+        .mat-menu-content {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .mat-divider {
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .alert-type-option.mat-menu-item {
+            display: flex;
+        }
+
+        .alert-type-detail {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex: 1;
+            max-width: 100%;
+            line-height: initial;
+        }
+    }
+
+    .namespace-selector-cdk-menu.mat-menu-panel {
+        .mat-menu-item {
+            height: 24px;
+            line-height: 24px;
+        }
+
+        .mat-divider {
+            margin: 8px 0;
+        }
+
+        .filter-all-namespaces {
+            padding: 8px 16px;
+            width: 100%;
+
+            .mat-form-field {
+                width: 100%;
+                .mat-form-field-suffix {
+                    align-self: center;
+                }
+            }
+        }
+
+        &.submenu {
+            max-height: 500px;
+        }
+    }
+
+    .sparkline-display-cdk-menu.mat-menu-panel {
+        max-width: initial; // 100px is width of the sparkline column
+        min-width: initial;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+
+        .mat-menu-item {
+            height: 24px;
+            line-height: 24px;
+            text-align: right;
+        }
+    }
+}
+
+@mixin alerts-container-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+
+    $header-chip-text: #ffffff;
+
+    $border-color: map-get($foreground, dividers);
+
+    $brand-color: map-get($background, navbar);
+    $brand-color-inverse: map-get($foreground, navbar-text);
+
+    .alerts-container-component {
+        background-color: map-get($background, card);
+
+        .alerts-main-controls {
+            box-shadow: inset 0 -1px 0 0 $border-color;
+
+            .namespace-selector {
+                min-width: 250px;
+
+                .mat-button {
+                    background-color: rgba(map-get($primary, default), 0.08);
+
+                    .control-label {
+                        color: map-get($foreground, disabled);
+                    }
+
+                    .mat-icon {
+                        color: map-get($foreground, link);
+                    }
+
+                    &:hover {
+                        box-shadow: inset 0 -2px 0 0 rgba(map-get($primary, default), .3);
+                    }
+
+                    &.menu-open {
+                        box-shadow: inset 0 -2px 0 0 map-get($primary, default);
+                    }
+                }
+            }
+
+            .alert-filter-input {
+                .mat-form-field {
+                    .mat-form-field-suffix {
+                        .mat-icon {
+                            color: map-get($foreground, link);
+                        }
+                    }
+                }
+            }
+        }
+
+        //chips
+        /* OLD
+        .header-chip {
+            color: $header-chip-text;
+
+            &.is-error {
+                background-color: map-get($status, error);
+            }
+
+            &.is-warning {
+                background-color: map-get($status, warning);
+            }
+
+            &.is-good {
+                background-color: map-get($status, success);
+            }
+
+            &.is-snoozed {
+                background-color: map-get($foreground, disabled-button);
+            }
+        }*/
+        .header-chip {
+            &.is-error::before {
+                background-color: map-get($status, error);
+            }
+
+            &.is-warning::before {
+                background-color: map-get($status, warning);
+            }
+
+            &.is-good::before {
+                background-color: map-get($status, success);
+            }
+            &.is-unknown::before {
+                background-color: map-get($denali-grey, 400);
+            }
+            &.is-missing::before {
+                background-color: map-get($denali-blue, 400);
+            }
+
+            &.is-snoozed::before {
+                background-color: map-get($denali-purple, 500);
+            }
+        }
+
+        .group-label-chip {
+            // border: 1px solid rgba(0,0,0,0.1);
+            background: if($is-dark, rgba(255,255,255,0.35), rgba(0,0,0,0.08));
+            color: if($is-dark, rgba(0,0,0,0.8), rgba(0,0,0,0.5));
+        }
+
+        .alert-results {
+            .alert-results-wrapper {
+                .mat-paginator {
+                    border-top: 1px solid map-get($foreground, divider);
+                }
+            }
+        }
+
+        .batch-controls-toolbar.mat-toolbar {
+            background: transparent;
+
+            .batch-select-control {
+                .mat-checkbox-frame {
+                    border-color: map-get($foreground, link);
+                }
+
+                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                    background-color: map-get($foreground, link);
+                }
+            }
+        }
+
+        // table
+        .alerts-result-table.mat-table {
+
+            tr.mat-row:last-child {
+                td.mat-cell{
+                    border-bottom: 0;
+                }
+            }
+
+            .cdk-column-select {
+                .mat-checkbox-frame {
+                    border-color: map-get($foreground, link);
+                }
+
+                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                    background-color: map-get($foreground, link);
+                }
+            }
+            .cdk-column-actions {
+
+                /*.mat-icon-button .mat-icon {
+                    color: map-get($foreground, link);
+                }*/
+            }
+
+            /*.cdk-column-sparkline {
+                &.menu-open {
+                    position: relative;
+
+                    .mat-button {
+                        color: #ffffff;
+                        background-color: map-get($primary, default);
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+            }*/
+
+            .cdk-column-good {
+                .count-amount {
+                    background-color: map-get($status, success);
+                }
+            }
+
+            .cdk-column-bad {
+                .count-amount {
+                    background-color: map-get($status, error);
+                }
+            }
+
+            .cdk-column-warn {
+                .count-amount {
+                    background-color: map-get($status, warning);
+                }
+            }
+
+            .cdk-column-unknown {
+                .count-amount {
+                    background-color: map-get($denali-grey, 400);
+                }
+            }
+
+            .cdk-column-missing {
+                .count-amount {
+                    background-color: map-get($denali-blue, 400);
+                }
+            }
+
+            .cdk-column-name {
+                .edit-actions-wrapper {
+                    .mat-button {
+                        color: map-get($foreground, link);
+                    }
+                }
+            }
+
+            .cdk-column-contacts {
+                .contact-icon-strip {
+                    //background-color: rgba($brand-color, .15);
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                }
+            }
+
+            // disabled state
+            .mat-row.is-disabled {
+                background-color: rgba(map-get($foreground, divider), .05);
+
+                .group-label-chip {
+                    opacity: .6
+                }
+
+                .mat-cell {
+                    color: rgba(map-get($foreground, divider), .25);
+                }
+
+                .cdk-column-select {
+                    .mat-checkbox-frame {
+                        border-color: rgba(map-get($foreground, divider), .25);
+                    }
+
+                    .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                        background-color: rgba(map-get($foreground, divider), .25);
+                    }
+                }
+
+                .cdk-column-contacts {
+                    .contact-icon-strip {
+                        background-color: transparent;
+                        color: if($is-dark, rgba(map-get($foreground, navbar-text), .25),rgba(map-get($foreground, divider), .25));
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    // CDK ITEMS {
+
+    .namespace-selector-menu {
+        border: 1px solid map-get($foreground, divider);
+
+        .filter-all-namespaces {
+            border-bottom: 1px solid map-get($foreground, divider);
+        }
+    }
+
+    .alert-contacts-menu.mat-menu-panel {
+        border: 1px solid map-get($foreground, divider);
+
+        .contacts-wrapper {
+            .contact-list-type {
+                &:not(:last-child) {
+                    border-right: 1px solid map-get($foreground, divider);
+                }
+            }
+        }
+    }
+
+    .create-alert-menu {
+        border: 1px solid map-get($foreground, divider);
+
+        .alert-type-label {
+            color: map-get($foreground, link);
+        }
+    }
+
+    .sparkline-display-cdk-menu.mat-menu-panel {
+        border-top: 2px solid map-get($primary, default);
+    }
+}

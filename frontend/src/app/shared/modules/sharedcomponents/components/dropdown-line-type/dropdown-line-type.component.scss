@@ -1,0 +1,125 @@
+@mixin dropdown-line-type-component-base() {
+    .dropdown-line-type {
+        display: inline-block;
+
+        @include dropdown-line-type-preview();
+
+        .mat-form-field {
+            .mat-form-field-infix {
+                display: flex;
+                width: initial;
+            }
+        }
+
+        .mat-select {
+            display: flex;
+
+            .mat-select-trigger {
+                .mat-select-value-text {
+                    display: flex;
+                    flex: 1;
+
+                    .trigger-value-display {
+                        display: flex;
+                    } 
+                }
+
+                .mat-select-arrow-wrapper {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+
+    // CDK ITEMS
+    .dropdown-line-type-options {
+        .mat-select-content {
+            .mat-option-text {
+                display: inline-flex;
+                @include dropdown-line-type-preview();
+            }
+        }
+    }
+}
+
+@mixin dropdown-line-type-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .dropdown-line-type {
+        @include dropdown-line-weight-preview-theme($foreground);
+    } 
+
+    // CDK ITEMS
+    .dropdown-line-type-options {
+        .mat-select-content {
+            .mat-option {
+                @include dropdown-line-weight-preview-theme($foreground);
+            }
+        }
+    }
+}
+
+// UTILITY MIXINS
+@mixin dropdown-line-type-preview() {
+    .line-type-preview {
+        display: inline-flex;
+        align-items: center;
+        width: 21px;
+        max-width: 21px;
+        flex: 1;
+        margin-right: 8px;
+
+        span {
+            border-bottom-width: 2px;
+            display: inline-block;
+            flex: 1;
+            height: 1px;
+            max-height: 1px;
+        }
+
+        // modifiers
+        &.line-type-solid {
+            span {
+                border-bottom-style: solid;
+            }
+        }
+
+        &.line-type-dotted {
+            span {
+                border-bottom-style: dotted;
+            }
+        }
+
+        &.line-type-dashed {
+            span {
+                border-bottom-style: dashed;
+            }
+        }
+
+        &.line-type-dot-dashed {
+            span:first-child {
+                border-bottom-style: dotted;
+                margin-right: 2px;
+            }
+            span:last-child {
+                border-bottom-style: dashed;
+            }
+        }
+    }
+}
+
+@mixin dropdown-line-type-preview-theme($foreground) {
+    // theme part
+    .line-type-preview {
+        span {
+            border-bottom-color: map-get($foreground, text);
+        }
+    }
+}

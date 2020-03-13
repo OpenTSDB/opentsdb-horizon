@@ -1,0 +1,42 @@
+@mixin navigator-panel-component-base() {
+    .navigator-panel {
+        display: flex;
+        flex: 1;
+        
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 6000px;
+            
+            li {
+                width: 300px;
+            }
+        }
+
+        .navigator-panel-wrapper {
+            overflow: hidden;
+        }
+
+        .navigator-panel-inner {
+            display: flex;
+            min-height: 100%;
+        }
+
+        .navigator-panel-item {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+@mixin navigator-panel-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+}

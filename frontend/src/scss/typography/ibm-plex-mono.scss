@@ -1,0 +1,54 @@
+$ibm-mono-typeface-config: (
+    family: 'IBM Plex Mono',
+    font-family: "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace",
+    path: '/assets/fonts/IBM-Plex/mono',
+    fontweight-map: ( 
+        light: 300,
+        medium: 500, 
+        regular: 400
+    ),
+    fonts: (
+        light: (
+            local: "IBM Plex Mono Light",
+            local2: "IBMPlexMono-Light",
+            weight: 300,
+            style: normal,
+            file-prefix: 'IBMPlexMono-Light'
+        ),
+        light-italic: (
+            local: "IBM Plex Mono Light Italic",
+            local2: "IBMPlexMono-LightItalic",
+            weight: 300,
+            style: italic,
+            file-prefix: 'IBMPlexMono-LightItalic'
+        ),
+        medium: (
+            local: "IBM Plex Mono Medium",
+            local2: "IBMPlexMono-Medium",
+            weight: 500,
+            style: normal,
+            file-prefix: 'IBMPlexMono-Medium'
+        ),
+        medium-italic: (
+            local: "IBM Plex Mono Medium Italic",
+            local2: "IBMPlexMono-MediumItalic",
+            weight: 500,
+            style: italic,
+            file-prefix: 'IBMPlexMono-MediumItalic'
+        ),
+        regular: (
+            local: "IBM Plex Mono",
+            local2: "IBMPlexMono",
+            weight: 400,
+            style: normal,
+            file-prefix: 'IBMPlexMono-Regular'
+        ),
+        regular-italic: (
+            local: "IBM Plex Mono Italic",
+            local2: "IBMPlexMono-Italic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'IBMPlexMono-Italic'
+        )
+    )
+);

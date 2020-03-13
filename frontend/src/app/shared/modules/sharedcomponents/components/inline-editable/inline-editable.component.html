@@ -1,0 +1,30 @@
+<span class="editable-click">
+  <div #container>
+    <div *ngIf="fieldValue === placeholder" [hidden]="isEditView" (click)="showEditable()">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div *ngIf="fieldValue !== placeholder" [hidden]="isEditView" (click)="showEditable()">{{fieldValue}}</div>
+
+    <form class="example-form" *ngIf="isEditView">
+        <mat-form-field class="example-full-width">
+          <input matInput [value]="fieldValue" [formControl]="fieldFormControl" (keyup.enter)="save()" (blur)="save()">
+      
+          <!-- Errors -->
+          <mat-error *ngIf="fieldFormControl.hasError('required')">
+            Field is <strong>required</strong>.
+          </mat-error>
+
+          <mat-error *ngIf="fieldFormControl.hasError('maxlength') && !fieldFormControl.hasError('whitespace')">
+            Max length is {{maxLength}}.
+          </mat-error>
+
+          <mat-error *ngIf="fieldFormControl.hasError('minlength') && !fieldFormControl.hasError('whitespace')">
+            Min length is {{minLength}}.
+          </mat-error>
+
+          <mat-error *ngIf="fieldFormControl.hasError('whitespace') && !fieldFormControl.hasError('required')">
+            Please enter valid data.
+          </mat-error>
+
+        </mat-form-field>
+      </form>
+  </div>
+</span>

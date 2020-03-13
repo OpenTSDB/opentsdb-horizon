@@ -1,0 +1,228 @@
+/**
+ * LANDING PAGE CONTENT COMPONENT
+ */
+
+ @mixin landing-page-content-component-base() {
+    .landing-page-content {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+
+        .main-content {
+            //width: 100%;
+            flex: 1 0px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .landing-page-hero,
+        .landing-page-utilities {
+            padding: 10px;
+        }
+
+        .landing-page-hero {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 30px;
+            justify-content: center;
+            align-items: center;
+
+            .hero-message {
+                max-width: 40%;
+                text-align: center;
+            }
+
+            .hero-buttons {
+                :not(:last-child) {
+                    margin-right: 8px;
+                }
+            }
+
+            .hero-close-button {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        .landing-page-utilities {
+            .mat-toolbar {
+
+                &.mat-toolbar-single-row {
+                    padding-left: 0;
+                    padding-right: 0;
+                }
+
+                .search-utility,
+                .add-widget-button {
+                    margin-right: 20px;
+                }
+
+                .add-widget-button,
+                .new-dashboard-button {
+                    .mat-icon {
+                        margin-right: 8px;
+                        font-size: 100%;
+                        width: 12px;
+                        height: 12px;
+                        line-height: 1;
+                    }
+                }
+            }
+
+            .search-utility {
+                display: flex;
+                padding: 4px;
+
+                .mat-form-field {
+                    padding-bottom: 0;
+                    line-height: 1;
+                }
+    
+                .mat-form-field-wrapper {
+                    padding-bottom: 0;
+                }
+    
+                .mat-form-field-infix {
+                    padding: .35em 0 .35em 0;
+                    border-top: 0;
+                }
+    
+                .mat-form-field-flex {
+                    line-height: 1;
+                    padding: 0 .75em;
+                    border-radius: 0;
+                    justify-content: center;
+                    align-items: center;
+                }
+    
+                .mat-form-field-label-wrapper {
+                    display: none;
+                }
+    
+                .mat-form-field-type-mat-input {
+                    width: 100%;
+                }
+    
+                .mat-form-field {
+                    &:first-child {
+                        .mat-form-field-flex {
+                            border-top-left-radius: 4px;
+                            border-bottom-left-radius: 4px;
+                        }
+                    }
+    
+                    &:last-child {
+                        .mat-form-field-flex {
+                            border-top-right-radius: 4px;
+                            border-bottom-right-radius: 4px;
+                        }
+                    }
+                }
+    
+                // mat-select arrow correction after all these changes
+                .mat-select-arrow-wrapper {
+                    transform: initial;
+                }
+    
+                // specific overrides
+                .search-context-form-field {
+    
+                    .mat-form-field-underline {
+                        display: none;
+                    }
+    
+                    .mat-form-field-infix {
+                        width: 90px;
+                    }
+    
+                    .mat-select {
+                        .mat-select-value-text {
+                            font-size: 12px;
+                        }
+                    }
+                }
+    
+                .search-query-form-field {
+
+                    .mat-form-field-infix{
+                        padding-bottom: .45em;
+                    }
+    
+                    .mat-input-element {
+                        font-size: 12px;
+                    }
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 14px;
+                        line-height: 1;
+                    }
+    
+                    .mat-form-field-underline {
+                        bottom: 0;
+    
+                        &::before {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .dashboard {
+            //flex: 1 1 auto;
+            //overflow: auto; --> disbable x scrolling
+            width: 100%;
+        }
+
+        .gridster-stage {
+            .is-scroller {
+                //@include is-scroller();
+                padding: 10px;
+            }
+        }
+    }
+ }
+
+ @mixin landing-page-content-component-theme($theme-config) {
+     /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .landing-page-content {
+        border-right: 2px solid map-get($foreground, divider);
+
+        .landing-page-hero {
+            background-color: map-get($background, card);
+        }
+
+        .landing-page-utilities {
+            .search-utility {
+                background-color: map-get($background, card);
+                
+                .search-query-form-field {
+                    .mat-icon {
+                        color: map-get($primary, default);
+                    }
+
+                    .mat-form-field-underline {
+                        
+                        .mat-form-field-ripple {
+                            background-color: map-get($primary, default);
+                        }
+                    }
+                }
+            }
+        }
+    }
+ }

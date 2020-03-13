@@ -1,0 +1,27 @@
+<form [formGroup]="widgetConfigLegend">
+    <div class="config-control with-enable-label">
+        <label class="fixed-label">Visibility</label>
+        <div class="form-field-group">
+            <mat-slide-toggle formControlName="display"><span class="mat-caption" [ngClass]="{'is-enabled': widgetConfigLegend.controls.display.value }">Legend is <strong>{{widgetConfigLegend.controls.display.value ? 'visible' : 'hidden'}}</strong></span></mat-slide-toggle>
+        </div>
+    </div>
+    <div class="config-control inline-controls">
+        <label class="fixed-label">Position</label>
+        <div class="form-field-group">
+            <mat-radio-group formControlName="position">  
+                <mat-radio-button value="top">Top</mat-radio-button>
+                <mat-radio-button value="bottom">Bottom</mat-radio-button>
+                <mat-radio-button value="right">Right</mat-radio-button>
+                <mat-radio-button value="left">Left</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="config-control inline-controls">
+            <label class="fixed-label">Columns</label>
+            <div class="form-field-group">
+                <ng-container *ngFor="let column of columns">
+                    <mat-checkbox value="{{column.value}}" [checked]="widget.settings.legend.columns.indexOf(column.value)!== -1 " (change)="setLegendColumns($event)">{{column.label}}</mat-checkbox>
+                </ng-container>
+            </div>
+    </div>
+</form>

@@ -1,0 +1,298 @@
+@mixin linechart-widget-component-base() {
+
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.linechart-widget {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .hide {
+            display: none;
+        }
+
+        // Don't have padding for line-charts
+        .widget-output {
+            padding: 0;
+            /*position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;*/
+            width: 100%;
+            height: 100%;
+            display: flex;
+
+            .dygraph-legend {
+                display: none;
+                z-index: 1000;
+                // margin-top:15px;
+                //background: #f0f0f0;
+                //border: 1px solid #cccccc;
+                padding: 4px;
+                min-width:250px;
+                width: 300px;
+                position: absolute;
+                border-radius: 5px;
+                font-size: 12px;
+                font-family: Monaco, monospace;
+                // font-family: Helvetica Neue, Helvetica;
+            }
+
+            .dygraph-label, .dygraph-axis-label {
+                color: slategrey;
+                font-size: 12px;
+                // font-family: Monaco, monospace;
+                font-family: Helvetica Neue, Helvetica;
+            }
+
+            .dygraph-ylabel {
+                font-weight: 400;
+            }
+
+            .graph-legend {
+                display: none;
+                position: initial; // override dygraph style
+                list-style: none;
+                height: 100%;
+                overflow: auto;
+                z-index: 0;
+                // background-color: #fee;
+
+                .mat-table {
+                    font-family: Monaco, monospace;
+                    background-color: inherit;
+                    .nowrap {
+                        white-space: nowrap;
+                    }
+                }
+            }
+
+            .loading-spinner,
+            .gif-spinner {
+                position: absolute;
+                left: 5px;
+                bottom: 5px;
+                z-index: 1;
+                /*width: 24px;
+                height: 24px;
+                background-image: url(/assets/denali-loader.svg);
+                background-color: transparent;*/
+            }
+
+            .apply-tpl-status {
+                position: absolute;
+                right: -5px;
+                top: 0px;
+                z-index: 1;
+
+                .mat-icon {
+                    font-size: 16px;
+                    color: rgb(216, 216, 215);
+                }
+            }
+
+            .error{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: red;
+            }
+
+            .debug{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: rgb(75, 9, 228);
+            }
+
+            // now for positioning of legend
+            &.display-legend-top,
+            &.display-legend-right,
+            &.display-legend-bottom,
+            &.display-legend-left {
+                .graph-legend {
+                    display: flex;
+                    flex: 1;
+                    .line-series{
+                        display: inline-flex;
+                        width:10px;
+                        height: 10px;
+                        margin-right: 5px;
+                    }
+                  }
+            }
+
+            &.display-legend-top{
+                .graph-cell {
+                    flex-direction: column-reverse;
+                }
+                .graph-legend {
+                    margin-bottom: 6px;
+                }
+            }
+
+            &.display-legend-right {
+                .graph-cell {
+                    flex-direction: row;
+                    align-items: flex-start;
+                }
+            }
+
+            &.display-legend-bottom {
+                .graph-cell {
+                    flex-direction: column;
+                }
+            }
+
+            &.display-legend-left {
+                .graph-cell {
+                    flex-direction: row-reverse;
+                    align-items: flex-start;
+                }
+            }
+
+            &.display-legend-left,
+            &.display-legend-right,
+            &.display-legend-top,
+            &.display-legend-bottom {
+                .graph-legend {
+                    table {
+                        // flex: 1;
+                    }
+                    tr {
+                        cursor: pointer;
+                    }
+                    .mat-column-series {
+                        width: 12px;
+                        max-width: 12px;
+                    }
+                    .mat-row, .mat-header-row {
+                        height: 10px;
+                        line-height: 12px;
+                    }
+                    .mat-cell, .mat-header-cell {
+                        padding: 0px 8px;
+                        font-size: 9px;
+                        border-bottom-width: 0px;
+                    }
+                    .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+
+        .events {
+            max-height: 500px;
+        }
+
+        .events-overlay {
+            padding-left: 2px;
+            padding-top: 6px;
+             event-timeline {
+                display: inline;
+            }
+        }
+
+        .events-config {
+            max-height: 200px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            width: 100%;
+            .event-result-title {
+                font-weight: bold;
+                padding-left: 10px;
+            }
+        }
+
+        .disabled-message {
+            padding: 10px;
+        }
+
+        /*#dygraphLegendTop {
+            height: 20%;
+            width: 100%;
+        }
+        #dygraphLegendLeft {
+            width: 20%;
+            float:left;
+            height: 100%;
+        }
+        #dygraphLegendRight {
+            width: 20%;
+            float:left;
+            height: 100%;
+           }
+        #dygraphLegendBottom {
+            height: 20%;
+            position: absolute;
+            width:100%;
+            float: left;
+           }
+        #dygraph_div {
+            height: 100%;
+            width: 100%;
+            float:left;
+        }
+        #dygraphLegendLeft  li, #dygraphLegendRight li{
+            display: block;
+        }
+        #dygraphLegendTop  li, #dygraphLegendBottom      li{
+            display: inline;
+            margin-right: 20px;
+        }*/
+    }
+
+     // when we are in edit view
+     .edit-view-container.is-active {
+        .widget-panel-content.linechart-widget {
+            .widget-output {
+                //top: 30px;
+                padding: 8px 0px;
+                //display: block;
+                position: relative;
+            }
+        }
+    }
+}
+
+@mixin linechart-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $dygraph-tooltip-bg: if($is-dark-theme, map-get($background, menu), #f0f0f0);
+    $dygraph-tooltip-border: if($is-dark-theme, lighten(map-get($background, menu), 10%) , #cccccc);
+
+    $graph-legend-bg: map-get($background, graph-legend);
+
+    .widget-panel-content.linechart-widget {
+        .widget-output {
+            .dygraph-legend {
+                background: $dygraph-tooltip-bg;
+                border: 1px solid $dygraph-tooltip-border;
+            }
+
+            .graph-legend {
+                background: $graph-legend-bg
+            }
+        }
+    }
+
+}

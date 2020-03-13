@@ -1,0 +1,16 @@
+@mixin info-island-toolbar-component-base() {
+    .info-island-component {
+        .info-island-container {
+            .info-island-toolbar {
+                display: flex;
+                flex: 1 1 100%;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+@mixin info-island-toolbar-component-theme($theme-config) {
+
+}

@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="labels">
+        <div class="mat-body-strong label">Text Color</div>
+        <div class="mat-body-strong label">Background Color</div>
+        <div class="mat-body-strong label">Font</div>
+    </div>
+
+    <div class="selectors">
+        <div class="selector">
+            <color-picker (newColor)="textColorChanged($event)" [color]="widget.settings.visual.textColor"></color-picker>
+        </div>
+
+        <div class="selector">
+            <color-picker (newColor)="backgroundColorChanged($event)" [color]="widget.settings.visual.backgroundColor"></color-picker>
+        </div>
+
+        <div class="selector monospace">
+            <mat-slide-toggle id="font-toggle" [checked]="widget.settings.visual.font === 'monospace'" (change)="fontFamilyChanged($event.checked)">Monospace?</mat-slide-toggle>
+        </div>
+    </div>
+</div>

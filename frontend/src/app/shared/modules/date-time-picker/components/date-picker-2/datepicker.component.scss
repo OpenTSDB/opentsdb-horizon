@@ -1,0 +1,391 @@
+@mixin date-picker-component-base() {
+
+    $calendar-padding: 8px;
+    $calendar-cell-size: 40px;
+    $calendar-width: $calendar-cell-size * 7 + $calendar-padding * 2;
+    $calendar-height: 320px;
+
+    $calendar-body-label-padding-start: 5% !default;
+    $calendar-body-label-side-padding: 33% / 7 !default;
+    $calendar-body-cell-min-size: 32px !default;
+    $calendar-body-cell-content-margin: 5% !default;
+    $calendar-body-cell-content-border-width: 1px !default;
+
+    $calendar-body-min-size: 7 * $calendar-body-cell-min-size !default;
+    $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 !default;
+
+    $calendar-padding: 8px !default;
+    $calendar-header-divider-width: 1px !default;
+    $calendar-controls-vertical-padding: 5%;
+    $calendar-controls-side-margin: calc(33% / 7 - 16px);
+
+    $calendar-arrow-size: 5px !default;
+    $calendar-arrow-disabled-opacity: 0.5 !default;
+
+    $calendar-prev-next-icon-border-width: 2px;
+    $calendar-prev-next-icon-margin: 15.5px;
+    $calendar-prev-icon-transform: translateX(2px) rotate(-45deg);
+    $calendar-next-icon-transform: translateX(-2px) rotate(45deg);
+
+    .date-picker-component {
+        position: relative;
+
+        .calendar-container  {
+            position: fixed;
+            z-index: 1;
+        }
+
+       .input-field {
+            #input-box {
+                //height: 28px;
+                width: 210px;
+            }
+            
+            #calendar-icon {
+                min-width: 0px;
+                padding: 1px;
+                margin-left: 4px;
+            }
+            
+            .code {
+                font-weight: bold;
+            }
+            
+            .mat-error {
+                font-size: 9px;
+                line-height: 9px;
+            }
+        
+            // resetting some input fields 
+            .mat-form-field.mat-form-field-appearance-fill {
+    
+                .mat-form-field-flex {
+                    padding: .75em .75em 0 .75em;
+                }
+    
+                .mat-form-field-infix {
+                    padding: 0.25em 0 0.75em 0;
+                    border-top: 0.84375em solid transparent;
+                }
+    
+                .mat-input-element {
+                    height: initial;
+                }
+    
+                .mat-form-field-subscript-wrapper {
+                    
+                }
+    
+                .mat-form-field-label-wrapper {
+                    top: -0.84375em;
+                    left: 0;
+                    padding-top: 0.84375em;
+    
+                    .mat-form-field-label {
+                        top: 1.09375em;
+                        margin-top: -0.5em;
+                    }
+                }
+    
+                &.mat-form-field-can-float {
+                    &.mat-form-field-should-float {
+                        .mat-form-field-label {
+                            -webkit-transform: translateY(-0.59375em) scale(0.75);
+                            transform: translateY(-0.59375em) scale(0.75);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @include until(600px) {
+        .date-picker-component {
+            .input-field {
+                display: block;
+                
+                &,
+                .mat-form-field {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .calendar-container {
+        @include mat-elevation(5);
+        display: block;
+        font-size: 14px;
+        width: $calendar-width;
+
+        .mat-card {
+            padding: 4px $calendar-padding $calendar-padding $calendar-padding;
+            width: initial;
+        }
+
+        .mat-card-title {
+            margin-bottom: 5px;
+        }
+
+        .mat-card-content {
+            margin-left: 8px;
+            margin-bottom: 8px;
+        }
+
+        .mat-button {
+            min-width: 0px;
+            padding-left: 2px;
+            padding-right: 2px;
+            line-height: 18px;
+        }
+
+        .dp-calendar-weekday {
+            display: inline-block;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .dp-calendar-week {
+            height: 20px;
+        }
+
+        .dp-weekdays {
+            height: 25px;
+        }
+
+        .dp-hide-near-month {
+            .dp-prev-month,
+            .dp-next-month {
+                visibility: hidden;
+            }
+        }
+
+        // NEW
+
+        .mat-calendar-period-button {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .mat-calendar {
+            display: block;
+            width: $calendar-width;
+            height: $calendar-height;
+        }
+        
+        .mat-calendar-header {
+            padding: ($calendar-padding/2) $calendar-padding 0 $calendar-padding;
+        }
+        
+        .mat-calendar-content {
+            padding: 0 $calendar-padding $calendar-padding $calendar-padding;
+            outline: none;
+        }
+        
+        .mat-calendar-controls {
+            display: flex;
+            margin: $calendar-controls-vertical-padding $calendar-controls-side-margin;
+        }
+        
+        .mat-calendar-spacer {
+            flex: 1 1 auto;
+        }
+        
+        .mat-calendar-period-button {
+            min-width: 0;
+        }
+        
+        .mat-calendar-arrow {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: $calendar-arrow-size solid transparent;
+            border-right: $calendar-arrow-size solid transparent;
+            border-top-width: $calendar-arrow-size;
+            border-top-style: solid;
+            margin: 0 0 0 $calendar-arrow-size;
+            vertical-align: middle;
+            
+            &.mat-calendar-invert {
+                transform: rotate(180deg);
+            }
+            
+            [dir='rtl'] & {
+                margin: 0 $calendar-arrow-size 0 0;
+            }
+        }
+        
+        .mat-calendar-previous-button,
+        .mat-calendar-next-button {
+            position: relative;
+            
+            &::after {
+                @include overlay;
+                content: '';
+                margin: $calendar-prev-next-icon-margin;
+                border: 0 solid currentColor;
+                border-top-width: $calendar-prev-next-icon-border-width;
+            }
+            
+            [dir='rtl'] & {
+                transform: rotate(180deg);
+            }
+        }
+        
+        .mat-calendar-previous-button::after {
+            border-left-width: $calendar-prev-next-icon-border-width;
+            transform: $calendar-prev-icon-transform;
+        }
+        
+        .mat-calendar-next-button::after {
+            border-right-width: $calendar-prev-next-icon-border-width;
+            transform: $calendar-next-icon-transform;
+        }
+        
+        .mat-calendar-table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .mat-calendar-table-header th {
+            text-align: center;
+            padding: 0 0 $calendar-padding 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .mat-calendar-table-header-divider {
+            position: relative;
+            height: $calendar-header-divider-width;
+            
+            // We use an absolutely positioned pseudo-element as the divider line for the table header so we
+            // can extend it all the way to the edge of the calendar.
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -$calendar-padding;
+                right: -$calendar-padding;
+                height: $calendar-header-divider-width;
+            }
+        }
+
+
+
+        .mat-calendar-body {
+            min-width: $calendar-body-min-size;
+            font-weight: 14px;
+        }
+        
+        .mat-calendar-body-label {
+            //height: 0;
+            height: $calendar-cell-size;
+            line-height: 0;
+            text-align: left;
+            padding-left: $calendar-body-label-side-padding;
+            padding-right: $calendar-body-label-side-padding;
+        }
+        
+        .mat-calendar-body-cell {
+            position: relative;
+            //height: 0;
+            line-height: 0;
+            text-align: center;
+            outline: none;
+            cursor: pointer;
+            height: $calendar-cell-size;
+            width: $calendar-cell-size;
+        }
+        
+        .mat-calendar-body-disabled,
+        .mat-calendar-body-not-current {
+            cursor: default;
+            pointer-events: none;
+        }
+        
+        .mat-calendar-body-cell-content {
+            position: absolute;
+            top: $calendar-body-cell-content-margin;
+            left: $calendar-body-cell-content-margin;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            box-sizing: border-box;
+            width: $calendar-body-cell-content-size;
+            height: $calendar-body-cell-content-size;
+            
+            // Prevents text being off-center on Android.
+            line-height: 1;
+            
+            border-width: $calendar-body-cell-content-border-width;
+            border-style: solid;
+            
+            // Choosing a value clearly larger than the height ensures we get the correct capsule shape.
+            border-radius: 999px;
+            
+            @include cdk-high-contrast {
+                border: none;
+            }
+        }
+        
+        
+        @include cdk-high-contrast {
+            .mat-datepicker-popup:not(:empty),
+            .mat-calendar-body-selected {
+                outline: solid 1px;
+            }
+            
+            .mat-calendar-body-today {
+                outline: dotted 1px;
+            }
+        }
+        
+        [dir='rtl'] {
+            .mat-calendar-body-label {
+                text-align: right;
+            }
+        }
+    }
+}
+
+@mixin date-picker-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+        /*TODO: overwrite mat-button background: transparent */
+        .dp-selected {
+            // background: if($is-dark, true-value, false-value);
+            background: map-get($primary, default);
+        }
+    
+        .calendar-container {
+            background-color: mat-color($background, card);
+            color: mat-color($foreground, text);
+    
+            .mat-calendar-body-not-current {
+                background-color: map-get($background, hover);
+                
+                .mat-calendar-body-cell-content {
+                    color: map-get($foreground, disabled);
+                }
+            }
+    
+            .mat-calendar-body-disabled {
+                background: repeating-linear-gradient(
+                    45deg,
+                    rgba(0,0,0,.03),
+                    rgba(0,0,0,.03) 2px,
+                    rgba(0,0,0,.05) 2px,
+                    rgba(0,0,0,.05) 4px
+                );
+            }
+        }
+
+  }

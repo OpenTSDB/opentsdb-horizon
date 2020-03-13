@@ -1,0 +1,10 @@
+<div mat-dialog-content>
+    <h2><b>Log:</b></h2>
+    <hr>
+    <div [innerHtml]="this.log"></div>
+    <br>
+    <br>
+    <h2><b>Query:</b></h2>
+    <hr>
+    <pre [innerHtml]="this.dialogData.query | json"></pre>
+</div>

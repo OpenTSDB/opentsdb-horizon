@@ -1,0 +1,91 @@
+@mixin time-picker-component-base() {
+
+    .dtp-time-picker {
+        button {
+            &.refresh-button {
+                &.mat-raised-button {
+                    padding: 0px;
+                    margin-left: 6px;
+                    margin-right: 6px;
+                    min-width: 10px;
+                }
+            }
+        }
+        .auto-refresh-button {
+            &.mat-raised-button {
+                padding: 0px;
+                margin-left: 6px;
+                margin-right: 6px;
+                min-width: 10px;
+            }
+            span {
+                // pointer-events: none;
+                cursor: default;
+                margin-right: 6px;
+            }
+
+            .mat-icon {
+                cursor: pointer;
+            }
+        }
+    }
+
+    // dropdown menu container
+    .timerange-picker-menu.mat-menu-panel {
+        position: relative;
+        overflow: initial;
+        max-width: initial;
+
+        .timerange-picker-container {
+            padding: 0 12px;
+            height: initial;
+        }
+    }
+    .timerange-picker-menu {
+        .mat-menu-content {
+            padding-top: 2px;
+            padding-bottom: 4px;
+        }
+    }
+
+    // mobile media query
+    @include until(600px) {
+        // cdk dropdown menu container
+        .timerange-picker-menu.mat-menu-panel {
+            width: 100vw;
+        }
+    }
+}
+
+@mixin time-picker-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+    
+    // tooltip color
+    .dtp-tooltip-text {
+        background-color: map-get($accent, default);
+    }
+
+    // dropdown menu container
+    .timerange-picker-menu.mat-menu-panel {
+        &::after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: map-get($background, menu); // actual color of arrow
+        }
+    }
+
+    .timerange-picker-menu {
+        .mat-menu-content {
+            .timerange-picker-container {
+                &.mat-menu-item {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}

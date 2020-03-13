@@ -1,0 +1,469 @@
+@mixin snooze-details-component-base() {
+    .snooze-alert-dialog-component {
+        width: 100%;
+        min-width: 600px;
+        display: flex;
+        flex-direction: column;
+        
+        .snooze-configuration-wrapper {
+            border-radius: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: 100%;
+            max-height: 100%;
+
+            .mat-card-header {
+                &,
+                .mat-toolbar {
+                    height: 48px;
+                    padding-right: 0;
+
+                    .close-dialog {
+                        transform: scaleX(-1);
+                    }
+                }
+            }
+
+            .mat-card-header-text {
+                display: none;
+            }
+
+            .mat-card-content {
+                padding: 0;
+                flex: 1;
+                margin-bottom: 0;
+            }
+
+            .mat-card-actions {
+                padding: 0 16px;
+                max-width: 100%;
+                width: 100%;
+                height: 60px;
+                margin-left: 0;
+                margin-right: 0;
+                margin-bottom: 0;
+                display: flex;
+                align-items: center;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .mat-button,
+                .mat-flat-button,
+                .mat-stroked-button {
+                    &:not(:last-child) {
+                        margin-right: 6px;
+                    }
+                }
+            }
+
+            .error {
+                color:red; 
+                height: 30px; 
+                text-align:center; 
+                padding: 2px; 
+            }
+        }
+
+        .controls-wrapper {
+            padding: 0;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+
+            .alert-control-steps {
+                padding: 8px 0 0;
+                flex: 1;
+                overflow: auto;
+            }
+
+            .step-section {
+                margin-bottom: 8px;
+                display: block;
+
+                .step-section-label {
+                    border-top: 1px solid #E0E0E0; // why is color here??
+                    
+                    .step-section-label-text {
+                        display: inline-block;
+                        padding: 2px 24px 2px 8px;
+                        background-color: #E0E0E0; // why is color here???
+                        border-bottom-right-radius: 20px 24px;
+                    }
+                }
+
+                .step-section-content {
+                    padding: 8px;
+                    max-width: 100vw;
+                }
+
+                &.is-visible {
+                    display: block;
+                }
+            }
+
+            // form stuff
+            .form-group {
+                display: flex;
+                align-items: flex-start;
+
+                &:not(:last-child),
+                &:not(.select-threshold-type) {
+                    margin-bottom: 12px;
+                }
+                
+                .form-label,
+                .toggle-wrap {
+                    height: 32px;
+                    width: 180px;
+                    min-width: 180px;
+                    margin-right: 16px;
+                    line-height: 1.2;
+                    text-align: right;
+                    font-size: 12px;
+
+                    &.vertical-center {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                    }
+
+                    .indicator-square {
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        margin-right: 6px;
+                    }
+                }
+
+                &.sliding-window {
+                    display: flex;
+                    flex: 1;
+
+                    .sentence-item {
+                        display: inline-flex;
+                        align-items: center;
+                        height: 36px;
+
+                        &:not(:last-child) {
+                            margin-right: 8px;
+                        }
+                    }
+                }
+
+                &.alert-message {
+                    .message-subject-body {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+
+                        .mat-form-field {
+                            width: 80%;
+                            min-width: 320px;
+
+                            &:not(:last-child) {
+                                margin-bottom: 8px;
+                            }
+
+                            textarea {
+                                min-height: 100px;
+                            }
+                        }
+                    }
+                }
+
+                &.alert-recipients,
+                &.alert-labels {
+                    .mat-form-field {
+                        width: 100%;
+                        max-width: 60%;
+                    }
+                }
+
+                .form-control-wrap {
+                    width: 100%;
+                    max-width: 60%;
+                    display: flex;
+                    flex-direction: column;
+
+                    &.auto-width {
+                        width: initial;
+                        max-width: initial;
+                    }
+
+                    &.date-range {
+                        .start-time, .end-time {
+                            width: 100px;
+                        }
+                    }
+
+                    .time-ranges {
+                        .date-picker-component {
+                            &:first-child {
+                                margin-right: 5px;
+                            }
+                            &:last-child {
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+
+                    .alert-list {
+                        .mat-chip {
+                            font-size: 10px;
+                            font-weight: 400;
+                            margin: 1px;
+                            min-height: 25px;
+                        }
+                    }
+                }
+
+                
+
+            }
+
+
+            .date-range {
+                .mat-form-field {
+                    max-width: 150px;
+                }
+
+                .mat-form-field-wrapper {
+                    padding-bottom: 0;
+                }
+
+                .mat-form-field-underline {
+                    bottom: 0;
+                }
+
+                .mat-form-field:not(:last-child) {
+                    margin-right: 8px
+                }
+            }
+
+            .query-editor-proto .metric-wrapper{
+                border-left: 0px;
+                border-right: 0px;
+                .common-tags {
+                    background-color: #ffffff;
+                    padding: 0px;
+                    margin-left: 0px;
+                    .common-tags-wrapper {
+                        margin: 0px;
+                        .mat-button {
+                            padding-left: 0px;
+                        }
+                    }
+                    .common-tags-label {
+                        display: none;
+                    }
+                }
+                .tags-selected-header {
+                    border-bottom: 0px;
+                }
+                .tags-selected .tag {
+                    margin-left: 0px;
+                }
+            }
+        }
+
+        .mega-panel-trigger {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border: 2px solid transparent;
+        }
+
+        .mat-dialog-title {
+            margin: 0;
+            display: flex;
+            padding: 4px 8px 4px 16px;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .mat-dialog-content {
+            margin: 0;
+            padding: 16px;
+        }
+
+        .alert-configuration-contacts-component .mat-form-field {
+            width: 100%;
+        }
+
+        .mat-dialog-actions {
+            margin-bottom: 0;
+            padding: 4px 16px;
+        }
+
+
+        .mat-label {
+            font-weight: 500;
+            margin-bottom: 6px
+        }
+
+        .mat-divider {
+            margin: 16px 0;
+        }
+
+        .mat-button-toggle-group {
+            @include mat-elevation(0);
+            height: 52px;
+            line-height: 52px;
+        }
+
+        datepicker2 {
+            height: 52px;
+        }
+    }
+    
+    .alert-options-cdk-panel.mat-menu-panel {
+        min-width: calc(65vw - 250px);
+        max-width: 100%;
+        height: 350px;
+        display: flex;
+
+        .mat-menu-content {
+            width: 100%;
+            padding: 0;
+
+            .mega-panel-alert-list-controls {
+                padding: 0;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                max-width: 100%;
+                max-height: 100%;
+                cursor: pointer;
+            }
+
+            .alert-list-controls {
+                display: flex;
+                flex: 1;
+            }
+
+            .mat-list.mat-list-base {
+                width: 100%;
+                padding: 0;
+
+                .mat-list-item {
+                    padding-top: 4px;
+                    padding-bottom:4px;
+                    height: initial;
+                }
+            }
+        }
+
+        .mat-list-item-content {
+            align-items: flex-start;
+
+            .add-alert-label {
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                }
+            }
+
+            .alert-label-details {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                margin-left: 12px; 
+
+                .type {
+                    line-height: 12px;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                }
+            }
+        }
+    }
+
+    .alert-options-cdk-panel-content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-width: 100%;
+        max-height: 100%;
+        cursor: pointer;
+    }
+
+    // cdk items
+    .snooze-alert-dialog-panel.cdk-overlay-pane {
+        width: 100%;
+        max-width: 600px !important;
+        min-width: 300px;
+
+        .mat-dialog-container {
+            padding: 0;
+        }
+    }
+}
+
+@mixin snooze-details-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+
+    .snooze-alert-dialog-component {
+        .mat-dialog-title {
+            border-bottom: 1px solid map-get($foreground, divider);
+        }
+
+        .mat-dialog-actions {
+            border-top: 1px solid map-get($foreground, divider);
+        }
+
+        .preset-toggles {
+            .mat-button-toggle-group {
+                .mat-button-toggle {
+                    color: map-get($primary, default);
+
+                    &.mat-button-toggle-checked {
+                        background-color: rgba(map-get($primary, default), .08);
+                    }
+                }
+            }
+        }
+    }
+
+    // cdk items
+    .alert-options-cdk-panel.mat-menu-panel {
+
+        .mat-menu-content {
+            .mat-list.mat-list-base {
+                .mat-list-item {
+                    &:hover {
+                        background: lighten(map-get($foreground, divider), 50%);
+                    }
+                }
+            }
+        }
+
+        .mat-list-item-content {
+
+            .add-alert-label {
+                color: map-get($foreground, link);
+            }
+
+            .alert-label-details {
+                .type {
+                    color: map-get($foreground, hint-text);
+                }
+            }
+        }
+    }
+
+}

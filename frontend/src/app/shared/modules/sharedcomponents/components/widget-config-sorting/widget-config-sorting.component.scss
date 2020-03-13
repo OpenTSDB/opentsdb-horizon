@@ -1,0 +1,45 @@
+@mixin widget-config-sorting-component-base() {
+    widget-config-sorting {
+        padding-left: 30px;
+        padding-top: 10px;
+
+        .order-title {
+            font-weight: 500;
+        }
+
+        .limit-title {
+            padding-top: 15px;
+            font-weight: 500;
+        }
+
+        mat-button-toggle-group { // top/bottom toggle
+            margin-top: 5px;
+
+            .mat-button-toggle-button {
+                .mat-button-toggle-label-content {
+                    line-height: 36px;
+                }
+            }
+        }
+
+        mat-form-field {
+            width: 123px;
+        }
+    }
+}
+
+@mixin widget-config-sorting-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    // widget-config-sorting {
+
+    // }
+}

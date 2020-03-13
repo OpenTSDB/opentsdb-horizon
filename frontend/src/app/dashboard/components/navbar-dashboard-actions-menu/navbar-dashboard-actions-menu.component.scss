@@ -1,0 +1,60 @@
+@mixin navbar-dashboard-actions-menu-component-base() {
+    .navbar-dashboard-actions-menu {
+        display: inline-flex;
+
+        .mat-flat-button {
+            &.save-dashboard-button {
+                padding: 0;
+                min-width: initial;
+                margin: auto 6px;
+
+                .mat-icon {
+                    margin: 0;
+                }
+            }
+        }
+    }
+    
+    // CDK ITEMS
+    .dashboard-actions-menu.mat-menu-panel {
+        .mat-menu-item {
+            font-size: 12px;
+            height: 26px;
+            line-height: 26px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(16px);
+            }
+        }
+    }
+}
+
+@mixin navbar-dashboard-actions-menu-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+
+    .navbar-dashboard-actions-menu {
+        .mat-flat-button {
+            &.save-dashboard-button {
+                background-color: map-get($status, success);
+                color: map-get($status, success-contrast);
+            }
+        }
+    }
+
+    // cdk items
+    .dashboard-actions-menu {
+        .mat-menu-item {
+            .mat-icon {
+                //color: map-get($foreground, link);
+            }
+        }
+    }
+}

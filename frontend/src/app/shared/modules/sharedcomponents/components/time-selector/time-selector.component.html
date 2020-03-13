@@ -1,0 +1,28 @@
+<div *ngIf="isViewMode" class="view-mode">
+  <strong>{{secondsToLabel(timeInSecondsAsNumber)}}</strong>
+</div>
+
+<div *ngIf="!isViewMode" class="edit-mode">
+  <button mat-button class="time-button" (click)="menuOpened()" [matMenuTriggerFor]="menu">{{secondsToLabel(timeInSecondsAsNumber)}} 
+    <div class="mat-select-arrow-wrapper">
+      <div class="mat-select-arrow"></div>
+    </div>
+  </button>
+  
+  <mat-menu #menu="matMenu" class="cdk-time-menu">
+    <button *ngFor="let preset of presets" mat-menu-item (click)="selectedPreset(preset)">{{secondsToLabel(preset)}}</button>
+    <div mat-menu-item class="cdk-custom-time" (click)="$event.stopPropagation();">
+      <mat-form-field class="has-right-items">
+        <mat-label>Custom Time</mat-label>
+        <input matInput [formControl]="inputVal" #customTime class="custom-time-input" id="custom-time"
+          (keyup)="keyedOnUnitInputBox(customTime.value)"
+          (keyup.enter)="customTimeEntered()"
+          (blur)="customTime.focus()"
+          (click)="$event.stopPropagation();">
+        <mat-hint *ngIf="inputVal.errors && inputVal.errors.forbiddenName">Try 6min, 5h, 4d, etc.</mat-hint>
+        <mat-hint *ngIf="inputVal.errors && inputVal.errors.tooLarge"> Max time: {{secondsToLabel(maxSeconds)}}</mat-hint>
+        <mat-hint *ngIf="inputVal.errors && inputVal.errors.tooSmall"> Min time: {{secondsToLabel(minSeconds)}}</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-menu>
+</div>

@@ -1,0 +1,35 @@
+<div class="bucket-meta">{{ meta.bucketNSPercent}} % of Series, {{ meta.bucketNSeries }} of {{ options.heatmap.nseries }}, Bucket Range: [ {{meta.bucketRange[0] }} ,  {{ meta.bucketRange[1] }} )</div>
+<div class="bucket-detail">
+    <div class="column ts-data-wrapper has-scroller">
+            <div class="is-scroller" >
+                <table #legendTable class="ts-legend-table" *ngIf="meta.bucketNSeries"
+                    mat-table
+                    [dataSource]="tableDataSource"
+                    matSort
+                    matSortActive="value"
+                    matSortDirection="desc"
+                    matSortDisableClear="true">
+                    <ng-container *ngFor="let column of tableColumns || [] " [matColumnDef]="column">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
+                        <td mat-cell class="nowrap" *matCellDef="let element"> {{ element[column] }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true" class="mat-elevation-z1"></tr>
+                    <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+                </table>
+            </div>
+    </div>
+  <div class="column chartContainer"  #chartContainer>
+        <div class="chart"  [style.height]="size.height + 'px'"
+        D3BarChart
+        [options]="barData"
+        [size]="size"
+        ></div>
+  </div>
+</div>
+<info-island-toolbar customClass="timeseries-legend-toolbar">
+    <div class="toolbar-item">
+        <span>{{ meta.metric }} | </span>
+        <span>{{ meta.formattedTime }}</span>
+    </div>
+    <span class="flex-spacer" style="min-width: 30px;"></span>
+</info-island-toolbar>

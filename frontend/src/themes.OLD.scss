@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/**************************************
+ * MATERIAL THEMES
+ **************************************/
+
+// material theming support
+@import '~@angular/material/theming';
+
+// theme configs
+@import 'styles/theme-config';
+
+// general config
+@import 'styles/config';
+
+// import component mixins
+@import 'styles/theme-components';
+
+/*
+ * DEFAULT THEME
+ */
+
+// Due to some wierd issue with how it checks things before calling 'mat-core',
+// you have to include one of the prebuilt themes or define a theme before calling 'mat-core'
+// avoid getting an error in the console.
+// Whatever is included here will be our 'default' theme
+@include angular-material-theme(map-get($app-available-themes, 'default'));
+@include generate-component-themes(map-get($app-available-themes, 'default'));
+
+// Now we can build out the Material core
+@include mat-core();
+
+/*
+ * ALTERNATE THEMES
+ */
+
+
+@each $theme, $theme-config in $app-available-themes {
+    // avoid 'default' theme sincewe already declared it
+    @if $theme != 'default' {
+        /* [[  THEME  ]] #($theme)  */
+        [theme='#{$theme}'] {
+
+            //* Material core theme */
+            @include angular-material-theme($theme-config);
+            //* Component themes */
+            @include generate-component-themes($theme-config, $theme);
+        }
+    }
+}

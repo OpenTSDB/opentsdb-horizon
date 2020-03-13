@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>
+    <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
+    <span>Save Dashboard</span>
+</h2>
+<mat-dialog-content [formGroup]="saveForm">
+
+    <p class="save-control mat-caption">New dashboards need to provide some information before saving.</p>
+    <div class="save-control">
+        <div class="mat-label">Dashboard Name *</div>
+        <mat-form-field appearance="fill" color="primary" floatLabel="never" class="dashboard-title">
+            <input matInput placeholder="Please enter dashboard name" formControlName="title" required>
+            <mat-error *ngIf="saveForm['controls']['title'].errors && saveForm['controls']['title'].errors.required">Dashboard name is required</mat-error>
+            <mat-error *ngIf="saveForm['controls']['title'].errors && saveForm['controls']['title'].errors.minlength">Dashboard name should be at least 3 characters</mat-error>
+            <mat-error *ngIf="saveForm['controls']['title'].errors && saveForm['controls']['title'].errors.maxlength">Dashboard name should be shorter than 50 characters</mat-error>
+        </mat-form-field>
+        <mat-error *ngIf="saveForm.hasError('duplicateDashboard')">A dashboard with that name already exists in {{(saveForm['controls']['namespace'].enabled) ? 'the selected namespace' : 'your personal folder'}}</mat-error>
+    </div>
+    <div class="form-field-group save-control" *ngIf="formReady">
+        <label>Save to:</label>
+        <mat-radio-group (change)="dashboardSaveToChanged($event)">
+            <mat-radio-button value="isNamespace" checked=true>
+                <div class="use-namespace" [ngClass]="{'is-disabled': saveForm['controls']['namespace'].disabled}">
+                    <span class="mat-label">Namespace</span>
+                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                        <input matInput placeholder="Enter a namespace" formControlName="namespace"
+                            (keydown)="namespaceKeydown($event)"
+                            (keydown.enter)="namespaceKeydown($event)"
+                            (blur)="namespaceKeydown($event)"
+                            [matAutocomplete]="namespaceAuto"
+                            autocomplete="off">
+                        <!-- auto complete-->
+                    </mat-form-field>
+                    <mat-error *ngIf="saveForm['controls']['namespace'].errors && saveForm['controls']['namespace'].errors.required">Namespace is required, if not for
+                        personal use</mat-error>
+                    <mat-error *ngIf="saveForm['controls']['namespace'].errors && saveForm['controls']['namespace'].errors.invalid">Invalid Namespace</mat-error>
+                    <mat-autocomplete #namespaceAuto="matAutocomplete" (optionSelected)="namespaceOptionSelected($event)">
+                        <mat-option *ngFor="let option of filteredNamespaceOptions | async" [value]="option.name">
+                            {{ option.name }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
+            </mat-radio-button>
+
+            <mat-radio-button value="isPersonal">
+                <span class="save-control">My personal folder</span>
+            </mat-radio-button>
+        </mat-radio-group>
+
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-flat-button color="primary" (click)="saveDashboardAction()" [disabled]="saveForm.invalid">Save</button>
+  <button mat-stroked-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

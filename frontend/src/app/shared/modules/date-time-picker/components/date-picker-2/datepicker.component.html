@@ -1,0 +1,97 @@
+<!-- INPUT FIELD -->
+<span class="input-field">
+    <mat-form-field [formGroup]="dateForm" appearance="fill" style="min-width: 296px;">
+        <mat-label>{{inputBoxName}}</mat-label>
+        <input matInput
+            id="input-box"
+            #dateInput
+            (input)="dateInputChanged()"
+            (focus)="inputFocused()"
+            (keyup.enter)="enterKeyed()"
+            type="text"
+            formControlName="dateInput"
+            class="form-control"/>
+        <button mat-button matSuffix mat-icon-button (click)="toggleCalendar()" (keydown)="enterKeyedOnCalendarButton($event)">
+            <mat-icon fontSet="denali" fontIcon="d-calendar" color="primary"></mat-icon>
+        </button>
+    </mat-form-field>
+    
+    <div *ngIf="formFields.dateInput.errors" class="invalid-feedback">
+        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.format && date"><div [innerHTML]="formatError"> </div></mat-error>
+        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.maxDate"><div> {{maxDateError}} </div></mat-error>
+        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.minDate"><div> {{minDateError}} </div></mat-error>
+    </div>
+</span>
+
+<!-- CALENDAR -->
+<div class="calendar-container" *ngIf="showCalendar">
+
+    <div class="mat-calendar-header">
+        <div class="mat-calendar-controls">
+            <button mat-button class="mat-calendar-period-button" (click)="toggleDisplay()" *ngIf="displayDayCalendar">
+                {{calendarTitle}}
+                <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
+            </button>
+
+            <button mat-button class="mat-calendar-period-button" (click)="toggleDisplay()" *ngIf="!displayDayCalendar">
+                {{monthCalendarTitle}}
+                <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
+            </button>
+
+            <div class="mat-calendar-spacer"></div>
+            <button mat-icon-button class="mat-calendar-previous-button" (click)="prev()"></button>
+            <button mat-icon-button class="mat-calendar-next-button" (click)="next()"></button>
+        </div>
+    </div>
+
+    <!-- DAY CALENDAR -->
+    <div class="mat-calendar-content" *ngIf="displayDayCalendar">
+        <table class="mat-calendar-table">
+            <thead class="mat-calendar-table-header">
+                <tr>
+                    <th class="mat-header-cell" *ngFor="let name of dayNames">{{name}}</th>
+                </tr>
+                <tr>
+                    <th class="mat-calendar-table-header-divider" colspan="7"></th>
+                </tr>
+            </thead>
+
+            <tbody class="mat-calendar-body">
+                <tr *ngFor="let week of weeks">
+                    <td class="mat-calendar-body-cell" *ngFor="let day of week" [ngClass]="{'mat-calendar-body-disabled': !options.enableFuture && day.isFuture, 'mat-calendar-body-not-current': !day.currentMonth && !day.isFuture, 'mat-calendar-body-active': day.isToday}">
+                        <div class="mat-calendar-body-cell-content"
+                            [ngClass]="{'mat-calendar-body-today': day.isToday, 'mat-calendar-body-selected': day.selected}"
+                            (click)="day.enabled ? selectDate(day) : null">
+                            {{day.day}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MONTH CALENDAR -->
+    <div class="mat-calendar-content" *ngIf="!displayDayCalendar">
+        <table class="mat-calendar-table">
+            <thead class="mat-calendar-table-header">
+                <tr>
+                    <th class="mat-calendar-table-header-divider" colspan="7"></th>
+                </tr>
+            </thead>
+            <tbody class="mat-calendar-body">
+                <tr *ngFor="let monthRow of monthNames; let i = index">
+                    <td class="mat-calendar-body-cell"
+                        style="width: 25%" 
+                        *ngFor="let month of monthRow; let j = index">
+
+                        <div class="mat-calendar-body-cell-content"
+                            [ngClass]="{'mat-calendar-body-today': month.isCurrentMonth, 'mat-calendar-body-selected': month.isSelected, 'mat-calendar-body-disabled': month.isDisabled}"
+                            (click)="monthSelected(i * 4 + j)">
+                            {{month.text}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

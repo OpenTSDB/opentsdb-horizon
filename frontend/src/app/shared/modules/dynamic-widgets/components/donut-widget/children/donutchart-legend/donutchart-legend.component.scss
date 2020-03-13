@@ -1,0 +1,98 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin donutchart-legend-component-base() {
+
+    .legend text {
+        font-size: 10px;
+    }
+
+    .widget-config-tab.donutchart-legend-configuration {
+        // style rules here
+        padding: 14px 10px;
+        
+        > form {
+            flex-direction: column;
+        }
+
+        .column:nth-child(n+2):nth-last-child(n+2) {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .column:first-child {
+            padding-right: 30px;
+        }
+
+        .column:last-child {
+            padding-left: 30px;
+        }
+
+        .form-field-group {
+            .mat-form-field:not(:last-child) {
+                margin-right: 8px;
+            }
+        }
+
+        .fixed-label {
+            display: inline-block;
+            width: 75px;        
+        }
+
+        .config-control:not(.with-enable-label):not(.inline-controls) > .label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .config-control.with-enable-label {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+
+            .label:first-child {
+                margin-right: 10px;
+            } 
+        }
+
+        .config-control.inline-controls {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+
+            .fixed-label {
+                padding: 10px 0;
+
+                &:not(:first-child) {
+                    margin-left: 25px;
+                }
+            }
+        }
+    }
+}
+
+@mixin donutchart-legend-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $good-green: if($is-dark, map-get($success, default), map-get($success, 600));
+
+    .widget-config-tab.legend-configuration {
+        // style rules here
+
+        .config-control.with-enable-label {
+            .mat-caption.is-enabled {
+                color: $good-green;
+            }
+        }
+    }
+
+}
+

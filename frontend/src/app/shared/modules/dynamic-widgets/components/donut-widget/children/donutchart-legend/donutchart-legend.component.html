@@ -1,0 +1,22 @@
+<form [formGroup]="gForm">
+        <div class="config-control with-enable-label">
+            <label class="fixed-label">Visibility</label>
+            <div class="form-field-group">
+                <mat-slide-toggle formControlName="display"><span class="mat-caption" [ngClass]="{'is-enabled': gForm.controls['display'].value }">Hide legend</span></mat-slide-toggle>
+            </div>
+        </div>
+        <div class="config-control inline-controls">
+            <label class="fixed-label">Position</label>
+            <div class="form-field-group">
+                <mat-radio-group formControlName="position">  
+                    <mat-radio-button *ngFor="let option of positionOptions" [value]="option.value">{{option.label}}</mat-radio-button>  
+                </mat-radio-group>
+            </div>
+        </div>
+        <div class="config-control with-enable-label">
+                <label class="fixed-label">Visibility</label>
+                <div class="form-field-group">
+                    <mat-slide-toggle formControlName="showPercentages"><span class="mat-caption" [ngClass]="{'is-enabled': gForm.controls['showPercentages'].value }">Show Percentages</span></mat-slide-toggle>
+                </div>
+        </div>
+</form>

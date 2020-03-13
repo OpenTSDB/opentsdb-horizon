@@ -1,0 +1,113 @@
+@mixin alert-details-count-component-base() {
+
+    .alert-details-count {
+        position: relative;
+        top: 0px;
+        margin-right: -5px;
+
+        .mat-header-row {
+            height: 31px;
+        }
+
+        .mat-row {
+            height: 32px;
+        }
+
+        .mat-cell {
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+
+        .mat-header-cell {
+            padding: 0px;
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed {
+            text-align: right;
+
+            .count-empty { }
+
+            .count-amount {
+                padding: 2px;
+                cursor: pointer;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 12px;
+                padding: 3px 6px;
+                outline: none;
+            }
+        }
+
+        .header {
+            padding: 4px;
+            font-weight: normal
+        }
+    }
+}
+
+@mixin alert-details-count-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+    $status: map-get($theme-config, status);
+
+    .alert-details-count {
+
+        .mat-table {
+            box-shadow: none;
+            border-left: solid 1px lightgray;
+            border-right: solid 1px lightgray;
+        }
+
+        .mat-header-row {
+            border-bottom: none;
+        }
+
+        .cdk-column-good {
+            .count-amount {
+                background-color: map-get($status, success);
+            }
+        }
+
+        .cdk-column-bad {
+            .count-amount {
+                background-color: map-get($status, error);
+            }
+        }
+
+        .cdk-column-warn {
+            .count-amount {
+                background-color: map-get($status, warning);
+            }
+        }
+
+        .cdk-column-unknown {
+            .count-amount {
+                background-color: map-get($denali-grey, 400);
+            }
+        }
+
+        .cdk-column-missing {
+            .count-amount {
+                background-color: map-get($denali-blue, 400);
+            }
+        }
+    }
+}
+
+

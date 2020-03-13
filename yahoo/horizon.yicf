@@ -1,0 +1,17 @@
+PRODUCT_NAME = horizon_dev
+MAJOR =`git describe --abbrev=0 ||  echo '0.0.560.'${SD_BUILD_ID}`
+DATE = `date +%s`
+VERSION = "$(MAJOR)"
+SHORT_DESC = `head -1 ./README.md`
+LONG_DESC = `cat ./README.md`
+CUSTODIAN = screwdriver-devel@yahoo-inc.com http://twiki.corp.yahoo.com/view/Cocktails/ScrewDriver
+SRCDIRS = ./server
+PACKAGE_OS_SPECIFIC = no
+
+YINST bug-product Yamas
+YINST bug-component General
+
+YINST requires pkg ynodejs_core             10.0.0.0 10.9999.9999.9999
+YINST requires pkg ynodejs_cosmo            * *
+
+find 0644 - - share/node/horizon_dev/ $(SRCDIRS)/ -name "*" -type f ! -ipath '*/artifacts/*' ! -ipath '*.yicf' ! -path '*.git*' ! -ipath '*/resources*' ! -path '*/test/*' ! -path '*/tests/*' ! -path '*/screwdriver/*' ! -path '*/config.js'

@@ -1,0 +1,12 @@
+<strong>UI Theme</strong>
+<button mat-flat-button [matMenuTriggerFor]="themeMenu" class="menu-trigger">
+    <span>{{activeThemeLabel}} Theme</span>
+    <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon>
+</button>
+<mat-menu #themeMenu="matMenu" [overlapTrigger]="false" class="settings-dropmenu settings-themepicker-menu" xPosition="after">
+    <button mat-menu-item *ngFor="let option of themeOptions" [ngClass]="{ 'is-active': option.value === activeTheme }" (click)="selectTheme(option)">
+        <span>{{option.label}}</span>
+        <span class="flex-spacer"></span>
+        <mat-icon *ngIf="option.value === activeTheme">check</mat-icon>
+    </button>
+</mat-menu>

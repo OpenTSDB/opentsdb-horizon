@@ -1,0 +1,53 @@
+/* TIMEZONE TOGGLE COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin navbar-timezone-toggle-component-base() {
+    
+    .navbar-timezone-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        .timezone-toggle-options.sliding-button-group {
+            .mat-tab-link {
+                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                height: 24px;
+            }
+
+            .mat-ink-bar {
+                height: 20px;
+            }
+        }
+        
+    }
+}
+
+@mixin navbar-timezone-toggle-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+
+    .navbar-timezone-toggle {
+        .timezone-toggle-options.sliding-button-group {
+            background-color: darken(map-get($background, navbar), 4%);
+
+            .mat-tab-link {
+                &,
+                &.mat-tab-label-active {
+                    color: map-get($foreground, navbar-text);
+                }
+            }
+
+            .mat-ink-bar {
+                background-color: rgba(map-get($foreground, navbar-text), .25);
+            }
+        }
+    }
+}

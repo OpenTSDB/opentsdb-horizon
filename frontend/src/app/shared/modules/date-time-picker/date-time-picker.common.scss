@@ -1,0 +1,59 @@
+/** 
+COMMON STYLES FOR WDATE TIME
+**/
+
+// NOTE: These styles cover ALL of the widget config panels generic classes.
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+@mixin date-time-picker-common-base() {
+    // when it is in the navbar
+    .navbar-item.nav-date-time-picker {
+        margin: 0 5px;
+
+        .mat-raised-button {
+            @include mat-elevation(0);
+            line-height: 24px;
+            font-size: 12px;
+            padding-left: 6px;
+            padding-right: 0;
+
+            .mat-icon {
+                font-size: 1.2em;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+
+                &:first-child {
+                    margin-right: 5px;
+                }
+
+                &:last-child {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+}
+
+@mixin date-time-picker-common-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    // when it is in the navbar
+    .navbar-item.nav-date-time-picker {
+        .mat-raised-button {
+            background-color: darken(map-get($background, navbar), 4%);
+            color: map-get($foreground, navbar-text);
+
+            &:hover {
+                background-color: lighten(map-get($background, navbar), 8%);
+            }
+        }
+    }
+
+}

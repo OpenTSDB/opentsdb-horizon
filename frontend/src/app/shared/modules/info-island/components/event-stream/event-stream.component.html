@@ -1,0 +1,77 @@
+<info-island-toolbar customClass="event-stream-toolbar">
+    <div class="title">{{title}}</div>
+</info-island-toolbar>
+<div class="event-stream-list" [ngClass]="{'not-ready': !displayReady}"> 
+    <mat-accordion class="event-accordion" displayMode="flat" #eventAccordion>
+        <ng-container *ngFor="let bucket of buckets; let i = index">
+            <mat-expansion-panel class="event-panel" expanded="{{expandedBucketIndex === i}}" (afterExpand)="openExpansion(i)" (afterCollapse)="collapseExpansion(i)" #eventPanel>
+                <mat-expansion-panel-header collapsedHeight="32px" expandedHeight="32px" >
+                    <mat-panel-title>
+                        <span>
+                            <span class="event-time">{{bucket.displayTime}}</span>
+                            <span class="event-count">{{bucket.events.length}} {{(bucket.events.length > 1) ? 'Events' : 'Event'}}</span>
+                        </span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngIf="expandedBucketIndex === i">
+                    <div *ngFor="let event of bucket.events; let j = index">
+                        <div *ngIf="j < maxEventsShown" class="event-summary">
+                            <div class="event-header">
+                                <strong class="event-source">{{event.source}}</strong>
+                                <span class="event-time">{{event.displayTime || 'BROKETIME'}}</span>
+                            </div>
+                            <div class="event-description">
+                                <span>{{event.title}}</span>
+                            </div>
+                            
+                            <div class="event-optionals">
+                                <div class="event-tags">
+                                    <fieldset *ngIf="event.tags">
+                                        <legend>Tags</legend>
+                                        <span class="event-tag" *ngFor="let tag of tags[i][j]">
+                                            <span class="tag-key">{{tag.key}}:</span> <span class="tag-value">{{tag.value}}</span>
+                                        </span>
+                                    </fieldset>
+                                </div>
+                
+                                <div class="event-properties">
+                                    <fieldset>
+                                        <legend> Properties </legend>
+                                        <span class="event-property">
+                                            <span class="tag-key">namespace:</span> <span class="tag-value">{{ event.namespace }}</span>
+                                        </span>
+                
+                                        <span class="event-property">
+                                            <span class="tag-key">source:</span> <span class="tag-value">{{ event.source }}</span>
+                                        </span>
+                
+                                        <span class="event-property" *ngIf="event.priority">
+                                            <span class="tag-key">priority:</span> <span class="tag-value">{{ event.priority }}</span>
+                                        </span>
+                
+                                        <span class="event-property" *ngFor="let tag of props[i][j]">
+                                            <span class="tag-key">{{tag.key}}: </span> <span class="tag-value">{{ tag.value }}</span>
+                                        </span>
+                                    </fieldset>
+                                </div>
+    
+                                <div class="event-details-wrapper">
+                                    <button mat-button color="primary" (click)="event.showDetails = !event.showDetails;">
+                                        <span>{{event.showDetails ? 'Hide' : 'Show'}} Message</span>
+                                        <mat-icon fontSet="denali" [fontIcon]="(event.showDetails) ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
+                                    </button>
+                                    <div class="event-details" *ngIf="event.showDetails">
+                                        {{event.message}}   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="j === maxEventsShown" class="max-error-message">
+                            First {{maxEventsShown}} shown. Narrow your Search.
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </ng-container>
+    </mat-accordion>
+</div>

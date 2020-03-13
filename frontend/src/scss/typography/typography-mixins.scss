@@ -1,0 +1,95 @@
+@mixin setBaseFontSize($base: 14px) {
+    @at-root {
+        html {
+            font-size: $base;
+        }
+    }
+}
+
+@mixin generate-typeface-imports($config) {
+    $family: map-get($config, family);
+    $font-path: map-get($config, path);
+    $fonts: map-get($config, fonts);
+
+    @each $font-tyle, $font-config in $fonts {
+    
+        $style: map-get($font-config, style);
+        $weight: map-get($font-config, weight);
+        $local: map-get($font-config, local);
+        $local2: map-get($font-config, local2);
+        $file-prefix: map-get($font-config, file-prefix);
+        $woff-path: '#{$font-path}/#{$file-prefix}.woff';
+        $woff2-path: '#{$font-path}/#{$file-prefix}.woff2';
+        
+    
+        /* #{$family} - #{$weight} #{$style} */
+        @font-face {
+            font-family: $family;
+            font-style: $style;
+            font-display: swap;
+            font-weight: $weight;
+            src:
+              local('#{$local}'),
+              local('#{$local2}'),
+              url('#{$woff2-path}') format('woff2'), /* Super Modern Browsers */
+              url('#{$woff-path}') format('woff'); /* Modern Browsers */
+          }
+    }
+}
+
+@function generate-material-compatible-typography-config($config){
+
+    $font-family:   map-get($config, font-family);
+    $weight-maps:   map-get($config, fontweight-map);
+
+    $display-4:     mat-typography-level(112px, 112px, map-get($weight-maps, light));
+    $display-3:     mat-typography-level(56px, 56px, map-get($weight-maps, regular));
+    $display-2:     mat-typography-level(45px, 48px, map-get($weight-maps, regular));
+    $display-1:     mat-typography-level(34px, 40px, map-get($weight-maps, regular));
+    $headline:      mat-typography-level(24px, 32px, map-get($weight-maps, regular));
+    $title:         mat-typography-level(20px, 32px, map-get($weight-maps, medium));
+    $subheading-2:  mat-typography-level(16px, 28px, map-get($weight-maps, regular));
+    $subheading-1:  mat-typography-level(15px, 24px, map-get($weight-maps, regular));
+    $body-2:        mat-typography-level(14px, 24px, map-get($weight-maps, medium));
+    $body-1:        mat-typography-level(14px, 20px, map-get($weight-maps, regular));
+    $caption:       mat-typography-level(12px, 20px, map-get($weight-maps, regular));
+    $button:        mat-typography-level(14px, 14px, map-get($weight-maps, medium));
+    
+
+    /*
+    $display-4:     mat-typography-level(8rem, 8rem, map-get($weight-maps, light));
+    $display-3:     mat-typography-level(5rem, 5.4rem, map-get($weight-maps, regular));
+    $display-2:     mat-typography-level(4rem, 4.2rem, map-get($weight-maps, regular));
+    $display-1:     mat-typography-level(3rem, 3.6rem, map-get($weight-maps, regular));
+    $headline:      mat-typography-level(2rem, 2.2rem, map-get($weight-maps, regular));
+    $title:         mat-typography-level(1.6rem, 2rem, map-get($weight-maps, medium));
+    $subheading-2:  mat-typography-level(1.4rem, 1.8rem, map-get($weight-maps, regular));
+    $subheading-1:  mat-typography-level(1.2rem, 1.6rem, map-get($weight-maps, regular));
+    $body-2:        mat-typography-level(1rem, 1.8rem, map-get($weight-maps, medium));
+    $body-1:        mat-typography-level(1rem, 1.8rem, map-get($weight-maps, regular));
+    $caption:       mat-typography-level(.8rem, 1.2rem, map-get($weight-maps, regular));
+    $button:        mat-typography-level(1rem, 1rem, map-get($weight-maps, medium));
+    */
+
+    // Line-height must be unit-less fraction of the font-size.
+    $input:         mat-typography-level(inherit, 1.125, map-get($weight-maps, regular));
+
+
+    @return mat-typography-config(
+        $font-family,
+        $display-4,
+        $display-3,
+        $display-2,
+        $display-1,
+        $headline,
+        $title,
+        $subheading-2,
+        $subheading-1,
+        $body-2,
+        $body-1,
+        $caption,
+        $button,
+        $input
+      );
+
+}
