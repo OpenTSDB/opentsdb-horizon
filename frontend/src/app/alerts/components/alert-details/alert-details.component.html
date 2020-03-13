@@ -42,7 +42,7 @@
         <div *ngIf="!readOnly && (data.type === 'simple' || data.type === 'healthcheck') " class="controls-wrapper">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable class="navbar-item"
                             [fieldValue]="data.name"
@@ -611,7 +611,7 @@
         <div *ngIf="!readOnly && data.type === 'event'" class="controls-wrapper">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable class="navbar-item"
                             [fieldValue]="data.name"
@@ -832,7 +832,7 @@
         <div *ngIf="readOnly" class="controls-wrapper read-only-mode">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <div>
                             {{data.name}}

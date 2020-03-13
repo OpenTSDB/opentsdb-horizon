@@ -1262,12 +1262,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     openDashboardDeleteDialog() {
         const dialogConf: MatDialogConfig = new MatDialogConfig();
-        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        dialogConf.hasBackdrop = true;
-        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-
+        // dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        // dialogConf.hasBackdrop = true;
+        // dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        dialogConf.width = '400px';
+        dialogConf.height = '300px';
         dialogConf.autoFocus = true;
         dialogConf.data = {};
+
+        // mat-dialog-container
+
         this.dashboardDeleteDialog = this.dialog.open(DashboardDeleteDialogComponent, dialogConf);
         this.dashboardDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
             if (dialog_out && dialog_out.delete) {
@@ -1329,7 +1333,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
             this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
-                if (dialog_out.namespace) {
+                if (dialog_out && dialog_out.namespace) {
                     this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: dialog_out.namespace});
                     this.dataShare.setMessage('WidgetToAlert');
                     this.router.navigate(['a', dialog_out.namespace, '_new_']);

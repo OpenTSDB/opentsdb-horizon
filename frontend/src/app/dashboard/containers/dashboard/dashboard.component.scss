@@ -279,6 +279,13 @@
         }
     }
 
+    .cdk-overlay-container {
+        .mat-dialog-container {
+            width: 400px;
+            height: 300px;
+        }
+    }
+
 }
 
 @mixin dashboard-component-theme($theme-config) {

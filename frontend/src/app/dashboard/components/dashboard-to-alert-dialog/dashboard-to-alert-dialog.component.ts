@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, HostBinding, Output } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit, Inject, HostBinding, Output, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatSelectionList } from '@angular/material';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -9,6 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class DashboardToAlertDialogComponent implements OnInit {
   @HostBinding('class.dashboard-to-alert-dialog') private _hostClass = true;
+  @ViewChild('nsList') nsList: MatSelectionList;
 
   constructor(public dialogRef: MatDialogRef<DashboardToAlertDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any ) {
@@ -19,10 +20,11 @@ export class DashboardToAlertDialogComponent implements OnInit {
 
   namespaces: string[] = [];
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.nsList.deselectAll();
+   }
 
   nsSelected(ns) {
-    console.log(ns);
     this.dialogRef.close( {namespace : ns} );
   }
 

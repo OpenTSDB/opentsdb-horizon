@@ -1,10 +1,29 @@
 @mixin dashboard-to-alert-dialog-component-base() {
     .dashboard-to-alert-dialog {
-        overflow: scroll;
+
+        .header {
+            text-align: center;
+            position: sticky;
+            top: 0;
+            left: 0;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+        .footer {
+            text-align: center;
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+            .mat-icon-button { }
+
+        }
 
         .mat-nav-list {
             display: flex;
-            flex-flow: row wrap;
+            flex-wrap: wrap;
+            flex-direction: row;
         }
     }
 }
@@ -25,6 +44,21 @@
     $close-button-text: map-get($foreground, navbar-text);
 
     .dashboard-to-alert-dialog  {
+
+        .header {
+            // todo - white or black
+            background: white;
+        }
+
+        .footer {
+           // todo - white or black
+           background: white;
+
+            .mat-icon-button {
+                // :hover
+            }
+
+        }
 
     }
 }

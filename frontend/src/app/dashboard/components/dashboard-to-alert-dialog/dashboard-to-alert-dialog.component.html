@@ -1,8 +1,8 @@
-<div>
+<div class="header">
   Create alert in which namespace?
 </div>
 
-<mat-nav-list>
+<mat-nav-list #nsList>
   <mat-list-item *ngFor="let ns of namespaces" (click)="nsSelected(ns)">
      <button mat-icon-button>
        {{ns}}
@@ -10,6 +10,8 @@
   </mat-list-item>
 </mat-nav-list>
 
-<button mat-icon-button (click)="canceled()">
-  Cancel
-</button>
+<div class="footer">
+  <button mat-icon-button (click)="canceled()">
+    Cancel
+  </button>
+</div>
