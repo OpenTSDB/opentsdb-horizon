@@ -818,14 +818,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
 
         if (type === 'simple') {
+            const convertedQuery = this.convertQueryFromDashboardToAlert(payload.widget.queries, payload.tplVariables);
             data.queries = {
-                raw: payload.widget.queries
+                raw: convertedQuery
             };
         }
         if (type === 'event') {
-            payload.widget.eventQueries = this.convertEventQueryFromDashboardToAlert(payload.widget.eventQueries);
+            const convertedQuery = this.convertEventQueryFromDashboardToAlert(payload.widget.eventQueries);
             data.queries = {
-                eventdb: payload.widget.eventQueries
+                eventdb: convertedQuery
             };
         }
         this.openEditMode(data);
@@ -848,6 +849,20 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         } // 'healthcheck'
     }
 
+    convertQueryFromDashboardToAlert(queries, tplVariables) {
+        const convertQueries = this.utils.deepClone(queries);
+        for (const q of queries) {
+            for (const f of q.filters) {
+                for (const customFilter of f.customFilter) {
+                    const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
+                    this.moveCustomFilterToFilter(convertQueries, f.tagk, filterValue, customFilter);
+                }
+            }
+        }
+        this.removeEmptyFilters(convertQueries);
+        return convertQueries;
+    }
+
     convertEventQueryFromDashboardToAlert(queries: any) {
         const eventQuery = [];
         for (const query of queries) {
@@ -857,6 +872,51 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             eventQuery.push(q);
         }
         return eventQuery;
+    }
+
+    getTplValueForAlias(tplVariables, alias: string) {
+        for (const tvar of tplVariables.tvars) {
+            if ('[' + tvar.alias + ']' === alias) {
+                return tvar.filter;
+            }
+        }
+        return '';
+    }
+
+    moveCustomFilterToFilter(queries, tagKey, tagValue, customFilter) {
+        for (const q of queries) {
+            for (const f of q.filters) {
+                if (f.tagk === tagKey) {
+                    console.log(f);
+                    if (tagValue) { // add to filters
+                        f.filter.push(tagValue);
+                    }
+                    const index = f.customFilter.indexOf(customFilter);
+                    if (index > -1) { // remove from customFilters
+                        f.customFilter.splice(index, 1);
+                    }
+                    console.log('*', queries);
+                    return;
+                }
+            }
+        }
+    }
+
+    removeEmptyFilters(queries) {
+        for (const q of queries) {
+            const filtersToRemove = [];
+            let index = 0;
+            for (const f of q.filters) { // find indices to remove
+                if (f.customFilter.length === 0 && f.filter.length === 0) {
+                   filtersToRemove.push(index);
+                }
+                index++;
+            }
+            // remove indices
+            for (let i = filtersToRemove.length - 1; i >= 0; i--) {
+                q.filters.splice(filtersToRemove[i], 1);
+            }
+        }
     }
 
     openEditMode(data: any) {

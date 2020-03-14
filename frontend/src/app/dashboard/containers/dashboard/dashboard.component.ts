@@ -202,7 +202,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     dbOwner: string = ''; // /namespace/yamas
     user: string = '';    // /user/zb
     writeSpaces: string[] = [];
-    notifiedLoader = false;
 
     constructor(
         private store: Store,
@@ -335,7 +334,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.rerender = { 'reload': true };
                     break;
                 case 'createAlertFromWidget':
-                    this.openWidgetToAlertDialog(message);
+                    this.createAlertFromWidget(message);
                     break;
                 case 'getQueryData':
                     this.handleQueryPayload(message);
@@ -1215,13 +1214,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     notifyWidgetLoaderUserHasWriteAccess(userHasWriteAccessToNamespace: boolean) {
-        if (!this.notifiedLoader) {
             this.interCom.requestSend({
                 action: 'WriteAccessToNamespace',
                 payload: {userHasWriteAccessToNamespace}
             });
-            this.notifiedLoader = true;
-        }
     }
 
     doesUserHaveWriteAccess() {
@@ -1314,16 +1310,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return namespaces;
     }
 
-    openWidgetToAlertDialog(message) {
+    createAlertFromWidget(message) {
         const namespaces = this.getNamespaceNames();
-
         // user has only 1 ns with write access
         if (namespaces.length === 1) {
             this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
             this.dataShare.setMessage('WidgetToAlert');
             this.router.navigate(['a', namespaces[0], '_new_']);
         } else if (namespaces.length > 1) {
-            // user has multiple write access
+            // pick namespace
             const dialogConf: MatDialogConfig = new MatDialogConfig();
             dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
             dialogConf.hasBackdrop = true;
@@ -1334,7 +1329,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
             this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
                 if (dialog_out && dialog_out.namespace) {
-                    this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: dialog_out.namespace});
+                    this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: dialog_out.namespace, tplVariables: this.tplVariables.viewTplVariables});
                     this.dataShare.setMessage('WidgetToAlert');
                     this.router.navigate(['a', dialog_out.namespace, '_new_']);
                 }
