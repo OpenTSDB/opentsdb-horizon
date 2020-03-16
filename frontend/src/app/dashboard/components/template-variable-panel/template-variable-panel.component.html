@@ -16,6 +16,9 @@
                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                 {{option}}
                             </mat-option>
+                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                <img src="/assets/spinner-26x26.gif" />
+                              </div>
                         </mat-autocomplete>
                         
                     </mat-form-field>
@@ -137,6 +140,9 @@
                                             <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                                 {{option}}
                                             </mat-option>
+                                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                                <img src="/assets/spinner-26x26.gif" />
+                                              </div>
                                         </mat-autocomplete>
                                     </mat-form-field>
                                 </div>

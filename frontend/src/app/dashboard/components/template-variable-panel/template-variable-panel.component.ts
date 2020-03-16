@@ -43,6 +43,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     listenSub: Subscription;
     filteredKeyOptions: Observable<string[]>; // options for key autosuggest
     filteredValueOptions: string[][];
+    filterValLoading = true;
     prevSelectedTagk = '';
     disableDone = false;
     trackingSub: any = {};
@@ -189,14 +190,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.filteredValueOptions[index][0] = regexStr;
                     this.cdRef.markForCheck();
                 }
+                this.filterValLoading = true;
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
+                        this.filterValLoading = false;
                         if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                             this.cdRef.markForCheck();
                         }
                     });
-                
             });
     }
     initListFormGroup(checkRun: boolean = false) {
@@ -333,7 +335,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                     }
                     if (idx === -1) {
-                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true }); 
+                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
+                        selControl.get('display').setValue(val);
+
                     } else {
                         selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                     }                                    
@@ -518,6 +522,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         }
                         if (idx === -1) {
                             selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
+                            selControl.get('display').setValue(val);
                         } else {
                             selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                         }
