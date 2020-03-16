@@ -2,7 +2,7 @@
   Create alert in which namespace?
 </div>
 
-<mat-nav-list #nsList>
+<mat-nav-list #nsList class="namespace-list">
   <mat-list-item *ngFor="let ns of namespaces; let i = index" (click)="nsSelected(ns)" class="ns-item">
      <button mat-icon-button [attr.id]="'ns' + i" class="ns-button">
        {{ns}}

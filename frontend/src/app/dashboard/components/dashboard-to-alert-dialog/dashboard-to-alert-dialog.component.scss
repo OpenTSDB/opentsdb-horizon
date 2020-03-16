@@ -12,6 +12,14 @@
             padding-bottom: 5px;
         }
 
+        .namespace-list {
+            &.mat-nav-list {
+                width: 500px;
+                height: 300px;
+                overflow-y: scroll;
+            }
+        }
+
         .footer {
             text-align: center;
             position: sticky;
