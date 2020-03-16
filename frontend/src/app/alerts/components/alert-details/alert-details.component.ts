@@ -1161,7 +1161,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.options.labels = ['x'];
             this.chartData = { ts: [[0]] };
         }
-        this.getCount();
     }
 
     getTsdbQuery(mid) {
