@@ -185,7 +185,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     // when creating alert from dashboard widget
     dashboardToCancelTo = -1;
-    createdFrom = null;
+    createdFrom = {};
 
     alertOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     recoverOptions: any[] = [
@@ -1465,7 +1465,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
 
         // if created from dashboard and widget
-        if (this.createdFrom) {
+        if (this.createdFrom && Object.keys(this.createdFrom).length) {
            data.createdFrom = this.createdFrom;
         }
 
