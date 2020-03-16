@@ -326,6 +326,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
+        this.getCount();
         this.setAlertEvaluationLink();
     }
 
@@ -1201,7 +1202,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     getCount() {
-        if (this.queries && this.queries[0] && this.data.namespace && this.data && this.data.id) {
+        if (this.data.namespace && this.data && this.data.id) {
             const countObserver = this.httpService.getAlertCount({namespace: this.data.namespace, alertId: this.data.id});
 
             if (this.countSub) {
@@ -1218,7 +1219,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                 },
                 err => {
-                    // this.error = err;
+                    this.error = err;
                 }
             );
         }
@@ -1326,9 +1327,14 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.reloadData();
         }
 
+        if (e.value === 'singleMetric' && this.periodOverPeriodConfig && this.periodOverPeriodConfig.delayEvaluation != null) {
+            this.alertForm['controls'].threshold.get('delayEvaluation').setValue(this.periodOverPeriodConfig.delayEvaluation);
+        }
+
         if (e.value === 'periodOverPeriod') { // singleMetric thresholds can interfere with rendering of periodOverPeriod graph
             this.alertForm['controls'].threshold['controls'].singleMetric.get('badThreshold').setValue(null);
             this.alertForm['controls'].threshold['controls'].singleMetric.get('warnThreshold').setValue(null);
+            this.periodOverPeriodConfig.delayEvaluation = this.alertForm['controls'].threshold.get('delayEvaluation').value;
         }
     }
 
@@ -1428,6 +1434,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 if (this.data.threshold.subType === 'periodOverPeriod') {
                     const dataThresholdCopy = {...data.threshold};
                     data.notification.transitionsToNotify = [...this.periodOverPeriodTransitionsSelected];
+                    data.threshold.delayEvaluation = this.periodOverPeriodConfig.delayEvaluation;
                     data.threshold.periodOverPeriod = {...this.periodOverPeriodConfig.periodOverPeriod};
                     data.threshold.periodOverPeriod.metricId = subNodes[0].id; // metric/expression node
                     data.threshold.periodOverPeriod.queryIndex = dataThresholdCopy.singleMetric.queryIndex;
