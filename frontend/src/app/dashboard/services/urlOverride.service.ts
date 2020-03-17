@@ -111,20 +111,20 @@ export class URLOverrideService {
             var v = url['queryParams'][k];
             switch (k.toLowerCase()) {
                 case '__tsdb_host':
-                    environment.tsdb_host = v;
-                    environment.tsdb_hosts = [v];
+                    environment.tsdb_host = decodeURIComponent(v);
+                    environment.tsdb_hosts = [decodeURIComponent(v)];
                     break;
                 case '__config_host':
-                    environment.configdb = v;
+                    environment.configdb = decodeURIComponent(v);
                     break;
                 case '__meta_host':
-                    environment.metaApi = v;
+                    environment.metaApi = decodeURIComponent(v);
                     break;
                 case '__debug_level':
                     environment.debugLevel = v;
                     break;
                     case '__tsdb_source':
-                    environment.tsdbSource = v;
+                    environment.tsdbSource = decodeURIComponent(v);
                     break;
                 case '__tsdb_cache':
                     environment.tsdbCacheMode = v;

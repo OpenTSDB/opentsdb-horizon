@@ -92,6 +92,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                         if ( message.payload.error ) {
                             this.error = message.payload.error;
+                        } else {
+                            this.error = null;
                         }
                         if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                             environment.debugLevel.toUpperCase() == 'DEBUG' ||
