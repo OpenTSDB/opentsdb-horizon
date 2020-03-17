@@ -1,7 +1,7 @@
 import {
     Type, Component, OnInit, Input, Output, ViewChild,
     ComponentFactoryResolver, EventEmitter,
-    OnChanges, SimpleChanges, HostBinding, ChangeDetectionStrategy, ElementRef, TemplateRef
+    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef
 } from '@angular/core';
 import { WidgetService } from '../../../core/services/widget.service';
 import { WidgetDirective } from '../../directives/widget.directive';
@@ -44,11 +44,15 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private componentFactoryResolver: ComponentFactoryResolver,
         private dialog: MatDialog,
         private infoIslandService: InfoIslandService,
-        private hostElRef: ElementRef
+        private hostElRef: ElementRef,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
-        this.loadComponent();
+        setTimeout(() => {
+            this.loadComponent();
+            this.cdRef.markForCheck();
+        });
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
             if (message.action && this.widget.id === message.id) {

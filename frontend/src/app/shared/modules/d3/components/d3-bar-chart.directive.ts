@@ -3,7 +3,7 @@ import { UnitConverterService } from '../../../../core/services/unit-converter.s
 import { UtilsService } from '../../../../core/services/utils.service';
 
 
-import * as d3 from "d3";
+import * as d3 from 'd3';
 
 @Directive({
   selector: '[D3BarChart]'
@@ -116,9 +116,10 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         .remove();
       const fontSize = barHeight >= labelHeight ? '1em' : barHeight * 0.75 + 'px'; //y.bandwidth()  * 0.4 + "px";
       const chartAreawidth = this.size.width - yAxisWidth - margin.left - margin.right;
+      const dmin = dataset.length > 1 ? d3.min(dataset, (d: any) => parseFloat(d.value)) : Number.MIN_VALUE;
       const x = d3.scaleLinear()
         .range([0, chartAreawidth])
-        .domain([d3.min(dataset, (d: any) => parseFloat(d.value)), d3.max(dataset, (d: any) => parseFloat(d.value))]);
+        .domain([ dmin, d3.max(dataset, (d: any) => parseFloat(d.value))]);
       const g = svg.append('g').attr("transform", "translate(" + (margin.left + yAxisWidth + 3) + "," + margin.top + ")");
 
       // reduce the font-size when bar height is less than the fontsize
