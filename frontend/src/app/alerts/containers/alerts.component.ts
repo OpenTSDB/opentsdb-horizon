@@ -887,7 +887,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         for (const q of queries) {
             for (const f of q.filters) {
                 if (f.tagk === tagKey) {
-                    console.log(f);
                     if (tagValue) { // add to filters
                         f.filter.push(tagValue);
                     }
@@ -895,7 +894,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     if (index > -1) { // remove from customFilters
                         f.customFilter.splice(index, 1);
                     }
-                    console.log('*', queries);
                     return;
                 }
             }
