@@ -40,6 +40,8 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
+import { DataShareService } from '../../../core/services/data-share.service';
+import { Router } from '@angular/router';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -181,6 +183,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     counts = [];
     countSub: Subscription;
 
+    // when creating alert from dashboard widget
+    dashboardToCancelTo = -1;
+    createdFrom = {};
+
     alertOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     recoverOptions: any[] = [
                                 { label: 'Never', value: null },
@@ -261,6 +267,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     doEventQuery$ = new BehaviorSubject(['list', 'count']);
     eventQuery: any = { namespace: '', search: ''};
 
+
     constructor(
         private fb: FormBuilder,
         private queryService: QueryService,
@@ -275,7 +282,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private interCom: IntercomService,
         private alertConverter: AlertConverterService,
         private cdRef: ChangeDetectorRef,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private dataShare: DataShareService,
+        private router: Router
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -326,6 +335,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
+
+        if (this.dataShare.getMessage() === 'WidgetToAlert') {
+            this.dashboardToCancelTo = this.dataShare.getData().dashboardId;
+            this.createdFrom = {widgetId: this.dataShare.getData().widgetId, dashboardId: this.dataShare.getData().dashboardId };
+            this.dataShare.clear();
+        }
+
         this.getCount();
         this.setAlertEvaluationLink();
     }
@@ -1145,7 +1161,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.options.labels = ['x'];
             this.chartData = { ts: [[0]] };
         }
-        this.getCount();
     }
 
     getTsdbQuery(mid) {
@@ -1202,7 +1217,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     getCount() {
-        if (this.data.namespace && this.data && this.data.id) {
+        if (this.data && this.data.namespace && this.data.id) {
             const countObserver = this.httpService.getAlertCount({namespace: this.data.namespace, alertId: this.data.id});
 
             if (this.countSub) {
@@ -1448,6 +1463,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             case 'event':
                 break;
         }
+
+        // if created from dashboard and widget
+        if (this.createdFrom && Object.keys(this.createdFrom).length) {
+           data.createdFrom = this.createdFrom;
+        }
+
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
@@ -1455,10 +1476,14 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     cancelEdit() {
-        // emit with no event
-        this.configChange.emit({
-            action: 'CancelEdit'
-        });
+        if (this.dashboardToCancelTo > 0) {
+            this.router.navigate(['d', this.dashboardToCancelTo]);
+        } else {
+            // emit with no event
+            this.configChange.emit({
+                action: 'CancelEdit'
+            });
+        }
     }
 
     /** Events */
