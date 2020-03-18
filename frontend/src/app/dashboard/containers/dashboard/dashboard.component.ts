@@ -219,6 +219,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     checkUserFavorited$: Observable<boolean> | null;
     checkUserFavoritedSub: Subscription;
 
+    private locked = false;
+
     constructor(
         private store: Store,
         private activatedRoute: ActivatedRoute,
@@ -1339,6 +1341,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     unloadNotification($event: any) {
         if (this.isDashboardDirty()) {
             $event.returnValue = true;
+        }
+    }
+
+    @HostListener('document:keypress', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        if (event.key === 'l' || event.key === 'L') {
+            this.locked = !this.locked;
+            this.interCom.responsePut({
+                action: 'dashboardLocked',
+                payload: {locked: this.locked}
+            });
+
+            this.interCom.requestSend({
+                action: 'systemMessage',
+                payload: {
+                    type: 'info',
+                    message:  this.locked ? 'Selection Locked' : 'Selection Unlocked',
+                    timeoutInSeconds: 3
+                }
+            });
         }
     }
 

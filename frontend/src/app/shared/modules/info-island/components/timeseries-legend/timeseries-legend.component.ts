@@ -84,6 +84,10 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
       this.options.showLogscaleToggle = false;
     }
 
+    if (_islandData.data && _islandData.data.trackMouse) {
+      this.options.trackMouse = _islandData.data.trackMouse;
+    }
+
     this.currentWidgetOptions = utilsService.deepClone(_islandData.data.options);
     this.currentWidgetQueries = utilsService.deepClone(_islandData.data.queries);
     this.multigraph = _islandData.data.multigraph;
@@ -114,6 +118,14 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     this.logScaleY2 = (widgetAxes.y2 && widgetAxes.y2.hasOwnProperty('logscale')) ? widgetAxes.y2.logscale : false;
 
     // set subscriptions
+    this.subscription.add(this.interCom.responseGet().subscribe(message => {
+      switch (message.action) {
+        case 'dashboardLocked':
+          this.options.trackMouse = !message.payload.locked;
+          break;
+      }
+    }));
+
     this.subscription.add(this.interCom.requestListen().subscribe(message => {
       // this.logger.intercom('[TSL] RequestListen', {message});
       switch (message.action) {

@@ -63,6 +63,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     private isStackedGraph = false;
     chartType = 'line';
     multiLimitMessage = '';
+    showToolTip = true;
+    dashboardLocked = false;
 
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
@@ -85,7 +87,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         highlightSeriesBackgroundAlpha: 0.5,
         highlightSeriesBackgroundColor: 'rgb(255, 255, 255)',
         isZoomedIgnoreProgrammaticZoom: true,
-        hideOverlayOnMouseOut: true,
+        hideOverlayOnMouseOut: false,
         isCustomZoomed: false,
         highlightSeriesOpts: {
             strokeWidth: 2,
@@ -250,6 +252,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.legendFocus = false;
                         this.cdRef.markForCheck();
                     }
+                    break;
+                case 'dashboardLocked':
+                    this.dashboardLocked = message.payload.locked;
                     break;
             }
 
@@ -1410,6 +1415,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     /* TIMESERIES LEGEND */
 
+    tooltipVisible(event) {
+        this.showToolTip = event.payload.visible;
+    }
+
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
         // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
@@ -1443,7 +1452,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     options: widgetOptions,
                     queries: this.widget.queries,
                     settings: this.widget.settings,
-                    tsTickData: event.tickData
+                    tsTickData: event.tickData,
+                    trackMouse: !this.dashboardLocked
                 },
                 options: {
                     title: 'Timeseries Legend',
@@ -1472,9 +1482,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 settings: this.widget.settings,
                 tickData: event.tickData
             };
-            if (event.trackMouse) {
-                payload.trackMouse = event.trackMouse;
+
+            if (this.dashboardLocked) {
+                payload.trackMouse = {checked: false};
+            } else {
+                payload.trackMouse = {checked: true};
             }
+
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'tsTickDataChange',

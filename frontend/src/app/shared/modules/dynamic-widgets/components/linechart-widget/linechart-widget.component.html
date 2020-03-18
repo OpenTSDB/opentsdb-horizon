@@ -25,7 +25,7 @@
             'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position=='bottom' && options.labels.length > 1,
             'display-legend-left': widget.settings.legend.display && widget.settings.legend.position=='left' && options.labels.length > 1
         }">
-        <div class="dygraph-legend" #graphLegend></div>
+        <div class="dygraph-legend" #graphLegend [style.visibility]="showToolTip ? 'visible' : 'hidden'"></div>
         <!-- STANDARD GRAPH OUTPUT -->
         <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)">
             <div class="multi-graph-container" #multigraphContainer
@@ -77,9 +77,11 @@
                                         [showEvents]="widget.settings.visual.showEvents"
                                         [multigraph]="multigraphEnabled"
                                         [timeseriesLegend]="tsLegendOptions"
+                                        [widget]="widget"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
-                                        (zoomed)="handleZoom($event)">
+                                        (zoomed)="handleZoom($event)"
+                                        (tooltipVisible)="tooltipVisible($event)">
                                     </div>
                                     <!--<div class="dygraph-legend" #graphLegend [attr.id]="'graphlegend-' + i + '-' + j"></div>-->
                                     <div class="events-overlay" [hidden]="!widget.settings.visual.showEvents" *ngIf="!multigraphEnabled"
