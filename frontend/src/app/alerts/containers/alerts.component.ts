@@ -365,7 +365,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.userNamespaces$.subscribe(data => {
-            this.userNamespaces = data;
+            const dataCopy = this.utils.deepClone(data);
+            dataCopy.sort((a: any, b: any) => {
+                return this.utils.sortAlphaNum(a.name, b.name);
+            });
+            this.userNamespaces = dataCopy;
+
             if (this.stateLoaded.userNamespaces) {
                 this.configLoaded$.next(true);
                 this.configLoaded$.complete();
