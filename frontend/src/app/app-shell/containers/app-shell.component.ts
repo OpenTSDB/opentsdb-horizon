@@ -22,11 +22,13 @@ import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navig
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import {
     AppShellState,
+    DbfsState,
     NavigatorState,
     SetSideNavOpen,
     SSGetUserProfile,
     DbfsLoadResources,
-    DbfsInitialized
+    DbfsInitialized,
+    DbfsResourcesState
 } from '../state';
 import {
     UpdateNavigatorSideNav
@@ -57,6 +59,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     //@Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
     //userProfile: any = {};
 
+    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
+
+    // if the active user is a member of yamas
+    isYamasMember: boolean = false;
+
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
     @ViewChild(NavigatorSidenavComponent) private sideNav: NavigatorSidenavComponent;
@@ -80,6 +87,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         warning: 'd-warning-solid'
     };
 
+    sideNavTopGap: number = 0;
+
     // first load flag
     // tslint:disable-next-line: no-inferrable-types
     private firstLoad: boolean = true;
@@ -94,16 +103,16 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     ) {
         // prefetch the navigator first data
         const dbfsInit = this.store.dispatch(new DbfsLoadResources()).subscribe((state: any) => {
-          // logger.log('DBFS INIT COMPLETE', state);
-          this.store.dispatch(new DbfsInitialized());
-          dbfsInit.unsubscribe();
+            // logger.log('DBFS INIT COMPLETE', state);
+            this.store.dispatch(new DbfsInitialized());
+            dbfsInit.unsubscribe();
         });
     }
 
     ngOnInit() {
 
         this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
-            this.logger.log('LS THEME', { theme });
+            // this.logger.log('LS THEME', { theme });
             this.setAppTheme(theme);
         }));
 
@@ -152,6 +161,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     break;
             }
         }));
+
+        this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
+            // this.logger.ng('RESOURCES LOADED?', resourcesLoaded ? 'YES' : 'NO');
+            if (resourcesLoaded) {
+                const user = this.store.selectSnapshot(DbfsState.getUser());
+                // this.logger.log('USER', user);
+                this.isYamasMember = user.memberNamespaces.includes('yamas');
+            }
+        }));
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -194,6 +212,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
 
     /** BEHAVIORS */
+
+    globalMessageVisibility(event: any) {
+      // this.logger.log('GLOBAL MESSAGE VISIBILITY', event);
+      if (event.visible) {
+          this.sideNavTopGap = 30;
+      } else {
+          this.sideNavTopGap = 0;
+      }
+  }
 
     closeMessageBar() {
         this.messageBarVisible = false;

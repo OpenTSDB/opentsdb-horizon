@@ -2,6 +2,7 @@
     .app-shell {
         display: flex;
         flex: 1;
+        flex-direction: column;
 
         // .app-navigator contains:
         // the icon bar (.app-sidenav)
