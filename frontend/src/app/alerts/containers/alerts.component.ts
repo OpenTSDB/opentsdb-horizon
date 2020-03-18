@@ -151,6 +151,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     ];
     alertSearch: FormControl;
     snoozeSearch: FormControl;
+    defaultDebounceTime = 500; // ms
+    alertSearchDebounceTime = this.defaultDebounceTime; // ms
+    snoozeSearchDebounceTime = this.defaultDebounceTime; // ms
+
 
     snoozesDataSource; // dynamically gets reassigned after new alerts state is subscribed
     snoozeDisplayedColumns: string[] = [
@@ -284,8 +288,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.snoozeSearch = new FormControl();
 
         this.subscription.add(this.alertSearch.valueChanges.pipe(
-            debounceTime(500)
+            debounceTime(this.alertSearchDebounceTime)
         ).subscribe(val => {
+            this.alertSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
             if (this.alertsDataSource) {
@@ -311,13 +316,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                         }
                     }
                     return sanitizedDataStr.toLocaleLowerCase().match(this.alertsFilterRegexp);
-                }
+                };
             }
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
-            debounceTime(500)
+            debounceTime(this.snoozeSearchDebounceTime)
         ).subscribe(val => {
+            this.snoozeSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             if (this.snoozesDataSource) {
                 this.snoozesDataSource.filter = val;
@@ -646,9 +652,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.loadAlertsSnooze([mode]);
         this.setRouterUrl();
         if (mode === 'alerts' && this.alertSearch.value !== '') {
-            this.alertSearch.setValue(this.alertSearch.value);
+            this.retriggerAlertSearch();
         } else if (mode === 'snooze' && this.snoozeSearch.value !== '') {
-            this.snoozeSearch.setValue(this.snoozeSearch.value);
+            this.retriggerSnoozeSearch();
         }
     }
 
@@ -1013,7 +1019,19 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
             this.setTableDataSource();
+            this.retriggerAlertSearch();
+            this.retriggerSnoozeSearch();
         }
+    }
+
+    retriggerAlertSearch() {
+        this.alertSearchDebounceTime = 0;
+        this.alertSearch.setValue(this.alertSearch.value);
+    }
+
+    retriggerSnoozeSearch() {
+        this.snoozeSearchDebounceTime = 0;
+        this.snoozeSearch.setValue(this.snoozeSearch.value);
     }
 
     selectSparklineDisplayOption(option: any) {

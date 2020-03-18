@@ -42,6 +42,7 @@ import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { Router } from '@angular/router';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -284,12 +285,20 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private cdRef: ChangeDetectorRef,
         private themeService: ThemeService,
         private dataShare: DataShareService,
-        private router: Router
+        private router: Router,
+        private location: LocationStrategy
     ) {
         // this.data = dialogData;
         if (this.data.name) {
             this.alertName.setValue(this.data.name);
         }
+
+        // back button on browser goes to overview page
+        location.onPopState(() => {
+            this.configChange.emit({
+                action: 'CancelEdit'
+            });
+          });
     }
 
     ngOnInit() {
@@ -1476,6 +1485,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     cancelEdit() {
+        // check if alert created from db
         if (this.dashboardToCancelTo > 0) {
             this.router.navigate(['d', this.dashboardToCancelTo]);
         } else {
