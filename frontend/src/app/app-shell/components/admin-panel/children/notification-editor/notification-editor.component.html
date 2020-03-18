@@ -1,0 +1,49 @@
+<!--
+    if there is an existing notification
+    1. edit
+    2. disable
+    If there is no active notification
+    1. create
+-->
+<strong>Global Notifications</strong>
+<hr />
+<div class="notification-form" [formGroup]="notificationForm">
+    <!-- notification type [checkbox] -->
+    <div class="notification-type">
+        <label>Notification Type</label>
+        <mat-radio-group formControlName="type">
+            <mat-radio-button value="info">Info</mat-radio-button>
+            <mat-radio-button value="alert">Alert</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <!-- summary [text] -->
+    <div class="notification-summary" style="margin-top: 16px;">
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Summary</mat-label>
+            <textarea matInput formControlName="summary" cdkTextareaAutosize="false"></textarea>
+        </mat-form-field>
+    </div>
+
+    <!-- details [markdown] -->
+    <div class="notification-details" style="margin-top: 16px;">
+        <mat-form-field class="inputArea" style="width: 100%; min-height: 100px;">
+            <textarea matInput
+                formControlName="detail"
+                placeholder="Notification Detail here. We support Markdown."
+                [value]="notificationForm.get('detail').value"
+                style="min-height: 100%;"></textarea>
+        </mat-form-field>
+        <hr style="margin: 8px 0;" />
+        <strong>Detail Markdown Preview</strong>
+        <div class="detail-preview" style="width: 100%; min-height: 100px;">
+            <markdown class="markdown-body" id="markdown-override" [data]="notificationForm.get('detail').value"></markdown>
+        </div>
+    </div>
+</div>
+
+<!-- actions -->
+<div class="actions" style="display: flex; flex-direction: column; align-items: stretch;">
+    <button mat-flat-button color="primary" *ngIf="!activeNotification">Create notification</button>
+    <button mat-flat-button color="primary" *ngIf="activeNotification">Update notification</button>
+    <button mat-flat-button color="accent" *ngIf="activeNotification">Disable Notification</button>
+</div>

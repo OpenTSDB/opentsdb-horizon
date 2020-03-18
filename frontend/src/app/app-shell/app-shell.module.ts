@@ -19,6 +19,10 @@ import {
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
+import {
+  MarkdownModule,
+  MarkedOptions
+} from 'ngx-markdown';
 
 // services
 import { AppShellService } from './services/app-shell.service';
@@ -34,6 +38,7 @@ import { TestNavigatorComponent } from './components/test-navigator/test-navigat
 import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.directive';
 import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
+import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
 
 import {
     DbfsComponent,
@@ -44,6 +49,10 @@ import {
     SettingsPanelComponent,
     SettingsThemeComponent
 } from './components/settings-panel';
+import {
+    AdminPanelComponent,
+    NotificationEditorComponent
+} from './components/admin-panel';
 
 @NgModule({
     imports: [
@@ -54,6 +63,14 @@ import {
         FormsModule,
         ReactiveFormsModule,
         SharedcomponentsModule,
+        MarkdownModule.forRoot({
+          markedOptions: {
+            provide: MarkedOptions,
+            useValue: {
+              sanitize: true,
+            }
+          }
+        }),
         NgxsModule.forFeature([
             AppShellState,
             NavigatorState,
@@ -74,7 +91,10 @@ import {
         DbfsComponent,
         DbfsMiniNavComponent,
         SettingsPanelComponent,
-        SettingsThemeComponent
+        SettingsThemeComponent,
+        GlobalNotificationBannerComponent,
+        NotificationEditorComponent,
+        AdminPanelComponent
     ],
     providers: [
         AppShellService,

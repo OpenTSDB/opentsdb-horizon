@@ -1,0 +1,121 @@
+@import './children/notification-editor/notification-editor.component';
+
+@mixin admin-panel-component-base() {
+    $navbar-height: map-get($navbar-config, 'navbar-height');
+    $logo-height: map-get($navbar-config, 'logo-height');
+
+    .admin-navigator {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        font-weight: 300;
+        font-size: 12px;
+
+        .mat-icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+
+            .mat-button-wrapper {
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mat-icon {
+                line-height: 1;
+                width: 24px;
+                height: 24px;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        .panel-toolbar {
+            @include mat-elevation(0);
+            @include unselectable;
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+            }
+
+            .panel-label {
+                cursor: pointer;
+
+                strong {
+                    font-weight: 400;
+                    font-size: 14px;
+                    text-transform: uppercase;
+                }
+            }
+
+            &.is-master-panel {
+
+                .panel-label {
+                    cursor: default;
+
+                    strong {
+                        text-transform: capitalize;
+                    }
+                }
+            }
+
+            &.mat-toolbar-multiple-rows,
+            &.mat-toolbar-single-row {
+                min-height: $navbar-height !important;
+                height: $navbar-height;
+            }
+        }
+
+        .admin-panel {
+            flex: 1;
+
+            .is-scroller {
+                padding: 16px;
+            }
+        }
+    }
+
+    @include notification-editor-component-base();
+}
+
+@mixin admin-panel-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+    $status: map-get($theme-config, status);
+
+    /* navbar config */
+    $sn-light: map-get($navbar-config, sn-light);
+    $sn-dark: map-get($navbar-config, sn-dark);
+    $sn-light-text: map-get($navbar-config, sn-light-text);
+    $sn-dark-text: map-get($navbar-config, sn-dark-text);
+    $sn-seperator: map-get($navbar-config, sn-seperator);
+    $sn-active: map-get($navbar-config, sn-active);
+
+    $text-color: map-get($background, navbar);
+    $icon-color: $text-color;
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+    $menu-background: map-get($background, card);
+    $menu-background-hover: find-color-invert($menu-background);
+
+    .admin-navigator {
+
+    }
+
+    @include notification-editor-component-theme($theme-config);
+}
