@@ -45,11 +45,11 @@ export class URLOverrideService {
             if (!v) continue;
             switch (k) {
                 case '__start':
-                    time['start'] = v.toLowerCase(); break;
+                    time['start'] = decodeURIComponent(v.toLowerCase()); break;
                 case '__end':
-                    time['end'] = v.toLowerCase(); break;
+                    time['end'] = decodeURIComponent(v.toLowerCase()); break;
                 case '__tz':
-                    time['zone'] = v.toLowerCase(); break;
+                    time['zone'] = decodeURIComponent(v.toLowerCase()); break;
                 default:
                     if (k.startsWith('__'))
                         break;
