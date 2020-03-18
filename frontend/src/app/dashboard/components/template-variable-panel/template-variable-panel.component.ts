@@ -43,6 +43,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     listenSub: Subscription;
     filteredKeyOptions: Observable<string[]>; // options for key autosuggest
     filteredValueOptions: string[][];
+    filterValLoading = true;
     prevSelectedTagk = '';
     disableDone = false;
     trackingSub: any = {};
@@ -130,21 +131,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const name = this.mode.view ? 'view' : 'edit';
         const selControl = arrayControl.at(index);
         if (selControl.invalid) { return; } // no go futher if no tagkey and alias defined.
-        const conVal = selControl.get('filter').value;
-        const res = conVal.match(/^regexp\((.*)\)$/);
-        let initRegVal = '';
-        if (res) {
-            selControl.get('filter').setValue(res[1], { emitEvent: false });
-            initRegVal = res[1];
-        }
+        const val = selControl.get('display').value;
         // only when it not there
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
         } 
 
-        this.trackingSub[name + index] = selControl.get('filter').valueChanges
+        this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
-                startWith(initRegVal),
+                startWith(val),
                 distinctUntilChanged(),
                 debounceTime(200)
             ).subscribe(val => {
@@ -185,7 +180,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 if ( this.trackingSub[qid] ) {
                     this.trackingSub[qid].unsubscribe();
                 }
-                const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
                 // assign regexpStr to first element right away
                 if (this.filteredValueOptions[index]) {
                     if (this.filteredValueOptions[index].length > 1) {
@@ -194,14 +190,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.filteredValueOptions[index][0] = regexStr;
                     this.cdRef.markForCheck();
                 }
+                this.filterValLoading = true;
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
-                        if (results && results.length > 0) {                    
+                        this.filterValLoading = false;
+                        if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                             this.cdRef.markForCheck();
                         }
                     });
-                
             });
     }
     initListFormGroup(checkRun: boolean = false) {
@@ -219,11 +216,13 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.listForm.controls['listVariables'] = this.fb.array([]);
         if (this.tplVariables.viewTplVariables.tvars) {
             this.tplVariables.viewTplVariables.tvars.forEach((data, index) => {
+                const res = data.filter.match(/^regexp\((.*)\)$/);
                 const vardata = {
                     tagk: new FormControl((data.tagk) ? data.tagk : '', []),
                     alias: new FormControl((data.alias) ? data.alias : '', []),
                     filter: new FormControl((data.filter) ? data.filter : '', []),
                     mode: new FormControl((data.mode) ? data.mode : 'auto'),
+                    display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
                     applied: data.applied,
                     isNew: data.isNew
                 };
@@ -261,10 +260,19 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
     }
 
+    checkRegexp(val: string): boolean {
+        const res = val.match(/^regexp\((.*)\)$/);
+        return res ? true : false;
+    }
+
+    getDisplay(val: string): string {
+        const res = val.match(/^regexp\((.*)\)$/);
+        return res ? res[1] : val;
+    }
     // to resturn the last filter mode to use for new one.
     getLastFilterMode(): string {
         let retString = 'auto';
-        if (this.formTplVariables.controls.length > 0) {
+        if (this.formTplVariables.controls && this.formTplVariables.controls.length > 0) {
             const lastFilter = this.formTplVariables.controls[this.formTplVariables.controls.length -1];
             retString = lastFilter.get('mode').value;
         }
@@ -275,11 +283,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     // dirty = 1 means to do insert
     addVariableTemplate(data?: any) {
         data = (data) ? data : { mode: this.getLastFilterMode(), applied: 0, isNew: 1 };
+        let res = null;
+        if (data.filter) {
+            res = data.filter.match(/^regexp\((.*)\)$/);
+        }
         const varData = {
             tagk: new FormControl((data.tagk) ? data.tagk : '', [Validators.required]),
             alias: new FormControl((data.alias) ? data.alias : '', [Validators.required]),
             filter: new FormControl((data.filter) ? data.filter : '', []),
             mode: new FormControl((data.mode) ? data.mode : 'auto'),
+            display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
             applied: data.applied,
             isNew: data.isNew
         };
@@ -303,11 +316,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = control.at(index);
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(()=> {
-            const val = selControl.get('filter').value;
+            const val = selControl.get('display').value;
             // no check and let user enter whatever
             let idx = -1;
             if (val === '') {
-                selControl.get('filter').setValue('', { emitEvent: false });
+                selControl.get('filter').setValue('', { emitEvent: true });
+                selControl.get('display').setValue('');
             } else {
                 // val will not have regexp wrapper yet here
                 // see of the original filer val has regexp
@@ -321,9 +335,11 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                     }
                     if (idx === -1) {
-                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false }); 
+                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
+                        selControl.get('display').setValue(val);
+
                     } else {
-                        selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                        selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                     }                                    
                 }              
             }
@@ -369,7 +385,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     });
                 } 
                 break;
-            case 'filter':
+            case 'display':
                 this.tagValueFocusTimeout = setTimeout(() => {
                     this.manageFilterControl(index);
                 }, 300);
@@ -378,7 +394,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     private getSelectedControl(index: number, formArrayName = 'formTplVariables') {
-        const control = <FormArray>this.editForm.controls[formArrayName];
+        let control = null;
+        if (formArrayName === 'listVariables') {
+            control = <FormArray>this.listForm.controls[formArrayName];
+        } else {
+            control = <FormArray>this.editForm.controls[formArrayName];
+        }
         return control.at(index);
     }
 
@@ -482,13 +503,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.autoSetAlias(selControl, index);
             }, 300);
         }
-        if (cname === 'filter') {
+        if (cname === 'display') {
             if (selControl.invalid) { return; }
             // to check filter again return list       
             this.tagValueBlurTimeout = setTimeout(() => {              
                 let idx = -1;
                 if (val === '') {
-                    selControl.get('filter').setValue('', { eventEmit: false});
+                    selControl.get('filter').setValue('', { eventEmit: true});
+                    selControl.get('display').setValue('');
                 } else {
                     const res = this.tplVariables.editTplVariables.tvars[index].filter.match(/^regexp\((.*)\)$/);
                     if ((res && res[1] === val) || (!res && this.tplVariables.editTplVariables.tvars[index].filter === val)) {
@@ -499,9 +521,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                         }
                         if (idx === -1) {
-                            selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: false });
+                            selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
+                            selControl.get('display').setValue(val);
                         } else {
-                            selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: false });
+                            selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
                         }
                     }
                 }
@@ -593,8 +616,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if ( this.tagValueFocusTimeout ) {
             clearTimeout(this.tagValueFocusTimeout);
         }
+        const display = this.getDisplay(event.option.value);
+        this.tplVariables.editTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index);
-        this.updateState(selControl);
+        selControl.get('display').setValue(display, { eventEmit: false });
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false }); 
+        if (this.tplVariables.editTplVariables.tvars[index].filter !== event.option.value) {
+            this.updateState(selControl);
+        }       
     }
 
     selectVarValueOption(event: any, index: number) {
@@ -612,6 +641,13 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         this.isSecondBlur = true;
         this.focusEl.nativeElement.focus();
+        // handle the display for view form
+        // while select this, we need to update the display
+        const display = this.getDisplay(event.option.value);
+        this.tplVariables.viewTplVariables.tvars[index].display = display;
+        const selControl = this.getSelectedControl(index, 'listVariables');
+        selControl.get('display').setValue(display, { eventEmit: false });
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });        
         // the event is matAutocomplete event, we deal later to clear focus
         if (this.tplVariables.viewTplVariables.tvars[index].filter !== event.option.value) {
             this.tplVariables.viewTplVariables.tvars[index].filter = event.option.value;
@@ -687,9 +723,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     calculateVariableDisplayWidth(item: FormGroup, options: any) {
-
         let minSize = (options && options.minSize) ? options.minSize : '50px';
-        const filter = item.get('filter').value;
+        const filter = item.get('display').value;
         const alias = item.get('alias').value;
         const fontFace = 'Ubuntu';
         const fontSize = 14;

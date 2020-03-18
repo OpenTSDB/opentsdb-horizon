@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         const authCheck = interval(60 * 1000);
         this.authCheckSub = authCheck.subscribe(val => {
-            return this.authService.getCookieStatus()
+            return this.authService.getCookieStatus(true)
                 .subscribe(
                         (res) => {
                             console.log("heatbeat check res", res);

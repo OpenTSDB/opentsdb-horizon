@@ -124,16 +124,19 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
                         if (message.payload && message.payload.error) {
                             this.error = message.payload.error;
-                        } else if (message.payload && message.payload.rawdata) {
-                            if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                                environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                                environment.debugLevel.toUpperCase() == 'INFO') {
+                        } else {
+                            this.error = null;
+                            if (message.payload && message.payload.rawdata) {
+                                if (environment.debugLevel.toUpperCase() === 'TRACE' ||
+                                    environment.debugLevel.toUpperCase() == 'DEBUG' ||
+                                    environment.debugLevel.toUpperCase() == 'INFO') {
                                     this.debugData = message.payload.rawdata.log; // debug log
+                                }
+                                this.data = message.payload.rawdata.results || [];
+                                this.setBigNumber();
+                            } else { // no data, so get some
+                                this.refreshData();
                             }
-                            this.data = message.payload.rawdata.results || [];
-                            this.setBigNumber();
-                        } else { // no data, so get some
-                            this.refreshData();
                         }
                         this.cdRef.detectChanges();
                         break;

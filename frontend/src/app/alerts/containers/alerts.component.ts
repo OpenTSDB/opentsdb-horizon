@@ -59,11 +59,12 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { IntercomService } from '../../core/services/intercom.service';
+import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
+import { DataShareService } from '../../core/services/data-share.service';
 const moment = _moment;
 
 @Component({
@@ -150,6 +151,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     ];
     alertSearch: FormControl;
     snoozeSearch: FormControl;
+    defaultDebounceTime = 500; // ms
+    alertSearchDebounceTime = this.defaultDebounceTime; // ms
+    snoozeSearchDebounceTime = this.defaultDebounceTime; // ms
+
 
     snoozesDataSource; // dynamically gets reassigned after new alerts state is subscribed
     snoozeDisplayedColumns: string[] = [
@@ -260,7 +265,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private cdkService: CdkService,
         private interCom: IntercomService,
         private logger: LoggerService,
-        private utils: UtilsService
+        private utils: UtilsService,
+        private dataShare: DataShareService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -282,8 +288,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.snoozeSearch = new FormControl();
 
         this.subscription.add(this.alertSearch.valueChanges.pipe(
-            debounceTime(500)
+            debounceTime(this.alertSearchDebounceTime)
         ).subscribe(val => {
+            this.alertSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
             if (this.alertsDataSource) {
@@ -309,13 +316,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                         }
                     }
                     return sanitizedDataStr.toLocaleLowerCase().match(this.alertsFilterRegexp);
-                }
+                };
             }
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
-            debounceTime(500)
+            debounceTime(this.snoozeSearchDebounceTime)
         ).subscribe(val => {
+            this.snoozeSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             if (this.snoozesDataSource) {
                 this.snoozesDataSource.filter = val;
@@ -541,7 +549,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             // this.logger.log('ROUTE CHANGE', { url });
 
-            if (url.length >= 1 && url[0].path === 'snooze') {
+            if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
+                this.createAlertFromWidget(this.dataShare.getData());
+            } else if (url.length >= 1 && url[0].path === 'snooze') {
                 this.list = 'snooze';
                 if (url.length >= 2 && this.utils.checkIfNumeric(url[1].path)) {
                     this.store.dispatch(new GetSnoozeDetailsById(parseInt(url[1].path, 10)));
@@ -642,9 +652,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.loadAlertsSnooze([mode]);
         this.setRouterUrl();
         if (mode === 'alerts' && this.alertSearch.value !== '') {
-            this.alertSearch.setValue(this.alertSearch.value);
+            this.retriggerAlertSearch();
         } else if (mode === 'snooze' && this.snoozeSearch.value !== '') {
-            this.snoozeSearch.setValue(this.snoozeSearch.value);
+            this.retriggerSnoozeSearch();
         }
     }
 
@@ -795,6 +805,124 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.location.go('a/' + this.selectedNamespace + '/_new_');
     }
 
+    createAlertFromWidget(payload) {
+        const type = this.getAlertTypeFromWidget(payload.widget);
+        this.selectedNamespace = payload.namespace;
+        this.detailsMode = 'edit';
+        const data = {
+            type: type,
+            namespace: this.selectedNamespace,
+            name: 'Alert from widget ' + payload.widget.settings.title,
+            queries: {},
+            notification: {
+                body: 'Created from dashboard: ' + 'https://yamas.ouroath.com/d/' + payload.dashboardId
+            },
+            createdFrom: {
+                dashboardId: payload.dashboardId,
+                widgetId: payload.widget.id,
+            }
+        };
+
+        if (type === 'simple') {
+            const convertedQuery = this.convertQueryFromDashboardToAlert(payload.widget.queries, payload.tplVariables);
+            data.queries = {
+                raw: convertedQuery
+            };
+        }
+        if (type === 'event') {
+            const convertedQuery = this.convertEventQueryFromDashboardToAlert(payload.widget.eventQueries);
+            data.queries = {
+                eventdb: convertedQuery
+            };
+        }
+        this.openEditMode(data);
+        this.location.go('a/' + this.selectedNamespace + '/_new_');
+    }
+
+    getAlertTypeFromWidget(widget) {
+        const widgetType: string = widget.settings.component_type;
+        if (widgetType.toLowerCase() === 'BarchartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'LinechartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'HeatmapWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'BignumberWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'DonutWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() === 'TopnWidgetComponent'.toLowerCase() ) {
+                return 'simple';
+        } else if (widgetType.toLowerCase() === 'EventsWidgetComponent'.toLowerCase()) {
+            return 'event';
+        } else {
+            return '';
+        } // 'healthcheck'
+    }
+
+    convertQueryFromDashboardToAlert(queries, tplVariables) {
+        const convertQueries = this.utils.deepClone(queries);
+        for (const q of queries) {
+            for (const f of q.filters) {
+                for (const customFilter of f.customFilter) {
+                    const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
+                    this.moveCustomFilterToFilter(convertQueries, f.tagk, filterValue, customFilter);
+                }
+            }
+        }
+        this.removeEmptyFilters(convertQueries);
+        return convertQueries;
+    }
+
+    convertEventQueryFromDashboardToAlert(queries: any) {
+        const eventQuery = [];
+        for (const query of queries) {
+            const q: any = {};
+            q.namespace = query.namespace;
+            q.filter = query.search;
+            eventQuery.push(q);
+        }
+        return eventQuery;
+    }
+
+    getTplValueForAlias(tplVariables, alias: string) {
+        for (const tvar of tplVariables.tvars) {
+            if ('[' + tvar.alias + ']' === alias) {
+                return tvar.filter;
+            }
+        }
+        return '';
+    }
+
+    moveCustomFilterToFilter(queries, tagKey, tagValue, customFilter) {
+        for (const q of queries) {
+            for (const f of q.filters) {
+                if (f.tagk === tagKey) {
+                    if (tagValue) { // add to filters
+                        f.filter.push(tagValue);
+                    }
+                    const index = f.customFilter.indexOf(customFilter);
+                    if (index > -1) { // remove from customFilters
+                        f.customFilter.splice(index, 1);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    removeEmptyFilters(queries) {
+        for (const q of queries) {
+            const filtersToRemove = [];
+            let index = 0;
+            for (const f of q.filters) { // find indices to remove
+                if (f.customFilter.length === 0 && f.filter.length === 0) {
+                   filtersToRemove.push(index);
+                }
+                index++;
+            }
+            // remove indices
+            for (let i = filtersToRemove.length - 1; i >= 0; i--) {
+                q.filters.splice(filtersToRemove[i], 1);
+            }
+        }
+    }
+
     openEditMode(data: any) {
         if (this.detailsMode === 'clone') {
             data.id = '';
@@ -891,7 +1019,19 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
             this.setTableDataSource();
+            this.retriggerAlertSearch();
+            this.retriggerSnoozeSearch();
         }
+    }
+
+    retriggerAlertSearch() {
+        this.alertSearchDebounceTime = 0;
+        this.alertSearch.setValue(this.alertSearch.value);
+    }
+
+    retriggerSnoozeSearch() {
+        this.snoozeSearchDebounceTime = 0;
+        this.snoozeSearch.setValue(this.snoozeSearch.value);
     }
 
     selectSparklineDisplayOption(option: any) {

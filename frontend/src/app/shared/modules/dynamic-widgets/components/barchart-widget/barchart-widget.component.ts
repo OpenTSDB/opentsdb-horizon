@@ -138,6 +138,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         }
                         if ( message.payload.error ) {
                             this.error = message.payload.error;
+                        } else {
+                            this.error = null;
                         }
                         if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                             environment.debugLevel.toUpperCase() == 'DEBUG' ||
