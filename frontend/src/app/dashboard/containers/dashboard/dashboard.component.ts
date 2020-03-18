@@ -337,9 +337,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.createAlertFromWidget(message);
                     break;
                 case 'getQueryData':
+                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     this.handleQueryPayload(message);
                     this.rerender = { 'reload': true };
-                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     break;
                 case 'getEventData':
                     this.handleEventQueryPayload(message);
