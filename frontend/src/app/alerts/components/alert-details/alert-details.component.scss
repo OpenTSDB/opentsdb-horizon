@@ -171,8 +171,10 @@
                 flex-direction: column;
 
                 .namespace {
-                    font-size: 10px;
+                    font-weight: 200;
+                    font-size: 12px;
                     opacity: .4;
+                    margin-bottom: 5px;
                 }
 
                 .alert-name {

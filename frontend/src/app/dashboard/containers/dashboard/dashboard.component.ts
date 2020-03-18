@@ -15,7 +15,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { DBState, LoadDashboard, SaveDashboard, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
-//import { LoadUserNamespaces, LoadUserFolderData, UserSettingsState } from '../../state/user.settings.state';
+
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
     DeleteWidget, WidgetModel } from '../../state/widgets.state';
@@ -36,24 +36,22 @@ import {
     UpdateDashboardTimeZone,
     UpdateDashboardTitle,
     UpdateVariables,
-    UpdateMeta,
-    UpdateDashboardTimeOnZoom,
-    UpdateDashboardTimeOnZoomOut
+    UpdateMeta
 } from '../../state/settings.state';
 import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState } from '../../../app-shell/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
+import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 
 import { LoggerService } from '../../../core/services/logger.service';
 import { HttpService } from '../../../core/http/http.service';
-import { ICommand, CmdManager } from '../../../core/services/CmdManager';
 import { DbfsUtilsService } from '../../../app-shell/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
 import { URLOverrideService } from '../../services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
-import { InternalDispatchedActionResults } from '@ngxs/store/src/internal/dispatcher';
+import { DataShareService } from '../../../core/services/data-share.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -181,6 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
     dashboardDeleteDialog: MatDialogRef<DashboardDeleteDialogComponent> | null;
+    dashboardToAlertDialog: MatDialogRef<DashboardToAlertDialogComponent> | null;
     activeMediaQuery = '';
     gridsterUnitSize: any = {};
     lastWidgetUpdated: any;
@@ -223,7 +222,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private httpService: HttpService,
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
-        private urlOverrideService: URLOverrideService
+        private urlOverrideService: URLOverrideService,
+        private dataShare: DataShareService
     ) { }
 
     ngOnInit() {
@@ -333,9 +333,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.store.dispatch(new UpdateMode(message.payload));
                     this.rerender = { 'reload': true };
                     break;
+                case 'createAlertFromWidget':
+                    this.createAlertFromWidget(message);
+                    break;
                 case 'getQueryData':
                     this.handleQueryPayload(message);
                     this.rerender = { 'reload': true };
+                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     break;
                 case 'getEventData':
                     this.handleEventQueryPayload(message);
@@ -1209,6 +1213,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.writeSpaces = writeSpaces;
     }
 
+    notifyWidgetLoaderUserHasWriteAccess(userHasWriteAccessToNamespace: boolean) {
+            this.interCom.requestSend({
+                action: 'WriteAccessToNamespace',
+                payload: {userHasWriteAccessToNamespace}
+            });
+    }
+
     doesUserHaveWriteAccess() {
         if (this.dbOwner && this.dbOwner.length) {
             return this.writeSpaces.includes(this.dbOwner);
@@ -1247,12 +1258,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     openDashboardDeleteDialog() {
         const dialogConf: MatDialogConfig = new MatDialogConfig();
-        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        dialogConf.hasBackdrop = true;
-        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-
+        // dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        // dialogConf.hasBackdrop = true;
+        // dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        dialogConf.width = '400px';
+        dialogConf.height = '300px';
         dialogConf.autoFocus = true;
         dialogConf.data = {};
+
+        // mat-dialog-container
+
         this.dashboardDeleteDialog = this.dialog.open(DashboardDeleteDialogComponent, dialogConf);
         this.dashboardDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
             if (dialog_out && dialog_out.delete) {
@@ -1285,6 +1300,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 });
             }
         });
+    }
+
+    getNamespaceNames() {
+        const namespaces = [];
+        for (const ns of this.userNamespaces) {
+            namespaces.push(ns.name);
+        }
+        return namespaces;
+    }
+
+    createAlertFromWidget(message) {
+        const namespaces = this.getNamespaceNames();
+        // user has only 1 ns with write access
+        if (namespaces.length === 1) {
+            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
+            this.dataShare.setMessage('WidgetToAlert');
+            this.router.navigate(['a', namespaces[0], '_new_']);
+        } else if (namespaces.length > 1) {
+            // pick namespace
+            const dialogConf: MatDialogConfig = new MatDialogConfig();
+            dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+            dialogConf.hasBackdrop = true;
+            dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+            dialogConf.autoFocus = true;
+            dialogConf.data = {namespaces: namespaces};
+
+            this.dashboardToAlertDialog = this.dialog.open(DashboardToAlertDialogComponent, dialogConf);
+            this.dashboardToAlertDialog.afterClosed().subscribe((dialog_out: any) => {
+                if (dialog_out && dialog_out.namespace) {
+                    this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: dialog_out.namespace, tplVariables: this.tplVariables.viewTplVariables});
+                    this.dataShare.setMessage('WidgetToAlert');
+                    this.router.navigate(['a', dialog_out.namespace, '_new_']);
+                }
+            });
+        }
     }
 
     ngOnDestroy() {

@@ -43,6 +43,7 @@ import { DashboardSaveDialogComponent } from './components/dashboard-save-dialog
 import { DashboardDeleteDialogComponent } from './components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { WidgetDeleteDialogComponent } from './components/widget-delete-dialog/widget-delete-dialog.component';
 import { TemplateVariablePanelComponent } from './components/template-variable-panel/template-variable-panel.component';
+import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 
 @NgModule({
     imports: [
@@ -81,7 +82,8 @@ import { TemplateVariablePanelComponent } from './components/template-variable-p
         DashboardDeleteDialogComponent,
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
-        TemplateVariablePanelComponent
+        TemplateVariablePanelComponent,
+        DashboardToAlertDialogComponent
     ],
     providers: [
         DashboardService,
@@ -91,6 +93,7 @@ import { TemplateVariablePanelComponent } from './components/template-variable-p
         DashboardSettingsDialogComponent,
         DashboardSaveDialogComponent,
         DashboardDeleteDialogComponent,
+        DashboardToAlertDialogComponent,
         WidgetDeleteDialogComponent
     ]
 })

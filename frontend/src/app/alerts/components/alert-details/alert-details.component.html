@@ -42,7 +42,7 @@
         <div *ngIf="!readOnly && (data.type === 'simple' || data.type === 'healthcheck') " class="controls-wrapper">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable class="navbar-item"
                             [fieldValue]="data.name"
@@ -611,7 +611,7 @@
         <div *ngIf="!readOnly && data.type === 'event'" class="controls-wrapper">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable class="navbar-item"
                             [fieldValue]="data.name"
@@ -622,6 +622,7 @@
                     </div>
                 </div>
                 <span class="flex-spacer"></span>
+                <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             </mat-toolbar>
             <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             <div class="alert-control-steps has-scroller">
@@ -831,7 +832,7 @@
         <div *ngIf="readOnly" class="controls-wrapper read-only-mode">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: {{data.namespace}}</span>
+                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <div>
                             {{data.name}}
