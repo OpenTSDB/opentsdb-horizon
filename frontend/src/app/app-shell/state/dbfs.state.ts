@@ -91,6 +91,19 @@ export class DbfsState {
         });
     }
 
+    static yamasMember(userid?: string) {
+        return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
+            if (state.loaded === false) {
+                return { loaded: false};
+            }
+
+            const id = (userid) ? userid : state.activeUser;
+            let user: any = {...state.users[id], loaded: true};
+
+            return user.memberNamespaces.includes('yamas');
+        });
+    }
+
     // utility selector to get a users member namespaces
     // will default to activeUser (Browser Session User)
     static getUserMemberNamespaceData(userid?: string) {
