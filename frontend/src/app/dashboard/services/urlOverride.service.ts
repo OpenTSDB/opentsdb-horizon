@@ -63,7 +63,6 @@ export class URLOverrideService {
             this.overrides['time'] = time;
         if (Object.keys(tags).length)
             this.overrides['tags'] = tags;
-        console.log("debug time", this.overrides)
     }
 
     getLocationURLandQueryParams() {
