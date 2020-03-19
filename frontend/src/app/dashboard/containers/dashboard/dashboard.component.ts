@@ -337,9 +337,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.createAlertFromWidget(message);
                     break;
                 case 'getQueryData':
+                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     this.handleQueryPayload(message);
                     this.rerender = { 'reload': true };
-                    this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     break;
                 case 'getEventData':
                     this.handleEventQueryPayload(message);
@@ -702,7 +702,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.userFolderData$.subscribe( (result: any) => {
 
             if (result && result.loaded) {
-                this.userNamespaces = result.namespaces;
+                const namespaceCopy = this.utilService.deepClone(result.namespaces);
+                namespaceCopy.sort((a: any, b: any) => {
+                    return this.utilService.sortAlphaNum(a.name, b.name);
+                });
+                this.userNamespaces = namespaceCopy;
 
                 if (result.personalFolders && result.personalFolders[0] && result.personalFolders[0].fullPath) {
                     this.user = this.getOwnerFromPath(result.personalFolders[0].fullPath);

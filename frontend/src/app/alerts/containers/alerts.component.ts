@@ -371,7 +371,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.userNamespaces$.subscribe(data => {
-            this.userNamespaces = data;
+            const dataCopy = this.utils.deepClone(data);
+            dataCopy.sort((a: any, b: any) => {
+                return this.utils.sortAlphaNum(a.name, b.name);
+            });
+            this.userNamespaces = dataCopy;
+
             if (this.stateLoaded.userNamespaces) {
                 this.configLoaded$.next(true);
                 this.configLoaded$.complete();
@@ -857,16 +862,32 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     convertQueryFromDashboardToAlert(queries, tplVariables) {
         const convertQueries = this.utils.deepClone(queries);
+
+        // loop through original queries since we are modifying the arrays
         for (const q of queries) {
             for (const f of q.filters) {
                 for (const customFilter of f.customFilter) {
                     const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
-                    this.moveCustomFilterToFilter(convertQueries, f.tagk, filterValue, customFilter);
+                    this.moveCustomFilterToFilter(convertQueries, q.id, f.tagk, filterValue, customFilter);
                 }
             }
         }
+
         this.removeEmptyFilters(convertQueries);
+
+        // sanitize visual settings
+        for (const q of convertQueries) {
+            q.settings = this.generateDefaultVisibilty();
+            for (const m of q.metrics) {
+                m.settings = this.generateDefaultVisibilty();
+            }
+        }
+
         return convertQueries;
+    }
+
+    generateDefaultVisibilty() {
+        return { visual: { visible: true } };
     }
 
     convertEventQueryFromDashboardToAlert(queries: any) {
@@ -889,19 +910,22 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         return '';
     }
 
-    moveCustomFilterToFilter(queries, tagKey, tagValue, customFilter) {
+    moveCustomFilterToFilter(queries, qId, tagKey, tagValue, customFilter) {
         for (const q of queries) {
-            for (const f of q.filters) {
-                if (f.tagk === tagKey) {
-                    if (tagValue) { // add to filters
-                        f.filter.push(tagValue);
+            if (qId === q.id) {
+                for (const f of q.filters) {
+                    if (f.tagk === tagKey) {
+                        if (tagValue) { // add to filters
+                            f.filter.push(tagValue);
+                        }
+                        const index = f.customFilter.indexOf(customFilter);
+                        if (index > -1) { // remove from customFilters
+                            f.customFilter.splice(index, 1);
+                        }
+                        return;
                     }
-                    const index = f.customFilter.indexOf(customFilter);
-                    if (index > -1) { // remove from customFilters
-                        f.customFilter.splice(index, 1);
-                    }
-                    return;
                 }
+
             }
         }
     }
