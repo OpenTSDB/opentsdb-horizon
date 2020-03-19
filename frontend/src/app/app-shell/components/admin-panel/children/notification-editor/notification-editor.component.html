@@ -10,7 +10,7 @@
 <div class="notification-form" [formGroup]="notificationForm">
     <!-- notification type [checkbox] -->
     <div class="notification-type">
-        <label>Notification Type</label>
+        <label>Notification Type: </label>
         <mat-radio-group formControlName="type">
             <mat-radio-button value="info">Info</mat-radio-button>
             <mat-radio-button value="alert">Alert</mat-radio-button>
@@ -18,15 +18,19 @@
     </div>
     <!-- summary [text] -->
     <div class="notification-summary" style="margin-top: 16px;">
+        <label>Summary</label>
         <mat-form-field appearance="fill" style="width: 100%;">
-            <mat-label>Summary</mat-label>
-            <textarea matInput formControlName="summary" cdkTextareaAutosize="false"></textarea>
+            <textarea matInput
+                formControlName="summary"
+                placeholder="Enter brief sentence to describe notification"
+                cdkTextareaAutosize="false"></textarea>
         </mat-form-field>
     </div>
 
     <!-- details [markdown] -->
     <div class="notification-details" style="margin-top: 16px;">
-        <mat-form-field class="inputArea" style="width: 100%; min-height: 100px;">
+        <label>Notification Detail</label>
+        <mat-form-field class="inputArea" style="width: 100%; min-height: 100px;" appearance="fill">
             <textarea matInput
                 formControlName="detail"
                 placeholder="Notification Detail here. We support Markdown."

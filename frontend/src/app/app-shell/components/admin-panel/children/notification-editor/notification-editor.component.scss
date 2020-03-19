@@ -1,6 +1,98 @@
 @mixin notification-editor-component-base() {
     .notification-editor {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        min-height: calc(100% - 30px);
 
+        .notification-form,
+        .notification-details {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .notification-type,
+        .notification-summary,
+        .notification-details {
+            margin-top: 16px;
+        }
+
+        .notification-summary {
+            .mat-form-field.mat-form-field-type-mat-input {
+                width: 100%;
+                height: 50px;
+                display: flex;
+                align-items: stretch;
+                justify-content: stretch;
+                flex: 1;
+                flex-direction: column;
+
+                .mat-form-field-wrapper {
+                    height: 100%;
+                    width: 100%;
+                    flex: 1 1 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mat-form-field-flex,
+                .mat-form-field-infix {
+                    min-height: 50px;
+                    height: 100%;
+                    width: 100%;
+                    flex: 1 1 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mat-input-element {
+                    flex: 1;
+                }
+            }
+        }
+
+        .notification-details {
+            .mat-form-field.mat-form-field-type-mat-input {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: stretch;
+                justify-content: stretch;
+                flex: 1;
+                flex-direction: column;
+
+                .mat-form-field-wrapper {
+                    height: 100%;
+                    width: 100%;
+                    flex: 1 1 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mat-form-field-flex,
+                .mat-form-field-infix {
+                    min-height: 100px;
+                    height: 100%;
+                    width: 100%;
+                    flex: 1 1 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mat-input-element {
+                    min-height: 100px;
+                    height: 100%;
+                    flex: 1;
+                }
+            }
+        }
+
+        .detail-preview {
+            width: 100%;
+            min-height: 100px;
+            flex: 1 1 100%;
+        }
     }
 }
 
