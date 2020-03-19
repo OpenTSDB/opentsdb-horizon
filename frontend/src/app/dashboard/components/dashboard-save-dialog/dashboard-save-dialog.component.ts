@@ -16,6 +16,7 @@ import { map, startWith, debounceTime } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
 
 import { DbfsState, DbfsResourcesState, DbfsLoadResources } from '../../../app-shell/state';
+import { UtilsService } from '../../../core/services/utils.service';
 
 
 @Component({
@@ -70,6 +71,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         private store: Store,
         private fb: FormBuilder,
         public dialogRef: MatDialogRef<DashboardSaveDialogComponent>,
+        private utils: UtilsService,
         @Inject(MAT_DIALOG_DATA) public dbData: any
     ) {}
 
@@ -109,6 +111,10 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
 
         this.subscription.add(this.namespacesData$.subscribe( namespaces => {
             // console.log('NAMESPACES', {namespaces});
+            namespaces.sort((a: any, b: any) => {
+                return this.utils.sortAlphaNum(a.name, b.name);
+            });
+
             this.namespaceOptions = namespaces;
         }));
 
