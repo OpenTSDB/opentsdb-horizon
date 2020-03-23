@@ -15,6 +15,9 @@ import {
     DbfsSyntheticFolderModel,
     DbfsUserModel
 } from './dbfs-resources.interfaces';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { DBState } from '../../dashboard/state';
+import { NgxsStoragePlugin } from '@ngxs/storage-plugin';
 
 /** ACTIONS */
 
@@ -81,6 +84,32 @@ export class DbfsLoadNamespacesListSuccess {
         public readonly response: any,
         public readonly resourceAction: any
     ) {}
+}
+
+export class DbfsLoadUserFavoritesList {
+  public static type = '[DBFS Resources] Load User Favorites List';
+  constructor (public readonly resourceAction: any) {}
+}
+
+export class DbfsLoadUserFavoritesListSuccess {
+  public static type = '[DBFS Resources] Load User Favorites List SUCCESS';
+  constructor (
+      public readonly response: any,
+      public readonly resourceAction: any
+  ) {}
+}
+
+export class DbfsLoadUserRecentList {
+  public static type = '[DBFS Resources] Load User Recent List';
+  constructor (public readonly resourceAction: any) {}
+}
+
+export class DbfsLoadUserRecentListSuccess {
+  public static type = '[DBFS Resources] Load User Recent List SUCCESS';
+  constructor (
+      public readonly response: any,
+      public readonly resourceAction: any
+  ) {}
 }
 
 export class DbfsLoadTopFolder {
@@ -200,6 +229,34 @@ export class DbfsAddPlaceholderFolder {
     ) {}
 }
 
+export class DbfsSetupFavoriteRecentPlaceholders {
+    public static type = '[DBFS Resources] Setup Favorite/Recent Placeholders';
+    constructor () {}
+}
+
+export class DbfsAddUserFavorite {
+    public static type = '[DBFS Resources] Add User Favorite';
+    constructor (
+        public readonly resource: any
+    ) {}
+}
+
+export class DbfsRemoveUserFavorite {
+    public static type = '[DBFS Resources] Remove User Favorite';
+    constructor (
+        public readonly resource: any,
+        public readonly resourceAction: any
+    ) {}
+}
+
+export class DbfsAddUserRecent {
+    public static type = '[DBFS Resources] Add User Recent';
+    constructor (
+        public readonly resource: any,
+        public readonly url: any
+    ) {}
+}
+
 /** STATE */
 
 @State<DbfsResourcesModel>({
@@ -210,13 +267,17 @@ export class DbfsAddPlaceholderFolder {
         userList: [],
         namespaces: {},
         namespaceList: [],
+        userFavorites: [],
+        userRecents: [],
         folders: {},
         files: {},
         error: {},
         loaded: false,
         dynamicLoaded: {
             users: false,
-            namespaces: false
+            namespaces: false,
+            favorites: false,
+            recents: false
         },
         resourceAction: {}
     }
@@ -289,6 +350,35 @@ export class DbfsResourcesState {
 
     @Selector() static getUsersList(state: DbfsResourcesModel) {
         return state.userList.map(item => state.users[item]);
+    }
+
+    @Selector() static getUserFavorites(state: DbfsResourcesModel) {
+
+        let favorites = [];
+        if (state.loaded) {
+            favorites = state.userFavorites.map(item => {
+                const data: any = {...state.files[item.fullPath]};
+                data.rootPath = data.fullPath.split('/').slice(0, 3).join('/');
+                data.favorited = item.created;
+                return data;
+            });
+        }
+        return favorites;
+    }
+
+    @Selector() static getUserRecents(state: DbfsResourcesModel) {
+        let recents = [];
+
+        if (state.loaded) {
+            recents = state.userRecents.map(item => {
+                const data: any = {...state.files[item.fullPath]};
+                data.rootPath = data.fullPath.split('/').slice(0, 3).join('/');
+                data.visited = item.visited;
+                return data;
+            });
+        }
+
+        return recents;
     }
 
     public static getFolderResource(path: string) {
@@ -503,7 +593,7 @@ export class DbfsResourcesState {
         // DbfsSyntheticFolderModel
         const panelRoot = <DbfsSyntheticFolderModel>{
             id: 0,
-            name: 'Dashboards',
+            name: 'Home',
             path: ':panel-root:',
             fullPath: ':panel-root:',
             synthetic: true,
@@ -543,14 +633,20 @@ export class DbfsResourcesState {
         const favFolder = <DbfsFolderModel>{
             id: 0,
             name: 'My Favorites',
-            path: '/user/' + activeUser + '/favorites',
-            fullPath: '/user/' + activeUser + '/favorites',
+            // path: '/user/' + activeUser + '/favorites',
+            // fullPath: '/user/' + activeUser + '/favorites',
+            path: ':user-favorites:',
+            fullPath: ':user-favorites:',
             files: [],
-            resourceType: 'favorites',
-            ownerType: 'user',
+            // resourceType: 'favorites',
+            // ownerType: 'user',
+            resourceType: 'list',
+            ownerType: 'dynamic',
             icon: 'd-star',
             synthetic: true,
             loaded: false,
+            moveEnabled: false,
+            selectEnabled: false,
             user: activeUser
         };
         folders[favFolder.fullPath] = favFolder;
@@ -562,35 +658,47 @@ export class DbfsResourcesState {
         const freqFolder = <DbfsFolderModel>{
             id: 0,
             name: 'Frequently Visited',
-            path: '/user/' + activeUser + '/frequently-visited',
-            fullPath: '/user/' + activeUser + '/frequently-visited',
+            // path: '/user/' + activeUser + '/frequently-visited',
+            // fullPath: '/user/' + activeUser + '/frequently-visited',
+            path: ':user-frequent:',
+            fullPath: ':user-frequent:',
             files: [],
-            resourceType: 'frequentlyVisited',
-            ownerType: 'user',
+            // resourceType: 'frequentlyVisited',
+            // ownerType: 'user',
+            resourceType: 'list',
+            ownerType: 'dynamic',
             icon: 'd-duplicate',
             synthetic: true,
             loaded: false,
+            moveEnabled: false,
+            selectEnabled: false,
             user: activeUser
         };
         folders[freqFolder.fullPath] = freqFolder;
-        panelRoot.personal.push(freqFolder.fullPath);
+        panelRoot.personal.push(freqFolder.fullPath);*/
 
         // recently visited
         const recvFolder = <DbfsFolderModel>{
             id: 0,
             name: 'Recently Visited',
-            path: '/user/' + activeUser + '/recently-visited',
-            fullPath: '/user/' + activeUser + '/recently-visited',
+            // path: '/user/' + activeUser + '/recently-visited',
+            // fullPath: '/user/' + activeUser + '/recently-visited',
+            path: ':user-recent:',
+            fullPath: ':user-recent:',
             files: [],
-            resourceType: 'recentlyVisited',
-            ownerType: 'user',
+            // resourceType: 'recentlyVisited',
+            // ownerType: 'user',
+            resourceType: 'list',
+            ownerType: 'dynamic',
             icon: 'd-time',
             synthetic: true,
             loaded: false,
+            moveEnabled: false,
+            selectEnabled: false,
             user: activeUser
         };
         folders[recvFolder.fullPath] = recvFolder;
-        panelRoot.personal.push(recvFolder.fullPath);*/
+        panelRoot.personal.push(recvFolder.fullPath);
 
         // USER Trash - add to root panel
         // tslint:disable-next-line: max-line-length
@@ -610,7 +718,8 @@ export class DbfsResourcesState {
             fullPath: ':member-namespaces:',
             subfolders: [],
             resourceType: 'userMemberNamespaces',
-            icon: 'd-dashboard-tile',
+            // icon: 'd-dashboard-tile',
+            icon: 'd-network-platform',
             synthetic: true,
             loaded: false,
             moveEnabled: false,
@@ -662,12 +771,13 @@ export class DbfsResourcesState {
         // SPECIAL FOLDERS
         const namespaceListFolder = <DbfsFolderModel>{
             id: 0,
-            name: 'All Namespaces',
+            name: 'Namespace List',
             path: ':list-namespaces:',
             fullPath: ':list-namespaces:',
             resourceType: 'list',
             ownerType: 'dynamic',
-            icon: 'd-list',
+            // icon: 'd-list',
+            icon: 'd-network-platform',
             loaded: false,
             synthetic: true,
             moveEnabled: false,
@@ -677,12 +787,12 @@ export class DbfsResourcesState {
 
         const userListFolder = <DbfsFolderModel>{
             id: 0,
-            name: 'All Users',
+            name: 'User List',
             path: ':list-users:',
             fullPath: ':list-users:',
             resourceType: 'list',
             ownerType: 'dynamic',
-            icon: 'd-user-group-solid',
+            icon: 'd-user-group',
             loaded: false,
             synthetic: true,
             moveEnabled: false,
@@ -699,6 +809,9 @@ export class DbfsResourcesState {
             files,
             loaded: true
         });
+
+        // after we have file/folder resources, lets setup favorites and recents (placeholders if necessary)
+        ctx.dispatch(new DbfsSetupFavoriteRecentPlaceholders());
     }
 
     @Action(DbfsLoadSubfolder)
@@ -878,6 +991,44 @@ export class DbfsResourcesState {
         });
     }
 
+    // USER FAVORITES (for when we hook up to backend)
+    @Action(DbfsLoadUserFavoritesList)
+    loadUserFavoritesList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadUserFavoritesList) {
+        this.logger.action('State :: Load User Favorites');
+
+        return this.service.getUserFavoritesList().pipe(
+            map( (payload: any) => {
+                return ctx.dispatch(new DbfsLoadUserFavoritesListSuccess(payload, resourceAction));
+            }),
+            catchError( error => ctx.dispatch(new DbfsResourcesError(error, 'Load User Favorites')))
+        );
+    }
+
+    @Action(DbfsLoadUserFavoritesListSuccess)
+    loadUserFavoritesListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadUserFavoritesListSuccess) {
+
+    }
+
+
+    // USER RECENTLY VISITED (for when we hook up to backend)
+    @Action(DbfsLoadUserRecentList)
+    loadUserRecentList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadUserRecentList) {
+        this.logger.action('State :: Load User Recently Visited');
+
+        return this.service.getUserRecentList().pipe(
+            map( (payload: any) => {
+                return ctx.dispatch(new DbfsLoadUserRecentListSuccess(payload, resourceAction));
+            }),
+            catchError( error => ctx.dispatch(new DbfsResourcesError(error, 'Load User Recently Visited')))
+        );
+    }
+
+    @Action(DbfsLoadUserRecentListSuccess)
+    loadUserRecentListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadUserRecentListSuccess) {
+
+    }
+
+    // LOAD TOP FOLDER
     @Action(DbfsLoadTopFolder)
     loadTopFolder(ctx: StateContext<DbfsResourcesModel>, { type, key, resourceAction }: DbfsLoadTopFolder) {
         this.logger.action('State :: Load Top Folder', { type, key, resourceAction });
@@ -1267,6 +1418,155 @@ export class DbfsResourcesState {
             folders,
             resourceAction
         });
+
+    }
+
+    @Action(DbfsAddUserFavorite)
+    addUserFavorite(ctx: StateContext<DbfsResourcesModel>, { resource }: DbfsAddUserFavorite) {
+        this.logger.action('State :: Add User Favorite', { resource });
+        const curState = ctx.getState();
+        const favorites: any[] = this.utils.deepClone(curState.userFavorites);
+
+        // Are we doing max on favorites?
+        // need to check if favorites are at max (50)
+
+        // check if payload.favorite already exists?
+        const index = favorites.findIndex(item => item.id === resource.id);
+
+        // we don't have that favorite, so lets add it to the front
+        if (index === -1) {
+            favorites.unshift(resource);
+            ctx.patchState({ userFavorites: favorites });
+        }
+    }
+
+    @Action(DbfsRemoveUserFavorite)
+    removeUserFavorite(ctx: StateContext<DbfsResourcesModel>, { resource, resourceAction }: DbfsRemoveUserFavorite) {
+        this.logger.action('State :: Remove User Favorite', { resource, resourceAction });
+        const curState = ctx.getState();
+        const favorites: any[] = this.utils.deepClone(curState.userFavorites);
+
+        const index = favorites.findIndex(item => item.fullPath === resource.fullPath);
+
+        // it exists, so lets remove it
+        if (index > -1) {
+            favorites.splice(index, 1);
+            ctx.patchState({ userFavorites: favorites, resourceAction });
+        }
+        // NOTE: Do we need an else case when favorite not found?
+    }
+
+    @Action(DbfsAddUserRecent)
+    addUserRecent(ctx: StateContext<DbfsResourcesModel>, { resource, url }: DbfsAddUserRecent) {
+        this.logger.action('State :: Add User Recent', { resource, url });
+        const curState = ctx.getState();
+        const recents: any[] = this.utils.deepClone(curState.userRecents);
+
+        let urlNeedsEntry = true;
+
+        /* if (recents[0] === false) {
+            console.log('RECENTS NOT LOADED', recents);
+            setTimeout(() => {
+                this.store.dispatch(new DbfsAddUserRecent(resource, url));
+            }, 200);
+
+            return;
+        } */
+
+        // recents isn't empty
+        if (recents.length > 0) {
+            // check to see if the most recent entry (at the top) is the same
+            if (recents[0].id === parseInt(resource.id)) {
+                // top most item is recents is the same
+                // so mark it as not needing entry
+                urlNeedsEntry = false;
+            }
+
+            if (recents.length === 50) {
+                // we are at max, so pop off the end
+                recents.pop();
+            }
+        }
+
+        if (urlNeedsEntry) {
+            // for now we are only storing dashboards
+            // so check if we already have cached record
+            // ALSO, could possibly be a bogus url path...
+            // So, we are going to grab data by the id
+            if (!curState.files[resource.fullPath]) {
+                // data is not cached, so fetch it, and try again after data comes back
+                const args: any = {
+                    originDetails: this.dbfsUtils.detailsByFullPath(resource.fullPath),
+                    resourceAction: {}
+                };
+                // we don't have cached value, so we need to fetch the data
+                this.service.getResourceById(resource.id).pipe(
+                    map( (payload: any) => {
+                        if ( resource.type === 'file') {
+                            ctx.dispatch(new DbfsUpdateFileSuccess(payload, args));
+                        } else {
+                            ctx.dispatch(new DbfsUpdateFolderSuccess(payload, args));
+                        }
+                        return ctx.dispatch(new DbfsAddUserRecent(resource, url));
+                    }),
+                    catchError( error => ctx.dispatch(new DbfsResourcesError(error, 'Add User Recent [Fetching data]')))
+                );
+            } else {
+                // probably a valid url, because it was found in the resource cache
+                const dbResource = this.utils.deepClone(curState.files[resource.fullPath]);
+
+                const recent: any = {
+                    id: dbResource.id,
+                    path: dbResource.path,
+                    fullPath: dbResource.fullPath,
+                    name: dbResource.name,
+                    type: 'dashboard',
+                    urlParams: (resource.urlParams.length > 0) ? resource.urlParams: false,
+                    visited: Date.now()
+                };
+                recents.unshift(recent);
+                ctx.patchState({
+                    userRecents: recents
+                });
+
+            }
+        }
+    }
+
+    @Action(DbfsSetupFavoriteRecentPlaceholders)
+    setupFavoriteRecentPlaceholders(ctx: StateContext<DbfsResourcesModel>, {}: DbfsSetupFavoriteRecentPlaceholders) {
+        const state = ctx.getState();
+        const favorites = state.userFavorites;
+        const recents = state.userRecents;
+        this.logger.action('State :: Setup Favorites Placeholders', { favorites, recents });
+        const files = this.utils.deepClone(state.files);
+        // const folders = state.folders; // might allow folders to be favorited in the future
+
+        let placeholders = false;
+        for (const fav of favorites) {
+            if (!files[fav.fullPath]) {
+                const file: DbfsFileModel = this.dbfsUtils.normalizeFile(fav);
+                file.loaded = false;
+                // console.log('===> FILE <===', file);
+                files[file.fullPath] = file;
+                placeholders = true;
+            }
+            // TODO: when/if we add folders, need to check that here and setup
+        }
+
+        for (const rec of recents) {
+            if (!files[rec.fullPath]) {
+                const file: DbfsFileModel = this.dbfsUtils.normalizeFile(rec);
+                file.loaded = false;
+                // console.log('===> FILE <===', file);
+                files[file.fullPath] = file;
+                placeholders = true;
+            }
+        }
+
+        if (placeholders) {
+            ctx.patchState({ files });
+        }
 
     }
 

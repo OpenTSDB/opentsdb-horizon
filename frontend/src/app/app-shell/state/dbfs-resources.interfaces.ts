@@ -22,6 +22,7 @@ export interface DbfsCommonResourceModel {
 // file models
 export interface DbfsFileModel extends DbfsCommonResourceModel {
     parentPath: string;
+    loaded?: boolean;
 }
 
 // folder models
@@ -87,6 +88,8 @@ export interface DbfsResourcesModel {
     userList: any[];
     namespaces: {}; // namespaces data... NOT namespace folder
     namespaceList: any[];
+    userFavorites: any[];
+    userRecents: any[];
     folders: {}; // user and namespace folders
     files: {}; // user and namespace files (dashboards)
     error: {};
@@ -94,6 +97,8 @@ export interface DbfsResourcesModel {
     dynamicLoaded: {
         users: boolean;
         namespaces: boolean;
+        favorites: boolean;
+        recents: boolean;
     };
     resourceAction: {};
 }

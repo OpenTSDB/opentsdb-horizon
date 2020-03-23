@@ -1,6 +1,7 @@
 <div fxLayout="row" fxFlex="1 1 100%" fxFlexFill>
         <div fxFlex="1 1 100%" fxLayout="column" fxFlexFill>
-            <landing-page-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></landing-page-content>
+            <!--<landing-page-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></landing-page-content>-->
+            <router-outlet></router-outlet>
         </div>
         <!-- <div fxFlex="1 1 320px" class="sidebar">
             <!--<button mat-raised-button color="primary" (click)="createDashboard()">Create Dashboard</button>
@@ -34,11 +35,11 @@
     <!-- navbar portal items for landing page -->
     <ng-template #landingpageNavbarTmpl>
         <div class="navbar-item">
-            <span class="dashboard-name">Horizon Landing Page</span>
+            <span class="dashboard-name">Horizon</span>
         </div>
-    
+
         <span class="flex-spacer"></span>
-    
+
         <!--
         <span class="navbar-item navbar-icon-item nav-theme-picker">
             <theme-picker mat-button></theme-picker>

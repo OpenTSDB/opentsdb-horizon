@@ -1,77 +1,93 @@
-<div class="landing-page-hero" *ngIf="showHero" style="flex: 1; justify-content: flex-start; padding-top: 40px">
-    <h2 class="hero-title mat-title">Welcome to Yamas</h2>
-    <!-- <div class="hero-message mat-subheading-2">Lorem upsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Tempor incididunt ut labore et dolore magna aliqu.</div> -->
-    <div class="hero-buttons">
-        <button mat-flat-button color="primary" (click)="createDashboard()">Create a dashboard</button>
-        <!-- <button mat-stroked-button color="primary" (click)="gotoYamasGuide()">Yamas Guide</button> -->
-    </div>
-    <!-- <button mat-icon-button class="hero-close-button" (click)="closeHero()">
-        <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
-    </button> -->
-</div>
-<!-- <div class="landing-page-utilities">
-    <mat-toolbar>
-        <div class="mat-elevation-z2 flex-spacer search-utility" [formGroup]="searchFormGroup">
-            <mat-form-field appearance="fill" class="search-context-form-field">
-                <mat-select formControlName="searchContext" [disableOptionCentering]="true">
-                    <mat-option *ngFor="let context of fakeSearchContextOptions" [value]="context.value">
-                        {{context.label}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="fill" class="search-query-form-field">
-                <input matInput placeholder="Enter your search term"
-                    formControlName="searchQuery"
-                    [matAutocomplete]="queryAutocomplete"
-                    (keydown.enter)="queryKeydown($event)">
-                <mat-icon matSuffix fontSet="denali" fontIcon="d-search"></mat-icon>
-                <mat-autocomplete #queryAutocomplete="matAutocomplete" (optionSelected)="querySuggestOptionSelected">
-                    <mat-option *ngFor="let option of fakeQuerySuggestions" [value]="option">
-                        {{option.label}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
+<div class="landing-page-hero" *ngIf="showHero" style="flex: 1 1 300px; justify-content: flex-start; padding-top: 40px">
+        <h2 class="hero-title mat-title">
+            <span class="user-avatar mat-elevation-z2" *ngIf="user && user.alias">
+                <img src="https://git.ouroath.com/{{user.alias}}.png?size=40" />
+            </span>
+            <span>Hi {{(user && user.name.length > 0) ? user.name : user.alias}}!</span>
+            <span>Welcome to Horizon!</span>
+        </h2>
+        <div class="hero-message mat-subheading-2">Horizon is the next generation dashboard tool from Yamas</div>
+        <div class="hero-buttons">
+            <button mat-flat-button color="primary" (click)="createDashboard()">Create a dashboard</button>
+            <!-- <button mat-stroked-button color="primary" (click)="gotoYamasGuide()">Yamas Guide</button> -->
         </div>
-        <button mat-stroked-button color="primary" class="add-widget-button">
-            <mat-icon fontSet="denali" fontIcon="d-category"></mat-icon>
-            <span>Add Widget</span>
-        </button> 
-        <button mat-flat-button color="primary" (click)="createDashboard()" class="new-dashboard-button">
-            <mat-icon fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
-            <span>New Dashboard</span>
-        </button> 
-    </mat-toolbar>
-</div> -->
-<div class="gridster-stage has-scroller" style="display: none" fxFlex="1 1 100%">
-    <div class="is-scroller">
-        <!-- <simple-dashboard-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-dashboard-list> -->
-    
-        <!--<a routerLink="/d/abcd">abcd</a>
-        GRIDSTER ITEMS HERE-->
-        <!-- HIDING GRIDSTER FOR NOW
-        <gridster #gridster1 class="dashboard"
-            [options]="gridsterOptions"
-            (optionsChange)="breakpointChange($event)"
-            (reflow)="gridsterFlow($event)"
-            [draggableOptions]="{ handlerClass: 'panel-heading' }">
-
-            <gridster-item #itemComp class="gridster-item"
-                *ngFor="let widget of widgets; let idx = index; trackBy: trackByWidget"
-                [dragAndDrop]="widget.gridPos.dragAndDrop"
-                [resizable]="widget.gridPos.resizable"
-                [(x)]="widget.gridPos.x"
-                [(y)]="widget.gridPos.y"
-                [(xMd)]="widget.gridPos.xMd"
-                [(yMd)]="widget.gridPos.yMd"
-                [(w)]="widget.gridPos.w"
-                [(h)]="widget.gridPos.h"
-                (end)="gridEventEnd($event)">
-
-                <app-widget-loader
-                (editComponent)="editComponent($event)"
-                [widget]="widget"></app-widget-loader>
-            </gridster-item>
-        </gridster>
-        -->
+        <button mat-icon-button class="hero-close-button" (click)="closeHero()">
+            <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+        </button>
     </div>
-</div>
+    <!-- SEARCH BAR MOSTLY -->
+    <div class="landing-page-utilities">
+        <mat-toolbar>
+            <div class="mat-elevation-z2 flex-spacer search-utility" [formGroup]="searchFormGroup">
+                <mat-form-field appearance="fill" class="search-context-form-field">
+                    <mat-select formControlName="searchContext" [disableOptionCentering]="true">
+                        <mat-option *ngFor="let context of fakeSearchContextOptions" [value]="context.value">
+                            {{context.label}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="search-query-form-field">
+                    <input matInput placeholder="Enter your search term"
+                        formControlName="searchQuery"
+                        [matAutocomplete]="queryAutocomplete"
+                        (keydown.enter)="queryKeydown($event)">
+                    <mat-icon matSuffix fontSet="denali" fontIcon="d-search"></mat-icon>
+                    <mat-autocomplete #queryAutocomplete="matAutocomplete" (optionSelected)="querySuggestOptionSelected">
+                        <mat-option *ngFor="let option of fakeQuerySuggestions" [value]="option">
+                            {{option.label}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <!--<button mat-stroked-button color="primary" class="add-widget-button">
+                <mat-icon fontSet="denali" fontIcon="d-category"></mat-icon>
+                <span>Add Widget</span>
+            </button>-->
+            <button mat-flat-button color="primary" (click)="createDashboard()" class="new-dashboard-button">
+                <mat-icon fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
+                <span>New Dashboard</span>
+            </button>
+        </mat-toolbar>
+    </div>
+    <div class="gridster-stage has-scroller" fxFlex="1 1 100%">
+        <div class="is-scroller">
+            <div class="dashboard">
+                <widget-projection title="My Dashboards">
+                    <simple-dashboard-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-dashboard-list>
+                </widget-projection>
+                <widget-projection title="My Favorites">
+                    <simple-favorites-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-favorites-list>
+                </widget-projection>
+                <widget-projection title="Recently Viewed Dashboards">
+                    <simple-recents-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-recents-list>
+                </widget-projection>
+            </div>
+            <!--<a routerLink="/d/abcd">abcd</a>
+            GRIDSTER ITEMS HERE-->
+            <!-- HIDING GRIDSTER FOR NOW
+            <gridster #gridster1 class="dashboard"
+                [options]="gridsterOptions"
+                (optionsChange)="breakpointChange($event)"
+                (reflow)="gridsterFlow($event)"
+                [draggableOptions]="{ handlerClass: 'panel-heading' }">
+
+                <gridster-item #itemComp class="gridster-item"
+                    *ngFor="let widget of widgets; let idx = index; trackBy: trackByWidget"
+                    [dragAndDrop]="widget.gridPos.dragAndDrop"
+                    [resizable]="widget.gridPos.resizable"
+                    [(x)]="widget.gridPos.x"
+                    [(y)]="widget.gridPos.y"
+                    [(xMd)]="widget.gridPos.xMd"
+                    [(yMd)]="widget.gridPos.yMd"
+                    [(w)]="widget.gridPos.w"
+                    [(h)]="widget.gridPos.h"
+                    (end)="gridEventEnd($event)">
+
+                    <app-widget-loader
+                    (editComponent)="editComponent($event)"
+                    [widget]="widget"></app-widget-loader>
+                </gridster-item>
+            </gridster>
+            -->
+        </div>
+    </div>

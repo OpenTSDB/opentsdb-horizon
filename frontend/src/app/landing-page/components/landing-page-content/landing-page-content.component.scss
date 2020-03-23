@@ -8,6 +8,21 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+        }
 
         .main-content {
             //width: 100%;
@@ -29,6 +44,16 @@
             padding: 60px 30px;
             justify-content: center;
             align-items: center;
+
+            .hero-title {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                span {
+                    margin-right: 8px;
+                }
+            }
 
             .hero-message {
                 max-width: 40%;
@@ -81,16 +106,16 @@
                     padding-bottom: 0;
                     line-height: 1;
                 }
-    
+
                 .mat-form-field-wrapper {
                     padding-bottom: 0;
                 }
-    
+
                 .mat-form-field-infix {
                     padding: .35em 0 .35em 0;
                     border-top: 0;
                 }
-    
+
                 .mat-form-field-flex {
                     line-height: 1;
                     padding: 0 .75em;
@@ -98,15 +123,15 @@
                     justify-content: center;
                     align-items: center;
                 }
-    
+
                 .mat-form-field-label-wrapper {
                     display: none;
                 }
-    
+
                 .mat-form-field-type-mat-input {
                     width: 100%;
                 }
-    
+
                 .mat-form-field {
                     &:first-child {
                         .mat-form-field-flex {
@@ -114,7 +139,7 @@
                             border-bottom-left-radius: 4px;
                         }
                     }
-    
+
                     &:last-child {
                         .mat-form-field-flex {
                             border-top-right-radius: 4px;
@@ -122,36 +147,36 @@
                         }
                     }
                 }
-    
+
                 // mat-select arrow correction after all these changes
                 .mat-select-arrow-wrapper {
                     transform: initial;
                 }
-    
+
                 // specific overrides
                 .search-context-form-field {
-    
+
                     .mat-form-field-underline {
                         display: none;
                     }
-    
+
                     .mat-form-field-infix {
                         width: 90px;
                     }
-    
+
                     .mat-select {
                         .mat-select-value-text {
                             font-size: 12px;
                         }
                     }
                 }
-    
+
                 .search-query-form-field {
 
                     .mat-form-field-infix{
                         padding-bottom: .45em;
                     }
-    
+
                     .mat-input-element {
                         font-size: 12px;
                     }
@@ -162,10 +187,10 @@
                         font-size: 14px;
                         line-height: 1;
                     }
-    
+
                     .mat-form-field-underline {
                         bottom: 0;
-    
+
                         &::before {
                             display: none;
                         }
@@ -178,6 +203,23 @@
             //flex: 1 1 auto;
             //overflow: auto; --> disbable x scrolling
             width: 100%;
+            height: 100%;
+            flex: 1 1 100%;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+
+            .widget-projection {
+                &:not(:last-child) {
+                    margin-right: 10px;
+                }
+
+                .widget-panel-content {
+                    .mat-card .mat-divider-horizontal {
+                        position: initial;
+                    }
+                }
+            }
         }
 
         .gridster-stage {
@@ -207,16 +249,21 @@
         }
 
         .landing-page-utilities {
+
+            .mat-toolbar {
+                background: transparent;
+            }
+
             .search-utility {
                 background-color: map-get($background, card);
-                
+
                 .search-query-form-field {
                     .mat-icon {
                         color: map-get($primary, default);
                     }
 
                     .mat-form-field-underline {
-                        
+
                         .mat-form-field-ripple {
                             background-color: map-get($primary, default);
                         }

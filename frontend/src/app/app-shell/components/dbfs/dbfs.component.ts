@@ -35,9 +35,9 @@ import {
     DbfsPanelsInitialize,
     DbfsAddPanel,
     DbfsUpdatePanels,
-    DbfsResetPanelAction
+    DbfsResetPanelAction,
+    DbfsChangePanelTab
 } from '../../state/dbfs-panels.state';
-
 import {
     DbfsResourcesState,
     DbfsLoadResources,
@@ -50,7 +50,11 @@ import {
     DbfsUpdateFolder,
     DbfsDeleteDashboard,
     DbfsAddPlaceholderFolder,
-    DbfsMoveResource
+    DbfsMoveResource,
+    DbfsLoadUserFavoritesList,
+    DbfsLoadUserRecentList,
+    DbfsAddUserFavorite,
+    DbfsRemoveUserFavorite
 } from '../../state/dbfs-resources.state';
 import { LoggerService } from '../../../core/services/logger.service';
 import { MatMenuTrigger } from '@angular/material';
@@ -58,7 +62,6 @@ import { DBState, LoadDashboard } from '../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';
-
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -95,6 +98,12 @@ export class DbfsComponent implements OnInit, OnDestroy {
     usersListLoaded: boolean = false;
     // tslint:disable-next-line: no-inferrable-types
     namespacesListLoaded: boolean = false;
+    // tslint:disable-next-line: no-inferrable-types
+    userFavoritesListLoaded: boolean = false;
+    // tslint:disable-next-line: no-inferrable-types
+    userFrequentListLoaded: boolean = false;
+    // tslint:disable-next-line: no-inferrable-types
+    userRecentListLoaded: boolean = false;
 
     @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
     namespacesList: any[] = [];
@@ -105,6 +114,16 @@ export class DbfsComponent implements OnInit, OnDestroy {
     usersList: any[] = [];
     usersDataSource = new MatTableDataSource([]);
     usersFilter: FormControl = new FormControl('');
+
+    @Select(DbfsResourcesState.getUserFavorites) userFavorites$: Observable<any[]>;
+    userFavorites: any[] = [];
+    userFavoritesDataSource = new MatTableDataSource([]);
+    userFavoritesFilter: FormControl = new FormControl('');
+
+    @Select(DbfsResourcesState.getUserRecents) userRecents$: Observable<any[]>;
+    userRecents: any[] = [];
+    userRecentsDataSource = new MatTableDataSource([]);
+    userRecentsFilter: FormControl = new FormControl('');
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
 
@@ -121,8 +140,15 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     @Select(DbfsPanelsState.getPanelAction) panelAction$: Observable<any>;
 
-    @Select(DBState.getDashboardId) curDashboardId$: Observable<any>;
-    curDashboardId: any = false;
+    @Select(DbfsPanelsState.getPanelTab) panelTab$: Observable<any>;
+    currentPanelTab: any = '';
+
+    @Select(DbfsState.getLoadedDashboardId) curDashboardId$: Observable<any>;
+     curDashboardId: any = false;
+    /*get curDashboardId(): number {
+        const db: any = this.store.selectSnapshot(DbfsState.getLoadedDashboardId);
+        return (db) ? db : null;
+    }*/
 
     // VIEW CHILDREN
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
@@ -161,6 +187,16 @@ export class DbfsComponent implements OnInit, OnDestroy {
     menuIsOpen: any = false;
     miniNavOpen: any = false;
 
+    dynamicFolderPaths: any[] = [
+      ':list-users:',
+      ':list-namespaces:',
+      ':user-favorites:',
+      ':user-frequent:',
+      ':user-recent:'
+    ];
+
+    curDashboardId$$: Subscription;
+
     constructor(
         private store: Store,
         private interCom: IntercomService,
@@ -168,7 +204,9 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private logger: LoggerService,
         private fb: FormBuilder,
         @Inject('WINDOW') private window: any
-    ) { }
+    ) {
+
+    }
 
     ngOnInit() {
         this.folderForm = this.fb.group({
@@ -212,6 +250,10 @@ export class DbfsComponent implements OnInit, OnDestroy {
             this.currentPanelIndex = idx;
         }));
 
+        this.subscription.add(this.panelTab$.subscribe( tab => {
+            this.currentPanelTab = tab;
+        }));
+
         this.subscription.add(this.dynamicLoaded$.subscribe( loaded => {
             this.usersListLoaded = loaded.users;
             this.namespacesListLoaded = loaded.namespaces;
@@ -233,6 +275,24 @@ export class DbfsComponent implements OnInit, OnDestroy {
             this.usersDataSource = new MatTableDataSource(this.usersList);
         }));
 
+        this.subscription.add(this.userFavorites$.subscribe( favorites => {
+            // console.log('FAVORITES', favorites);
+            this.userFavorites = (favorites) ? favorites : [];
+            this.userFavoritesDataSource = new MatTableDataSource(this.userFavorites);
+            this.userFavoritesDataSource.filterPredicate = (data: any, filter: string) => {
+                return data.name.toLowerCase().includes(filter);
+            };
+        }));
+
+        this.subscription.add(this.userRecents$.subscribe( recents => {
+            // console.log('RECENTS', recents);
+            this.userRecents = (recents) ? recents : [];
+            this.userRecentsDataSource = new MatTableDataSource(this.userRecents);
+            this.userRecentsDataSource.filterPredicate = (data: any, filter: string) => {
+                return data.name.toLowerCase().includes(filter);
+            };
+        }));
+
         this.subscription.add(this.resourceAction$.subscribe( action => {
             // this.logger.log('RESOURCE ACTION', action);
             switch (action.method) {
@@ -252,7 +312,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.panelAction$.subscribe( action => {
 
-            // this.logger.log('PANEL ACTION', action);
+            this.logger.log('PANEL ACTION', action);
             switch (action.method) {
                 case 'goNextPanel':
                     setTimeout(function() {
@@ -280,7 +340,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                         }.bind(this));
                     }.bind(this), 200);
                     break;
-                case ':list-users:':
+                /* case ':list-users:':
                     setTimeout(function() {
                         this.resetDataSourceFilters();
                         this.navPanel.goNext(this.loadAllUsersPanel.bind(this));
@@ -292,19 +352,84 @@ export class DbfsComponent implements OnInit, OnDestroy {
                         this.navPanel.goNext(this.loadAllNamespacesPanel.bind(this));
                     }.bind(self), 200);
                     break;
+                case ':user-favorites:':
+                    setTimeout(function() {
+                        this.resetDataSourceFilters();
+                        this.navPanel.goNext(this.loadUserFavoritesPanel.bind(this));
+                    }.bind(self), 200);
+                    break;
+
+                case ':user-recent:':
+                    setTimeout(function() {
+                        this.resetDataSourceFilters();
+                        this.navPanel.goNext(this.loadUserRecentPanel.bind(this));
+                    }.bind(self), 200);
+                    break; */
+                case 'changePanelTab':
+                    // console.log('CHANGE PANEL TAB', this);
+                    this.resetDataSourceFilters();
+                    switch (action.tab) {
+                      case 'favorites':
+                          // this.navPanel.startAt(0);
+                          setTimeout(function() {
+                              this.navPanel.resetTo(0, this.loadUserFavoritesPanel.bind(this));
+                          }.bind(self), 100);
+                          break;
+                      case 'recent':
+                          // this.navPanel.startAt(0);
+                          setTimeout(function() {
+                              this.navPanel.resetTo(0, this.loadUserRecentPanel.bind(this));
+                          }.bind(self), 100);
+                          break;
+                      case 'users':
+                          // this.navPanel.startAt(0);
+                            if (this.usersListLoaded) {
+                                // they have been loaded, so just switch to the panel
+                                this.navPanel.resetTo(action.startIndex);
+                            } else {
+                                setTimeout(function() {
+                                    // they have NOT been loaded, so reset panel to 0, then load the data
+                                    this.navPanel.resetTo(0, this.loadAllUsersPanel.bind(this));
+                                }.bind(self), 100);
+                            }
+                          break;
+                      case 'namespaces':
+                          // this.navPanel.startAt(0);
+                            if (this.namespacesListLoaded) {
+                                // they have been loaded, so just switch to the panel
+                                this.navPanel.resetTo(action.startIndex);
+                            } else {
+                                // they have NOT been loaded, so reset panel to 0, then load the data
+                                setTimeout(function() {
+                                    this.navPanel.resetTo(0, this.loadAllNamespacesPanel.bind(this));
+                                }.bind(self), 100);
+                            }
+                          break;
+                      default:
+                          // default is 'personal' tab
+                          //setTimeout(function() {
+                              this.navPanel.resetTo(action.startIndex);
+                          //}.bind(self), 200);
+                          break;
+                    }
+                    break;
                 default:
                     break;
             }
         }));
 
-        this.subscription.add(this.curDashboardId$.subscribe(id => {
-            this.curDashboardId = id;
+        this.subscription.add(this.curDashboardId$.subscribe(db => {
+            console.log('CURRENT DASHBOARD ID', db);
+            this.curDashboardId = (db) ? db : false;
         }));
 
         // INTERCOM SUBSCRIPTION
-        this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-            // intercom stuff
-        }));
+        // this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+        // intercom stuff
+        // }));
+
+
+
     }
 
     ngOnDestroy() {
@@ -435,9 +560,19 @@ export class DbfsComponent implements OnInit, OnDestroy {
         // this.logger.log('APPLY USERS FILTER', {filterValue, dataSource: this.usersDataSource});
     }
 
+    applyUserFavoritesFilter(filterValue: string) {
+        this.userFavoritesDataSource.filter = filterValue.trim().toLowerCase();
+    }
+
+    applyUserRecentsFilter(filterValue: string) {
+        this.userRecentsDataSource.filter = filterValue.trim().toLowerCase();
+    }
+
     resetDataSourceFilters() {
         this.namespacesDataSource.filter = '';
         this.usersDataSource.filter = '';
+        this.userFavoritesDataSource.filter = '';
+        this.userRecentsDataSource.filter = '';
     }
 
     // DYNAMIC FOLDER BEHAVIOR
@@ -456,6 +591,24 @@ export class DbfsComponent implements OnInit, OnDestroy {
         if (!this.usersListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUsersList({})
+            );
+        }
+    }
+
+    loadUserFavoritesPanel() {
+        this.logger.log('LOAD USER FAVORITES PANEL');
+        if (!this.userFavoritesListLoaded) {
+            this.store.dispatch(
+                new DbfsLoadUserFavoritesList({})
+            );
+        }
+    }
+
+    loadUserRecentPanel() {
+        this.logger.log('LOAD USER RECENT PANEL');
+        if (!this.userRecentListLoaded) {
+            this.store.dispatch(
+                new DbfsLoadUserRecentList({})
             );
         }
     }
@@ -560,6 +713,10 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.closeDrawer();
     }
 
+    editDashboards() {
+
+    }
+
     navigateToDashboard(path: string) {
         //this.logger.log('NAVIGATE TO DASHBOARD', { path });
     }
@@ -567,6 +724,24 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
 
     // MORE MENU BEHAVIORS
+
+    favoriteMenuAction(action: string, data: any, event?: any) {
+        // this.logger.log('FAVORITE MENU ACTION', {action, data, event});
+        switch (action) {
+            case 'removeFromFavorites':
+                this.store.dispatch(
+                    new DbfsRemoveUserFavorite(
+                        data,
+                        {
+                            method: 'removeFavoriteComplete'
+                        }
+                    )
+                );
+                break;
+            default:
+                break;
+        }
+    }
 
     folderMenuAction(action: string, folder: any, event?: any) {
         // this.logger.log('FOLDER MENU ACTION', {action, folder, event});
@@ -616,6 +791,18 @@ export class DbfsComponent implements OnInit, OnDestroy {
                     )
                 );
                 break;
+            case 'favoriteDashboard':
+                this.store.dispatch(
+                    new DbfsAddUserFavorite({
+                        id: file.id,
+                        name: file.name,
+                        path: file.path,
+                        fullPath: file.fullPath,
+                        type: 'dashboard',
+                        created: Date.now()
+                    })
+                );
+                break;
             case 'navigateTo':
                 if (this.activeMediaQuery === 'xs') {
                     this.toggleDrawer.emit({
@@ -658,57 +845,123 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }
     }
 
+    navtoPanelTab(tab: string) {
+        // if same tab, don't do anything
+        if (this.currentPanelTab === 'tab') {
+            return;
+        }
+
+        // switch panel roots (AKA tabs)
+        switch (tab) {
+            case 'favorites':
+                this.store.dispatch(new DbfsChangePanelTab({
+                    panelTab: tab,
+                    panelAction: {
+                        method: 'changePanelTab',
+                        tab
+                    }
+                }));
+                break;
+            case 'recent':
+                this.store.dispatch(new DbfsChangePanelTab({
+                    panelTab: tab,
+                    panelAction: {
+                        method: 'changePanelTab',
+                        tab
+                    }
+                }));
+                break;
+            case 'users':
+                this.store.dispatch(new DbfsChangePanelTab({
+                    panelTab: tab,
+                    panelAction: {
+                        method: 'changePanelTab',
+                        tab
+                    }
+                }));
+                break;
+            case 'namespaces':
+                this.store.dispatch(new DbfsChangePanelTab({
+                    panelTab: tab,
+                    panelAction: {
+                        method: 'changePanelTab',
+                        tab
+                    }
+                }));
+                break;
+            default:
+                // default is 'personal'
+                this.store.dispatch(new DbfsChangePanelTab({
+                    panelTab: tab,
+                    panelAction: {
+                        method: 'changePanelTab',
+                        tab
+                    }
+                }));
+                break;
+        }
+    }
+
     gotoFolder(path: string) {
         if (!this.bulkEdit) {
-            //this.logger.log('GOTO FOLDER', { path });
+            this.logger.log('GOTO FOLDER', { path });
             const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
 
-            const panel = <any>{
-                folderResource: folder.fullPath
-            };
-
-            const panelAction: any = {
-                method: 'goNextPanel'
-            };
-
-            if (folder.synthetic) {
-                panel.synthetic = folder.synthetic;
-            }
-
-            if (folder.root) {
-                panel.root = folder.root;
-            }
-
-            if (folder.ownerType === 'dynamic') {
-                panel.dynamic = true;
-                panel.locked = true;
-                panelAction.method = panel.folderResource;
-            }
-
-            if (folder.trashFolder) {
-                panel.trashFolder = true;
-            }
-
-            if (!folder.loaded && !folder.synthetic) {
-                panelAction.method = (folder.topFolder) ? 'loadTopFolder' : 'loadSubFolder';
-                panelAction.path = folder.fullPath;
-                if (folder.topFolder) {
-                    panelAction.type = folder.ownerType;
-                    panelAction.key = folder[panelAction.type];
+            if (folder.fullPath === ':user-recent:' || folder.fullPath === ':user-favorites:') {
+                if (folder.fullPath === ':user-recent:') {
+                  this.navtoPanelTab('recent');
+                } else {
+                  this.navtoPanelTab('favorites');
                 }
-            }
+            } else {
 
-            if (folder.locked) {
-                panel.locked = true;
-            }
+                const panel = <any>{
+                    folderResource: folder.fullPath
+                };
 
-            // add panel
-            this.store.dispatch(
-                new DbfsAddPanel({
-                    panel,
-                    panelAction
-                })
-            );
+                const panelAction: any = {
+                    method: 'goNextPanel'
+                };
+
+                if (folder.synthetic) {
+                    panel.synthetic = folder.synthetic;
+                }
+
+                if (folder.root) {
+                    panel.root = folder.root;
+                }
+
+                if (folder.ownerType === 'dynamic') {
+                    panel.dynamic = true;
+                    panel.locked = true;
+                    panelAction.method = panel.folderResource;
+                }
+
+                if (folder.trashFolder) {
+                    panel.trashFolder = true;
+                }
+
+                if (!folder.loaded && !folder.synthetic) {
+                    panelAction.method = (folder.topFolder) ? 'loadTopFolder' : 'loadSubFolder';
+                    panelAction.path = folder.fullPath;
+                    if (folder.topFolder) {
+                        panelAction.type = folder.ownerType;
+                        panelAction.key = folder[panelAction.type];
+                    }
+                }
+
+                if (folder.locked) {
+                    panel.locked = true;
+                }
+
+                // add panel
+                this.store.dispatch(
+                    new DbfsAddPanel({
+                        panel,
+                        panelAction
+                    })
+                );
+            }
 
         }
     }

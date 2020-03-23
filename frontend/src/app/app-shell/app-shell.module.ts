@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 
 // store
 import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import {
     AppShellState,
     NavigatorState,
@@ -14,7 +15,6 @@ import {
     DbfsPanelsState,
     DbfsResourcesState
  } from './state';
-
 
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
@@ -59,8 +59,14 @@ import {
             NavigatorState,
             DbfsState,
             DbfsPanelsState,
-            DbfsResourcesState,
+            DbfsResourcesState
         ]),
+        NgxsStoragePluginModule.forRoot({
+          key: [
+            'Navigator.DBFS.Resources.userFavorites',
+            'Navigator.DBFS.Resources.userRecents'
+          ]
+        }),
         RouterModule
     ],
     declarations: [

@@ -124,6 +124,31 @@ export class DbfsService {
 
     }
 
+    getUserFavoritesList(): Observable<any> {
+        this.logger.api('DbfsService :: Get User Favorites List [NOT IMPLEMENTED YET]');
+
+        return of({
+            mockData: true,
+            favorites: []
+        });
+    }
+
+    getUserFrequentList(): Observable<any> {
+        this.logger.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
+        return of({
+          mockData: true,
+          frequent: []
+      });
+    }
+
+    getUserRecentList(): Observable<any> {
+        this.logger.api('DbfsService :: Get User Recently Visited List [NOT IMPLEMENTED YET]');
+        return of({
+          mockData: true,
+          recent: []
+      });
+    }
+
     createFolder(folder: any) {
         const apiUrl = environment.configdb + '/dashboard/folder';
 
@@ -206,6 +231,26 @@ export class DbfsService {
 
     updateFile(file: any) {
         return this.updateResource('file', file);
+    }
+
+    getResourceById(id: any) {
+        const apiUrl = environment.configdb + '/dashboard/' + id;
+
+        this.logger.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json'
+        };
+
+        return this.http.get(apiUrl, httpOptions).pipe(
+            catchError(this.handleError)
+        );
     }
 
 }

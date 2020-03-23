@@ -1,19 +1,55 @@
 <mat-toolbar class="panel-toolbar" [ngClass]="{'is-master-panel': currentPanelIndex === 0}">
     <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
-        <div class="nav-item back-to-master">
-            <button mat-icon-button (click)="navtoMasterPanel()">
-                <mat-icon fontSet="denali" fontIcon="d-arrowhead-left"></mat-icon>
+        <div class="nav-item icon-nav"
+            matTooltip="Dashboard Navigator Home"
+            [ngClass]="{'is-active': currentPanelTab === 'personal'}">
+            <button mat-icon-button (click)="navtoPanelTab('personal')">
+                <mat-icon fontSet="denali" fontIcon="d-home"></mat-icon>
             </button>
         </div>
+        <div class="nav-item icon-nav"
+            matTooltip="My Favorites"
+            [ngClass]="{'is-active': currentPanelTab === 'favorites'}">
+            <button mat-icon-button (click)="navtoPanelTab('favorites')">
+                <mat-icon fontSet="denali" fontIcon="d-star"></mat-icon>
+            </button>
+        </div>
+        <div class="nav-item icon-nav"
+            matTooltip="My Recent History"
+            [ngClass]="{'is-active': currentPanelTab === 'recent'}">
+            <button mat-icon-button (click)="navtoPanelTab('recent')">
+                <mat-icon fontSet="denali" fontIcon="d-time-history"></mat-icon>
+            </button>
+        </div>
+        <div class="nav-item icon-nav"
+            matTooltip="View All Users"
+            [ngClass]="{'is-active': currentPanelTab === 'users'}">
+            <button mat-icon-button (click)="navtoPanelTab('users')">
+                <mat-icon fontSet="denali" fontIcon="d-user-group"></mat-icon>
+            </button>
+        </div>
+        <div class="nav-item icon-nav"
+            matTooltip="View all Namespaces"
+            [ngClass]="{'is-active': currentPanelTab === 'namespaces'}">
+            <button mat-icon-button (click)="navtoPanelTab('namespaces')">
+                <mat-icon fontSet="denali" fontIcon="d-network-platform"></mat-icon>
+            </button>
+        </div>
+        <div class="nav-item icon-nav"
+            matTooltip="Create New Dashboard">
+            <button mat-icon-button (click)="createDashboard()">
+                <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
+            </button>
+        </div>
+        <!--
         <div class="nav-item panel-label" (click)="navtoMasterPanel()">
             <strong *ngIf="panels[currentPanelIndex] && !panels[currentPanelIndex].dynamic">Dashboards</strong>
-            <strong *ngIf="panels[currentPanelIndex] && panels[currentPanelIndex].dynamic && panels[currentPanelIndex].folderResource === ':list-users:'">User List</strong>
-            <strong *ngIf="panels[currentPanelIndex] && panels[currentPanelIndex].dynamic && panels[currentPanelIndex].folderResource === ':list-namespaces:'">Namespace List</strong>
-        </div>
+            <strong *ngIf="panels[currentPanelIndex] && panels[currentPanelIndex].dynamic && dynamicFolderPaths.includes(panels[currentPanelIndex].folderResource)">{{getResource(panels[currentPanelIndex].folderResource).name}}</strong>
+        </div>-->
         <span class="flex-spacer"></span>
-        <div class="nav-item">
+        <div class="nav-item icon-nav">
             <button mat-icon-button (click)="closeDrawer()">
-                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+                <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
             </button>
         </div>
     </mat-toolbar-row>
@@ -21,8 +57,12 @@
 <navigator-panel #navPanel>
     <ng-container *ngFor="let panel of panels; let i = index;">
         <ng-container *navigatorPanelItem>
-            <ng-container *ngIf="panel.folderResource !== ':list-users:' && panel.folderResource !== ':list-namespaces:' && i > 0">
-                <ng-container *ngTemplateOutlet="pathTree;context:{panels: panels, i: i}"></ng-container>
+            <!--<div class="panel-title" *ngIf="panels.length === 1 && currentPanelIndex === 0">
+                <strong *ngIf="currentPanelTab === 'personal'">{{user.alias | titlecase}}&nbsp;</strong> <span>{{(getResource(panels[0].folderResource)).name}}</span>
+            </div>-->
+            <ng-container>
+                <!--<ng-container *ngTemplateOutlet="pathTree;context:{panels: panels, i: i}"></ng-container>-->
+                <ng-container *ngTemplateOutlet="breadcrumbPath;context:{panels: panels, i: i}"></ng-container>
             </ng-container>
             <!-- root folder -->
             <ng-container *ngIf="panel.folderResource === ':panel-root:'">
@@ -45,43 +85,41 @@
 </navigator-panel>
 
 <ng-template #rootPanel let-panel="panel" let-panelIndex="panelIndex">
-    <ng-container *ngTemplateOutlet="createDashboardButton"></ng-container>
-    <div class="dnav-folders">
-        <mat-nav-list class="folder-list">
-            <mat-list-item *ngFor="let folder of panel.personal; let i = index;" class="folder-nav-item" (click)="gotoFolder(folder.fullPath)">
-                <ng-container *ngTemplateOutlet="nsFolderDisplay;context:{data: folder, icon: folder.icon, showcount: true}"></ng-container>
-            </mat-list-item>
-        </mat-nav-list>
-    </div>
-    <div>
-        <button mat-button color="primary" (click)="gotoFolder(':list-users:')">
-            <span>View other users</span>
-        </button>
-    </div>
-    <div class="block-header folders-header">
-        <div class="block-header-label">
-            <span class="header-label">My Namespaces</span>
+    <!--<ng-container *ngTemplateOutlet="createDashboardButton"></ng-container>-->
+    <div class="dynamic-scroller has-scroller">
+        <div class="is-scroller">
+            <div class="dnav-folders">
+                <mat-nav-list class="folder-list">
+                    <mat-list-item *ngFor="let folder of panel.personal; let i = index;" class="folder-nav-item" (click)="gotoFolder(folder.fullPath)">
+                        <ng-container *ngTemplateOutlet="nsFolderDisplay;context:{data: folder, icon: folder.icon, showcount: true}"></ng-container>
+                    </mat-list-item>
+                </mat-nav-list>
+            </div>
+            <div class="block-header folders-header">
+                <div class="block-header-label">
+                    <span class="header-label">My Namespaces</span>
+                </div>
+                <span class="flex-spacer"></span>
+            </div>
+            <div class="dnav-folders">
+                <mat-nav-list class="folder-list">
+                    <mat-list-item *ngFor="let folder of panel.namespaces; let i = index;" class="folder-nav-item" (click)="gotoTopFolder(folder.namespace, 'namespace')">
+                        <ng-container *ngTemplateOutlet="nsFolderDisplay;context:{data: folder, icon: folder.icon, showcount: true}"></ng-container>
+                    </mat-list-item>
+                </mat-nav-list>
+            </div>
         </div>
-        <span class="flex-spacer"></span>
-        <div>
-            <button mat-button color="primary" (click)="gotoFolder(':list-namespaces:')">
-                <span>View all</span>
-            </button>
-        </div>
-    </div>
-    <div class="dnav-folders">
-        <mat-nav-list class="folder-list">
-            <mat-list-item *ngFor="let folder of panel.namespaces; let i = index;" class="folder-nav-item" (click)="gotoTopFolder(folder.namespace, 'namespace')">
-                <ng-container *ngTemplateOutlet="nsFolderDisplay;context:{data: folder, icon: folder.icon, showcount: true}"></ng-container>
-            </mat-list-item>
-        </mat-nav-list>
     </div>
 </ng-template>
 
 <ng-template #defaultPanel let-panel="panel" let-panelIndex="panelIndex">
-    <ng-container *ngTemplateOutlet="createDashboardButton"></ng-container>
-    <ng-container *ngTemplateOutlet="folderList;context:{folders: panel.subfolders, panelIndex: panelIndex, locked: (panel.locked || false)}"></ng-container>
-    <ng-container *ngTemplateOutlet="dashboardList;context:{dashboards: panel.files, panelIndex: panelIndex, locked: (panel.locked || false)}"></ng-container>
+    <!--<ng-container *ngTemplateOutlet="createDashboardButton"></ng-container>-->
+    <div class="dynamic-scroller has-scroller">
+        <div class="is-scroller">
+            <ng-container *ngTemplateOutlet="folderList;context:{folders: panel.subfolders, panelIndex: panelIndex, locked: (panel.locked || false)}"></ng-container>
+            <ng-container *ngTemplateOutlet="dashboardList;context:{dashboards: panel.files, panelIndex: panelIndex, locked: (panel.locked || false)}"></ng-container>
+        </div>
+    </div>
 </ng-template>
 
 <ng-template #trashPanel let-panel="panel" let-panelIndex="panelIndex">
@@ -132,8 +170,50 @@
             </mat-nav-list>
         </div>
     </ng-container>
+    <ng-container *ngIf="panel.folderResource === ':user-favorites:'">
+        <div class="filter-list-control" *ngIf="userFavorites.length > 0">
+            <mat-form-field appearance="fill" color="primary">
+                <mat-icon matPrefix fontSet="denali" fontIcon="d-search"></mat-icon>
+                <input matInput (keyup)="applyUserFavoritesFilter($event.target.value)" placeholder="Filter Favorites">
+            </mat-form-field>
+        </div>
+        <div class="dnav-folders dynamic-scroller" *ngIf="userFavorites.length > 0">
+            <mat-nav-list class="favorites-list">
+                <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
+                    <mat-list-item *ngIf="userFavorites.length === 0" class="no-item-message">
+                        <span class="mat-caption no-item-message">You have no favorites.</span>
+                    </mat-list-item>
+                    <mat-list-item *cdkVirtualFor="let fav of userFavoritesDataSource; let i = index;">
+                        <ng-container *ngTemplateOutlet="userFavoriteItem;context:{data: fav, panelIndex: panelIndex}"></ng-container>
+                    </mat-list-item>
+                </cdk-virtual-scroll-viewport>
+            </mat-nav-list>
+        </div>
+
+    </ng-container>
+    <ng-container *ngIf="panel.folderResource === ':user-recent:'">
+        <div class="filter-list-control" *ngIf="userRecents.length > 0">
+            <mat-form-field appearance="fill" color="primary">
+                <mat-icon matPrefix fontSet="denali" fontIcon="d-search"></mat-icon>
+                <input matInput (keyup)="applyUserRecentsFilter($event.target.value)" placeholder="Filter Recents">
+            </mat-form-field>
+        </div>
+        <div class="dnav-folders dynamic-scroller" *ngIf="userRecents.length > 0">
+            <mat-nav-list class="recents-list">
+                <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
+                    <mat-list-item *ngIf="userRecents.length === 0" class="no-item-message">
+                        <span class="mat-caption no-item-message">You have no Recents.</span>
+                    </mat-list-item>
+                    <mat-list-item *cdkVirtualFor="let recent of userRecentsDataSource; let i = index;">
+                        <ng-container *ngTemplateOutlet="userRecentItem;context:{data: recent, panelIndex: panelIndex}"></ng-container>
+                    </mat-list-item>
+                </cdk-virtual-scroll-viewport>
+            </mat-nav-list>
+        </div>
+    </ng-container>
 </ng-template>
 
+<!-- BREAD CRUMBS -->
 <ng-template #pathTree let-panels="panels", let-i="i">
     <mat-nav-list class="path-tree">
         <ng-container *ngFor="let leaf of panels; let n = index;">
@@ -148,6 +228,23 @@
     </mat-nav-list>
 </ng-template>
 
+<ng-template #breadcrumbPath let-panels="panels" let-i="i">
+    <div class="breadcrumb-path">
+        <ng-container *ngFor="let leaf of panels; let n = index; let first = first; let last = last;">
+            <mat-basic-chip *ngIf="first" (click)="navtoSpecificPanel(n, i)">
+                <mat-icon fontSet="denali" [fontIcon]="folders[leaf.folderResource].icon || 'd-home'"></mat-icon>
+                <span *ngIf="currentPanelTab === 'personal'">{{user.alias | titlecase}}&nbsp;</span>
+                <span>{{folders[leaf.folderResource].name | titlecase}}</span>
+            </mat-basic-chip>
+            <mat-basic-chip *ngIf="!first" [ngClass]="{'is-active': n === i}" (click)="navtoSpecificPanel(n, i)">
+                <span>{{folders[leaf.folderResource].name | titlecase}}</span>
+            </mat-basic-chip>
+            <mat-icon class="path-seperator" fontSet="denali" fontIcon="d-arrowhead-right" *ngIf="!last"></mat-icon>
+        </ng-container>
+    </div>
+</ng-template>
+
+<!-- CREATE DASHBOARD BUTTON-->
 <ng-template #createDashboardButton>
     <div class="create-dashboard">
         <button mat-flat-button (click)="createDashboard()">
@@ -435,6 +532,48 @@
 </ng-template>
 
 <!-- OTHER TEMPLATES -->
+<!-- TODO: logic for folder/namespace when we decide to add folders to favorites -->
+<!-- TODO: For now, support only dashboards -->
+<ng-template #userFavoriteItem let-data="data" let-panelIndex="panelIndex">
+    <div class="dnav-favorite-item" [ngClass]="{'dnav-menu-opened': menuIsOpen === data.fullPath, 'matched-dashboard': data.id === curDashboardId}">
+        <a class="dnav-favorite-link flex-spacer" routerLink="/d/{{data.id}}{{data.fullPath}}" (click)="fileMenuAction('navigateTo', data)">
+            <mat-icon class="dnav-dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
+            <span class="dnav-favorite-detail">
+                <span class="root-path">Belongs to: {{data.rootPath}}</span>
+                <span class="dnav-favorite-label">{{data.name}}</span>
+                <span class="favorite-date">Added: {{data.favorited | date:'medium'}}</span>
+            </span>
+        </a>
+        <span class="dnav-favorite-menu">
+            <button mat-icon-button (click)="clickMoreMenu(data.id, 'favorite', $event)">
+                <mat-icon fontSet="denali" fontIcon="d-more-vertical"></mat-icon>
+            </button>
+        </span>
+        <span class="dnav-menu-trigger"
+            [matMenuTriggerFor]="dnavFavoriteItemMenu"
+            [matMenuTriggerData]="{data: data, panelIndex: panelIndex, type: 'favorite'}"
+            (menuOpened)="menuState(data.fullPath)"
+            (menuClosed)="menuState(false)"
+            #moreMenuTrigger></span>
+    </div>
+</ng-template>
+
+<!-- TODO: logic for folder/namespace when we decide to add folders to favorites -->
+<!-- TODO: For now, support only dashboards -->
+<ng-template #userRecentItem let-data="data" let-panelIndex="panelIndex">
+    <div class="dnav-recent-item">
+        <a class="dnav-recent-link flex-spacer" routerLink="/d/{{data.id}}{{data.fullPath}}" (click)="fileMenuAction('navigateTo', data)">
+            <mat-icon class="dnav-dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
+            <span class="dnav-recent-detail">
+                <span class="root-path">Belongs to: {{data.rootPath}}</span>
+                <span class="dnav-recent-label">{{data.name}}</span>
+                <span class="recent-date">Visited: {{data.visited | date:'medium'}}</span>
+            </span>
+        </a>
+    </div>
+</ng-template>
+
+
 <ng-template #simpleFolderDisplay let-data="data" let-icon="icon" let-loading="loading" let-showcount="showcount">
     <div class="dnav-folder-item">
         <div class="list-item">
@@ -465,9 +604,14 @@
         <div class="list-item folder-name flex-spacer">
             <span>{{data.name}}</span>
         </div>
-        <div class="list-item" *ngIf="showcount">
+        <div class="list-item" *ngIf="showcount && data.fullPath !== ':user-favorites:' && data.fullPath !== ':user-recent:'">
             <span class="counter">
                 <span class="chip-count">{{((data.subfolders) ? data.subfolders.length : 0) + ((data.files) ? data.files.length : 0)}}</span>
+            </span>
+        </div>
+        <div class="list-item" *ngIf="showcount && (data.fullPath === ':user-favorites:' || data.fullPath === ':user-recent:')">
+            <span class="counter">
+                <span class="chip-count">{{(data.fullPath === ':user-favorites:') ? userFavorites.length : userRecents.length}}</span>
             </span>
         </div>
         <div class="list-item goto-next-folder">
@@ -480,9 +624,21 @@
 </ng-template>
 
 <!-- MENUS -->
-<mat-menu class="dnav-cdk-folder-menu"
+<mat-menu class="dnav-cdk-favorite-menu"
     xPosition="after"
     style="transform-origin: top left -32px;"
+    #dnavFavoriteItemMenu="matMenu">
+    <ng-template matMenuContent let-data="data" let-panelIndex="panelIndex">
+        <button mat-menu-item (click)="favoriteMenuAction('removeFromFavorites', data)">
+            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+            <span>Remove from favorites</span>
+        </button>
+    </ng-template>
+</mat-menu>
+
+<mat-menu class="dnav-cdk-folder-menu"
+    xPosition="after"
+    style="transform-origin: top left -48px;"
     #dnavFolderItemMenu="matMenu">
     <ng-template matMenuContent let-folder="data" let-panelIndex="panelIndex">
         <button mat-menu-item (click)="folderMenuAction('editName', folder)">
@@ -516,6 +672,10 @@
         <button mat-menu-item (click)="fileMenuAction('deleteDashboard', file)" *ngIf="!file.locked && !file.parentPath.includes('/trash')">
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             <span>Move to trash</span>
+        </button>
+        <button mat-menu-item (click)="fileMenuAction('favoriteDashboard', file)">
+            <mat-icon fontSet="denali" fontIcon="d-star"></mat-icon>
+            <span>Add to favorites</span>
         </button>
     </ng-template>
 </mat-menu>
