@@ -251,6 +251,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
     booleanConditionalKeys: string[] = ['enabled'];
 
+    // where to navigate on save
+    dashboardId = -1;
+
     constructor(
         private store: Store,
         private dialog: MatDialog,
@@ -529,6 +532,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.saveError$.subscribe(error => {
+
+            if (!error) {
+                if (this.dashboardId > 0) {
+                    this.location.go('d/' + this.dashboardId);
+                    this.router.navigate(['d', this.dashboardId]);
+                } else {
+                    this.location.go('a/' + this.selectedNamespace);
+                }
+            }
+
             if (this.list === 'alerts' && this.createAlertDialog) {
                 this.createAlertDialog.data.error = error;
             }
@@ -866,9 +879,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // loop through original queries since we are modifying the arrays
         for (const q of queries) {
             for (const f of q.filters) {
-                for (const customFilter of f.customFilter) {
-                    const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
-                    this.moveCustomFilterToFilter(convertQueries, q.id, f.tagk, filterValue, customFilter);
+                if (f.customFilter) {
+                    for (const customFilter of f.customFilter) {
+                        const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
+                        this.moveCustomFilterToFilter(convertQueries, q.id, f.tagk, filterValue, customFilter);
+                    }
                 }
             }
         }
@@ -902,9 +917,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     getTplValueForAlias(tplVariables, alias: string) {
-        for (const tvar of tplVariables.tvars) {
-            if ('[' + tvar.alias + ']' === alias) {
-                return tvar.filter;
+        if (tplVariables.tvars) {
+            for (const tvar of tplVariables.tvars) {
+                if ('[' + tvar.alias + ']' === alias) {
+                    return tvar.filter;
+                }
             }
         }
         return '';
@@ -925,7 +942,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                         return;
                     }
                 }
-
             }
         }
     }
@@ -935,7 +951,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             const filtersToRemove = [];
             let index = 0;
             for (const f of q.filters) { // find indices to remove
-                if (f.customFilter.length === 0 && f.filter.length === 0) {
+                if (f.customFilter && f.customFilter.length === 0 && f.filter && f.filter.length === 0) {
                    filtersToRemove.push(index);
                 }
                 index++;
@@ -1016,9 +1032,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     configurationEdit_change(message: any) {
         switch (message.action) {
             case 'SaveAlert':
+                if (message.dashboard && message.dashboard > 0) {
+                    this.dashboardId = message.dashboard;
+                }
                 // lets save this thing
                 this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
-                this.location.go('a/' + message.namespace);
                 break;
             case 'SaveSnooze':
                 this.store.dispatch(new SaveSnoozes(message.namespace, message.payload));

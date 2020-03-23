@@ -8,6 +8,7 @@ import { Store, Select } from '@ngxs/store';
 // tslint:disable-next-line:max-line-length
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
+import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -20,7 +21,7 @@ import { Observable, Subscription } from 'rxjs';
 
 export class AlertConfigurationContactsComponent implements OnInit, OnChanges, OnDestroy {
     @HostBinding('class.alert-configuration-contacts-component') private _hostClass = true;
-    constructor(private eRef: ElementRef, private store: Store) { }
+    constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService) { }
 
     @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger }) private megaPanelTrigger: MatMenuTrigger;
     @ViewChild('recipientInput', { read: MatInput }) private recipientInput: MatInput;
@@ -138,6 +139,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             for (let type in _data.recipients) {
                 let recipients = _data.recipients[type];
                 if (recipients) {
+                    // sort by name
+                    recipients.sort((a: any, b: any) => {
+                        return this.utils.sortAlphaNum(a.name, b.name);
+                    });
                     for (let _recipient of recipients) {
                         _recipient.type = type.toLowerCase();
                         this.namespaceRecipients.push(_recipient);
