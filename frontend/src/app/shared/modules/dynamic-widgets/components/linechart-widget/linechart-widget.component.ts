@@ -317,6 +317,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             this.error = message.payload.error;
                             this.cdRef.markForCheck();
                         } else {
+                            this.error = null;
                             const rawdata = message.payload.rawdata;
                             this.setTimezone(message.payload.timezone);
                             this.resetChart(); // need to reset this data

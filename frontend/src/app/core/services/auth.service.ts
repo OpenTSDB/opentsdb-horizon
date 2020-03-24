@@ -36,20 +36,22 @@ export class AuthService {
         checks the login cookie. It will try to renew the cookie when the cookie is expired.
         returns Observable<string> cookie-valid | cookie-invalid | cookie-renewed | cookie-check-error
     */
-    getCookieStatus() {
+    getCookieStatus(heartbeat= false) {
         const self = this;
         self.store.dispatch(new SetAuth('unknown'));
         return this.http.get('/heartbeat')
             .pipe(
                 map(
                     (res) => {
-                        self.store.dispatch(new SetAuth('valid'));
+                        if ( !heartbeat ) {
+                            self.store.dispatch(new SetAuth('valid'));
+                        }
                         return of('cookie-valid');
                     }
                 ),
                 catchError(
                     error => {
-                        if ( error.status === 401 ) {
+                        if ( !heartbeat && error.status === 401 ) {
                             return this.canCookieRenewed();
                         }
                         return of('cookie-check-error');

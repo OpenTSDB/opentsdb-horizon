@@ -320,7 +320,7 @@ export class AlertsState {
         ctx.patchState({ actionStatus: 'save-progress', saveError: {}});
         return this.httpService.saveAlert(namespace, payload).subscribe(
             res => {
-                ctx.patchState({ actionStatus: payload.data[0].id ? 'update-success' : 'add-success'});
+                ctx.patchState({ actionStatus: payload.data[0].id ? 'update-success' : 'add-success', saveError: null});
                 ctx.dispatch(new LoadAlerts({namespace: namespace}));
             },
             error => {

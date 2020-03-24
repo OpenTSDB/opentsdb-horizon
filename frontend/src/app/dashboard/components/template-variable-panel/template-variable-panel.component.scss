@@ -14,6 +14,16 @@
         width: 100%;
         max-width: 100%;
 
+        .regexp {
+            padding: 0 2px 0 6px;
+            align-items: center;
+            align-self: stretch;
+            display: flex;
+            background-color: #eeeeee;
+            font-style: italic;
+            font-size: smaller;
+        }
+
         /* Table overrides */
         table {
             width: auto;
@@ -157,15 +167,6 @@
                     align-items: center;
                     align-self: stretch;
                     display: flex;
-                }
-                .regexp {
-                    padding: 0 2px 0 6px;
-                    align-items: center;
-                    align-self: stretch;
-                    display: flex;
-                    background-color: #eeeeee;
-                    font-style: italic;
-                    font-size: smaller;
                 }
             }
 

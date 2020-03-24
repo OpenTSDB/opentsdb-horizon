@@ -9,7 +9,8 @@ import {
     AfterContentInit, EventEmitter,
     Output,
     Input,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    AfterViewInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
@@ -40,6 +41,9 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
+import { DataShareService } from '../../../core/services/data-share.service';
+import { Router } from '@angular/router';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -48,7 +52,7 @@ import { ThemeService } from '../../../app-shell/services/theme.service';
     styleUrls: []
 })
 
-export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit {
+export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     @HostBinding('class.alert-details-component') private _hostClass = true;
 
     @ViewChild('graphOutput') private graphOutput: ElementRef;
@@ -181,6 +185,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     counts = [];
     countSub: Subscription;
 
+    // when creating alert from dashboard widget
+    dashboardToCancelTo = -1;
+    createdFrom = {};
+
     alertOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     recoverOptions: any[] = [
                                 { label: 'Never', value: null },
@@ -261,6 +269,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     doEventQuery$ = new BehaviorSubject(['list', 'count']);
     eventQuery: any = { namespace: '', search: ''};
 
+
     constructor(
         private fb: FormBuilder,
         private queryService: QueryService,
@@ -275,12 +284,22 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private interCom: IntercomService,
         private alertConverter: AlertConverterService,
         private cdRef: ChangeDetectorRef,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private dataShare: DataShareService,
+        private router: Router,
+        private location: LocationStrategy
     ) {
         // this.data = dialogData;
         if (this.data.name) {
             this.alertName.setValue(this.data.name);
         }
+
+        // back button on browser goes to overview page
+        location.onPopState(() => {
+            this.configChange.emit({
+                action: 'CancelEdit'
+            });
+          });
     }
 
     ngOnInit() {
@@ -326,6 +345,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if (this.data.name) {
             this.utils.setTabTitle(this.data.name);
         }
+
+        if (this.dataShare.getMessage() === 'WidgetToAlert') {
+            this.dashboardToCancelTo = this.dataShare.getData().dashboardId;
+            this.createdFrom = {widgetId: this.dataShare.getData().widgetId, dashboardId: this.dataShare.getData().dashboardId };
+            this.dataShare.clear();
+        }
+
         this.getCount();
         this.setAlertEvaluationLink();
     }
@@ -351,6 +377,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             };
             this.size = newSize;
         });
+    }
+
+    ngAfterViewInit() {
+        if (this.dashboardToCancelTo > 0) {
+            this.validate(false);
+        }
     }
 
     newSingleMetricTimeWindowSelected(timeInSeconds: string) {
@@ -1145,7 +1177,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.options.labels = ['x'];
             this.chartData = { ts: [[0]] };
         }
-        this.getCount();
     }
 
     getTsdbQuery(mid) {
@@ -1202,7 +1233,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     getCount() {
-        if (this.data.namespace && this.data && this.data.id) {
+        if (this.data && this.data.namespace && this.data.id) {
             const countObserver = this.httpService.getAlertCount({namespace: this.data.namespace, alertId: this.data.id});
 
             if (this.countSub) {
@@ -1327,13 +1358,18 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.reloadData();
         }
 
+        if (e.value === 'singleMetric' && this.periodOverPeriodConfig && this.periodOverPeriodConfig.delayEvaluation != null) {
+            this.alertForm['controls'].threshold.get('delayEvaluation').setValue(this.periodOverPeriodConfig.delayEvaluation);
+        }
+
         if (e.value === 'periodOverPeriod') { // singleMetric thresholds can interfere with rendering of periodOverPeriod graph
             this.alertForm['controls'].threshold['controls'].singleMetric.get('badThreshold').setValue(null);
             this.alertForm['controls'].threshold['controls'].singleMetric.get('warnThreshold').setValue(null);
+            this.periodOverPeriodConfig.delayEvaluation = this.alertForm['controls'].threshold.get('delayEvaluation').value;
         }
     }
 
-    validate() {
+    validate(showTopErrorBar = true) {
         this.alertForm.markAsTouched();
         switch ( this.data.type ) {
             case 'simple':
@@ -1391,8 +1427,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.saveAlert();
             }
 
-
-        } else {
+        } else if (showTopErrorBar) {
             // set system message bar
             this.interCom.requestSend({
                 action: 'systemMessage',
@@ -1429,6 +1464,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 if (this.data.threshold.subType === 'periodOverPeriod') {
                     const dataThresholdCopy = {...data.threshold};
                     data.notification.transitionsToNotify = [...this.periodOverPeriodTransitionsSelected];
+                    data.threshold.delayEvaluation = this.periodOverPeriodConfig.delayEvaluation;
                     data.threshold.periodOverPeriod = {...this.periodOverPeriodConfig.periodOverPeriod};
                     data.threshold.periodOverPeriod.metricId = subNodes[0].id; // metric/expression node
                     data.threshold.periodOverPeriod.queryIndex = dataThresholdCopy.singleMetric.queryIndex;
@@ -1442,17 +1478,29 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             case 'event':
                 break;
         }
+
+        // if created from dashboard and widget
+        if (this.createdFrom && Object.keys(this.createdFrom).length) {
+           data.createdFrom = this.createdFrom;
+        }
+
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
-        this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, payload: { data: this.utils.deepClone([data]) }} );
+        this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
+            payload: { data: this.utils.deepClone([data])}} );
     }
 
     cancelEdit() {
-        // emit with no event
-        this.configChange.emit({
-            action: 'CancelEdit'
-        });
+        // check if alert created from db
+        if (this.dashboardToCancelTo > 0) {
+            this.router.navigate(['d', this.dashboardToCancelTo]);
+        } else {
+            // emit with no event
+            this.configChange.emit({
+                action: 'CancelEdit'
+            });
+        }
     }
 
     /** Events */

@@ -154,6 +154,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                           this.error = message.payload.error;
                           this.cdRef.markForCheck();
                       } else {
+                          this.error = null;
                           const rawdata = message.payload.rawdata;
                           this.setTimezone(message.payload.timezone);
                           this.data.ts = this.dataTransformer.yamasToHeatmap(this.widget, this.options, this.data.ts, rawdata);

@@ -1,7 +1,7 @@
 import {
     Type, Component, OnInit, Input, Output, ViewChild,
     ComponentFactoryResolver, EventEmitter,
-    OnChanges, SimpleChanges, HostBinding, ChangeDetectionStrategy, ElementRef, TemplateRef
+    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef
 } from '@angular/core';
 import { WidgetService } from '../../../core/services/widget.service';
 import { WidgetDirective } from '../../directives/widget.directive';
@@ -35,6 +35,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     viewContainerRef: any;
     widgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
     multiLimitMessage = '';
+    userHasWriteAccessToNamespace = false;
 
     private subscription: Subscription = new Subscription();
 
@@ -44,13 +45,24 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private componentFactoryResolver: ComponentFactoryResolver,
         private dialog: MatDialog,
         private infoIslandService: InfoIslandService,
-        private hostElRef: ElementRef
+        private hostElRef: ElementRef,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
-        this.loadComponent();
+        setTimeout(() => {
+            this.loadComponent();
+            this.cdRef.markForCheck();
+        });
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+            if (message.action) {
+                switch (message.action) {
+                    case 'WriteAccessToNamespace':
+                        this.userHasWriteAccessToNamespace = message.payload.userHasWriteAccessToNamespace;
+                }
+            }
+
             if (message.action && this.widget.id === message.id) {
                 // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
                 switch (message.action) {
@@ -243,6 +255,14 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     widgetClone() {
         this.interCom.requestSend(<IMessage> {
             action: 'cloneWidget',
+            id: this.widget.id,
+            payload: this.widget
+        });
+    }
+
+    createAlert() {
+        this.interCom.requestSend(<IMessage> {
+            action: 'createAlertFromWidget',
             id: this.widget.id,
             payload: this.widget
         });
