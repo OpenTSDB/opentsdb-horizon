@@ -2,35 +2,39 @@
     <!-- need to figure out how to toggle on/off depending on whether there is template variables -->
     <!--<variable-template-bar *ngIf="!viewEditMode" [dbSettingsVariables]="variables" ></variable-template-bar> -->
     <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true"
-        [ngClass]="{'is-edit-mode': !variablePanelMode.view}" 
+        [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
         [mode]="variablePanelMode"
         [widgets]="widgets"
         [tagKeysByNamespaces] = "tagKeysByNamespaces"
         [tplVariables]="tplVariables"
         (modeChange)="changeVarPanelMode($event)">
     </template-variable-panel>
-    <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" 
+    <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"
         [newWidget]="newWidget"
         [mWidget]="mWidget"
-        (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)" 
-        [rerender]="rerender" 
-        [widgets]="widgets" 
+        (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
+        [rerender]="rerender"
+        [widgets]="widgets"
         [dashboardMode]="dashboardMode$ | async">
     </app-dboard-content>
 </div>
 <ng-template #dashboardNavbarTmpl>
-    <inline-editable class="navbar-item" 
+    <inline-editable class="navbar-item"
         [fieldValue]="dbSettings.meta.title"
         [minLength]="3"
         [maxLength]="25"
         (updatedValue)="setTitle($event)"
         *ngIf="activeMediaQuery !== 'xs'">
     </inline-editable>
-    
-    <!--<span class="navbar-item navbar-icon-item nav-dashboard-config-trigger" *ngIf="activeMediaQuery !== 'xs'">
-        <dashboard-settings-toggle mat-button ></dashboard-settings-toggle>
+
+    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="activeMediaQuery !== 'xs' && dbid !=='_new_'">
+        <button mat-icon-button class="mat-elevation-z0"
+            [ngClass]="{'dashboard-faved': isUserFavorited}"
+            (click)="dashboardFavoriteAction(isUserFavorited)">
+            <mat-icon fontSet="denali" [fontIcon]="isUserFavorited ? 'd-star-solid' : 'd-star'"></mat-icon>
+        </button>
     </span>
-    -->
+
     <!--
     <span class="navbar-item nav-dashboard-template-var-trigger" *ngIf="tplVariables.length === 0">
         <button mat-raised-button class="mat-elevation-z0" (click)="variablePanelMode = 'edit'">
@@ -42,7 +46,7 @@
     <span class="flex-spacer"></span>
 
     <span class="navbar-item nav-add-new-widget" *ngIf="activeMediaQuery !== 'xs' && !viewEditMode">
-        <button mat-raised-button class="mat-elevation-z0" 
+        <button mat-raised-button class="mat-elevation-z0"
             [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
             [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"
             #availableWidgetsMenuTrigger>
@@ -53,7 +57,7 @@
             <ng-template matMenuContent>
                 <div class="available-widget-output">
                     <div class="widget-types">
-                        <button mat-raised-button class="widget-type-selector mat-elevation-z0"  
+                        <button mat-raised-button class="widget-type-selector mat-elevation-z0"
                         *ngFor="let wtype of availableWidgetTypes"
                         (click)="addNewWidget(wtype)">
                             <span class="widget-type-icon {{ wtype.iconClass }}"></span>
@@ -65,13 +69,13 @@
         </mat-menu>
     </span>
 
-    <time-picker class="navbar-item nav-date-time-picker" 
-        (newChange)="handleTimePickerChanges($event)" 
-        [timezone]="dbTime.zone" 
-        [startTime]="dbTime.start" 
+    <time-picker class="navbar-item nav-date-time-picker"
+        (newChange)="handleTimePickerChanges($event)"
+        [timezone]="dbTime.zone"
+        [startTime]="dbTime.start"
         [endTime]="dbTime.end"
         [isEditMode] = "viewEditMode"
-        [refresh]="refresh$ | async" 
+        [refresh]="refresh$ | async"
         [xPosition]="menuXAlignValue">
     </time-picker>
 

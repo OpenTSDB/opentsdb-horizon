@@ -38,7 +38,7 @@ import {
     UpdateVariables,
     UpdateMeta
 } from '../../state/settings.state';
-import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState } from '../../../app-shell/state';
+import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState, DbfsRemoveUserFavorite, DbfsAddUserFavorite } from '../../../app-shell/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
@@ -203,6 +203,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     user: string = '';    // /user/zb
     writeSpaces: string[] = [];
 
+    isUserFavorited: boolean = false;
+    // going to be a dynamic observable
+    checkUserFavorited$: Observable<boolean> | null;
+    checkUserFavoritedSub: Subscription;
+
     constructor(
         private store: Store,
         private activatedRoute: ActivatedRoute,
@@ -245,6 +250,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new LoadDashboard(this.dbid));
             } else {
                 this.store.dispatch(new LoadDashboard(url[0].path));
+                // favorite subscription
             }
             // remove system messages - TODO: when adding more apps, put this in app-shell and listen for router change.
             this.interCom.requestSend({
@@ -507,6 +513,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if  (this.dbid !== db.id) {
                 this.oldWidgets = [];
                 this.oldMeta = {};
+                this.isUserFavorited = false;
             }
 
             if (db && db.fullPath) {
@@ -522,6 +529,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new LoadDashboardSettings(db.content.settings)).subscribe(() => {
                     // update WidgetsState after settings state sucessfully loaded
                     this.store.dispatch(new UpdateWidgets(db.content.widgets));
+                });
+
+                // check if Favorited
+                // const userFavs = this.store.selectSnapshot(DbfsResourcesState.getUserFavorites);
+                // const favCheck = userFavs.findIndex((val: any) => {
+                //    return val.id === this.dbid;
+                // });
+                // this.isUserFavorited = favCheck !== -1;
+                if (this.checkUserFavoritedSub) {
+                    this.checkUserFavoritedSub.unsubscribe();
+                }
+                this.checkUserFavorited$ = this.store.select(DbfsResourcesState.checkFileFavorited(this.dbid));
+                this.checkUserFavoritedSub = this.checkUserFavorited$.subscribe(val => {
+                    this.isUserFavorited = val;
                 });
             }
         }));
@@ -562,6 +583,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             this.store.dispatch(new DbfsLoadSubfolder(parentDetails.fullPath, {}));
                         }
                     }
+
+                    // reset favorite subs
+                    if (this.checkUserFavoritedSub) {
+                        this.checkUserFavoritedSub.unsubscribe();
+                    }
+                    this.checkUserFavorited$ = this.store.select(DbfsResourcesState.checkFileFavorited(this.dbid));
+                    this.checkUserFavoritedSub = this.checkUserFavorited$.subscribe(val => {
+                        this.isUserFavorited = val;
+                    });
                 }
             }
         }));
@@ -1338,6 +1368,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.router.navigate(['a', dialog_out.namespace, '_new_']);
                 }
             });
+        }
+    }
+
+    dashboardFavoriteAction(remove?: boolean) {
+        if (remove) {
+            // fetch resource from DBFS
+            const data: any = this.store.selectSnapshot(DbfsResourcesState.getFileById(this.dbid));
+            this.store.dispatch(
+                new DbfsRemoveUserFavorite(
+                    data,
+                    {
+                        method: 'removeFavoriteComplete'
+                    }
+                )
+            );
+        } else {
+            const dbstate = this.store.selectSnapshot(DBState);
+            this.store.dispatch(
+                new DbfsAddUserFavorite({
+                    id: dbstate.id,
+                    name: dbstate.name,
+                    path: dbstate.path,
+                    fullPath: dbstate.fullPath,
+                    type: 'dashboard',
+                    created: Date.now()
+                })
+            );
         }
     }
 

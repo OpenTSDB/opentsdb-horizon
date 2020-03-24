@@ -63,8 +63,8 @@ import {
         ]),
         NgxsStoragePluginModule.forRoot({
           key: [
-            'Navigator.DBFS.Resources.userFavorites',
-            'Navigator.DBFS.Resources.userRecents'
+            'DBFS.DataResources.userFavorites',
+            'DBFS.DataResources.userRecents'
           ]
         }),
         RouterModule

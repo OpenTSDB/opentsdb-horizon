@@ -726,7 +726,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     // MORE MENU BEHAVIORS
 
     favoriteMenuAction(action: string, data: any, event?: any) {
-        // this.logger.log('FAVORITE MENU ACTION', {action, data, event});
+        this.logger.log('FAVORITE MENU ACTION', {action, data, event});
         switch (action) {
             case 'removeFromFavorites':
                 this.store.dispatch(

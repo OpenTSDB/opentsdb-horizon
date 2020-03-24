@@ -177,7 +177,7 @@
                 <input matInput (keyup)="applyUserFavoritesFilter($event.target.value)" placeholder="Filter Favorites">
             </mat-form-field>
         </div>
-        <div class="dnav-folders dynamic-scroller" *ngIf="userFavorites.length > 0">
+        <div class="dnav-folders dynamic-scroller" *ngIf="userFavorites">
             <mat-nav-list class="favorites-list">
                 <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
                     <mat-list-item *ngIf="userFavorites.length === 0" class="no-item-message">
@@ -198,7 +198,7 @@
                 <input matInput (keyup)="applyUserRecentsFilter($event.target.value)" placeholder="Filter Recents">
             </mat-form-field>
         </div>
-        <div class="dnav-folders dynamic-scroller" *ngIf="userRecents.length > 0">
+        <div class="dnav-folders dynamic-scroller" *ngIf="userRecents">
             <mat-nav-list class="recents-list">
                 <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
                     <mat-list-item *ngIf="userRecents.length === 0" class="no-item-message">
