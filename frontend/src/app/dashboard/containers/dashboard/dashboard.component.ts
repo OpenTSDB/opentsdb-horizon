@@ -1346,7 +1346,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keypress', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
-        if (event.key === 'l' || event.key === 'L') {
+        if (!this.viewEditMode && event.getModifierState('Control') && (event.key === 'l' || event.key === 'L')) {
             this.locked = !this.locked;
             this.interCom.responsePut({
                 action: 'dashboardLocked',

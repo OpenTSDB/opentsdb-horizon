@@ -8,13 +8,12 @@ import DygraphInteraction from '../../../dygraphs/misc/dygraph-interaction-model
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
 import { UtilsService } from '../../../../core/services/utils.service';
 import ThresholdsPlugin from '../../../dygraph-threshold-plugin/src/index';
-import CrosshairPlugin from '../../../dygraph-crosshair-plugin/src/index';
 import * as moment from 'moment';
 import * as d3 from 'd3';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../../core/services/intercom.service';
-
+import { TimestampShareService } from '../../../../core/services/timestamp-share.service';
 @Directive({
     // tslint:disable-next-line: directive-selector
     selector: '[dygraphsChart]',
@@ -37,13 +36,12 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
     @Output() tooltipVisible = new EventEmitter<any>();
 
-    private startTime = 0; // for icon placement
+    private startTime = 0; // for event icon placement
     private _g: any;
     private gDimension: any;
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
     private locked = false;
-    private lockedRow = -1;
     private tooltipVisibleToggle: boolean;
 
     public labelsDiv: any;
@@ -58,6 +56,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         private uConverter: UnitConverterService,
         private logger: LoggerService,
         private interCom: IntercomService,
+        private timestampShareService: TimestampShareService
     ) { }
 
     ngOnInit() {
@@ -66,14 +65,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             if (message) {
                 switch (message.action) {
                     case 'mouseOverOnTimeChart':
-                        if (message.payload && this.chartType !== 'heatmap' && (message.payload.row || message.payload.row === 0)) {
-                            this._g.setSelection(message.payload.row);
-                            this.lockedRow = message.payload.row;
-                        } else {  // moused out
-                            console.log('clearing selection 2', this);
-                            this._g.clearSelection();
-                            this.lockedRow = -1;
-                        }
+                        // redraw dygraph for vertical line
+                        this._g = new Dygraph(this.element.nativeElement, this.data.ts, this.options);
                         break;
                     case 'dashboardLocked':
                         if (message.payload) {
@@ -128,14 +121,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         const self = this;
         const mouseover = function (e, x, points, row, seriesName) {
 
+            let timeChanged = false;
+            if (self.timestampShareService.getTimestamp() !== x) {
+                self.timestampShareService.setTimestamp(x);
+                timeChanged = true;
+            }
+
             // tooltip should be visible on mousover
             if (!self.tooltipVisibleToggle) {
                 self.setTooltipVisible(true);
-            }
-
-            // if locked, keep selection the same
-            if (self.locked && self.lockedRow > -1) {
-                self._g.setSelection(self.lockedRow);
             }
 
             this.lastSeriesHighlighted = seriesName;
@@ -199,11 +193,11 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 });
             }
 
-            // output event for crosshair
-            if (!self.locked && self.interCom) {
+            // output event for vertical line
+            if (!self.locked && self.interCom && timeChanged) {
                 self.interCom.responsePut({
                     action: 'mouseOverOnTimeChart',
-                    payload: {row}
+                    payload: {}
                 });
             }
             // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
@@ -301,6 +295,16 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         };
 
         const underlayCallback = (canvas, area, g) => {
+
+            // draw vertical line
+            const x = this.timestampShareService.getTimestamp();
+            if (x > 0) {
+                canvas.beginPath();
+                canvas.fillStyle = 'rgba(0, 0, 0)';
+                canvas.fillRect(g.toDomXCoord(x), area.y, 1, area.h);
+                canvas.closePath();
+            }
+
             if (this.eventBuckets && this.showEvents) {
                 for (const bucket of this.eventBuckets) {
                     let coords;
@@ -439,7 +443,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
             // if new data
             if (( changes.data && changes.data.currentValue || changes.options && changes.options.currentValue) ) {
-                this.options.plugins = [ThresholdsPlugin, CrosshairPlugin];
+                this.options.plugins = [ThresholdsPlugin];
 
                 if (this.chartType === 'line') {
                     if (this.options.labelsDiv) {
@@ -564,11 +568,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                             const cx2 = g.toDomXCoord(xv);
 
                             const cy = Dygraph.pageY(event) - graphPos.y;
-
-                            if ( _prev && !self.locked) {
-                                g.clearSelection();
-                            }
-
 
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
@@ -734,6 +733,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (this._g) {
             this._g.clearSelection();
 =======
@@ -748,6 +748,16 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 });
             }
 >>>>>>> b823544... copy vertical line from private git
+=======
+        this._g.clearSelection();
+
+        if (this.chartType !== 'heatmap' && !this.locked) {
+            this.timestampShareService.clear();
+            this.interCom.responsePut({
+                action: 'mouseOverOnTimeChart',
+                payload: {}
+            });
+>>>>>>> f4f58b7... use overlay for vertical line
         }
     }
 
