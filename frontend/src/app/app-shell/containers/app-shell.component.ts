@@ -81,7 +81,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         warning: 'd-warning-solid'
     };
 
-
     private resourcesReady: boolean = false;
     private pendingRecent: any = {};
 
@@ -100,11 +99,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         @Inject(DOCUMENT) private document: any
     ) {
         // prefetch the navigator first data
-        this.store.dispatch(new DbfsLoadResources());
+        // this.store.dispatch(new DbfsLoadResources());
 
         // prefetch the navigator first data
         this.store.dispatch(new DbfsLoadResources()).pipe(
-            map( rs => {
+            map(rs => {
                 this.resourcesReady = true;
                 if (this.pendingRecent.resource) {
                     this.store.dispatch(
@@ -113,8 +112,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
                     // maybe here update the 'personal' tab of navigator if it is closed?
                 }
-
-
             })
         ).subscribe();
 
@@ -122,26 +119,26 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event: NavigationEnd) => {
-              const urlParts = event.urlAfterRedirects.split('?');
-              const urlPath = urlParts[0].split('/');
-              // not sure if we need to store urlParams, but pulling it out in case.
-              // TODO: find out if we want to store urlParams
-              let urlParams: any = '';
-              if (urlParts[1]) {
-                  urlParams = urlParts[1];
-              }
-              // remove first item... should be empty element anyways
-              urlPath.shift();
-              // second item in arrant should be which horizon app we are in. extract it
-              const app = urlPath.shift();
+            const urlParts = event.urlAfterRedirects.split('?');
+            const urlPath = urlParts[0].split('/');
+            // not sure if we need to store urlParams, but pulling it out in case.
+            // TODO: find out if we want to store urlParams
+            let urlParams: any = '';
+            if (urlParts[1]) {
+                urlParams = urlParts[1];
+            }
+            // remove first item... should be empty element anyways
+            urlPath.shift();
+            // second item in arrant should be which horizon app we are in. extract it
+            const app = urlPath.shift();
 
-              // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
-              if (app === 'd') {
-                  // YAY! we are in dashboard land
-                  const dbId = urlPath.shift();
-                  const dbFullPath =  '/' + urlPath.join('/');
-                  // assuming we don't want to track NEW (but we will want to track it after it was saved)
-                  if (dbId !== '_new_') {
+            // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
+            if (app === 'd') {
+                // YAY! we are in dashboard land
+                const dbId = urlPath.shift();
+                const dbFullPath = '/' + urlPath.join('/');
+                // assuming we don't want to track NEW (but we will want to track it after it was saved)
+                if (dbId !== '_new_') {
 
                     // the fullpath could possibly be wrong, but we store it anyway
                     // we'll do the lookup based on the ID if the path is not found in the resource cache
@@ -164,32 +161,27 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                             new DbfsAddUserRecent(payload, event.urlAfterRedirects)
                         );
                     }
-                  }
+                }
+            }
 
-              }
-
-              if (app === 'main') {
+            if (app === 'main' && this.resourcesReady) {
                 // we are on landing page
                 // open the navigator
                 this.drawer.open();
-                this.store.dispatch(new UpdateNavigatorSideNav({mode: this.drawerMode, currentApp: 'dashboard'}));
-              }
-            });
-              /*self.logger.ng('ROUTER NavigationEnd', {
-                  navigationEnd: event,
-                  location: self.location,
-                  activatedRoute: self.activatedRoute
-              });*/
+                this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
+            }
+        });
+
         const dbfsInit = this.store.dispatch(new DbfsLoadResources()).subscribe((state: any) => {
-          // logger.log('DBFS INIT COMPLETE', state);
-          this.store.dispatch(new DbfsInitialized());
-          dbfsInit.unsubscribe();
+            // logger.log('DBFS INIT COMPLETE', state);
+            this.store.dispatch(new DbfsInitialized());
+            dbfsInit.unsubscribe();
         });
     }
 
     ngOnInit() {
 
-        this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
+        this.subscription.add(this.themeService.getActiveTheme().subscribe(theme => {
             this.logger.log('LS THEME', { theme });
             this.setAppTheme(theme);
         }));
@@ -213,6 +205,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.currentApp$.subscribe(app => {
             // console.log('[SUB] currentApp', app);
             this.activeNavSection = app;
+
+            // open drawer if on landing page
+            if (app === 'main' && this.resourcesReady) {
+                this.drawer.open();
+                this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
+            }
         }));
 
         this.subscription.add(this.sideNavOpen$.subscribe(isOpen => {
@@ -249,7 +247,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             const pathParts = changes.fullUrlPath.currentValue.split('/');
             pathParts.shift();
             // this.logger.ng('PATH PARTS', { changes, pathParts});
-            const activeNav: any = { section : ''};
+            const activeNav: any = { section: '' };
             switch (pathParts[0]) {
                 case 'a':
                     // alerts

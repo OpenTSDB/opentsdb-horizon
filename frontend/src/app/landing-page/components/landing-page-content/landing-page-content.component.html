@@ -3,7 +3,7 @@
             <span class="user-avatar mat-elevation-z2" *ngIf="user && user.alias">
                 <img src="https://git.ouroath.com/{{user.alias}}.png?size=40" />
             </span>
-            <span>Hi {{(user && user.name.length > 0) ? user.name : user.alias}}!</span>
+            <span>Hi {{(user && user.name) ? user.name : user.alias}}!</span>
             <span>Welcome to Horizon!</span>
         </h2>
         <div class="hero-message mat-subheading-2">Horizon is the next generation dashboard tool from Yamas</div>
