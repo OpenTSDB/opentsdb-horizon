@@ -192,14 +192,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     tickData: tickDataOutput
                 });
             }
-
             // output event for vertical line
-            if (!self.locked && self.interCom && timeChanged) {
+            setTimeout(() => { if (!self.locked && self.interCom && timeChanged) {
                 self.interCom.responsePut({
                     action: 'mouseOverOnTimeChart',
                     payload: {}
                 });
-            }
+            }}, 0);
+
             // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
         };
 
