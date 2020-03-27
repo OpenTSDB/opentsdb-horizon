@@ -113,14 +113,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     get types(): Array<string> {
-        const types = Object.keys(RecipientType);
-        // todo: enable http
-        for (let i = 0; i < types.length; i++) {
-            if (types[i] === 'http') {
-              types.splice(i, 1);
-            }
-         }
-        return types;
+        return Object.keys(RecipientType)
+            .filter(t => environment.alert.recipient[t])
+            .filter(t => environment.alert.recipient[t].enable);
     }
 
     /** ANGULAR INTERFACE METHODS */
