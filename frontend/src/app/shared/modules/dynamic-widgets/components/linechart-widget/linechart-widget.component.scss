@@ -57,6 +57,14 @@
             height: 100%;
             display: flex;
 
+            .graph-chart {
+                position: absolute;
+            }
+    
+            .vertical-line {
+                margin-left: 50px;
+            }
+
             .dygraph-legend {
                 display: none;
                 z-index: 1000;

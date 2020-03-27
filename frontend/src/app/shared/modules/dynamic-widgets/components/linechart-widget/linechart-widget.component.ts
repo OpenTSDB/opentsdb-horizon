@@ -173,6 +173,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     eventsError = '';
 
+    // VERTICAL LINE
+    @ViewChild('verticalLineCanvas') canvas: ElementRef<HTMLCanvasElement>;
+    private ctx: CanvasRenderingContext2D;
+    verticalLineCanvasWidth: string;
+    verticalLineCanvasHeight: string;
+    verticalLinePosition: number;
+
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
     private _timeRange: BehaviorSubject<any> = new BehaviorSubject({});
@@ -673,6 +680,39 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+        }
+    }
+
+    verticalLinePercent(e) {
+        if (e.percent < 0) {
+            this.verticalLinePosition = -1;
+        } else if (e.percent === 0) {
+            this.verticalLinePosition = 1;
+        } else {
+            this.verticalLinePosition = Math.floor(e.percent * (this.size.width - 11));
+        }
+        this.drawVerticalLine(this.verticalLinePosition);
+    }
+
+    initializeLineChartCtx() {
+        if (this.canvas && !this.ctx) {
+            this.ctx = this.canvas.nativeElement.getContext('2d');
+        }
+    }
+
+    drawVerticalLine(xPos) {
+        this.initializeLineChartCtx();
+        if (this.ctx) {
+            this.ctx.clearRect(0, 0, this.size.width, this.size.height);
+            this.verticalLineCanvasHeight = this.size.height - 6 + 'px';
+            this.verticalLineCanvasWidth = this.size.width - 50 + 'px';
+
+            if (xPos > 0) {
+                this.ctx.beginPath();
+                this.ctx.fillStyle = 'rgba(0, 0, 0)';
+                this.ctx.fillRect(xPos, 0, 1, this.size.height);
+                this.ctx.closePath();
+            }
         }
     }
 

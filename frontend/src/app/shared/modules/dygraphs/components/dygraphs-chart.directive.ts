@@ -35,6 +35,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Output() currentTickEvent = new EventEmitter<any>();
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
     @Output() tooltipVisible = new EventEmitter<any>();
+    @Output() percentOfXAxis = new EventEmitter<any>();
 
     private startTime = 0; // for event icon placement
     private _g: any;
@@ -64,9 +65,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
             if (message) {
                 switch (message.action) {
-                    case 'mouseOverOnTimeChart':
-                        // redraw dygraph for vertical line
-                        this._g = new Dygraph(this.element.nativeElement, this.data.ts, this.options);
+                    case 'updateVerticalLine':
+                        this.percentOfXAxis.emit({percent: this._g.toPercentXCoord(this.timestampShareService.getTimestamp())});
                         break;
                     case 'dashboardLocked':
                         if (message.payload) {
@@ -122,7 +122,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         const mouseover = function (e, x, points, row, seriesName) {
 
             let timeChanged = false;
-            if (self.timestampShareService.getTimestamp() !== x) {
+            if (!self.locked && self.timestampShareService.getTimestamp() !== x) {
                 self.timestampShareService.setTimestamp(x);
                 timeChanged = true;
             }
@@ -193,12 +193,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 });
             }
             // output event for vertical line
-            setTimeout(() => { if (!self.locked && self.interCom && timeChanged) {
-                self.interCom.responsePut({
-                    action: 'mouseOverOnTimeChart',
-                    payload: {}
-                });
-            }}, 0);
+            setTimeout(() => {
+                if (!self.locked && self.interCom && timeChanged) {
+                    self.interCom.responsePut({
+                        action: 'updateVerticalLine',
+                        payload: {}
+                    });
+                }
+            }, 0);
 
             // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
         };
@@ -295,16 +297,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         };
 
         const underlayCallback = (canvas, area, g) => {
-
-            // draw vertical line
-            const x = this.timestampShareService.getTimestamp();
-            if (x > 0) {
-                canvas.beginPath();
-                canvas.fillStyle = 'rgba(0, 0, 0)';
-                canvas.fillRect(g.toDomXCoord(x), area.y, 1, area.h);
-                canvas.closePath();
-            }
-
             if (this.eventBuckets && this.showEvents) {
                 for (const bucket of this.eventBuckets) {
                     let coords;
@@ -475,6 +467,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                             g.drawGraph_();
                         }
                     };
+
+                    setTimeout(() => {
+                        if (self.interCom) {
+                            self.interCom.responsePut({
+                                action: 'updateVerticalLine',
+                                payload: {}
+                            });
+                        }
+                    }, 0);
 
                     if (this.timeseriesLegend) {
                         //this.options.clickCallback = clickCallback;
@@ -754,7 +755,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         if (this.chartType !== 'heatmap' && !this.locked) {
             this.timestampShareService.clear();
             this.interCom.responsePut({
-                action: 'mouseOverOnTimeChart',
+                action: 'updateVerticalLine',
                 payload: {}
             });
 >>>>>>> f4f58b7... use overlay for vertical line

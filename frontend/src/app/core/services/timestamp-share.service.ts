@@ -15,6 +15,7 @@ export class TimestampShareService {
 
   setTimestamp(ts: number) {
     this.timestamp = ts;
+    console.log('* in setter', ts);
   }
 
   getTimestamp() {
