@@ -9,6 +9,7 @@ import { Store, Select } from '@ngxs/store';
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -45,6 +46,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
+    environment = environment;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template

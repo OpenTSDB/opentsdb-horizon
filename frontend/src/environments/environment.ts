@@ -25,4 +25,19 @@ export const environment = {
   // metaApi: 'https://stg-metrics.yamas.ouroath.com/api',
   // metaApi: 'https://stg-mt-1-gq1.yamas.ouroath.com/api',
   auraUI: 'https://qa-aura.yamas.ouroath.com:4443',
+  alert: {
+    recipient: {
+      opsgenie: {
+        guideUrl: 'https://git.ouroath.com/pages/monitoring/yamas_userguide_2.0/BE/opsgenie_plugin/#1-create-an-api-key-for-your-opsgenie-team'
+      },
+      slack: {
+        guideUrl: 'https://git.ouroath.com/pages/monitoring/yamas_userguide_2.0/BE/slack_integration/#1-request-webhook-permissions-for-your-slack-app'
+      },
+      oc: {
+        onboardUrl: 'https://vzbuilders.service-now.com/nav_to.do?uri=%2Fcom.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3Dd0f777c64ffc1b40eee3b47f0210c7b8',
+        guideUrl: 'https://git.ouroath.com/pages/monitoring/horizon_userguide/alerts/recipients/#operations-center-oc'
+      }
+    }
+  },
+  splunk_url: 'https://logs.yms.yahoo.com:9999/splunk/en-US/app/search/search?q=search%20index%3Dcorona-alerts%20alert_id%3D'
 };
