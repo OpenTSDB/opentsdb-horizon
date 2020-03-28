@@ -25,7 +25,7 @@
             'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position=='bottom' && options.labels.length > 1,
             'display-legend-left': widget.settings.legend.display && widget.settings.legend.position=='left' && options.labels.length > 1
         }">
-        <div class="dygraph-legend" #graphLegend [style.visibility]="showToolTip ? 'visible' : 'hidden'"></div>
+        <div class="dygraph-legend" #graphLegend></div>
         <!-- STANDARD GRAPH OUTPUT -->
         <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)">
             <div class="multi-graph-container" #multigraphContainer
@@ -81,7 +81,6 @@
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
                                         (zoomed)="handleZoom($event)"
-                                        (tooltipVisible)="tooltipVisible($event)"
                                         (percentOfXAxis)="verticalLinePercent($event)">
                                     </div>
                                     <canvas #verticalLineCanvas class="vertical-line" [height]="size.height - 6" [width]="size.width"

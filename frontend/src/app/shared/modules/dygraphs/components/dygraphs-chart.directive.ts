@@ -34,7 +34,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
-    @Output() tooltipVisible = new EventEmitter<any>();
     @Output() percentOfXAxis = new EventEmitter<any>();
 
     private startTime = 0; // for event icon placement
@@ -43,7 +42,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
     private locked = false;
-    private tooltipVisibleToggle: boolean;
 
     public labelsDiv: any;
     /* Commenting out for now
@@ -127,11 +125,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 timeChanged = true;
             }
 
-            // tooltip should be visible on mousover
-            if (!self.tooltipVisibleToggle) {
-                self.setTooltipVisible(true);
-            }
-
             this.lastSeriesHighlighted = seriesName;
 
             /* Commenting out for now
@@ -203,13 +196,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }, 0);
 
             // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
-        };
-
-        const unhighlightCallback = function(event) {
-            // onleave, hide tooltip
-            if (self.tooltipVisibleToggle) {
-                self.setTooltipVisible(false);
-            }
         };
 
         const clickCallback = function(e, x, points) {
@@ -440,7 +426,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 if (this.chartType === 'line') {
                     if (this.options.labelsDiv) {
                         this.options.highlightCallback = mouseover;
-                        this.options.unhighlightCallback = unhighlightCallback;
+                        // this.options.unhighlightCallback = unhighlightCallback;
                     }
                     this.options.legendFormatter = legendFormatter;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
@@ -626,14 +612,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this._g.resize(nsize.width, nsize.height);
             }
         }
-    }
-
-    setTooltipVisible(visible: boolean) {
-        this.tooltipVisibleToggle = visible;
-        this.tooltipVisible.emit({
-            action: 'toolTipVisibility',
-            payload: { visible },
-        });
     }
 
     /* Commenting out for now
