@@ -173,8 +173,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsError = '';
 
     // VERTICAL LINE
-    @ViewChild('verticalLineCanvas') canvas: ElementRef<HTMLCanvasElement>;
-    private ctx: CanvasRenderingContext2D;
+    @ViewChildren('verticalLineCanvas') canvases: QueryList<any>;
+    private ctxs: CanvasRenderingContext2D[];
+
     verticalLineCanvasWidth: string;
     verticalLineCanvasHeight: string;
     verticalLinePosition: number;
@@ -227,7 +228,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }));
 
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
-
             switch (message.action) {
                 case 'TimeChanged':
                     this.options.isCustomZoomed = false;
@@ -433,9 +433,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
+                                this.initializeLineChartCtxs();
                             });
-
                         }
+                        this.initializeLineChartCtxs();
                         break;
                     case 'getUpdatedWidgetConfig':
                         // console.log("getUpdatedWidgetConfig", message);
@@ -693,24 +694,27 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.drawVerticalLine(this.verticalLinePosition);
     }
 
-    initializeLineChartCtx() {
-        if (this.canvas && !this.ctx) {
-            this.ctx = this.canvas.nativeElement.getContext('2d');
-        }
+    initializeLineChartCtxs() {
+        this.ctxs = [];
+        this.canvases.toArray().forEach(el => {
+            const ctx = el.nativeElement.getContext('2d');
+            this.ctxs.push(ctx);
+        });
     }
 
     drawVerticalLine(xPos) {
-        this.initializeLineChartCtx();
-        if (this.ctx) {
-            this.ctx.clearRect(0, 0, this.size.width, this.size.height);
-            this.verticalLineCanvasHeight = this.size.height - 6 + 'px';
-            this.verticalLineCanvasWidth = this.size.width - 50 + 'px';
+        if (this.ctxs && this.ctxs.length > 0) {
+            for (const ctx of this.ctxs) {
+                ctx.clearRect(0, 0, this.size.width, this.size.height);
+                this.verticalLineCanvasHeight = this.size.height - 6 + 'px';
+                this.verticalLineCanvasWidth = this.size.width - 51 + 'px';
 
-            if (xPos > 0) {
-                this.ctx.beginPath();
-                this.ctx.fillStyle = 'rgba(0, 0, 0)';
-                this.ctx.fillRect(xPos, 0, 1, this.size.height);
-                this.ctx.closePath();
+                if (xPos > 0) {
+                    ctx.beginPath();
+                    ctx.fillStyle = 'rgba(0, 0, 0)';
+                    ctx.fillRect(xPos, 0, 1, this.size.height);
+                    ctx.closePath();
+                }
             }
         }
     }

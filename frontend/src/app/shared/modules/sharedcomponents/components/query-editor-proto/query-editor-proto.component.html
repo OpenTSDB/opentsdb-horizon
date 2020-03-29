@@ -137,6 +137,7 @@
                                 <span>{{ getExpressionUserInput(data.metric.expression) }}</span>
                                 <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                             </div>
+<<<<<<< HEAD
                             <mat-form-field *ngIf="editExpressionId === data.metric.id" class="expression-input-field"
                                 appearance="fill" color="primary" floatLabel="never">
                                 <input matInput placeholder="e.g. m1 + m2" [formControlName]="data.metric.id"
@@ -145,6 +146,11 @@
                                     #editExpressionInput>
                                 <mat-error
                                     *ngIf="fg.controls[data.metric.id].errors && fg.controls[data.metric.id].errors.invalid">
+=======
+                            <mat-form-field *ngIf="editExpressionId === data.metric.id" class="expression-input-field" appearance="fill" color="primary" floatLabel="never">
+                                <input matInput placeholder="e.g., m1 + m2 or q1.m1 + q2.m2" [formControlName]="data.metric.id" (blur)="updateExpression(data.metric.id, $event)" (keyup.enter)="updateExpression(data.metric.id, $event)" autocomplete="off" #editExpressionInput>
+                                <mat-error *ngIf="fg.controls[data.metric.id].errors && fg.controls[data.metric.id].errors.invalid">
+>>>>>>> 498a088... vertical line for multigraph
                                     Invalid Expression.
                                 </mat-error>
                             </mat-form-field>
@@ -297,11 +303,16 @@
                             </span>
                         </div>
                         <div class="metric-row-data expression is-adding" *ngIf="isAddExpressionProgress">
+<<<<<<< HEAD
                             <mat-form-field class="expression-input-field" appearance="outline" color="primary"
                                 floatLabel="never">
                                 <input matInput placeholder="e.g. m1 + m2" formControlName="-1"
                                     (blur)="updateExpression(-1, $event)" (keyup.enter)="updateExpression(-1, $event)"
                                     autocomplete="off" #addExpressionInput>
+=======
+                            <mat-form-field class="expression-input-field" appearance="outline" color="primary" floatLabel="never" >
+                                <input matInput placeholder="e.g., m1 + m2 or q1.m1 + q2.m22"  formControlName="-1" (blur)="updateExpression(-1, $event)" (keyup.enter)="updateExpression(-1, $event)" autocomplete="off" #addExpressionInput>
+>>>>>>> 498a088... vertical line for multigraph
                                 <mat-error *ngIf="fg.controls['-1'].errors && fg.controls['-1'].errors.invalid">
                                     Invalid Expression.
                                 </mat-error>
