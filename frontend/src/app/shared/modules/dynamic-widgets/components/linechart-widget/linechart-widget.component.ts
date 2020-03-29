@@ -63,7 +63,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     private isStackedGraph = false;
     chartType = 'line';
     multiLimitMessage = '';
-    showToolTip = true;
     dashboardLocked = false;
 
     doRefreshData$: BehaviorSubject<boolean>;
@@ -1454,10 +1453,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     /* TIMESERIES LEGEND */
-
-    tooltipVisible(event) {
-        this.showToolTip = event.payload.visible;
-    }
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {

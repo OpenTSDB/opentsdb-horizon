@@ -74,6 +74,13 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 }
             }
         }));
+
+        // need to know if dashboard is currently locked
+        this.interCom.requestSend({
+            action: 'isDashboarLocked',
+            payload: {}
+        });
+
     }
 
     ngOnChanges(changes: SimpleChanges) {

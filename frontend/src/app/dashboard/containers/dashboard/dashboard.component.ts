@@ -352,6 +352,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     delete this.wData[message.id];
                     this.store.dispatch(new UpdateMode(message.payload));
                     this.rerender = { 'reload': true };
+
                     break;
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
@@ -502,6 +503,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         payload: { zoomingWid: message.id, date: message.payload }
                     });
                     this.updateURLParams(this.dbTime);
+                    break;
+                case 'isDashboarLocked':
+                    this.interCom.responsePut({
+                        action: 'dashboardLocked',
+                        payload: {locked: this.locked}
+                    });
                     break;
                 default:
                     break;
@@ -1346,7 +1353,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keypress', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
-        if (!this.viewEditMode && event.getModifierState('Control') && (event.key === 'l' || event.key === 'L')) {
+        if (event.getModifierState('Control') && (event.key === 'l' || event.key === 'L')) {
             this.locked = !this.locked;
             this.interCom.responsePut({
                 action: 'dashboardLocked',
