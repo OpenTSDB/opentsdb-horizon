@@ -46,6 +46,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         // },
     ];
     slackWebhookMaxLength = 200;
+    opsGenieApiKeyMaxLength = 200;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template
@@ -499,6 +500,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         return webhook && webhook.length > 0 && webhook.length <= this.slackWebhookMaxLength;
     }
 
+    isOpsGenieApiKeyCorrectLength(apiKey: string): boolean {
+        return apiKey && apiKey.length > 0 && apiKey.length <= this.opsGenieApiKeyMaxLength;
+    }
+
     getRecipientItemsByType(type) {
         if (this.viewMode === Mode.all) {
             // all mode (show only unselected)
@@ -577,9 +582,17 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    opsGenieApiKeyValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isOpsGenieApiKeyCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
+        this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
         this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
