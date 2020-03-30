@@ -14,7 +14,7 @@ $widgets-common-config: (
     tab-width: initial,
     action-bar-height: 30px,
     output-radius: 4px,
-    widget-output-height: 270px,
+    widget-output-height: 318px,
     edit-toolbar-height: 50px,
     edit-toolbar-border-width: 2px
 );
@@ -45,8 +45,7 @@ $widgets-common-config: (
             padding: $default-padding $edit-view-padding;
         }
 
-        .widget-panel-content,
-        .widget-controls-container {
+        .widget-panel-content {
             flex: 1 1 100%;
             display: flex;
             flex-direction: column;
@@ -61,6 +60,15 @@ $widgets-common-config: (
             }
         }
 
+        .widget-controls-container {
+            flex: 1 1 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            padding: 0 0 10px 0px;
+        }
+
         .widget-output-container {
             flex: 1 1 100%;
             display: flex;
@@ -71,6 +79,23 @@ $widgets-common-config: (
             .widget-title {
                 @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
                 flex: 1 1 $action-bar-height;
+
+                .title-label {
+                    margin-right: 8px;
+                    white-space: nowrap;
+                }
+
+                .title-content {
+                    .mat-icon-button {
+                        width: 24px;
+                        height: 24px;
+                        line-height: 24px;
+                    }
+
+                    .mat-icon-button .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                    }
+                }
 
                 .close-edit-view-btn {
                     min-width: auto;
@@ -92,18 +117,19 @@ $widgets-common-config: (
             max-height: 100%;
             max-width: 100%;
         }
+
         .step-section {
             margin-bottom: 8px;
             display: none;
 
             .step-section-label {
                 border-top: 1px solid #e6eded; // why is color here??
-
                 display: inline-block;
                 padding: 2px 8px 2px 8px;
-                    // why is color here???
-                border-bottom-right-radius: 18px;
-                background-color: #e6eded;
+                border-bottom-right-radius: 4px;
+                background-color: #e6eded; // why is color here???
+                width: 200px;
+
                 .step-section-label-text {
                     flex: 1;
                     display: flex;
@@ -115,7 +141,7 @@ $widgets-common-config: (
                         font-size: 14px;
                         font-weight: 500;
                         padding: 2px 0;
-                        color: #084b4e;
+                        // color: #084b4e;
                     }
 
                     .mat-icon {
@@ -124,7 +150,7 @@ $widgets-common-config: (
                         font-size: 16px;
                         margin-left: 6px;
                         margin-top: 4px;
-                        color: #303030;
+                        //color: #303030;
                     }
                 }
             }
@@ -413,17 +439,23 @@ $widgets-common-config: (
 
         .widget-output-container {
             padding: 10px $edit-view-padding;
-            max-height: $widget-output-height;
+            max-height: $widget-output-height ;
             // background: #f2f4f5;
 
             .widget-title {
-                margin-top: $default-padding / 2;
-                margin-bottom: $default-padding / 2;
+                //margin-top: $default-padding / 2;
+                //margin-bottom: $default-padding / 2;
+                margin-top: -10px;
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: 10px;
+                padding: 7px 14px;
             }
 
             .widget-output {
                 height: 250px;
                 max-height: 250px;
+                min-height: 250px;
                 //padding: $default-padding 0;
                 border-radius: $output-radius;
                 display: flex;
@@ -450,11 +482,24 @@ $widgets-common-config: (
     $mg-background: #E6EDED;
     $mg-text: #606060;
 
+    // section markers
+    //
+    $section-tab-markers: if($is-dark-theme, rgba(map-get($background, ink-bar), .35), rgba(map-get($background, navbar), .35));
+    $section-tab-color: #ffffff; // most of the time, white will do. need to test
+
     .edit-view-container.is-active {
         .widget-output-container {
 
             .widget-output {
                 background-color: map-get($background, card);
+            }
+
+            .widget-title {
+                background-color: map-get($background, card);
+
+                .title-label {
+                    color: map-get($foreground, secondary-text);
+                }
             }
         }
     }
@@ -463,6 +508,7 @@ $widgets-common-config: (
 
         .widget-controls-container {
             background-color: map-get($background, card);
+            border-top: 1px solid rgba($divider,.15);
         }
         .widget-configs {
 
@@ -504,6 +550,23 @@ $widgets-common-config: (
 
         .widget-actions {
             border-top: 1px solid map-get($foreground, dividers);
+        }
+
+        .step-section {
+            .step-section-label {
+                background-color: $section-tab-markers;
+
+            }
+
+            .step-section-label-text {
+                span {
+                    color: $section-tab-color;
+                }
+
+                .mat-icon {
+                    color: rgba($section-tab-color, .8);
+                }
+            }
         }
     }
 

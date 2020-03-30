@@ -102,10 +102,10 @@
                                 <div class="form-label vertical-center">API Key</div>
                                 <mat-form-field floatLabel="never" appearance="fill" class="wide-formfield">
                                     <input matInput [formControl]="opsGenieApiKey" placeholder="Enter API Key*" required
-                                        minlength="36" maxlength="36" [value]="recipientsFormData[_recipientType.opsgenie].apikey"
+                                        [value]="recipientsFormData[_recipientType.opsgenie].apikey"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.opsgenie], 'apikey', $event.target.value)">
                                     <mat-error *ngIf="opsGenieApiKey.errors && (opsGenieApiKey.dirty || opsGenieApiKey.touched)">
-                                        OpsGenie API Key required. Length is 36 characters.
+                                        OpsGenie API Key required. Max length is {{opsGenieApiKeyMaxLength}}.
                                     </mat-error>
                                 </mat-form-field>
                             </div>
@@ -133,10 +133,10 @@
                                 <div class="form-label vertical-center">Webhook URL </div>
                                 <mat-form-field floatLabel="never" appearance="fill" class="wide-formfield">
                                     <input [formControl]="slackWebhook" matInput placeholder="Webhook URL*" required
-                                        minlength="77" maxlength="77" [value]="recipientsFormData[_recipientType.slack].webhook"
+                                        [value]="recipientsFormData[_recipientType.slack].webhook"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.slack], 'webhook', $event.target.value)">
                                     <mat-error *ngIf="slackWebhook.errors && (slackWebhook.dirty || slackWebhook.touched)">
-                                        Slack Webhook URL required. Length is 77 characters.
+                                        Slack Webhook URL required. Max length is {{slackWebhookMaxLength}}.
                                     </mat-error>
                                 </mat-form-field>
                             </div>

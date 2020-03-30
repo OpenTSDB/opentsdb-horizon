@@ -48,7 +48,7 @@
         <div class="alert-results-wrapper">
             <div class="alert-results-body has-scroller">
                 <div class="is-scroller">
-                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc">
+                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc" matSortActive="updatedTime" matSortDirection="desc">
                         <ng-container matColumnDef="select">
                             <th mat-header-cell *matHeaderCellDef>
                                 <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -68,7 +68,7 @@
 
                         <ng-container matColumnDef="name">
                             <th mat-header-cell *matHeaderCellDef>
-                                <span *ngIf="!selection.hasValue()" mat-sort-header="name">Alert Name</span>
+                                <span *ngIf="!selection.hasValue()" mat-sort-header>Alert Name</span>
                                 <div class="bulk-actions-wrapper" *ngIf="selection.hasValue()">
                                     <button mat-button color="primary" (click)="bulkDisableAlerts()">
                                         <mat-icon fontSet="denali" fontIcon="d-notification-disable"></mat-icon>

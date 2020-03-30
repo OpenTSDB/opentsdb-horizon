@@ -44,6 +44,7 @@
                 font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
                 width: $row-size;
                 height: $row-size;
+                border-top-left-radius: 4px;
             }
 
             .action-icons {
@@ -62,19 +63,21 @@
         .metric-wrapper {
             position: relative;
             overflow: auto;
-            // padding: 5px;
+            padding: 10px;
 
             .common-tags {
                 display: flex;
                 align-items: stretch;
-                padding: 4px;
+                padding: 4px 0;
+                margin-bottom: 5px;
+                border-radius: 2px;
 
                 .common-tags-label {
                     font-weight: 500;
                 }
 
                 .common-tags-wrapper {
-                    border-radius: 2px;
+                    //border-radius: 2px;
                     position: relative;
                     flex: 1;
                     // margin-left: 10px;
@@ -98,7 +101,7 @@
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
-                    padding: 0 $filter-block-padding;
+                    padding: 0 $filter-block-padding 4px $filter-block-padding;
                     font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
                     line-height: 24px;
 
@@ -121,9 +124,17 @@
                     height: initial;
                     min-height: 24px;
                     margin: 2px $filter-block-padding;
-                    border-radius: 4px;
-                    border: 0;
+                    // border-radius: 4px;
+                    // border: 0;
                     font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+
+                    &:last-of-type {
+                        margin-bottom: 0;
+                    }
+
+                    &:first-of-type {
+                        margin-top: 4px;
+                    }
 
                     .mat-list-item-content {
                         padding: 0;
@@ -154,7 +165,7 @@
                 }
             }
 
-            
+
 
         }
 
@@ -524,8 +535,8 @@
             border-top: $mat-select-arrow-size solid;
             margin: 0 $mat-select-arrow-margin;
           }
-        
-        
+
+
 
         // HOST MODIFIERS
         &.can-disable-metrics {
@@ -694,7 +705,7 @@
     .query-editor-proto {
 
 
-        .namespace-filter-wrapper {
+        .namespace-wrapper {
             background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
         }
         .namespace-bar.mat-toolbar {
@@ -716,19 +727,20 @@
             border-right: 1px solid $lighter-divider;
 
             .common-tags {
-                // background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
+                //background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
+                background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
 
                 .common-tags-label {
                     color: if($is-dark, $brand-color-inverse, $brand-color);
                 }
 
                 .common-tags-wrapper {
-                    background: $card-background;
+                    // background: $card-background;
                 }
             }
 
             .tags-selected-header {
-                border-bottom: 1px solid $divider
+                border-bottom: 1px solid $card-background;
             }
 
             .tag-filter-detail {
