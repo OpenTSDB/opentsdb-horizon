@@ -149,6 +149,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // TIMESERIES LEGEND
     // tsHighlightData: any = {};
     // private _tsTickData: BehaviorSubject<any> = new BehaviorSubject({});
+    keepLinechartDotsOnMouseOut = false;
 
     tsLegendOptions: any = {
         open: false,
@@ -175,7 +176,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // VERTICAL LINE
     @ViewChildren('verticalLineCanvas') canvases: QueryList<any>;
     private ctxs: CanvasRenderingContext2D[];
-
     verticalLineCanvasWidth: string;
     verticalLineCanvasHeight: string;
     verticalLinePosition: number;
@@ -254,8 +254,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 case 'tsLegendFocusChange':
                     if (message.id === this.widget.id) {
                         this.legendFocus = message.payload;
+                        this.keepLinechartDotsOnMouseOut = true;
                     } else {
                         this.legendFocus = false;
+                        this.keepLinechartDotsOnMouseOut = false;
                         this.cdRef.markForCheck();
                     }
                     break;
@@ -1491,8 +1493,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     options: widgetOptions,
                     queries: this.widget.queries,
                     settings: this.widget.settings,
-                    tsTickData: event.tickData,
-                    trackMouse: !this.dashboardLocked
+                    tsTickData: event.tickData
                 },
                 options: {
                     title: 'Timeseries Legend',
@@ -1522,10 +1523,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 tickData: event.tickData
             };
 
-            if (this.dashboardLocked) {
-                payload.trackMouse = {checked: false};
-            } else {
-                payload.trackMouse = {checked: true};
+            if (event.trackMouse) {
+                payload.trackMouse = event.trackMouse;
             }
 
             this.interCom.requestSend({

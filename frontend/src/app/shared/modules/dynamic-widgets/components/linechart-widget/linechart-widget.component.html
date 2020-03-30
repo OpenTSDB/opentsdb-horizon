@@ -78,6 +78,7 @@
                                         [multigraph]="multigraphEnabled"
                                         [timeseriesLegend]="tsLegendOptions"
                                         [widget]="widget"
+                                        [keepLinechartDotsOnMouseOut]="keepLinechartDotsOnMouseOut"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
                                         (zoomed)="handleZoom($event)"

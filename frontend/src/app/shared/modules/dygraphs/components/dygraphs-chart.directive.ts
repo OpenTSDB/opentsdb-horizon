@@ -30,6 +30,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Input() multigraph: boolean;
     @Input() timeseriesLegend: any = {};
     @Input() widget: any;
+    @Input() keepLinechartDotsOnMouseOut: boolean;
     @Output() zoomed = new EventEmitter;
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
@@ -720,6 +721,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         this.firstTickHighlight = false;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (this._g) {
             this._g.clearSelection();
 =======
@@ -736,6 +738,11 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 >>>>>>> b823544... copy vertical line from private git
 =======
         this._g.clearSelection();
+=======
+        if (!this.keepLinechartDotsOnMouseOut) {
+            this._g.clearSelection();
+        }
+>>>>>>> 248aea2... dashboard lock and track mouse are indepdent
 
         if (this.chartType !== 'heatmap' && !this.locked) {
             this.timestampShareService.clear();
