@@ -45,6 +45,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
+    slackWebhookMaxLength = 200;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template
@@ -494,6 +495,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         return re.test(email);
     }
 
+    isSlackWebhookCorrectLength(webhook: string): boolean {
+        return webhook && webhook.length > 0 && webhook.length <= this.slackWebhookMaxLength;
+    }
+
     getRecipientItemsByType(type) {
         if (this.viewMode === Mode.all) {
             // all mode (show only unselected)
@@ -565,10 +570,18 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    slackWebookValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isSlackWebhookCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
+        this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
         this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
         this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);
