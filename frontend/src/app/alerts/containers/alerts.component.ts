@@ -251,6 +251,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
     booleanConditionalKeys: string[] = ['enabled'];
 
+    closeEditPopup = 0;
     // where to navigate on save
     dashboardId = -1;
 
@@ -566,6 +567,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
             // this.logger.log('ROUTE CHANGE', { url });
+            this.closeEditPopup = 0;
 
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
@@ -597,6 +599,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 (url.length === 1 && this.utils.checkIfNumeric(url[0].path))
             ) {
                 // abreviated alert url... probably came from alert email
+                this.closeEditPopup = this.activatedRoute.snapshot.queryParams.close;
                 this.store.dispatch(new GetAlertDetailsById(parseInt(url[0].path, 10)));
             } else if (url.length > 2) {
                 // load alert the alert
@@ -1059,10 +1062,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 break;
         }
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
-            this.setNavbarPortal();
-            this.setTableDataSource();
-            this.retriggerAlertSearch();
-            this.retriggerSnoozeSearch();
+            if ( message.action === 'CancelEdit' && this.closeEditPopup && window.opener ) {
+                window.close();
+            } else {
+                this.setNavbarPortal();
+                this.setTableDataSource();
+                this.retriggerAlertSearch();
+                this.retriggerSnoozeSearch();
+            }
         }
     }
 
