@@ -48,5 +48,5 @@ export const environment = {
       }
     }
   },
-  splunk_url: 'https://logs.yms.yahoo.com:9999/splunk/en-US/app/search/search?q=search%20index%3Dcorona-alerts%20alert_id%3D'
+  alert_history_url: 'https://logs.yms.yahoo.com:9999/splunk/en-US/app/search/search?q=search%20index%3Dcorona-alerts%20alert_id%3D'
 };

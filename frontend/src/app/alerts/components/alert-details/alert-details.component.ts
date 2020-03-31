@@ -1668,7 +1668,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setAlertEvaluationLink() {
-        let url = environment.splunk_url + this.data.id;
+        let url = environment.alert_history_url + this.data.id;
         if (this.startTime && this.endTime) {
             const start =  Math.floor(this.dateUtil.timeToMoment(this.startTime, 'local').valueOf() / 1000);
             const end =  Math.floor(this.dateUtil.timeToMoment(this.endTime, 'local').valueOf() / 1000);
