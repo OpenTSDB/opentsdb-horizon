@@ -9,6 +9,7 @@ import { Store, Select } from '@ngxs/store';
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -45,6 +46,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
+    environment = environment;
+    slackWebhookMaxLength = 200;
+    opsGenieApiKeyMaxLength = 200;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template
@@ -111,14 +115,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     get types(): Array<string> {
-        const types = Object.keys(RecipientType);
-        // todo: enable http
-        for (let i = 0; i < types.length; i++) {
-            if (types[i] === 'http') {
-              types.splice(i, 1);
-            }
-         }
-        return types;
+        return Object.keys(RecipientType)
+            .filter(t => environment.alert.recipient[t])
+            .filter(t => environment.alert.recipient[t].enable);
     }
 
     /** ANGULAR INTERFACE METHODS */
@@ -494,6 +493,14 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         return re.test(email);
     }
 
+    isSlackWebhookCorrectLength(webhook: string): boolean {
+        return webhook && webhook.length > 0 && webhook.length <= this.slackWebhookMaxLength;
+    }
+
+    isOpsGenieApiKeyCorrectLength(apiKey: string): boolean {
+        return apiKey && apiKey.length > 0 && apiKey.length <= this.opsGenieApiKeyMaxLength;
+    }
+
     getRecipientItemsByType(type) {
         if (this.viewMode === Mode.all) {
             // all mode (show only unselected)
@@ -565,10 +572,26 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    slackWebookValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isSlackWebhookCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
+    opsGenieApiKeyValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isOpsGenieApiKeyCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
+        this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
+        this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
         this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
         this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);

@@ -48,7 +48,7 @@
         <div class="alert-results-wrapper">
             <div class="alert-results-body has-scroller">
                 <div class="is-scroller">
-                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc">
+                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc" matSortActive="updatedTime" matSortDirection="desc">
                         <ng-container matColumnDef="select">
                             <th mat-header-cell *matHeaderCellDef>
                                 <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -68,7 +68,7 @@
 
                         <ng-container matColumnDef="name">
                             <th mat-header-cell *matHeaderCellDef>
-                                <span *ngIf="!selection.hasValue()" mat-sort-header="name">Alert Name</span>
+                                <span *ngIf="!selection.hasValue()" mat-sort-header>Alert Name</span>
                                 <div class="bulk-actions-wrapper" *ngIf="selection.hasValue()">
                                     <button mat-button color="primary" (click)="bulkDisableAlerts()">
                                         <mat-icon fontSet="denali" fontIcon="d-notification-disable"></mat-icon>
@@ -83,10 +83,12 @@
                             <td mat-cell *matCellDef="let element">
                                 <span class="alert-name">{{element.name}}</span>
                                 <div class="edit-actions-wrapper" *ngIf="hasNamespaceWriteAccess">
-                                    <button mat-button color="primary" (click)="editAlert(element)">
-                                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                        <span>edit</span>
-                                    </button>
+                                    <a href="/a/{{element.id}}/edit?close=1" target="_blank">
+                                        <button mat-button color="primary">
+                                            <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                            <span>edit</span>
+                                        </button>
+                                    </a>
                                     <button mat-button color="primary" (click)="createAlertSnooze(element.id)">
                                         <mat-icon fontSet="denali" fontIcon="d-notification-snooze"></mat-icon>
                                         <span>Snooze</span>

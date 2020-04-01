@@ -1036,7 +1036,7 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadNamespacesList)
     loadNamespacesList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadNamespacesList) {
-        this.logger.action('State :: Load Namespaces', { resourceAction });
+        // this.logger.action('State :: Load Namespaces', { resourceAction });
         return this.service.getNamespacesList().pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsLoadNamespacesListSuccess(payload, resourceAction));
@@ -1047,7 +1047,7 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadNamespacesListSuccess)
     loadNamespacesListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadNamespacesListSuccess) {
-        this.logger.success('State :: Load Namespaces', response);
+        // this.logger.success('State :: Load Namespaces', response);
         const state = ctx.getState();
         const dynamicLoaded = JSON.parse(JSON.stringify({ ...state.dynamicLoaded }));
 
