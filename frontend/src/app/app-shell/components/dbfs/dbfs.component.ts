@@ -316,7 +316,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.panelAction$.subscribe( action => {
 
-            this.logger.log('PANEL ACTION', action);
+            // this.logger.log('PANEL ACTION', action);
             switch (action.method) {
                 case 'goNextPanel':
                     setTimeout(function() {

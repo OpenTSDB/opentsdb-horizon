@@ -1669,7 +1669,6 @@ export class DbfsResourcesState {
 
         return this.service.getUserFavoritesList(userid).pipe(
             map((payload: any) => {
-                this.logger.ng('FAVORITES PAYLOAD', payload)
                 return ctx.dispatch(new DbfsLoadUserFavoritesSuccess(payload, { userid }));
             }),
             catchError(error => ctx.dispatch(new DbfsResourcesError(error, 'Load User Favorites [Fetching data]')))

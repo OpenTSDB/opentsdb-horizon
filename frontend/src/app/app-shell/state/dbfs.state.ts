@@ -52,7 +52,7 @@ export class DbfsState {
 
     @Selector([DBState])
     static getLoadedDashboardId(dbstate) {
-        console.log('DBSTATE from DBFS', dbstate);
+        // console.log('DBSTATE from DBFS', dbstate);
         return dbstate.id || false;
     }
 

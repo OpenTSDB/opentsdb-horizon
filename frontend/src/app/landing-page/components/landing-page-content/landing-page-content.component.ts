@@ -132,7 +132,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.user$.subscribe(user => {
-            this.logger.log('USER', user);
+            // this.logger.log('USER', user);
             this.user = user;
         }));
     }
