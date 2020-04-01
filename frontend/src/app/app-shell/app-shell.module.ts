@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 
 // store
 import { NgxsModule } from '@ngxs/store';
-import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
 import {
     AppShellState,
     NavigatorState,
@@ -61,12 +61,6 @@ import {
             DbfsPanelsState,
             DbfsResourcesState
         ]),
-        NgxsStoragePluginModule.forRoot({
-          key: [
-            'DBFS.DataResources.userFavorites',
-            'DBFS.DataResources.userRecents'
-          ]
-        }),
         RouterModule
     ],
     declarations: [

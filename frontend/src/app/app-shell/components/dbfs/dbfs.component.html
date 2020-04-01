@@ -507,7 +507,7 @@
 
 <ng-template #dashboardItem let-dashboard="dashboard" let-panelIndex="panelIndex">
     <div class="dnav-dashboard-item" [ngClass]="{'dnav-menu-opened': menuIsOpen === dashboard.fullPath || miniNavOpen === dashboard.fullPath, 'matched-dashboard': dashboard.id === curDashboardId}">
-        <a routerLink="/d/{{dashboard.id}}{{dashboard.fullPath}}" (click)="fileMenuAction('navigateTo', dashboard)"class="dnav-dashboard-link flex-spacer">
+        <a routerLink="/d/{{dashboard.id}}{{dashboard.fullPath}}" (click)="fileMenuAction('navigateTo', dashboard)" class="dnav-dashboard-link flex-spacer">
             <mat-icon class="dnav-dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
             <span class="dnav-dashboard-label">{{dashboard.name}}</span>
         </a>

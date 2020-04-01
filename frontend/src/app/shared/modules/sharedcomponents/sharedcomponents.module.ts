@@ -2,6 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 /** Other modules */
 import { MaterialModule } from '../material/material.module';
@@ -67,7 +68,8 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         DygraphsModule,
         ChartjsModule,
         DateTimePickerModule,
-        ColorPickerModule
+        ColorPickerModule,
+        RouterModule
     ],
     declarations: [
         ThemePickerComponent,

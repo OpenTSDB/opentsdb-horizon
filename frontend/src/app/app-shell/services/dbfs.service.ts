@@ -124,29 +124,130 @@ export class DbfsService {
 
     }
 
-    getUserFavoritesList(): Observable<any> {
-        this.logger.api('DbfsService :: Get User Favorites List [NOT IMPLEMENTED YET]');
+    getUserFavoritesList(userid: string) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
+
+        const params: any = {
+            userId : userid
+        };
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            params
+        };
+
+        return this.http.get(apiUrl, httpOptions);
+
+        /* return of({
+            mockData: true,
+            favorites: []
+        }); */
+    }
+
+    addUserFavorite(dbid: any) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const body: any = {
+            'id': dbid
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            body
+        };
+
+        // POST
+        return this.http.post(apiUrl, body, httpOptions);
+        //return this.http.request('post', apiUrl, httpOptions)
+
+
+    }
+
+    removeUserFavorite(dbid: any) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const body: any = {
+            'id': dbid
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            body
+        };
+
+        // DELETE
+        return this.http.delete(apiUrl, httpOptions);
+        // return this.http.request('delete', apiUrl, httpOptions)
+
+    }
+
+    getUserFrequentList(userid?: string): Observable<any> {
+        this.logger.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
 
         return of({
             mockData: true,
-            favorites: []
+            frequent: []
         });
     }
 
-    getUserFrequentList(): Observable<any> {
-        this.logger.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
-        return of({
-          mockData: true,
-          frequent: []
-      });
-    }
+    getUserRecentList(userId: string, limit: number) {
 
-    getUserRecentList(): Observable<any> {
-        this.logger.api('DbfsService :: Get User Recently Visited List [NOT IMPLEMENTED YET]');
-        return of({
-          mockData: true,
-          recent: []
-      });
+        const apiUrl = environment.configdb + '/dashboard/recent';
+
+        this.logger.api('DbfsService :: Get User Recently Visited List', {userId, limit});
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        limit = (limit) ? limit : 50;
+
+        const params: any = {
+            userId,
+            limit
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            params
+        };
+
+        return this.http.get(apiUrl, httpOptions);
+
+        /*return of({
+            mockData: true,
+            recent: []
+        });*/
     }
 
     createFolder(folder: any) {
@@ -188,7 +289,7 @@ export class DbfsService {
         const apiUrl = environment.configdb + '/dashboard/folder/move';
 
         // tslint:disable-next-line:max-line-length
-        this.logger.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl});
+        this.logger.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'

@@ -6,7 +6,7 @@
                     <th mat-header-cell *matHeaderCellDef> Dashboard </th>
                     <td mat-cell *matCellDef="let element">
                         <div class="recent-labels">
-                            <span class="dashboard-name">{{element.name}}</span>
+                            <a routerLink="/d/{{element.id}}{{element.fullPath}}" class="dashboard-name">{{element.name}}</a>
                             <span class="root-path">{{element.rootPath}}</span>
                         </div>
                     </td>
@@ -16,8 +16,8 @@
                     <th mat-header-cell *matHeaderCellDef> Visited </th>
                     <td mat-cell *matCellDef="let element">
                         <div class="recent-labels">
-                            <span class="visited-date">{{element.visited | date: 'mediumDate'}}</span>
-                            <span class="visited-time">{{element.visited | date: 'shortTime'}}</span>
+                            <span class="visited-date">{{element.createdTime | date: 'mediumDate'}}</span>
+                            <span class="visited-time">{{element.createdTime | date: 'shortTime'}}</span>
                         </div>
                     </td>
                 </ng-container>

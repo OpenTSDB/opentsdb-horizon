@@ -38,7 +38,17 @@ import {
     UpdateVariables,
     UpdateMeta
 } from '../../state/settings.state';
-import { AppShellState, NavigatorState, DbfsState, DbfsLoadTopFolder, DbfsLoadSubfolder, DbfsDeleteDashboard, DbfsResourcesState, DbfsRemoveUserFavorite, DbfsAddUserFavorite } from '../../../app-shell/state';
+import {
+    AppShellState,
+    NavigatorState,
+    DbfsState,
+    DbfsLoadTopFolder,
+    DbfsLoadSubfolder,
+    DbfsDeleteDashboard,
+    DbfsResourcesState,
+    DbfsRemoveUserFav,
+    DbfsAddUserFav
+} from '../../../app-shell/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
@@ -1376,7 +1386,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             // fetch resource from DBFS
             const data: any = this.store.selectSnapshot(DbfsResourcesState.getFileById(this.dbid));
             this.store.dispatch(
-                new DbfsRemoveUserFavorite(
+                new DbfsRemoveUserFav(
                     data,
                     {
                         method: 'removeFavoriteComplete'
@@ -1386,14 +1396,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else {
             const dbstate = this.store.selectSnapshot(DBState);
             this.store.dispatch(
-                new DbfsAddUserFavorite({
+                new DbfsAddUserFav({
                     id: dbstate.id,
                     name: dbstate.name,
                     path: dbstate.path,
                     fullPath: dbstate.fullPath,
                     type: 'dashboard',
                     created: Date.now()
-                })
+                }, {})
             );
         }
     }

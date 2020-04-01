@@ -15,7 +15,7 @@
             <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
         </button>
     </div>
-    <!-- SEARCH BAR MOSTLY -->
+    <!-- SEARCH BAR MOSTLY - HIDING FOR NOW
     <div class="landing-page-utilities">
         <mat-toolbar>
             <div class="mat-elevation-z2 flex-spacer search-utility" [formGroup]="searchFormGroup">
@@ -39,22 +39,23 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
-            <!--<button mat-stroked-button color="primary" class="add-widget-button">
+            <button mat-stroked-button color="primary" class="add-widget-button">
                 <mat-icon fontSet="denali" fontIcon="d-category"></mat-icon>
                 <span>Add Widget</span>
-            </button>-->
+            </button>
             <button mat-flat-button color="primary" (click)="createDashboard()" class="new-dashboard-button">
                 <mat-icon fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
                 <span>New Dashboard</span>
             </button>
         </mat-toolbar>
-    </div>
+    </div>-->
     <div class="gridster-stage has-scroller" fxFlex="1 1 100%">
         <div class="is-scroller">
             <div class="dashboard">
-                <widget-projection title="My Dashboards">
+                <!-- HIDING FOR NOW
+                    <widget-projection title="My Dashboards">
                     <simple-dashboard-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-dashboard-list>
-                </widget-projection>
+                </widget-projection>-->
                 <widget-projection title="My Favorites">
                     <simple-favorites-list fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"></simple-favorites-list>
                 </widget-projection>

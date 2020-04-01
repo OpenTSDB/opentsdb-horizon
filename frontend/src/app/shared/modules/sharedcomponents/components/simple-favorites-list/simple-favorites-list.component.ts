@@ -5,6 +5,8 @@ import {
     OnDestroy
 } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../../../app-shell/state';
@@ -33,7 +35,8 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
 
     constructor(
         private store: Store,
-        private logger: LoggerService
+        private logger: LoggerService,
+        private router: Router
     ) { }
 
     ngOnInit() {

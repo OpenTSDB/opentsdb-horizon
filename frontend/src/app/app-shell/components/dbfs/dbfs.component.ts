@@ -51,10 +51,14 @@ import {
     DbfsDeleteDashboard,
     DbfsAddPlaceholderFolder,
     DbfsMoveResource,
-    DbfsLoadUserFavoritesList,
-    DbfsLoadUserRecentList,
-    DbfsAddUserFavorite,
-    DbfsRemoveUserFavorite
+    DbfsLoadUserFavorites,
+    DbfsLoadUserRecents,
+    DbfsRemoveUserFav,
+    DbfsAddUserFav,
+    //DbfsLoadUserFavoritesList,
+    //DbfsLoadUserRecentList,
+    //DbfsAddUserFavorite,
+    //DbfsRemoveUserFavorite
 } from '../../state/dbfs-resources.state';
 import { LoggerService } from '../../../core/services/logger.service';
 import { MatMenuTrigger } from '@angular/material';
@@ -599,7 +603,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.logger.log('LOAD USER FAVORITES PANEL');
         if (!this.userFavoritesListLoaded) {
             this.store.dispatch(
-                new DbfsLoadUserFavoritesList({})
+                new DbfsLoadUserFavorites(null, {})
             );
         }
     }
@@ -608,7 +612,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.logger.log('LOAD USER RECENT PANEL');
         if (!this.userRecentListLoaded) {
             this.store.dispatch(
-                new DbfsLoadUserRecentList({})
+                new DbfsLoadUserRecents(null, null, {})
             );
         }
     }
@@ -730,7 +734,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         switch (action) {
             case 'removeFromFavorites':
                 this.store.dispatch(
-                    new DbfsRemoveUserFavorite(
+                    new DbfsRemoveUserFav(
                         data,
                         {
                             method: 'removeFavoriteComplete'
@@ -793,14 +797,14 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 break;
             case 'favoriteDashboard':
                 this.store.dispatch(
-                    new DbfsAddUserFavorite({
+                    new DbfsAddUserFav({
                         id: file.id,
                         name: file.name,
                         path: file.path,
                         fullPath: file.fullPath,
                         type: 'dashboard',
                         created: Date.now()
-                    })
+                    }, {})
                 );
                 break;
             case 'navigateTo':

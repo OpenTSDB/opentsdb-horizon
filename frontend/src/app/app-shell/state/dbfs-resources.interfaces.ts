@@ -80,6 +80,19 @@ export interface DbfsUserModel {
     memberNamespaces?: any[];
 }
 
+// Favorites Model
+export interface DbfsFavoriteModel {
+    createdTime: number;
+    createdBy: string;
+    updatedTime: number;
+    updatedBy: string;
+    id: number;
+    name: string;
+    type: string;
+    path: string;
+    fullPath: string;
+}
+
 // state model
 export interface DbfsResourcesModel {
     // activeUser is ID of user the cookie belongs to

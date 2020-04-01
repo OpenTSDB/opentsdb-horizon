@@ -25,8 +25,9 @@ import {
     SetSideNavOpen,
     SSGetUserProfile,
     DbfsLoadResources,
-    DbfsAddUserRecent,
-    DbfsInitialized
+    // DbfsAddUserRecent,
+    DbfsInitialized,
+    DbfsLoadUserRecents
 } from '../state';
 import {
     UpdateNavigatorSideNav
@@ -106,8 +107,13 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             map(rs => {
                 this.resourcesReady = true;
                 if (this.pendingRecent.resource) {
-                    this.store.dispatch(
+                    /* this.store.dispatch(
                         new DbfsAddUserRecent(this.pendingRecent.resource, this.pendingRecent.url)
+                    );*/
+
+                    // update recents?
+                    this.store.dispatch(
+                        new DbfsLoadUserRecents(null, null, {})
                     );
 
                     // maybe here update the 'personal' tab of navigator if it is closed?
@@ -157,8 +163,13 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                         };
                     } else {
                         // resource state has already been loaded, so lets just store it
-                        this.store.dispatch(
+                        /* this.store.dispatch(
                             new DbfsAddUserRecent(payload, event.urlAfterRedirects)
+                        );*/
+
+                        // update recents
+                        this.store.dispatch(
+                            new DbfsLoadUserRecents(null, null, {})
                         );
                     }
                 }
