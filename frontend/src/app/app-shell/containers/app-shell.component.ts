@@ -32,7 +32,7 @@ import {
 import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { LoggerService } from '../../core/services/logger.service';
 import { DBState } from '../../dashboard/state';
 import { ThemeService } from '../services/theme.service';
@@ -56,8 +56,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     @Select(NavigatorState.getDrawerOpen) drawerOpen$: Observable<boolean>;
 
     @Select(AppShellState.getCurrentMediaQuery) mediaQuery$: Observable<string>;
-    //@Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
-    //userProfile: any = {};
+    @Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
+    userProfile: any = {};
 
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
@@ -99,18 +99,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         private themeService: ThemeService,
         @Inject(DOCUMENT) private document: any
     ) {
-        // prefetch the navigator first data
-        // this.store.dispatch(new DbfsLoadResources());
 
         // prefetch the navigator first data
         this.store.dispatch(new DbfsLoadResources()).pipe(
             map(rs => {
                 this.resourcesReady = true;
                 if (this.pendingRecent.resource) {
-                    /* this.store.dispatch(
-                        new DbfsAddUserRecent(this.pendingRecent.resource, this.pendingRecent.url)
-                    );*/
-
                     // update recents?
                     this.store.dispatch(
                         new DbfsLoadUserRecents(null, null, {})
@@ -126,67 +120,67 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event: NavigationEnd) => {
             const urlParts = event.urlAfterRedirects.split('?');
-            const urlPath = urlParts[0].split('/');
+            const urlPath = (urlParts && urlParts.length > 0) ? urlParts[0].split('/') : [];
+
             // not sure if we need to store urlParams, but pulling it out in case.
             // TODO: find out if we want to store urlParams
             let urlParams: any = '';
-            if (urlParts[1]) {
+            if (urlParts && urlParts[1]) {
                 urlParams = urlParts[1];
             }
-            // remove first item... should be empty element anyways
-            urlPath.shift();
-            // second item in arrant should be which horizon app we are in. extract it
-            const app = urlPath.shift();
 
-            // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
-            if (app === 'd') {
-                // YAY! we are in dashboard land
-                const dbId = urlPath.shift();
-                const dbFullPath = '/' + urlPath.join('/');
-                // assuming we don't want to track NEW (but we will want to track it after it was saved)
-                if (dbId !== '_new_') {
+            if (urlPath && urlPath.length > 0) {
+                // remove first item... should be empty element anyways
+                urlPath.shift();
+                // second item in arrant should be which horizon app we are in. extract it
+                const app = urlPath.shift();
 
-                    // the fullpath could possibly be wrong, but we store it anyway
-                    // we'll do the lookup based on the ID if the path is not found in the resource cache
-                    const payload = {
-                        id: dbId,
-                        fullPath: dbFullPath,
-                        type: 'file',
-                        urlParams
-                    };
+                // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
+                if (app === 'd') {
+                    // YAY! we are in dashboard land
+                    const dbId = urlPath.shift();
+                    const dbFullPath = '/' + urlPath.join('/');
+                    // assuming we don't want to track NEW (but we will want to track it after it was saved)
+                    if (dbId !== '_new_') {
 
-                    if (!this.resourcesReady) {
-                        // FIRST LOAD... need to store it as pending till the resources state is ready
-                        this.pendingRecent = {
-                            resource: payload,
-                            url: event.urlAfterRedirects
+                        // the fullpath could possibly be wrong, but we store it anyway
+                        // we'll do the lookup based on the ID if the path is not found in the resource cache
+                        const payload = {
+                            id: dbId,
+                            fullPath: dbFullPath,
+                            type: 'file',
+                            urlParams
                         };
-                    } else {
-                        // resource state has already been loaded, so lets just store it
-                        /* this.store.dispatch(
-                            new DbfsAddUserRecent(payload, event.urlAfterRedirects)
-                        );*/
 
-                        // update recents
-                        this.store.dispatch(
-                            new DbfsLoadUserRecents(null, null, {})
-                        );
+                        if (!this.resourcesReady) {
+                            // FIRST LOAD... need to store it as pending till the resources state is ready
+                            this.pendingRecent = {
+                                resource: payload,
+                                url: event.urlAfterRedirects
+                            };
+                        } else {
+                            // resource state has already been loaded, so lets just store it
+
+                            // update recents
+                            this.store.dispatch(
+                                new DbfsLoadUserRecents(null, null, {})
+                            );
+                        }
                     }
                 }
-            }
 
-            if (app === 'main' && this.resourcesReady) {
-                // we are on landing page
-                // open the navigator
-                this.drawer.open();
-                this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
+                if (app === 'main' && this.resourcesReady) {
+                    // we are on landing page
+                    // open the navigator
+                    this.drawer.open();
+                    this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
+                }
             }
         });
 
-        const dbfsInit = this.store.dispatch(new DbfsLoadResources()).subscribe((state: any) => {
+        this.store.dispatch(new DbfsLoadResources()).pipe(take(1)).subscribe((state: any) => {
             // logger.log('DBFS INIT COMPLETE', state);
             this.store.dispatch(new DbfsInitialized());
-            dbfsInit.unsubscribe();
         });
     }
 
@@ -203,7 +197,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             this.store.dispatch(new SetSideNavOpen((currentMediaQuery !== 'xs')));
         }));
 
-        /* TODO - change this to general selector from DBFS
+        /* TODO - change this to general selector from DBFS */
         this.subscription.add(this.userProfile$.subscribe(data => {
             // console.log('[SUB] User Profile', data);
             this.userProfile = data;
@@ -211,7 +205,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             if (!data.loaded) {
                 this.store.dispatch(new SSGetUserProfile());
             }
-        }));*/
+        }));
 
         this.subscription.add(this.currentApp$.subscribe(app => {
             // console.log('[SUB] currentApp', app);
