@@ -91,6 +91,7 @@ export interface DbfsFavoriteModel {
     type: string;
     path: string;
     fullPath: string;
+    favoritedTime: number;
 }
 
 // state model
