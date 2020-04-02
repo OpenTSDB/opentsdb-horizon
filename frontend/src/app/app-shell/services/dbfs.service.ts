@@ -145,11 +145,6 @@ export class DbfsService {
         };
 
         return this.http.get(apiUrl, httpOptions);
-
-        /* return of({
-            mockData: true,
-            favorites: []
-        }); */
     }
 
     addUserFavorite(dbid: any) {
@@ -174,8 +169,6 @@ export class DbfsService {
 
         // POST
         return this.http.post(apiUrl, body, httpOptions);
-        //return this.http.request('post', apiUrl, httpOptions)
-
 
     }
 
@@ -201,7 +194,6 @@ export class DbfsService {
 
         // DELETE
         return this.http.delete(apiUrl, httpOptions);
-        // return this.http.request('delete', apiUrl, httpOptions)
 
     }
 
@@ -243,11 +235,6 @@ export class DbfsService {
         };
 
         return this.http.get(apiUrl, httpOptions);
-
-        /*return of({
-            mockData: true,
-            recent: []
-        });*/
     }
 
     createFolder(folder: any) {

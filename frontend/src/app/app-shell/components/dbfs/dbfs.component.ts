@@ -344,49 +344,21 @@ export class DbfsComponent implements OnInit, OnDestroy {
                         }.bind(this));
                     }.bind(this), 200);
                     break;
-                /* case ':list-users:':
-                    setTimeout(function() {
-                        this.resetDataSourceFilters();
-                        this.navPanel.goNext(this.loadAllUsersPanel.bind(this));
-                    }.bind(self), 200);
-                    break;
-                case ':list-namespaces:':
-                    setTimeout(function() {
-                        this.resetDataSourceFilters();
-                        this.navPanel.goNext(this.loadAllNamespacesPanel.bind(this));
-                    }.bind(self), 200);
-                    break;
-                case ':user-favorites:':
-                    setTimeout(function() {
-                        this.resetDataSourceFilters();
-                        this.navPanel.goNext(this.loadUserFavoritesPanel.bind(this));
-                    }.bind(self), 200);
-                    break;
-
-                case ':user-recent:':
-                    setTimeout(function() {
-                        this.resetDataSourceFilters();
-                        this.navPanel.goNext(this.loadUserRecentPanel.bind(this));
-                    }.bind(self), 200);
-                    break; */
                 case 'changePanelTab':
                     // console.log('CHANGE PANEL TAB', this);
                     this.resetDataSourceFilters();
                     switch (action.tab) {
                       case 'favorites':
-                          // this.navPanel.startAt(0);
                           setTimeout(function() {
                               this.navPanel.resetTo(0, this.loadUserFavoritesPanel.bind(this));
                           }.bind(self), 100);
                           break;
                       case 'recent':
-                          // this.navPanel.startAt(0);
                           setTimeout(function() {
                               this.navPanel.resetTo(0, this.loadUserRecentPanel.bind(this));
                           }.bind(self), 100);
                           break;
                       case 'users':
-                          // this.navPanel.startAt(0);
                             if (this.usersListLoaded) {
                                 // they have been loaded, so just switch to the panel
                                 this.navPanel.resetTo(action.startIndex);
@@ -398,7 +370,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
                             }
                           break;
                       case 'namespaces':
-                          // this.navPanel.startAt(0);
                             if (this.namespacesListLoaded) {
                                 // they have been loaded, so just switch to the panel
                                 this.navPanel.resetTo(action.startIndex);
@@ -411,9 +382,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                           break;
                       default:
                           // default is 'personal' tab
-                          //setTimeout(function() {
-                              this.navPanel.resetTo(action.startIndex);
-                          //}.bind(self), 200);
+                          this.navPanel.resetTo(action.startIndex);
                           break;
                     }
                     break;
@@ -423,7 +392,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.curDashboardId$.subscribe(db => {
-            console.log('CURRENT DASHBOARD ID', db);
+            //console.log('CURRENT DASHBOARD ID', db);
             this.curDashboardId = (db) ? db : false;
         }));
 
