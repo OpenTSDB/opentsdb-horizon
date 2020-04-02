@@ -56,6 +56,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     @Select(NavigatorState.getDrawerOpen) drawerOpen$: Observable<boolean>;
 
     @Select(AppShellState.getCurrentMediaQuery) mediaQuery$: Observable<string>;
+
     @Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
     userProfile: any = {};
 
@@ -197,7 +198,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
             this.store.dispatch(new SetSideNavOpen((currentMediaQuery !== 'xs')));
         }));
 
-        /* TODO - change this to general selector from DBFS */
         this.subscription.add(this.userProfile$.subscribe(data => {
             // console.log('[SUB] User Profile', data);
             this.userProfile = data;
