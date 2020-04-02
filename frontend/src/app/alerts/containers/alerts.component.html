@@ -19,7 +19,7 @@
         </div>
         <div class="control-item alert-filter-input">
             <mat-form-field appearance="fill" floatLabel="never">
-                <input matInput placeholder="Filter alerts"
+                <input matInput placeholder="Filter alerts by name, recipients, bad, disabled, etc."
                     *ngIf="list === 'alerts'"
                     autocomplete="off"
                     [formControl] = "alertSearch">
