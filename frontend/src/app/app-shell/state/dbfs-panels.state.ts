@@ -27,8 +27,29 @@ export interface DbfsPanelModel {
 }
 
 export interface DbfsPanelsModel {
-    panels: DbfsPanelModel[]; // panels for primary list
-    curPanel: number; // current panel index
+    panelTab: string;
+    personalTab: {
+      curPanel: number;
+      panels: DbfsPanelModel[];
+    };
+    favoritesTab: {
+      curPanel: number;
+      panels: DbfsPanelModel[];
+    };
+    recentTab: {
+      curPanel: number;
+      panels: DbfsPanelModel[];
+    };
+    usersTab: {
+      curPanel: number;
+      panels: DbfsPanelModel[];
+    };
+    namespacesTab: {
+      curPanel: number;
+      panels: DbfsPanelModel[];
+    };
+    // panels: DbfsPanelModel[]; // panels for primary list
+    // curPanel: number; // current panel index
     panelAction: {};
     initialized: boolean;
 }
@@ -60,12 +81,40 @@ export class DbfsResetPanelAction {
     constructor() {}
 }
 
+export class DbfsChangePanelTab {
+    static readonly type = '[DBFS Panels] change panel root';
+    constructor(
+      public readonly payload: any,
+    ) {}
+}
+
 /** STATE */
 @State<DbfsPanelsModel>({
     name: 'NavPanels',
     defaults: {
-        panels: [],
-        curPanel: 0,
+        panelTab: 'personal', // personal, favorites, recent, users, namespaces
+        personalTab: {
+          curPanel: 0,
+          panels: []
+        },
+        favoritesTab: {
+          curPanel: 0,
+          panels: []
+        },
+        recentTab: {
+          curPanel: 0,
+          panels: []
+        },
+        usersTab: {
+          curPanel: 0,
+          panels: []
+        },
+        namespacesTab: {
+          curPanel: 0,
+          panels: []
+        },
+        // panels: [],
+        // curPanel: 0,
         panelAction: {},
         initialized: false
     }
@@ -80,15 +129,23 @@ export class DbfsPanelsState {
     /** Selectors */
 
     @Selector() static getPanels(state: DbfsPanelsModel) {
-        return state.panels;
+        const curTab = state.panelTab + 'Tab';
+        return state[curTab].panels;
+        // return state.panels;
     }
 
     @Selector() static getCurPanel(state: DbfsPanelsModel) {
-        return state.curPanel;
+        const curTab = state.panelTab + 'Tab';
+        return state[curTab].curPanel;
+        // return state.panels;
     }
 
     @Selector() static getPanelAction(state: DbfsPanelsModel) {
         return state.panelAction;
+    }
+
+    @Selector() static getPanelTab(state: DbfsPanelsModel) {
+      return state.panelTab;
     }
 
     /** Actions */
@@ -111,29 +168,99 @@ export class DbfsPanelsState {
         this.logger.success('State :: Panels Initialize');
         const state = ctx.getState();
 
-        ctx.setState({...state,
-            panels: [
-                {
-                    index: 0,
-                    folderResource: ':panel-root:',
-                    root: true,
-                    synthetic: true,
-                    locked: true
-                }
-            ],
-            initialized: true
-        });
+        if (!state.initialized) {
+            ctx.setState({...state,
+                personalTab: {
+                    curPanel: 0,
+                    panels: [
+                      {
+                          index: 0,
+                          folderResource: ':panel-root:', // maybe change this in resources to personal-root
+                          root: true,
+                          synthetic: true,
+                          locked: true
+                      }
+                    ]
+                },
+                favoritesTab: {
+                  curPanel: 0,
+                  panels: [
+                    {
+                        index: 0,
+                        folderResource: ':user-favorites:',
+                        root: true,
+                        dynamic: true,
+                        synthetic: true,
+                        locked: true
+                    }
+                  ]
+                },
+                recentTab: {
+                  curPanel: 0,
+                  panels: [
+                    {
+                        index: 0,
+                        folderResource: ':user-recent:',
+                        root: true,
+                        dynamic: true,
+                        synthetic: true,
+                        locked: true
+                    }
+                  ]
+                },
+                usersTab: {
+                  curPanel: 0,
+                  panels: [
+                    {
+                        index: 0,
+                        folderResource: ':list-users:',
+                        root: true,
+                        dynamic: true,
+                        synthetic: true,
+                        locked: true
+                    }
+                  ]
+                },
+                namespacesTab: {
+                  curPanel: 0,
+                  panels: [
+                    {
+                        index: 0,
+                        folderResource: ':list-namespaces:',
+                        root: true,
+                        dynamic: true,
+                        synthetic: true,
+                        locked: true
+                    }
+                  ]
+                },
+                // legacy panels -- to be removed eventually
+                /*panels: [
+                    {
+                        index: 0,
+                        folderResource: ':panel-root:',
+                        root: true,
+                        synthetic: true,
+                        locked: true
+                    }
+                ],*/
+                initialized: true
+            });
+        }
     }
 
     @Action(DbfsAddPanel)
     addPanel(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsAddPanel) {
         this.logger.action('State :: Add Panels', payload);
         const state = ctx.getState();
-        const panels = this.utils.deepClone(state.panels);
+        const curTab = state.panelTab + 'Tab';
+
+        const panels = this.utils.deepClone(state[curTab].panels);
 
         // check if panel with that path already exists
         // i.e. people click way too fast, too many times
         const index = panels.findIndex(p => p.folderResource === payload.panel.folderResource);
+
         if (index === -1) {
             const newPanel = {...payload.panel,
                 index: panels.length
@@ -141,22 +268,62 @@ export class DbfsPanelsState {
 
             panels.push(newPanel);
 
-            ctx.patchState({
-                panels,
-                curPanel: (panels.length - 1),
+            const patchData: any  = {
                 panelAction: payload.panelAction
-            });
+            };
+
+            patchData[curTab] = {
+                panels,
+                curPanel: (panels.length - 1)
+            };
+
+            ctx.patchState(patchData);
         }
     }
 
     @Action(DbfsUpdatePanels)
     updatePanels(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsUpdatePanels) {
         this.logger.action('State :: Update Panels', payload);
+        const state = ctx.getState();
+        const curTab = state.panelTab + 'Tab';
+
         const idx = (payload.panels.length - 1);
-        ctx.patchState({
-            panels: payload.panels,
-            curPanel: (idx < 0) ? 0 : idx,
+
+        const patchData: any = {
             panelAction: (payload.panelAction) ? payload.panelAction : {}
+        };
+
+        patchData[curTab] = {
+            panels: payload.panels,
+            curPanel: (idx < 0) ? 0 : idx
+        };
+
+        ctx.patchState(patchData);
+    }
+
+
+    @Action(DbfsChangePanelTab)
+    changePanelTab(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsChangePanelTab) {
+        this.logger.action('State :: Change Panel Tab', payload);
+        const state = ctx.getState();
+
+        const panelAction = payload.panelAction;
+
+        if (payload.panelTab === 'personal') {
+            panelAction.startIndex = state.personalTab.curPanel;
+        }
+
+        if (payload.panelTab === 'namespaces') {
+            panelAction.startIndex = state.namespacesTab.curPanel;
+        }
+
+        if (payload.panelTab === 'users') {
+            panelAction.startIndex = state.usersTab.curPanel;
+        }
+
+        ctx.patchState({
+            panelTab: payload.panelTab,
+            panelAction: payload.panelAction
         });
     }
 

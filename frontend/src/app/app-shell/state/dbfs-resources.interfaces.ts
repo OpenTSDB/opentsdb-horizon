@@ -22,6 +22,7 @@ export interface DbfsCommonResourceModel {
 // file models
 export interface DbfsFileModel extends DbfsCommonResourceModel {
     parentPath: string;
+    loaded?: boolean;
 }
 
 // folder models
@@ -79,6 +80,20 @@ export interface DbfsUserModel {
     memberNamespaces?: any[];
 }
 
+// Favorites Model
+export interface DbfsFavoriteModel {
+    createdTime: number;
+    createdBy: string;
+    updatedTime: number;
+    updatedBy: string;
+    id: number;
+    name: string;
+    type: string;
+    path: string;
+    fullPath: string;
+    favoritedTime: number;
+}
+
 // state model
 export interface DbfsResourcesModel {
     // activeUser is ID of user the cookie belongs to
@@ -87,6 +102,8 @@ export interface DbfsResourcesModel {
     userList: any[];
     namespaces: {}; // namespaces data... NOT namespace folder
     namespaceList: any[];
+    userFavorites: any[];
+    userRecents: any[];
     folders: {}; // user and namespace folders
     files: {}; // user and namespace files (dashboards)
     error: {};
@@ -94,6 +111,8 @@ export interface DbfsResourcesModel {
     dynamicLoaded: {
         users: boolean;
         namespaces: boolean;
+        favorites: boolean;
+        recents: boolean;
     };
     resourceAction: {};
 }

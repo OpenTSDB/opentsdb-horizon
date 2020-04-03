@@ -28,7 +28,9 @@
             }
 
             &.dashboard-list,
-            &.folder-list {
+            &.folder-list,
+            &.favorites-list,
+            &.recents-list {
                 .mat-list-item-content {
                     padding: 0;
                     margin-left: 0;
@@ -72,6 +74,7 @@
                 font-size: 18px;
                 display: flex;
                 align-items: center;
+                justify-content: center;
             }
         }
 
@@ -83,6 +86,12 @@
             .nav-item {
                 display: flex;
                 align-items: center;
+                justify-content: center;
+
+                &.icon-nav {
+                    // width: 40px;
+                    flex: 1 1 100%;
+                }
             }
 
             .back-to-master {
@@ -101,6 +110,7 @@
                 }
             }
 
+            /* animation of the top - removing
             &.is-master-panel {
 
                 .back-to-master {
@@ -115,6 +125,10 @@
                         text-transform: capitalize;
                     }
                 }
+            }*/
+
+            .mat-toolbar-row {
+                padding: 0;
             }
 
             &.mat-toolbar-multiple-rows,
@@ -132,7 +146,7 @@
             justify-content: stretch;
             align-items: center;
             height: 32px;
-            margin-top: 16px;
+            // margin-top: 16px;
 
             .header-label {
                 text-transform: uppercase;
@@ -158,6 +172,48 @@
                 .leaf-#{$i} {
                     padding-left: $val;
                 }
+            }
+        }
+
+        .breadcrumb-path {
+            padding: 5px 4px;
+            display: flex;
+            flex-wrap: wrap;
+
+            .mat-chip {
+                @include unselectable();
+                font-weight: 400;
+                font-size: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 14px;
+                cursor: pointer;
+                padding: 3px;
+                border-radius: 2px;
+
+                &:focus {
+                    outline: 0;
+                }
+
+                &:first-child {
+                    .mat-icon {
+                        margin-right: 4px;
+                    }
+                }
+
+                &:last-child {
+                    pointer-events: none;
+                }
+
+                &.is-active {
+                    font-weight: 500;
+                }
+            }
+
+            .path-seperator {
+                margin-top: 3px;
+                margin-bottom: 3px;
             }
         }
 
@@ -280,11 +336,14 @@
             }
         }
 
-        .dnav-folders.dynamic-scroller {
+        .dynamic-scroller {
             flex: 1;
             display: flex;
+            flex-direction: column;
 
-            .folder-list {
+            .folder-list,
+            .favorites-list,
+            .recents-list {
                 flex: 1;
 
                 .cdk-virtual-scroll-viewport {
@@ -480,6 +539,110 @@
             }
         }
 
+        // FAVORITE/RECENT ITEM
+        .mat-nav-list.favorites-list,
+        .mat-nav-list.recents-list {
+            .mat-list-item {
+                height: 48px;
+            }
+        }
+
+        .dnav-favorite-item,
+        .dnav-recent-item {
+            flex: 1;
+            display: flex;
+            justify-content: stretch;
+            align-items: stretch;
+            height: 48px;
+            padding-left: 12px;
+            padding-right: 8px;
+
+            .mat-icon {
+                height: 12px;
+                width: 12px;
+                font-size: 100%;
+            }
+
+            .dnav-favorite-detail,
+            .dnav-recent-detail {
+                display: flex;
+                flex: 1;
+                justify-content: stretch;
+                align-items: stretch;
+                flex-direction: column;
+
+                .root-path,
+                .favorite-date,
+                .recent-date {
+                    font-size: 8px;
+                    line-height: 10px;
+                }
+            }
+
+            .dnav-favorite-link,
+            .dnav-recent-link,
+            .dnav-favorite-menu {
+                display: flex;
+                align-items: center;
+            }
+
+            .dnav-favorite-link,
+            .dnav-recent-link {
+                overflow: hidden;
+            }
+
+            .dnav-dashboard-icon {
+                margin-right: 8px;
+            }
+
+            // only favorites will have a menu
+            .dnav-favorite-menu {
+                opacity: 0;
+                transition: opacity 200ms ease-in;
+
+                .mat-icon-button {
+                    .mat-icon {
+                        justify-content: center;
+                        margin-left: -2px;
+                    }
+                }
+            }
+
+            .dnav-menu-trigger {
+                width: 1px;
+
+                &.last-child {
+                    margin-right: 15px;
+                }
+            }
+
+            &:hover {
+                .dnav-favorite-menu {
+                    opacity: 1;
+                }
+            }
+
+            &.dnav-menu-opened {
+                position: relative;
+
+                .dnav-favorite-menu {
+                    opacity: 0;
+                    pointer-events: none;
+                }
+
+                &::after {
+                    content: '';
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-width: 9px 9px 9px 0;
+                    position: absolute;
+                    top: 9px;
+                    right: 0;
+                }
+            }
+        }
+
         // navigator-panel-inner
         .navigator-panel-inner {
             min-height: 100%;
@@ -507,14 +670,22 @@
     // CDK Items
     .dnav-cdk-mini-navigator.mat-menu-panel,
     .dnav-cdk-folder-menu.mat-menu-panel,
-    .dnav-cdk-dashboard-menu.mat-menu-panel  {
+    .dnav-cdk-dashboard-menu.mat-menu-panel,
+    .dnav-cdk-favorite-menu.mat-menu-panel  {
         margin-top: -36px;
         margin-left: 16px;
         border-top-left-radius: 0;
     }
 
+    .dnav-cdk-favorite-menu.mat-menu-panel  {
+        margin-top: -48px;
+        margin-left: 10px;
+        border-top-left-radius: 0;
+    }
+
     .dnav-cdk-folder-menu,
-    .dnav-cdk-dashboard-menu  {
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu  {
 
         .mat-menu-content:not(:empty) {
             padding: 8px;
@@ -534,7 +705,8 @@
         }
     }
 
-    .dnav-cdk-dashboard-menu {
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu {
         border-top-left-radius: 0;
      }
 
@@ -569,22 +741,43 @@
     $menu-background: map-get($background, card);
     $menu-background-hover: find-color-invert($menu-background);
 
+    $link: map-get($foreground, link);
+    $link-inverse: find-color-invert($link);
+
     $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
     $icon-color: $item-text;
 
     .dashboard-navigator {
 
-        /*.panel-toolbar {
-            background: transparent;
+        .panel-toolbar {
+            // background: rgba($text-color, .5);
             border-bottom: 1px solid rgba($divider,.07);
-            color: $text-color;
+            color: if($is-dark-theme, $navbar-text, $text-color);
+
+            .nav-item.icon-nav {
+                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+            }
+
+            .nav-item.icon-nav:not(:last-child) {
+                border-right: 1px solid rgba($divider,.07);
+            }
+
+            .nav-item:hover {
+                background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
+                cursor: pointer;
+            }
+
+            .nav-item.icon-nav.is-active {
+                background: transparent;
+                color: if($is-dark-theme, $navbar-text, $text-color);
+            }
 
             &.is-master-panel {
                 .header-label {
                     color: rgba($text-color,.85);
                 }
             }
-        }*/
+        }
 
         .navigator-panel-item,
         .mat-list .mat-list-item,
@@ -611,8 +804,19 @@
         }
 
         .mat-nav-list:not(.path-tree) .mat-list-item:not(:last-child),
-        .path-tree {
+        .path-tree,
+        .breadcrumb-path {
             border-bottom: 1px solid rgba($divider,.07);
+        }
+
+        .breadcrumb-path {
+
+            .mat-chip {
+                &:hover {
+                    background: $link;
+                    color: $link-inverse;
+                }
+            }
         }
 
         .counter {
@@ -724,6 +928,30 @@
                 box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
 
                 &::after {
+                    border-color: transparent rgba($navbar-background, .15) transparent transparent;
+                }
+            }
+
+            &.matched-dashboard {
+                background: rgba(map-get($primary, default), .15);
+                box-shadow: inset 3px 0 0 rgb(34,122,236);
+            }
+        }
+
+        // favorite/recent
+        .dnav-favorite-item,
+        .dnav-recent-item {
+            .dnav-favorite-menu {
+                .mat-icon-button {
+                    background: rgba(0, 0, 0, .1);
+                }
+            }
+
+            &.dnav-menu-opened {
+                background: rgba($navbar-background, .05);
+                box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
+
+                &::after {
                     border-color: transparent if($is-dark-theme, rgba($navbar-background, .80), rgba($navbar-background, .15)) transparent transparent;
                 }
             }
@@ -739,10 +967,10 @@
     //$menu-background: if($is-dark-theme, lighten(map-get($primary, default), 5%), lighten(map-get($background, navbar), 5%) );
 
     .dnav-cdk-folder-menu,
-    .dnav-cdk-dashboard-menu {
-       background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-       border: 1px solid rgba($navbar-background, .15);
-
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu {
+        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+        border: 1px solid rgba($navbar-background, .15);
 
        $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
         .mat-menu-item {

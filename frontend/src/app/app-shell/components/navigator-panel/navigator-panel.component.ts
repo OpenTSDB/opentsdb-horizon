@@ -135,12 +135,27 @@ export class NavigatorPanelComponent implements AfterViewInit {
         this.panel.nativeElement.style.transform = `translateX(-${tmpOffset}px)`;
     }
 
+    resetTo(idx: any, isDone?: any) {
+        // console.log('PANEL RESET TO', idx);
+        this.currentSlide = idx;
+        const offset = this.currentSlide * this.itemWidth;
+        const myAnimation: AnimationFactory = this.buildAnimation(offset, true);
+
+        this.player = myAnimation.create(this.panel.nativeElement);
+        this.player.onDone(() => {
+            if (isDone) {
+                isDone();
+            }
+        });
+        this.player.play();
+    }
+
     /** Privates */
 
-    private buildAnimation(offset) {
+    private buildAnimation(offset, immediate: boolean = false) {
         // console.log('%cOFFSET', 'background-color: purple; color: white; padding: 4px;', offset);
         return this.builder.build([
-            animate(this.timing, style({ transform: `translateX(-${offset}px)` }))
+            animate((immediate) ? 0 : this.timing, style({ transform: `translateX(-${offset}px)` }))
         ]);
     }
 

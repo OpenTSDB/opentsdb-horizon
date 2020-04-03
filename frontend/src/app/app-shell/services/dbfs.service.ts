@@ -124,6 +124,119 @@ export class DbfsService {
 
     }
 
+    getUserFavoritesList(userid: string) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
+
+        const params: any = {
+            userId : userid
+        };
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            params
+        };
+
+        return this.http.get(apiUrl, httpOptions);
+    }
+
+    addUserFavorite(dbid: any) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const body: any = {
+            'id': dbid
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            body
+        };
+
+        // POST
+        return this.http.post(apiUrl, body, httpOptions);
+
+    }
+
+    removeUserFavorite(dbid: any) {
+        const apiUrl = environment.configdb + '/dashboard/favorite';
+
+        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const body: any = {
+            'id': dbid
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            body
+        };
+
+        // DELETE
+        return this.http.delete(apiUrl, httpOptions);
+
+    }
+
+    getUserFrequentList(userid?: string): Observable<any> {
+        this.logger.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        return of({
+            mockData: true,
+            frequent: []
+        });
+    }
+
+    getUserRecentList(userId: string, limit: number) {
+
+        const apiUrl = environment.configdb + '/dashboard/recent';
+
+        this.logger.api('DbfsService :: Get User Recently Visited List', {userId, limit});
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        limit = (limit) ? limit : 50;
+
+        const params: any = {
+            userId,
+            limit
+        };
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json',
+            params
+        };
+
+        return this.http.get(apiUrl, httpOptions);
+    }
+
     createFolder(folder: any) {
         const apiUrl = environment.configdb + '/dashboard/folder';
 
@@ -163,7 +276,7 @@ export class DbfsService {
         const apiUrl = environment.configdb + '/dashboard/folder/move';
 
         // tslint:disable-next-line:max-line-length
-        this.logger.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl});
+        this.logger.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -206,6 +319,26 @@ export class DbfsService {
 
     updateFile(file: any) {
         return this.updateResource('file', file);
+    }
+
+    getResourceById(id: any) {
+        const apiUrl = environment.configdb + '/dashboard/' + id;
+
+        this.logger.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            responseType: 'json'
+        };
+
+        return this.http.get(apiUrl, httpOptions).pipe(
+            catchError(this.handleError)
+        );
     }
 
 }

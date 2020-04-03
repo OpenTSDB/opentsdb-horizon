@@ -2,6 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 /** Other modules */
 import { MaterialModule } from '../material/material.module';
@@ -48,6 +49,11 @@ import { WidgetConfigEventsComponent } from './components/widget-config-events/w
 import { EventListComponent } from './components/event-list/event-list.component';
 import { WidgetConfigMultigraphComponent } from './components/widget-config-multigraph/widget-config-multigraph.component';
 import { TimeSelectorComponent } from './components/time-selector/time-selector.component';
+import { SimpleFavoritesListComponent } from './components/simple-favorites-list/simple-favorites-list.component';
+import { SimpleRecentsListComponent } from './components/simple-recents-list/simple-recents-list.component';
+import { SimpleNamespacesListComponent } from './components/simple-namespaces-list/simple-namespaces-list.component';
+import { WidgetProjectionComponent } from './components/widget-projection/widget-projection.component';
+
 import { GraphTypeComponent } from './components/graph-type/graph-type.component';
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
@@ -62,7 +68,8 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         DygraphsModule,
         ChartjsModule,
         DateTimePickerModule,
-        ColorPickerModule
+        ColorPickerModule,
+        RouterModule
     ],
     declarations: [
         ThemePickerComponent,
@@ -97,6 +104,10 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         EventListComponent,
         WidgetConfigMultigraphComponent,
         TimeSelectorComponent,
+        SimpleFavoritesListComponent,
+        SimpleRecentsListComponent,
+        SimpleNamespacesListComponent,
+        WidgetProjectionComponent,
         GraphTypeComponent,
         AuraDialogComponent,
         InfoTooltipComponent,
@@ -133,6 +144,10 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         EventListComponent,
         WidgetConfigMultigraphComponent,
         TimeSelectorComponent,
+        SimpleFavoritesListComponent,
+        SimpleRecentsListComponent,
+        SimpleNamespacesListComponent,
+        WidgetProjectionComponent,
         GraphTypeComponent,
         InfoTooltipComponent
     ],
