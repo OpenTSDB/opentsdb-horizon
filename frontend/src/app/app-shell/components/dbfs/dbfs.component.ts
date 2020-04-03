@@ -80,7 +80,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     @ViewChildren('moreMenuTrigger', {read: MatMenuTrigger}) moreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('miniNavTrigger', {read: MatMenuTrigger}) miniNavTriggers: QueryList<MatMenuTrigger>;
 
-
     // Subscriptions
     private subscription: Subscription = new Subscription();
 
@@ -149,10 +148,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     @Select(DbfsState.getLoadedDashboardId) curDashboardId$: Observable<any>;
      curDashboardId: any = false;
-    /*get curDashboardId(): number {
-        const db: any = this.store.selectSnapshot(DbfsState.getLoadedDashboardId);
-        return (db) ? db : null;
-    }*/
 
     // VIEW CHILDREN
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;

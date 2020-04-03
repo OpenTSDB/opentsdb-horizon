@@ -15,9 +15,6 @@ import {
     DbfsSyntheticFolderModel,
     DbfsUserModel
 } from './dbfs-resources.interfaces';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { DBState } from '../../dashboard/state';
-import { NgxsStoragePlugin } from '@ngxs/storage-plugin';
 
 /** ACTIONS */
 
@@ -208,59 +205,6 @@ export class DbfsSetupFavoriteRecentPlaceholders {
     constructor() { }
 }
 
-/* These use LocalStorage
-    TODO: Remove the localstorage versions
-*/
-/*export class DbfsLoadUserFavoritesList {
-    public static type = '[DBFS Resources] Load User Favorites List';
-    constructor(public readonly resourceAction: any) { }
-}
-
-export class DbfsLoadUserFavoritesListSuccess {
-    public static type = '[DBFS Resources] Load User Favorites List SUCCESS';
-    constructor(
-        public readonly response: any,
-        public readonly resourceAction: any
-    ) { }
-}
-
-export class DbfsLoadUserRecentList {
-    public static type = '[DBFS Resources] Load User Recent List';
-    constructor(public readonly resourceAction: any) { }
-}
-
-export class DbfsLoadUserRecentListSuccess {
-    public static type = '[DBFS Resources] Load User Recent List SUCCESS';
-    constructor(
-        public readonly response: any,
-        public readonly resourceAction: any
-    ) { }
-}
-
-export class DbfsAddUserFavorite {
-    public static type = '[DBFS Resources] Add User Favorite';
-    constructor(
-        public readonly resource: any
-    ) { }
-}
-
-export class DbfsRemoveUserFavorite {
-    public static type = '[DBFS Resources] Remove User Favorite';
-    constructor(
-        public readonly resource: any,
-        public readonly resourceAction: any
-    ) { }
-}
-
-export class DbfsAddUserRecent {
-    public static type = '[DBFS Resources] Add User Recent';
-    constructor(
-        public readonly resource: any,
-        public readonly url: any
-    ) { }
-}*/
-
-/* these use API */
 export class DbfsLoadUserFavorites {
     public static type = '[DBFS Resources] Load User Favorites';
     constructor(
@@ -327,9 +271,6 @@ export class DbfsLoadUserRecentsSuccess {
         public readonly resourceAction: any
     ) {}
 }
-
-
-
 
 /** STATE */
 
@@ -514,55 +455,6 @@ export class DbfsResourcesState {
         });
     }
 
-    /*public static getUser(userid?: string, fullDetail?: boolean) {
-        return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
-            // tslint:disable-next-line: prefer-const
-            const id = (userid) ? userid : state.activeUser;
-            let user: any = state.users[id];
-
-            // get more detailed member namespace data, including folder
-            // user can write to these namespaces
-            if (fullDetail) {
-              let namespaces = [];
-              namespaces = user.memberNamespaces.map(item => {
-                const data = {
-                  alias: state.namespaces[item].alias,
-                  id: state.namespaces[item].id, // NAMESPACE ID - !!NOT THE NAMESPACE FOLDER ID (see folder object for namespace folder id)
-                  name: state.namespaces[item].name,
-                  enabled: state.namespaces[item].enabled,
-                  folder: {...state.folders['/folders/' + item]}
-                };
-                return data;
-              });
-              user = {...user,
-                memberNamespaces: namespaces
-              };
-            }
-
-            return user;
-        });
-    }
-
-    public static getUserMemberNamespaceData(userid?: string) {
-        return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
-            const id = (userid) ? userid : state.activeUser;
-            const user = state.users[id];
-            let namespaces = [];
-            // filter this, because filtering doesn't work correctly with ALL the data
-            namespaces = user.memberNamespaces.map(item => {
-                const data = {
-                    alias: state.namespaces[item].alias,
-                    id: state.namespaces[item].id, // NAMESPACE ID - !!NOT THE NAMESPACE FOLDER ID (see folder object for namespace folder id)
-                    name: state.namespaces[item].name,
-                    enabled: state.namespaces[item].enabled,
-                    folder: {...state.folders['/folders/' + item]}
-                };
-                return data;
-            });
-            return namespaces;
-        });
-    }*/
-
     /** Utils */
     private resourceLockCheck(path: string, state: any) {
         const details = this.dbfsUtils.detailsByFullPath(path);
@@ -714,13 +606,9 @@ export class DbfsResourcesState {
         const favFolder = <DbfsFolderModel>{
             id: 0,
             name: 'My Favorites',
-            // path: '/user/' + activeUser + '/favorites',
-            // fullPath: '/user/' + activeUser + '/favorites',
             path: ':user-favorites:',
             fullPath: ':user-favorites:',
             files: [],
-            // resourceType: 'favorites',
-            // ownerType: 'user',
             resourceType: 'list',
             ownerType: 'dynamic',
             icon: 'd-star',
@@ -735,7 +623,7 @@ export class DbfsResourcesState {
 
         // frequently visited
         // TODO: NAG backend to get frequently & recently visited working
-        /* REMOVING TILL BACKEND IS WORKING
+        /* COMMENTING OUT TILL BACKEND IS WORKING
         const freqFolder = <DbfsFolderModel>{
             id: 0,
             name: 'Frequently Visited',
@@ -762,13 +650,9 @@ export class DbfsResourcesState {
         const recvFolder = <DbfsFolderModel>{
             id: 0,
             name: 'Recently Visited',
-            // path: '/user/' + activeUser + '/recently-visited',
-            // fullPath: '/user/' + activeUser + '/recently-visited',
             path: ':user-recent:',
             fullPath: ':user-recent:',
             files: [],
-            // resourceType: 'recentlyVisited',
-            // ownerType: 'user',
             resourceType: 'list',
             ownerType: 'dynamic',
             icon: 'd-time',
@@ -799,7 +683,6 @@ export class DbfsResourcesState {
             fullPath: ':member-namespaces:',
             subfolders: [],
             resourceType: 'userMemberNamespaces',
-            // icon: 'd-dashboard-tile',
             icon: 'd-network-platform',
             synthetic: true,
             loaded: false,
@@ -857,7 +740,6 @@ export class DbfsResourcesState {
             fullPath: ':list-namespaces:',
             resourceType: 'list',
             ownerType: 'dynamic',
-            // icon: 'd-list',
             icon: 'd-network-platform',
             loaded: false,
             synthetic: true,
@@ -1001,14 +883,6 @@ export class DbfsResourcesState {
         const users = JSON.parse(JSON.stringify({ ...state.users }));
         const userList: any[] = [];
 
-        /*for (const usr of response) {
-            usr.alias = usr.userid.slice(5);
-            userList.push(usr.alias);
-            if (!users[usr.alias]) {
-                users[usr.alias] = <DbfsUserModel>usr;
-            }
-        }*/
-
         for (let i = 0; i < response.length; i++) {
             const usr = response[i];
             usr.alias = usr.userid.slice(5);
@@ -1054,11 +928,6 @@ export class DbfsResourcesState {
         const namespaces = JSON.parse(JSON.stringify({ ...state.namespaces }));
         const namespaceList: any[] = [];
 
-        /*for (const ns of response) {
-            namespaces[ns.alias] = <DbfsNamespaceModel>ns;
-            namespaceList.push(ns.alias);
-        }*/
-
         for (let i = 0; i < response.length; i++) {
             const ns = response[i];
             namespaces[ns.alias] = <DbfsNamespaceModel>ns;
@@ -1079,44 +948,6 @@ export class DbfsResourcesState {
             resourceAction
         });
     }
-
-    // USER FAVORITES (for when we hook up to backend)
-    /*@Action(DbfsLoadUserFavoritesList)
-    loadUserFavoritesList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadUserFavoritesList) {
-        this.logger.action('State :: Load User Favorites');
-
-        return this.service.getUserFavoritesList().pipe(
-            map((payload: any) => {
-                return ctx.dispatch(new DbfsLoadUserFavoritesListSuccess(payload, resourceAction));
-            }),
-            catchError(error => ctx.dispatch(new DbfsResourcesError(error, 'Load User Favorites')))
-        );
-    }
-
-    @Action(DbfsLoadUserFavoritesListSuccess)
-    loadUserFavoritesListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadUserFavoritesListSuccess) {
-
-    }*/
-
-
-    // USER RECENTLY VISITED (for when we hook up to backend)
-    /*@Action(DbfsLoadUserRecentList)
-    loadUserRecentList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadUserRecentList) {
-        this.logger.action('State :: Load User Recently Visited');
-
-
-        return this.service.getUserRecentList().pipe(
-            map((payload: any) => {
-                return ctx.dispatch(new DbfsLoadUserRecentListSuccess(payload, resourceAction));
-            }),
-            catchError(error => ctx.dispatch(new DbfsResourcesError(error, 'Load User Recently Visited')))
-        );
-    }
-
-    @Action(DbfsLoadUserRecentListSuccess)
-    loadUserRecentListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadUserRecentListSuccess) {
-
-    }*/
 
     // LOAD TOP FOLDER
     @Action(DbfsLoadTopFolder)
