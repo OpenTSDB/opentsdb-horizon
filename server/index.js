@@ -1,12 +1,8 @@
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var utils = require('./lib/utils');
-var oktaConfig = require('./config/oktaConfig');
-var authUtil = require('./middlewares/auth-utils');
-var expressOkta = require('express-okta-oath');
 
 var index = require('./routes/index');
 
@@ -17,22 +13,9 @@ app.use(logger('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-if (utils.getEnv() === 'dev') {
-    // implement okta validation
-} else if (utils.getProperty('auth_mode') === 'okta') {
-  const okta     = new expressOkta.Okta(oktaConfig);
-  app.use(okta.callback());
-  app.use(authUtil.validateOktaCredentials(okta));
-}
-else if (utils.getProperty('auth_mode') === 'athenz') {
-    // app.use(authUtil.validateAthenzCredentials());
-}
 
-app.use(function (req, res, next) {
-    // WhitelistFrameAncestors
-    res.setHeader('Content-Security-Policy', 'frame-ancestors ' + utils.getWhitelistFrameAncestors().join(' ') );
-    next();
-});
+// load middlewares
+utils.loadMiddlewares(app, __dirname + '/middlewares');
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -50,22 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // for now, we need to get the better regex and re-organize the api url
 app.get(/^\/(d|main|a)(.*)/, function (req, res) {
-    console.log('CALL ME >>>>> index.html');
-    // refresh cookies if the age is >= 10 mins, 
-    const now = Math.floor(Date.now() / 1000);
-    if (req.app.get('env') === 'prod') {
-        const claims = req.okta.claims;
-        if ( now - claims.iat >= 120 ) {
-            const okta     = new expressOkta.Okta(oktaConfig);
-            expressOkta.refreshAccessTokenCallback(okta.config, req, res, '', function(details) {
-                res.sendFile(path.join(__dirname + '/public/index.html'));
-            });
-        } else {
-            res.sendFile(path.join(__dirname + '/public/index.html'));
-        }
-    } else {
-        res.sendFile(path.join(__dirname + '/public/index.html'));
-    }
+    res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
 // routing

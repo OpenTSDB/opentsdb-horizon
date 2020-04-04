@@ -7,21 +7,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "bluebird": "^3.5.1",
     "compression": "^1.7.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
-    "express-okta-oath": "^3.0.2",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
-    "concurrently": "^4.1.0",
-    "properties-reader": "0.0.16",
-    "request": "^2.86.0",
-    "request-promise": "^4.2.2",
-    "rxjs": "^6.1.0",
-    "elasticsearch": "^15.1.1",
-    "md5": "^2.2.1",
-    "q": "^1.5.1"
+    "concurrently": "^4.1.0"
   }
 }
