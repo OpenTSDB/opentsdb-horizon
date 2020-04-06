@@ -1,0 +1,16 @@
+<mat-card fxLayout="column" fxFlexFill>
+    <mat-card-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" class="panel-body">
+        <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <span class="panel-title"
+                        matTooltip="{{title}}"
+                        [matTooltipClass]="{'cdk-widget-title-tooltip':true}">{{title}}</span>
+                    <span class="flex-spacer"></span>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <!-- projected widget -->
+        <ng-content></ng-content>
+    </mat-card-content>
+</mat-card>

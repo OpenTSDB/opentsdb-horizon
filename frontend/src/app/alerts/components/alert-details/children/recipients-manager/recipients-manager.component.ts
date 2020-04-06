@@ -9,6 +9,7 @@ import { Store, Select } from '@ngxs/store';
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -45,6 +46,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
+    environment = environment;
     slackWebhookMaxLength = 200;
     opsGenieApiKeyMaxLength = 200;
 
@@ -113,14 +115,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     get types(): Array<string> {
-        const types = Object.keys(RecipientType);
-        // todo: enable http
-        for (let i = 0; i < types.length; i++) {
-            if (types[i] === 'http') {
-              types.splice(i, 1);
-            }
-         }
-        return types;
+        return Object.keys(RecipientType)
+            .filter(t => environment.alert.recipient[t])
+            .filter(t => environment.alert.recipient[t].enable);
     }
 
     /** ANGULAR INTERFACE METHODS */

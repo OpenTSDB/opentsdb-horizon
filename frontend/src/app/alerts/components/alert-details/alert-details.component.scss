@@ -207,7 +207,7 @@
                     margin-left: 5px;
                 }
 
-                .splunk-link {
+                .alert-history-link {
                     padding-top: 8px;
                     font-size: 12px;
 
@@ -695,7 +695,7 @@
             background: transparent;
             border-bottom: 1px solid $divider-color;
 
-            .splunk-link a {
+            .alert-history-link a {
                 color: map-get($foreground, link);
             }
         }

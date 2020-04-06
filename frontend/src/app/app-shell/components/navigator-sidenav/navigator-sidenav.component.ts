@@ -6,6 +6,7 @@ import {
     EventEmitter,
     HostBinding
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-navigator-sidenav',
@@ -25,10 +26,10 @@ export class NavigatorSidenavComponent implements OnInit {
     // tslint:disable-next-line:no-inferrable-types
     @Input() mediaQuery: string = '';
 
-    navItems: object[] = [
-        { section: 'dashboard',         label: 'Dashboards',        icon: 'd-dashboard-tile' },
+    navItems: any[] = [
+        { section: 'dashboard', label: 'Dashboards', icon: 'd-dashboard-tile' },
         // { section: 'metric-explorer',   label: 'Metric Explorer',   icon: 'd-chart-line' },
-        { section: 'alerts',            label: 'Alerts',            icon: 'd-notification'},
+        { section: 'alerts', label: 'Alerts', icon: 'd-notification' },
         /*{ section: 'status',            label: 'Status',            icon: 'd-heart-health' },
         { section: 'annotations',       label: 'Annotations',       icon: 'd-flag' },
         { section: 'admin',             label: 'Admin',             icon: 'd-user-secure', requiresUserAdmin: true },
@@ -40,9 +41,11 @@ export class NavigatorSidenavComponent implements OnInit {
 
     ];
 
-    constructor() { }
+    constructor(
+        private router: Router
+    ) { }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     navigationClicked(obj: any) {
         if (this.activeNav === obj) {
@@ -55,6 +58,10 @@ export class NavigatorSidenavComponent implements OnInit {
 
     resetActiveNav() {
         this.activeNav = {};
+    }
+
+    gotoMain() {
+        this.router.navigate(['/main']);
     }
 
 }

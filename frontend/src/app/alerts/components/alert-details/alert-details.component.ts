@@ -44,6 +44,7 @@ import { ThemeService } from '../../../app-shell/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
+import { environment } from "../../../../environments/environment";
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -1667,8 +1668,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setAlertEvaluationLink() {
-        // tslint:disable-next-line:max-line-length
-        let url = 'https://logs.yms.yahoo.com:9999/splunk/en-US/app/search/search?q=search%20index%3Dcorona-alerts%20alert_id%3D' + this.data.id;
+        let url = environment.alert_history_url + this.data.id;
         if (this.startTime && this.endTime) {
             const start =  Math.floor(this.dateUtil.timeToMoment(this.startTime, 'local').valueOf() / 1000);
             const end =  Math.floor(this.dateUtil.timeToMoment(this.endTime, 'local').valueOf() / 1000);

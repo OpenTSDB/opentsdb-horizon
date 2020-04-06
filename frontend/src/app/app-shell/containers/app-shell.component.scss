@@ -30,6 +30,10 @@
             .mat-drawer-backdrop.mat-drawer-shown {
                 background-color: rgba(0, 0, 0, .01);
             }
+
+            .cdk-visually-hidden.cdk-focus-trap-anchor {
+                display: none;
+            }
         }
 
         .app-navigator-drawer {

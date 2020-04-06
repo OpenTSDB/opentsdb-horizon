@@ -11,11 +11,11 @@ import { HttpService } from '../../../../../core/http/http.service';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'simple-dashboard-list',
-    templateUrl: './simple-dashboard-list.component.html',
-    styleUrls: ['./simple-dashboard-list.component.scss']
+    templateUrl: './simple-dashboard-list.component.html'
 })
 export class SimpleDashboardListComponent implements OnInit {
-    @HostBinding('class.simple-dashboard-list') private _hostClass = true;
+    @HostBinding('class.widget-panel-content') private _hostClass = true;
+    @HostBinding('class.simple-dashboard-list') private _componentClass = true;
 
     dashboards: Observable<object[]>;
     dashboardsSub: Subscription;
@@ -25,11 +25,12 @@ export class SimpleDashboardListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        /* Will fetch data from another place
         this.dashboardsSub = this.http.getDashboards()
             .subscribe( data => {
                 this.dashboards = <Observable<object[]>>data;
             });
-
+        */
 
     }
 

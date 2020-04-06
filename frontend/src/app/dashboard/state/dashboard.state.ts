@@ -163,6 +163,7 @@ export class DBState {
                     } else {
                         ctx.dispatch(new MigrateAndLoadDashboard(id, dashboard));
                     }
+                    // NOTE: maybe add recent tracking here?
                 }),
                 catchError( error => ctx.dispatch(new LoadDashboardFail(error)))
             );

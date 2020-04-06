@@ -11,7 +11,5 @@ PACKAGE_OS_SPECIFIC = no
 YINST bug-product Yamas
 YINST bug-component General
 
-YINST requires pkg ynodejs_core             10.0.0.0 10.9999.9999.9999
-YINST requires pkg ynodejs_cosmo            * *
 
 find 0644 - - share/node/horizon_dev/ $(SRCDIRS)/ -name "*" -type f ! -ipath '*/artifacts/*' ! -ipath '*.yicf' ! -path '*.git*' ! -ipath '*/resources*' ! -path '*/test/*' ! -path '*/tests/*' ! -path '*/screwdriver/*' ! -path '*/config.js'

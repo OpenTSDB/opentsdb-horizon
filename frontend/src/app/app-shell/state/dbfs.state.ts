@@ -52,7 +52,8 @@ export class DbfsState {
 
     @Selector([DBState])
     static getLoadedDashboardId(dbstate) {
-        return dbstate.id;
+        // console.log('DBSTATE from DBFS', dbstate);
+        return dbstate.id || false;
     }
 
     // utility selector to get a users profile
