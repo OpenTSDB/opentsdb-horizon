@@ -14,10 +14,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// dynamically load the app middlewares from middlewares directory
-// you can add application middlewares or want to add/override routing handlers then write the middlewares and put the js files under the middlewares directory 
+// dynamically load the app middleware from middleware directory
+// you can add application middleware or want to add/override routing handlers then write the middleware and put the js files under the middleware directory 
 // middleware format: https://expressjs.com/en/guide/writing-middleware.html
-utils.loadMiddlewares(app, __dirname + '/middlewares');
+utils.loadMiddleware(app, __dirname + '/middleware');
 
 // error handler
 app.use(function(err, req, res, next) {

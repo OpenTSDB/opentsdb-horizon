@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 var utils = {
-    loadMiddlewares: function(app, dir ) {
+    loadMiddleware: function(app, dir ) {
         if (fs.existsSync(dir)) {
             fs.readdirSync(dir).forEach(function(file) {
                 if ( file.substr(file.lastIndexOf('.') + 1) !== 'js' ) return;
