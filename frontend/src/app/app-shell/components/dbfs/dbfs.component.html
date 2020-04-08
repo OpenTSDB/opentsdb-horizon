@@ -541,7 +541,7 @@
             <span class="dnav-favorite-detail">
                 <span class="root-path">Belongs to: {{data.rootPath}}</span>
                 <span class="dnav-favorite-label">{{data.name}}</span>
-                <span class="favorite-date">Added: {{data.favorited | date:'medium'}}</span>
+                <span class="favorite-date">Added: {{data.favoritedTime | date:'medium'}}</span>
             </span>
         </a>
         <span class="dnav-favorite-menu">
@@ -567,7 +567,7 @@
             <span class="dnav-recent-detail">
                 <span class="root-path">Belongs to: {{data.rootPath}}</span>
                 <span class="dnav-recent-label">{{data.name}}</span>
-                <span class="recent-date">Visited: {{data.visited | date:'medium'}}</span>
+                <span class="recent-date">Visited: {{data.lastVisitedTime | date:'medium'}}</span>
             </span>
         </a>
     </div>

@@ -760,14 +760,19 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 );
                 break;
             case 'favoriteDashboard':
+                const time = Date.now();
                 this.store.dispatch(
                     new DbfsAddUserFav({
                         id: file.id,
                         name: file.name,
                         path: file.path,
                         fullPath: file.fullPath,
-                        type: 'dashboard',
-                        created: Date.now()
+                        type: 'DASHBOARD',
+                        createdTime: time,
+                        createdBy: this.user.userid,
+                        updatedTime: time,
+                        updatedBy: this.user.userid,
+                        favoritedTime: time
                     }, {})
                 );
                 break;
