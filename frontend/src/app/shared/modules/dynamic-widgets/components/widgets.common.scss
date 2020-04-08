@@ -484,7 +484,7 @@ $widgets-common-config: (
 
     // section markers
     //
-    $section-tab-markers: if($is-dark-theme, rgba(map-get($background, ink-bar), .35), rgba(map-get($background, navbar), .35));
+    $section-tab-markers: if($is-dark-theme, rgba(map-get($background, ink-bar), .45), rgba(map-get($background, navbar), .45));
     $section-tab-color: #ffffff; // most of the time, white will do. need to test
 
     .edit-view-container.is-active {

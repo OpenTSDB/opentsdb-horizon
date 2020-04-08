@@ -4,15 +4,18 @@
             <span>{{ label }}</span>
         </div>
         <div class="toolbar-item">
-            <span class="title"> Namespace </span>
+            <span class="title"> Namespace:</span>
         </div>
-        <div class="toolbar-item">
-            <span class="namespace-value" *ngIf="!editNamespace" (click)="editNamespace=true;">
+        <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace" (click)="editNamespace=true;">
+            <span class="namespace-value">
                 {{ query.namespace }}
             </span>
+            <div class="mat-select-arrow-wrapper">
+                <div class="mat-select-arrow"></div>
+            </div>
         </div>
-        <div class="toolbar-item">
-            <span class="value" *ngIf="editNamespace || !query.namespace.trim() ">
+        <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace.trim() ">
+            <span class="value">
                 <namespace-autocomplete [value]="query.namespace" [options]="options" (nschange)="saveNamespace($event)"
                     (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
             </span>
@@ -295,12 +298,12 @@
                     </div>
                 </td>
             </ng-container>
+            <!-- next two rows are for metric visual appearance options -->
             <ng-container matColumnDef="padding">
-                <td mat-cell colspan="2" *matCellDef="let element"></td>
+                <td mat-cell *matCellDef="let element"></td>
             </ng-container>
             <ng-container matColumnDef="visual">
-                <td mat-cell [colSpan]="metricTableDisplayColumns.length - 2" *matCellDef="let data">
-
+                <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data" style="padding-left: 0;">
                     <div class="visual-panel-dropdown-text" [matMenuTriggerFor]="metricVisualPanel"
                         #metricVisualPanelTrigger="matMenuTrigger" [matMenuTriggerData]="{data: data}">
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
@@ -346,15 +349,15 @@
     <!-- ADD EXPRESSION - ENDS -->
     <div class="metric-action-buttons"
         *ngIf="options.enableMetric && (query.namespace || query.metrics.length || query.filters.length)">
-        <button mat-button color="primary" *ngIf="!isAddMetricProgress || !query.metrics.length "
+        <button mat-button color="primary" class="add-metric-button"
+            *ngIf="!isAddMetricProgress || !query.metrics.length "
             (click)="addQueryItemProgress('metric')">
-            <mat-icon fontSet="denali" fontIcon="d-add"></mat-icon>
-            <span>Metric</span>
+            <span>Add Metric</span>
         </button>
-        <button mat-button color="primary" *ngIf="query.metrics.length && !this.isAddExpressionProgress"
+        <button mat-button color="primary" class="add-expression-button"
+            *ngIf="query.metrics.length && !this.isAddExpressionProgress"
             (click)="editExpression(-1)" [disabled]="query.metrics.length === 0">
-            <mat-icon fontSet="denali" fontIcon="d-add"></mat-icon>
-            <span>Expression</span>
+            <span>Add Expression</span>
         </button>
     </div>
 </div>

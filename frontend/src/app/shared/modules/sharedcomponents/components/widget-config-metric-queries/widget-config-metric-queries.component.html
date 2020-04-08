@@ -6,18 +6,18 @@
                     <query-editor-proto  [label]="'Q' + (index + 1)" [query]="query" [queries]="widget.queries" [widget]="widget"
                     [options]="{toggleQuery: options.enableMultipleQueries,
                         enableAlias: options.enableAlias,
-                        cloneQuery: options.enableMultipleQueries, 
-                        deleteQuery: options.enableMultipleQueries, 
-                        enableSummarizer: options.enableSummarizer, 
+                        cloneQuery: options.enableMultipleQueries,
+                        deleteQuery: options.enableMultipleQueries,
+                        enableSummarizer: options.enableSummarizer,
                         enableMultiMetricSelection: options.enableMultiMetricSelection,
                         enableGroupBy: options.enableGroupBy }" (queryOutput)="handleQueryRequest($event);"
                         [tplVariables]="tplVariables"
                         [type]="widget.settings.component_type"></query-editor-proto>
                 </div>
-                <div class="query-metric-row" *ngIf="widget.queries.length && widget.queries[widget.queries.length-1].metrics.length && !queryEditMode && options.enableMultipleQueries" style="margin-top:25p;">
-                    <button mat-button mat-primary color="primary" (click)="addNewQuery()">Add Query</button>
-                </div>
             </mat-expansion-panel>
         </mat-accordion>
+        <div class="query-metric-row" *ngIf="widget.queries.length && widget.queries[widget.queries.length-1].metrics.length && !queryEditMode && options.enableMultipleQueries" style="margin-top:25p;">
+            <button mat-button mat-primary color="primary" (click)="addNewQuery()">Add Query</button>
+        </div>
     </div>
 </div>
