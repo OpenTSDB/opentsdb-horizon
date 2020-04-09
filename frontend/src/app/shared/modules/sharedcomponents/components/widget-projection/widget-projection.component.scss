@@ -13,26 +13,31 @@
             width: 100%;
             top: 0;
             cursor: move;
+            max-height: 24px;
+            flex: 1 1 24px;
+            min-height: 24px;
 
             .panel-title {
                 display: inline-block;
                 padding: 2px;
                 margin-left: auto;
                 margin-right: auto;
-                font-size: 16px;
+                font-size: 12px;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                padding: 0 10px;
+                font-weight: 500;
             }
         }
 
         .mat-toolbar,
         .mat-toolbar-row {
             font-size: 1.1em;
-            height: 18px;
-            min-height: 18px !important;
+            height: 24px;
+            min-height: 24px !important;
             //border-bottom: 1px solid #dfdfdf;
-            font-weight: 300;
+            font-weight: 500;
         }
 
         .mat-toolbar {
@@ -104,10 +109,7 @@
                     @include transition(background-color 0.2s ease-in-out);
                 }
 
-                .panel-title {
-                    padding: 0 10px;
-                    font-weight: 300;
-                }
+
 
                 .mat-toolbar {
                     @include transition(none);
