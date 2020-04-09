@@ -374,7 +374,7 @@ export class DbfsResourcesState {
             favorites = state.userFavorites.map(item => {
                 const data: any = { ...state.files[item.fullPath] };
                 data.rootPath = data.fullPath.split('/').slice(0, 3).join('/');
-                data.favorited = item.created;
+                data.favoritedTime = item.favoritedTime;
                 return data;
             });
         }
@@ -388,7 +388,7 @@ export class DbfsResourcesState {
             recents = state.userRecents.map(item => {
                 const data: any = { ...state.files[item.fullPath] };
                 data.rootPath = data.fullPath.split('/').slice(0, 3).join('/');
-                data.visited = item.visited;
+                data.lastVisitedTime = item.lastVisitedTime;
                 return data;
             });
         }
