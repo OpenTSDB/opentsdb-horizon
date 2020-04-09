@@ -244,6 +244,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'UpdateQuery':
                 this.util.updateQuery(this.widget, message.payload);
                 this.widget.queries = [...this.widget.queries];
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -256,6 +257,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'DeleteQueryMetric':
                 this.util.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.util.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -271,6 +273,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'DeleteQuery':
                 this.util.deleteQuery(this.widget, message.id);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -281,6 +284,12 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'SummarizerChange':
                 this.refreshData();
+                break;
+            case 'ToggleInfectiousNan':
+                this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
         }
     }
