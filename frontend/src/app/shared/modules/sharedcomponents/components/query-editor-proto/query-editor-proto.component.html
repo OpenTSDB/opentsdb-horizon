@@ -6,7 +6,7 @@
         <div class="toolbar-item">
             <span class="title"> Namespace:</span>
         </div>
-        <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace" (click)="editNamespace=true;">
+        <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace && query.namespace.length > 0" (click)="editNamespace=true;">
             <span class="namespace-value">
                 {{ query.namespace }}
             </span>
@@ -49,11 +49,11 @@
             <div class="tags-selected" *ngIf="query.filters.length">
                 <div class="tags-selected-header">
                     <span><strong>Tag Filters</strong> ({{ query.filters.length }})</span>
-                    <span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
+                    <!--<span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
                         <mat-checkbox (click)="$event.stopPropagation();"
                             [checked]="query.settings.explicitTagMatch"
                             (change)="toggleExplictTagMatch($event)">Only match selected tag keys</mat-checkbox>
-                    </span>
+                    </span>-->
                 </div>
                 <mat-list class="tag-filter-rows" role="list">
                     <mat-list-item class="tag" role="listitem"
@@ -156,6 +156,9 @@
                             <span matPrefix>Alias</span>
                         </mat-form-field>
                     </div>
+                    <!--<div class="vertical-line-spacer">
+                        <span></span>
+                    </div>-->
                 </td>
             </ng-container>
             <!-- AGGREGATOR AND FUNCTIONS Column -->
@@ -165,6 +168,7 @@
                     <!-- aggregator -->
                     <div class="metric-row-data tag-aggregator">
                         <div class="tag-aggregator-wrapper">
+                            <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
                             <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
                                 (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
                             <span class="by-spacer">{{ data.type === 'expression' ? 'JOIN ON' : 'By' }}</span>
@@ -252,14 +256,17 @@
                 <td mat-cell *matCellDef="let metric" [colSpan]="metricTableDisplayColumns.length">
                     <div style="display: flex; align-items: center; width: 100%; height: 100%;">
                         <div class="metric-row-data metric-index is-adding" *ngIf="isAddMetricProgress">
-                            <button mat-flat-button>
+                            <!--<button mat-flat-button>
                                 <span class="label">
                                     <span>m</span>
                                 </span>
                                 <span class="mat-select-arrow-wrapper">
                                     <div class="mat-select-arrow" style="opacity: 0"></div>
                                 </span>
-                            </button>
+                            </button>-->
+                            <span class="label">
+                                <span>m</span>
+                            </span>
                         </div>
                         <div class="metric-row-data metric-name is-adding" *ngIf="isAddMetricProgress">
                             <metric-autocomplete [focus]="isAddMetricProgress" [multiple]="true" [namespace]="query.namespace"
@@ -275,14 +282,17 @@
                 <td mat-cell *matCellDef="let metric" [colSpan]="metricTableDisplayColumns.length">
                     <div style="display: flex; align-items: center; width: 100%; height: 100%;">
                         <div class="metric-row-data metric-index is-adding" *ngIf="isAddExpressionProgress">
-                            <button mat-flat-button>
+                            <!--<button mat-flat-button>
                                 <span class="label">
                                     <span>exp</span>
                                 </span>
                                 <span class="mat-select-arrow-wrapper">
                                     <div class="mat-select-arrow" style="opacity: 0"></div>
                                 </span>
-                            </button>
+                            </button>-->
+                            <span class="label">
+                                <span>exp</span>
+                            </span>
                         </div>
                         <div class="metric-row-data expression is-adding" *ngIf="isAddExpressionProgress">
                             <mat-form-field class="expression-input-field" appearance="outline" color="primary"
@@ -352,12 +362,12 @@
         <button mat-button color="primary" class="add-metric-button"
             *ngIf="!isAddMetricProgress || !query.metrics.length "
             (click)="addQueryItemProgress('metric')">
-            <span>Add Metric</span>
+            <span>Add metric</span>
         </button>
         <button mat-button color="primary" class="add-expression-button"
             *ngIf="query.metrics.length && !this.isAddExpressionProgress"
             (click)="editExpression(-1)" [disabled]="query.metrics.length === 0">
-            <span>Add Expression</span>
+            <span>Add expression</span>
         </button>
     </div>
 </div>

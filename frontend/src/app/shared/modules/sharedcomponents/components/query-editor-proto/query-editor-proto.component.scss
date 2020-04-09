@@ -179,6 +179,24 @@
 
         }
 
+        .vertical-line-spacer {
+            height: 16px;
+            width: 6px;
+            position: relative;
+            display: inline-block;
+            margin-top: 4px;
+
+            span {
+                display: block;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 3px;
+                width: 1px;
+                height: 16px;
+            }
+        }
+
         .query-metric-table.mat-table {
             padding: 4px;
 
@@ -216,6 +234,10 @@
                 input[type=radio] {
                     margin-right: 5px;
                 }
+            }
+
+            .cdk-column-alias {
+                white-space: nowrap;
             }
 
             // .cdk-column-name {}
@@ -311,8 +333,15 @@
                     width: 400px
                 }
 
+                &.metric-index.is-adding {
+                    margin-right: 8px;
+                    width: 40px;
+                    min-width: 40px;
+                    justify-content: center;
+                }
+
                 &.expression.is-adding {
-                    width: 600px
+                    width: 600px;
                 }
 
                 // is this used??
@@ -333,12 +362,32 @@
                         height: 32px;
                         border-radius: 4px;
 
+                        .aggregator-icon {
+                            @include sizeDenaliIcon(14px);
+                        }
+
+                        .tag-aggregator-component,
+                        .dropdown-metric-tags {
+                            .mat-button {
+                                padding: 0 8px;
+                                width: initial;
+
+                                .button-label {
+                                    padding: 0 8px;
+                                }
+                            }
+                        }
+
                         .tag-aggregator-component {
                             align-self: stretch;
                         }
 
+                        .dropdown-metric-tags {
+                            padding-right: 0;
+                        }
+
                         .by-spacer {
-                            padding: 0 6px;
+                            // padding: 0 6px;
                         }
                     }
                 }
@@ -389,17 +438,14 @@
                     margin-left: 8px;
                     display: inline-flex;
                     align-items: center;
-
-                    .mat-icon svg path {
-                        fill: currentColor;
-                    }
+                    min-height: 32px;
 
                     .mat-flat-button {
                         padding: 0;
                         min-width: 24px;
                         //height: 24px;
-                        line-height: 32px;
-                        height: 32px;
+                        line-height: 24px;
+                        height: 24px;
                         padding-left: 6px;
 
                         &,
@@ -407,22 +453,23 @@
                             line-height: 24px;
                         }
 
-                        .mat-icon {
-                            width: 24px;
-                            height: 24px;
+                        .mat-button-wrapper {
+                            display: flex;
+                            align-items: center;
+                        }
 
-                            svg {
-                                width: 90%;
-                                height: 90%;
-                            }
+                        .mat-icon {
+                            font-size: 16px;
+                            width: 18px;
+                            height: 18px;
                         }
 
                     }
 
                     .mat-mini-fab {
                         @include mat-elevation(2);
-                        width: 24px;
-                        height: 24px;
+                        width: 18px;
+                        height: 18px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -432,9 +479,9 @@
                         }
 
                         .mat-icon {
-                            width: 18px;
-                            height: 18px;
-                            font-size: 18px;
+                            width: 16px;
+                            height: 16px;
+                            font-size: 16px;
                             margin-left: -1px;
                             margin-top: -2px;;
                         }
@@ -480,7 +527,8 @@
         .metric-action-buttons {
             display: flex;
             align-items: center;
-            padding: 5px;
+            padding: 0;
+            margin-top: 10px;
 
             .mat-icon-button,
             .mat-stroked-button,
@@ -783,6 +831,12 @@
             }
         }
 
+        .vertical-line-spacer {
+            span {
+                background-color: $divider;
+            }
+        }
+
         .metric-row-data {
 
             &.metric-index {
@@ -806,7 +860,8 @@
             &.alias,
             &.expression {
                 .display-name {
-                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                    // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                    background-color: transparent;
 
                     .mat-icon {
                         color: $link;
@@ -820,7 +875,12 @@
 
             &.tag-aggregator {
                 .tag-aggregator-wrapper {
-                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                    // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                    background-color: transparent;
+
+                    .aggregator-icon {
+                        color: rgba(map-get($foreground, text), .8);
+                    }
 
                     &:hover {
                         background-color: rgba($link, 0.1);
@@ -844,7 +904,9 @@
             }
 
             &.custom-function {
-                background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                background-color: transparent;
+
                 .custom-function-wrapper {
                     border: 1px solid $lighter-divider;
 
@@ -856,8 +918,9 @@
 
             &.add-function {
                 .mat-flat-button {
-                    background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                    border: 1px solid $lighter-divider;
+                    //background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                    //border: 1px solid $lighter-divider;
+                    background-color: transparent;
 
                     .mat-icon {
                         color: map-get($foreground, link);
@@ -867,6 +930,10 @@
                         .mat-select-arrow {
                             color: if($is-dark, rgba(255,255,255,0.7), rgba(0,0,0,0.7));
                         }
+                    }
+
+                    &:hover {
+                        background-color: rgba($link, 0.1);
                     }
                 }
             }
@@ -879,7 +946,7 @@
         .metric-action-buttons {
             // border-bottom: 1px solid $lighter-divider;
             .add-metric-button {
-
+                background-color: rgba(map-get($primary, default), .15);
             }
         }
 

@@ -17,7 +17,10 @@
             </mat-expansion-panel>
         </mat-accordion>
         <div class="query-metric-row" *ngIf="widget.queries.length && widget.queries[widget.queries.length-1].metrics.length && !queryEditMode && options.enableMultipleQueries" style="margin-top:25p;">
-            <button mat-button mat-primary color="primary" (click)="addNewQuery()">Add Query</button>
+            <button class="add-new-query-button" mat-button mat-primary color="primary" (click)="addNewQuery()">
+                <mat-icon fontSet="denali" fontIcon="d-add-square-solid"></mat-icon>
+                <span>Query</span>
+            </button>
         </div>
     </div>
 </div>
