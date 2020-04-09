@@ -506,6 +506,12 @@ export class DbfsResourcesState {
         // initial data setup
         // extract user data
         let user = response.user;
+        // because this is the activeUser, split out the name
+        const userName = user.name.split(' ');
+        if (userName.length > 0) {
+            user.firstName = userName[0];
+        }
+
         // keys for the user member namespaces
         user.memberNamespaces = [];
         // assign active user id (user who the cookie belongs to)
