@@ -221,6 +221,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'UpdateQuery':
                 this.updateQuery(message.payload);
                 this.widget.queries = [...this.widget.queries];
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -232,6 +233,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'DeleteQueryMetric':
                 this.deleteQueryMetric(message.id, message.payload.mid);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -258,6 +260,12 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'SummarizerChange':
                 this.refreshData();
+                break;
+            case 'ToggleInfectiousNan':
+                this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
         }
     }

@@ -22,7 +22,6 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
-import { rgb } from 'd3';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -572,6 +571,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);
                 this.widget.queries = [...this.widget.queries];
+                this.widget = {...this.widget};
                 this.setOptions();
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
@@ -611,6 +611,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'DeleteQueryMetric':
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -629,6 +630,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 } else {
                     this.refreshData(false);
                 }
+                break;
+            case 'ToggleInfectiousNan':
+                this.utilService.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
         }
     }

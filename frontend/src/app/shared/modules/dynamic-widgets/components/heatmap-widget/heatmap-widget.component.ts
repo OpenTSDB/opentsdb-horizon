@@ -234,6 +234,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
         case 'UpdateQuery':
             this.updateQuery(message.payload);
             this.widget.queries = [...this.widget.queries];
+            this.widget = {...this.widget};
             this.doRefreshData$.next(true);
             this.needRequery = true;
             break;
@@ -246,6 +247,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
         case 'DeleteQueryMetric':
             this.deleteQueryMetric(message.id, message.payload.mid);
             this.doRefreshData$.next(true);
+            this.widget = {...this.widget};
             this.needRequery = true;
             break;
         case 'ToggleQueryVisibility':
@@ -268,6 +270,12 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             this.widget.settings.useDBFilter = message.payload.apply;
             this.refreshData();
             this.needRequery = message.payload.reQuery;
+            break;
+        case 'ToggleInfectiousNan':
+            this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+            this.widget = {...this.widget};
+            this.doRefreshData$.next(true);
+            this.needRequery = true;
             break;
     }
   }

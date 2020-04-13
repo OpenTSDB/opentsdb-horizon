@@ -12,6 +12,9 @@
                         enableGroupBy: options.enableGroupBy }" (queryOutput)="handleQueryRequest($event);"
                         [tplVariables]="tplVariables"></query-editor-proto>
                 </div>
+                <div class="query-metric-row" *ngIf="hasExpression">
+                    <span class="infectious-nan"><mat-checkbox (click)="$event.stopPropagation();" [checked]="widget.queries[0].settings.infectiousNan" (change)="toggleInfectiousNan($event.checked)">Do not evaluate expressions if a value is missing</mat-checkbox></span>
+                </div>
                 <div class="query-metric-row" *ngIf="widget.queries.length && widget.queries[widget.queries.length-1].metrics.length && !queryEditMode && options.enableMultipleQueries" style="margin-top:25p;">
                     <button mat-button mat-primary color="primary" (click)="addNewQuery()">Add Query</button>
                 </div>
