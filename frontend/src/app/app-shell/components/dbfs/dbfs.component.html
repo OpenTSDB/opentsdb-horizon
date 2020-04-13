@@ -233,7 +233,7 @@
         <ng-container *ngFor="let leaf of panels; let n = index; let first = first; let last = last;">
             <mat-basic-chip *ngIf="first" (click)="navtoSpecificPanel(n, i)">
                 <mat-icon fontSet="denali" [fontIcon]="folders[leaf.folderResource].icon || 'd-home'"></mat-icon>
-                <span *ngIf="currentPanelTab === 'personal'">{{user.alias | titlecase}}&nbsp;</span>
+                <span *ngIf="currentPanelTab === 'personal'">{{user.firstName | titlecase}}'s&nbsp;</span>
                 <span>{{folders[leaf.folderResource].name | titlecase}}</span>
             </mat-basic-chip>
             <mat-basic-chip *ngIf="!first" [ngClass]="{'is-active': n === i}" (click)="navtoSpecificPanel(n, i)">

@@ -175,6 +175,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     // open the navigator
                     this.drawer.open();
                     this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
+
+                    // update recents
+                    this.store.dispatch(
+                      new DbfsLoadUserRecents(null, null, {})
+                    );
                 }
             }
         });
