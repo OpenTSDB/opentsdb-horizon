@@ -1,6 +1,6 @@
 <mat-card fxLayout="column" fxFlexFill>
     <mat-card-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" class="panel-body">
-        <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
+        <div fxFlex="1 1 30px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
             <mat-toolbar>
                 <mat-toolbar-row>
                     <span class="panel-title"
@@ -11,6 +11,8 @@
             </mat-toolbar>
         </div>
         <!-- projected widget -->
-        <ng-content></ng-content>
+        <div fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" style="margin-top: 5px;">
+            <ng-content></ng-content>
+        </div>
     </mat-card-content>
 </mat-card>

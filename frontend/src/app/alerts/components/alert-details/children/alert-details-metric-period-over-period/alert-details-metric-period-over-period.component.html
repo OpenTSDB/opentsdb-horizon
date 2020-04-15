@@ -35,7 +35,7 @@
     required
     type="number" min="1" max="10"
     [value]="config.periodOverPeriod.lookbacks"
-    (change)="updateConfig('lookbacks', $event.target.value)">
+    (input)="updateConfig('lookbacks', $event.target.value)">
     <mat-error *ngIf="lookbacks.errors && (lookbacks.dirty || lookbacks.touched)">
         Number of lookbacks required. Min = 1, Max = 10.
     </mat-error>
@@ -56,7 +56,7 @@
             [formControl]="badUpperThreshold"
             type="number" min="0"
             [value]="config.periodOverPeriod.badUpperThreshold"
-            (change)="updateConfig('badUpperThreshold', $event.target.value)">
+            (input)="updateConfig('badUpperThreshold', $event.target.value)">
             <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType === 'percent'">%</span>
             <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType !== 'percent'">#</span>
         </span>
@@ -71,7 +71,7 @@
             [formControl]="warnUpperThreshold"
             type="number" min="0"
             [value]="config.periodOverPeriod.warnUpperThreshold"
-            (change)="updateConfig('warnUpperThreshold', $event.target.value)">
+            (input)="updateConfig('warnUpperThreshold', $event.target.value)">
             <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType === 'percent'">%</span>
             <span class="type" *ngIf="config.periodOverPeriod.upperThresholdType !== 'percent'">#</span>
         </span>
@@ -111,7 +111,7 @@
                 [formControl]="badLowerThreshold"
                 type="number" min="0"
                 [value]="config.periodOverPeriod.badLowerThreshold"
-                (change)="updateConfig('badLowerThreshold', $event.target.value)">
+                (input)="updateConfig('badLowerThreshold', $event.target.value)">
             <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType === 'percent'">%</span>
             <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType !== 'percent'">#</span>
         </span>
@@ -126,12 +126,12 @@
                 [formControl]="warnLowerThreshold"
                 type="number" min="0"
                 [value]="config.periodOverPeriod.warnLowerThreshold"
-                (change)="updateConfig('warnLowerThreshold', $event.target.value)">
+                (input)="updateConfig('warnLowerThreshold', $event.target.value)">
             <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType === 'percent'">%</span>
             <span class="type" *ngIf="config.periodOverPeriod.lowerThresholdType !== 'percent'">#</span>
         </span>
 
-        <span class="threshold-type" *ngIf="!viewMode"> 
+        <span class="threshold-type" *ngIf="!viewMode">
             <mat-button-toggle-group name="lowerThresholdType"
                 (change)="updateConfig('lowerThresholdType', $event.value)"
                 [value]="config.periodOverPeriod.lowerThresholdType">
@@ -203,7 +203,7 @@
         <span class="delay-evaluation-input" [ngClass]="{'blue-background': !viewMode}">
             <input matInput
             [readonly]="viewMode"
-            type="number" onkeypress="return event.charCode >= 48" autocomplete="off" 
+            type="number" onkeypress="return event.charCode >= 48" autocomplete="off"
             min="0"
             [placeholder]="getDelayEvalutionPlaceholder()"
             [value]="config.delayEvaluation"

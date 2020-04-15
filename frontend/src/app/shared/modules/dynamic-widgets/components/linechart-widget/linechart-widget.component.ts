@@ -578,7 +578,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);
-                this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget.queries = [...this.widget.queries];
                 this.widget = {...this.widget};
                 this.setOptions();
                 this.needRequery = true;
@@ -639,6 +639,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'DeleteQueryMetric':
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -657,6 +658,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 } else {
                     this.refreshData(false);
                 }
+                break;
+            case 'ToggleInfectiousNan':
+                this.utilService.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
         }
     }

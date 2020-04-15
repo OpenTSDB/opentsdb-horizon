@@ -245,6 +245,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'UpdateQuery':
                 this.util.updateQuery(this.widget, message.payload);
+                this.widget.queries = [...this.widget.queries];
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
@@ -279,6 +280,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'DeleteQuery':
                 this.util.deleteQuery(this.widget, message.id);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.widget = {...this.widget};
                 this.needRequery = true;
@@ -290,6 +292,12 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'SummarizerChange':
                 this.refreshData();
+                break;
+            case 'ToggleInfectiousNan':
+                this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
         }
     }
@@ -378,9 +386,9 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

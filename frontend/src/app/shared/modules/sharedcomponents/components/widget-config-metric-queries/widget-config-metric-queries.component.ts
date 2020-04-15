@@ -60,6 +60,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     selectAllToggle: String = 'none'; // none/all/some
     tplVariables: any = {};
     hasCustomFilter = false;
+    hasExpression = false;
     private subscription: Subscription = new Subscription();
 
     constructor(
@@ -98,6 +99,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
     getNewQueryConfig() {
         // const gconfig = this.util.getObjectByKey(this.widget.query.groups, 'id', gid);
+        const infectiousNan = this.widget.queries.length && this.widget.queries[0].settings.infectiousNan ? true : false;
         const query: any = { namespace: '' , metrics: [], filters: [] };
         switch (this.widget.settings.component_type) {
             case 'LinechartWidgetComponent':
@@ -120,6 +122,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                     };
         }
         query.id = this.util.generateId(3, this.util.getIDs(this.widget.queries));
+        query.settings.infectiousNan = infectiousNan;
         return query;
     }
 
@@ -130,13 +133,24 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        // when editing mode is loaded, we need to temporary adding default UI state
-        // to editing widget
         if ( changes.widget.currentValue ) {
             if ( !changes.widget.currentValue.queries.length ) {
                 this.addNewQuery();
             }
+            this.hasExpression = this.getExpressionCount() ? true : false;
         }
+    }
+    getExpressionCount() {
+        let count = 0;
+        const queries = this.widget.queries;
+        for ( let i = 0; i < queries.length; i++ ) {
+            for ( let j = 0; j < queries[i].metrics.length; j++ ) {
+                if ( queries[i].metrics[j].expression ) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     handleQueryRequest(message: any) {
@@ -160,6 +174,12 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 this.widgetChange.emit({ id: message.id, action: 'DeleteQuery' });
                 break;
             case 'DeleteQueryMetric':
+                const expCount = this.getExpressionCount();
+                const qindex = this.widget.queries.findIndex(d => d.id === message.id);
+                const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
+                if ( expCount === 1 && this.widget.queries[qindex].metrics[mindex].expression ) {
+                    this.toggleInfectiousNan(false);
+                }
                 this.widgetChange.emit({ id: message.id, action: 'DeleteQueryMetric', payload: {  mid: message.payload.mid }});
                 break;
             case 'QueryChange':
@@ -186,6 +206,10 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         } else {
             cWidget.queries[qIndx] = query;
         }
+    }
+
+    toggleInfectiousNan(checked) {
+        this.widgetChange.emit({ action: 'ToggleInfectiousNan', payload: { checked: checked } });
     }
 
     updateLabelsForTimeShift(metrics: any[]) {

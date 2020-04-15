@@ -188,6 +188,12 @@ export class UtilsService {
         }
     }
 
+    toggleQueryInfectiousNan(widget, checked) {
+        for ( let i = 0; i < widget.queries.length; i++ ) {
+            widget.queries[i].settings.infectiousNan = checked;
+        }
+    }
+
     getWidgetMetricDefaultLabel(queries, qIndex, mIndex: number) {
         let m = 0;
         let e = 0;
