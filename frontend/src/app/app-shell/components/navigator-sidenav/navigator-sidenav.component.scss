@@ -91,7 +91,7 @@
 
     $sn-active: map-get($navbar-config, sn-active);
 
-    $nav-item-bg: if($is-dark, lighten(map-get($background, card), 10%), map-get($background, card));
+    $nav-item-bg: if($is-dark, lighten(map-get($background, card), 10%), rgba(map-get($foreground, text), .08));
 
     .app-navigator-sidenav {
         background-color: $sn-light;

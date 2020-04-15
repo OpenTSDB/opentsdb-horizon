@@ -84,7 +84,7 @@
             <ng-container matColumnDef="metric-index">
                 <th mat-header-cell *matHeaderCellDef>metric index</th>
                 <td mat-cell *matCellDef="let data; let i = dataIndex;">
-                    <div class="metric-row-data metric-index">
+                    <div class="metric-row-data metric-index" (click)="toggleMetric(data.metric.id)">
                         <span class="label">
                             <input type="radio" name="metric" *ngIf="!options.enableMultiMetricSelection"
                                 [checked]="data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
@@ -165,65 +165,67 @@
             <ng-container matColumnDef="modifiers">
                 <th mat-header-cell *matHeaderCellDef>modifier</th>
                 <td mat-cell *matCellDef="let data;" style="width: 100%">
-                    <!-- aggregator -->
-                    <div class="metric-row-data tag-aggregator">
-                        <div class="tag-aggregator-wrapper">
-                            <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
-                            <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
-                                (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
-                            <span class="by-spacer">{{ data.type === 'expression' ? 'JOIN ON' : 'By' }}</span>
+                    <div style="display: flex; align-items: flex-start;">
+                        <!-- aggregator -->
+                        <div class="metric-row-data tag-aggregator">
+                            <div class="tag-aggregator-wrapper">
+                                <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
+                                <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
+                                    (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
+                                <span class="by-spacer">{{ data.type === 'expression' ? 'JOIN ON' : 'By' }}</span>
 
-                            <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
-                                [selected]="data.metric.groupByTags"
-                                [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
-                                (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
-                            </dropdown-metric-tags>
-                        </div>
-                    </div>
-
-                    <!-- summarizer selector -->
-                    <div class="metric-row-data summarizer-selector" *ngIf="options.enableSummarizer">
-                        <div class="summarizer-selector-wrapper">
-                            <span class="summarizer-title">Take the </span>
-                            <button mat-button [matMenuTriggerFor]="summarizerMenu">
-                                <span>{{ data.metric.summarizer | titlecase }}</span>
-                                <span class="mat-select-arrow-wrapper">
-                                    <span class="mat-select-arrow"></span>
-                                </span>
-                            </button>
-                            <mat-menu class="tag-aggregator-cdk-menu" #summarizerMenu="matMenu" yPosition="below">
-                                <button mat-menu-item *ngFor="let option of summarizerOptions"
-                                    (click)="setSummarizerValue(data.metric.id, option)">{{option | titlecase}}
-                                </button>
-                            </mat-menu>
-                        </div>
-                    </div>
-                    <!-- custom function loop -->
-                    <div class="metric-row-data custom-function" *ngFor="let fx of data.metric.functions">
-                        <div class="custom-function-wrapper">
-                            <metric-function [metricId]="data.metric.id" [fx]="fx" (fxOut)="functionUpdate($event)"
-                                (fxDel)="functionDelete($event)"
-                                [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
-                                [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
-                                [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
-                            </metric-function>
-                        </div>
-                    </div>
-                    <!-- custom function icon [ ALWAYS LAST ] -->
-                    <div class="metric-row-data add-function" *ngIf="data.type === 'metric'"
-                        [matMenuTriggerFor]="functionSelectionMenu" [matMenuTriggerData]="{metric: data.metric}"
-                        (click)="functionMenuOpened($event, i)" (menuClosed)="functionMenuClosed($event)">
-                        <button mat-flat-button>
-                            <mat-icon fontSet="denali" fontIcon="d-functions"></mat-icon>
-                            <div class="mat-select-arrow-wrapper">
-                                <div class="mat-select-arrow"></div>
+                                <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
+                                    [selected]="data.metric.groupByTags"
+                                    [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
+                                    (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
+                                </dropdown-metric-tags>
                             </div>
-                        </button>
+                        </div>
+
+                        <!-- summarizer selector -->
+                        <div class="metric-row-data summarizer-selector" *ngIf="options.enableSummarizer">
+                            <div class="summarizer-selector-wrapper">
+                                <span class="summarizer-title">Take the </span>
+                                <button mat-button [matMenuTriggerFor]="summarizerMenu">
+                                    <span>{{ data.metric.summarizer | titlecase }}</span>
+                                    <span class="mat-select-arrow-wrapper">
+                                        <span class="mat-select-arrow"></span>
+                                    </span>
+                                </button>
+                                <mat-menu class="tag-aggregator-cdk-menu" #summarizerMenu="matMenu" yPosition="below">
+                                    <button mat-menu-item *ngFor="let option of summarizerOptions"
+                                        (click)="setSummarizerValue(data.metric.id, option)">{{option | titlecase}}
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </div>
+                        <!-- custom function loop -->
+                        <div class="metric-row-data custom-function" *ngFor="let fx of data.metric.functions">
+                            <div class="custom-function-wrapper">
+                                <metric-function [metricId]="data.metric.id" [fx]="fx" (fxOut)="functionUpdate($event)"
+                                    (fxDel)="functionDelete($event)"
+                                    [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
+                                    [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
+                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
+                                </metric-function>
+                            </div>
+                        </div>
+                        <!-- custom function icon [ ALWAYS LAST ] -->
+                        <div class="metric-row-data add-function" *ngIf="data.type === 'metric'"
+                            [matMenuTriggerFor]="functionSelectionMenu" [matMenuTriggerData]="{metric: data.metric}"
+                            (click)="functionMenuOpened($event, i)" (menuClosed)="functionMenuClosed($event)">
+                            <button mat-flat-button>
+                                <mat-icon fontSet="denali" fontIcon="d-functions"></mat-icon>
+                                <div class="mat-select-arrow-wrapper">
+                                    <div class="mat-select-arrow"></div>
+                                </div>
+                            </button>
+                        </div>
+                        <!--<div class="metric-row-data expression-options"
+                                            *ngIf="data.type === 'expression'">
+                                            <label><input type="checkbox" value="true" (change)="setMissingMetrics(data.metric.id,$event.target.checked)">Substitute Missing Metrics</label>
+                                        </div>-->
                     </div>
-                    <!--<div class="metric-row-data expression-options"
-                                        *ngIf="data.type === 'expression'">
-                                        <label><input type="checkbox" value="true" (change)="setMissingMetrics(data.metric.id,$event.target.checked)">Substitute Missing Metrics</label>
-                                    </div>-->
                 </td>
             </ng-container>
             <ng-container matColumnDef="action">
@@ -316,21 +318,29 @@
                 <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data" style="padding-left: 0;">
                     <div class="visual-panel-dropdown-text" [matMenuTriggerFor]="metricVisualPanel"
                         #metricVisualPanelTrigger="matMenuTrigger" [matMenuTriggerData]="{data: data}">
-                        <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                         <span>
-                            {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                        <span>&nbsp;<div [style.background]="data.visual.color"
-                                style="width: 10px; height: 10px;display: inline-block;"></div>
-                            {{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }} </span>
-                        <span *ngIf="type === 'BignumberWidgetComponent'"> text on <div
-                                [style.background]="data.visual.backgroundColor"
-                                style="width: 10px; height: 10px;display: inline-block;"></div>
+                            {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}
+                        </span>
+                        <span>
+                            {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}
+                        </span>
+                        <span>
+                            <span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block;"></span>
+                            {{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }}
+                        </span>
+                        <span *ngIf="type === 'BignumberWidgetComponent'">
+                            text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
                             {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
-                            background</span>
-                        <span> {{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
-                        <span *ngIf="type === 'LinechartWidgetComponent'"> on {{ data.visual.axis || 'y1' }}</span>
+                            background
+                        </span>
+                        <span>
+                            {{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}
+                        </span>
+                        <span *ngIf="type === 'LinechartWidgetComponent'">
+                            on {{ data.visual.axis || 'y1' }}
+                        </span>
                         <span class="mat-select-arrow-wrapper" style="display: inline-block">
-                            <div class="mat-select-arrow"></div>
+                            <span class="mat-select-arrow"></span>
                         </span>
                     </div>
                 </td>
@@ -341,7 +351,7 @@
 
             <!-- DEFAULT DATA ROW -->
             <tr mat-row *matRowDef="let row; columns: metricTableDisplayColumns;" class="metric-query-item"
-                [ngClass]="{'metric-type': row.type === 'metric', 'expression-type': row.type === 'expression'}"></tr>
+                [ngClass]="{'metric-type': row.type === 'metric', 'expression-type': row.type === 'expression', 'row-disabled': options.enableMultiMetricSelection && !row.metric.settings.visual.visible}"></tr>
             <tr class="metric-query-item-visual" mat-row
                 *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow" style="overflow: hidden"></tr>
             <!-- SPECIAL ROW - add metric -->
@@ -417,7 +427,7 @@
                 <mat-nav-list>
                     <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"
                         *ngFor="let category of functionCategories; let i = index;"
-                        (click)="$event.stopPropagation(); selectFunctionCategory($event, i)">
+                        (hover)="$event.stopPropagation(); selectFunctionCategory($event, i)">
                         <span>{{ category.label }}</span>
                         <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
                     </a>
