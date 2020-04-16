@@ -57,7 +57,7 @@
                             <img src="/assets/{{type}}-contact.svg" />
                             <span>{{typeToDisplayName(type)}}</span>
                         </div>
-                        <div class="contact-list-type-wrapper">
+                        <div class="contact-list-type-wrapper {{type}}-contact-wrapper">
                             <mat-list dense disableRipple="false">
                                 <mat-list-item
                                     *ngFor="let recipient of getRecipientItemsByType(type)"
@@ -76,7 +76,7 @@
                                             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                                         </button>
                                     </span>
-                                    
+
                                 </mat-list-item>
                             </mat-list>
                         </div>
@@ -165,8 +165,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-label vertical-center">Context </div>
-                                
-                                    <mat-radio-group class="context-toggle" aria-label="Select the Context" 
+
+                                    <mat-radio-group class="context-toggle" aria-label="Select the Context"
                                         [value]="recipientsFormData[_recipientType.oc].context"
                                         (change)="updateRecipient(recipientsFormData[_recipientType.oc], 'context', $event.value)"
                                         >
@@ -176,7 +176,7 @@
                                 <div class="info">
                                     <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon> Live alerts processed by the OC; Analysis for onboarding.
                                 </div>
-                               
+
                             </div>
                             <div class="form-group">
                                 <div class="form-label vertical-center">OpsDB Property </div>
@@ -191,7 +191,7 @@
                                 <div class="info">
                                     <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon> The property owner of the alerts - must exactly match OpsDB.
                                 </div>
-                                
+
                             </div>
                             <div class="form-group">
                                 <div>
