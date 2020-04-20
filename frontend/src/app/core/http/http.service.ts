@@ -376,7 +376,7 @@ export class HttpService {
         // tslint:disable-next-line:prefer-const
         let serverData: any = {};
         serverData[data.type] = [];
-        serverData[data.type][0] = { name: data.name };
+        serverData[data.type][0] = { id: data.id };
         return this.http.put(apiUrl, serverData, httpOptions);
     }
 

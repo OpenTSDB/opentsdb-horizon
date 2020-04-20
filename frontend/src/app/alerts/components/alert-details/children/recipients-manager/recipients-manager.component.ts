@@ -286,6 +286,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     saveCreatedRecipient($event) {
         let newRecipient = { ... this.recipientsFormData[this.recipientType] };
         newRecipient.namespace = this.namespace;
+        if (this.recipientType === RecipientType.email) {
+            newRecipient.email = newRecipient.name;
+        }
         this.store.dispatch(new PostRecipient(newRecipient));
         this.setViewMode($event, Mode.all);
     }
@@ -296,8 +299,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         updatedRecipient = { ... this.recipientsFormData[this.recipientType] };
         updatedRecipient.namespace = this.namespace;
         if (this.recipientsFormData[this.recipientType].name !== this.originalName) {
-            updatedRecipient.name = this.originalName;
-            updatedRecipient.newname = this.recipientsFormData[this.recipientType].name;
+            updatedRecipient.name = this.recipientsFormData[this.recipientType].name;
         }
         this.store.dispatch(new UpdateRecipient(updatedRecipient));
         this.setViewMode($event, Mode.all);
@@ -309,7 +311,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     deleteRecipient($event: Event, recipient: Recipient) {
-        this.removeRecipient(recipient.name, recipient.type);
+        this.removeRecipient(recipient.id, recipient.type);
         this.setViewMode($event, Mode.edit);
     }
 
@@ -410,8 +412,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
     }
 
-    removeRecipient(name: string, type: RecipientType) {
-        this.store.dispatch(new DeleteRecipient({ namespace: this.namespace, name: name, type: type }));
+    removeRecipient(id: number, type: RecipientType) {
+        this.store.dispatch(new DeleteRecipient({ namespace: this.namespace, id: id, type: type }));
     }
 
     removeRecipientFromAlertRecipients(name: string, type: RecipientType) {
