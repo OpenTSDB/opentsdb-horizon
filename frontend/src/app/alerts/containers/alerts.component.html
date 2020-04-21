@@ -83,7 +83,7 @@
                             <td mat-cell *matCellDef="let element">
                                 <span class="alert-name">{{element.name}}</span>
                                 <div class="edit-actions-wrapper" *ngIf="hasNamespaceWriteAccess">
-                                    <a  [routerLink]="[ '/a', element.id, element.namespace, element.slug, 'edit']">
+                                    <a  [routerLink]="[ '/a', element.id, element.namespace, element.slug, 'edit']" (click)="detailsMode='edit'">
                                         <button mat-button color="primary">
                                             <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                                             <span>edit</span>
