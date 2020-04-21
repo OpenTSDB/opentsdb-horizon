@@ -487,6 +487,8 @@ $widgets-common-config: (
     $section-tab-markers: if($is-dark-theme, rgba(map-get($background, ink-bar), .45), rgba(map-get($background, navbar), .45));
     $section-tab-color: #ffffff; // most of the time, white will do. need to test
 
+    $new-bg: #edeff4; // needs to be moved to theme (ALSO, needs dark version)
+
     .edit-view-container.is-active {
         .widget-output-container {
 
@@ -553,6 +555,10 @@ $widgets-common-config: (
         }
 
         .step-section {
+            &:not(:first-of-type) {
+                border-top: 1px solid $new-bg;
+            }
+
             .step-section-label {
                 background-color: $section-tab-markers;
 

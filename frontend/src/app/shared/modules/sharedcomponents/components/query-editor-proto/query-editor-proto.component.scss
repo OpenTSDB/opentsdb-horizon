@@ -521,10 +521,20 @@
                 }
             }
 
+            .metric-alias,
             .visual-panel-dropdown-text {
                 cursor: pointer;
                 color: #b5b5b5; // TODO: move color to theme section
                 font-size: 12px;
+            }
+
+            .metric-alias {
+                .display-name {
+                    .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                        margin-left: 8px;
+                    }
+                }
             }
         }
         .metric-action-buttons {
@@ -765,12 +775,14 @@
 
     $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
     $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
-    $new-bg: #edeff4; // needs to be moved to theme
+    $new-bg: #edeff4; // needs to be moved to theme (ALSO, needs dark version)
 
-    $label-color: rgba(0, 0, 0, 0.5);
+    $label-color: rgba(0, 0, 0, 0.5); // label color for query function keys (NOT the values)
 
     .query-editor-proto {
-        border: 1px solid #d5d5d5;
+        // border: 1px solid #d5d5d5;
+        border: 1px solid $new-bg;
+        // box-shadow: 0 0 5px 0px rgba(map-get($foreground, text), .4);
         border-radius: 4px;
 
         .namespace-wrapper {
@@ -842,6 +854,27 @@
             }
         }
 
+        .metric-alias {
+            .display-name {
+                // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                background-color: transparent;
+
+                .mat-icon {
+                    color: $link;
+                }
+
+                &:hover {
+                    background-color: rgba($link, 0.1);
+                }
+            }
+        }
+
+        .visual-panel-dropdown-text {
+            &:hover {
+                background-color: rgba($link, 0.1);
+            }
+        }
+
         .metric-row-data {
 
             &.metric-index {
@@ -862,7 +895,7 @@
             }
 
             &.metric-name,
-            &.alias,
+            // &.alias,
             &.expression {
                 .display-name {
                     // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);

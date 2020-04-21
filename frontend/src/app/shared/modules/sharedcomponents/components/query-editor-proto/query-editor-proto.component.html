@@ -36,6 +36,13 @@
                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             </button>
         </div>
+        <!-- leave new query the option to delete (if it is the second or greater query only)-->
+        <div class="toolbar-item action-icons" *ngIf="query.metrics.length === 0 && label !== 'Q1'">
+            <button mat-icon-button color="primary" [disabled]="!canDeleteQuery()" *ngIf="options.deleteQuery"
+                (click)="confirmQueryDelete(label); $event.stopPropagation();">
+                <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+            </button>
+        </div>
     </mat-toolbar>
 </div>
 <div class="metric-wrapper" [formGroup]="fg"
@@ -138,7 +145,7 @@
                     </ng-template>
                 </td>
             </ng-container>
-            <ng-container matColumnDef="alias">
+            <!--<ng-container matColumnDef="alias">
                 <th mat-header-cell *matHeaderCellDef>Alias</th>
                 <td mat-cell *matCellDef="let data; let i = dataIndex;">
                     <div class="metric-row-data alias" *ngIf="options.enableAlias">
@@ -156,15 +163,15 @@
                             <span matPrefix>Alias</span>
                         </mat-form-field>
                     </div>
-                    <!--<div class="vertical-line-spacer">
+                    <div class="vertical-line-spacer">
                         <span></span>
-                    </div>-->
+                    </div>
                 </td>
-            </ng-container>
+            </ng-container>-->
             <!-- AGGREGATOR AND FUNCTIONS Column -->
             <ng-container matColumnDef="modifiers">
                 <th mat-header-cell *matHeaderCellDef>modifier</th>
-                <td mat-cell *matCellDef="let data;" style="width: 100%">
+                <td mat-cell *matCellDef="let data; let i = dataIndex;" style="width: 100%">
                     <div style="display: flex; align-items: flex-start;">
                         <!-- aggregator -->
                         <div class="metric-row-data tag-aggregator">
@@ -316,32 +323,41 @@
             </ng-container>
             <ng-container matColumnDef="visual">
                 <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data" style="padding-left: 0;">
-                    <div class="visual-panel-dropdown-text" [matMenuTriggerFor]="metricVisualPanel"
-                        #metricVisualPanelTrigger="matMenuTrigger" [matMenuTriggerData]="{data: data}">
-                        <span>
-                            {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}
-                        </span>
-                        <span>
-                            {{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}
-                        </span>
-                        <span>
-                            <span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block;"></span>
-                            {{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }}
-                        </span>
-                        <span *ngIf="type === 'BignumberWidgetComponent'">
-                            text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
-                            {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
-                            background
-                        </span>
-                        <span>
-                            {{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}
-                        </span>
-                        <span *ngIf="type === 'LinechartWidgetComponent'">
-                            on {{ data.visual.axis || 'y1' }}
-                        </span>
-                        <span class="mat-select-arrow-wrapper" style="display: inline-block">
-                            <span class="mat-select-arrow"></span>
-                        </span>
+                    <div style="display: flex;">
+                        <!-- alias display and edit controls -->
+                        <div class="metric-alias" *ngIf="options.enableAlias">
+                            <div class="display-name" *ngIf="editAliasId !== data.metric.id"
+                                (click)="editAliasId = data.metric.id;">
+                                <span *ngIf="data.metric.settings.visual.label">Alias: </span>
+                                <span class="alias-text"> {{ data.metric.settings.visual.label || 'As an alias'}}</span>
+                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                            </div>
+                            <mat-form-field *ngIf="editAliasId === data.metric.id" class="alias-input-field" appearance="fill"
+                                color="primary" floatLabel="never">
+                                <input matInput placeholder="Alias" [value]="data.metric.settings.visual.label || ''"
+                                    (blur)="updateMetricAlias(data.metric.id, $event)"
+                                    (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
+                                <span matPrefix>Alias</span>
+                            </mat-form-field>
+                        </div>
+                        <!-- visual panel trigger and summary-->
+                        <div class="visual-panel-dropdown-text"
+                            #metricVisualPanelTrigger="matMenuTrigger"
+                            [matMenuTriggerFor]="metricVisualPanel"
+                            [matMenuTriggerData]="{data: data}"
+                            *ngIf="options.enableAlias && editAliasId !== data.metric.id">
+                            <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
+                            <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
+                            <span><span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block;"></span>{{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }}</span>
+                            <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
+                                {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
+                                background</span>
+                            <span>{{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
+                            <span *ngIf="type === 'LinechartWidgetComponent'">on {{ data.visual.axis || 'y1' }} </span>
+                            <span class="mat-select-arrow-wrapper" style="display: inline-flex">
+                                <span class="mat-select-arrow"></span>
+                            </span>
+                        </div>
                     </div>
                 </td>
             </ng-container>
@@ -427,7 +443,7 @@
                 <mat-nav-list>
                     <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"
                         *ngFor="let category of functionCategories; let i = index;"
-                        (hover)="$event.stopPropagation(); selectFunctionCategory($event, i)">
+                        (mouseover)="$event.stopPropagation(); selectFunctionCategory($event, i)" (click)="$event.stopPropagation();">
                         <span>{{ category.label }}</span>
                         <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
                     </a>

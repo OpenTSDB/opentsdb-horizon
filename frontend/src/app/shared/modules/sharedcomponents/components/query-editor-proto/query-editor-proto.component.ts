@@ -43,6 +43,7 @@ interface IQueryEditorOptions {
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
+    enableAlias?: boolean;
 }
 
 @Component({
@@ -363,7 +364,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     metricTableDisplayColumns: string[] = [
         'metric-index',
         'name',
-        'alias',
+        // 'alias',
         'modifiers',
         'action'
     ];
@@ -544,7 +545,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // when the filters list is updated, it might have adding the custom dashboard tag filter
         // we need to resolve it to diffrent obj to handle it to metric auto-complete
         this.query.filters = filters;
-        this.queryChanges$.next(true);        
+        this.queryChanges$.next(true);
         this.buildTagFilters(filters);
     }
     // helper function to create clean tag filters for metric auto-complete
