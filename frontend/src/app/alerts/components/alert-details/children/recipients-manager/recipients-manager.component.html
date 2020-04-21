@@ -4,8 +4,7 @@
         <mat-chip *ngFor="let recipient of alertRecipients" [selectable]="true" [removable]="true"
             (removed)="removeRecipientFromAlertRecipients(recipient.name, recipient.type)">
             <img src="/assets/{{recipient.type}}-contact.svg" class="chip-image" />
-            <!-- {{recipient.type === _recipientType.slack ? '#' + recipient.name : recipient.name}} -->
-            {{recipient.name}}
+            {{recipient.type === _recipientType.slack ? trimRecipientName(recipient.name) : recipient.name}}
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
 
@@ -62,11 +61,11 @@
                                 <mat-list-item
                                     *ngFor="let recipient of getRecipientItemsByType(type)"
                                     (click)="viewMode === _mode.all ? addRecipientToAlertRecipients($event, recipient.name, recipient.type) : !recipient.admin ? editRecipientMode($event, recipient) : null"
-                                    [ngClass]="{'no-highlight': viewMode === _mode.edit && type === _recipientType.email && recipient.admin}">
+                                    [ngClass]="{'no-highlight': viewMode === _mode.edit && type === _recipientType.email && recipient.admin, 'is-disabled' : viewMode === _mode.all && isAlertRecipient(recipient.name, type) }">
                                     <span class="add-contact">
                                         <mat-icon fontSet="denali" fontIcon="d-add-circle" *ngIf="viewMode === _mode.all"></mat-icon>
                                     </span>
-                                    <span class="recipient-label">{{type === _recipientType.slack ? '#' + recipient.name : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
+                                    <span class="recipient-label">{{type === _recipientType.slack ? '#' + trimRecipientName(recipient.name) : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
                                     <span class="flex-spacer"></span>
                                     <span class="contact-item-actions" *ngIf="viewMode === _mode.edit && !recipient.admin">
                                         <button mat-icon-button *ngIf="type !== _recipientType.email">
