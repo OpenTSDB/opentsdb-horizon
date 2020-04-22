@@ -451,7 +451,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.hasNamespaceWriteAccess = !readOnly;
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let modeCheck;
-            this.logger.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
+            // this.logger.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
 
             if (routeSnapshot.length > 1 && this.utils.checkIfNumeric(routeSnapshot[0].path) && routeSnapshot[1].path !== '_new_') {
 
@@ -543,7 +543,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // handle route for alerts
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
-            this.logger.log('ROUTE CHANGE', { url });
+            // this.logger.log('ROUTE CHANGE', { url });
 
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());

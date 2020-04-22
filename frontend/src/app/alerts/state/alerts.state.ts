@@ -285,7 +285,7 @@ export class AlertsState {
             if (d.name.toLowerCase() === namespace.toLowerCase()) { fixedNamespace = d.name; }
         });
 
-        const readOnly = (userNamespaces.find( (d: any) => d.name === fixedNamespace ) === undefined) ? false : false;
+        const readOnly = (userNamespaces.find( (d: any) => d.name === fixedNamespace ) === undefined) ? true : false;
 
         if (fixedNamespace !== "") {
             ctx.patchState({ selectedNamespace: fixedNamespace, readOnly });
@@ -296,7 +296,7 @@ export class AlertsState {
     checkWriteAccess(ctx: StateContext<AlertsStateModel>, { payload }: CheckWriteAccess) {
         const state = ctx.getState();
         const userNamespaces = state.userNamespaces;
-        const readOnly = (userNamespaces.find( (d: any) => d.name === payload.namespace ) === undefined) ? false : false;
+        const readOnly = (userNamespaces.find( (d: any) => d.name === payload.namespace ) === undefined) ? true : false;
 
         ctx.patchState( { editItem: payload, readOnly } );
     }
