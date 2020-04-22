@@ -506,7 +506,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     getRecipientItemsByType(type) {
         if (this.viewMode === Mode.all) {
             // all mode (show only unselected)
-            return this.getUnselectedRecipientsForType(type);
+            return this.getAllRecipientsForType(type);
         } else {
             // edit mode (show all)
             return this.getAllRecipientsForType(type);
@@ -597,6 +597,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
         this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
         this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);
+    }
+
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
     }
 
     // NOTE: Not sure we need this any more

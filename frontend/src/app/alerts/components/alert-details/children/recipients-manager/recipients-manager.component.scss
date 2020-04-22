@@ -143,6 +143,14 @@
                                 pointer-events: none;
                                 cursor: initial;
                             }
+                            &.is-disabled {
+                                pointer-events: none;
+                                cursor: not-allowed;
+                                opacity: 0.5;
+                                .add-contact {
+                                    visibility: hidden;
+                                }
+                            }
                         }
 
                         .recipient-label {
@@ -181,6 +189,7 @@
                 .contact-item-actions {
                     margin-right: -8px;
                     align-self: flex-start;
+                    white-space: nowrap;
 
                     .mat-icon-button {
                         width: 24px;
