@@ -2,7 +2,7 @@
     <mat-chip-list #chipList>
 
         <mat-chip *ngFor="let recipient of alertRecipients" [selectable]="true" [removable]="true"
-            (removed)="removeRecipientFromAlertRecipients(recipient.name, recipient.type)">
+            (removed)="removeRecipientFromAlertRecipients(recipient.id)">
             <img src="/assets/{{recipient.type}}-contact.svg" class="chip-image" />
             {{recipient.type === _recipientType.slack ? trimRecipientName(recipient.name) : recipient.name}}
             <mat-icon matChipRemove>cancel</mat-icon>
@@ -60,7 +60,7 @@
                             <mat-list dense disableRipple="false">
                                 <mat-list-item
                                     *ngFor="let recipient of getRecipientItemsByType(type)"
-                                    (click)="viewMode === _mode.all ? addRecipientToAlertRecipients($event, recipient.name, recipient.type) : !recipient.admin ? editRecipientMode($event, recipient) : null"
+                                    (click)="viewMode === _mode.all ? addRecipientToAlertRecipients($event, recipient.id, recipient.name, recipient.type) : !recipient.admin ? editRecipientMode($event, recipient) : null"
                                     [ngClass]="{'no-highlight': viewMode === _mode.edit && type === _recipientType.email && recipient.admin, 'is-disabled' : viewMode === _mode.all && isAlertRecipient(recipient.name, type) }">
                                     <span class="add-contact">
                                         <mat-icon fontSet="denali" fontIcon="d-add-circle" *ngIf="viewMode === _mode.all"></mat-icon>
