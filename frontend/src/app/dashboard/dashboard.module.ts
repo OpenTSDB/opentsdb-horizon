@@ -44,7 +44,6 @@ import { DashboardDeleteDialogComponent } from './components/dashboard-delete-di
 import { WidgetDeleteDialogComponent } from './components/widget-delete-dialog/widget-delete-dialog.component';
 import { TemplateVariablePanelComponent } from './components/template-variable-panel/template-variable-panel.component';
 import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
-import { NavbarDashboardDownsampleComponent } from './components/navbar-dashboard-downsample/navbar-dashboard-downsample.component';
 
 @NgModule({
     imports: [
@@ -84,8 +83,7 @@ import { NavbarDashboardDownsampleComponent } from './components/navbar-dashboar
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
         TemplateVariablePanelComponent,
-        DashboardToAlertDialogComponent,
-        NavbarDashboardDownsampleComponent
+        DashboardToAlertDialogComponent
     ],
     providers: [
         DashboardService,
