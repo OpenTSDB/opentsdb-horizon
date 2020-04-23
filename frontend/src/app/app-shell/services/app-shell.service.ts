@@ -46,13 +46,21 @@ export class AppShellService {
             apiUrl
         });
 
-        return this.http.get(apiUrl, {
+        // put will get or create based on existing of user
+        return this.http.put(apiUrl, null, {
             headers: headers,
             withCredentials: true,
             observe: 'response'
         }).pipe(
             catchError(this.handleError)
         );
+        /* return this.http.get(apiUrl, {
+            headers: headers,
+            withCredentials: true,
+            observe: 'response'
+        }).pipe(
+            catchError(this.handleError)
+        );*/
     }
 
     createUser() {
