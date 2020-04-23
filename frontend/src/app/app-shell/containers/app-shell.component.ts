@@ -25,16 +25,15 @@ import {
     SetSideNavOpen,
     SSGetUserProfile,
     DbfsLoadResources,
-    // DbfsAddUserRecent,
     DbfsInitialized,
-    DbfsLoadUserRecents
+    DbfsLoadUserRecents,
+    DbfsState
 } from '../state';
 import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
 import { filter, map, take } from 'rxjs/operators';
 import { LoggerService } from '../../core/services/logger.service';
-import { DBState } from '../../dashboard/state';
 import { ThemeService } from '../services/theme.service';
 
 @Component({
@@ -110,11 +109,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     this.store.dispatch(
                         new DbfsLoadUserRecents(null, null, {})
                     );
-
-                    // maybe here update the 'personal' tab of navigator if it is closed?
                 }
             })
-        ).subscribe();
+        ).subscribe(() => {
+            // check if initialized
+            const initialized = this.store.selectSnapshot(DbfsState.getInitialized);
+            if (!initialized) {
+                this.store.dispatch(new DbfsInitialized());
+            }
+        });
 
         // get some router events
         this.router.events.pipe(
@@ -182,11 +185,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     );
                 }
             }
-        });
-
-        this.store.dispatch(new DbfsLoadResources()).pipe(take(1)).subscribe((state: any) => {
-            // logger.log('DBFS INIT COMPLETE', state);
-            this.store.dispatch(new DbfsInitialized());
         });
     }
 
