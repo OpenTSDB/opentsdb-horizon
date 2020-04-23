@@ -170,13 +170,15 @@ export class AppShellState {
 
     @Action(SSGetUserProfileFail)
     GetUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSGetUserProfileFail) {
+        // throw error since previous call should create user if not there.
         this.logger.error('AppShellState :: Get user profile', error);
-        if ( error.status === 404 ) {
+        /* if ( error.status === 404 ) {
             ctx.dispatch(new SSCreateUserProfile()); // 404 means the profile does not exist
-        }
+        } */
         ctx.dispatch({error: error});
     }
 
+    /* remove later after test for new user provision
     @Action(SSCreateUserProfile)
     CreateUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSCreateUserProfile) {
         this.logger.state('AppShellState :: Create user profile');
@@ -189,7 +191,6 @@ export class AppShellState {
             catchError( error => ctx.dispatch(new SSCreateUserProfileFail(error)))
         );
     }
-
     @Action(SSCreateUserProfileSuccess)
     CreateUserProfileSuccess(ctx: StateContext<AppShellStateModel>, { response }: SSCreateUserProfileSuccess) {
         const state = ctx.getState();
@@ -209,5 +210,5 @@ export class AppShellState {
         this.logger.error('AppShellState :: Create user profile', error);
         ctx.dispatch({error: error});
     }
-
+    */
 }
