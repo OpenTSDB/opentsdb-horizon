@@ -78,6 +78,5 @@ export interface IDygraphOptions {
     xAxisHeight?: number;
     xRangePad?: number;
     clickCallback?: any;
-    unhighlightCallback?: any;
 }
 

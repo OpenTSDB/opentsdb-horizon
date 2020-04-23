@@ -43,6 +43,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
     private locked = false;
+    private currentlyHighlightedChartId = '';
 
     public labelsDiv: any;
     /* Commenting out for now
@@ -70,6 +71,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     case 'dashboardLocked':
                         if (message.payload) {
                             this.locked = message.payload.locked;
+                        }
+                        break;
+                    case 'currentlyHighlightedChartId':
+                        if (message.payload) {
+                            this.currentlyHighlightedChartId = message.payload.id;
+                        }
+                        if (message.payload.id !== this.widget.id && !this.keepLinechartDotsOnMouseOut) {
+                            this._g.clearSelection();
                         }
                         break;
                 }
@@ -434,7 +443,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 if (this.chartType === 'line') {
                     if (this.options.labelsDiv) {
                         this.options.highlightCallback = mouseover;
-                        // this.options.unhighlightCallback = unhighlightCallback;
                     }
                     this.options.legendFormatter = legendFormatter;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
@@ -628,6 +636,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseEnter(event: any) {
         // reset tick highlight
         this.firstTickHighlight = false;
+
+        // only fire when entering a new chart
+        if (this.currentlyHighlightedChartId !== this.widget.id) {
+            this.interCom.responsePut({
+                action: 'currentlyHighlightedChartId',
+                payload: {id: this.widget.id}
+            });
+        }
     }
 
     @HostListener('mousemove', ['$event'])
@@ -719,30 +735,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseLeave(event: any) {
         this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (this._g) {
-            this._g.clearSelection();
-=======
 
-        if (this.chartType !== 'heatmap') {
-            if (this.locked && this.lockedRow > -1) {
-                this._g.setSelection(this.lockedRow);
-            } else {
-                this.interCom.responsePut({
-                    action: 'mouseOverOnTimeChart',
-                    payload: {}
-                });
-            }
->>>>>>> b823544... copy vertical line from private git
-=======
-        this._g.clearSelection();
-=======
         if (!this.keepLinechartDotsOnMouseOut) {
             this._g.clearSelection();
         }
->>>>>>> 248aea2... dashboard lock and track mouse are indepdent
 
         if (this.chartType !== 'heatmap' && !this.locked) {
             this.timestampShareService.clear();
@@ -750,7 +746,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 action: 'updateVerticalLine',
                 payload: {}
             });
->>>>>>> f4f58b7... use overlay for vertical line
         }
     }
 

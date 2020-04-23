@@ -320,7 +320,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         clearInterval(this.timer);
         this.messageBarVisible = false;
         this.messageBarData = {};
-        this.timer = null;
     }
 
     setMessageTimeout(timeInSeconds: number) {
