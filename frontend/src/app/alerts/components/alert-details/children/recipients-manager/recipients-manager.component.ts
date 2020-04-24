@@ -390,7 +390,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
     modifyRecipientNameInAlertRecipients(recipient) {
         for (let index = 0; index < this.alertRecipients.length; index++) {
-          if (this.alertRecipients[index].name === recipient.name && this.alertRecipients[index].type === recipient.type ) {
+          if (this.alertRecipients[index].id === recipient.id ) {
             this.alertRecipients[index].id = recipient.id;
             this.alertRecipients[index].name = recipient.name;
             this.emitAlertRecipients();
