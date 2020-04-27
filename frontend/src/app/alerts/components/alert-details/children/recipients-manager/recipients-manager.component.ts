@@ -176,7 +176,14 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             for (let type in this.selectedAlertRecipients) {
                 let alertRecipients = this.selectedAlertRecipients[type];
                 for (let recipient of alertRecipients) {
-                    this.alertRecipients.push({id: recipient.id, name: recipient.name, type: type});
+                    const o: any = { name: recipient.name, type: type };
+                    if ( recipient.id !== undefined ) {
+                        o.id = recipient.id;
+                    }
+                    if ( type === RecipientType.email ) {
+                        o.email = recipient.name;
+                    }
+                    this.alertRecipients.push(o);
                 }
             }
         }
@@ -382,6 +389,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             const o: any = { name: name, type: type };
             if ( id ) {
                 o.id = id;
+            }
+            if ( type === RecipientType.email ) {
+                o.email = name;
             }
             this.alertRecipients.push(o);
             this.emitAlertRecipients();
