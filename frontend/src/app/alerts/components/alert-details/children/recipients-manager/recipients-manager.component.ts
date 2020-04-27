@@ -305,9 +305,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let updatedRecipient: any = {};
         updatedRecipient = { ... this.recipientsFormData[this.recipientType] };
         updatedRecipient.namespace = this.namespace;
-        if (this.recipientsFormData[this.recipientType].name !== this.originalName) {
-            updatedRecipient.name = this.recipientsFormData[this.recipientType].name;
-        }
+
         this.store.dispatch(new UpdateRecipient(updatedRecipient));
         this.setViewMode($event, Mode.all);
         this.emitAlertRecipients();
