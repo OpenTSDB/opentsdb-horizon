@@ -24,17 +24,18 @@
 @import 'scss/typography/typography-mixins';
 @import 'scss/typography/roboto-mono';
 @import 'scss/typography/helvetica-neue-sans';
+@import 'scss/typography/yahoo-sans';
 
 /* TYPOGRAPHY CONFIG */
 //@include debug-map($type-config);
 $app-fontface-config: (
     mono: generate-material-compatible-typography-config($roboto-mono-typeface-config),
-    sans: generate-material-compatible-typography-config($helvetica-neue-sans-typeface-config)
+    sans: generate-material-compatible-typography-config($yahoo-sans-typeface-config)
 );
 
 @each $typeface, $type-config in $app-fontface-config {
     /**** [ FONTFACE CONFIG: #{$typeface} ] ****/
-    @include debug-map($type-config); 
+    @include debug-map($type-config);
 }
 
 
