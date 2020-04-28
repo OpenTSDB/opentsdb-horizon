@@ -21,13 +21,17 @@
 
                     .trigger-value-display {
                         display: flex;
-                    } 
+                    }
                 }
 
                 .mat-select-arrow-wrapper {
                     margin-left: 8px;
                 }
             }
+        }
+
+        .mat-button-toggle-group {
+            width: 100%;
         }
     }
 
@@ -52,15 +56,21 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
+    $line-selected-color: map-get($foreground, link);
+    $line-normal-color: map-get($foreground, text);
+
     .dropdown-line-weight {
-        @include dropdown-line-weight-preview-theme($foreground);
-    } 
+        @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
+        @include dropdown-line-weight-preview-theme($line-normal-color, $line-selected-color);
+
+    }
 
     // CDK ITEMS
     .dropdown-line-weight-options {
         .mat-select-content {
             .mat-option {
-                @include dropdown-line-weight-preview-theme($foreground);
+                @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
+                @include dropdown-line-weight-preview-theme($line-normal-color, $line-selected-color);
             }
         }
     }
@@ -85,12 +95,21 @@
     }
 }
 
-@mixin dropdown-line-weight-preview-theme($foreground) {
+@mixin dropdown-line-weight-preview-theme($text, $color) {
     // theme part
     .line-weight-preview {
-        
         span {
-            border-bottom-color: map-get($foreground, text);
+            border-bottom-color: $text;
+        }
+    }
+
+    .mat-button-toggle.mat-button-toggle-checked {
+        .line-weight-preview {
+            span {
+                border-bottom-color: $color;
+            }
         }
     }
 }
+
+

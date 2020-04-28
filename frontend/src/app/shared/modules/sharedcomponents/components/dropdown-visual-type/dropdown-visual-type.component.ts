@@ -14,7 +14,7 @@ export class DropdownVisualTypeComponent {
     @Output()
     valueChange = new EventEmitter<string>();
 
-    visualTypeOptions: Array<object> = [
+    visualTypeOptions: Array<any> = [
         {
             label: 'Line',
             value: 'line',

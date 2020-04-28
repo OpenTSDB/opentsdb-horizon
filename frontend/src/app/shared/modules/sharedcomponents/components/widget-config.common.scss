@@ -1,4 +1,4 @@
-/** 
+/**
 COMMON STYLES FOR WIDGET CONFIG PANELS
 **/
 
@@ -8,10 +8,10 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-padding: map-get($widgets-common-config, edit-padding);
     $edit-toolbar-height: map-get($widgets-common-config, edit-toolbar-height);
-    
+
     $action-bar-height: 30px;
     $flex-gap: 10px;
-  
+
     // ** Config tab CONTENT ** //
     .widget-config-tab {
         // position: absolute;
@@ -44,7 +44,7 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
                 align-items: inherit;
                 padding: 0;
             }
-    
+
             .toolbar-item {
                 display: inline-flex;
                 align-items: center;
@@ -60,7 +60,7 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
             .mat-button {
                 font-size: 12px;
                 line-height: 24px;
-    
+
                 .mat-icon {
                     width: 18px;
                     height: 18px;
@@ -104,13 +104,13 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
             }
         }
         // NOTE: specific tab overrides are in their own component style sheet
-       
+
     }
 
     // CUSTOM ELEMENT STYLES
     .button-group {
         display: flex;
-        
+
         .mat-button,
         .mat-raised-button,
         .mat-stroked-button {
@@ -214,14 +214,14 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
     $is-dark: map-get($theme-config, is-dark);
-    
+
     $divider: rgba(map-get($foreground, divider), .05);
 
     $edit-toolbar-border-width: map-get($widgets-common-config, edit-toolbar-border-width);
 
     // ** Config tab CONTENT ** //
     .widget-config-tab {
-    
+
         // possibly re-usable within a widget-config-tab
         .config-toolbar,
         .query-item-toolbar {
@@ -272,6 +272,22 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
 
         .mat-ink-bar {
             background-color: map-get($background, card);
+        }
+    }
+}
+
+@mixin vertical-button-toggle-override($text, $color) {
+    .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        .mat-button-toggle {
+            color: $text;
+            border: 0;
+            background: transparent;
+        }
+
+        .mat-button-toggle.mat-button-toggle-checked {
+           color: $color;
+           border: 0;
+           background-color: rgba($color, .1);
         }
     }
 }

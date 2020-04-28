@@ -15,7 +15,7 @@ export class DropdownLineWeightComponent {
     @Output()
     change = new EventEmitter<string>();
 
-    lineWeightOptions: Array<object> = [
+    lineWeightOptions: Array<any> = [
         {
             label: '0.5px',
             value: '0.5px'
