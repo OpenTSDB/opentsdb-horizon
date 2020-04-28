@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, HostBinding, ElementRef, Input, Output
 
 
 @Component({
-  selector: 'app-metric-visual-panel',
+  selector: 'metric-visual-panel',
   templateUrl: './metric-visual-panel.component.html'
 })
 export class MetricVisualPanelComponent implements OnInit {
@@ -37,10 +37,12 @@ export class MetricVisualPanelComponent implements OnInit {
       visual[key] = value;
       this.visualOutput.emit( { action: 'UpdateQueryMetricVisual', payload: { mid : id, visual: visual } });
   }
+
   setVisualType(id, type) {
     this.mode = type;
     this.setMetricVisual(id, 'type', type);
   }
+
   setLineType(id, type) {
       this.setMetricVisual(id, 'lineType', type);
   }
@@ -93,7 +95,6 @@ export class MetricVisualPanelComponent implements OnInit {
   documentClickHandler(target) {
       if (!this.elRef.nativeElement.contains(target) && this.visible) {
           this.visible = false;
-
       } else if (!this.visible) {
           this.visible = true;
       }
