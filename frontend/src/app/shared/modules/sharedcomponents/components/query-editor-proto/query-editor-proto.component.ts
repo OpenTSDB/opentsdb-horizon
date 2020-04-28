@@ -32,6 +32,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
+import { LoggerService } from '../../../../../core/services/logger.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -105,6 +106,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     handleBarsRegex = /\{\{(.+?)\}\}/;
     tagFilters = [];
     tplVars = []; // a wrapper object for tplVariables.tvars for pipe since alert component using it.
+
+    visualPanelHighlight: any = false;
 
     timeAggregatorOptions: Array<any> = [
         {
@@ -380,7 +383,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
-        private interCom: IntercomService
+        private interCom: IntercomService,
+        private logger: LoggerService
     ) {
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
@@ -1046,6 +1050,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             setTimeout(() => {
                 this.addExpressionInput.nativeElement.focus();
             }, 100);
+        }
+    }
+
+    toggleVisualRow(index, highlight) {
+        this.logger.log('TOGGLE VISUAL ROW', {index, highlight});
+        if (highlight) {
+            this.visualPanelHighlight = index;
+        } else {
+            this.visualPanelHighlight = false;
         }
     }
 

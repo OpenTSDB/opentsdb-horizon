@@ -642,7 +642,13 @@
 
     .metric-visual-panel-wrapper.mat-menu-panel {
         max-width: 980px;
-        padding: 10px;
+        padding: 0px;
+
+        .mat-menu-content:not(:empty) {
+            padding: 0;
+        }
+
+        /* these styles belong in the component styles for metric-visual-panel
         .header {
             display: flex;
             align-items: center;
@@ -650,6 +656,7 @@
             border-bottom: 1px solid #ccc; // TODO: move color to theme section
             padding-bottom: 3px;
         }
+
         .footer {
             display: flex;
             align-items: center;
@@ -657,6 +664,7 @@
             border-top: 1px solid #ccc; // TODO: move color to theme section
             padding-top: 3px;
         }
+
         .table-visual-settings {
             th {
                 padding-left: 12px;
@@ -668,7 +676,7 @@
                     border-top: 0px solid #cccccc; // TODO: move color to theme section
                 }
             }
-        }
+        }*/
     }
 
     .function-selection-cdk-menu.mat-menu-panel {
@@ -863,6 +871,11 @@
                     color: $link;
                 }
 
+                .alias-text.has-alias {
+                    color: map-get($foreground, text);
+                    font-weight: bold;
+                }
+
                 &:hover {
                     background-color: rgba($link, 0.1);
                 }
@@ -870,8 +883,18 @@
         }
 
         .visual-panel-dropdown-text {
+            margin-left: 4px;
+
             &:hover {
                 background-color: rgba($link, 0.1);
+            }
+
+            > span:not(.mat-select-arrow-wrapper) {
+                margin-right: 4px;
+            }
+
+            > span:empty:not(.mat-select-arrow-wrapper) {
+                display: none;
             }
         }
 
@@ -976,6 +999,29 @@
                 }
             }
         }
+
+        .metric-query-item.visual-highlight {
+            &,
+            & + .metric-query-item-visual {
+                background-color: rgba(map-get($denali-yellow, 200), .2);
+            }
+
+            & + .metric-query-item-visual {
+                border-bottom: 2px solid map-get($primary, default);
+
+                .visual-panel-dropdown-text {
+                    background: map-get($primary, default);
+                    color: map-get($primary, default-contrast);
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+
+                    .mat-select-arrow-wrapper .mat-select-arrow {
+                        color: rgba(map-get($primary, default-contrast), .54);
+                    }
+                }
+            }
+        }
+
 
         .metric-query-item:not(:first-of-type) {
             border-top: 1px dotted $divider;

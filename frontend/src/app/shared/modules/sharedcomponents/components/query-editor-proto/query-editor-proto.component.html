@@ -145,7 +145,8 @@
                     </ng-template>
                 </td>
             </ng-container>
-            <!--<ng-container matColumnDef="alias">
+            <!-- Alias moved to another row
+                <ng-container matColumnDef="alias">
                 <th mat-header-cell *matHeaderCellDef>Alias</th>
                 <td mat-cell *matCellDef="let data; let i = dataIndex;">
                     <div class="metric-row-data alias" *ngIf="options.enableAlias">
@@ -265,14 +266,6 @@
                 <td mat-cell *matCellDef="let metric" [colSpan]="metricTableDisplayColumns.length">
                     <div style="display: flex; align-items: center; width: 100%; height: 100%;">
                         <div class="metric-row-data metric-index is-adding" *ngIf="isAddMetricProgress">
-                            <!--<button mat-flat-button>
-                                <span class="label">
-                                    <span>m</span>
-                                </span>
-                                <span class="mat-select-arrow-wrapper">
-                                    <div class="mat-select-arrow" style="opacity: 0"></div>
-                                </span>
-                            </button>-->
                             <span class="label">
                                 <span>m</span>
                             </span>
@@ -291,14 +284,6 @@
                 <td mat-cell *matCellDef="let metric" [colSpan]="metricTableDisplayColumns.length">
                     <div style="display: flex; align-items: center; width: 100%; height: 100%;">
                         <div class="metric-row-data metric-index is-adding" *ngIf="isAddExpressionProgress">
-                            <!--<button mat-flat-button>
-                                <span class="label">
-                                    <span>exp</span>
-                                </span>
-                                <span class="mat-select-arrow-wrapper">
-                                    <div class="mat-select-arrow" style="opacity: 0"></div>
-                                </span>
-                            </button>-->
                             <span class="label">
                                 <span>exp</span>
                             </span>
@@ -322,19 +307,19 @@
                 <td mat-cell *matCellDef="let element"></td>
             </ng-container>
             <ng-container matColumnDef="visual">
-                <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data" style="padding-left: 0;">
+                <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data; let i = index" style="padding-left: 0;">
                     <div style="display: flex;">
                         <!-- alias display and edit controls -->
                         <div class="metric-alias" *ngIf="options.enableAlias">
                             <div class="display-name" *ngIf="editAliasId !== data.metric.id"
                                 (click)="editAliasId = data.metric.id;">
                                 <span *ngIf="data.metric.settings.visual.label">Alias: </span>
-                                <span class="alias-text"> {{ data.metric.settings.visual.label || 'As an alias'}}</span>
+                                <span class="alias-text" [ngClass]="{'has-alias': data.metric.settings.visual.label && data.metric.settings.visual.label.length > 0}"> {{ data.metric.settings.visual.label || 'As an alias'}}</span>
                                 <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                             </div>
                             <mat-form-field *ngIf="editAliasId === data.metric.id" class="alias-input-field" appearance="fill"
                                 color="primary" floatLabel="never">
-                                <input matInput placeholder="Alias" [value]="data.metric.settings.visual.label || ''"
+                                <input matInput placeholder="Enter an alias" [value]="data.metric.settings.visual.label || ''"
                                     (blur)="updateMetricAlias(data.metric.id, $event)"
                                     (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
                                 <span matPrefix>Alias</span>
@@ -345,6 +330,8 @@
                             #metricVisualPanelTrigger="matMenuTrigger"
                             [matMenuTriggerFor]="metricVisualPanel"
                             [matMenuTriggerData]="{data: data}"
+                            (menuOpened)="toggleVisualRow(i - 1, true)"
+                            (menuClosed)="toggleVisualRow(i - 1, false)"
                             *ngIf="options.enableAlias && editAliasId !== data.metric.id">
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
@@ -366,10 +353,12 @@
             <tr mat-header-row *matHeaderRowDef="metricTableDisplayColumns"></tr>
 
             <!-- DEFAULT DATA ROW -->
-            <tr mat-row *matRowDef="let row; columns: metricTableDisplayColumns;" class="metric-query-item"
-                [ngClass]="{'metric-type': row.type === 'metric', 'expression-type': row.type === 'expression', 'row-disabled': options.enableMultiMetricSelection && !row.metric.settings.visual.visible}"></tr>
-            <tr class="metric-query-item-visual" mat-row
-                *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow" style="overflow: hidden"></tr>
+            <tr mat-row *matRowDef="let row; columns: metricTableDisplayColumns; let i = index;" class="metric-query-item" [attr.data-index]="i"
+                [ngClass]="{'visual-highlight': visualPanelHighlight === i,'metric-type': row.type === 'metric', 'expression-type': row.type === 'expression', 'row-disabled': options.enableMultiMetricSelection && !row.metric.settings.visual.visible}"></tr>
+            <tr class="metric-query-item-visual" mat-row [attr.data-index]="i"
+                *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow; let i = index;"
+                [ngClass]="{'visual-highlight': visualPanelHighlight === (i - 1)}"
+                style="overflow: hidden"></tr>
             <!-- SPECIAL ROW - add metric -->
             <tr mat-row *matRowDef="let row; columns: ['add-metric']; when: checkAddMetricRow" class="add-query-item"
                 [ngClass]="{'is-hidden': !isAddMetricProgress}" [@addQueryItem]="isAddMetricProgress ? 'expanded' : 'collapsed'"
@@ -431,8 +420,8 @@
 <!-- Visual panel -->
 <mat-menu class="metric-visual-panel-wrapper" yPosition="below" #metricVisualPanel="matMenu" backDrop="false">
     <ng-template matMenuContent let-data="data">
-        <app-metric-visual-panel [query]="query" [data]="data" [type]="type"
-            (visualOutput)="updateVisual($event, data)"></app-metric-visual-panel>
+        <metric-visual-panel [query]="query" [data]="data" [type]="type"
+            (visualOutput)="updateVisual($event, data)"></metric-visual-panel>
     </ng-template>
 </mat-menu>
 <!-- FUNCTION MENU-->
