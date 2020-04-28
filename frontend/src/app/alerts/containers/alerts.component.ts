@@ -1141,6 +1141,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         return moment(time).format('YYYY-MM-DD  hh:mm a');
     }
 
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
+    }
+
     getRecipientKeys(element: any) {
         // extract keys
         const objKeys = element.recipients ? Object.keys(element.recipients) : [];

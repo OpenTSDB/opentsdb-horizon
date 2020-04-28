@@ -1231,7 +1231,7 @@
                                         <strong>{{typeToDisplayName(type)}}</strong>
                                         <ul>
                                             <li *ngFor="let recipient of data.notification.recipients[type]">
-                                                {{type === 'slack' ? '#' + recipient.name : recipient.name}}
+                                                {{type === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}
                                             </li>
                                         </ul>
                                     </div>

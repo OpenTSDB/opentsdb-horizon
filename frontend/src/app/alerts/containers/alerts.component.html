@@ -351,7 +351,7 @@
                     <div class="contact-list-type-wrapper">
                         <mat-list dense disableRipple="false">
                             <mat-list-item *ngFor="let recipient of element.recipients[contactType]">
-                                <span class="recipient-label">{{contactType === 'slack' ? '#' + recipient.name : recipient.name}}</span>
+                                <span class="recipient-label">{{contactType === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}</span>
                             </mat-list-item>
                         </mat-list>
                     </div>

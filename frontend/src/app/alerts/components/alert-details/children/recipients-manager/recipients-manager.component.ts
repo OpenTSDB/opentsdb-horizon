@@ -305,9 +305,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let updatedRecipient: any = {};
         updatedRecipient = { ... this.recipientsFormData[this.recipientType] };
         updatedRecipient.namespace = this.namespace;
-        if (this.recipientsFormData[this.recipientType].name !== this.originalName) {
-            updatedRecipient.name = this.recipientsFormData[this.recipientType].name;
-        }
+
         this.store.dispatch(new UpdateRecipient(updatedRecipient));
         this.setViewMode($event, Mode.all);
         this.emitAlertRecipients();
@@ -326,7 +324,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         // reset to old contact
         for (let i = 0; i < this.alertRecipients.length; i++) {
             if (this.alertRecipients[i].id === this.recipientsFormData[this.recipientType].id) {
-                this.alertRecipients[i] = { name: this.tempRecipient.name, type: this.tempRecipient.type };
+                this.alertRecipients[i] = { id: this.tempRecipient.id, name: this.tempRecipient.name, type: this.tempRecipient.type };
                 break;
             }
         }
