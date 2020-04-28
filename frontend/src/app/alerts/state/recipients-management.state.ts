@@ -177,7 +177,8 @@ export class RecipientsState {
         const state = ctx.getState();
         let recipients = { ...state.recipients };
         recipients = this.appendRecipientToRecipients(recipient.data, recipients);
-        ctx.setState({ ...state, recipients: recipients, loading: false, });
+        const lastUpdated = this.createLastUpdated(recipient.data, 'add');
+        ctx.setState({ ...state, recipients: recipients, loading: false, lastUpdated });
     }
 
     @Action(PostRecipientFail)

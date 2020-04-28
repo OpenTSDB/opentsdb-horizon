@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     /**
      *  NOTE: at some point we might want to think about adding this to some config setup
      * */
-    availableWidgetTypes: Array<object> = [
+    availableWidgetTypes: Array<any> = [
         {
             label: 'Bar Graph',
             type: 'BarchartWidgetComponent',

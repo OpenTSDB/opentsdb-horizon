@@ -1530,7 +1530,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             input.value = '';
         }
     }
-
+    
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
+    }
     /*
     removeQueryGroupRuleValue(i: number) {
         const control = <FormArray>this.groupRulesLabelValues;

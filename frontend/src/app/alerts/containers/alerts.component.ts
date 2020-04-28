@@ -44,6 +44,7 @@ import {
     SetNamespace,
     SaveSnoozes
 } from '../state/alerts.state';
+import { DbfsResourcesState } from '../../app-shell/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
 import { SnoozeState, GetSnoozeDetailsById } from '../state/snooze.state';
 
@@ -104,6 +105,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     @Select(AlertsState.getLoaded) loaded$: Observable<any>;
     stateLoaded: any = {};
+
+    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
 
     @Select(AlertsState.getSelectedNamespace) selectedNamespace$: Observable<any>;
     selectedNamespace = '';
@@ -315,7 +318,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.loaded$.subscribe(data => {
             this.stateLoaded = JSON.parse(JSON.stringify(data));
-            if (!this.stateLoaded.userNamespaces) {
+        }));
+
+        this.subscription.add(this.resourcesLoaded$.subscribe( rloaded => {
+            const dynamicLoaded = this.store.selectSnapshot(AlertsState.getLoaded);
+            if ( rloaded && !dynamicLoaded.allNamespaces) {
                 this.store.dispatch(
                     new LoadNamespaces({
                         guid: this.guid,
@@ -1132,6 +1139,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     formatTime(time: any) {
         return moment(time).format('YYYY-MM-DD  hh:mm a');
+    }
+
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
     }
 
     getRecipientKeys(element: any) {
