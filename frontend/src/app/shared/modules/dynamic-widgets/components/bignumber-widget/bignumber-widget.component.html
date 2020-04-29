@@ -1,4 +1,18 @@
 <div class="widget-output-container" fxLayout="column">
+    <div class="widget-title" #widgetTitle *ngIf="editMode">
+        <div class="title-label">
+            <span class="navbar-item">Widget name:</span>
+        </div>
+        <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
+            <inline-editable class="navbar-item" [fieldValue]="widget.settings.title" [minLength]="3" [maxLength]="100"
+                (updatedValue)="setTitle($event)">
+            </inline-editable>
+            <button mat-icon-button color="primary">
+                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+            </button>
+        </span>
+        <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
+    </div>
     <canvas #myCanvas width="0" height="0"></canvas>
     <div class="widget-output" #widgetoutput>
         <div class="widget-container">
@@ -100,10 +114,6 @@
 </div>
 
 <div class="widget-controls-container" *ngIf="editMode">
-    <div class="widget-title" fxLayout="row" fxFlex="1 1 30px">
-            <span class="flex-spacer"></span>
-            <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
-    </div>
     <div class="widget-control-steps has-scroller">
         <div class="is-scroller">
             <div class="step-section query-section is-visible" #stepqueries>
