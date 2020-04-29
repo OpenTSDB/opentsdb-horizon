@@ -526,10 +526,18 @@
                 cursor: pointer;
                 color: #b5b5b5; // TODO: move color to theme section
                 font-size: 12px;
+                padding: 0 4px;
+            }
+
+            .visual-panel-dropdown-text {
+                padding: 0 4px;
             }
 
             .metric-alias {
+                margin-left: 10px;
                 .display-name {
+                    padding: 0 4px;
+
                     .mat-icon {
                         @include sizeDenaliIcon(14px);
                         margin-left: 8px;
@@ -1018,6 +1026,28 @@
                     .mat-select-arrow-wrapper .mat-select-arrow {
                         color: rgba(map-get($primary, default-contrast), .54);
                     }
+                }
+            }
+        }
+
+        .metric-query-item.row-disabled {
+            &,
+            & + .metric-query-item-visual {
+                background-color: if($is-dark, rgba(255,255,255,0.3), rgba(0,0,0,0.03));
+            }
+
+            & {
+                .mat-cell:not(:first-child) {
+                    pointer-events: none;
+                    opacity: .5;
+                }
+            }
+
+            & + .metric-query-item-visual {
+                pointer-events: none;
+
+                .mat-cell {
+                    opacity: .7;
                 }
             }
         }
