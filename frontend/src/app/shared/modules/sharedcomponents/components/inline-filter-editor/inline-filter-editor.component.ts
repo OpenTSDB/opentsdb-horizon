@@ -60,8 +60,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     visible = false;
     regexVars = /^!?\[.*\]$/;
 
-
-
     constructor(
         private elRef: ElementRef,
         private httpService: HttpService,

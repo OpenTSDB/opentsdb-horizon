@@ -376,6 +376,10 @@
 
                         .aggregator-icon {
                             @include sizeDenaliIcon(14px);
+
+                            & + .by-spacer {
+                                margin-left: 4px;
+                            }
                         }
 
                         .tag-aggregator-component,
@@ -546,12 +550,22 @@
 
             .metric-alias {
                 margin-left: 10px;
+
                 .display-name {
                     padding: 0 4px;
 
                     .mat-icon {
                         @include sizeDenaliIcon(14px);
                         margin-left: 8px;
+                    }
+                }
+
+                .alias-input-field {
+                    .mat-form-field-prefix {
+                        align-self: stretch;
+                        display: inline-flex;
+                        align-items: center;
+                        padding: 0 4px;
                     }
                 }
             }
@@ -784,6 +798,7 @@
     $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
 
     $link: map-get($foreground, link);
+    $text: map-get($foreground, text);
 
     $widgets: map-get($theme-config, widgets);
 
@@ -897,6 +912,17 @@
 
                 &:hover {
                     background-color: rgba($link, 0.1);
+                }
+            }
+
+            .alias-input-field {
+                .mat-form-field-prefix {
+                    color: rgba(map-get($foreground, text), .5);
+                    background-color: rgba($link, 0.1)
+                }
+
+                .mat-input-element {
+                    color: $text;
                 }
             }
         }
