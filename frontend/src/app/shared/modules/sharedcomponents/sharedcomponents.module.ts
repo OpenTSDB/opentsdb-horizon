@@ -60,6 +60,8 @@ import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.com
 import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pipe';
 import { MetricVisualPanelComponent } from './components/metric-visual-panel/metric-visual-panel.component';
 
+import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -113,7 +115,8 @@ import { MetricVisualPanelComponent } from './components/metric-visual-panel/met
         AuraDialogComponent,
         InfoTooltipComponent,
         FormatAutoManualFilterPipe,
-        MetricVisualPanelComponent
+        MetricVisualPanelComponent,
+        HexToColorNamePipe
     ],
     exports: [
         ThemePickerComponent,
@@ -151,7 +154,8 @@ import { MetricVisualPanelComponent } from './components/metric-visual-panel/met
         SimpleNamespacesListComponent,
         WidgetProjectionComponent,
         GraphTypeComponent,
-        InfoTooltipComponent
+        InfoTooltipComponent,
+        HexToColorNamePipe
     ],
     entryComponents: [
         InlineFilterEditorComponent,
