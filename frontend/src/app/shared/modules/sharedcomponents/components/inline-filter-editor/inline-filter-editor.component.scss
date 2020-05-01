@@ -553,8 +553,22 @@
             }
         }
 
+        .tag-filters-modal-actions {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+
+            .mat-stroked-button {
+                line-height: 24px;
+            }
+        }
+
         .tag-filters .tag {
             background: $option-highlight-bg;
+        }
+
+        .tag-filters-modal-actions {
+            border-top: 2px solid $divider;
         }
 
         .tag-filters {
