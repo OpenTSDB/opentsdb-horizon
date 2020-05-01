@@ -19,8 +19,6 @@ $base-font-size: 10px;
 @import 'typography/roboto-mono';
 @import 'typography/roboto-sans';
 @import 'typography/helvetica-neue-sans';
-@import 'typography/yahoo-sans';
-@import 'typography/yahoo-sans-cond';
 
 $app-available-typefaces: (
     ibm-plex-mono: $ibm-mono-typeface-config,
@@ -29,9 +27,7 @@ $app-available-typefaces: (
     ubuntu-sans: $ubuntu-sans-typeface-config,
     roboto-mono: $roboto-mono-typeface-config,
     roboto-sans: $roboto-sans-typeface-config,
-    helvetica-neue: $helvetica-neue-sans-typeface-config,
-    yahoo-sans: $yahoo-sans-typeface-config,
-    yahoo-sans-cond: $yahoo-sans-cond-typeface-config
+    helvetica-neue: $helvetica-neue-sans-typeface-config
 );
 
 // generate font-face imports
@@ -45,7 +41,7 @@ $app-available-typefaces: (
 // right now
 $app-fontface-config: (
     mono: generate-material-compatible-typography-config(map-get($app-available-typefaces, ubuntu-mono)),
-    sans: generate-material-compatible-typography-config(map-get($app-available-typefaces, yahoo-sans))
+    sans: generate-material-compatible-typography-config(map-get($app-available-typefaces, ubuntu-sans))
 );
 
 // IMPORT APPLICATION MODULE STYLE/THEME LOADERS
