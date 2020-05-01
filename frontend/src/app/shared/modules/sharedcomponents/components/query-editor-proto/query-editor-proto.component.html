@@ -55,12 +55,15 @@
                 [matMenuTriggerData]="{query: query}" class="tag-filter-menu-trigger"></span>
             <div class="tags-selected" *ngIf="query.filters.length">
                 <div class="tags-selected-header">
-                    <span><strong>Tag Filters</strong> ({{ query.filters.length }})</span>
+                    <span><strong>Tag Filters</strong></span>
                     <!--<span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
                         <mat-checkbox (click)="$event.stopPropagation();"
                             [checked]="query.settings.explicitTagMatch"
                             (change)="toggleExplictTagMatch($event)">Only match selected tag keys</mat-checkbox>
                     </span>-->
+                    <button mat-icon-button color="primary">
+                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                    </button>
                 </div>
                 <mat-list class="tag-filter-rows" role="list">
                     <mat-list-item class="tag" role="listitem"
@@ -98,7 +101,7 @@
                             <input type="radio" name="metric" *ngIf="!options.enableMultiMetricSelection"
                                 [checked]="data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
                             <mat-icon fontSet="denali" *ngIf="options.enableMultiMetricSelection && options.toggleMetric"
-                                [fontIcon]="data.metric.settings.visual.visible ? 'd-check' : 'd-minus'"></mat-icon>
+                                [fontIcon]="data.metric.settings.visual.visible ? 'd-check-square' : 'd-minus-square'"></mat-icon>
                             <span>{{ data.indexLabel}}</span>
                         </span>
                     </div>
@@ -337,7 +340,7 @@
                             *ngIf="options.enableAlias && editAliasId !== data.metric.id">
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                            <span><span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block; margin-right: 4px;"></span>{{ !data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color }}</span>
+                            <span><span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block; margin-right: 4px;"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
                             <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
                                 {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                                 background</span>
@@ -419,7 +422,9 @@
     <ng-template matMenuContent let-query="query">
         <div class="filter" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
             *ngIf="query.namespace">
-            <inline-filter-editor [query]="query" [options]="options" (filterOutput)="updateFilters($event);"
+            <inline-filter-editor [query]="query" [options]="options"
+                (filterOutput)="updateFilters($event);"
+                (closeModalOutput)="closeTagFilterModal($event)"
                 [tplVariables]="tplVariables"></inline-filter-editor>
         </div>
     </ng-template>

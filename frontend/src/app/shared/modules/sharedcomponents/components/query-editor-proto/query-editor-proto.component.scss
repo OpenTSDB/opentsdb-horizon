@@ -122,6 +122,17 @@
                     .mat-checkbox-inner-container {
                         margin-right: 4px;
                     }
+
+                    .mat-icon-button {
+                        width: 24px;
+                        height: 24px;
+                        line-height: 24px;
+                        margin-left: 4px;
+
+                        .mat-icon {
+                            @include sizeDenaliIcon(14px);
+                        }
+                    }
                 }
 
                 .tag-filter-rows {
@@ -911,6 +922,12 @@
             &.metric-index {
                 background-color: rgba($brand-color, .15);
                 color: $brand-color;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
+                }
+
                 /* ▼▼▼ Not sure this is still needed - need to check */
                 .mat-flat-button {
                     background: if($is-dark, rgba(255,255,255, 0.08), rgba(0,0,0, 0.03));

@@ -1062,6 +1062,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    closeTagFilterModal(event: any) {
+        this.tagFilterMenuTrigger.closeMenu();
+    }
+
+
+
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show
     checkAddMetricRow = (i: number, data: object) => data.hasOwnProperty('addMetric');
     checkMetricVisualRow = (i: number, data: any) => data.hasOwnProperty('visual');
