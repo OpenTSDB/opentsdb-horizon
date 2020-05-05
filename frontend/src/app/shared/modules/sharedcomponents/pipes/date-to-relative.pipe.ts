@@ -18,7 +18,7 @@ export class DateToRelativePipe implements PipeTransform {
             return moment(timestamp).fromNow();
         } else {
             // else, return formatted date (i.e. February 14th, 2020)
-            return moment(timestamp).format('MMMM Do, YYYY');
+            return moment(timestamp).format('MMM Do, YYYY');
         }
 
     }
