@@ -65,7 +65,8 @@
                                     <span class="add-contact">
                                         <mat-icon fontSet="denali" fontIcon="d-add-circle" *ngIf="viewMode === _mode.all"></mat-icon>
                                     </span>
-                                    <span class="recipient-label">{{type === _recipientType.slack ? '#' + trimRecipientName(recipient.name) : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
+                                    <span class="recipient-label" *ngIf="type !== _recipientType.email">{{type === _recipientType.slack ? '#' + trimRecipientName(recipient.name) : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
+                                    <span class="recipient-label" *ngIf="type === _recipientType.email"><span class="recipient" [matTooltip]="recipient.name">{{type === _recipientType.slack ? '#' + trimRecipientName(recipient.name) : recipient.name}}</span> <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
                                     <span class="flex-spacer"></span>
                                     <span class="contact-item-actions" *ngIf="viewMode === _mode.edit && !recipient.admin">
                                         <button mat-icon-button *ngIf="type !== _recipientType.email">
