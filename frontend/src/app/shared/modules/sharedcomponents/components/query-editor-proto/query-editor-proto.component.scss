@@ -1,5 +1,4 @@
 @mixin query-editor-proto-component-base() {
-
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-padding: map-get($widgets-common-config, edit-padding);
 
@@ -42,19 +41,48 @@
             .title {
                 padding-left: 16px;
                 // text-transform: uppercase;
-                font-weight: mat-font-weight(map-get($app-fontface-config, sans), display-4);
+                font-weight: mat-font-weight(
+                    map-get($app-fontface-config, sans),
+                    display-4
+                );
             }
 
             .namespace-value {
-                font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
-                font-size: mat-font-size(map-get($app-fontface-config, sans), subheading-2);
+                font-weight: mat-font-weight(
+                    map-get($app-fontface-config, sans),
+                    body-2
+                );
+                font-size: mat-font-size(
+                    map-get($app-fontface-config, sans),
+                    subheading-2
+                );
             }
 
-            .query-index  {
-                font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+            .query-index {
+                font-weight: mat-font-weight(
+                    map-get($app-fontface-config, sans),
+                    body-2
+                );
                 width: $row-size;
                 height: $row-size;
                 border-top-left-radius: 4px;
+                position: relative;
+
+                .query-disabled-label {
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    width: 100%;
+                    height: 14px;
+                    line-height: 12px;
+                    margin-left: -1px;
+                    padding: 2px;
+                    text-transform: uppercase;
+                    font-size: 8px;
+                    color: white; // TODO: add to theme
+                    background: rgba(255, 255, 255, 0.25); // TODO: add to theme
+                }
             }
 
             .action-icons {
@@ -97,7 +125,8 @@
                         font-size: 12px;
                     }
 
-                    .tag-filter-menu-trigger, .metric-visual-panel-trigger {
+                    .tag-filter-menu-trigger,
+                    .metric-visual-panel-trigger {
                         position: absolute;
                         top: -1px;
                         left: -1px;
@@ -112,7 +141,10 @@
                     justify-content: flex-start;
                     align-items: center;
                     padding: 0 $filter-block-padding 4px $filter-block-padding;
-                    font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                    font-size: mat-font-size(
+                        map-get($app-fontface-config, sans),
+                        caption
+                    );
                     line-height: 24px;
 
                     // Only match selected tags label
@@ -147,7 +179,10 @@
                     margin: 2px $filter-block-padding;
                     // border-radius: 4px;
                     // border: 0;
-                    font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                    font-size: mat-font-size(
+                        map-get($app-fontface-config, sans),
+                        caption
+                    );
 
                     &:last-of-type {
                         margin-bottom: 0;
@@ -178,16 +213,12 @@
                             align-items: stretch;
 
                             span {
-                                padding:  2px 4px;
+                                padding: 2px 4px;
                             }
-
                         }
                     }
                 }
             }
-
-
-
         }
 
         .vertical-line-spacer {
@@ -211,7 +242,8 @@
         .query-metric-table.mat-table {
             padding: 4px;
 
-            tr.mat-footer-row, tr.mat-row {
+            tr.mat-footer-row,
+            tr.mat-row {
                 height: initial;
             }
 
@@ -242,7 +274,7 @@
                 width: 50px;
                 font-weight: 500;
 
-                input[type=radio] {
+                input[type="radio"] {
                     margin-right: 5px;
                 }
             }
@@ -284,7 +316,12 @@
                     border-radius: 3px;
                     cursor: pointer;
 
-                    .mat-icon{
+                    .label {
+                        display: inline-flex;
+                        align-items: center;
+                    }
+
+                    .mat-icon {
                         width: 14px;
                         height: 14px;
                         font-size: 16px;
@@ -325,8 +362,6 @@
                             margin-left: 2px;
                             opacity: 0;
                             transition: opacity 200ms ease-in-out;
-
-
                         }
 
                         &:hover {
@@ -342,7 +377,7 @@
                 }
 
                 &.metric-name.is-adding {
-                    width: 400px
+                    width: 400px;
                 }
 
                 &.metric-index.is-adding {
@@ -415,7 +450,7 @@
                         align-items: center;
                         height: 32px;
 
-                        .summarizer-title{
+                        .summarizer-title {
                             padding-left: 5px;
                             padding-right: 5px;
                         }
@@ -481,7 +516,6 @@
                             width: 18px;
                             height: 18px;
                         }
-
                     }
 
                     .mat-mini-fab {
@@ -501,7 +535,7 @@
                             height: 16px;
                             font-size: 16px;
                             margin-left: -1px;
-                            margin-top: -2px;;
+                            margin-top: -2px;
                         }
                     }
                 }
@@ -521,10 +555,9 @@
                     margin-bottom: 0;
                 }
             }
-            tr.metric-query-item:hover .metric-row-data.action  {
-                visibility:visible
+            tr.metric-query-item:hover .metric-row-data.action {
+                visibility: visible;
             }
-
 
             // modifiers
             tr.mat-row.add-query-item.is-hidden {
@@ -546,6 +579,21 @@
 
             .visual-panel-dropdown-text {
                 padding: 0 4px;
+
+                .color-chip {
+                    width: 10px;
+                    height: 10px;
+                    display: inline-block;
+                    margin-right: 6px;
+                }
+
+                > span:not(:empty) {
+                    margin-right: 4px;
+                }
+
+                > span:empty {
+                    display: none;
+                }
             }
 
             .metric-alias {
@@ -601,7 +649,8 @@
         $mat-select-panel-max-height: 256px !default;
         $mat-select-item-height: 3em !default;
 
-        $mat-select-placeholder-arrow-space: 2 * ($mat-select-arrow-size + $mat-select-arrow-margin);
+        $mat-select-placeholder-arrow-space: 2 *
+            ($mat-select-arrow-size + $mat-select-arrow-margin);
 
         .mat-select-arrow-wrapper {
             display: table-cell;
@@ -609,42 +658,44 @@
 
             // When used in a box appearance form-field the arrow should be shifted up 50%.
             .mat-form-field-appearance-fill & {
-              transform: translateY(-50%);
+                transform: translateY(-50%);
             }
 
             // When used in a outline form-field the arrow should be shifted up 25%.
             .mat-form-field-appearance-outline & {
-              transform: translateY(-25%);
+                transform: translateY(-25%);
             }
 
             // When used in a standard appearance form-field the arrow should be shifted up 50%,
             // but only if it's not empty and it has a label.
             .mat-form-field-appearance-standard.mat-form-field-has-label
-              .mat-select:not(.mat-select-empty) & {
+                .mat-select:not(.mat-select-empty)
+                & {
                 transform: translateY(-50%);
-              }
+            }
 
             // Animate the arrow position, but only when the transitioning to empty (animate the arrow down)
             // This is in line with the mat-form-field label animation
             .mat-form-field-appearance-standard .mat-select.mat-select-empty & {
-              transition: transform $swift-ease-out-duration $swift-ease-out-timing-function;
+                transition: transform $swift-ease-out-duration
+                    $swift-ease-out-timing-function;
             }
 
-            ._mat-animation-noopable.mat-form-field-appearance-standard .mat-select.mat-select-empty & {
-              transition: none;
+            ._mat-animation-noopable.mat-form-field-appearance-standard
+                .mat-select.mat-select-empty
+                & {
+                transition: none;
             }
-          }
+        }
 
-          .mat-select-arrow {
+        .mat-select-arrow {
             width: 0;
             height: 0;
             border-left: $mat-select-arrow-size solid transparent;
             border-right: $mat-select-arrow-size solid transparent;
             border-top: $mat-select-arrow-size solid;
             margin: 0 $mat-select-arrow-margin;
-          }
-
-
+        }
 
         // HOST MODIFIERS
         &.can-disable-metrics {
@@ -659,6 +710,45 @@
                         }
                     }
                 }
+            }
+        }
+
+        // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
+        .metric-query-item.visual-highlight {
+
+            & + .metric-query-item-visual {
+
+                .visual-panel-dropdown-text {
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                }
+            }
+        }
+
+        // metric row is disabled
+        .metric-query-item.row-disabled {
+
+            & {
+                .mat-cell:not(:first-child) {
+                    pointer-events: none;
+                    opacity: 0.5;
+                }
+            }
+
+            & + .metric-query-item-visual {
+                pointer-events: none;
+
+                .mat-cell {
+                    opacity: 0.7;
+                }
+            }
+        }
+
+        // query disabled
+        .namespace-wrapper.query-disabled {
+            & + .metric-wrapper {
+                filter: grayscale(100%) blur(1px);
+                pointer-events: none;
             }
         }
     }
@@ -738,7 +828,7 @@
             justify-content: stretch;
             max-width: 100%;
             max-height: 100%;
-            width:  100%;
+            width: 100%;
         }
 
         .function-categories,
@@ -783,7 +873,6 @@
 }
 
 @mixin query-editor-proto-component-theme($theme-config) {
-
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
@@ -793,9 +882,9 @@
     $is-dark: map-get($theme-config, is-dark);
     $dbfilter: map-get($theme-config, dashboard-filters);
 
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+    $chip-bg: rgba(map-get($primary, default), 0.1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.5));
 
     $link: map-get($foreground, link);
     $text: map-get($foreground, text);
@@ -810,14 +899,18 @@
     $query-block-bg: map-get($widgets, query-editor-block-bg);
     $query-block-selected-border: map-get($widgets, query-editor-selected-border);
 
-    $brand-color: if($is-dark, lighten(map-get($background, navbar), 15%), map-get($background, navbar));
+    $brand-color: if(
+        $is-dark,
+        lighten(map-get($background, navbar), 15%),
+        map-get($background, navbar)
+    );
     $brand-color-inverse: find-color-invert($brand-color);
 
-    $lighter-divider: rgba(0,0,0,0.04);
+    $lighter-divider: rgba(0, 0, 0, 0.04);
 
     $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
     $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
-    $new-bg: #edeff4; // needs to be moved to theme (ALSO, needs dark version)
+    $new-bg: if($is-dark, rgba(255,255,255, 0.25), #edeff4);
 
     $label-color: rgba(0, 0, 0, 0.5); // label color for query function keys (NOT the values)
 
@@ -828,10 +921,11 @@
         border-radius: 4px;
 
         .namespace-wrapper {
-            background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+            background-color: if($is-dark, rgba(255, 255, 255, 0.04), $new-bg);
         }
+
         .namespace-bar.mat-toolbar {
-            background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+            background-color: if($is-dark, rgba(255, 255, 255, 0.04), $new-bg);
 
             &.is-expanded {
                 box-shadow: inset 0 -1px 0 1px map-get($background, card);
@@ -850,13 +944,16 @@
         }
 
         .metric-wrapper {
-
             border-left: 1px solid $lighter-divider;
             border-right: 1px solid $lighter-divider;
 
             .common-tags {
                 //background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
-                background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
+                background-color: if(
+                    $is-dark,
+                    rgba(255, 255, 255, 0.04),
+                    $new-bg
+                );
 
                 .common-tags-label {
                     color: if($is-dark, $brand-color-inverse, $brand-color);
@@ -874,7 +971,7 @@
             .tag-filter-detail {
                 .tagkey-item {
                     .automode {
-                        color: rgba(0,0,0,.8);
+                        color: rgba(0, 0, 0, 0.8);
 
                         &.auto-mode {
                             background-color: $dbf-automode-bg;
@@ -917,8 +1014,8 @@
 
             .alias-input-field {
                 .mat-form-field-prefix {
-                    color: rgba(map-get($foreground, text), .5);
-                    background-color: rgba($link, 0.1)
+                    color: rgba(map-get($foreground, text), 0.5);
+                    background-color: rgba($link, 0.1);
                 }
 
                 .mat-input-element {
@@ -934,35 +1031,39 @@
                 background-color: rgba($link, 0.1);
             }
 
-            > span:not(.mat-select-arrow-wrapper) {
-                margin-right: 4px;
-            }
 
-            > span:empty:not(.mat-select-arrow-wrapper) {
-                display: none;
-            }
         }
 
         .metric-row-data {
-
             &.metric-index {
-                background-color: rgba($brand-color, .15);
-                color: $brand-color;
-
-                .label {
-                    display: inline-flex;
-                    align-items: center;
-                }
+                background-color: if(
+                    $is-dark,
+                    rgba($brand-color, 1),
+                    rgba($brand-color, 0.15)
+                );
+                color: if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                );
 
                 /* ▼▼▼ Not sure this is still needed - need to check */
                 .mat-flat-button {
-                    background: if($is-dark, rgba(255,255,255, 0.08), rgba(0,0,0, 0.03));
+                    background: if(
+                        $is-dark,
+                        rgba(255, 255, 255, 0.08),
+                        rgba(0, 0, 0, 0.03)
+                    );
 
                     .mat-select-arrow-wrapper {
-                        border-top: 1px solid if($is-dark, rgba(255,255,255, 0.25), rgba(0,0,0,0.06));
+                        border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
 
                         .mat-select-arrow {
-                            color: if($is-dark, rgba(255,255,255,0.7), rgba(0,0,0,0.7));
+                            color: if(
+                                $is-dark,
+                                rgba(255, 255, 255, 0.7),
+                                rgba(0, 0, 0, 0.7)
+                            );
                         }
                     }
                 }
@@ -991,7 +1092,7 @@
                     background-color: transparent;
 
                     .aggregator-icon {
-                        color: rgba(map-get($foreground, text), .8);
+                        color: rgba(map-get($foreground, text), 0.8);
                     }
 
                     &:hover {
@@ -1001,7 +1102,6 @@
             }
 
             &.summarizer-selector {
-
                 .mat-button {
                     color: map-get($foreground, link);
                 }
@@ -1040,7 +1140,11 @@
 
                     .mat-select-arrow-wrapper {
                         .mat-select-arrow {
-                            color: if($is-dark, rgba(255,255,255,0.7), rgba(0,0,0,0.7));
+                            color: if(
+                                $is-dark,
+                                rgba(255, 255, 255, 0.7),
+                                rgba(0, 0, 0, 0.7)
+                            );
                         }
                     }
 
@@ -1051,67 +1155,56 @@
             }
         }
 
+        // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
         .metric-query-item.visual-highlight {
             &,
             & + .metric-query-item-visual {
-                background-color: rgba(map-get($denali-yellow, 200), .2);
+                background-color: rgba(map-get($denali-yellow, 200), 0.2);
             }
 
             & + .metric-query-item-visual {
-                border-bottom: 2px solid map-get($primary, default);
+                border-bottom: 2px solid rgba($link, .25);
 
                 .visual-panel-dropdown-text {
-                    background: map-get($primary, default);
-                    color: map-get($primary, default-contrast);
-                    border-top-left-radius: 4px;
-                    border-top-right-radius: 4px;
+                    background: rgba($link, .25);
+                    color: $text;
+
+                    .color-chip {
+                        box-shadow: 0 0 0 2px #ffffff;
+                    }
 
                     .mat-select-arrow-wrapper .mat-select-arrow {
-                        color: rgba(map-get($primary, default-contrast), .54);
+                        color: rgba($text, 0.54);
                     }
                 }
             }
         }
 
+        // metric row has been disabled
         .metric-query-item.row-disabled {
             &,
             & + .metric-query-item-visual {
-                background-color: if($is-dark, rgba(255,255,255,0.3), rgba(0,0,0,0.03));
-            }
-
-            & {
-                .mat-cell:not(:first-child) {
-                    pointer-events: none;
-                    opacity: .5;
-                }
-            }
-
-            & + .metric-query-item-visual {
-                pointer-events: none;
-
-                .mat-cell {
-                    opacity: .7;
-                }
+                background-color: if(
+                    $is-dark,
+                    rgba(255, 255, 255, 0.3),
+                    rgba(0, 0, 0, 0.03)
+                );
             }
         }
-
 
         .metric-query-item:not(:first-of-type) {
             border-top: 1px dotted $divider;
         }
 
         .metric-action-buttons {
-            // border-bottom: 1px solid $lighter-divider;
             .add-metric-button {
-                background-color: rgba(map-get($primary, default), .15);
+                background-color: rgba(map-get($primary, default), 0.15);
             }
         }
-
     }
 
     // CDK ITEMS
     .function-selection-cdk-menu.mat-menu-panel {
-
         .function-categories {
             border-right: 1px solid map-get($foreground, divider);
 
@@ -1121,7 +1214,5 @@
                 }
             }
         }
-
-
     }
 }

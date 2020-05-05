@@ -1,7 +1,8 @@
-<div class="namespace-wrapper">
+<div class="namespace-wrapper" [ngClass]="{'query-disabled': !query.settings.visual.visible}">
     <mat-toolbar class="namespace-bar" *ngIf="options.showNamespaceBar">
         <div class="toolbar-item query-index">
             <span>{{ label }}</span>
+            <span class="query-disabled-label" *ngIf="!query.settings.visual.visible">disabled</span>
         </div>
         <div class="toolbar-item">
             <span class="title"> Namespace:</span>
@@ -23,9 +24,10 @@
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
             <button mat-icon-button color="primary" *ngIf="options.toggleQuery"
+                [matTooltip]="query.settings.visual.visible ? 'click to disable' : 'click to enable'"
                 (click)="toggleQuery(); $event.stopPropagation();">
-                <mat-icon fontSet="denali" fontIcon="d-eye-open" *ngIf="query.settings.visual.visible"></mat-icon>
-                <mat-icon fontSet="denali" fontIcon="d-eye-close" *ngIf="!query.settings.visual.visible"></mat-icon>
+                <mat-icon fontSet="denali" fontIcon="d-check-square" *ngIf="query.settings.visual.visible"></mat-icon>
+                <mat-icon fontSet="denali" fontIcon="d-minus-square" *ngIf="!query.settings.visual.visible"></mat-icon>
             </button>
             <button mat-icon-button color="primary" *ngIf="options.cloneQuery"
                 (click)="cloneQuery(); $event.stopPropagation();">
@@ -340,7 +342,7 @@
                             *ngIf="options.enableAlias && editAliasId !== data.metric.id">
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                            <span><span [style.background]="data.visual.color" style="width: 10px; height: 10px;display: inline-block; margin-right: 4px;"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
+                            <span><span [style.background]="data.visual.color" style="" class="color-chip"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
                             <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
                                 {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                                 background</span>

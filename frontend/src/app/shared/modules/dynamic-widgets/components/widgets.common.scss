@@ -484,10 +484,10 @@ $widgets-common-config: (
 
     // section markers
     //
-    $section-tab-markers: if($is-dark-theme, rgba(map-get($background, ink-bar), .45), rgba(map-get($background, navbar), .45));
+    $section-tab-markers: if($is-dark-theme, rgba(map-get($foreground, link), .45), rgba(map-get($background, navbar), .45));
     $section-tab-color: #ffffff; // most of the time, white will do. need to test
 
-    $new-bg: #edeff4; // needs to be moved to theme (ALSO, needs dark version)
+    $new-bg: if($is-dark-theme, rgba(255,255,255, 0.25), #edeff4);
 
     .edit-view-container.is-active {
         .widget-output-container {

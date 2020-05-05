@@ -24,21 +24,23 @@
                 </mat-radio-group>
                 <!-- just to see if it changed ok
                     <span style="color: red;">{{ this.widgetConfigTime.get('selectedDownsample').value }}</span> -->
-            </div> 
+            </div>
         </div>
         <div class="config-control aggregator-controls">
             <label class="label">Aggregator</label>
             <div class="form-field-group mat-select">
+                <mat-form-field appearance="fill">
                     <mat-select [value]="selectedAggregators[0]" *ngIf="!multipleAggregators" (selectionChange)="setAggregator($event)" disableOptionCentering="true">
                         <mat-option *ngFor="let aggregator of timeAggregatorOptions" [value]="aggregator.value">{{ aggregator.label }}</mat-option>
                     </mat-select>
+                </mat-form-field>
                 <!---
                     <mat-select [value]="selectedAggregators" *ngIf="multipleAggregators" multiple (selectionChange)="setAggregator($event)">
                         <mat-option *ngFor="let aggregator of timeAggregatorOptions" [value]="aggregator.value">{{ aggregator.label }}</mat-option>
                     </mat-select>
-                
+
                 <mat-checkbox formControlName="multiple">Mutiple</mat-checkbox>-->
-            </div> 
+            </div>
         </div>
 
         <div class="config-control min-interval-controls">
@@ -67,7 +69,7 @@
                 </mat-button-toggle-group>
             </div>
         </div>
-        
+
     </div>
 
 </form>

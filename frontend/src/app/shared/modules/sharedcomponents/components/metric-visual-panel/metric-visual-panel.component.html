@@ -4,7 +4,7 @@
             <strong>Visual Appearance</strong>
         </div>
         <div class="flex-spacer"></div>
-        <div class="visual-style-type">
+        <div class="visual-style-type" *ngIf="type === 'LinechartWidgetComponent'">
             <strong>Styles</strong>
             <dropdown-visual-type  [value]="this.mode || 'line'" (valueChange)="setVisualType(data.metric.id, $event)"></dropdown-visual-type>
         </div>

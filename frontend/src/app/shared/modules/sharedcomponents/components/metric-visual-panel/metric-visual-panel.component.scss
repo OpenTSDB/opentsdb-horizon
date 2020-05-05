@@ -192,7 +192,7 @@
     }
 
     .mat-menu-panel.metric-visual-panel-wrapper {
-        border-top: 2px solid map-get($primary, default);
+        border-top: 2px solid rgba($link, .25);
     }
 
 }
