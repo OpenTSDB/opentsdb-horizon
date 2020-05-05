@@ -215,7 +215,6 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     updateConfig(message) {
-        console.log("donut message", message);
         switch ( message.action ) {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);

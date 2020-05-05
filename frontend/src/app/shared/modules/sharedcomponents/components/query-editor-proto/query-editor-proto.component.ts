@@ -1054,7 +1054,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     toggleVisualRow(index, highlight) {
-        this.logger.log('TOGGLE VISUAL ROW', {index, highlight});
         if (highlight) {
             this.visualPanelHighlight = index;
         } else {
