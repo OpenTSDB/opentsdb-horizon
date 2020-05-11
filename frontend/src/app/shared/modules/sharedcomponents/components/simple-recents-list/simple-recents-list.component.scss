@@ -37,9 +37,7 @@
                     align-items: stretch;
                     justify-content: stretch;
 
-                    .root-path,
-                    .visited-date,
-                    .visited-time {
+                    .root-path {
                         font-size: 10px;
                     }
                 }
@@ -56,21 +54,34 @@
     $success: map-get($theme-config, success);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    $is-dark: map-get($theme-config, is-dark);
 
-    $row-bg: map-get($primary, 50);
     $text: map-get($foreground, text);
     $link: map-get($foreground, link);
+
+    $primary-default: map-get($primary, default);
+    $primary-light: map-get($primary, 50);
+
+    $row-hover-bg: if(
+        $is-dark,
+        rgba($primary-light, .05),
+        $primary-light
+    );
+    $table-header-bg: if(
+        $is-dark,
+        lighten(map-get($background, card), 10%),
+        darken(map-get($background, card), 5%)
+    );
 
     .widget-panel-content.simple-recents-list {
         .mat-table {
             tr.mat-header-row {
-                background: #f7f7f7;
+                background: $table-header-bg;
             }
 
             tr.mat-row {
                 &:hover {
-                    background-color: $row-bg;
+                    background-color: $row-hover-bg;
                 }
             }
 
