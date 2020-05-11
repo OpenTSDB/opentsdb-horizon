@@ -177,7 +177,8 @@ export class RecipientsState {
         const state = ctx.getState();
         let recipients = { ...state.recipients };
         recipients = this.appendRecipientToRecipients(recipient.data, recipients);
-        ctx.setState({ ...state, recipients: recipients, loading: false, });
+        const lastUpdated = this.createLastUpdated(recipient.data, 'add');
+        ctx.setState({ ...state, recipients: recipients, loading: false, lastUpdated });
     }
 
     @Action(PostRecipientFail)
@@ -207,7 +208,7 @@ export class RecipientsState {
         recipients = this.modifyRecipient(recipient.data, recipients);
 
         const type = Object.keys(recipient.data)[0];
-        if (recipient.data[type][0].newname) {
+        if (recipient.data[type][0].id) {
             const lastUpdated = this.createLastUpdated(recipient.data, 'update');
             ctx.setState({ ...state, recipients, loading: false, lastUpdated });
         } else {
@@ -267,7 +268,7 @@ export class RecipientsState {
         const _namespaceAndRecipients = JSON.parse(JSON.stringify(namespaceAndRecipients));
         // tslint:disable-next-line:forin
         for (let i = 0; i < _namespaceAndRecipients.recipients[type].length; i++) {
-            if (_namespaceAndRecipients.recipients[type][i].name === recipient[type][0].name) {
+            if (_namespaceAndRecipients.recipients[type][i].id === recipient[type][0].id) {
                 index = i;
                 break;
             }
@@ -281,15 +282,11 @@ export class RecipientsState {
         const _namespaceAndRecipients = JSON.parse(JSON.stringify(namespaceAndRecipients));
         // tslint:disable-next-line:forin
         for (let i = 0; i < _namespaceAndRecipients.recipients[type].length; i++) {
-            if (_namespaceAndRecipients.recipients[type][i].name === recipient[type][0].name) {
-                if (recipient[type][0].newname) {
-                    _namespaceAndRecipients.recipients[type][i].name = recipient[type][0].newname;
-                }
+            if (_namespaceAndRecipients.recipients[type][i].id === recipient[type][0].id) {
                 // tslint:disable-next-line:forin
                 for (let key in recipient[type][0] ) {
                     if (key.toLowerCase() !== 'namespace' &&
                         key.toLowerCase() !== 'type' &&
-                        key.toLowerCase() !== 'name' &&
                         key.toLowerCase() !== 'newname') {
                             _namespaceAndRecipients.recipients[type][i][key] = recipient[type][0][key];
                     }

@@ -9,7 +9,8 @@ import {
     AfterContentInit, EventEmitter,
     Output,
     Input,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    AfterViewInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
@@ -43,6 +44,7 @@ import { ThemeService } from '../../../app-shell/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
+import { environment } from "../../../../environments/environment";
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -51,7 +53,7 @@ import { LocationStrategy } from '@angular/common';
     styleUrls: []
 })
 
-export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit {
+export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     @HostBinding('class.alert-details-component') private _hostClass = true;
 
     @ViewChild('graphOutput') private graphOutput: ElementRef;
@@ -376,6 +378,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             };
             this.size = newSize;
         });
+    }
+
+    ngAfterViewInit() {
+        if (this.dashboardToCancelTo > 0) {
+            this.validate(false);
+        }
     }
 
     newSingleMetricTimeWindowSelected(timeInSeconds: string) {
@@ -1362,7 +1370,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
     }
 
-    validate() {
+    validate(showTopErrorBar = true) {
         this.alertForm.markAsTouched();
         switch ( this.data.type ) {
             case 'simple':
@@ -1420,8 +1428,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.saveAlert();
             }
 
-
-        } else {
+        } else if (showTopErrorBar) {
             // set system message bar
             this.interCom.requestSend({
                 action: 'systemMessage',
@@ -1481,7 +1488,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
-        this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, payload: { data: this.utils.deepClone([data]) }} );
+        this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
+            payload: { data: this.utils.deepClone([data])}} );
     }
 
     cancelEdit() {
@@ -1522,7 +1530,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             input.value = '';
         }
     }
-
+    
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
+    }
     /*
     removeQueryGroupRuleValue(i: number) {
         const control = <FormArray>this.groupRulesLabelValues;
@@ -1660,8 +1671,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setAlertEvaluationLink() {
-        // tslint:disable-next-line:max-line-length
-        let url = 'https://logs.yms.yahoo.com:9999/splunk/en-US/app/search/search?q=search%20index%3Dcorona-alerts%20alert_id%3D' + this.data.id;
+        let url = environment.alert_history_url + this.data.id;
         if (this.startTime && this.endTime) {
             const start =  Math.floor(this.dateUtil.timeToMoment(this.startTime, 'local').valueOf() / 1000);
             const end =  Math.floor(this.dateUtil.timeToMoment(this.endTime, 'local').valueOf() / 1000);

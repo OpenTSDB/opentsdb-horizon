@@ -54,7 +54,7 @@
                             <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                         </button>-->
                     </div>
-                    <div class="splunk-link" *ngIf="data.id">
+                    <div class="alert-history-link" *ngIf="data.id">
                         <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
                     </div>
                 </div>
@@ -620,11 +620,13 @@
                             (updatedValue)="setAlertName($event)">
                         </inline-editable>
                     </div>
+                    <span class="alert-history-link" *ngIf="data.id">
+                        <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
+                    </span>
                 </div>
                 <span class="flex-spacer"></span>
                 <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             </mat-toolbar>
-            <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             <div class="alert-control-steps has-scroller">
                 <div class="is-scroller">
                     <div class="step-section threshold-section is-visible" formGroupName="threshold">
@@ -840,7 +842,7 @@
                     </div>
 
                     <div>
-                        <span class="splunk-link" *ngIf="data.id">
+                        <span class="alert-history-link" *ngIf="data.id">
                             <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
                         </span>
                         <span *ngIf="hasWriteAccess" >
@@ -1229,7 +1231,7 @@
                                         <strong>{{typeToDisplayName(type)}}</strong>
                                         <ul>
                                             <li *ngFor="let recipient of data.notification.recipients[type]">
-                                                {{type === 'slack' ? '#' + recipient.name : recipient.name}}
+                                                {{type === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}
                                             </li>
                                         </ul>
                                     </div>

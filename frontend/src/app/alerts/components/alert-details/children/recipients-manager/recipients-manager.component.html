@@ -2,10 +2,9 @@
     <mat-chip-list #chipList>
 
         <mat-chip *ngFor="let recipient of alertRecipients" [selectable]="true" [removable]="true"
-            (removed)="removeRecipientFromAlertRecipients(recipient.name, recipient.type)">
+            (removed)="removeRecipientFromAlertRecipients(recipient.id)">
             <img src="/assets/{{recipient.type}}-contact.svg" class="chip-image" />
-            <!-- {{recipient.type === _recipientType.slack ? '#' + recipient.name : recipient.name}} -->
-            {{recipient.name}}
+            {{recipient.type === _recipientType.slack ? trimRecipientName(recipient.name) : recipient.name}}
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
 
@@ -57,16 +56,16 @@
                             <img src="/assets/{{type}}-contact.svg" />
                             <span>{{typeToDisplayName(type)}}</span>
                         </div>
-                        <div class="contact-list-type-wrapper">
+                        <div class="contact-list-type-wrapper {{type}}-contact-wrapper">
                             <mat-list dense disableRipple="false">
                                 <mat-list-item
                                     *ngFor="let recipient of getRecipientItemsByType(type)"
-                                    (click)="viewMode === _mode.all ? addRecipientToAlertRecipients($event, recipient.name, recipient.type) : !recipient.admin ? editRecipientMode($event, recipient) : null"
-                                    [ngClass]="{'no-highlight': viewMode === _mode.edit && type === _recipientType.email && recipient.admin}">
+                                    (click)="viewMode === _mode.all ? addRecipientToAlertRecipients($event, recipient.id, recipient.name, recipient.type) : !recipient.admin ? editRecipientMode($event, recipient) : null"
+                                    [ngClass]="{'no-highlight': viewMode === _mode.edit && type === _recipientType.email && recipient.admin, 'is-disabled' : viewMode === _mode.all && isAlertRecipient(recipient.name, type) }">
                                     <span class="add-contact">
                                         <mat-icon fontSet="denali" fontIcon="d-add-circle" *ngIf="viewMode === _mode.all"></mat-icon>
                                     </span>
-                                    <span class="recipient-label">{{type === _recipientType.slack ? '#' + recipient.name : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
+                                    <span class="recipient-label">{{type === _recipientType.slack ? '#' + trimRecipientName(recipient.name) : recipient.name}} <span class="admin-tag" *ngIf="recipient.admin">admin{{viewMode === _mode.edit ? ' (cannot edit)' : ''}}</span></span>
                                     <span class="flex-spacer"></span>
                                     <span class="contact-item-actions" *ngIf="viewMode === _mode.edit && !recipient.admin">
                                         <button mat-icon-button *ngIf="type !== _recipientType.email">
@@ -76,7 +75,7 @@
                                             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                                         </button>
                                     </span>
-                                    
+
                                 </mat-list-item>
                             </mat-list>
                         </div>
@@ -102,17 +101,17 @@
                                 <div class="form-label vertical-center">API Key</div>
                                 <mat-form-field floatLabel="never" appearance="fill" class="wide-formfield">
                                     <input matInput [formControl]="opsGenieApiKey" placeholder="Enter API Key*" required
-                                        minlength="36" maxlength="36" [value]="recipientsFormData[_recipientType.opsgenie].apikey"
+                                        [value]="recipientsFormData[_recipientType.opsgenie].apikey"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.opsgenie], 'apikey', $event.target.value)">
                                     <mat-error *ngIf="opsGenieApiKey.errors && (opsGenieApiKey.dirty || opsGenieApiKey.touched)">
-                                        OpsGenie API Key required. Length is 36 characters.
+                                        OpsGenie API Key required. Max length is {{opsGenieApiKeyMaxLength}}.
                                     </mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="form-group">
                                 <div class="form-label"></div>
                                 <span>
-                                    Follow steps outlined in <a href="https://git.ouroath.com/pages/monitoring/yamas_userguide_2.0/BE/opsgenie_plugin/#1-create-an-api-key-for-your-opsgenie-team" target="_blank">the user-guide</a> to create an API key.
+                                    Follow steps outlined in <a href="{{environment.alert.recipient.opsgenie.guideUrl}}" target="_blank">the user-guide</a> to create an API key.
                                 </span>
                             </div>
                         </div>
@@ -133,17 +132,17 @@
                                 <div class="form-label vertical-center">Webhook URL </div>
                                 <mat-form-field floatLabel="never" appearance="fill" class="wide-formfield">
                                     <input [formControl]="slackWebhook" matInput placeholder="Webhook URL*" required
-                                        minlength="77" maxlength="77" [value]="recipientsFormData[_recipientType.slack].webhook"
+                                        [value]="recipientsFormData[_recipientType.slack].webhook"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.slack], 'webhook', $event.target.value)">
                                     <mat-error *ngIf="slackWebhook.errors && (slackWebhook.dirty || slackWebhook.touched)">
-                                        Slack Webhook URL required. Length is 77 characters.
+                                        Slack Webhook URL required. Max length is {{slackWebhookMaxLength}}.
                                     </mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="form-group">
                                 <div class="form-label"></div>
                                 <span>
-                                    Follow steps <a href="https://git.ouroath.com/pages/monitoring/yamas_userguide_2.0/BE/slack_integration/#1-request-webhook-permissions-for-your-slack-app" target="_blank"> one and two of the user-guide </a> to create a webhook url.
+                                    Follow steps <a href="{{environment.alert.recipient.slack.guideUrl}}" target="_blank"> one and two of the user-guide </a> to create a webhook url.
                                 </span>
                             </div>
                         </div>
@@ -165,8 +164,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-label vertical-center">Context </div>
-                                
-                                    <mat-radio-group class="context-toggle" aria-label="Select the Context" 
+
+                                    <mat-radio-group class="context-toggle" aria-label="Select the Context"
                                         [value]="recipientsFormData[_recipientType.oc].context"
                                         (change)="updateRecipient(recipientsFormData[_recipientType.oc], 'context', $event.value)"
                                         >
@@ -176,7 +175,7 @@
                                 <div class="info">
                                     <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon> Live alerts processed by the OC; Analysis for onboarding.
                                 </div>
-                               
+
                             </div>
                             <div class="form-group">
                                 <div class="form-label vertical-center">OpsDB Property </div>
@@ -191,12 +190,12 @@
                                 <div class="info">
                                     <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon> The property owner of the alerts - must exactly match OpsDB.
                                 </div>
-                                
+
                             </div>
                             <div class="form-group">
                                 <div>
-                                    <a href="https://vzbuilders.service-now.com/nav_to.do?uri=%2Fcom.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3Dd0f777c64ffc1b40eee3b47f0210c7b8" target="_blank">Onboard</a> to use the OC.
-                                    For more information, refer to the <a href="https://git.ouroath.com/pages/monitoring/horizon_userguide/alerts/recipients/#operations-center-oc" target="_blank"> user-guide</a>
+                                    <a href="{{environment.alert.recipient.oc.onboardUrl}}" target="_blank">Onboard</a> to use the OC.
+                                    For more information, refer to the <a href="{{environment.alert.recipient.oc.guideUrl}}" target="_blank"> user-guide</a>
                                 </div>
                             </div>
                         </div>

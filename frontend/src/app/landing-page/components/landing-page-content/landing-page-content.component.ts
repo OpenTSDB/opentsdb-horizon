@@ -1,11 +1,20 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material';
 
+import {
+    Select,
+    Store,
+} from '@ngxs/store';
 
+import {
+    DbfsResourcesState
+} from '../../../app-shell/state/dbfs-resources.state';
+import { LoggerService } from '../../../core/services/logger.service';
+import { DbfsState } from '../../../app-shell/state';
 
 // import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
@@ -17,6 +26,13 @@ import { MatSnackBar } from '@angular/material';
 })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
+
+    // Subscriptions
+    private subscription: Subscription = new Subscription();
+
+    // state stuff
+    @Select(DbfsState.getUser()) user$: Observable<any>;
+    user: any;
 
     /** Local variables */
 
@@ -42,10 +58,10 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
             label: 'Namespaces',
             value: 'namespace'
         },
-        {
+        /*{
             label: 'Metrics',
             value: 'metric'
-        },
+        },*/
         {
             label: 'Users',
             value: 'user'
@@ -89,7 +105,6 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
 
     /** Form Group */
     searchFormGroup: FormGroup;
-    routeQueryParamsSub: Subscription;
 
     constructor(
         // private dbService: DashboardService,
@@ -97,21 +112,29 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private store: Store,
+        private logger: LoggerService
     ) { }
 
     ngOnInit() {
         this.createSearchForm();
-        this.routeQueryParamsSub = this.route.queryParams.subscribe(params => {
+        this.subscription.add(this.route.queryParams.subscribe(params => {
             // console.log("comes in router params....", params)
             if (params['db-delete']) {
                 this.snackBar.open('Dashboard has been deleted.', '', {
                     horizontalPosition: 'center',
                     verticalPosition: 'top',
                     duration: 5000,
-                    panelClass: 'info'});
+                    panelClass: 'info'
+                });
             }
-        });
+        }));
+
+        this.subscription.add(this.user$.subscribe(user => {
+            // this.logger.log('USER', user);
+            this.user = user;
+        }));
     }
 
     createSearchForm() {
@@ -151,7 +174,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.routeQueryParamsSub.unsubscribe();
+        this.subscription.unsubscribe();
     }
 
 }

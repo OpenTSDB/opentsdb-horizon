@@ -8,6 +8,8 @@ import { Store, Select } from '@ngxs/store';
 // tslint:disable-next-line:max-line-length
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
+import { UtilsService } from '../../../../../core/services/utils.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -20,7 +22,7 @@ import { Observable, Subscription } from 'rxjs';
 
 export class AlertConfigurationContactsComponent implements OnInit, OnChanges, OnDestroy {
     @HostBinding('class.alert-configuration-contacts-component') private _hostClass = true;
-    constructor(private eRef: ElementRef, private store: Store) { }
+    constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService) { }
 
     @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger }) private megaPanelTrigger: MatMenuTrigger;
     @ViewChild('recipientInput', { read: MatInput }) private recipientInput: MatInput;
@@ -44,6 +46,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
+    environment = environment;
+    slackWebhookMaxLength = 200;
+    opsGenieApiKeyMaxLength = 200;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template
@@ -110,14 +115,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     get types(): Array<string> {
-        const types = Object.keys(RecipientType);
-        // todo: enable http
-        for (let i = 0; i < types.length; i++) {
-            if (types[i] === 'http') {
-              types.splice(i, 1);
-            }
-         }
-        return types;
+        return Object.keys(RecipientType)
+            .filter(t => environment.alert.recipient[t])
+            .filter(t => environment.alert.recipient[t].enable);
     }
 
     /** ANGULAR INTERFACE METHODS */
@@ -138,6 +138,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             for (let type in _data.recipients) {
                 let recipients = _data.recipients[type];
                 if (recipients) {
+                    // sort by name
+                    recipients.sort((a: any, b: any) => {
+                        return this.utils.sortAlphaNum(a.name, b.name);
+                    });
                     for (let _recipient of recipients) {
                         _recipient.type = type.toLowerCase();
                         this.namespaceRecipients.push(_recipient);
@@ -153,9 +157,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.lastUpdatedRecipientSub = this._recipientLastUpdated$.subscribe(data => {
             if (data && data.action) {
                 if (data.action.toLowerCase() === 'delete') {
-                    this.removeRecipientFromAlertRecipients(data.recipient.name, data.recipient.type);
-                } else if (data.action.toLowerCase() === 'update') {
-                    this.modifyRecipientNameInAlertRecipients(data.recipient.name, data.recipient.newname, data.recipient.type);
+                    this.removeRecipientFromAlertRecipients(data.recipient.id);
+                } else if (data.action.toLowerCase() === 'update' || data.action.toLowerCase() === 'add') {
+                    this.modifyRecipientNameInAlertRecipients(data.recipient);
                 }
             }
         });
@@ -172,7 +176,14 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             for (let type in this.selectedAlertRecipients) {
                 let alertRecipients = this.selectedAlertRecipients[type];
                 for (let recipient of alertRecipients) {
-                    this.alertRecipients.push({name: recipient.name, type: type});
+                    const o: any = { name: recipient.name, type: type };
+                    if ( recipient.id !== undefined ) {
+                        o.id = recipient.id;
+                    }
+                    if ( type === RecipientType.email ) {
+                        o.email = recipient.name;
+                    }
+                    this.alertRecipients.push(o);
                 }
             }
         }
@@ -282,6 +293,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     saveCreatedRecipient($event) {
         let newRecipient = { ... this.recipientsFormData[this.recipientType] };
         newRecipient.namespace = this.namespace;
+        if (this.recipientType === RecipientType.email) {
+            newRecipient.email = newRecipient.name;
+        }
         this.store.dispatch(new PostRecipient(newRecipient));
         this.setViewMode($event, Mode.all);
     }
@@ -291,10 +305,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let updatedRecipient: any = {};
         updatedRecipient = { ... this.recipientsFormData[this.recipientType] };
         updatedRecipient.namespace = this.namespace;
-        if (this.recipientsFormData[this.recipientType].name !== this.originalName) {
-            updatedRecipient.name = this.originalName;
-            updatedRecipient.newname = this.recipientsFormData[this.recipientType].name;
-        }
+
         this.store.dispatch(new UpdateRecipient(updatedRecipient));
         this.setViewMode($event, Mode.all);
         this.emitAlertRecipients();
@@ -305,16 +316,15 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     deleteRecipient($event: Event, recipient: Recipient) {
-        this.removeRecipient(recipient.name, recipient.type);
+        this.removeRecipient(recipient.id, recipient.type);
         this.setViewMode($event, Mode.edit);
     }
 
     cancelEdit($event: Event) {
         // reset to old contact
         for (let i = 0; i < this.alertRecipients.length; i++) {
-            if (this.alertRecipients[i].name === this.recipientsFormData[this.recipientType].name &&
-                this.alertRecipients[i].type === this.recipientsFormData[this.recipientType].type) {
-                this.alertRecipients[i] = { name: this.tempRecipient.name, type: this.tempRecipient.type };
+            if (this.alertRecipients[i].id === this.recipientsFormData[this.recipientType].id) {
+                this.alertRecipients[i] = { id: this.tempRecipient.id, name: this.tempRecipient.name, type: this.tempRecipient.type };
                 break;
             }
         }
@@ -357,31 +367,40 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let recipient = this.getRecipientIfUniqueName(recipientName);
 
         if (recipient) {
-          this.addRecipientToAlertRecipients(null, recipient.name, recipient.type);
+          this.addRecipientToAlertRecipients(null, recipient.id, recipient.name, recipient.type);
         } else {
           if (this.isEmailValid(recipientName)) {
             this.recipientType = RecipientType.email;
             this.recipientsFormData[this.recipientType].name = recipientName;
             this.saveCreatedRecipient(null);
-            this.addRecipientToAlertRecipients(null, this.recipientsFormData[this.recipientType].name, this.recipientType);
+            // tslint:disable-next-line:max-line-length
+            this.addRecipientToAlertRecipients(null, this.recipientsFormData[this.recipientType].id, this.recipientsFormData[this.recipientType].name, this.recipientType);
           }
         }
     }
 
-    addRecipientToAlertRecipients($event: Event, name: string, type: RecipientType) {
+    addRecipientToAlertRecipients($event: Event, id: number, name: string, type: RecipientType) {
         if ($event) {
             $event.stopPropagation();
         }
         if (!this.isAlertRecipient(name, type)) {
-            this.alertRecipients.push({ name: name, type: type });
+            const o: any = { name: name, type: type };
+            if ( id ) {
+                o.id = id;
+            }
+            if ( type === RecipientType.email ) {
+                o.email = name;
+            }
+            this.alertRecipients.push(o);
             this.emitAlertRecipients();
         }
     }
 
-    modifyRecipientNameInAlertRecipients(name: string, newName: string, type: RecipientType) {
+    modifyRecipientNameInAlertRecipients(recipient) {
         for (let index = 0; index < this.alertRecipients.length; index++) {
-          if (this.alertRecipients[index].name === name && this.alertRecipients[index].type === type) {
-            this.alertRecipients[index].name = newName;
+          if (this.alertRecipients[index].id === recipient.id ) {
+            this.alertRecipients[index].id = recipient.id;
+            this.alertRecipients[index].name = recipient.name;
             this.emitAlertRecipients();
             break;
           }
@@ -406,13 +425,13 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
     }
 
-    removeRecipient(name: string, type: RecipientType) {
-        this.store.dispatch(new DeleteRecipient({ namespace: this.namespace, name: name, type: type }));
+    removeRecipient(id: number, type: RecipientType) {
+        this.store.dispatch(new DeleteRecipient({ namespace: this.namespace, id: id, type: type }));
     }
 
-    removeRecipientFromAlertRecipients(name: string, type: RecipientType) {
+    removeRecipientFromAlertRecipients(id: number) {
         for (let index = 0; index < this.alertRecipients.length; index++) {
-            if (this.alertRecipients[index].name === name && this.alertRecipients[index].type === type) {
+            if (this.alertRecipients[index].id === id) {
                 this.alertRecipients.splice(index, 1);
                 this.emitAlertRecipients();
                 break;
@@ -489,10 +508,18 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         return re.test(email);
     }
 
+    isSlackWebhookCorrectLength(webhook: string): boolean {
+        return webhook && webhook.length > 0 && webhook.length <= this.slackWebhookMaxLength;
+    }
+
+    isOpsGenieApiKeyCorrectLength(apiKey: string): boolean {
+        return apiKey && apiKey.length > 0 && apiKey.length <= this.opsGenieApiKeyMaxLength;
+    }
+
     getRecipientItemsByType(type) {
         if (this.viewMode === Mode.all) {
             // all mode (show only unselected)
-            return this.getUnselectedRecipientsForType(type);
+            return this.getAllRecipientsForType(type);
         } else {
             // edit mode (show all)
             return this.getAllRecipientsForType(type);
@@ -560,13 +587,33 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    slackWebookValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isSlackWebhookCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
+    opsGenieApiKeyValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isOpsGenieApiKeyCorrectLength(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
+        this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
+        this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
         this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
         this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);
+    }
+
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
     }
 
     // NOTE: Not sure we need this any more

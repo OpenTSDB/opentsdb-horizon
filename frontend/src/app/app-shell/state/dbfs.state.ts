@@ -52,7 +52,8 @@ export class DbfsState {
 
     @Selector([DBState])
     static getLoadedDashboardId(dbstate) {
-        return dbstate.id;
+        // console.log('DBSTATE from DBFS', dbstate);
+        return dbstate.id || false;
     }
 
     // utility selector to get a users profile
@@ -136,7 +137,7 @@ export class DbfsState {
     // this selector is meant to return data in a format similar to what was originally defined in <DBState>Dashboard.UserSettings
     // will default to activeUser (Browser Session User)
     static getUserFolderData(userid?: any) {
-        console.log('DBFS getUserFolderData', userid);
+        // console.log('DBFS getUserFolderData', userid);
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
 
             if (state.loaded === false) {

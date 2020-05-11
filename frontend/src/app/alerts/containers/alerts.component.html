@@ -19,7 +19,7 @@
         </div>
         <div class="control-item alert-filter-input">
             <mat-form-field appearance="fill" floatLabel="never">
-                <input matInput placeholder="Filter alerts"
+                <input matInput placeholder="Filter alerts by name, recipients, bad, disabled, etc."
                     *ngIf="list === 'alerts'"
                     autocomplete="off"
                     [formControl] = "alertSearch">
@@ -48,7 +48,7 @@
         <div class="alert-results-wrapper">
             <div class="alert-results-body has-scroller">
                 <div class="is-scroller">
-                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc">
+                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc" matSortActive="updatedTime" matSortDirection="desc">
                         <ng-container matColumnDef="select">
                             <th mat-header-cell *matHeaderCellDef>
                                 <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -68,7 +68,7 @@
 
                         <ng-container matColumnDef="name">
                             <th mat-header-cell *matHeaderCellDef>
-                                <span *ngIf="!selection.hasValue()" mat-sort-header="name">Alert Name</span>
+                                <span *ngIf="!selection.hasValue()" mat-sort-header>Alert Name</span>
                                 <div class="bulk-actions-wrapper" *ngIf="selection.hasValue()">
                                     <button mat-button color="primary" (click)="bulkDisableAlerts()">
                                         <mat-icon fontSet="denali" fontIcon="d-notification-disable"></mat-icon>
@@ -83,10 +83,12 @@
                             <td mat-cell *matCellDef="let element">
                                 <span class="alert-name">{{element.name}}</span>
                                 <div class="edit-actions-wrapper" *ngIf="hasNamespaceWriteAccess">
-                                    <button mat-button color="primary" (click)="editAlert(element)">
-                                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                        <span>edit</span>
-                                    </button>
+                                    <a  [routerLink]="[ '/a', element.id, element.namespace, element.slug, 'edit']" (click)="detailsMode='edit'">
+                                        <button mat-button color="primary">
+                                            <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                            <span>edit</span>
+                                        </button>
+                                    </a>
                                     <button mat-button color="primary" (click)="createAlertSnooze(element.id)">
                                         <mat-icon fontSet="denali" fontIcon="d-notification-snooze"></mat-icon>
                                         <span>Snooze</span>
@@ -349,7 +351,7 @@
                     <div class="contact-list-type-wrapper">
                         <mat-list dense disableRipple="false">
                             <mat-list-item *ngFor="let recipient of element.recipients[contactType]">
-                                <span class="recipient-label">{{contactType === 'slack' ? '#' + recipient.name : recipient.name}}</span>
+                                <span class="recipient-label">{{contactType === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}</span>
                             </mat-list-item>
                         </mat-list>
                     </div>
@@ -408,7 +410,7 @@
 
 <!-- PORTAL TEMPLATE FOR HEADER BAR -->
 <ng-template #alertspageNavbarTmpl>
-    <div class="navbar-item">
+    <div class="navbar-item" style="margin-left: 10px;">
         <span class="dashboard-name">Alerts Management</span>
     </div>
 

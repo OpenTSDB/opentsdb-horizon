@@ -57,6 +57,12 @@
 @import 'components/widget-config-multigraph/widget-config-multigraph.component';
 
 
+@import 'components/widget-projection/widget-projection.component';
+@import 'components/simple-dashboard-list/simple-dashboard-list.component';
+@import 'components/simple-favorites-list/simple-favorites-list.component';
+@import 'components/simple-recents-list/simple-recents-list.component';
+@import 'components/simple-namespaces-list/simple-namespaces-list.component';
+
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin sharedcomponents-module-core() {
     // include your core mixins
@@ -96,6 +102,13 @@
     @include widget-config-sorting-component-base();
     @include widget-config-events-component-base();
     @include widget-config-multigraph-component-base();
+
+    @include widget-projection-component-base();
+    @include simple-dashboard-list-component-base();
+    @include simple-favorites-list-component-base();
+    @include simple-recents-list-component-base();
+    @include simple-namespaces-list-component-base();
+
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
@@ -137,4 +150,10 @@
     @include widget-config-sorting-component-theme($theme-config);
     @include widget-config-events-component-theme($theme-config);
     @include widget-config-multigraph-component-theme($theme-config);
+
+    @include widget-projection-component-theme($theme-config);
+    @include simple-dashboard-list-component-theme($theme-config);
+    @include simple-favorites-list-component-theme($theme-config);
+    @include simple-recents-list-component-theme($theme-config);
+    @include simple-namespaces-list-component-theme($theme-config);
 }

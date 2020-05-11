@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 export interface AppShellStateModel {
     currentTheme: string;
     currentMediaQuery: string;
-    // userProfile: any;
+    userProfile: any;
     error: any;
 }
 
@@ -36,7 +36,6 @@ export class SetCurrentMediaQuery {
     constructor() {}
 }
 
-/*
 export class SSGetUserProfileSuccess {
     static readonly type = '[DashboardNavigator] Get User profile [SUCCESS]';
     constructor(
@@ -68,7 +67,7 @@ export class SSCreateUserProfileFail {
     constructor(
         public readonly error: any
     ) {}
-}*/
+}
 
 
 /** Define State */
@@ -77,9 +76,9 @@ export class SSCreateUserProfileFail {
     defaults: {
         currentTheme: 'developing',
         currentMediaQuery: '',
-        // userProfile: {
-        //     loaded: false
-        // },
+        userProfile: {
+            loaded: false
+        },
         error: false
     }
 })
@@ -108,10 +107,10 @@ export class AppShellState {
         return state.error;
     }
 
-    /*@Selector()
+    @Selector()
     static getUserProfile(state: AppShellStateModel) {
         return state.userProfile;
-    }*/
+    }
 
     @Selector()
     static getCurrentTheme(state: AppShellStateModel) {
@@ -140,7 +139,7 @@ export class AppShellState {
         ctx.setState({...state, currentMediaQuery });
     }
 
-    /*
+
     @Action(SSGetUserProfile)
     GetUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSGetUserProfile) {
         this.logger.state('AppShellState :: Get user profile');
@@ -171,13 +170,15 @@ export class AppShellState {
 
     @Action(SSGetUserProfileFail)
     GetUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSGetUserProfileFail) {
+        // throw error since previous call should create user if not there.
         this.logger.error('AppShellState :: Get user profile', error);
-        if ( error.status === 404 ) {
+        /* if ( error.status === 404 ) {
             ctx.dispatch(new SSCreateUserProfile()); // 404 means the profile does not exist
-        }
+        } */
         ctx.dispatch({error: error});
     }
 
+    /* remove later after test for new user provision
     @Action(SSCreateUserProfile)
     CreateUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSCreateUserProfile) {
         this.logger.state('AppShellState :: Create user profile');
@@ -190,7 +191,6 @@ export class AppShellState {
             catchError( error => ctx.dispatch(new SSCreateUserProfileFail(error)))
         );
     }
-
     @Action(SSCreateUserProfileSuccess)
     CreateUserProfileSuccess(ctx: StateContext<AppShellStateModel>, { response }: SSCreateUserProfileSuccess) {
         const state = ctx.getState();
@@ -209,6 +209,6 @@ export class AppShellState {
     CreateUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSCreateUserProfileFail) {
         this.logger.error('AppShellState :: Create user profile', error);
         ctx.dispatch({error: error});
-    }*/
-
+    }
+    */
 }

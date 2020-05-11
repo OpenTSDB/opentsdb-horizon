@@ -132,6 +132,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = arrayControl.at(index);
         if (selControl.invalid) { return; } // no go futher if no tagkey and alias defined.
         const val = selControl.get('display').value;
+        const initVal = this.checkRegexp(selControl.get('filter').value) ? val : '';
         // only when it not there
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
@@ -139,7 +140,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
         this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
-                startWith(val),
+                startWith(initVal),
                 distinctUntilChanged(),
                 debounceTime(200)
             ).subscribe(val => {

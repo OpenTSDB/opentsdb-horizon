@@ -44,6 +44,7 @@ import {
     SetNamespace,
     SaveSnoozes
 } from '../state/alerts.state';
+import { DbfsResourcesState } from '../../app-shell/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
 import { SnoozeState, GetSnoozeDetailsById } from '../state/snooze.state';
 
@@ -104,6 +105,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     @Select(AlertsState.getLoaded) loaded$: Observable<any>;
     stateLoaded: any = {};
+
+    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
 
     @Select(AlertsState.getSelectedNamespace) selectedNamespace$: Observable<any>;
     selectedNamespace = '';
@@ -190,6 +193,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     namespaces: any[] = [];
     alertFilterTypes = ['all', 'alerting', 'snoozed', 'disabled'];
     alertsFilterRegexp = new RegExp('.*');
+    snoozeFilterRegexp = new RegExp('.*');
 
     @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
     @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
@@ -251,6 +255,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
     booleanConditionalKeys: string[] = ['enabled'];
 
+    // where to navigate on save
+    dashboardId = -1;
+
     constructor(
         private store: Store,
         private dialog: MatDialog,
@@ -293,31 +300,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.alertSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            if (this.alertsDataSource) {
-                this.alertsDataSource.filter = val;
-                this.alertsDataSource.filterPredicate = (data: AlertModel, filter: string) => {
-                    let d: any = JSON.parse(JSON.stringify(data));
-                    d.updatedTime = this.formatAlertTimeModified(d);
-                    let sanitizedDataStr = '';
-                    for (let i = 0; i < Object.keys(d).length; i++) {
-                        const key = Object.keys(d)[i];
-                        if (this.whitelistKeys.includes(key)) {
-                            sanitizedDataStr += ' ' + JSON.stringify(d[key]);
-                        } else if (this.nonZeroConditionalKeys.includes(key)) {
-                            if (d[key] > 0) {
-                                sanitizedDataStr += ' ' + key + ' ' + d[key];
-                            }
-                        } else if (this.booleanConditionalKeys.includes(key)) {
-                            if (key === 'enabled' && d[key]) {
-                                sanitizedDataStr += ' enabled';
-                            } else {
-                                sanitizedDataStr += ' disabled';
-                            }
-                        }
-                    }
-                    return sanitizedDataStr.toLocaleLowerCase().match(this.alertsFilterRegexp);
-                };
-            }
+            this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
@@ -325,9 +308,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         ).subscribe(val => {
             this.snoozeSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
-            if (this.snoozesDataSource) {
-                this.snoozesDataSource.filter = val;
-            }
+            this.snoozeFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
+            this.setSnoozeTableDataSource(this.getFilteredSnoozes(this.snoozeFilterRegexp, this.snoozes));
         }));
 
         // setup navbar portal
@@ -336,7 +318,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.loaded$.subscribe(data => {
             this.stateLoaded = JSON.parse(JSON.stringify(data));
-            if (!this.stateLoaded.userNamespaces) {
+        }));
+
+        this.subscription.add(this.resourcesLoaded$.subscribe( rloaded => {
+            const dynamicLoaded = this.store.selectSnapshot(AlertsState.getLoaded);
+            if ( rloaded && !dynamicLoaded.allNamespaces) {
                 this.store.dispatch(
                     new LoadNamespaces({
                         guid: this.guid,
@@ -371,7 +357,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.userNamespaces$.subscribe(data => {
-            this.userNamespaces = data;
+            const dataCopy = this.utils.deepClone(data);
+            dataCopy.sort((a: any, b: any) => {
+                return this.utils.sortAlphaNum(a.name, b.name);
+            });
+            this.userNamespaces = dataCopy;
+
             if (this.stateLoaded.userNamespaces) {
                 this.configLoaded$.next(true);
                 this.configLoaded$.complete();
@@ -381,8 +372,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alerts$.pipe(skip(1)).subscribe(alerts => {
             this.stateLoaded.alerts = true;
             this.alerts = JSON.parse(JSON.stringify(alerts));
-            this.setTableDataSource();
             this.setAlertListMeta();
+            this.retriggerAlertSearch();
         }));
 
         this.subscription.add(this.snoozes$.pipe(skip(1)).subscribe(snoozes => {
@@ -396,7 +387,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 }
                 return d;
             });
-            this.setSnoozeTableDataSource();
+            this.retriggerSnoozeSearch();
         }));
 
         this.subscription.add(this.status$.subscribe(status => {
@@ -435,6 +426,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     panelClass: 'info'
                 });
             }
+            this.retriggerAlertSearch();
+            this.retriggerSnoozeSearch();
         }));
 
         this.subscription.add(this.editItem$.pipe(filter(data => Object.keys(data).length !== 0), distinctUntilChanged())
@@ -524,6 +517,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.saveError$.subscribe(error => {
+
+            if (!error) {
+                if (this.dashboardId > 0) {
+                    this.location.go('d/' + this.dashboardId);
+                    this.router.navigate(['d', this.dashboardId]);
+                } else {
+                    this.location.go('a/' + this.selectedNamespace);
+                }
+            }
+
             if (this.list === 'alerts' && this.createAlertDialog) {
                 this.createAlertDialog.data.error = error;
             }
@@ -639,6 +642,56 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     }
 
+    getFilteredAlerts(regexFilter: RegExp, alerts: AlertModel[]) {
+        const filteredAlerts = [];
+        for (const data of alerts) {
+            const d: any = JSON.parse(JSON.stringify(data));
+            d.updatedTime = this.formatAlertTimeModified(d);
+            let sanitizedDataStr = '';
+            for (let i = 0; i < Object.keys(d).length; i++) {
+                const key = Object.keys(d)[i];
+                if (this.whitelistKeys.includes(key)) {
+                    sanitizedDataStr += ' ' + JSON.stringify(d[key]);
+                } else if (this.nonZeroConditionalKeys.includes(key)) {
+                    if (d[key] > 0) {
+                        sanitizedDataStr += ' ' + key + ' ' + d[key];
+                    }
+                } else if (this.booleanConditionalKeys.includes(key)) {
+                    if (key === 'enabled' && d[key]) {
+                        sanitizedDataStr += ' enabled';
+                    } else {
+                        sanitizedDataStr += ' disabled';
+                    }
+                }
+            }
+
+            if (regexFilter.test(sanitizedDataStr.toLowerCase())) {
+                filteredAlerts.push(data);
+            }
+        }
+        return filteredAlerts;
+    }
+
+    getFilteredSnoozes(regexFilter: RegExp, snoozes: AlertModel[]) {
+        const filteredSnoozes = [];
+        for (const data of snoozes) {
+            const d: any = JSON.parse(JSON.stringify(data));
+            d.updatedTime = this.formatAlertTimeModified(d);
+            let sanitizedDataStr = '';
+            for (let i = 0; i < Object.keys(d).length; i++) {
+                const key = Object.keys(d)[i];
+                sanitizedDataStr += ' ' + JSON.stringify(d[key]);
+                if (key === 'alertIds') {
+                    sanitizedDataStr += ' ' + JSON.stringify(this.getAlertNamesByIds(d[key]));
+                }
+            }
+            if (regexFilter.test(sanitizedDataStr.toLowerCase())) {
+                filteredSnoozes.push(data);
+            }
+        }
+        return filteredSnoozes;
+    }
+
     setNavbarPortal() {
         this.interCom.requestSend({
             action: 'clearSystemMessage',
@@ -661,10 +714,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     setNamespace(namespace) {
         if (this.selectedNamespace !== namespace) {
             this.store.dispatch(new SetNamespace(namespace));
+            if (this.alertSearch) {
+                this.alertSearch.setValue('');
+            }
         }
-        // clear out those value.
-        if (this.alertSearch) this.alertSearch.setValue('');
-        if (this.snoozeSearch) this.snoozeSearch.setValue('');
+
+        if (this.snoozeSearch) {
+            this.snoozeSearch.setValue('');
+        }
     }
 
     handleNamespaceChange(namespace) {
@@ -693,13 +750,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     /** privates */
-    private setTableDataSource() {
-        this.alertsDataSource = new MatTableDataSource<AlertModel>(this.alerts);
+    private setTableDataSource(alerts: AlertModel[]) {
+        this.alertsDataSource = new MatTableDataSource<AlertModel>(alerts);
         this.alertsDataSource.paginator = this.paginator;
     }
 
-    setSnoozeTableDataSource() {
-        this.snoozesDataSource = new MatTableDataSource<any>(this.snoozes);
+    private setSnoozeTableDataSource(snoozes: AlertModel[]) {
+        this.snoozesDataSource = new MatTableDataSource<any>(snoozes);
     }
 
     setAlertListMeta() {
@@ -857,16 +914,34 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     convertQueryFromDashboardToAlert(queries, tplVariables) {
         const convertQueries = this.utils.deepClone(queries);
+
+        // loop through original queries since we are modifying the arrays
         for (const q of queries) {
             for (const f of q.filters) {
-                for (const customFilter of f.customFilter) {
-                    const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
-                    this.moveCustomFilterToFilter(convertQueries, f.tagk, filterValue, customFilter);
+                if (f.customFilter) {
+                    for (const customFilter of f.customFilter) {
+                        const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
+                        this.moveCustomFilterToFilter(convertQueries, q.id, f.tagk, filterValue, customFilter);
+                    }
                 }
             }
         }
+
         this.removeEmptyFilters(convertQueries);
+
+        // sanitize visual settings
+        for (const q of convertQueries) {
+            q.settings = this.generateDefaultVisibilty();
+            for (const m of q.metrics) {
+                m.settings = this.generateDefaultVisibilty();
+            }
+        }
+
         return convertQueries;
+    }
+
+    generateDefaultVisibilty() {
+        return { visual: { visible: true } };
     }
 
     convertEventQueryFromDashboardToAlert(queries: any) {
@@ -881,26 +956,30 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     getTplValueForAlias(tplVariables, alias: string) {
-        for (const tvar of tplVariables.tvars) {
-            if ('[' + tvar.alias + ']' === alias) {
-                return tvar.filter;
+        if (tplVariables.tvars) {
+            for (const tvar of tplVariables.tvars) {
+                if ('[' + tvar.alias + ']' === alias) {
+                    return tvar.filter;
+                }
             }
         }
         return '';
     }
 
-    moveCustomFilterToFilter(queries, tagKey, tagValue, customFilter) {
+    moveCustomFilterToFilter(queries, qId, tagKey, tagValue, customFilter) {
         for (const q of queries) {
-            for (const f of q.filters) {
-                if (f.tagk === tagKey) {
-                    if (tagValue) { // add to filters
-                        f.filter.push(tagValue);
+            if (qId === q.id) {
+                for (const f of q.filters) {
+                    if (f.tagk === tagKey) {
+                        if (tagValue) { // add to filters
+                            f.filter.push(tagValue);
+                        }
+                        const index = f.customFilter.indexOf(customFilter);
+                        if (index > -1) { // remove from customFilters
+                            f.customFilter.splice(index, 1);
+                        }
+                        return;
                     }
-                    const index = f.customFilter.indexOf(customFilter);
-                    if (index > -1) { // remove from customFilters
-                        f.customFilter.splice(index, 1);
-                    }
-                    return;
                 }
             }
         }
@@ -911,7 +990,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             const filtersToRemove = [];
             let index = 0;
             for (const f of q.filters) { // find indices to remove
-                if (f.customFilter.length === 0 && f.filter.length === 0) {
+                if (f.customFilter && f.customFilter.length === 0 && f.filter && f.filter.length === 0) {
                    filtersToRemove.push(index);
                 }
                 index++;
@@ -992,9 +1071,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     configurationEdit_change(message: any) {
         switch (message.action) {
             case 'SaveAlert':
+                if (message.dashboard && message.dashboard > 0) {
+                    this.dashboardId = message.dashboard;
+                }
                 // lets save this thing
                 this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
-                this.location.go('a/' + message.namespace);
+                this.router.navigateByUrl('a/' + this.selectedNamespace);
                 break;
             case 'SaveSnooze':
                 this.store.dispatch(new SaveSnoozes(message.namespace, message.payload));
@@ -1003,7 +1085,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             case 'CancelSnoozeEdit':
                 this.detailsView = false;
                 this.location.go('a/snooze/' + this.selectedNamespace);
-                this.setSnoozeTableDataSource();
                 break;
            case 'CancelToAlerts':
                 this.switchType('alerts');
@@ -1013,25 +1094,30 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             default:
                 // this is when dialog is closed to return to summary page
                 this.detailsView = false;
-                this.location.go('a/' + this.selectedNamespace);
+                this.router.navigateByUrl('a/' + this.selectedNamespace);
                 break;
         }
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
-            this.setTableDataSource();
-            this.retriggerAlertSearch();
-            this.retriggerSnoozeSearch();
         }
+        this.retriggerAlertSearch();
+        this.retriggerSnoozeSearch();
     }
 
     retriggerAlertSearch() {
-        this.alertSearchDebounceTime = 0;
-        this.alertSearch.setValue(this.alertSearch.value);
+        const val = this.alertSearch.value;
+        if (this.alertSearch) {
+            this.alertSearchDebounceTime = 0;
+            this.alertSearch.setValue(val);
+        }
     }
 
     retriggerSnoozeSearch() {
-        this.snoozeSearchDebounceTime = 0;
-        this.snoozeSearch.setValue(this.snoozeSearch.value);
+        const val = this.snoozeSearch.value;
+        if (this.snoozeSearch) {
+            this.snoozeSearchDebounceTime = 0;
+            this.snoozeSearch.setValue(val);
+        }
     }
 
     selectSparklineDisplayOption(option: any) {
@@ -1053,6 +1139,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     formatTime(time: any) {
         return moment(time).format('YYYY-MM-DD  hh:mm a');
+    }
+
+    trimRecipientName(name) {
+        return name.replace(/^\#/, '');
     }
 
     getRecipientKeys(element: any) {

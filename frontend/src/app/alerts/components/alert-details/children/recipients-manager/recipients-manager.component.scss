@@ -11,7 +11,7 @@
             left: 0;
             right: 0;
         }
-        
+
         .mat-chip {
             .chip-image {
                 width: 16px;
@@ -54,7 +54,7 @@
         display: none;
     }
 
-    .mega-panel-cdk-backdrop.is-dim { 
+    .mega-panel-cdk-backdrop.is-dim {
         display: block;
     }
 
@@ -134,18 +134,30 @@
                     .mat-list {
                         .mat-list-item {
                             position: relative;
-                            height: 30px;
+                            height: initial;
+                            min-height: 20px;
+                            margin-bottom: 10px;
+                            align-items: center;
 
                             &.no-highlight {
                                 pointer-events: none;
                                 cursor: initial;
+                            }
+                            &.is-disabled {
+                                pointer-events: none;
+                                cursor: not-allowed;
+                                opacity: 0.5;
+                                .add-contact {
+                                    visibility: hidden;
+                                }
                             }
                         }
 
                         .recipient-label {
                             display: inline-flex;
                             position: relative;
-                            line-height: 12px;
+                            line-height: 16px;
+                            max-width: 130px;
                         }
 
                         .admin-tag {
@@ -161,18 +173,33 @@
                             padding: 2px;
                         }
                     }
+
+                    &.email-contact-wrapper {
+                        .mat-list-item {
+                            min-height: 30px;
+                            margin-bottom: 0px;
+
+                            &.no-highlight {
+                                margin-bottom: 8px;
+                            }
+                        }
+                    }
                 }
 
                 .contact-item-actions {
                     margin-right: -8px;
+                    align-self: flex-start;
+                    white-space: nowrap;
 
                     .mat-icon-button {
                         width: 24px;
                         height: 24px;
-                        line-height: 24px;
+                        line-height: 16px;
 
                         .mat-icon {
                             margin-right: 0;
+                            line-height: 16px;
+                            vertical-align: top;
                         }
                     }
                 }
@@ -197,7 +224,7 @@
             &:not(:last-child) {
                 margin-bottom: 24px;
             }
-            
+
             .form-label {
                 height: 32px;
                 width: 180px;
@@ -222,7 +249,7 @@
 
             .wide-formfield {
                 width: 80%;
-                
+
             }
 
             .context-toggle {
@@ -309,7 +336,7 @@
         .existing-contacts {
 
             .contact-list-type {
-                
+
                 &:not(:last-child) {
                     border-right: 1px solid $divider;
                 }
