@@ -179,6 +179,17 @@
                             min-height: 30px;
                             margin-bottom: 0px;
 
+                            .recipient-label {
+                                .recipient {
+                                    display: inline-block;
+                                    line-height: 16px;
+                                    width: 130px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                }
+                            }
+
                             &.no-highlight {
                                 margin-bottom: 8px;
                             }

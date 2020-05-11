@@ -16,8 +16,8 @@
                     <th mat-header-cell *matHeaderCellDef> Visited </th>
                     <td mat-cell *matCellDef="let element">
                         <div class="recent-labels">
-                            <span class="visited-date">{{element.lastVisitedTime | date: 'mediumDate'}}</span>
-                            <span class="visited-time">{{element.lastVisitedTime | date: 'shortTime'}}</span>
+                            <span class="visited-date">{{element.lastVisitedTime | dateToRelative}}</span>
+                            <!--<span class="visited-time">{{element.lastVisitedTime | date: 'shortTime'}}</span>-->
                         </div>
                     </td>
                 </ng-container>

@@ -57,7 +57,11 @@ import { WidgetProjectionComponent } from './components/widget-projection/widget
 import { GraphTypeComponent } from './components/graph-type/graph-type.component';
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
+
+// pipes
 import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pipe';
+import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
+
 
 @NgModule({
     imports: [
@@ -111,7 +115,8 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         GraphTypeComponent,
         AuraDialogComponent,
         InfoTooltipComponent,
-        FormatAutoManualFilterPipe
+        FormatAutoManualFilterPipe,
+        DateToRelativePipe
     ],
     exports: [
         ThemePickerComponent,

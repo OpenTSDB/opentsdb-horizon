@@ -620,11 +620,11 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 height: tooltip.clientHeight
             };
 
-            // scroll container edge detection
-
+            let closeToRight: boolean = false;
             // if close to the right edge, put it left of the cursor
             if (coords.left > (wrapperSize.width - (tooltipSize.width - 30))) {
                 xOffset = - (tooltipSize.width + 10);
+                closeToRight = true;
                 // check if it goes off the left edge of scrollContainer, then put back on right of cursor
                 if ((((coords.left + xOffset) - widgetScrollContainer.scrollLeft) + (xOffset)) < 0) {
                     xOffset = 15;
@@ -650,7 +650,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
 
             // set styles
-            tooltip.style.left = (coords.left + xOffset) + 'px';
+            if (closeToRight) {
+                tooltip.style.right = (wrapperSize.width - coords.left) + 'px';
+                tooltip.style.left = 'initial';
+            } else {
+                tooltip.style.left = (coords.left + xOffset) + 'px';
+                tooltip.style.right = 'initial';
+            }
+
             tooltip.style.top = (coords.top + yOffset) + 'px';
 
         }
