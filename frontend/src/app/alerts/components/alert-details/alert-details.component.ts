@@ -468,7 +468,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     requiresFullWindow: data.threshold.singleMetric.requiresFullWindow || false,
                     reportingInterval: data.threshold.singleMetric.reportingInterval || null,
                     recoveryThreshold: recover,
-                    recoveryType: data.threshold.singleMetric.recoveryType || 'minimum',
+                    recoveryType: recover === null ? 'minimum' : 'specific',
                     // tslint:disable-next-line:max-line-length
                     slidingWindow : data.threshold.singleMetric.slidingWindow ? data.threshold.singleMetric.slidingWindow.toString() : this.defaultSlidingWindowSize,
                     comparisonOperator : data.threshold.singleMetric.comparisonOperator || 'above',
@@ -562,6 +562,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         // tslint:disable-next-line:max-line-length
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryThreshold'].valueChanges.subscribe(val => {
+            const recoveryType = this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].value;
+            if ( val !== null && recoveryType === 'minimum' ) {
+                this.thresholdSingleMetricControls['recoveryType'].setValue('specific');
+            }
             this.setThresholds('recovery', val);
         }));
 
@@ -1569,6 +1573,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     recoveryTypeChange(event: any) {
         const control = <FormControl>this.thresholdSingleMetricControls.recoveryType;
+        if ( event.value === 'minimum' ) {
+            this.thresholdSingleMetricControls.recoveryThreshold.setValue(null);
+        }
         control.setValue(event.value);
     }
 
