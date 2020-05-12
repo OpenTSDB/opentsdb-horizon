@@ -19,13 +19,13 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EMPTY_COLOR, coerceHexaColor } from '../../color-picker';
+import { EMPTY_COLOR, coerceHexaColor, IDefaultColor, IColor, DEFAULT_COLORS } from '../../color-picker';
 import { ColorPickerService } from '../../services/color-picker.service';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatCard } from '@angular/material';
 import { ColorPickerSelectorComponent } from '../../components/color-picker-selector/color-picker-selector.component';
 
-interface IDefaultColor {
+/*interface IDefaultColor {
     text: string;
     value: string;
 }
@@ -33,7 +33,7 @@ interface IDefaultColor {
 interface IColor {
     hex: string;
     rgb: string;
-}
+}*/
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -98,32 +98,7 @@ export class ColorPickerComponent implements OnInit {
     // DropDown and DropDownNoButton outputs custom color when apply is clicked.
     @Output() newColor = new EventEmitter();
 
-    DefaultColors: IDefaultColor[] = [
-        { text: 'Maroon', value: '#B00013' },
-        { text: 'Yellow', value: '#FED800' },
-        { text: 'Blue', value: '#0B5ED2' },
-        { text: 'Lavender', value: '#9971E0' },
-        { text: 'Black', value: '#000000' },
-        { text: 'Red', value: '#DA001B' },
-        { text: 'Lime', value: '#AAEC61' },
-        { text: 'Periwinkle', value: '#B0D9F9' },
-        { text: 'Indigo', value: '#300075' },
-        { text: 'Slate Gray', value: '#4D4D4D' },
-        { text: 'Orange', value: '#ED5A1C' },
-        { text: 'Lime Green', value: '#75D42A' },
-        { text: 'Cyan', value: '#18BDED' },
-        { text: 'Magenta', value: '#B10060' },
-        { text: 'Gray', value: '#888888' },
-        { text: 'Brown', value: '#E28B00' },
-        { text: 'Green', value: '#1CB84F' },
-        { text: 'Aqua', value: '#6DDDFA' },
-        { text: 'Fuchsia', value: '#FB007D' },
-        { text: 'Silver', value: '#CBCBCB' },
-        { text: 'Amber', value: '#F0B200' },
-        { text: 'Olive', value: '#446E17' },
-        { text: 'Purple', value: '#87119A' },
-        { text: 'Pink', value: '#FC5AA8' },
-        { text: 'White', value: '#FFFFFF' }];
+    DefaultColors: IDefaultColor[] = DEFAULT_COLORS;
 
     // Valid picker modes:
     embedded = 'embedded';

@@ -32,6 +32,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
+import { LoggerService } from '../../../../../core/services/logger.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -43,6 +44,7 @@ interface IQueryEditorOptions {
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
+    enableAlias?: boolean;
 }
 
 @Component({
@@ -77,10 +79,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @Input() options: IQueryEditorOptions;
     @Input() tplVariables: any;
     @Input() queries: any[]; // for cross-query
+    @Input() widget: any;
 
     @Output() queryOutput = new EventEmitter;
 
     @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
 
     @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
@@ -94,6 +98,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     isAddExpressionProgress = false;
     editExpressionId = -1;
     editMetricId = -1;
+    editAliasId = -1;
     fg: FormGroup;
     expressionControl: FormControl;
     expressionControls: FormGroup;
@@ -101,6 +106,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     handleBarsRegex = /\{\{(.+?)\}\}/;
     tagFilters = [];
     tplVars = []; // a wrapper object for tplVariables.tvars for pipe since alert component using it.
+
+    visualPanelHighlight: any = false;
 
     timeAggregatorOptions: Array<any> = [
         {
@@ -360,13 +367,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     metricTableDisplayColumns: string[] = [
         'metric-index',
         'name',
-        'modifiers'
+        // 'alias',
+        'modifiers',
+        'action'
     ];
 
     // MAT-TABLE DATA SOURCE
     metricTableDataSource = new MatTableDataSource<any[]>([]);
 
-
+    visualPanelId = -1;
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -374,7 +383,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
-        private interCom: IntercomService
+        private interCom: IntercomService,
+        private logger: LoggerService
     ) {
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
@@ -418,6 +428,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             'deleteQuery': false,
             'toggleQuery': false,
             'cloneQuery': false,
+            'enableAlias': true,
             'enableMetric': true,
             'toggleMetric': true,
             'enableGroupBy': true,
@@ -442,6 +453,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const metrics = [];
         this.getMetricsByType('metrics').forEach((metric, i) => {
             metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
+            // tslint:disable:max-line-length
+            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
+                metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+            }
         });
 
         // placeholder row for Add Metric form
@@ -451,6 +466,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expressions = [];
         this.getMetricsByType('expression').forEach((metric, i) => {
             expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
+            // tslint:disable:max-line-length
+            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
+                expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+            }
         });
 
         // placeholder row for Add Expression form
@@ -530,7 +549,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // when the filters list is updated, it might have adding the custom dashboard tag filter
         // we need to resolve it to diffrent obj to handle it to metric auto-complete
         this.query.filters = filters;
-        this.queryChanges$.next(true);        
+        this.queryChanges$.next(true);
         this.buildTagFilters(filters);
     }
     // helper function to create clean tag filters for metric auto-complete
@@ -596,6 +615,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (index !== -1) {
             this.query.metrics[index].groupByTags = tags;
             this.queryChanges$.next(true);
+        }
+    }
+
+    updateVisual(message, data) {
+        if ( message.action === 'ClosePanel') {
+            this.metricVisualPanelTrigger.closeMenu();
+        } else {
+            this.requestChanges(message.action, message.payload);
+            // calling the initMetricDataSource causing the visual panel closing.
+            // data visual needs to be updated reflect the changes on the readonly version
+            data.visual = { ...data.visual, ...message.payload.visual };
         }
     }
 
@@ -699,6 +729,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         } else if (!expression && index === -1) {
             this.isAddExpressionProgress = false;
         }
+    }
+
+    updateMetricAlias(id, e) {
+        const alias = e.srcElement.value.trim();
+        const index = this.query.metrics.findIndex(d => d.id === id);
+        this.query.metrics[index].settings.visual.label = alias;
+        this.editAliasId = -1;
+        this.requestChanges('UpdateQueryMetricVisual', { mid : id, visual: { label: alias } } );
     }
 
     isValidExpression(id, expression) {
@@ -1015,7 +1053,22 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    toggleVisualRow(index, highlight) {
+        if (highlight) {
+            this.visualPanelHighlight = index;
+        } else {
+            this.visualPanelHighlight = false;
+        }
+    }
+
+    closeTagFilterModal(event: any) {
+        this.tagFilterMenuTrigger.closeMenu();
+    }
+
+
+
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show
     checkAddMetricRow = (i: number, data: object) => data.hasOwnProperty('addMetric');
+    checkMetricVisualRow = (i: number, data: any) => data.hasOwnProperty('visual');
     checkAddExpressionRow = (i: number, data: object) => data.hasOwnProperty('addExpression');
 }

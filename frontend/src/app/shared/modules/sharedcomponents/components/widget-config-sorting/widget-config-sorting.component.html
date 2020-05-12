@@ -1,29 +1,29 @@
-<div class="order-title">
-  Order
+<div class="config-control">
+  <div class="order-title">Sort</div>
+  <mat-button-toggle-group class="mat-button-toggle-group-horizontal" name="sortOrder" [value]="order" (change)="orderChanged($event)">
+    <mat-button-toggle value="top">Top</mat-button-toggle>
+    <mat-button-toggle value="bottom">Bottom</mat-button-toggle>
+  </mat-button-toggle-group>
 </div>
 
-<mat-button-toggle-group name="sortOrder" [value]="order" (change)="orderChanged($event)">
-  <mat-button-toggle value="top">Top</mat-button-toggle>
-  <mat-button-toggle value="bottom">Bottom</mat-button-toggle>
-</mat-button-toggle-group>
+<div class="config-control">
+  <div class="limit-title">
+    Limit
+  </div>
 
-<div class="limit-title">
-  Limit
-</div>
+  <mat-form-field [formGroup]="limitForm" appearance="fill">
+      <input matInput
+      id="limitInput"
+      #limitInput
+      type="number"
+      formControlName="limitInput"
+      (input)="limitInputChanged()"
+      autocomplete="off"
+      min="1" 
+      max="1000"/>
+  </mat-form-field>
 
-<mat-form-field [formGroup]="limitForm">
-    <input matInput
-    id="limitInput"
-    #limitInput
-    type="number"
-    formControlName="limitInput"
-    class="form-control"
-    (input)="limitInputChanged()"
-    min="1" 
-    max="1000"
-    />
-</mat-form-field>
-
-<div *ngIf="formFields.limitInput.errors" class="invalid-feedback">
-  <mat-error> <div> Please enter an integer between 1 and 1000.</div></mat-error>
+  <div *ngIf="formFields.limitInput.errors" class="invalid-feedback">
+    <mat-error> <div> Please enter an integer between 1 and 1000.</div></mat-error>
+  </div>
 </div>

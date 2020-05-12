@@ -2,14 +2,15 @@
     .widget-config-tab.multigraph-configuration {
         // style rules here
         padding: 14px 10px;
-        
+        display: flex;
+
         > form {
             flex-direction: column;
         }
 
         .fixed-label {
             display: inline-block;
-            width: 75px;        
+            width: 150px;
         }
 
         .config-control.inline-controls {
@@ -23,10 +24,6 @@
                 &:not(:first-child) {
                     margin-left: 25px;
                 }
-            }
-
-            .form-field-group {
-                padding: 10px 0px;
             }
             .mat-checkbox {
                 margin-right: 8px;
@@ -48,11 +45,11 @@
         .mat-form-field.numeric-options {
            .mat-form-field-infix {
                width: 60px;
-           } 
+           }
         }
 
         .form-field-group.table-output {
-            width: 100%;
+            width: calc(100% - 150px);
 
             .mat-header-cell,
             .mat-cell {
@@ -122,7 +119,7 @@
 }
 
 @mixin widget-config-multigraph-component-theme($theme-config) {
-    /* Theme config parts */    
+    /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);

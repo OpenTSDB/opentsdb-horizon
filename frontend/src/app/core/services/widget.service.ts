@@ -130,7 +130,7 @@ export class WidgetService {
                     delete queries[i].metrics[j].settings.visual.label;
                     delete queries[i].metrics[j].settings.visual.color;
                 }
-                if ( type === 'TopnWidgetComponent' ) {
+                if ( type === 'TopnWidgetComponent' || type === 'HeatmapWidgetComponent' ) {
                     delete queries[i].metrics[j].settings.visual.color;
                 }
                 if ( source === 'LinechartWidgetComponent' ) {

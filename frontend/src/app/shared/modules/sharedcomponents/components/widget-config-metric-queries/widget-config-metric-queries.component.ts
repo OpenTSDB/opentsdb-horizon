@@ -85,6 +85,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
     initOptions() {
         const defaultOptions = {
+            'enableAlias': true,
             'enableGroupBy': true,
             'enableSummarizer': false,
             'enableMultipleQueries': false,
@@ -154,6 +155,12 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
     handleQueryRequest(message: any) {
         switch ( message.action ) {
+            case 'UpdateQueryVisual':
+                this.widgetChange.emit(message);
+                break;
+            case 'UpdateQueryMetricVisual':
+                this.widgetChange.emit(message);
+                break;
             case 'ToggleQueryVisibility':
                 this.widgetChange.emit({ id: message.id, action: 'ToggleQueryVisibility' });
                 break;

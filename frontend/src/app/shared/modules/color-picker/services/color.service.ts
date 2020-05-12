@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { coerceHexaColor, isValidColor, EMPTY_COLOR } from '../color-picker';
+import { coerceHexaColor, isValidColor, EMPTY_COLOR, DEFAULT_COLORS } from '../color-picker';
 
 @Injectable()
 export class ColorService {
@@ -154,6 +154,19 @@ export class ColorService {
         if (t < 1 / 2) { return q; }
         if (t < 2 / 3) { return p + (q - p) * (2 / 3 - t) * 6; }
         return p;
+    }
+
+
+    hexToColorName(hexColor: string): string {
+        let colorName = hexColor;
+        // tslint:disable-next-line:prefer-const
+        for (let color of DEFAULT_COLORS) {
+            if (color.value === hexColor) {
+                colorName = color.text;
+                break;
+            }
+        }
+        return colorName;
     }
 
 }

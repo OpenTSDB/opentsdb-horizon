@@ -57,10 +57,9 @@
             flex: 1;
             width: 100%;
             max-width: 100%;
-        }
-
-        .variable-list-wrapper {
             padding: 4px 12px;
+
+
         }
 
         .hidden-focus {
@@ -443,6 +442,9 @@
     $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
     $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
 
+    $primary-default: map-get($primary, default);
+    $text: map-get($foreground, text);
+
     .template-variable-panel-component {
         background-color: map-get($background, card);
         color: $navbar-text;
@@ -460,6 +462,43 @@
         // TODO: possible remove when done
         tr:not(:first-child) {
             border-top: 1px solid rgba(0,0,0,.05);
+        }
+
+        .variable-list-wrapper {
+            .varlist {
+                .mat-form-field {
+                    &.mat-form-field-appearance-fill {
+                        .mat-form-field-flex {
+                            background-color: rgba($primary-default, 0.08);
+                        }
+
+                        .mat-form-field-underline::before {
+                            background-color: rgba(0,0,0,0); // this is transparent
+                        }
+
+                        &:hover:not(.mat-focused) {
+                            .mat-form-field-flex {
+                                background-color: rgba($primary-default, .1);
+                            }
+
+                            .mat-form-field-underline {
+                                background-color: rgba(0,0,0,0); // this is transparent
+
+                                .mat-form-field-ripple {
+                                    background-color: rgba($primary-default, 0.3);
+                                }
+                            }
+                        }
+
+                        &.mat-focused,
+                        &:hover {
+                            .mat-form-field-flex {
+                                background-color: rgba($primary-default, .08);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /* list-view controls */

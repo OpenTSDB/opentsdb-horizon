@@ -91,31 +91,28 @@
             }
         }
 
-        .column.stack-order-container {
+        .stack-order-container {
             flex: 1 1 120px;
-            .config-control:first-child {
-                margin-bottom: 8px;
+            margin-left: 8px;
+            .config-control .mat-label {
                 font-size: 12px;
                 font-weight: 500;
-                color: rgba(0, 0, 0, 0.54)
+                color: rgba(0, 0, 0, 0.8)
             }
         }
 
-        .column.display-modifier-container {
-            flex: 1 1 200px;
-
-            .config-control:first-child {
-                margin-bottom: 12px;
+        .donut-chart-visual-container,
+        .bar-chart-visual-container {
+            display: flex;
+            .mat-label {
+                width: 150px;
+                display: inline-block;
             }
-
-            .display-modifier {
-                padding: 10px 10px;
-
-                .mat-button-toggle {
-                    .mat-icon {
-                        margin-right: 8px;
-                    }
-                }
+            .mat-icon {
+                margin-right: 8px;
+                width: 14px;
+                height: 14px;
+                font-size: 14px;
             }
         }
 
@@ -204,6 +201,10 @@
 
         .column.stackbars-container {
             flex: 1 1 450px;
+        }
+
+        .conditional-formatter {
+            margin-left: 25px;
         }
         
         /* specific controls */

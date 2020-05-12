@@ -73,6 +73,8 @@
         }
 
         #container {
+            box-sizing: border-box;
+            padding: 20px 0px 0px 0px;
             display:flex;
             flex: 1;
             justify-content: center;
