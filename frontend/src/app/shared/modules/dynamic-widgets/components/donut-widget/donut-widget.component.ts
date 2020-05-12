@@ -60,6 +60,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     debugDialog: MatDialogRef < DebugDialogComponent > | null;
     storeQuery: any;
     needRequery = false;
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'legend': false };
 
     constructor(
         private interCom: IntercomService,
@@ -248,6 +249,10 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryMetricVisual':
+                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.refreshData(false);
+                break;
             case 'ToggleQueryMetricVisibility':
                 this.util.toggleQueryMetricVisibility(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.util.deepClone(this.widget.queries);
@@ -268,6 +273,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'CloneQuery':
                 this.util.cloneQuery(this.widget, message.id);
+                this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -275,6 +281,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.util.deleteQuery(this.widget, message.id);
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
+                this.widget = {...this.widget};
                 this.needRequery = true;
                 break;
             case 'ToggleDBFilterUsage':
@@ -332,6 +339,16 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
+    }
+
     changeWidgetType(type) {
         const wConfig = this.util.deepClone(this.widget);
         wConfig.id = wConfig.id.replace('__EDIT__', '');
@@ -368,9 +385,9 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

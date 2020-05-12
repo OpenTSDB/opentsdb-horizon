@@ -60,8 +60,10 @@ import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.com
 
 // pipes
 import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pipe';
-import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
+import { MetricVisualPanelComponent } from './components/metric-visual-panel/metric-visual-panel.component';
 
+import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
+import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 
 @NgModule({
     imports: [
@@ -116,6 +118,8 @@ import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
         AuraDialogComponent,
         InfoTooltipComponent,
         FormatAutoManualFilterPipe,
+        MetricVisualPanelComponent,
+        HexToColorNamePipe,
         DateToRelativePipe
     ],
     exports: [
@@ -154,7 +158,10 @@ import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
         SimpleNamespacesListComponent,
         WidgetProjectionComponent,
         GraphTypeComponent,
-        InfoTooltipComponent
+        InfoTooltipComponent,
+        MetricVisualPanelComponent,
+        HexToColorNamePipe,
+        DateToRelativePipe
     ],
     entryComponents: [
         InlineFilterEditorComponent,

@@ -30,6 +30,7 @@
                 align-self: stretch;
                 display: inline-flex;
                 align-items: center;
+                font-weight: bold;
 
                 .mat-input-element {
                     font-family: mat-font-family(map-get($app-fontface-config, mono));
@@ -104,7 +105,8 @@
         .mat-form-field {
 
             .mat-form-field-prefix {
-                background: rgba(0,0,0,0.04);
+                // background: rgba(0,0,0,0.04);
+                color: rgba(map-get($foreground, text), .5)
             }
 
             .mat-form-field-underline {

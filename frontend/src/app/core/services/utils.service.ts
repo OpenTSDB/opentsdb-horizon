@@ -157,6 +157,20 @@ export class UtilsService {
         widget.queries.splice(qindex, 1);
     }
 
+    updateQueryVisual(widget, qid, mid, visual) {
+        const qindex = widget.queries.findIndex(d => d.id === qid);
+        for ( let i = 0; i < widget.queries[qindex].metrics.length; i++ ) {
+            widget.queries[qindex].metrics[i].settings.visual = { ...widget.queries[qindex].metrics[i].settings.visual, ...visual };
+        }
+    }
+
+    updateQueryMetricVisual(widget, qid, mid, visual) {
+        // toggle the individual query metric
+        const qindex = widget.queries.findIndex(d => d.id === qid);
+        const mindex = widget.queries[qindex].metrics.findIndex(d => d.id === mid);
+        widget.queries[qindex].metrics[mindex].settings.visual = { ...widget.queries[qindex].metrics[mindex].settings.visual, ...visual };
+    }
+
     toggleQueryMetricVisibility(widget, qid, mid) {
         // toggle the individual query metric
         const qindex = widget.queries.findIndex(d => d.id === qid);

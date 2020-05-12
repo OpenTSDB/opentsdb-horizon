@@ -21,7 +21,7 @@
 
                     .trigger-value-display {
                         display: flex;
-                    } 
+                    }
                 }
 
                 .mat-select-arrow-wrapper {
@@ -52,15 +52,20 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
+    $line-selected-color: map-get($foreground, link);
+    $line-normal-color: map-get($foreground, text);
+
     .dropdown-line-type {
-        @include dropdown-line-weight-preview-theme($foreground);
-    } 
+        @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
+        @include dropdown-line-type-preview-theme($line-normal-color, $line-selected-color);
+    }
 
     // CDK ITEMS
     .dropdown-line-type-options {
         .mat-select-content {
             .mat-option {
-                @include dropdown-line-weight-preview-theme($foreground);
+                @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
+                @include dropdown-line-type-preview-theme($line-normal-color, $line-selected-color);
             }
         }
     }
@@ -115,11 +120,19 @@
     }
 }
 
-@mixin dropdown-line-type-preview-theme($foreground) {
+@mixin dropdown-line-type-preview-theme($text, $color) {
     // theme part
     .line-type-preview {
         span {
-            border-bottom-color: map-get($foreground, text);
+            border-bottom-color: $text;
+        }
+    }
+
+    .mat-button-toggle.mat-button-toggle-checked {
+        .line-type-preview {
+            span {
+                border-bottom-color: $color;
+            }
         }
     }
 }

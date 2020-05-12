@@ -83,6 +83,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
 
     @ViewChild('myCanvas') myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
@@ -266,8 +267,20 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     determineTextAndBackgroundColors() {
-        this.textColor = this.widget.settings.visual.textColor;
-        this.backgroundColor = this.widget.settings.visual.backgroundColor;
+        /*
+        let qindex = -1, mindex = -1;
+        for (let i = 0; i < this.widget.queries.length; i++ ) {
+            for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
+                if (this.widget.queries[i].metrics[j].settings.visual.visible) {
+                    qindex = i;
+                    mindex = j;
+                }
+            }
+        }
+        */
+        const visual = this.widget.settings.visual;
+        this.textColor = !visual.color || visual.color === 'auto' ? this.widget.settings.visual.textColor : visual.color;
+        this.backgroundColor = !visual.backgroundColor || visual.backgroundColor === 'auto' ? this.widget.settings.visual.backgroundColor : visual.backgroundColor;
         if (this.util.isNumber(this.aggregatorValues[0]) && this.widget.settings.visual.conditions) {
             let rawValue = this.aggregatorValues[0];
             for (let condition of this.widget.settings.visual.conditions) {
@@ -456,6 +469,11 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryMetricVisual':
+                this.widget.settings.visual = { ...this.widget.settings.visual, ...message.payload.visual};
+                this.determineTextAndBackgroundColors();
+                this.refreshData(false);
+                break;
             case 'ToggleQueryMetricVisibility':
                 this.toggleQueryMetricVisibility(message.id, message.payload.mid);
                 this.widget.queries = this.util.deepClone(this.widget.queries);
@@ -515,6 +533,16 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         } else {
             this.requestCachedData();
         }
+    }
+
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {

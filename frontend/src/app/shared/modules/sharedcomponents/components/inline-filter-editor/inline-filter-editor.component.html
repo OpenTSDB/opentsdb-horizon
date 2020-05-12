@@ -1,130 +1,144 @@
 <div class="tag-filters query-filter-block">
-            <div class="container" style="flex-direction: column; min-height:300px; ">
+    <div class="container" style="flex-direction: column; min-height:300px; ">
 
-                <!-- if adding/editing tags -->
-                <div class="tag-filter-options">
-                    <div class="tag-filter-options-column tag-keys">
-                        <div class="tag-key-search">
-                            <mat-form-field class="tag-search-input-field" appearance="outline" color="primary" floatLabel="never">
-                                <input matInput placeholder="Search tag keys" [formControl]="tagSearchControl" #tagSearchInput autocomplete="off">
-                            </mat-form-field>
+        <!-- if adding/editing tags -->
+        <div class="tag-filter-options">
+            <div class="tag-filter-options-column tag-keys">
+                <div class="tag-key-search">
+                    <mat-form-field class="tag-search-input-field" appearance="outline" color="primary"
+                        floatLabel="never">
+                        <input matInput placeholder="Search tag keys" [formControl]="tagSearchControl" #tagSearchInput
+                            autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="tag-key-search-results has-scroller">
+                    <div class="is-scroller">
+                        <div class="option-item tag-key-option" *ngFor="let option of tagFilteredOptions"
+                            [ngClass]="{'added': getTagIndex(option.name) !== -1, 'selected': option.name === selectedTag, 'last-added-key': lastAddedKey(option.name) }">
+                            <div class="option-cell add-remove" (click)="removeTagValues(option.name)"
+                                *ngIf="getTagIndex(option.name) !== -1">
+                                <mat-icon (click)="removeTagValues(option.name)">remove_circle_outline</mat-icon>
+                            </div>
+                            <div class="option-cell label" (click)="handlerTagClick(option.name)">{{ option.name }}
+                            </div>
                         </div>
-                        <div class="tag-key-search-results has-scroller">
-                            <div class="is-scroller">
-                                <div class="option-item tag-key-option" *ngFor="let option of tagFilteredOptions"
-                                    [ngClass]="{'added': getTagIndex(option.name) !== -1, 'selected': option.name === selectedTag, 'last-added-key': lastAddedKey(option.name) }">
-                                    <div class="option-cell add-remove" (click)="removeTagValues(option.name)" *ngIf="getTagIndex(option.name) !== -1">
-                                            <mat-icon (click)="removeTagValues(option.name)">remove_circle_outline</mat-icon>
-                                    </div>
-                                    <div class="option-cell label" (click)="handlerTagClick(option.name)">{{ option.name }}</div>
+                        <div *ngIf="message.tagControl.message"
+                            [ngClass]="message.tagControl.type === 'error'? 'error': 'info'">
+                            <mat-icon>error</mat-icon>
+                            <span>{{ message['tagControl']['message'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tag-filter-options-column tag-values">
+                <div class="tag-values-search">
+                    <div class="tag-values-type">
+                        <mat-button-toggle-group [formControl]="tagValueTypeControl" aria-label="Font Style">
+                            <mat-button-toggle value="literalor">Literal</mat-button-toggle>
+                            <mat-button-toggle value="regexp">Regexp</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <div class="tag-values-search-input">
+                        <mat-form-field appearance="outline" [color]="'primary'" floatLabel="never">
+                            <input #tagValueSearchInput [formControl]="tagValueSearchControl" matInput placeholder=""
+                                (keydown.enter)="addTagValueRegexp()" autocomplete="off">
+                            <mat-icon matSuffix *ngIf="tagValueTypeControl.value==='regexp'"
+                                (click)="addTagValueRegexp()">add_circle_outline</mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="column-output"
+                    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message === undefined">
+                    <div class="gif-spinner">
+                        <img src="/assets/spinner-26x26.gif" />
+                    </div>
+                </div>
+                <div class="column-output" *ngIf="filteredTagValues && filteredTagValues.length > 0">
+                    <div class="tag-values-count">
+                        <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag
+                            {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
+                    </div>
+                    <span class="seperator"></span>
+                    <div class="tag-values-search-results has-scroller" *ngIf="tagValueTypeControl.value==='literalor'">
+                        <div class="is-scroller">
+                            <div class="option-item" *ngFor="let option of filteredTagValues"
+                                [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}"
+                                (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
+                                <div class="option-cell add-remove">
+                                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1">
+                                        add_circle_outline</mat-icon>
+                                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">
+                                        remove_circle_outline</mat-icon>
                                 </div>
-                                <div *ngIf="message.tagControl.message" [ngClass]="message.tagControl.type === 'error'? 'error': 'info'">
-                                    <mat-icon>error</mat-icon>
-                                    <span>{{ message['tagControl']['message'] }}</span>
+                                <div class="option-cell label"
+                                    [innerHTML]="[option.name] | formatAutoManualFilter: tplVariables.tvars">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="tag-filter-options-column tag-values">
-                        <div class="tag-values-search">
-                            <div class="tag-values-type">
-                                <mat-button-toggle-group [formControl]="tagValueTypeControl" aria-label="Font Style">
-                                    <mat-button-toggle value="literalor">Literal</mat-button-toggle>
-                                    <mat-button-toggle value="regexp">Regexp</mat-button-toggle>
-                                </mat-button-toggle-group>
-                            </div>
-                            <div class="tag-values-search-input">
-                                <mat-form-field appearance="outline" [color]="'primary'" floatLabel="never">
-                                    <input #tagValueSearchInput [formControl]="tagValueSearchControl" matInput
-                                        placeholder="" (keydown.enter)="addTagValueRegexp()" autocomplete="off">
-                                    <mat-icon matSuffix *ngIf="tagValueTypeControl.value==='regexp'" (click)="addTagValueRegexp()">add_circle_outline</mat-icon>
-                                </mat-form-field>
+                </div>
+                <div class="column-output error-info-messaging"
+                    [ngClass]="message.tagValueControl.type === 'error'? 'error': 'info'"
+                    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message">
+                    <mat-icon>error</mat-icon>
+                    <span>{{ message['tagValueControl']['message'] }}</span>
+                </div>
+            </div>
+            <div class="tag-filter-options-column tag-values-selected">
+                <div class="tag-values-selected-header">
+                    <strong>Selected Filters({{ filters.length }})</strong>
+                </div>
+                <div class="tag-values-selected-list has-scroller" *ngIf="filters.length">
+                    <div class="is-scroller">
+                        <div class="tag-value-list-item" *ngFor="let filter of filters; let index=index">
+                            <div *ngIf="filter.filter.length || (filter.customFilter && filter.customFilter.length)">
+                                <mat-chip-list>
+                                    <strong>{{ filter.tagk }}:</strong>
+                                    <mat-chip *ngFor="let fItem of filter.filter" color="blue" removable="false"
+                                        [matMenuTriggerFor]="tagValueActionMenu"
+                                        [matMenuTriggerData]="{data: { tag: filter.tagk, value: fItem }}"
+                                        #trigger="matMenuTrigger">
+                                        <span class="prefix not" *ngIf="fItem[0]=== '!'">!</span>
+                                        <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
+                                        <mat-icon>keyboard_arrow_down</mat-icon>
+                                    </mat-chip>
+                                    <mat-chip *ngFor="let fItem of filter.customFilter" class="automode"
+                                        [ngClass]="{'auto-mode': getAutoManualClass(fItem), 'manual-mode': !getAutoManualClass(fItem)}"
+                                        removable="false" [matMenuTriggerFor]="tagValueActionMenu"
+                                        [matMenuTriggerData]="{data: { tag: filter.tagk, value: fItem }}"
+                                        #trigger="matMenuTrigger">
+                                        <span class="prefix not" *ngIf="fItem[0]=== '!'">!</span>
+                                        <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
+                                        <mat-icon>keyboard_arrow_down</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
                             </div>
                         </div>
-<div class="column-output"
-    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message === undefined">
-    <div class="gif-spinner">
-        <img src="/assets/spinner-26x26.gif" />
-    </div>
-</div>
-<div class="column-output" *ngIf="filteredTagValues && filteredTagValues.length > 0">
-    <div class="tag-values-count">
-        <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag
-            {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
-    </div>
-    <span class="seperator"></span>
-    <div class="tag-values-search-results has-scroller" *ngIf="tagValueTypeControl.value==='literalor'">
-        <div class="is-scroller">
-            <div class="option-item" *ngFor="let option of filteredTagValues"
-                [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}"
-                (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
-                <div class="option-cell add-remove">
-                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1">add_circle_outline</mat-icon>
-                    <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">remove_circle_outline</mat-icon>
-                </div>
-                <div class="option-cell label" [innerHTML]="[option.name] | formatAutoManualFilter: tplVariables.tvars">
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="tag-filters-modal-actions">
+            <button mat-stroked-button color="primary" (click)="closeTagFilterModal()">
+                <span>Done</span>
+            </button>
+        </div>
     </div>
-</div>
-<div class="column-output error-info-messaging"
-    [ngClass]="message.tagValueControl.type === 'error'? 'error': 'info'"
-    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message">
-    <mat-icon>error</mat-icon>
-    <span>{{ message['tagValueControl']['message'] }}</span>
-</div>
-                    </div>
-                    <div class="tag-filter-options-column tag-values-selected">
-                        <div class="tag-values-selected-header">
-                            <strong>Selected Filters({{ filters.length }})</strong>
-                        </div>
-                        <div class="tag-values-selected-list has-scroller" *ngIf="filters.length">
-                            <div class="is-scroller">
-                                <div  class="tag-value-list-item" *ngFor="let filter of filters; let index=index">
-                                    <div *ngIf="filter.filter.length || (filter.customFilter && filter.customFilter.length)">
-                                        <mat-chip-list>
-                                            <strong>{{ filter.tagk }}:</strong>
-                                            <mat-chip *ngFor="let fItem of filter.filter"
-                                                color="blue"
-                                                removable="false"
-                                                [matMenuTriggerFor]="tagValueActionMenu" [matMenuTriggerData]="{data: { tag: filter.tagk, value: fItem }}"
-                                                #trigger="matMenuTrigger">
-                                                <span class="prefix not" *ngIf="fItem[0]=== '!'">!</span>
-                                                <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
-                                                <mat-icon>keyboard_arrow_down</mat-icon>
-                                            </mat-chip>
-                                            <mat-chip *ngFor="let fItem of filter.customFilter"
-                                                class="automode"
-                                                [ngClass]="{'auto-mode': getAutoManualClass(fItem), 'manual-mode': !getAutoManualClass(fItem)}"
-                                                removable="false"
-                                                [matMenuTriggerFor]="tagValueActionMenu" [matMenuTriggerData]="{data: { tag: filter.tagk, value: fItem }}"
-                                                #trigger="matMenuTrigger">
-                                                <span class="prefix not" *ngIf="fItem[0]=== '!'">!</span>
-                                                <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
-                                                <mat-icon>keyboard_arrow_down</mat-icon>
-                                            </mat-chip>
-                                        </mat-chip-list>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 </div>
 <!-- TAG VALUE ACTION MENU -->
 <mat-menu class="filter-action-cdk-menu" #tagValueActionMenu="matMenu" xPosition="before" hasBackdrop="true">
     <ng-template matMenuContent let-data="data">
-        <button mat-menu-item *ngIf="data.value[0] === '!'" (click)="toggleExclude(data.tag, data.value, false);closeMenu($event);">
+        <button mat-menu-item *ngIf="data.value[0] === '!'"
+            (click)="toggleExclude(data.tag, data.value, false);closeMenu($event);">
             <mat-icon></mat-icon>
             <span>Include</span>
         </button>
-        <button mat-menu-item *ngIf="data.value[0] !== '!'" (click)="toggleExclude(data.tag, data.value, true);closeMenu($event);">
+        <button mat-menu-item *ngIf="data.value[0] !== '!'"
+            (click)="toggleExclude(data.tag, data.value, true);closeMenu($event);">
             <mat-icon svgIcon="exclamation_point"></mat-icon>
             <span>Exclude</span>
         </button>
-        <button mat-menu-item  (click)="updateTagValueSelection(data.tag, data.value, 'remove');closeMenu($event);">
+        <button mat-menu-item (click)="updateTagValueSelection(data.tag, data.value, 'remove');closeMenu($event);">
             <mat-icon>clear</mat-icon>
             <span>Delete</span>
         </button>

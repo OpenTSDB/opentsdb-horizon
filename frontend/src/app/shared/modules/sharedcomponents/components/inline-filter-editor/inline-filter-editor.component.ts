@@ -35,6 +35,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @Input() options: any;
     @Input() tplVariables: any;
     @Output() filterOutput = new EventEmitter();
+    @Output() closeModalOutput = new EventEmitter();
     @ViewChild('tagValueSearchInput') tagValueSearchInput: ElementRef;
     @ViewChild('tagSearchInput') tagSearchInput: ElementRef;
     @ViewChild('trigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
@@ -58,6 +59,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     tagValueSub: Subscription;
     visible = false;
     regexVars = /^!?\[.*\]$/;
+
     constructor(
         private elRef: ElementRef,
         private httpService: HttpService,
@@ -211,6 +213,11 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     requestChanges() {
         this.filterOutput.emit(this.filters);
+    }
+
+    closeTagFilterModal() {
+        //this.requestChanges();
+        this.closeModalOutput.emit(true);
     }
 
     triggerQueryChanges() {

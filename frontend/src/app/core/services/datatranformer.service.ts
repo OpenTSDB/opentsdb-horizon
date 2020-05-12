@@ -408,7 +408,7 @@ export class DatatranformerService {
 
             const timeSpecification = queryResults.timeSpecification;
             const n = queryResults.data.length;
-            const color = vConfig.color === 'auto' || !vConfig.color ? autoColors[cIndex++] : vConfig.color;
+            const color = !widget.settings.visual.color || widget.settings.visual.color === 'auto' ? autoColors[cIndex++] : widget.settings.visual.color;
             options.heatmap.nseries = n;
             options.heatmap.color = color;
             for ( let j = 0; j < n; j ++ ) {
@@ -622,7 +622,7 @@ export class DatatranformerService {
             }
 
             const n = results[i].data.length;
-            const color =  mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ? '' : mConfig.settings.visual.color;
+            const color =  !widget.settings.visual.color || widget.settings.visual.color === 'auto' ? '' : widget.settings.visual.color;
             for ( let j = 0; j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;

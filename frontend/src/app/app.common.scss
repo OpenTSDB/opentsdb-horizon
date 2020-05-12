@@ -1413,6 +1413,9 @@
     /* SCROLLBAR STYLING */
     // @include app-scrollbar($theme-config);
 
+    $primary-default: map-get($primary, default);
+    $text: map-get($foreground, text);
+
     /* GRIDSTER OVERRIDES */
 
     .gridster-item-prototype {
@@ -1470,29 +1473,40 @@
     .mat-form-field {
         &.mat-form-field-appearance-fill {
             .mat-form-field-flex  {
-                background-color: rgba(map-get($primary, default), 0.08);
+                // background-color: rgba($primary-default, 0.08);
+                background-color: transparent;
             }
 
             // remove the underline... inkbar will show on focus
             // make it transparent, because there is some sort of animation
             .mat-form-field-underline::before {
-                background-color: rgba(0,0,0,0); // this is transparent
+                //background-color: rgba(0,0,0,0); // this is transparent
+                background-color: $text;
             }
 
             &:hover:not(.mat-focused) {
+                .mat-form-field-flex {
+                    background-color: rgba($primary-default, .08);
+                }
+
                 .mat-form-field-underline {
-                    background-color: rgba(0,0,0,0); // this is transparent
+                    // background-color: rgba(0,0,0,0); // this is transparent
+                    background-color: $primary-default;
 
                     .mat-form-field-ripple {
-                        background-color: rgba(map-get($primary, default),0.3);
+                        background-color: rgba($primary-default, 0.3);
                     }
                 }
             }
 
-            /*&.mat-focused,
+            &.mat-focused,
             &:hover {
-                @include mat-elevation(1);
-            }*/
+                // @include mat-elevation(1);
+
+                .mat-form-field-flex {
+                    background-color: rgba($primary-default, .08);
+                }
+            }
         }
 
         &.mat-form-field-legacy {

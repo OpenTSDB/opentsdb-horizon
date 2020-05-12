@@ -5,25 +5,35 @@
     .widget-config-tab.time-configuration {
 
         .form-field-group {
+            display: inline-block;
+
             .mat-form-field:not(:last-child) {
                 margin-right: 8px;
             }
         }
 
-        .form-field-group .mat-select {
-            padding: 6px;
-            border-radius: 4px;
-            width: 200px;
-            background-color: rgba(34, 122, 236, 0.08);
+        .form-field-group {
+            &.mat-select {
+                width: 200px;
+            }
+
+            .mat-select {
+                padding: 6px;
+                border-radius: 4px;
+                width: 180px;
+                //background-color: rgba(34, 122, 236, 0.08);
+            }
         }
 
         .config-control > .label {
-            display: block;
-            margin-bottom: 10px;
+            display: inline-block;
+            width: 150px;
+            vertical-align: top;
+            // margin-bottom: 10px;
         }
 
         // .time-preset-options {}
-        
+
         .time-over-time-controls {
             .mat-form-field:not(:last-child) {
                 margin-right: 8px;
@@ -66,7 +76,7 @@
 
 @mixin widget-config-time-component-theme($theme-config) {
 
-    /* Theme config parts */    
+    /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);

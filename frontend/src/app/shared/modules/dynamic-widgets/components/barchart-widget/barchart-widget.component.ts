@@ -82,6 +82,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     storeQuery: any;
     needRequery = false;
     isDestroying = false;
+    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
 
     constructor(
         private interCom: IntercomService,
@@ -271,6 +272,10 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryMetricVisual':
+                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.refreshData(false);
+                break;
             case 'ToggleQueryMetricVisibility':
                 this.util.toggleQueryMetricVisibility(this.widget, message.id, message.payload.mid);
                 this.doRefreshData$.next(true);
@@ -328,7 +333,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.height = '100%';
         } else {
             this.width = (outputSize.width - 30) + 'px';
-            this.height = (outputSize.height - 20) + 'px';
+            this.height = (outputSize.height - 3) + 'px';
         }
         this.detectChanges();
     }
@@ -381,6 +386,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
     setSorting(sConfig) {
         this.widget.settings.sorting = { order: sConfig.order, limit: sConfig.limit };
+    }
+
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {

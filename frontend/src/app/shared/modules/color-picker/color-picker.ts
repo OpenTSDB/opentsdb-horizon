@@ -46,3 +46,41 @@ export function coerceHexaColor(color: string): string {
 export function isValidColor(color: string): boolean {
     return /^#[0-9A-F]{6}$/i.test(color);
 }
+
+
+export interface IDefaultColor {
+    text: string;
+    value: string;
+}
+
+export interface IColor {
+    hex: string;
+    rgb: string;
+}
+
+export const DEFAULT_COLORS: IDefaultColor[] = [
+    { text: 'Maroon', value: '#B00013' },
+    { text: 'Yellow', value: '#FED800' },
+    { text: 'Blue', value: '#0B5ED2' },
+    { text: 'Lavender', value: '#9971E0' },
+    { text: 'Black', value: '#000000' },
+    { text: 'Red', value: '#DA001B' },
+    { text: 'Lime', value: '#AAEC61' },
+    { text: 'Periwinkle', value: '#B0D9F9' },
+    { text: 'Indigo', value: '#300075' },
+    { text: 'Slate Gray', value: '#4D4D4D' },
+    { text: 'Orange', value: '#ED5A1C' },
+    { text: 'Lime Green', value: '#75D42A' },
+    { text: 'Cyan', value: '#18BDED' },
+    { text: 'Magenta', value: '#B10060' },
+    { text: 'Gray', value: '#888888' },
+    { text: 'Brown', value: '#E28B00' },
+    { text: 'Green', value: '#1CB84F' },
+    { text: 'Aqua', value: '#6DDDFA' },
+    { text: 'Fuchsia', value: '#FB007D' },
+    { text: 'Silver', value: '#CBCBCB' },
+    { text: 'Amber', value: '#F0B200' },
+    { text: 'Olive', value: '#446E17' },
+    { text: 'Purple', value: '#87119A' },
+    { text: 'Pink', value: '#FC5AA8' },
+    { text: 'White', value: '#FFFFFF' }]

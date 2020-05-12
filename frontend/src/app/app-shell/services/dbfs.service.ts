@@ -5,7 +5,6 @@ import { environment } from '../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { LoggerService } from '../../core/services/logger.service';
-import { namespace } from 'd3';
 
 @Injectable()
 export class DbfsService {
