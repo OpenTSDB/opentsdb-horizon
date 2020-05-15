@@ -11,8 +11,24 @@
         </div>
     </mat-toolbar-row>
 </mat-toolbar>
-<div class="admin-panel has-scroller">
-    <div class="is-scroller">
-        <app-notification-editor></app-notification-editor>
-    </div>
+<div class="admin-panel">
+    <mat-tab-group class="admin-function-tabs" selectedIndex="0">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon fontSet="denali" fontIcon="d-notification"></mat-icon>
+                <span>Global Notifications</span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-notification-panel></app-notification-panel>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span>Another Admin Tab</span>
+            </ng-template>
+            <ng-template matTabContent>
+                The Second Content
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 </div>

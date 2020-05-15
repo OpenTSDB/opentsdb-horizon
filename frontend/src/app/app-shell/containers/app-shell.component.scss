@@ -1,4 +1,6 @@
 @mixin app-shell-component-base() {
+    $drawer-min-width: 301px;
+
     .app-shell {
         display: flex;
         flex: 1;
@@ -29,7 +31,7 @@
             // when drawer is shown, and is "over", we make the dimming basically invisible
             // but you can still click on it / esc it
             .mat-drawer-backdrop.mat-drawer-shown {
-                background-color: rgba(0, 0, 0, .01);
+                background-color: rgba(0, 0, 0, .01); // TODO: move to theme
             }
 
             .cdk-visually-hidden.cdk-focus-trap-anchor {
@@ -39,7 +41,7 @@
 
         .app-navigator-drawer {
             display: flex;
-            width: 301px;
+            min-width: $drawer-min-width;
             // inner shaddow
             // first inset is the right shadow
             // second inset is the left shadow (slightly less opacity to compensate for the sidenav shadow layering

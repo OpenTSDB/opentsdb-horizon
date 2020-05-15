@@ -51,6 +51,8 @@ import {
 } from './components/settings-panel';
 import {
     AdminPanelComponent,
+    NotificationPanelComponent,
+    NotificationListComponent,
     NotificationEditorComponent
 } from './components/admin-panel';
 
@@ -94,7 +96,9 @@ import {
         SettingsThemeComponent,
         GlobalNotificationBannerComponent,
         NotificationEditorComponent,
-        AdminPanelComponent
+        AdminPanelComponent,
+        NotificationListComponent,
+        NotificationPanelComponent
     ],
     providers: [
         AppShellService,

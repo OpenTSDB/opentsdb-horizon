@@ -1,8 +1,11 @@
+@import './children/notification-panel/notification-panel.component';
+@import './children/notification-list/notification-list.component';
 @import './children/notification-editor/notification-editor.component';
 
 @mixin admin-panel-component-base() {
     $navbar-height: map-get($navbar-config, 'navbar-height');
     $logo-height: map-get($navbar-config, 'logo-height');
+    $admin-panel-min-width: 600px;
 
     .admin-navigator {
         min-height: 100%;
@@ -11,6 +14,7 @@
         flex: 1;
         font-weight: 300;
         font-size: 12px;
+        width: $admin-panel-min-width;
 
         .mat-icon-button {
             display: flex;
@@ -75,13 +79,40 @@
 
         .admin-panel {
             flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
 
-            .is-scroller {
+        .admin-function-tabs {
+            flex: 1;
+
+            .mat-tab-header {
+                .mat-tab-label {
+                    height: 32px;
+                    padding: 0 16px;
+                    font-size: 12px;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 4px;
+                }
+            }
+
+            .mat-tab-body-wrapper {
+                flex: 1;
+                height: 100%;
+            }
+
+            .mat-tab-body {
                 padding: 16px;
             }
         }
     }
 
+    @include notification-panel-component-base();
+    @include notification-list-component-base();
     @include notification-editor-component-base();
 }
 
@@ -113,9 +144,33 @@
     $menu-background: map-get($background, card);
     $menu-background-hover: find-color-invert($menu-background);
 
+    $navbar-text-color: map-get($foreground, navbar-text);
+
     .admin-navigator {
 
+        .admin-function-tabs.mat-tab-group {
+            .mat-tab-header {
+                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+
+                .mat-tab-label {
+                    color: if($is-dark-theme, $navbar-text, $text-color);
+
+                    &.mat-tab-label-active {
+                        opacity: 1;
+                        color: if($is-dark-theme, $navbar-text, $text-color);
+                    }
+                }
+            }
+
+            &.mat-primary {
+                .mat-ink-bar {
+                    background: $text-color;
+                }
+            }
+        }
     }
 
+    @include notification-panel-component-theme($theme-config);
+    @include notification-list-component-theme($theme-config);
     @include notification-editor-component-theme($theme-config);
 }
