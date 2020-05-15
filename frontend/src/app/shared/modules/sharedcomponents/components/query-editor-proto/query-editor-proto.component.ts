@@ -417,8 +417,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             });
         // call this in case of not modify filter list yet
         this.buildTagFilters(this.query.filters);
-
-        this.logger.log('WIDGET TYPE', this.type);
     }
 
     ngOnDestroy() {
