@@ -22,7 +22,7 @@
     <inline-editable class="navbar-item"
         [fieldValue]="dbSettings.meta.title"
         [minLength]="3"
-        [maxLength]="25"
+        [maxLength]="50"
         (updatedValue)="setTitle($event)"
         style="margin-left: 5px;"
         *ngIf="activeMediaQuery !== 'xs'">
