@@ -187,7 +187,8 @@
                                 <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
                                 <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
                                     (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
-                                <span class="by-spacer">{{ data.type === 'expression' ? 'JOIN ON' : 'By' }}</span>
+                                <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
+                                <span class="by-spacer">{{ data.type === 'expression' ? ' ON' : 'By' }}</span>
 
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
                                     [selected]="data.metric.groupByTags"
