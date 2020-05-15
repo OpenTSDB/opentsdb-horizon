@@ -54,6 +54,18 @@
                     flex-direction: row;
                     align-items: stretch;
                 }
+
+                &.is-bn-or-tn {
+                    .column:not(:first-child) {
+                        flex: 1;
+                    }
+
+                    .column:first-of-type {
+                        display: flex;
+                        flex-direction: column;
+                        margin-right: 24px;
+                    }
+                }
             }
         }
 

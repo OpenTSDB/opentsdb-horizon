@@ -587,11 +587,15 @@
                     margin-right: 6px;
                 }
 
-                > span:not(:empty) {
+                span:not(:empty) {
                     margin-right: 4px;
+
+                    .color-chip {
+                        margin-left: 4px;
+                    }
                 }
 
-                > span:empty {
+                span:empty:not(.color-chip) {
                     display: none;
                 }
             }

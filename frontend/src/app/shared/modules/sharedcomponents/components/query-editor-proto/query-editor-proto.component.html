@@ -333,17 +333,23 @@
                             </mat-form-field>
                         </div>
                         <!-- visual panel trigger and summary-->
-                        <div class="visual-panel-dropdown-text"
+                        <!--<div class="visual-panel-dropdown-text"
                             #metricVisualPanelTrigger="matMenuTrigger"
                             [matMenuTriggerFor]="metricVisualPanel"
                             [matMenuTriggerData]="{data: data}"
                             (menuOpened)="toggleVisualRow(i - 1, true)"
                             (menuClosed)="toggleVisualRow(i - 1, false)"
-                            *ngIf="options.enableAlias && editAliasId !== data.metric.id">
+                            *ngIf="(options.enableAlias && editAliasId !== data.metric.id) || type ==='BignumberWidgetComponent'">-->
+                        <div class="visual-panel-dropdown-text"
+                            #metricVisualPanelTrigger="matMenuTrigger"
+                            [matMenuTriggerFor]="metricVisualPanel"
+                            [matMenuTriggerData]="{data: data}"
+                            (menuOpened)="toggleVisualRow(i - 1, true)"
+                            (menuClosed)="toggleVisualRow(i - 1, false)">
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                             <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                            <span><span [style.background]="data.visual.color" style="" class="color-chip"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
-                            <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" style="width: 10px; height: 10px;display: inline-block;"></span>
+                            <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="data.visual.color && data.visual.color !== 'auto'"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
+                            <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
                                 {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                                 background</span>
                             <span>{{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
