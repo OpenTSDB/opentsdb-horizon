@@ -610,6 +610,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    setJoinType(id, value) {
+        const index = this.query.metrics.findIndex(item => item.id === id);
+        if (index !== -1) {
+            this.query.metrics[index].joinType = value;
+            this.queryChanges$.next(true);
+            console.log("join type id=", id, this.query.metrics[index].joinType )
+        }
+    }
+
     setMetricGroupByTags(id, tags) {
         const index = this.query.metrics.findIndex(item => item.id === id);
         if (index !== -1) {
