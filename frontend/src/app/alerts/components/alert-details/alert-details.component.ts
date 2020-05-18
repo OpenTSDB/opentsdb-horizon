@@ -1709,3 +1709,4 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         });
     }
 }
+
