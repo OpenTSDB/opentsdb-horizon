@@ -18,7 +18,7 @@
             <strong>Line Type</strong>
             <dropdown-line-type [value]="data.visual.lineType || 'solid'" (change)="setLineType(data.metric.id, $event)"></dropdown-line-type>
         </div>
-        <div class="vis-conf-col has-columns" *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
+        <div class="vis-conf-col has-columns is-bn-or-tn" *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
             <div class="column">
                 <mat-button-toggle-group  class="color-toggle" [(value)]="colorToggleVal" *ngIf="type === 'BignumberWidgetComponent'">
                     <mat-button-toggle mat-button value="color">Text</mat-button-toggle>
