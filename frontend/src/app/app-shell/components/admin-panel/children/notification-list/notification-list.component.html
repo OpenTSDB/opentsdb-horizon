@@ -31,16 +31,6 @@
                     <span class="updated">last updated: {{active.settings.notification.updatedTime | date:'shortDate'}} by {{active.settings.notification.updatedBy.replace('user.','')}}</span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <!--<div class="notification-preview">
-                <div class="summary-content">
-                    <strong>Summary:</strong>&nbsp;{{active.settings.summary}}
-                </div>
-                <hr />
-                <div class="detail-content">
-                    <markdown class="markdown-body" id="markdown-override" [data]="active.settings.visual.text">
-                    </markdown>
-                </div>
-            </div>-->
             <ng-container *ngTemplateOutlet="notificationPreviewOutput;context:{notification: active}"></ng-container>
             <mat-action-row>
                 <button mat-flat-button color="primary" (click)="disableNotification(active, 'active')">Disable</button>
@@ -77,16 +67,6 @@
                         <span class="updated">last updated: {{notification.settings.notification.updatedTime | date:'shortDate'}} by {{notification.settings.notification.updatedBy.replace('user.','')}}</span>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-                <!--<div class="notification-preview">
-                    <div class="summary-content">
-                        <strong>Summary:</strong>&nbsp;{{notification.settings.summary}}
-                    </div>
-                    <hr style="margin: 8px 0;"/>
-                    <div class="detail-content">
-                        <markdown class="markdown-body" id="markdown-override"
-                            [data]="notification.settings.visual.text"></markdown>
-                    </div>
-                </div>-->
                 <ng-container *ngTemplateOutlet="notificationPreviewOutput;context:{notification: notification}"></ng-container>
                 <mat-action-row>
                     <button mat-flat-button color="primary"
