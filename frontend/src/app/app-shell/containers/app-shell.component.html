@@ -30,7 +30,7 @@
         </mat-sidenav>
         <!-- where the rest of the app gets output -->
         <mat-sidenav-content class="app-navigator-output" fxFlex="1 1 100%" fxLayout fxLayoutAlign="stretch stretch">
-            <mat-drawer-container class="app-navigator-outlet-container" fxFlex="1 1 100%">
+            <mat-drawer-container class="app-navigator-outlet-container" fxFlex="1 1 100%" autosize>
                 <mat-drawer class="app-navigator-drawer"
                     (closedStart)="drawerClosedStart()"
                     [mode]="drawerMode"

@@ -14,7 +14,9 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 
-import { MatDrawer } from '@angular/material';
+import {
+    MatDrawer
+} from '@angular/material';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
 
@@ -344,11 +346,16 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     }
                     this.drawer.open();
                     break;
+                case 'admin':
+                    if (!this.drawer.opened) {
+
+                    }
+                    this.drawer.open();
+                    break;
                 case 'settings':
                 case 'metric-explorer':
                 case 'status':
                 case 'annotations':
-                case 'admin':
                 case 'favorites':
                 case 'namespaces':
                 case 'resources':
