@@ -1,9 +1,14 @@
 @mixin notification-editor-component-base() {
     .notification-editor {
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: stretch;
         min-height: calc(100% - 30px);
+
+        > strong {
+            font-size: 16px;
+        }
 
         .notification-form,
         .notification-details {
@@ -16,16 +21,43 @@
         .notification-summary,
         .notification-details {
             margin-top: 16px;
+
+            > label {
+                font-weight: bold;
+            }
+        }
+
+        .notification-type {
+            .mat-radio-group {
+                margin-left: 6px;
+            }
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+
+            .mat-button,
+            .mat-flat-button,
+            .mat-stroked-button {
+
+                + .mat-button,
+                + .mat-flat-button,
+                + .mat-stroked-button {
+                    margin-left: 8px;
+                }
+            }
         }
 
         .notification-summary {
             .mat-form-field.mat-form-field-type-mat-input {
                 width: 100%;
-                height: 50px;
+                //height: 50px;
                 display: flex;
                 align-items: stretch;
                 justify-content: stretch;
-                flex: 1;
+                flex: 1 1 100%;
                 flex-direction: column;
 
                 .mat-form-field-wrapper {
@@ -38,7 +70,7 @@
 
                 .mat-form-field-flex,
                 .mat-form-field-infix {
-                    min-height: 50px;
+                    //min-height: 50px;
                     height: 100%;
                     width: 100%;
                     flex: 1 1 100%;
@@ -59,7 +91,7 @@
                 display: flex;
                 align-items: stretch;
                 justify-content: stretch;
-                flex: 1;
+                flex: 1 1 100%;
                 flex-direction: column;
 
                 .mat-form-field-wrapper {
@@ -84,6 +116,10 @@
                     min-height: 100px;
                     height: 100%;
                     flex: 1;
+                }
+
+                textarea {
+                    background: transparent;
                 }
             }
         }

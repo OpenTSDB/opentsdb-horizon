@@ -1,6 +1,7 @@
 @mixin notification-panel-component-base() {
     .notification-panel {
-
+        display: flex;
+        flex: 1;
     }
 }
 

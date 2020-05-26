@@ -106,7 +106,12 @@
             }
 
             .mat-tab-body {
+                padding: 0;
+            }
+
+            .mat-tab-body-content {
                 padding: 16px;
+                display: flex;
             }
         }
     }

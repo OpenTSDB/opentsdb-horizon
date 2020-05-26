@@ -1,11 +1,4 @@
-<!--
-    if there is an existing notification
-    1. edit
-    2. disable
-    If there is no active notification
-    1. create
--->
-<strong>Global Notifications</strong>
+<strong>{{ mode === 'create' ? 'Create' : 'Edit'}} Notification</strong>
 <hr />
 <div class="notification-form" [formGroup]="notificationForm">
     <!-- notification type [checkbox] -->
@@ -16,14 +9,23 @@
             <mat-radio-button value="alert">Alert</mat-radio-button>
         </mat-radio-group>
     </div>
+    <!-- label [text] -->
+    <div class="notification-summary" style="margin-top: 16px;">
+        <label>Notification Label (will show in admin list)</label>
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <input matInput
+                formControlName="title"
+                placeholder="Enter name for notification" />
+        </mat-form-field>
+    </div>
     <!-- summary [text] -->
     <div class="notification-summary" style="margin-top: 16px;">
         <label>Summary</label>
         <mat-form-field appearance="fill" style="width: 100%;">
-            <textarea matInput
+            <input matInput
                 formControlName="summary"
                 placeholder="Enter brief sentence to describe notification"
-                cdkTextareaAutosize="false"></textarea>
+                autocomplete="off" />
         </mat-form-field>
     </div>
 
@@ -37,7 +39,7 @@
                 [value]="notificationForm.get('detail').value"
                 style="min-height: 100%;"></textarea>
         </mat-form-field>
-        <hr style="margin: 8px 0;" />
+        <!--<hr style="margin: 8px 0;" />-->
         <strong>Detail Markdown Preview</strong>
         <div class="detail-preview" style="width: 100%; min-height: 100px;">
             <markdown class="markdown-body" id="markdown-override" [data]="notificationForm.get('detail').value"></markdown>
@@ -46,8 +48,10 @@
 </div>
 
 <!-- actions -->
-<div class="actions" style="display: flex; flex-direction: column; align-items: stretch;">
-    <button mat-flat-button color="primary" *ngIf="!activeNotification">Create notification</button>
-    <button mat-flat-button color="primary" *ngIf="activeNotification">Update</button>
-    <button mat-flat-button color="accent" *ngIf="activeNotification">Disable</button>
+<div class="actions" style="display: flex; flex-direction: row; align-items: stretch;">
+    <button mat-flat-button color="primary" *ngIf="mode === 'create'" (click)="createNotificationAction()" [disabled]="notificationForm && !notificationForm.valid">Create notification</button>
+    <button mat-flat-button color="primary" *ngIf="mode === 'edit'" (click)="updateNotificationAction()" [disabled]="notificationForm && !notificationForm.valid">Update</button>
+    <button mat-flat-button color="accent" *ngIf="activeNotification" (click)="disableNotificationAction()">Disable</button>
+    <span class="flex-spacer"></span>
+    <button mat-stroked-button color="primary" (click)="cancelAction()">Cancel</button>
 </div>

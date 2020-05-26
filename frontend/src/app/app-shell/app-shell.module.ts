@@ -30,6 +30,7 @@ import { DbfsUtilsService } from './services/dbfs-utils.service';
 import { DbfsService } from './services/dbfs.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
+import { NotificationService } from './services/notification.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
@@ -55,6 +56,7 @@ import {
     NotificationListComponent,
     NotificationEditorComponent
 } from './components/admin-panel';
+import { DashboardService } from '../dashboard/services/dashboard.service';
 
 @NgModule({
     imports: [
@@ -102,8 +104,10 @@ import {
     ],
     providers: [
         AppShellService,
+        DashboardService,
         DbfsService,
         DbfsUtilsService,
+        NotificationService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [
