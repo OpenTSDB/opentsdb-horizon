@@ -43,14 +43,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     categoryAxis: any = {
         type: 'category',
         ticks: {
-            autoSkip: true
+            autoSkip: true,
+            fontColor: 'slategrey'
         }
     };
 
     valueAxis: any = {
         ticks: {
             beginAtZero: true,
-            precision: 0
+            precision: 0,
+            fontColor: 'slategrey'
         },
         type: 'linear'
     };
@@ -94,6 +96,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     ) { }
 
     ngOnInit() {
+
         this.doRefreshData$ = new BehaviorSubject(false);
 
         this.doRefreshDataSub = this.doRefreshData$
@@ -119,6 +122,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.options.scales.xAxes[0].gridLines = { color: '#eeeeee' };
             this.options.scales.yAxes[0].gridLines = { color: '#eeeeee' };
         });
+
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
             switch( message.action ) {
@@ -168,6 +172,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 }
             }
         });
+
+
 
         // first time when displaying chart
         if (!this.widget.settings.sorting) {
@@ -354,11 +360,13 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     }
 
     setAxisOption() {
-        const axis = this.valueAxis;
+        const axis = {...this.valueAxis};
         const config = this.widget.settings.axes && this.widget.settings.axes.y1 ?
                             this.widget.settings.axes.y1 : <Axis>{};
         axis.type = !config.scale || config.scale === 'linear' ? 'linear' : 'logarithmic';
-        axis.ticks = { beginAtZero: true };
+        /* this already is set in valueAxis... overriding here will kill the label color
+            axis.ticks = { beginAtZero: true, };
+        */
         if ( !isNaN( config.min ) && config.min ) {
             axis.ticks.min =  config.min;
         }
@@ -434,9 +442,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {
