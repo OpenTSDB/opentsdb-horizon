@@ -29,6 +29,16 @@ export interface DBSettingsModel {
         namespaces: string[];
         tvars: any[];
     };
+    downsample: {
+        enable: boolean;
+        override_auto: boolean;
+        aggregator: string[];
+        customUnit: string;
+        customValue: string;
+        minInterval: string;
+        reportingInterval: string;
+        value: string;
+    }
 }
 
 const defaultInitialZoomTime = {start: '', end: '', zone: ''};
@@ -107,6 +117,16 @@ export class UpdateMeta {
         tplVariables: {
             namespaces: [],
             tvars: []
+        },
+        downsample: {
+            enable: false,
+            override_auto: false,
+            aggregator: ['avg'],
+            customUnit: '',
+            customValue: '',
+            minInterval: '',
+            reportingInterval: '',
+            value: 'auto'
         }
     }
 })
@@ -141,6 +161,10 @@ export class DBSettingsState {
 
     @Selector() static getInitialZoomTime(state: DBSettingsModel) {
         return state.initialZoomTime;
+    }
+
+    @Selector() static getDownSample(state: DBSettingsModel) {
+        return state.downsample;
     }
 
     @Action(UpdateMode)
