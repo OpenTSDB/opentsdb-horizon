@@ -193,13 +193,15 @@
     $cdk-menu-bg: map-get($background, menu);
     $cdk-menu-border: $divider;
 
+    $text: map-get($foreground, text);
+
     $info: map-get($denali-brand-6, A400);
     $info-light: map-get($denali-brand-6, 50);
     $info-text: map-get(map-get($denali-brand-6, contrast), A700);
 
-    $alert: map-get($denali-red, A400);
-    $alert-light: map-get($denali-red, 50);
-    $alert-text: map-get(map-get($denali-red, contrast), A700);
+    $alert: map-get($denali-yellow, A700);
+    $alert-light: map-get($denali-yellow, 50);
+    $alert-text: map-get(map-get($denali-yellow, contrast), A700);
 
     $active: map-get($denali-lime, A200);
     $active-text: map-get(map-get($denali-lime, contrast), A200);
@@ -210,11 +212,20 @@
             .mat-expansion-panel {
 
                 .mat-expansion-panel-header {
-                    background-color: $divider;
+                    background-color: if(
+                        $is-dark-theme,
+                        rgba($white, .25),
+                        rgba($black, .08)
+                    );
 
                     .disabled {
                         color: $white;
                         background-color: $black;
+                    }
+
+                    .active {
+                        color: $active-text;
+                        background-color: $active;
                     }
                 }
 
@@ -233,6 +244,13 @@
 
                 .mat-expansion-panel-body {
                     background-color: $white;
+
+                    .notification-preview {
+                        .summary-content,
+                        .detail-content {
+                            color: $black;
+                        }
+                    }
                 }
 
                 &.mat-expanded {
@@ -243,10 +261,12 @@
 
                 &.active-notification {
                     .mat-expansion-panel-header {
+                        .mat-expansion-panel-header-description {
+                            color: if($is-dark-theme, $black, $text)
+                        }
 
-                        .active {
-                            color: $active-text;
-                            background-color: $active;
+                        .mat-expansion-indicator::after {
+                            color: rgba(if($is-dark-theme, $black, $text), .7);
                         }
                     }
 

@@ -129,8 +129,8 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
-    $blue: map-get($graph-colors, "blue");
-    $amber: map-get($graph-colors, "amber");
+    $blue: map-get($denali-brand-6, A400);
+    $amber: map-get($denali-yellow, A700);
 
     .global-notification-component {
         &.info-notification {
