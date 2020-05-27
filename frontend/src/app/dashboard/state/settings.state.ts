@@ -95,6 +95,11 @@ export class UpdateMeta {
     constructor(public readonly meta: any) {}
 }
 
+export class UpdateDownsample {
+    public static type ='[Dashboard] Update Downsample';
+    constructor(public readonly downsample: any) {}
+}
+
 @State<DBSettingsModel>({
     name: 'Settings',
     defaults: {
@@ -165,6 +170,12 @@ export class DBSettingsState {
 
     @Selector() static getDownSample(state: DBSettingsModel) {
         return state.downsample;
+    }
+
+    @Action(UpdateDownsample)
+    updateDownsample(ctx: StateContext<DBSettingsModel>, { downsample }: UpdateDownsample) {
+        const state = ctx.getState();
+        ctx.patchState({...state, downsample: downsample});
     }
 
     @Action(UpdateMode)
