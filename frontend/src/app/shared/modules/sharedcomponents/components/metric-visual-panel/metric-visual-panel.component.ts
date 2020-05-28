@@ -24,18 +24,19 @@ export class MetricVisualPanelComponent implements OnInit {
 
   ngOnInit() {
     this.mode = this.data.visual.type || 'line';
+    this.axis = this.data.visual.axis || 'y1';
   }
 
   setQueryVisual(id, key, value) {
     const visual = {};
     visual[key] = value;
-    this.visualOutput.emit( { action: 'UpdateQueryVisual', payload: { qid : id, visual: visual } });
+    this.visualOutput.emit( { action: 'UpdateQueryVisual', payload: { qid : this.query.id, mid: id, visual: visual } });
   }
 
   setMetricVisual(id, key, value) {
       const visual = {};
       visual[key] = value;
-      this.visualOutput.emit( { action: 'UpdateQueryMetricVisual', payload: { mid : id, visual: visual } });
+      this.visualOutput.emit( { action: 'UpdateQueryMetricVisual', payload: { qid: this.query.id, mid : id, visual: visual } });
   }
 
   setVisualType(id, type) {
@@ -59,6 +60,10 @@ export class MetricVisualPanelComponent implements OnInit {
   setAxis(id, axis) {
     this.axis = axis;
     this.setMetricVisual(id, 'axis', axis);
+  }
+
+  setStacking(id, stacked: boolean) {
+    this.setMetricVisual(id, 'stacked', stacked);
   }
 
   setUnit(id, unit) {

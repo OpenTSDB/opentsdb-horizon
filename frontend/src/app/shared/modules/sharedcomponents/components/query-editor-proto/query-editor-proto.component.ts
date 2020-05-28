@@ -373,7 +373,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     ];
 
     // MAT-TABLE DATA SOURCE
-    metricTableDataSource = new MatTableDataSource<any[]>([]);
+    metricTableDataSource = new MatTableDataSource<any>([]);
 
     visualPanelId = -1;
     constructor(
@@ -635,6 +635,36 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             // calling the initMetricDataSource causing the visual panel closing.
             // data visual needs to be updated reflect the changes on the readonly version
             data.visual = { ...data.visual, ...message.payload.visual };
+            const newConfig = message.payload.visual;
+            const overrideConfig: any = {};
+            for ( let i = 0; i < this.widget.queries.length; i++ ) {
+                for ( let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
+                    const vconfig = this.widget.queries[i].metrics[j].settings.visual;
+                    if ( ['area', 'bar'].includes(vconfig.type) ) {
+                        overrideConfig.axis = vconfig.axis || 'y1';
+                        overrideConfig.stacked = vconfig.stacked || 'true';
+                        break;
+                    }
+                }
+            }
+            const qindex = this.widget.queries.findIndex(d => d.id === message.payload.qid);
+            const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
+            const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
+            for ( let i = 0; i < this.metricTableDataSource.data.length; i++ ) {
+                if ( this.metricTableDataSource.data[i].visual ) {
+                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
+                        this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
+                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.color ||  newConfig.type ) ) {
+                        this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
+                        // set existing bar axis
+                        if ( newConfig.type && ['area', 'bar'].includes(newConfig.type) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type)) {
+                            this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...overrideConfig};
+                        }
+                    } else if ( message.action === 'UpdateQueryVisual' && newConfig.axis && (curtype !== 'line' || !this.metricTableDataSource.data[i].visual.type || this.metricTableDataSource.data[i].visual.type === 'line') )  {
+                        this.metricTableDataSource.data[i].visual.axis = newConfig.axis;
+                    }
+                }
+            }
         }
     }
 

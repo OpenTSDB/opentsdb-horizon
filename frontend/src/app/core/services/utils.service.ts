@@ -157,10 +157,13 @@ export class UtilsService {
         widget.queries.splice(qindex, 1);
     }
 
-    updateQueryVisual(widget, qid, mid, visual) {
+    updateQueryVisual(widget, qid, mid, visual, ex= []) {
         const qindex = widget.queries.findIndex(d => d.id === qid);
         for ( let i = 0; i < widget.queries[qindex].metrics.length; i++ ) {
-            widget.queries[qindex].metrics[i].settings.visual = { ...widget.queries[qindex].metrics[i].settings.visual, ...visual };
+            const id = widget.queries[qindex].metrics[i].id;
+            if ( !ex.length || !ex.includes(id)) {
+                widget.queries[qindex].metrics[i].settings.visual = { ...widget.queries[qindex].metrics[i].settings.visual, ...visual };
+            }
         }
     }
 
@@ -919,6 +922,14 @@ export class UtilsService {
             }
         }
         return '';
+    }
+
+    createNewReference(items, exclude = []) {
+        for ( let i = 0; i < items.length; i++ ) {
+            if ( !exclude.includes(i)) {
+                items[i] = {...items[i]};
+            }
+        }
     }
 
 }
