@@ -1,8 +1,13 @@
 /* WIDGET CONFIG COMPONENT */
 // TODO: Describe how this is setup & why there are two mixins (at a minimum)
 
-@mixin widget-config-time-component-base() {
-    .widget-config-tab.time-configuration {
+@mixin time-downsample-component-base() {
+    .time-downsample-component {
+        flex-direction: column;
+
+        &.widget-config-tab .config-control:not(:last-child) {
+            margin-bottom: 8px;
+        }
 
         .form-field-group {
             display: inline-block;
@@ -71,10 +76,27 @@
                 border-top: 0;
             }
         }
+
+        .mat-radio-label-content {
+            line-height: 24px;
+            font-size: 12px;
+        }
+
+        .mat-button-toggle-group.mat-button-toggle-group-horizontal {
+            line-height: 32px;
+        }
+
+        .mat-form-field.mat-form-field-type-mat-select {
+            line-height: 24px;
+
+            .mat-form-field-infix {
+                padding: 0;
+            }
+        }
     }
 }
 
-@mixin widget-config-time-component-theme($theme-config) {
+@mixin time-downsample-component-theme($theme-config) {
 
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
@@ -87,7 +109,7 @@
     $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.04));
 
 
-    /*.widget-config-tab.time-configuration {
+    /*.time-downsample-component {
         // style rules here
     }*/
 

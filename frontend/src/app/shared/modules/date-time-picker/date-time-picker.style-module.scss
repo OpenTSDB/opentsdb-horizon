@@ -21,6 +21,7 @@
 @import './components/keypad/keypad.component';
 @import './components/time-picker/time-picker.component';
 @import './components/time-range-picker/time-range-picker.component';
+@import './components/downsample/downsample.component';
 
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
@@ -30,6 +31,7 @@
     @include keypad-component-base();
     @include time-picker-component-base();
     @include time-range-picker-component-base();
+    @include time-downsample-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
@@ -39,4 +41,5 @@
     @include keypad-component-theme($theme-config);
     @include time-picker-component-theme($theme-config);
     @include time-range-picker-component-theme($theme-config);
+    @include time-downsample-component-theme($theme-config);
 }

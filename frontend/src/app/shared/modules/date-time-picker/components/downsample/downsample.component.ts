@@ -19,8 +19,8 @@ import { Subscription } from 'rxjs';
     ]
 })
 export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
-    @HostBinding('class.widget-config-tab') private _hostClass = true;
-    @HostBinding('class.time-configuration') private _tabClass = true;
+    @HostBinding('class.time-downsample-component') private _hostClass = true;
+    @HostBinding('class.widget-config-tab') private _extendClass = true;
     @HostBinding('class.has-columns') private _modifierClass = true;
 
     /** Inputs */
