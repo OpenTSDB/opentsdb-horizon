@@ -30,7 +30,7 @@ export interface DBSettingsModel {
         tvars: any[];
     };
     downsample: {
-        enable: boolean;
+        enabled: boolean;
         override_auto: boolean;
         aggregator: string[];
         customUnit: string;
@@ -124,7 +124,7 @@ export class UpdateDownsample {
             tvars: []
         },
         downsample: {
-            enable: false,
+            enabled: false,
             override_auto: false,
             aggregator: ['avg'],
             customUnit: '',
