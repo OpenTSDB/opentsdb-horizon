@@ -74,9 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @Select(AuthState.getAuth) auth$: Observable<string>;
     @Select(DBSettingsState.getDashboardSettings) dbSettings$: Observable<any>;
-
     @Select(DbfsState.getUserFolderData()) userFolderData$: Observable<any>;
-
     @Select(DBState.getDashboardFriendlyPath) dbPath$: Observable<string>;
     @Select(DBState.getLoadedDB) loadedRawDB$: Observable<any>;
     @Select(DBState.getDashboardStatus) dbStatus$: Observable<string>;
@@ -85,6 +83,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBSettingsState.getDashboardAutoRefresh) refresh$: Observable<any>;
     @Select(DBSettingsState.getMeta) meta$: Observable<any>;
     @Select(DBSettingsState.getTplVariables) tplVariables$: Observable<any>;
+    @Select(DBSettingsState.getDownSample) downSample$: Observable<any>;
     @Select(WidgetsState.getWigets) widgets$: Observable<WidgetModel[]>;
     @Select(WidgetsState.lastUpdated) lastUpdated$: Observable<any>;
     @Select(WidgetsRawdataState.getLastModifiedWidgetRawdataByGroup) widgetGroupRawData$: Observable<any>;
@@ -175,6 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     dbTime: any = {};
     isDBZoomed = false;
     meta: any = {};
+    dbDownsample: any = {};
     // variables: any;
     dbTags: any;
     dbid: string; // passing dashboard id
@@ -697,6 +697,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.meta.title) {
                 this.utilService.setTabTitle(this.meta.title);
             }
+        }));
+        this.subscription.add(this.downSample$.subscribe(downsample => {
+            this.dbDownsample = this.utilService.deepClone(downsample);
         }));
         this.subscription.add(this.tplVariables$.subscribe(tpl => {
             // whenever tplVariables$ trigger, we save to view too.

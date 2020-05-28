@@ -72,6 +72,7 @@
 
     <time-picker class="navbar-item nav-date-time-picker"
         (newChange)="handleTimePickerChanges($event)"
+        [downsample]="dbDownsample"
         [timezone]="dbTime.zone"
         [startTime]="dbTime.start"
         [endTime]="dbTime.end"
