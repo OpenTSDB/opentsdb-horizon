@@ -1,0 +1,10 @@
+<button mat-button [matMenuTriggerFor]="joinTypeMenu">
+  <div>{{ selectedLabel }}</div>
+  <div class="mat-select-arrow-wrapper">
+      <div class="mat-select-arrow"></div>
+  </div>
+</button>
+<mat-menu class="dropdown-join-type-cdk-menu" #joinTypeMenu="matMenu" yPosition="below">
+  <button mat-menu-item *ngFor="let option of joinOptions"
+      (click)="selectOption(option.value)">{{option.label}}</button>
+</mat-menu>
