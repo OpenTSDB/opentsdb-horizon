@@ -43,7 +43,7 @@ export class TimeRangePickerComponent implements OnInit {
     get timezone(): string {
       return this._timezone;
     }
-
+    @Input() downsample: any;
     @Input() options: TimeRangePickerOptions;
     @Output() timeSelected = new EventEmitter<ISelectedTime>();
     @Output() cancelSelected = new EventEmitter();
@@ -56,6 +56,7 @@ export class TimeRangePickerComponent implements OnInit {
     private _startTime: string;
     private _endTime: string;
     private _timezone: string;
+    private _downsample: any;
 
     startTimeSelected: Moment;
     endTimeSelected: Moment;

@@ -59,6 +59,9 @@
         </datepicker2>
 
     </div>
+    <div>
+        <downsample [downsample]="downsample"></downsample>
+    </div>
 
 <div class="dtp-action-controls" *ngIf="showApply" fxLayout.xs="row">
     <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="daytimePickerStart.formFields.dateInput.errors || daytimePickerEnd.formFields.dateInput.errors">Apply</button>
