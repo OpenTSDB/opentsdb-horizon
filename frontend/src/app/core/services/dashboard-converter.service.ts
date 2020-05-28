@@ -432,12 +432,9 @@ export class DashboardConverterService {
       if (!settings.downsample) {
         settings.downsample = {
           enabled: false,
-          override_auto: false,
-          aggregator: ['avg'],
+          aggregator: [],
           customUnit: '',
           customValue: '',
-          minInterval: '',
-          reportingInterval: '',
           value: 'auto'
         };
       }

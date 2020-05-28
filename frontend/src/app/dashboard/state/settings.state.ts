@@ -31,12 +31,9 @@ export interface DBSettingsModel {
     };
     downsample: {
         enabled: boolean;
-        override_auto: boolean;
         aggregator: string[];
         customUnit: string;
         customValue: string;
-        minInterval: string;
-        reportingInterval: string;
         value: string;
     }
 }
@@ -125,12 +122,9 @@ export class UpdateDownsample {
         },
         downsample: {
             enabled: false,
-            override_auto: false,
-            aggregator: ['avg'],
+            aggregator: [],
             customUnit: '',
             customValue: '',
-            minInterval: '',
-            reportingInterval: '',
             value: 'auto'
         }
     }
