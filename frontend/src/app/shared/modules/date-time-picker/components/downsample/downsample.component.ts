@@ -45,7 +45,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     customTimeRangeStart: any;
     customTimeRangeEnd: any;
 
-    selectedAggregators: any = ['avg'];
+    selectedAggregators: any = [''];
     timeOverTimeNumber: any = '';
     timeOverTimePeriod: any = '';
 
@@ -59,6 +59,9 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     overrideRelativeTime: any;
     timeShift: any;
     multipleAggregators = false;
+
+    overrideResolution = false;
+    overrideAggregator = false;
 
     /** Form control options */
     timePresetOptions: Array<any> = [
@@ -105,6 +108,10 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
     timeAggregatorOptions: Array<any> = [
+        {
+            label: 'Select one',
+            value: ''
+        },
         {
             label: 'Sum',
             value: 'sum'
@@ -312,9 +319,15 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedTimePreset = val;
     }
 
-    changeToggle(event: any) {
-        // this.downsample.enable = event.checked;
-        this.downsample = {...this.downsample, enabled: event.checked};
-        // this.cdRef.markForCheck();
+    changeToggle() {
+        this.downsample = {...this.downsample, enabled: !this.downsample.enabled };
+    }
+
+    checkOverrideResolution(event: any) {
+        this.overrideResolution = event.checked;
+    }
+
+    checkOverrideAggregator(event: any) {
+        this.overrideAggregator = event.checked;
     }
 }
