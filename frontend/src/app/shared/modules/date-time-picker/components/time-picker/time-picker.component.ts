@@ -79,6 +79,8 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
     @Input() config: any = {'enableSync': true, 'enableRefresh': true};
 
+    @Input() downsample: any;
+
     /** Outputs */
     @Output() newChange = new EventEmitter();
     @Output() autoRefreshFlagChanged = new EventEmitter();
