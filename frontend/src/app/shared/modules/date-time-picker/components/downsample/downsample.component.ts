@@ -22,6 +22,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.time-downsample-component') private _hostClass = true;
     @HostBinding('class.widget-config-tab') private _extendClass = true;
     @HostBinding('class.has-columns') private _modifierClass = true;
+    @HostBinding('class.advanced-open') private _advancedClass = false;
 
     /** Inputs */
     @Input() downsample: any;
@@ -321,6 +322,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
 
     changeToggle() {
         this.downsample = {...this.downsample, enabled: !this.downsample.enabled };
+        this._advancedClass = this.downsample.enabled;
     }
 
     checkOverrideResolution(event: any) {
