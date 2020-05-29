@@ -2,42 +2,48 @@
     <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
         <div class="nav-item icon-nav"
             matTooltip="Dashboard Navigator Home"
-            [ngClass]="{'is-active': currentPanelTab === 'personal'}">
-            <button mat-icon-button (click)="navtoPanelTab('personal')">
+            [ngClass]="{'is-active': currentPanelTab === 'personal'}"
+            (click)="navtoPanelTab('personal')">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-home"></mat-icon>
             </button>
         </div>
         <div class="nav-item icon-nav"
             matTooltip="My Favorites"
-            [ngClass]="{'is-active': currentPanelTab === 'favorites'}">
-            <button mat-icon-button (click)="navtoPanelTab('favorites')">
+            [ngClass]="{'is-active': currentPanelTab === 'favorites'}"
+            (click)="navtoPanelTab('favorites')">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-star"></mat-icon>
             </button>
         </div>
         <div class="nav-item icon-nav"
             matTooltip="My Recent History"
-            [ngClass]="{'is-active': currentPanelTab === 'recent'}">
-            <button mat-icon-button (click)="navtoPanelTab('recent')">
+            [ngClass]="{'is-active': currentPanelTab === 'recent'}"
+            (click)="navtoPanelTab('recent')">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-time-history"></mat-icon>
             </button>
         </div>
         <div class="nav-item icon-nav"
             matTooltip="View All Users"
-            [ngClass]="{'is-active': currentPanelTab === 'users'}">
-            <button mat-icon-button (click)="navtoPanelTab('users')">
+            [ngClass]="{'is-active': currentPanelTab === 'users'}"
+            (click)="navtoPanelTab('users')">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-user-group"></mat-icon>
             </button>
         </div>
         <div class="nav-item icon-nav"
             matTooltip="View all Namespaces"
-            [ngClass]="{'is-active': currentPanelTab === 'namespaces'}">
-            <button mat-icon-button (click)="navtoPanelTab('namespaces')">
+            [ngClass]="{'is-active': currentPanelTab === 'namespaces'}"
+            (click)="navtoPanelTab('namespaces')">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-network-platform"></mat-icon>
             </button>
         </div>
         <div class="nav-item icon-nav"
-            matTooltip="Create New Dashboard">
-            <button mat-icon-button (click)="createDashboard()">
+            matTooltip="Create New Dashboard"
+            (click)="createDashboard()">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
             </button>
         </div>
@@ -47,8 +53,9 @@
             <strong *ngIf="panels[currentPanelIndex] && panels[currentPanelIndex].dynamic && dynamicFolderPaths.includes(panels[currentPanelIndex].folderResource)">{{getResource(panels[currentPanelIndex].folderResource).name}}</strong>
         </div>-->
         <span class="flex-spacer"></span>
-        <div class="nav-item icon-nav">
-            <button mat-icon-button (click)="closeDrawer()">
+        <div class="nav-item icon-nav"
+            (click)="closeDrawer()">
+            <button mat-icon-button>
                 <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
             </button>
         </div>
