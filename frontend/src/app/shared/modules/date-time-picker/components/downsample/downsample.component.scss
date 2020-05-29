@@ -11,6 +11,11 @@
             margin-right: -16px;
             line-height: 36px;
             padding-left: 8px;
+
+            a {
+                color: blue;
+                text-decoration: underline;
+            }
         }
 
         &.advanced-open .advanced-toggle {
