@@ -667,6 +667,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseLeave(event: any) {
         this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
+        if (this._g) {
+            this._g.clearSelection();
+        }
     }
 
     ngOnDestroy() {

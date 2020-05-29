@@ -71,10 +71,8 @@ export class DatatranformerService {
     const queryResults = [];
     const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
     let isStacked = false;
-    const stackedGroups = {};
     const groups = {};
-    let areaAxis = 'y1';
-    let barAxis = 'y1';
+    const stackedYAxes = [];
     let yMax = 0, y2Max = 0;
     const min = { y1: null, y2: null };
     const mTimeConfigs = {};
@@ -124,14 +122,12 @@ export class DatatranformerService {
                     const tags = queryResults[i].data[j].tags;
                     const hash = JSON.stringify(tags);
                     dict[mid]['values'][hash] = queryResults[i].data[j].NumericType;
-                    if ( vConfig.type === 'area' || vConfig.type === 'bar' ) {
+                    if ( (vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) {
                         isStacked = true;
-                    }
-                    if ( vConfig.type === 'area' ) {
-                        areaAxis = vConfig.axis || 'y1';
-                    }
-                    if ( vConfig.type === 'bar' ) {
-                        barAxis = vConfig.axis || 'y1';
+                        const axis = !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2';
+                        if ( !stackedYAxes.includes(axis) ) {
+                            stackedYAxes.push(axis);
+                        }
                     }
                 }
             }
@@ -146,7 +142,6 @@ export class DatatranformerService {
     const tsObj = this.util.getTimestampsFromTimeSpecification(Object.values(mTimeConfigs));
     const ts = Object.keys(tsObj);
     const tsn = Object.keys(tsObj).length;
-    const stackedYAxes = this.util.arrayUnique([areaAxis, barAxis]);
     const xAggs = {
                         max: {
                             'area': { 'y' : Array( tsn ).fill(0), 'y2': Array( tsn ).fill(0) },
@@ -207,7 +202,7 @@ export class DatatranformerService {
                             strokePattern: this.getStrokePattern(vConfig.lineType),
                             // color: colors[j],
                             fillGraph: vConfig.type === 'area' ? true : false,
-                            isStacked: vConfig.type === 'area' ? true : false,
+                            isStacked: vConfig.type === 'area' && vConfig.stacked !== 'false' ? true : false,
                             axis: !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2',
                             metric: metric,
                             tags: { metric: !mConfig.expression ?
@@ -217,10 +212,8 @@ export class DatatranformerService {
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
-                            stackedGroups['bar'] = true;
-                        } else if ( vConfig.type === 'area' ) {
+                        } else if ( vConfig.type === 'area' && vConfig.stacked === 'true' ) {
                             config.plotter = stackedAreaPlotter;
-                            stackedGroups['area'] = true;
                         } else {
                             groups['line'] = true;
                         }
@@ -237,13 +230,8 @@ export class DatatranformerService {
         // sort the data
         intermediateTime = new Date().getTime();
         dseries.sort((a: any, b: any) => {
-            if ( !widget.settings.visual || !widget.settings.visual.stackOrder || widget.settings.visual.stackOrder === 'metric') {
-                return  (b.config.group < a.config.group ? -1 : b.config.group > a.config.group ? 1 : 0)  || this.util.sortAlphaNum(a.hash, b.hash);
-            } else {
-                const orderBy = widget.settings.visual.stackOrder;
-                return (b.config.group < a.config.group ? -1 : b.config.group > a.config.group ? 1 : 0)  || a.config.aggregations[orderBy] - b.config.aggregations[orderBy];
-            }
-        }).reverse();
+            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations['min'] - b.config.aggregations['min'];
+        });
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
@@ -276,7 +264,7 @@ export class DatatranformerService {
                 if ( tsIndex !== undefined ) {
                     normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : NaN;
                 }
-                if ( isStacked && !isNaN(data[k]) && ( type === 'area' || type === 'bar') ) {
+                if ( isStacked && !isNaN(data[k]) && ( (type === 'area' && dseries[i].config.isStacked) || type === 'bar') ) {
                     if ( data[k] > 0) {
                         xAggs['max'][type][axis][k] += data[k];
                     } else {
@@ -289,12 +277,12 @@ export class DatatranformerService {
 
         if (isStacked) {
             for ( let i = 0; i < stackedYAxes.length; i++ ) {
-                const axis = stackedYAxes[i] === 'y1' ? 'y' : 'y2';
+                const axis = stackedYAxes[i];
                 let axisMax = d3.max([...xAggs['max']['area'][axis], ...xAggs['max']['bar'][axis]]);
                 let axisMin = d3.min([...xAggs['min']['area'][axis], ...xAggs['min']['bar'][axis]]);
-                const axisConfig = widget.settings.axes[stackedYAxes[i]];
+                const axisConfig = widget.settings.axes[stackedYAxes[i] === 'y' ? 'y1' : 'y2'];
 
-                if ( stackedYAxes[i] === 'y1' ) {
+                if ( stackedYAxes[i] === 'y' ) {
                     axisMax = yMax > axisMax ? yMax : axisMax;
                     axisMin = min['y1'] < axisMin ? min['y1'] : axisMin;
                     yMax = axisMax;

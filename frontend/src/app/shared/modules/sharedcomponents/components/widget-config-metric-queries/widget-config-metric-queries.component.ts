@@ -156,6 +156,19 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     handleQueryRequest(message: any) {
         switch ( message.action ) {
             case 'UpdateQueryVisual':
+                // set bar axis to same as existing bars
+                if ( message.payload.visual.type && ['area', 'bar'].includes(message.payload.visual.type) ) {
+                    for ( let i = 0; i < this.widget.queries.length; i++ ) {
+                        for ( let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
+                            const vconfig = this.widget.queries[i].metrics[j].settings.visual;
+                            if ( ['area', 'bar'].includes(vconfig.type) ) {
+                                message.payload.visual.axis = vconfig.axis || 'y1';
+                                message.payload.visual.stacked = vconfig.stacked || 'true';
+                                break;
+                            }
+                        }
+                    }
+                }
                 this.widgetChange.emit(message);
                 break;
             case 'UpdateQueryMetricVisual':
