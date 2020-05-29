@@ -1,6 +1,6 @@
 
-<div style="display: block">
-<a mat-button color="primary" (click)="changeToggle()">Advance settings</a>
+<div class="advanced-toggle">
+    <a mat-button color="primary" (click)="changeToggle()">Advance settings</a>
 </div>
 <form [formGroup]="widgetConfigTime" *ngIf="downsample.enabled">
   <div>
@@ -79,4 +79,3 @@
   </div>
 
 </form>
- 
