@@ -267,10 +267,7 @@ export class DbfsService {
     }
 
     moveFolder(sourceId: number, destinationId: number, trashFolder?: boolean) {
-        const body = {
-            sourceId,
-            destinationId
-        };
+        const body = { 'sourceId': sourceId, 'destinationId': destinationId };
 
         const apiUrl = environment.configdb + '/dashboard/folder/move';
 

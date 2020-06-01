@@ -1,0 +1,42 @@
+@mixin notification-panel-component-base() {
+    .notification-panel {
+        display: flex;
+        flex: 1;
+    }
+}
+
+@mixin notification-panel-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+    $status: map-get($theme-config, status);
+
+    /* navbar config */
+    $sn-light: map-get($navbar-config, sn-light);
+    $sn-dark: map-get($navbar-config, sn-dark);
+    $sn-light-text: map-get($navbar-config, sn-light-text);
+    $sn-dark-text: map-get($navbar-config, sn-dark-text);
+    $sn-seperator: map-get($navbar-config, sn-seperator);
+    $sn-active: map-get($navbar-config, sn-active);
+
+    $text-color: map-get($background, navbar);
+    $icon-color: $text-color;
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+    $menu-background: if($is-dark-theme, lighten(map-get($background, card), 10%), map-get($background, card));
+    $menu-background-hover: find-color-invert($menu-background);
+
+    $cdk-menu-bg: map-get($background, menu);
+    $cdk-menu-border: $divider;
+
+    .notification-panel {
+
+    }
+}

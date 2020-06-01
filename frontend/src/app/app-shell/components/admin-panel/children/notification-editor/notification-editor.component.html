@@ -1,0 +1,57 @@
+<strong>{{ mode === 'create' ? 'Create' : 'Edit'}} Notification</strong>
+<hr />
+<div class="notification-form" [formGroup]="notificationForm">
+    <!-- notification type [checkbox] -->
+    <div class="notification-type">
+        <label>Notification Type: </label>
+        <mat-radio-group formControlName="type">
+            <mat-radio-button value="info">Info</mat-radio-button>
+            <mat-radio-button value="alert">Alert</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <!-- label [text] -->
+    <div class="notification-summary" style="margin-top: 16px;">
+        <label>Notification Label (will show in admin list)</label>
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <input matInput
+                formControlName="title"
+                placeholder="Enter name for notification" />
+        </mat-form-field>
+    </div>
+    <!-- summary [text] -->
+    <div class="notification-summary" style="margin-top: 16px;">
+        <label>Summary</label>
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <input matInput
+                formControlName="summary"
+                placeholder="Enter brief sentence to describe notification"
+                autocomplete="off" />
+        </mat-form-field>
+    </div>
+
+    <!-- details [markdown] -->
+    <div class="notification-details" style="margin-top: 16px;">
+        <label>Notification Detail</label>
+        <mat-form-field class="inputArea" style="width: 100%; min-height: 100px;" appearance="fill">
+            <textarea matInput
+                formControlName="detail"
+                placeholder="Notification Detail here. We support Markdown."
+                [value]="notificationForm.get('detail').value"
+                style="min-height: 100%;"></textarea>
+        </mat-form-field>
+        <!--<hr style="margin: 8px 0;" />-->
+        <strong>Detail Markdown Preview</strong>
+        <div class="detail-preview" style="width: 100%; min-height: 100px;">
+            <markdown class="markdown-body" id="markdown-override" [data]="notificationForm.get('detail').value"></markdown>
+        </div>
+    </div>
+</div>
+
+<!-- actions -->
+<div class="actions" style="display: flex; flex-direction: row; align-items: stretch;">
+    <button mat-flat-button color="primary" *ngIf="mode === 'create'" (click)="createNotificationAction()" [disabled]="notificationForm && !notificationForm.valid">Create notification</button>
+    <button mat-flat-button color="primary" *ngIf="mode === 'edit'" (click)="updateNotificationAction()" [disabled]="notificationForm && !notificationForm.valid">Update</button>
+    <button mat-flat-button color="accent" *ngIf="activeNotification" (click)="disableNotificationAction()">Disable</button>
+    <span class="flex-spacer"></span>
+    <button mat-stroked-button color="primary" (click)="cancelAction()">Cancel</button>
+</div>
