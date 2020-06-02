@@ -792,6 +792,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     updateURLParams(p) {
         this.urlOverrideService.applyParamstoURL(p);
     }
+    // applyCustomDownsample to widgets when user change
+    applyDBDownsample(dsample: any) {
+        console.log('hill - downsample to apply', dsample);
+        // deal with copy of widget since we dont want to write to wiget config
+        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        // find all widget that using downsample as auto
+        for (let i = 0; i < cloneWidgets.length; i++) {
+            const cWidget = cloneWidgets[i];
+            const wDownsample = cWidget.settings.time.downsample;
+            // only apply to widget which is using auto downsample to override
+            if (wDownsample.value === 'auto') {
+                if (dsample.aggregators[0] !== '') {
+                    cWidget.settings.time.downsample.aggregators = dsample.aggregators;
+                }
+                if (dsample.downsample !== 'auto') {
+                    cWidget.settings.time.downsample.value = dsample.downsample;
+                    cWidget.settings.time.downsample.customUnit = dsample.customDownsampleUnit;
+                    cWidget.settings.time.downsample.customValue = dsample.customDownsampleValue;
+                } 
+                this.handleQueryPayload({
+                    id: cWidget.id,
+                    payload: cWidget
+                });
+            }
+        }
+    }
+    
     // apply when custom tag value is changed
     // should only trigger widgets that are affected by this change.
     applyTplVarValue(tvars: any[]) {
@@ -1059,6 +1086,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     // dispatch payload query by group
     handleQueryPayload(message: any) {
+        console.log('hill - the downsample in state', this.dbDownsample);
         let groupid = '';
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
@@ -1073,6 +1101,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.isDBZoomed && message.id.indexOf('__EDIT__') === -1 && (wType === 'HeatmapWidgetComponent' || wType === 'LinechartWidgetComponent')) {
                 payload.settings.time.downsample.value = 'auto';
             }
+            // modify to apply dashboard downsample
+            
             // should we modify the widget if using dashboard tag filter
             const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
             // sending each group to get data.
@@ -1203,6 +1233,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             case 'SetDBDownsample': {
                 console.log('hill - to dashboard', message);
                 this.store.dispatch(new UpdateDownsample(message.payload));
+                this.applyDBDownsample(message.payload);
             }
         }
     }
