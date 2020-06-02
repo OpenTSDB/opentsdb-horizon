@@ -19,6 +19,10 @@ import {
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
+import {
+  MarkdownModule,
+  MarkedOptions
+} from 'ngx-markdown';
 
 // services
 import { AppShellService } from './services/app-shell.service';
@@ -26,6 +30,7 @@ import { DbfsUtilsService } from './services/dbfs-utils.service';
 import { DbfsService } from './services/dbfs.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
+import { NotificationService } from './services/notification.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
@@ -34,6 +39,7 @@ import { TestNavigatorComponent } from './components/test-navigator/test-navigat
 import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.directive';
 import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
+import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
 
 import {
     DbfsComponent,
@@ -44,6 +50,13 @@ import {
     SettingsPanelComponent,
     SettingsThemeComponent
 } from './components/settings-panel';
+import {
+    AdminPanelComponent,
+    NotificationPanelComponent,
+    NotificationListComponent,
+    NotificationEditorComponent
+} from './components/admin-panel';
+import { DashboardService } from '../dashboard/services/dashboard.service';
 
 @NgModule({
     imports: [
@@ -54,6 +67,14 @@ import {
         FormsModule,
         ReactiveFormsModule,
         SharedcomponentsModule,
+        MarkdownModule.forRoot({
+          markedOptions: {
+            provide: MarkedOptions,
+            useValue: {
+              sanitize: true,
+            }
+          }
+        }),
         NgxsModule.forFeature([
             AppShellState,
             NavigatorState,
@@ -74,12 +95,19 @@ import {
         DbfsComponent,
         DbfsMiniNavComponent,
         SettingsPanelComponent,
-        SettingsThemeComponent
+        SettingsThemeComponent,
+        GlobalNotificationBannerComponent,
+        NotificationEditorComponent,
+        AdminPanelComponent,
+        NotificationListComponent,
+        NotificationPanelComponent
     ],
     providers: [
         AppShellService,
+        DashboardService,
         DbfsService,
         DbfsUtilsService,
+        NotificationService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [

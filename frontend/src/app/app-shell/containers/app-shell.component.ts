@@ -14,20 +14,23 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 
-import { MatDrawer } from '@angular/material';
+import {
+    MatDrawer
+} from '@angular/material';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
 
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import {
     AppShellState,
+    DbfsState,
     NavigatorState,
     SetSideNavOpen,
     SSGetUserProfile,
     DbfsLoadResources,
     DbfsInitialized,
-    DbfsLoadUserRecents,
-    DbfsState
+    DbfsResourcesState,
+    DbfsLoadUserRecents
 } from '../state';
 import {
     UpdateNavigatorSideNav
@@ -59,6 +62,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     @Select(AppShellState.getUserProfile) userProfile$: Observable<any>;
     userProfile: any = {};
 
+    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
+
+    // if the active user is a member of yamas
+    isYamasMember: boolean = false;
+
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
     @ViewChild(NavigatorSidenavComponent) private sideNav: NavigatorSidenavComponent;
@@ -82,6 +90,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         warning: 'd-warning-solid'
     };
 
+    sideNavTopGap: number = 0;
     private resourcesReady: boolean = false;
     private pendingRecent: any = {};
 
@@ -190,8 +199,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
 
-        this.subscription.add(this.themeService.getActiveTheme().subscribe(theme => {
-            this.logger.log('LS THEME', { theme });
+        this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
+            // this.logger.log('LS THEME', { theme });
             this.setAppTheme(theme);
         }));
 
@@ -245,6 +254,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     break;
             }
         }));
+
+        this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
+            // this.logger.ng('RESOURCES LOADED?', resourcesLoaded ? 'YES' : 'NO');
+            if (resourcesLoaded) {
+                const user = this.store.selectSnapshot(DbfsState.getUser());
+                // this.logger.log('USER', user);
+                this.isYamasMember = user.memberNamespaces.includes('yamas');
+            }
+        }));
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -288,6 +306,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     /** BEHAVIORS */
 
+    globalMessageVisibility(event: any) {
+      // this.logger.log('GLOBAL MESSAGE VISIBILITY', event);
+      if (event.visible) {
+          this.sideNavTopGap = 30;
+      } else {
+          this.sideNavTopGap = 0;
+      }
+  }
+
     closeMessageBar() {
         this.messageBarVisible = false;
     }
@@ -319,11 +346,16 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     }
                     this.drawer.open();
                     break;
+                case 'admin':
+                    if (!this.drawer.opened) {
+
+                    }
+                    this.drawer.open();
+                    break;
                 case 'settings':
                 case 'metric-explorer':
                 case 'status':
                 case 'annotations':
-                case 'admin':
                 case 'favorites':
                 case 'namespaces':
                 case 'resources':

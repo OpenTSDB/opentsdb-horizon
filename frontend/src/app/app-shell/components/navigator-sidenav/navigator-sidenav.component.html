@@ -7,7 +7,15 @@
 </mat-toolbar>
 <mat-nav-list class="side-nav-applications">
     <ng-container *ngFor="let nav of navItems">
-        <a mat-list-item (click)="navigationClicked(nav)" [ngClass]="{'is-active': activeNav.section === nav.section}">
+        <a mat-list-item (click)="navigationClicked(nav)"
+            *ngIf="!nav.requiresUserAdmin"
+            [ngClass]="{'is-active': activeNav.section === nav.section}">
+            <mat-icon fontSet="denali" [fontIcon]="nav.icon"></mat-icon>
+            <span class="nav-label">{{nav.label}}</span>
+        </a>
+        <a mat-list-item (click)="navigationClicked(nav)"
+            *ngIf="nav.requiresUserAdmin && yamasMember"
+            [ngClass]="{'is-active': activeNav.section === nav.section}">
             <mat-icon fontSet="denali" [fontIcon]="nav.icon"></mat-icon>
             <span class="nav-label">{{nav.label}}</span>
         </a>

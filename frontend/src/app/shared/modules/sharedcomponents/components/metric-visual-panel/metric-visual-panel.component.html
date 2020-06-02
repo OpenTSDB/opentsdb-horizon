@@ -55,6 +55,13 @@
                 <mat-radio-button value="y1">Y1</mat-radio-button>
                 <mat-radio-button value="y2">Y2</mat-radio-button>
             </mat-radio-group>
+            <div *ngIf="this.mode ==='area'">
+            <strong>Stacking</strong>
+            <mat-radio-group class="vertical-radio-group" (change)="setStacking(data.metric.id, $event.value)" [value]="data.visual.stacked === 'false' ? 'false' : 'true'">
+                <mat-radio-button value="true">Vertical</mat-radio-button>
+                <mat-radio-button value="false">Overlay</mat-radio-button>
+            </mat-radio-group>
+            </div>
         </div>
     </mat-card-content>
     <mat-card-footer>
@@ -64,9 +71,9 @@
         <div class="flex-spacer"></div>
         <div *ngIf="type === 'LinechartWidgetComponent'">
             <strong>Apply to all:</strong>
-            <button mat-button color="primary" (click)="setQueryVisualType(query.id, $event)">Styles</button>
-            <button mat-button color="primary" (click)="setQueryVisualColor(query.id, $event)">Color</button>
-            <button mat-button color="primary" (click)="setQueryVisualAxis(query.id, $event)">Axis</button>
+            <button mat-button color="primary" (click)="setQueryVisualType(data.metric.id, $event)">Styles</button>
+            <button mat-button color="primary" (click)="setQueryVisualColor(data.metric.id, $event)">Color</button>
+            <button mat-button color="primary" (click)="setQueryVisualAxis(data.metric.id, $event)">Axis</button>
         </div>
     </mat-card-footer>
 </mat-card>
