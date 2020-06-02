@@ -30,6 +30,7 @@
         <time-range-picker
             (timeSelected)="timeReceived($event)"
             (cancelSelected)="triggerAndCloseTimeRangePicker()"
+            (dbdownsampleChange)="downsampleChange($event)"
             [startTime]="startTime"
             [endTime]="endTime"
             [options]="options"

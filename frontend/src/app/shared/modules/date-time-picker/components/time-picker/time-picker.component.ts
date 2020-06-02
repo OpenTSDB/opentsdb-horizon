@@ -212,6 +212,10 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
         this.trigger.closeMenu();
     }
 
+    downsampleChange(payload: any) {
+        this.newChange.emit({ action: 'SetDBDownsample', payload: payload.data });
+    }
+
     closeTimeRangePicker() {
         this.timeRangePicker.startTimeReference.shouldUpdateTimestamp = false;
         this.timeRangePicker.endTimeReference.shouldUpdateTimestamp = false;
