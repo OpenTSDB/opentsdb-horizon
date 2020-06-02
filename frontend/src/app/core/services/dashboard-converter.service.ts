@@ -431,7 +431,7 @@ export class DashboardConverterService {
       // set default
       if (!settings.downsample) {
         settings.downsample = {
-          aggregator: [''],
+          aggregators: [''],
           customUnit: '',
           customValue: '',
           value: 'auto'
