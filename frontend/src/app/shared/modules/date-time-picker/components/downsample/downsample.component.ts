@@ -116,23 +116,19 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-
-        if (changes.downsample && !changes.downsample.firstChange && !this.openMoreSettings) {
-            if (changes.downsample.currentValue.value !== 'auto'
-                || changes.downsample.currentValue.aggregators[0] !== '') {
-                    this.openMoreSettings = true;
-                    if (changes.downsample.currentValue.value !== 'auto') {
-                        this.overrideResolution = true;
-                        this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false}); 
-                    }
-                    if (changes.downsample.currentValue.aggregators[0] !== '') {
-                        this.overrideAggregator = true;
-                        this.selectedAggregators = changes.downsample.currentValue.aggregators;
-                        this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
-                    }
+        if (changes.downsample) {
+            // we need to update form as soon as it changes
+            this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false}); 
+            this.selectedAggregators = changes.downsample.currentValue.aggregators;
+            this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
+            this.overrideResolution = changes.downsample.currentValue.value === 'auto' ? false : true;
+            this.overrideAggregator = changes.downsample.currentValue.aggregators[0] !== '' ? true : false;
+   
+            if (this.overrideResolution || this.overrideAggregator) {
+                this.openMoreSettings = true;
             } else {
                 this.openMoreSettings = false;
-            }
+            }     
         }
     }
 
