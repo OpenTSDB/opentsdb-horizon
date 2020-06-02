@@ -794,7 +794,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     // applyCustomDownsample to widgets when user change
     applyDBDownsample(dsample: any) {
-        console.log('hill - downsample to apply', dsample);
         // deal with copy of widget since we dont want to write to wiget config
         const cloneWidgets = this.utilService.deepClone(this.widgets);
         // find all widget that using downsample as auto
@@ -1091,7 +1090,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     // dispatch payload query by group
     handleQueryPayload(message: any) {
-        console.log('hill - the downsample in state', this.dbDownsample);
         let groupid = '';
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
@@ -1236,7 +1234,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
                 break;
             case 'SetDBDownsample': {
-                console.log('hill - to dashboard', message);
                 this.store.dispatch(new UpdateDownsample(message.payload));
                 this.applyDBDownsample(message.payload);
             }

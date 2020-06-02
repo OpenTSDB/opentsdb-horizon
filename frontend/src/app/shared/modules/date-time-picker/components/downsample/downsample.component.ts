@@ -144,7 +144,6 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     createForm() {
-        console.log('hill - this downsample in create form', this.downsample);
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.downsample.value === 'custom' ? true : false;
         const customUnit = this.downsample.customUnit || this.customDownsampleUnit;
