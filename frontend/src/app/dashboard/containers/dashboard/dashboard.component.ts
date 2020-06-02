@@ -36,7 +36,8 @@ import {
     UpdateDashboardTimeZone,
     UpdateDashboardTitle,
     UpdateVariables,
-    UpdateMeta
+    UpdateMeta,
+    UpdateDownsample
 } from '../../state/settings.state';
 import {
     AppShellState,
@@ -1199,6 +1200,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.refresh();
                 }
                 break;
+            case 'SetDBDownsample': {
+                console.log('hill - to dashboard', message);
+                this.store.dispatch(new UpdateDownsample(message.payload));
+            }
         }
     }
 
