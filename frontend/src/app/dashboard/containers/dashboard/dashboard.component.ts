@@ -803,14 +803,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             const wDownsample = cWidget.settings.time.downsample;
             // only apply to widget which is using auto downsample to override
             if (wDownsample.value === 'auto') {
-                if (dsample.aggregators[0] !== '') {
-                    cWidget.settings.time.downsample.aggregators = dsample.aggregators;
-                }
-                if (dsample.downsample !== 'auto') {
-                    cWidget.settings.time.downsample.value = dsample.downsample;
-                    cWidget.settings.time.downsample.customUnit = dsample.customDownsampleUnit;
-                    cWidget.settings.time.downsample.customValue = dsample.customDownsampleValue;
-                } 
                 this.handleQueryPayload({
                     id: cWidget.id,
                     payload: cWidget
@@ -818,7 +810,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
     }
-    
+    // call this in query handle to see if we need to override this
+    // wDownsample is widget downsample
+    applyDBDownsampleToWidget(wDownsample: any) {
+        if (wDownsample.value === 'auto') {
+            if (this.dbDownsample.aggregators[0] !== '') {
+                wDownsample.aggregators = this.dbDownsample.aggregators;
+            }
+            if (this.dbDownsample.downsample !== 'auto') {
+                wDownsample.value = this.dbDownsample.value;
+                wDownsample.customUnit = this.dbDownsample.customUnit;
+                wDownsample.customValue = this.dbDownsample.customValue;
+            } 
+        }
+    }
     // apply when custom tag value is changed
     // should only trigger widgets that are affected by this change.
     applyTplVarValue(tvars: any[]) {
@@ -1102,7 +1107,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 payload.settings.time.downsample.value = 'auto';
             }
             // modify to apply dashboard downsample
-            
+            this.applyDBDownsampleToWidget(payload.settings.time.downsample);
             // should we modify the widget if using dashboard tag filter
             const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
             // sending each group to get data.
