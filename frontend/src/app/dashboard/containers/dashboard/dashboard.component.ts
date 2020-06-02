@@ -253,6 +253,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.meta = {};
             this.isDbTagsLoaded = false;
             this.variablePanelMode = { view: true };
+            this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
             this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
@@ -700,7 +701,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
         this.subscription.add(this.downSample$.subscribe(downsample => {
-            this.dbDownsample = this.utilService.deepClone(downsample);
+            this.dbDownsample = {...this.utilService.deepClone(downsample)};
         }));
         this.subscription.add(this.tplVariables$.subscribe(tpl => {
             // whenever tplVariables$ trigger, we save to view too.
