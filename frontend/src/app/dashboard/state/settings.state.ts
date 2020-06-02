@@ -93,7 +93,7 @@ export class UpdateMeta {
 
 export class UpdateDownsample {
     public static type ='[Dashboard] Update Downsample';
-    constructor(public readonly downsample: any) {}
+    constructor(public readonly payload: any) {}
 }
 
 @State<DBSettingsModel>({
@@ -165,8 +165,19 @@ export class DBSettingsState {
     }
 
     @Action(UpdateDownsample)
-    updateDownsample(ctx: StateContext<DBSettingsModel>, { downsample }: UpdateDownsample) {
+    updateDownsample(ctx: StateContext<DBSettingsModel>, { payload }: UpdateDownsample) {
         const state = ctx.getState();
+        
+        let downsample = {
+            aggregators: payload.aggregators,
+            value: payload.downsample,
+            customUnit: '',
+            customValue: ''
+        }
+        if (payload.downsample === 'custom') {
+            downsample.customUnit = payload.customDownsampleUnit;
+            downsample.customValue = payload.customDownsampleValue;
+        }
         ctx.patchState({...state, downsample: downsample});
     }
 
