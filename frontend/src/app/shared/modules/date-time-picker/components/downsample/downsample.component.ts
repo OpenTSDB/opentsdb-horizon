@@ -116,11 +116,20 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('hill - onchanges', changes);
-        if (changes.downsample) {
+
+        if (changes.downsample && !changes.downsample.firstChange && !this.openMoreSettings) {
             if (changes.downsample.currentValue.value !== 'auto'
                 || changes.downsample.currentValue.aggregators[0] !== '') {
                     this.openMoreSettings = true;
+                    if (changes.downsample.currentValue.value !== 'auto') {
+                        this.overrideResolution = true;
+                        this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false}); 
+                    }
+                    if (changes.downsample.currentValue.aggregators[0] !== '') {
+                        this.overrideAggregator = true;
+                        this.selectedAggregators = changes.downsample.currentValue.aggregators;
+                        this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
+                    }
             } else {
                 this.openMoreSettings = false;
             }
@@ -135,7 +144,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     createForm() {
-
+        console.log('hill - this downsample in create form', this.downsample);
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.downsample.value === 'custom' ? true : false;
         const customUnit = this.downsample.customUnit || this.customDownsampleUnit;
