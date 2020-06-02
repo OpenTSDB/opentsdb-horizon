@@ -81,6 +81,10 @@ export class TimeRangePickerComponent implements OnInit {
       this.showApply = false;
     }
 
+    downsampleChange(payload: any) {
+      console.log('hill - downsample payload', payload);
+    }
+
     getTimeSelected(): ISelectedTime {
         const time = new ISelectedTime();
 
