@@ -47,6 +47,7 @@ export class TimeRangePickerComponent implements OnInit {
     @Input() options: TimeRangePickerOptions;
     @Output() timeSelected = new EventEmitter<ISelectedTime>();
     @Output() cancelSelected = new EventEmitter();
+    @Output() dbdownsampleChange = new EventEmitter();
 
     @ViewChild('daytimePickerStart') startTimeReference: DatepickerComponent;
     @ViewChild('daytimePickerEnd') endTimeReference: DatepickerComponent;
@@ -82,7 +83,8 @@ export class TimeRangePickerComponent implements OnInit {
     }
 
     downsampleChange(payload: any) {
-      console.log('hill - downsample payload', payload);
+      // pass it thru
+      this.dbdownsampleChange.emit(payload);
     }
 
     getTimeSelected(): ISelectedTime {
