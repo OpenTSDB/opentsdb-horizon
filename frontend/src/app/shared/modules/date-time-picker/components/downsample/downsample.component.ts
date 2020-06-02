@@ -228,8 +228,13 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
             // if they do have value then reset and return those
             // widgets which using auto downsample to whatever aggregator they use before
             this.downsample = {...this.downsample, aggregators: [''] };
-            this.selectedAggregators = [''];
-            this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
+            if (this.selectedAggregators[0] === '') {
+                // use use drop down to set then uncheck, we fire even already
+                this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators, {emitEvent: false});
+            } else {
+                this.selectedAggregators = [''];
+                this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
+            }
         }
     }
 }
