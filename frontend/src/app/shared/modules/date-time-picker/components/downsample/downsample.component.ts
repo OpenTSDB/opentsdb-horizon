@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output, 
+    EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,7 +19,7 @@ import { Subscription } from 'rxjs';
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     ]
 })
-export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.time-downsample-component') private _hostClass = true;
     @HostBinding('class.widget-config-tab') private _extendClass = true;
     @HostBinding('class.has-columns') private _modifierClass = true;
@@ -28,7 +29,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() downsample: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() downsampleChange = new EventEmitter();
 
     /** Local Variables */
 
@@ -40,73 +41,14 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     widgetConfigTimeSub: Subscription;
     customDownsampleUnitSub: Subscription;
 
-    // form values
-    selectedTimePreset: any = '1h';
-
-    customTimeRangeStart: any;
-    customTimeRangeEnd: any;
-
     selectedAggregators: any = [''];
-    timeOverTimeNumber: any = '';
-    timeOverTimePeriod: any = '';
-
     selectedDownsample: any = 'auto';
     customDownsampleValue: any = 10;
     customDownsampleUnit: any = 'm';
 
-    minInterval: any = '';
-    reportingInterval: any = '';
-
-    overrideRelativeTime: any;
-    timeShift: any;
-    multipleAggregators = false;
-
+    openMoreSettings = false;
     overrideResolution = false;
     overrideAggregator = false;
-
-    /** Form control options */
-    timePresetOptions: Array<any> = [
-        {
-            label: '1h',
-            value: '1h'
-        },
-        {
-            label: '6h',
-            value: '6h'
-        },
-        {
-            label: '12h',
-            value: '12h'
-        },
-        {
-            label: '24h',
-            value: '24h'
-        },
-        {
-            label: '2d',
-            value: '2d'
-        },
-        {
-            label: '4d',
-            value: '4d'
-        },
-        {
-            label: '7d',
-            value: '7d'
-        },
-        {
-            label: '1m',
-            value: '1m'
-        },
-        {
-            label: '3m',
-            value: '3m'
-        },
-        {
-            label: '1y',
-            value: '1y'
-        }
-    ];
 
     timeAggregatorOptions: Array<any> = [
         {
@@ -166,68 +108,23 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     ];
 
-    timeOverTimeIterationOptions: Array<any> = [
-        {
-            label: '1',
-            value: '1'
-        },
-        {
-            label: '2',
-            value: '2'
-        },
-        {
-            label: '3',
-            value: '3'
-        },
-        {
-            label: '4',
-            value: '4'
-        },
-        {
-            label: '5',
-            value: '5'
-        },
-        {
-            label: '6',
-            value: '6'
-        },
-        {
-            label: '7',
-            value: '7'
-        }
-    ];
-
-    timeOverTimePeriodOptions: Array<any> = [
-        {
-            label: 'hours',
-            value: 'hours'
-        },
-        {
-            label: 'days',
-            value: 'days'
-        },
-        {
-            label: 'weeks',
-            value: 'weeks'
-        },
-        {
-            label: '30 days',
-            value: '30 days'
-        }
-    ];
-
     constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef) { }
 
     ngOnInit() {
-        this.minInterval = this.downsample.minInterval || '';
-        this.reportingInterval = this.downsample.reportingInterval || '';
         this.selectedAggregators = this.downsample.aggregators || this.selectedAggregators;
         this.createForm();
     }
 
-    ngAfterViewInit() {
-        // subscribe to value changes to check if 'custom' is checked
-        // so we can enable/disable the other custom fields
+    ngOnChanges(changes: SimpleChanges) {
+        console.log('hill - onchanges', changes);
+        if (changes.downsample) {
+            if (changes.downsample.currentValue.value !== 'auto'
+                || changes.downsample.currentValue.aggregators[0] !== '') {
+                    this.openMoreSettings = true;
+            } else {
+                this.openMoreSettings = false;
+            }
+        }
     }
 
     ngOnDestroy() {
@@ -238,25 +135,14 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     createForm() {
-        // need to actually add widget config values to form controls
-        // NOTE: exception is 'time preset range', which is not a form control, and sets value on click
 
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.downsample.value === 'custom' ? true : false;
         const customUnit = this.downsample.customUnit || this.customDownsampleUnit;
-        let minInterval = (this.minInterval ? this.downsample.minInterval : this.minInterval).trim();
-        // tslint:disable:max-line-length
-        let reportingInterval = (this.downsample.reportingInterval ? this.downsample.reportingInterval : this.reportingInterval).trim();
-        minInterval = minInterval.match(/^([0-9]+)(s|m|h)$/);
-        reportingInterval = reportingInterval.match(/^([0-9]+)(s|m|h)$/);
 
         this.widgetConfigTime = this.fb.group({
             aggregators:
                 new FormControl(this.selectedAggregators),
-            minInterval: new FormControl(minInterval ? minInterval[1] : this.minInterval),
-            minIntervalUnit: new FormControl(minInterval ? minInterval[2] : 's'),
-            reportingInterval: new FormControl(reportingInterval ? reportingInterval[1] : this.reportingInterval),
-            reportingIntervalUnit: new FormControl(reportingInterval ? reportingInterval[2] : 's'),
             'downsample': new FormControl(this.downsample.value || this.selectedDownsample),
             'customDownsampleValue':
                 new FormControl(
@@ -294,42 +180,47 @@ export class DownsampleComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.widgetConfigTime.controls.customDownsampleValue.setValidators([Validators.min(unit === 's' ? 10 : 1), Validators.pattern('^[0-9]+$'), Validators.required]);
                 this.widgetConfigTime.controls.customDownsampleValue.updateValueAndValidity();
             }.bind(this));
+
         this.widgetConfigTimeSub = this.widgetConfigTime.valueChanges
             .pipe(
-                distinctUntilChanged()
+                distinctUntilChanged(),
+                debounceTime(100)
             )
             .subscribe(function (data) {
-                // this.multipleAggregators = this.widgetConfigTime.controls.multiple.value ? true: false;
                 if (this.widgetConfigTime.valid) {
-                    data.minInterval = data.minInterval ? data.minInterval + data.minIntervalUnit : '';
-                    data.reportingInterval = data.reportingInterval ? data.reportingInterval + data.reportingIntervalUnit : '';
-                    delete data.reportingIntervalUnit;
-                    delete data.minIntervalUnit;
-                    this.widgetChange.emit({ 'action': 'SetTimeConfiguration', payload: { data: data } });
+                    this.downsampleChange.emit({ data });
                 }
             }.bind(this));
     }
 
 
     setAggregator(e) {
-        this.selectedAggregators = Array.isArray(e.value) ? e.value : [e.value];
+        this.selectedAggregators = [e.value];
         this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
     }
 
-    click_TimePresetChange(val: any) {
-        this.selectedTimePreset = val;
-    }
-
     changeToggle() {
-        this.downsample = {...this.downsample, enabled: !this.downsample.enabled };
-        this._advancedClass = this.downsample.enabled;
+        this.openMoreSettings = !this.openMoreSettings;
+        this._advancedClass = this.openMoreSettings;
     }
 
     checkOverrideResolution(event: any) {
         this.overrideResolution = event.checked;
+        // turn off this with value is auto and we do nothing
+        if (!this.overrideResolution && this.widgetConfigTime.get('downsample').value !== 'auto') {
+            this.downsample = {...this.downsample, value: 'auto'}
+            this.widgetConfigTime.controls.downsample.setValue('auto');         
+        }
     }
 
     checkOverrideAggregator(event: any) {
         this.overrideAggregator = event.checked;
+        if (!this.overrideAggregator) {
+            // if they do have value then reset and return those
+            // widgets which using auto downsample to whatever aggregator they use before
+            this.downsample = {...this.downsample, aggregators: [''] };
+            this.selectedAggregators = [''];
+            this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
+        }
     }
 }
