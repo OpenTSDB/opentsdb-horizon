@@ -29,6 +29,12 @@ export interface DBSettingsModel {
         namespaces: string[];
         tvars: any[];
     };
+    downsample: {
+        aggregators: string[];
+        customUnit: string;
+        customValue: string;
+        value: string;
+    }
 }
 
 const defaultInitialZoomTime = {start: '', end: '', zone: ''};
@@ -85,6 +91,11 @@ export class UpdateMeta {
     constructor(public readonly meta: any) {}
 }
 
+export class UpdateDownsample {
+    public static type ='[Dashboard] Update Downsample';
+    constructor(public readonly payload: any) {}
+}
+
 @State<DBSettingsModel>({
     name: 'Settings',
     defaults: {
@@ -107,6 +118,12 @@ export class UpdateMeta {
         tplVariables: {
             namespaces: [],
             tvars: []
+        },
+        downsample: {
+            aggregators: [''],
+            customUnit: '',
+            customValue: '',
+            value: 'auto'
         }
     }
 })
@@ -141,6 +158,27 @@ export class DBSettingsState {
 
     @Selector() static getInitialZoomTime(state: DBSettingsModel) {
         return state.initialZoomTime;
+    }
+
+    @Selector() static getDownSample(state: DBSettingsModel) {
+        return state.downsample;
+    }
+
+    @Action(UpdateDownsample)
+    updateDownsample(ctx: StateContext<DBSettingsModel>, { payload }: UpdateDownsample) {
+        const state = ctx.getState();
+        
+        let downsample = {
+            aggregators: payload.aggregators,
+            value: payload.downsample,
+            customUnit: '',
+            customValue: ''
+        }
+        if (payload.downsample === 'custom') {
+            downsample.customUnit = payload.customDownsampleUnit;
+            downsample.customValue = payload.customDownsampleValue;
+        }
+        ctx.patchState({...state, downsample: downsample});
     }
 
     @Action(UpdateMode)
