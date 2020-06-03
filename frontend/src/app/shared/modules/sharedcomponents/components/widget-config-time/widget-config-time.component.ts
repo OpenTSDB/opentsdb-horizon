@@ -158,6 +158,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         {
             label: '1 day',
             value: '1d'
+        },
+        {
+            label: 'custom',
+            value: 'custom'
         }
     ];
 
@@ -232,6 +236,14 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         this.customDownsampleUnitSub.unsubscribe();
     }
 
+    get selectedDownsampleValue(): string {
+        if (!this.widgetConfigTime) {
+            return '';
+        } else {
+            return this.widgetConfigTime.get('downsample').value;
+        }
+    }
+
     createForm() {
         // need to actually add widget config values to form controls
         // NOTE: exception is 'time preset range', which is not a form control, and sets value on click
@@ -253,7 +265,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
             minIntervalUnit: new FormControl( minInterval ? minInterval[2] : 's'),
             reportingInterval: new FormControl( reportingInterval ? reportingInterval[1] : this.reportingInterval),
             reportingIntervalUnit: new FormControl( reportingInterval ? reportingInterval[2] : 's'),
-            overrideRelativeTime: 
+            overrideRelativeTime:
                 new FormControl(this.widget.settings.time.overrideRelativeTime),
             shiftTime:
                 new FormControl(this.widget.settings.time.shiftTime),

@@ -25,6 +25,23 @@
             }
         }
 
+        .columned-controls {
+            display: flex;
+            margin-bottom: 16px;
+
+            .config-control:not(:first-child) {
+                .label {
+                    width: auto;
+                    margin-right: 16px;
+                }
+            }
+
+            .config-control:not(:last-child) {
+                margin-right: 30px;
+                margin-bottom: initial;
+            }
+        }
+
         .config-control > .label {
             display: inline-block;
             width: 150px;
@@ -58,8 +75,17 @@
             }
         }
 
-        .downsample-controls .custom-downsample {
-            margin-top: 10px;
+        .downsample-controls,
+        .aggregator-controls,
+        .min-interval-controls,
+        .reporting-interval-controls {
+            display: flex;
+
+            .label {
+                display: inline-flex;
+                align-items: center;
+                vertical-align: initial;
+            }
         }
 
         .override-relative-time-controls,
@@ -69,6 +95,50 @@
         .downsample-controls .custom-downsample {
             .mat-form-field-infix {
                 border-top: 0;
+            }
+        }
+
+        .downsample-controls {
+
+            .form-field-group {
+                display: flex;
+
+                .mat-form-field {
+                    width: 108px;
+                }
+
+                .mat-select {
+                    width: 100px;
+                }
+            }
+
+            .custom-downsample {
+                margin-top: 10px;
+
+                .mat-form-field {
+                    width: 60px;
+                }
+            }
+        }
+
+        .aggregator-controls {
+            .form-field-group {
+                .mat-form-field {
+                    width: 68px;
+                }
+
+                .mat-select {
+                    width: 60px;
+                }
+            }
+        }
+
+        .min-interval-controls,
+        .reporting-interval-controls {
+            .form-field-group {
+                .mat-form-field {
+                    width: 60px;
+                }
             }
         }
     }
