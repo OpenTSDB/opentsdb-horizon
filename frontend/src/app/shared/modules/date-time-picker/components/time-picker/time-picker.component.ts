@@ -84,7 +84,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     set downsample(ds: any) {
         this._downsample = ds;   
         this.downsampleDisplay = '';
-        const value = (ds.value === 'custom' ? ds.customValue + ds.customValue : ds.value);
+        const value = (ds.value === 'custom' ? ds.customValue + ds.customUnit : ds.value);
         const agg = ds.aggregators[0];
         if (agg !== '') {
             this.downsampleDisplay = ' | ' + value + '-' + agg;
