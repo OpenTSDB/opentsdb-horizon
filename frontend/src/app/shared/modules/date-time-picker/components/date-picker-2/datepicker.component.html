@@ -3,7 +3,6 @@
     <mat-form-field [formGroup]="dateForm" appearance="fill" style="min-width: 296px;">
         <mat-label>{{inputBoxName}}</mat-label>
         <input matInput
-            id="input-box"
             #dateInput
             (input)="dateInputChanged()"
             (focus)="inputFocused()"

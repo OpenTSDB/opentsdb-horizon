@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardConverterService {
 
-  currentVersion = 9;
+  currentVersion = 10;
 
   constructor ( private utils: UtilsService,
     private httpService: HttpService ) { }
@@ -416,6 +416,26 @@ export class DashboardConverterService {
             tvar.applied += 1;
           }
         }
+      }
+      this.toDBVersion10(dashboard).subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      })
+    });
+  }
+  // adding dashboard downsample settings
+  toDBVersion10(dashboard: any): Observable<any> {
+    return new Observable((observer) => {
+      dashboard.content.version = 10;
+      let settings = dashboard.content.settings;
+      // set default
+      if (!settings.downsample) {
+        settings.downsample = {
+          aggregators: [''],
+          customUnit: '',
+          customValue: '',
+          value: 'auto'
+        };
       }
       observer.next(dashboard);
       observer.complete();
