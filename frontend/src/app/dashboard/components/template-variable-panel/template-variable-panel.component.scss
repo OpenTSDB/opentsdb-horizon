@@ -10,7 +10,6 @@
     }
 
     .template-variable-panel-component {
-        display: flex;
         width: 100%;
         max-width: 100%;
 
@@ -27,7 +26,6 @@
         /* Table overrides */
         table {
             width: auto;
-            // margin: 0 5px;
         }
 
         th {
@@ -47,24 +45,27 @@
                  display: inline;
                 list-style-type: none;
                 padding-right: 10px;
-
-
             }
         }
 
         /* wrapper for variables - NOT in edit mode */
         .variable-list-wrapper {
+            display: flex;
+            align-items: center;
             flex: 1;
+            height: 100%;
+            min-height: 44px;
             width: 100%;
             max-width: 100%;
             padding: 4px 12px;
-
-
         }
 
         .hidden-focus {
             width: 1px;
             height: 1px;
+            padding: 0;
+            float: left;
+            margin-left: -10000px;
             background: transparent;
             outline: none;
             opacity: 0;
@@ -72,10 +73,8 @@
 
         /* wrapper for EDIT view */
         .variable-edit-wrapper {
-            display: flex;
-            flex-direction: column;
-            padding: 0 0 6px 0;
-            flex: 1;
+            padding: 0;
+            height: 100%;
         }
 
         .variable-form-wrapper {
@@ -105,15 +104,17 @@
                 .mat-chip-list-wrapper {
                     margin: 0px;
                 }
+
                 .mat-chip {
                     font-weight: 300;
                 }
+
                 .mat-standard-chip {
-                    // background: #eaf1fb;
                     margin: 2px;
                     min-height: 25px;
                     padding: 5px 8px;
                 }
+
                 .mat-icon {
                     width: 15px;
                     height: 15px;
@@ -133,6 +134,7 @@
                     .mat-icon {
                         @include sizeDenaliIcon(14px);
                     }
+
                     .mat-icon:first-child {
                         margin-right: 6px;
                     }
@@ -201,8 +203,6 @@
             padding: 0 4px;
         }
 
-
-
         .edit-form-title {
             display: flex;
             align-items: center;
@@ -217,10 +217,9 @@
 
         /* in edit mode - these are the buttons at bottom */
         .variable-action-controls {
-            flex: 1;
             width: 100%;
             max-width: 100%;
-            padding: 5px 10px 0 10px;
+            padding: 5px 10px;
 
             .edit-actions {
 
