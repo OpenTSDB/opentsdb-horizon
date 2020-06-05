@@ -18,17 +18,18 @@
             <div class="custom-downsample" *ngIf="selectedDownsampleValue === 'custom'">
                 <mat-form-field appearance="fill">
                     <input matInput  formControlName="customDownsampleValue" autocomplete="off">
+                    <mat-error *ngIf="widgetConfigTime.controls.customDownsampleValue.errors">
+                        <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.required">Should not be empty.</div>
+                        <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.pattern">Must be an integer.</div>
+                        <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.min">Should be >= {{widgetConfigTime.controls.customDownsampleValue.errors.min.min}} </div>
+                    </mat-error>
                 </mat-form-field>
                 <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="customDownsampleUnit">
                     <mat-button-toggle value="s" name="customDownsampleUnit">Secs</mat-button-toggle>
                     <mat-button-toggle value="m" name="customDownsampleUnit">Min</mat-button-toggle>
                     <mat-button-toggle value="h" name="customDownsampleUnit">Hrs</mat-button-toggle>
                 </mat-button-toggle-group>
-                <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors">
-                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.required">Should not be empty.</div>
-                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.pattern">Must be an integer.</div>
-                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.min">Should be >= {{widgetConfigTime.controls.customDownsampleValue.errors.min.min}} </div>
-                </div>
+
             </div>
           </div>
       </div>
