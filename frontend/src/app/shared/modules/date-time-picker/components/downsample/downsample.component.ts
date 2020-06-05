@@ -105,6 +105,10 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         {
             label: '1 day',
             value: '1d'
+        },
+        {
+            label: 'custom',
+            value: 'custom'
         }
     ];
 
@@ -116,9 +120,11 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.downsample) {
+        if (changes.downsample && this.widgetConfigTime) {
             // we need to update form as soon as it changes
             this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false}); 
+            this.widgetConfigTime.controls.customDownsampleValue.setValue(changes.downsample.currentValue.customValue, {emitEvent: false});
+            this,this.widgetConfigTime.controls.customDownsampleUnit.setValue(changes.downsample.currentValue.customUnit, {emitEvent: false});
             this.selectedAggregators = changes.downsample.currentValue.aggregators;
             this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
             this.overrideResolution = changes.downsample.currentValue.value === 'auto' ? false : true;
@@ -137,6 +143,14 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         this.selectedDownsample_Sub.unsubscribe();
         this.widgetConfigTimeSub.unsubscribe();
         this.customDownsampleUnitSub.unsubscribe();
+    }
+
+    get selectedDownsampleValue(): string {
+        if (!this.widgetConfigTime) {
+            return '';
+        } else {
+            return this.widgetConfigTime.get('downsample').value;
+        }
     }
 
     createForm() {

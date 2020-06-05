@@ -8,27 +8,28 @@
           <!--<label class="label">Override resolution</label>-->
           <mat-checkbox (change)="checkOverrideResolution($event)" [checked]="overrideResolution">Override resolution</mat-checkbox>
           <div class="form-field-group" *ngIf="overrideResolution">
-              <mat-radio-group formControlName="downsample">
-                  <mat-radio-button *ngFor="let downsample of timeDownsampleOptions" [value]="downsample.value" name="selectedDownsample">{{ downsample.label }}</mat-radio-button>
-                  <mat-radio-button [value]="'custom'" name="selectedDownsample">Custom</mat-radio-button>
-                  <div class="custom-downsample">
-                      <mat-form-field appearance="fill">
-                          <input matInput  formControlName="customDownsampleValue" autocomplete="off">
-                      </mat-form-field>
-                      <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="customDownsampleUnit">
-                          <mat-button-toggle value="s" name="customDownsampleUnit">Secs</mat-button-toggle>
-                          <mat-button-toggle value="m" name="customDownsampleUnit">Min</mat-button-toggle>
-                          <mat-button-toggle value="h" name="customDownsampleUnit">Hrs</mat-button-toggle>
-                      </mat-button-toggle-group>
-                      <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors">
-                          <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.required">Should not be empty.</div>
-                          <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.pattern">Must be an integer.</div>
-                          <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.min">Should be >= {{widgetConfigTime.controls.customDownsampleValue.errors.min.min}} </div>
-                      </div>
-                  </div>
-              </mat-radio-group>
-              <!-- just to see if it changed ok
-                  <span style="color: red;">{{ this.widgetConfigTime.get('selectedDownsample').value }}</span> -->
+            <mat-form-field appearance="fill">
+                <mat-select formControlName="downsample">
+                    <mat-option *ngFor="let downsample of timeDownsampleOptions" [value]="downsample.value">
+                        {{downsample.label}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="custom-downsample" *ngIf="selectedDownsampleValue === 'custom'">
+                <mat-form-field appearance="fill">
+                    <input matInput  formControlName="customDownsampleValue" autocomplete="off">
+                </mat-form-field>
+                <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="customDownsampleUnit">
+                    <mat-button-toggle value="s" name="customDownsampleUnit">Secs</mat-button-toggle>
+                    <mat-button-toggle value="m" name="customDownsampleUnit">Min</mat-button-toggle>
+                    <mat-button-toggle value="h" name="customDownsampleUnit">Hrs</mat-button-toggle>
+                </mat-button-toggle-group>
+                <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors">
+                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.required">Should not be empty.</div>
+                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.pattern">Must be an integer.</div>
+                    <div *ngIf="widgetConfigTime.controls.customDownsampleValue.errors.min">Should be >= {{widgetConfigTime.controls.customDownsampleValue.errors.min.min}} </div>
+                </div>
+            </div>
           </div>
       </div>
       <div class="config-control aggregator-controls">
