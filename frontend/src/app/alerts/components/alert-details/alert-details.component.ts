@@ -263,6 +263,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     events: any = [];
     startTime;
     endTime;
+    downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
     alertspageNavbarPortal: TemplatePortal;
     alertEvaluationLink: string;
@@ -1325,6 +1326,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.deleteQueryMetric(message.id, message.payload.mid);
                 this.queries = this.utils.deepClone(this.queries);
                 this.reloadData();
+                break;
+            case 'UpdateQueryMetricVisual':
+                const qindex = this.queries.findIndex(d => d.id === message.id);
+                const mindex = this.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
+                // tslint:disable-next-line: max-line-length
+                this.queries[qindex].metrics[mindex].settings.visual = { ...this.queries[qindex].metrics[mindex].settings.visual, ...message.payload.visual };
+                this.refreshChart();
                 break;
         }
     }
