@@ -62,6 +62,7 @@ export class DatatranformerService {
       // there is no data in here but default, reset it
       normalizedData = [];
     }
+    // this will also take care of payload return as empty {}
     if ( result === undefined || !result.results || !result.results.length ) {
         return normalizedData;
     }
@@ -78,6 +79,10 @@ export class DatatranformerService {
     const mTimeConfigs = {};
     let totalSeries = 0;
     for ( let i = 0;  i < result.results.length; i++ ) {
+        // no data then skip it.
+        if (result.results[i].data.length === 0) {
+            continue;
+        }
         queryResults.push(result.results[i]);
         const [ source, mid ] = result.results[i].source.split(':');
         const qids = this.REGDSID.exec(mid);
@@ -340,6 +345,10 @@ export class DatatranformerService {
     if ( result && result.results ) {
         // sometimes opentsdb returns empty results
         for ( let i = 0;  i < result.results.length; i++ ) {
+            // skip if no data
+            if (result.results[i].data.length === 0) {
+                continue;
+            }
             const queryResults = result.results[i];
             const [ source, mid ] = queryResults.source.split(':');
             if ( source === 'summarizer') {
@@ -381,6 +390,9 @@ export class DatatranformerService {
     if ( result && result.results ) {
         // sometimes opentsdb returns empty results
         for ( let i = 0;  i < result.results.length; i++ ) {
+            if (result.results[i].data.length === 0) {
+                continue;
+            }
             const queryResults = result.results[i];
             const [ source, mid ] = queryResults.source.split(':');
             const qids = this.REGDSID.exec(mid);
