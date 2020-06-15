@@ -13,11 +13,8 @@
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="HeatmapWidgetComponent"></graph-type>
     </div>
-    <div class="widget-output" #widgetoutput>    
-        <div class="no-data" *ngIf="data.ts.length === 0"[style.minWidth.px]="size.width">
-            <span>No Data Available</span>
-        </div>    
-        <div #dygraph *ngIf="data.ts.length > 0" class="graph-chart" dygraphsChart [chartType]="'heatmap'" [data]="data" [size]="size"
+    <div class="widget-output" #widgetoutput>       
+        <div #dygraph class="graph-chart" dygraphsChart [chartType]="'heatmap'" [data]="data" [size]="size"
             [timeseriesLegend]="tsLegendOptions" (currentTickEvent)="timeseriesTickListener($event)"
             [options]="options">
         </div>
