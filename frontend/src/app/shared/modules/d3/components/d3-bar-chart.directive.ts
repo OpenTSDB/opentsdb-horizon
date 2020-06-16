@@ -117,6 +117,10 @@ export class D3BarChartDirective implements OnInit, OnChanges {
       const fontSize = barHeight >= labelHeight ? '1em' : barHeight * 0.75 + 'px'; //y.bandwidth()  * 0.4 + "px";
       const chartAreawidth = this.size.width - yAxisWidth - margin.left - margin.right;
       const dmin = dataset.length > 1 ? d3.min(dataset, (d: any) => parseFloat(d.value)) : Number.MIN_VALUE;
+      const min = d3.min(dataset, (d: any) => parseFloat(d.value));
+      const offset = Math.sign(min) <= -1 ? -1 * min : 0;
+      const max = d3.max(dataset, (d: any) => parseFloat(d.value)) + offset;
+
       const x = d3.scaleLinear()
         .range([0, chartAreawidth])
         .domain([ dmin, d3.max(dataset, (d: any) => parseFloat(d.value))]);
@@ -141,7 +145,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         .attr("height", barHeight)
         .attr("x", 0)
         .attr("width", d => {
-          const v = x(d.value);
+          const v = ((d.value + offset) / max ) * chartAreawidth;
           return v > 0 ? v : 0;
         })
         .style('stroke', (d: any) => d.color)
