@@ -130,6 +130,13 @@
             }
         }
 
+        .y1-axis-container.y1-axis-disabled {
+            .config-control:not(.with-enable-label) {
+                opacity: .3;
+                pointer-events: none;
+            }
+        }
+
         .y2-axis-container.y2-axis-disabled {
             .config-control:not(.with-enable-label) {
                 opacity: .3;

@@ -1,5 +1,13 @@
 @mixin dropdown-unit-type-component-base() {
+    .mat-form-field-wrapper .mat-form-field-infix {
+        display: flex;
+        align-items: baseline;
 
+        .mat-select-arrow-wrapper {
+            display: flex;
+            align-items: center;
+        }
+    }
 }
 
 @mixin dropdown-unit-type-component-theme($theme-config) {

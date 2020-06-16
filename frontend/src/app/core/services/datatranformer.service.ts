@@ -217,7 +217,7 @@ export class DatatranformerService {
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
-                        } else if ( vConfig.type === 'area' && vConfig.stacked === 'true' ) {
+                        } else if ( vConfig.type === 'area' && vConfig.stacked !== 'false' ) {
                             config.plotter = stackedAreaPlotter;
                         } else {
                             groups['line'] = true;
