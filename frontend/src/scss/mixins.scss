@@ -118,6 +118,18 @@
   @extend %unselectable;
 }
 
+@mixin mat-input-as-dropdown() {
+    .mat-form-field-wrapper .mat-form-field-infix {
+        display: flex;
+        align-items: baseline;
+
+        .mat-select-arrow-wrapper {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
 @mixin clearfix() {
      &::after{
          clear: both;
