@@ -79,6 +79,7 @@
                                         [timeseriesLegend]="tsLegendOptions"
                                         [widget]="widget"
                                         [keepLinechartDotsOnMouseOut]="keepLinechartDotsOnMouseOut"
+                                        [dashboardLocked]="dashboardLocked"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
                                         (zoomed)="handleZoom($event)"

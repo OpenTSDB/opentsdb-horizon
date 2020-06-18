@@ -504,7 +504,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     });
                     this.updateURLParams(this.dbTime);
                     break;
-                case 'isDashboarLocked':
+                case 'isDashboardLocked':
                     this.interCom.responsePut({
                         action: 'dashboardLocked',
                         payload: {locked: this.locked}

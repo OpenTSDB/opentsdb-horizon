@@ -31,6 +31,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Input() timeseriesLegend: any = {};
     @Input() widget: any;
     @Input() keepLinechartDotsOnMouseOut: boolean;
+    @Input() dashboardLocked = false;
     @Output() zoomed = new EventEmitter;
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
@@ -42,7 +43,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     private gDimension: any;
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
-    private locked = false;
     private currentlyHighlightedChartId = '';
 
     public labelsDiv: any;
@@ -68,11 +68,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     case 'updateVerticalLine':
                         this.percentOfXAxis.emit({percent: this._g.toPercentXCoord(this.timestampShareService.getTimestamp())});
                         break;
-                    case 'dashboardLocked':
-                        if (message.payload) {
-                            this.locked = message.payload.locked;
-                        }
-                        break;
                     case 'currentlyHighlightedChartId':
                         if (message.payload) {
                             this.currentlyHighlightedChartId = message.payload.id;
@@ -84,12 +79,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 }
             }
         }));
-
-        // need to know if dashboard is currently locked
-        this.interCom.requestSend({
-            action: 'isDashboarLocked',
-            payload: {}
-        });
 
     }
 
@@ -137,7 +126,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         const mouseover = function (e, x, points, row, seriesName) {
 
             let timeChanged = false;
-            if (!self.locked && self.timestampShareService.getTimestamp() !== x) {
+            if (!self.dashboardLocked && self.timestampShareService.getTimestamp() !== x) { 
                 self.timestampShareService.setTimestamp(x);
                 timeChanged = true;
             }
@@ -204,7 +193,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
             // output event for vertical line
             setTimeout(() => {
-                if (!self.locked && self.interCom && timeChanged) {
+                if (!self.dashboardLocked && self.interCom && timeChanged) {
                     self.interCom.responsePut({
                         action: 'updateVerticalLine',
                         payload: {}
@@ -740,7 +729,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             this._g.clearSelection();
         }
 
-        if (this.chartType !== 'heatmap' && !this.locked) {
+        if (this.chartType !== 'heatmap' && !this.dashboardLocked) {
             this.timestampShareService.clear();
             this.interCom.responsePut({
                 action: 'updateVerticalLine',

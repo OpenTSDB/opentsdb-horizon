@@ -475,6 +475,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.setDefaultEvents();
         this.getEvents();
 
+        this.getDashboardLock();
+
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
         setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
@@ -1076,6 +1078,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setDefaultEvents() {
         this.widget = this.utilService.setDefaultEventsConfig(this.widget, false);
+    }
+
+    getDashboardLock() {
+        this.interCom.requestSend({
+            action: 'isDashboardLocked',
+            payload: {}
+        });
     }
 
     getEvents() {
