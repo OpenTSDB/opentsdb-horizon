@@ -271,6 +271,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 case 'timestampOnHoverChanged':
                     this.updateVerticalLine();
                     break;
+                case 'chartEntered':
+                    this.clearChart(message.payload.id);
+                    break;
             }
 
             if (message && (message.id === this.widget.id)) {
@@ -715,6 +718,19 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             action: 'timestampOnHoverChanged',
             payload: {}
         });
+    }
+
+    chartEntered() {
+        this.interCom.responsePut({
+            action: 'chartEntered',
+            payload: {id: this.widget.id}
+        });
+    }
+
+    clearChart(enteredWidgetId: String) {
+        if (enteredWidgetId !== this.widget.id && !this.keepLinechartDotsOnMouseOut) {
+            this.dygraphs.forEach(dygrah => dygrah.clearSelection());
+        }
     }
 
     initializeLineChartCtxs() {

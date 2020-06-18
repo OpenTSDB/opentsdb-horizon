@@ -12,7 +12,6 @@ import * as moment from 'moment';
 import * as d3 from 'd3';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { Subscription } from 'rxjs';
-import { IntercomService, IMessage } from '../../../../core/services/intercom.service';
 import { TimestampShareService } from '../../../../core/services/timestamp-share.service';
 
 @Directive({
@@ -38,13 +37,12 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Output() currentTickEvent = new EventEmitter<any>();
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
     @Output() timestampHoverChanged = new EventEmitter<any>();
+    @Output() chartEntered = new EventEmitter<any>();
 
     private startTime = 0; // for event icon placement
     private _g: any;
     private gDimension: any;
     public dataLoading: boolean;
-    private lastSeriesHighlighted: number = -1;
-    private currentlyHighlightedChartId = '';
 
     public labelsDiv: any;
     /* Commenting out for now
@@ -57,26 +55,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         private utils: UtilsService,
         private uConverter: UnitConverterService,
         private logger: LoggerService,
-        private interCom: IntercomService,
         private timestampShareService: TimestampShareService
     ) { }
 
     ngOnInit() {
-
-        this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
-            if (message) {
-                switch (message.action) {
-                    case 'currentlyHighlightedChartId':
-                        if (message.payload) {
-                            this.currentlyHighlightedChartId = message.payload.id;
-                        }
-                        if (message.payload.id !== this.widget.id && !this.keepLinechartDotsOnMouseOut) {
-                            this._g.clearSelection();
-                        }
-                        break;
-                }
-            }
-        }));
 
     }
 
@@ -124,7 +106,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         const mouseover = function (e, x, points, row, seriesName) {
 
             let timeChanged = false;
-            if (!self.dashboardLocked && self.timestampShareService.getTimestamp() !== x) { 
+            if (!self.dashboardLocked && self.timestampShareService.getTimestamp() !== x) {
                 self.timestampShareService.setTimestamp(x);
                 timeChanged = true;
             }
@@ -191,7 +173,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
             // output event for vertical line
             setTimeout(() => {
-                if (!self.dashboardLocked && self.interCom && timeChanged) {
+                if (!self.dashboardLocked && timeChanged) {
                     self.timestampHoverChanged.emit();
                 }
             }, 0);
@@ -615,14 +597,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseEnter(event: any) {
         // reset tick highlight
         this.firstTickHighlight = false;
-
-        // only fire when entering a new chart
-        if (this.currentlyHighlightedChartId !== this.widget.id) {
-            this.interCom.responsePut({
-                action: 'currentlyHighlightedChartId',
-                payload: {id: this.widget.id}
-            });
-        }
+        this.chartEntered.emit();
     }
 
     getXCoordPercent(ts: number) {
@@ -631,6 +606,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         } else {
             return -1;
         }
+    }
+
+    clearSelection() {
+        this._g.clearSelection();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -724,7 +703,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         this.firstTickHighlight = false;
 
         if (!this.keepLinechartDotsOnMouseOut) {
-            this._g.clearSelection();
+            this.clearSelection();
         }
 
         if (this.chartType !== 'heatmap' && !this.dashboardLocked) {
