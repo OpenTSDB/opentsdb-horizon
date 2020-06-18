@@ -572,7 +572,7 @@
             .metric-alias,
             .visual-panel-dropdown-text {
                 cursor: pointer;
-                color: #b5b5b5; // TODO: move color to theme section
+
                 font-size: 12px;
                 padding: 0 4px;
             }
@@ -597,6 +597,10 @@
 
                 span:empty:not(.color-chip) {
                     display: none;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
                 }
             }
 
@@ -1001,6 +1005,14 @@
             .display-name {
                 // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                 background-color: transparent;
+                color: rgba(
+                    if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    ),
+                    0.5
+                );
 
                 .mat-icon {
                     color: $link;
@@ -1013,6 +1025,11 @@
 
                 &:hover {
                     background-color: rgba($link, 0.1);
+                    color: if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    );
                 }
             }
 
@@ -1029,10 +1046,27 @@
         }
 
         .visual-panel-dropdown-text {
+            color: rgba(
+                if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                ),
+                0.5
+            );
             margin-left: 4px;
 
             &:hover {
                 background-color: rgba($link, 0.1);
+                color: if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                );
+            }
+
+            .mat-icon {
+                color: $link;
             }
 
 
