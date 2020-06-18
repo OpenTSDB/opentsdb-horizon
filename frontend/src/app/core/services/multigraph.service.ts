@@ -110,10 +110,9 @@ export class MultigraphService {
     if ( !Object.keys(lookupData).length ) {
       results['y'] = {'x': rawdata };
     }
-    const timeDiff = new Date().getTime() - startTime; // mil sec
-    // console.debug('execution time for multiconf data for widget', widget.id, timeDiff);
     // we need to sort the results first before apply limit or anything on it
-    const sortedResults = {};
+   
+   /*  const sortedResults = {};
     Object.keys(results)
       .sort(this.utils.sortAlphaNum)
       .forEach((k1) => {
@@ -125,6 +124,9 @@ export class MultigraphService {
           })
       });
     return sortedResults;
+    */
+   // return no sort
+   return results;
   }
 
   // build multigraph config
@@ -135,13 +137,22 @@ export class MultigraphService {
         const chart = multigraph.chart[i];
         if (chart.displayAs === 'x') {
           if (!conf['x']) { conf['x'] = {}; }
-          conf['x'][chart.key] = [];
+          conf['x'][chart.key] = {
+            sortAs: chart.sortAs,
+            value: []
+          };
         } else if (chart.displayAs === 'y') {
           if (!conf['y']) { conf['y'] = {}; }
-          conf['y'][chart.key] = [];
+          conf['y'][chart.key] = {
+            sortAs: chart.sortAs,
+            value: []
+          };
         } else {
           if (!conf['g']) { conf['g'] = {}; }
-          conf['g'][chart.key] = [];
+          conf['g'][chart.key] = {
+            sortAs: chart.sortAs,
+            value: []
+          };
         }
       }
       conf.layout = multigraph.layout;
