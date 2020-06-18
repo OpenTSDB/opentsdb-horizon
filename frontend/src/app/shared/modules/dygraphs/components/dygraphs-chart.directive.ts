@@ -14,6 +14,7 @@ import { LoggerService } from '../../../../core/services/logger.service';
 import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../../core/services/intercom.service';
 import { TimestampShareService } from '../../../../core/services/timestamp-share.service';
+
 @Directive({
     // tslint:disable-next-line: directive-selector
     selector: '[dygraphsChart]',
@@ -36,7 +37,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
-    @Output() percentOfXAxis = new EventEmitter<any>();
+    @Output() timestampHoverChanged = new EventEmitter<any>();
 
     private startTime = 0; // for event icon placement
     private _g: any;
@@ -65,9 +66,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
             if (message) {
                 switch (message.action) {
-                    case 'updateVerticalLine':
-                        this.percentOfXAxis.emit({percent: this._g.toPercentXCoord(this.timestampShareService.getTimestamp())});
-                        break;
                     case 'currentlyHighlightedChartId':
                         if (message.payload) {
                             this.currentlyHighlightedChartId = message.payload.id;
@@ -194,10 +192,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             // output event for vertical line
             setTimeout(() => {
                 if (!self.dashboardLocked && self.interCom && timeChanged) {
-                    self.interCom.responsePut({
-                        action: 'updateVerticalLine',
-                        payload: {}
-                    });
+                    self.timestampHoverChanged.emit();
                 }
             }, 0);
 
@@ -460,12 +455,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     };
 
                     setTimeout(() => {
-                        if (self.interCom) {
-                            self.interCom.responsePut({
-                                action: 'updateVerticalLine',
-                                payload: {}
-                            });
-                        }
+                        this.timestampHoverChanged.emit();
                     }, 0);
 
                     if (this.timeseriesLegend) {
@@ -635,6 +625,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    getXCoordPercent(ts: number) {
+        if (this._g) {
+            return this._g.toPercentXCoord(ts);
+        } else {
+            return -1;
+        }
+    }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: any) {
 
@@ -731,10 +729,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
         if (this.chartType !== 'heatmap' && !this.dashboardLocked) {
             this.timestampShareService.clear();
-            this.interCom.responsePut({
-                action: 'updateVerticalLine',
-                payload: {}
-            });
+            this.timestampHoverChanged.emit();
         }
     }
 

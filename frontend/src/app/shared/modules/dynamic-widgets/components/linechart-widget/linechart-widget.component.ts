@@ -22,6 +22,8 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
+import { TimestampShareService } from '../../../../../core/services/timestamp-share.service';
+import { DygraphsChartDirective } from '../../../dygraphs/components/dygraphs-chart.directive';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -57,6 +59,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     @ViewChildren('graphLegend', {read: ElementRef}) graphLegends: QueryList<ElementRef>;
     @ViewChildren('graphdiv', { read: ElementRef}) graphdivs: QueryList<ElementRef>;
+    @ViewChildren('dygraph', { read: DygraphsChartDirective}) dygraphs: QueryList<DygraphsChartDirective>;
     inViewport: any = {};
     private subscription: Subscription = new Subscription();
     isDataLoaded = false;
@@ -197,7 +200,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private logger: LoggerService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private timestampShareService: TimestampShareService
     ) { }
 
     ngOnInit() {
@@ -263,6 +267,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     break;
                 case 'dashboardLocked':
                     this.dashboardLocked = message.payload.locked;
+                    break;
+                case 'timestampOnHoverChanged':
+                    this.updateVerticalLine();
                     break;
             }
 
@@ -687,15 +694,27 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    verticalLinePercent(e) {
-        if (e.percent < 0) {
+    updateVerticalLine() {
+        const ts = this.timestampShareService.getTimestamp();
+        let percent = -1;
+        if (this.dygraphs && this.dygraphs.length > 0) {
+            percent = this.dygraphs.first.getXCoordPercent(ts);
+        }
+        if (percent < 0) {
             this.verticalLinePosition = -1;
-        } else if (e.percent === 0) {
+        } else if (percent === 0) {
             this.verticalLinePosition = 1;
         } else {
-            this.verticalLinePosition = Math.floor(e.percent * (this.size.width - 11));
+            this.verticalLinePosition = Math.floor(percent * (this.size.width - 11));
         }
         this.drawVerticalLine(this.verticalLinePosition);
+    }
+
+    timestampHoverChanged() {
+        this.interCom.responsePut({
+            action: 'timestampOnHoverChanged',
+            payload: {}
+        });
     }
 
     initializeLineChartCtxs() {
