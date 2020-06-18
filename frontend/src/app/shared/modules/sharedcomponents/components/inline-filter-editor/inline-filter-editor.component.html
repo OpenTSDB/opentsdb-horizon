@@ -87,6 +87,11 @@
             <div class="tag-filter-options-column tag-values-selected">
                 <div class="tag-values-selected-header">
                     <strong>Selected Filters({{ filters.length }})</strong>
+                    <span class="explicit-match" *ngIf="options.enableExplicitTagMatch" style="font-size: 10px; margin-left: 16px;">
+                        <mat-checkbox (click)="$event.stopPropagation();"
+                            [checked]="query.settings.explicitTagMatch"
+                            (change)="toggleExplictTagMatch($event)">Only match selected tag keys</mat-checkbox>
+                    </span>
                 </div>
                 <div class="tag-values-selected-list has-scroller" *ngIf="filters.length">
                     <div class="is-scroller">
