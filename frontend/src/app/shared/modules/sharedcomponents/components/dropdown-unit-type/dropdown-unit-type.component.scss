@@ -1,5 +1,5 @@
 @mixin dropdown-unit-type-component-base() {
-
+    @include mat-input-as-dropdown();
 }
 
 @mixin dropdown-unit-type-component-theme($theme-config) {

@@ -635,12 +635,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'DeleteQuery':
                 this.utilService.deleteQuery(this.widget, message.id);
+                this.setAxesOption();
                 this.widget = this.utilService.deepClone(this.widget);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQueryMetric':
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
+                this.setAxesOption();
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
@@ -918,6 +920,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.options.ylabel = y1Enabled ? this.options.ylabel : '';
         this.options.y2label = y2Enabled ? this.options.y2label : '';
         this.options.axes.y2.axisLabelWidth = y2Enabled ? 50 : 0;
+        this.widget.settings.axes.y2.enabled = y2Enabled ? true : false;
+        this.widget.settings.axes.y1.enabled = y1Enabled ? true : false;
     }
 
     updateAlertValue(nConfig) {

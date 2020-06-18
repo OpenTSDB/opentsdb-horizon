@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -15,7 +15,7 @@ import { isDefaultChangeDetectionStrategy } from '@angular/core/src/change_detec
     templateUrl: './widget-config-axes.component.html',
     styleUrls: []
 })
-export class WidgetConfigAxesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
     @HostBinding('class.axes-configuration') private _tabClass = true;
     @HostBinding('class.has-columns') private _modifierClass = true;
@@ -97,7 +97,10 @@ export class WidgetConfigAxesComponent implements OnInit, OnDestroy, AfterViewIn
 
     constructor(private fb: FormBuilder, private unit: UnitConverterService) { }
 
-    ngOnInit() {
+    ngOnChanges(changes: SimpleChanges) {
+        if ( !changes.widget ) {
+            return;
+        }
         // populate form controls
         this.createForm();
     }
@@ -122,6 +125,7 @@ export class WidgetConfigAxesComponent implements OnInit, OnDestroy, AfterViewIn
                 this.y1AxisEnabledToggleDisplay = false;
                 this.widgetConfigAxes.addControl('y1', this.getAxisFormGroup(this.getAxisConfiguration('y1')));
                 this.widgetConfigAxes.addControl('y2', this.getAxisFormGroup(this.getAxisConfiguration('y2')));
+                this.y1AxisEnabled_label = this.widgetConfigAxes.controls['y1']['controls'].enabled.value ? 'enabled' : 'disabled';
                 this.y2AxisEnabled_label = this.widgetConfigAxes.controls['y2']['controls'].enabled.value ? 'enabled' : 'disabled';
             break;
         }
