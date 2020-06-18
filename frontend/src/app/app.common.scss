@@ -1481,7 +1481,7 @@
             // make it transparent, because there is some sort of animation
             .mat-form-field-underline::before {
                 //background-color: rgba(0,0,0,0); // this is transparent
-                background-color: $text;
+                background-color: rgba($text, .2);
             }
 
             &:hover:not(.mat-focused) {

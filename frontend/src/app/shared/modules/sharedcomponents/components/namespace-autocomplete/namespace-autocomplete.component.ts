@@ -77,9 +77,9 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
                         });
 
         setTimeout(() => {
-            // this.nsInput.nativeElement.focus();
             this.visible = true;
-        }, 500);
+            this.nsInput.nativeElement.focus();
+        }, 200);
     }
 
 
