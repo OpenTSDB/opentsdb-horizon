@@ -21,6 +21,7 @@ import {
     MatDialogConfig,
     MatDialogRef
 } from '@angular/material';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime, skip } from 'rxjs/operators';
@@ -45,6 +46,7 @@ import { DataShareService } from '../../../core/services/data-share.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
 import { environment } from "../../../../environments/environment";
+import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -271,6 +273,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     doEventQuery$ = new BehaviorSubject(['list', 'count']);
     eventQuery: any = { namespace: '', search: ''};
 
+    tsLegendOptions: any = {
+        open: false,
+        trackMouse: true,
+        showLogscaleToggle: false
+      };
+    chartId = 'eventAlert';
 
     constructor(
         private fb: FormBuilder,
@@ -289,7 +297,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private themeService: ThemeService,
         private dataShare: DataShareService,
         private router: Router,
-        private location: LocationStrategy
+        private location: LocationStrategy,
+        private infoIslandService: InfoIslandService,
+        private hostElRef: ElementRef
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -325,6 +335,21 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.doEventQuery(list);
             })
         );
+        this.subscription.add(this.interCom.responseGet().subscribe((message: any) => {
+            // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
+            if (message.action && message.id === this.chartId) {
+              switch (message.action) {
+                case 'tsLegendToggleSeries':
+                  this.tsLegendToggleChartSeries(message.payload.batch, message.payload.visible, message.payload.multigraph);
+                  break;
+                case 'InfoIslandClosed':
+                  this.tsLegendOptions.open = false;
+                  break;
+                default:
+                  break;
+              }
+            }
+        }));
         if ( this.data.id ) {
             this.data.createdTime = this.dateUtil.timestampToTime((this.data.createdTime / 1000).toString(), 'local');
             this.data.updatedTime = this.dateUtil.timestampToTime((this.data.updatedTime / 1000 ).toString(), 'local');
@@ -1335,6 +1360,85 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.refreshChart();
                 break;
         }
+    }
+
+    timeseriesTickListener(event: any) {
+        if (event.action === 'openLegend' && !this.tsLegendOptions.open) {
+          this.tsLegendOptions.open = true;
+          // open the infoIsland with TimeseriesLegend
+          const payload: any = {
+              portalDef: {
+                  type: 'component',
+                  name: 'TimeseriesLegendComponent'
+              },
+              data: {
+                  options: this.options,
+                  queries: this.queries,
+                  settings: {},
+                  tsTickData: event.tickData,
+                  showLogscaleToggle: false
+              },
+              options: {
+                  title: 'Timeseries Legend',
+                  height: 250,
+                  positionStrategy: 'connected',
+                  outerWrap: '.alerts-container-component',
+                  originId: this.chartId,
+              }
+          };
+
+          const dataToInject = {
+            widget: {},
+            originId: this.chartId,
+            data: payload.data
+          };
+
+          const portalDef = payload.portalDef;
+          let componentOrTemplateRef;
+          const overlayOriginRef = this.graphOutput.nativeElement;
+          const compRef = (portalDef.name) ? this.infoIslandService.getComponentToLoad(portalDef.name) : portalDef.reference;
+          componentOrTemplateRef = new ComponentPortal(compRef, null, this.infoIslandService.createInjector(dataToInject));
+
+          this.infoIslandService.openIsland(
+            overlayOriginRef,
+            componentOrTemplateRef,
+            payload.options
+          );
+        } else if (event.action === 'openLegend' && !this.tsLegendOptions.open || event.action === 'tickDataChange') {
+          const payload: any = {
+            tickData: event.tickData
+          };
+          if (event.trackMouse) {
+              payload.trackMouse = event.trackMouse;
+          }
+          this.interCom.requestSend({
+              id: this.chartId,
+              action: 'tsTickDataChange',
+              payload: payload
+          });
+        }
+      }
+
+    tsLegendToggleChartSeries(batch: number[], visible: boolean, multigraph: any = false) {
+        // update visibility on batch items
+        for (let i = 0; i < batch.length; i += 1) {
+            const srcIndex = batch[i];
+            this.setSeriesVisibilityConfig(srcIndex, visible);
+        }
+        this.cdRef.detectChanges();
+        // interCom updated options
+        this.interCom.requestSend({
+            action: 'tsLegendWidgetOptionsUpdate',
+            id: this.chartId,
+            payload: { options: this.options}
+        });
+    }
+    
+    setSeriesVisibilityConfig(index: number, visibility: boolean) {
+        const options = this.options;
+        this.options.visibility[index] = visibility;
+        this.options.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
+        this.options = {... this.options};
     }
 
     reloadData() {
