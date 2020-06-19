@@ -5,14 +5,12 @@
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
             <inline-editable class="navbar-item"
+            showEditIcon="true"
             [fieldValue]="widget.settings.title"
             [minLength]="3"
             [maxLength]="100"
             (updatedValue)="setTitle($event)">
             </inline-editable>
-            <button mat-icon-button color="primary">
-                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-            </button>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
     </div>
@@ -213,7 +211,7 @@
             <div class="step-section notification-section is-visible" #stepmultigraph>
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('multigraph', $event);scrollToElement(stepmultigraph);">
-                            <span>5. Multigraph [Beta]</span>
+                            <span>5. Multigraph</span>
                             <mat-icon fontSet="denali" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>

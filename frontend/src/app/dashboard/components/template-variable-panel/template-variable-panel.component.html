@@ -20,7 +20,7 @@
                                 <img src="/assets/spinner-26x26.gif" />
                               </div>
                         </mat-autocomplete>
-                        
+
                     </mat-form-field>
                 </li>
                 <li>
@@ -60,7 +60,7 @@
                                 Mode
                                 <info-tooltip>
                                     <p>
-                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable. Overrides non-dashboard tags when value is set. OR'd with other dashboard tags. 
+                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable. Overrides non-dashboard tags when value is set. OR'd with other dashboard tags.
                                     </p>
                                     <br/>
                                     <p>
@@ -71,10 +71,12 @@
                             <th>Tag Key <sup>*</sup></th>
                             <th>Filter Name <sup>*</sup></th>
                             <th>Default value (optional)</th>
-                            <th>Applied</th>
-                            <info-tooltip>
-                                <p> # of widgets using dashboard tag.</p>
-                            </info-tooltip>
+                            <th style="white-space: nowrap;">
+                                <span>Applied</span>
+                                <info-tooltip>
+                                    <p> # of widgets using dashboard tag.</p>
+                                </info-tooltip>
+                            </th>
                             <th>Actions</th>
                             <th><!--empty for trash--></th>
                             <th>Reorder</th>
@@ -181,7 +183,7 @@
                             </td>
                             <!-- drag handle for reordering -->
                             <td>
-                                <div class="settings-control actions-control">
+                                <div class="settings-control actions-control" style="justify-content: initial; padding-left: 4px;">
                                     <div class="actions" style="cursor: grab;">
                                         <!-- icon is drag handle for the row -->
                                         <mat-icon *ngIf="formTplVariables.controls && formTplVariables.controls.length > 1" fontSet="denali" fontIcon="d-drag-handle" cdkDragHandle></mat-icon>

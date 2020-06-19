@@ -4,12 +4,13 @@
             <span class="navbar-item">Widget name:</span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item" [fieldValue]="widget.settings.title" [minLength]="3" [maxLength]="100"
+            <inline-editable class="navbar-item"
+                showEditIcon="true"
+                [fieldValue]="widget.settings.title"
+                [minLength]="3"
+                [maxLength]="100"
                 (updatedValue)="setTitle($event)">
             </inline-editable>
-            <button mat-icon-button color="primary">
-                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-            </button>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="DonutWidgetComponent"></graph-type>
     </div>
