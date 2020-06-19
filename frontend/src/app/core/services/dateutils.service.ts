@@ -18,7 +18,8 @@ enum validDateWithoutTimeFormat {
   'M-D-YYYY',
   'MM-DD-YY',
   'MM-DD-YYYY',
-  'YYYY-MM-DD'
+  'YYYY-MM-DD',
+  'YYYYMMDD'
 }
 
 @Injectable({
@@ -67,11 +68,11 @@ export class DateUtilsService {
     return moment(date, format, true).isValid();
   }
 
-  timestampToTime(timestamp: string, timezone: string): string {
+  timestampToTime(timestamp: string, timezone: string, format = defaultFormat): string {
     if (timezone.toLowerCase() === 'utc') {
-      return moment.unix(Number(timestamp)).utc().format(defaultFormat);
+      return moment.unix(Number(timestamp)).utc().format(format);
     } else {
-      return moment.unix(Number(timestamp)).format(defaultFormat);
+      return moment.unix(Number(timestamp)).format(format);
     }
   }
 
@@ -192,6 +193,8 @@ export class DateUtilsService {
       } else {
         _moment = moment().startOf(this.timeToTime(time.toLowerCase()));
       }
+   } else if ( moment(time, 'YYYYMMDDTHHmmss', true).isValid() ) {
+      _moment = timezone.toLowerCase() === 'utc' ? moment.utc(time, 'YYYYMMDDTHHmmss', true) : moment(time, 'YYYYMMDDTHHmmss', true);
     } else if (this.isTimeStampValid(time)) {  // e.g., 1234567890
       _moment = moment.unix(Number(time));
     } else if (this.relativeTimeToMoment(time)) {  // e.g., 1h
