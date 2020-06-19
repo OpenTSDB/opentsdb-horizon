@@ -25,6 +25,7 @@ import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { TimestampShareService } from '../../../../../core/services/timestamp-share.service';
 import { DygraphsChartDirective } from '../../../dygraphs/components/dygraphs-chart.directive';
 
+
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'linechart-widget',
@@ -182,6 +183,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     verticalLineCanvasWidth: string;
     verticalLineCanvasHeight: string;
     verticalLinePosition: number;
+    verticalLineFillStyle = 'rgb(0,0,0)';
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -223,6 +225,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 //highlightSeriesBackgroundAlpha: (themeType === 'light') ? 0.5 : 0.8,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
+
+           this.verticalLineFillStyle = (themeType === 'light') ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
+           this.updateVerticalLine();
+
             this.cdRef.markForCheck();
         }));
 
@@ -750,7 +756,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
                 if (xPos > 0) {
                     ctx.beginPath();
-                    ctx.fillStyle = 'rgba(0, 0, 0)';
+                    ctx.fillStyle = this.verticalLineFillStyle;
                     ctx.fillRect(xPos, 0, 1, this.size.height);
                     ctx.closePath();
                 }
