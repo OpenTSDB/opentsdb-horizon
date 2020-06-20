@@ -668,7 +668,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.dbTime = {...t};
             }
 
-            this.updateURLParams(this.dbTime);
             // do not intercom if widgets are still loading
             if (!this.widgets.length) {
                 return;
@@ -685,6 +684,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     payload: t
                 });
             }
+            this.updateURLParams(this.dbTime);
         }));
 
         this.subscription.add(this.dbSettings$.subscribe(settings => {
