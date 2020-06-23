@@ -4,6 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 import { Router,  NavigationEnd } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { UtilsService} from '../../core/services/utils.service';
+import { DateUtilsService } from '../../core/services/dateutils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,18 @@ export class URLOverrideService {
 
     getTimeOverrides() {
         if (this.overrides['time']) {
+            const tz = this.overrides['time']['zone'] ? this.overrides['time']['zone'] : 'local';
+            if ( this.overrides['time']['start'] ) {
+                const t = this.overrides['time']['start'];
+                const m = this.dateUtil.timeToMoment(t, tz);
+                // tslint:disable:max-line-length
+                this.overrides['time']['start'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
+            }
+            if ( this.overrides['time']['end'] ) {
+                const t = this.overrides['time']['end'];
+                const m = this.dateUtil.timeToMoment(t, tz);
+                this.overrides['time']['end'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
+            }
             return this.overrides['time'];
         }
     }
@@ -45,9 +58,9 @@ export class URLOverrideService {
             if (!v) continue;
             switch (k) {
                 case '__start':
-                    time['start'] = decodeURIComponent(v.toLowerCase()); break;
+                    time['start'] = decodeURIComponent(v); break;
                 case '__end':
-                    time['end'] = decodeURIComponent(v.toLowerCase()); break;
+                    time['end'] = decodeURIComponent(v); break;
                 case '__tz':
                     time['zone'] = decodeURIComponent(v.toLowerCase()); break;
                 default:
@@ -103,7 +116,8 @@ export class URLOverrideService {
     constructor(
         private location: Location,
         private router: Router,
-        private utils: UtilsService
+        private utils: UtilsService,
+        private dateUtil: DateUtilsService
     ) {
         var url = this.getLocationURLandQueryParams();
         var otherParams = {};
@@ -142,10 +156,11 @@ export class URLOverrideService {
         let url = this.getLocationURLandQueryParams();
         let tags: any = {};
         if (params.start) {
-            url['queryParams']['__start'] = params.start;
+            // tslint:disable:max-line-length
+            url['queryParams']['__start'] = params.start.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.start) ? params.start : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.start, params.zone).unix().toString(), params.zone, 'YYYYMMDDTHHmmss');
         }
         if (params.end) {
-            url['queryParams']['__end'] = params.end;
+            url['queryParams']['__end'] = params.end.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.end) ? params.end : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.end, params.zone).unix().toString(), params.zone, 'YYYYMMDDTHHmmss');
         }
         if (params.zone) {
             url['queryParams']['__tz'] = params.zone;
