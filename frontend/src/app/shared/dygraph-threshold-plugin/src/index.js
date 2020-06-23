@@ -3,8 +3,6 @@
 var Thresholds = (function() {
 'use strict';
 
- //var Thresholds = (function() {
-
 var Thresholds= function() {
     this.thresholds = []; 
     //console.log("yahooo", this.thresholds);

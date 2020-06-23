@@ -11,6 +11,8 @@ import ThresholdsPlugin from '../../../dygraph-threshold-plugin/src/index';
 import * as moment from 'moment';
 import * as d3 from 'd3';
 import { LoggerService } from '../../../../core/services/logger.service';
+import { Subscription } from 'rxjs';
+import { TimestampShareService } from '../../../../core/services/timestamp-share.service';
 
 @Directive({
     // tslint:disable-next-line: directive-selector
@@ -27,30 +29,38 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Input() showEvents: boolean;
     @Input() multigraph: boolean;
     @Input() timeseriesLegend: any = {};
+    @Input() widget: any;
+    @Input() keepLinechartDotsOnMouseOut: boolean;
+    @Input() dashboardLocked = false;
     @Output() zoomed = new EventEmitter;
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
     @Output() lastTimeseriesHighlighted = new EventEmitter<any>();
+    @Output() timestampHoverChanged = new EventEmitter<any>();
+    @Output() chartEntered = new EventEmitter<any>();
 
-    private startTime = 0; // for icon placement
+    private startTime = 0; // for event icon placement
     private _g: any;
     private gDimension: any;
     public dataLoading: boolean;
-    private lastSeriesHighlighted: number = -1;
 
     public labelsDiv: any;
     /* Commenting out for now
         will be part of next PR that will improve tooltip movement*/
     public firstTickHighlight = false;
+    private subscription: Subscription = new Subscription();
 
     constructor(
         private element: ElementRef,
         private utils: UtilsService,
         private uConverter: UnitConverterService,
-        private logger: LoggerService
+        private logger: LoggerService,
+        private timestampShareService: TimestampShareService
     ) { }
 
-    ngOnInit() { }
+    ngOnInit() {
+
+    }
 
     ngOnChanges(changes: SimpleChanges) {
 
@@ -94,6 +104,13 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
         const self = this;
         const mouseover = function (e, x, points, row, seriesName) {
+
+            let timeChanged = false;
+            if (!self.dashboardLocked && self.timestampShareService.getTimestamp() !== x) {
+                self.timestampShareService.setTimestamp(x);
+                timeChanged = true;
+            }
+
             this.lastSeriesHighlighted = seriesName;
 
             /* Commenting out for now
@@ -154,9 +171,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     tickData: tickDataOutput
                 });
             }
+            // output event for vertical line
+            setTimeout(() => {
+                if (!self.dashboardLocked && timeChanged) {
+                    self.timestampHoverChanged.emit();
+                }
+            }, 0);
 
             // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
-
         };
 
         const clickCallback = function(e, x, points) {
@@ -414,6 +436,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         }
                     };
 
+                    setTimeout(() => {
+                        this.timestampHoverChanged.emit();
+                    }, 0);
+
                     if (this.timeseriesLegend) {
                         //this.options.clickCallback = clickCallback;
                         // TODO: need to detect double click and NOT open the island
@@ -507,11 +533,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
                             const cy = Dygraph.pageY(event) - graphPos.y;
 
-                            if ( _prev ) {
-                                g.clearSelection();
-                            }
-
-
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
                                 const ts = g.toDataXCoord(cx2);
@@ -576,6 +597,19 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseEnter(event: any) {
         // reset tick highlight
         this.firstTickHighlight = false;
+        this.chartEntered.emit();
+    }
+
+    getXCoordPercent(ts: number) {
+        if (this._g) {
+            return this._g.toPercentXCoord(ts);
+        } else {
+            return -1;
+        }
+    }
+
+    clearSelection() {
+        this._g.clearSelection();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -667,8 +701,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     onMouseLeave(event: any) {
         this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
-        if (this._g) {
-            this._g.clearSelection();
+
+        if (!this.keepLinechartDotsOnMouseOut) {
+            this.clearSelection();
+        }
+
+        if (this.chartType !== 'heatmap' && !this.dashboardLocked) {
+            this.timestampShareService.clear();
+            this.timestampHoverChanged.emit();
         }
     }
 

@@ -219,6 +219,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     checkUserFavorited$: Observable<boolean> | null;
     checkUserFavoritedSub: Subscription;
 
+    private locked = false;
+
     constructor(
         private store: Store,
         private activatedRoute: ActivatedRoute,
@@ -350,6 +352,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     delete this.wData[message.id];
                     this.store.dispatch(new UpdateMode(message.payload));
                     this.rerender = { 'reload': true };
+
                     break;
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
@@ -500,6 +503,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         payload: { zoomingWid: message.id, date: message.payload }
                     });
                     this.updateURLParams(this.dbTime);
+                    break;
+                case 'isDashboardLocked':
+                    this.interCom.responsePut({
+                        action: 'dashboardLocked',
+                        payload: {locked: this.locked}
+                    });
                     break;
                 default:
                     break;
@@ -1339,6 +1348,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     unloadNotification($event: any) {
         if (this.isDashboardDirty()) {
             $event.returnValue = true;
+        }
+    }
+
+    @HostListener('document:keypress', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        if (event.getModifierState('Control') && (event.key === 'l' || event.key === 'L')) {
+            this.locked = !this.locked;
+            this.interCom.responsePut({
+                action: 'dashboardLocked',
+                payload: {locked: this.locked}
+            });
+
+            this.interCom.requestSend({
+                action: 'systemMessage',
+                payload: {
+                    type: 'info',
+                    message:  this.locked ? 'Selection Locked' : 'Selection Unlocked',
+                    timeoutInSeconds: 3
+                }
+            });
         }
     }
 

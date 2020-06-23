@@ -93,6 +93,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     sideNavTopGap: number = 0;
     private resourcesReady: boolean = false;
     private pendingRecent: any = {};
+    timer;
 
     // first load flag
     // tslint:disable-next-line: no-inferrable-types
@@ -242,12 +243,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 case 'systemMessage':
                     this.messageBarData = message.payload;
                     this.messageBarVisible = true;
+                    this.setMessageTimeout(message.payload.timeoutInSeconds);
                     break;
                 // clears and resets system message
                 case 'clearSystemMessage':
                     if (this.messageBarVisible) {
-                        this.messageBarData = {};
-                        this.messageBarVisible = false;
+                        this.closeMessageBar();
                     }
                     break;
                 default:
@@ -316,7 +317,16 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
   }
 
     closeMessageBar() {
+        clearInterval(this.timer);
         this.messageBarVisible = false;
+        this.messageBarData = {};
+    }
+
+    setMessageTimeout(timeInSeconds: number) {
+        clearInterval(this.timer);
+        if (timeInSeconds && timeInSeconds > 0) {
+            this.timer = setInterval(() => this.closeMessageBar(), timeInSeconds * 1000);
+        }
     }
 
     drawerClosedStart() {
