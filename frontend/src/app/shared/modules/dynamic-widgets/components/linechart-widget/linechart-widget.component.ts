@@ -24,6 +24,7 @@ import { InfoIslandService } from '../../../info-island/services/info-island.ser
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { TimestampShareService } from '../../../../../core/services/timestamp-share.service';
 import { DygraphsChartDirective } from '../../../dygraphs/components/dygraphs-chart.directive';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 
 @Component({
@@ -1456,6 +1457,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // request send to update state to close edit mode
     closeViewEditMode() {
+        this.iiService.closeIsland();
         this.interCom.requestSend({
             action: 'closeViewEditMode',
             id: this.widget.id,
@@ -1517,11 +1519,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
         // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
-
-        if (this.editMode === true) {
-            return;
-        }
-
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
@@ -1556,14 +1553,27 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             };
             if (multigraph) {
+                // tslint:disable-next-line: max-line-length
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
-            this.interCom.requestSend({
-                id: this.widget.id,
-                action: 'InfoIslandOpen',
-                payload: payload
-            });
+            if ( !this.editMode ) {
+                this.interCom.requestSend({
+                    id: this.widget.id,
+                    action: 'InfoIslandOpen',
+                    payload: payload
+                });
+            } else {
+                const dataToInject = {
+                    widget: this.widget,
+                    originId: this.widget.id,
+                    data: payload.data
+                };
+                // tslint:disable-next-line: max-line-length
+                const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
+                const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+                this.iiService.openIsland(this.widgetOutputElement.nativeElement, componentOrTemplateRef, widgetOptions);
+            }
         }
 
         if (event.action === 'tickDataChange') {
