@@ -22,10 +22,7 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
-import { TimestampShareService } from '../../../../../core/services/timestamp-share.service';
-import { DygraphsChartDirective } from '../../../dygraphs/components/dygraphs-chart.directive';
 import { ComponentPortal } from '@angular/cdk/portal';
-
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -61,14 +58,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     @ViewChildren('graphLegend', {read: ElementRef}) graphLegends: QueryList<ElementRef>;
     @ViewChildren('graphdiv', { read: ElementRef}) graphdivs: QueryList<ElementRef>;
-    @ViewChildren('dygraph', { read: DygraphsChartDirective}) dygraphs: QueryList<DygraphsChartDirective>;
     inViewport: any = {};
     private subscription: Subscription = new Subscription();
     isDataLoaded = false;
     private isStackedGraph = false;
     chartType = 'line';
     multiLimitMessage = '';
-    dashboardLocked = false;
 
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
@@ -91,7 +86,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         highlightSeriesBackgroundAlpha: 1,
         highlightSeriesBackgroundColor: 'rgb(255, 255, 255)',
         isZoomedIgnoreProgrammaticZoom: true,
-        hideOverlayOnMouseOut: false,
+        hideOverlayOnMouseOut: true,
         isCustomZoomed: false,
         highlightSeriesOpts: {
             strokeWidth: 2,
@@ -154,7 +149,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // TIMESERIES LEGEND
     // tsHighlightData: any = {};
     // private _tsTickData: BehaviorSubject<any> = new BehaviorSubject({});
-    keepLinechartDotsOnMouseOut = false;
 
     tsLegendOptions: any = {
         open: false,
@@ -178,14 +172,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     eventsError = '';
 
-    // VERTICAL LINE
-    @ViewChildren('verticalLineCanvas') canvases: QueryList<any>;
-    private ctxs: CanvasRenderingContext2D[];
-    verticalLineCanvasWidth: string;
-    verticalLineCanvasHeight: string;
-    verticalLinePosition: number;
-    verticalLineFillStyle = 'rgb(0,0,0)';
-
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
     private _timeRange: BehaviorSubject<any> = new BehaviorSubject({});
@@ -203,8 +189,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private logger: LoggerService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
-        private themeService: ThemeService,
-        private timestampShareService: TimestampShareService
+        private themeService: ThemeService
     ) { }
 
     ngOnInit() {
@@ -226,10 +211,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 //highlightSeriesBackgroundAlpha: (themeType === 'light') ? 0.5 : 0.8,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
-
-           this.verticalLineFillStyle = (themeType === 'light') ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
-           this.updateVerticalLine();
-
             this.cdRef.markForCheck();
         }));
 
@@ -239,6 +220,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }));
 
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
+
             switch (message.action) {
                 case 'TimeChanged':
                     this.options.isCustomZoomed = false;
@@ -265,21 +247,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 case 'tsLegendFocusChange':
                     if (message.id === this.widget.id) {
                         this.legendFocus = message.payload;
-                        this.keepLinechartDotsOnMouseOut = true;
                     } else {
                         this.legendFocus = false;
-                        this.keepLinechartDotsOnMouseOut = false;
                         this.cdRef.markForCheck();
                     }
-                    break;
-                case 'dashboardLocked':
-                    this.dashboardLocked = message.payload.locked;
-                    break;
-                case 'timestampOnHoverChanged':
-                    this.updateVerticalLine();
-                    break;
-                case 'chartEntered':
-                    this.clearChart(message.payload.id);
                     break;
             }
 
@@ -452,10 +423,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
-                                this.initializeLineChartCtxs();
                             });
+
                         }
-                        this.initializeLineChartCtxs();
                         break;
                     case 'getUpdatedWidgetConfig':
                         // console.log("getUpdatedWidgetConfig", message);
@@ -491,8 +461,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         this.setDefaultEvents();
         this.getEvents();
-
-        this.getDashboardLock();
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
@@ -703,67 +671,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
-        }
-    }
-
-    updateVerticalLine() {
-        const ts = this.timestampShareService.getTimestamp();
-        let percent = -1;
-        if (this.dygraphs && this.dygraphs.length > 0) {
-            percent = this.dygraphs.first.getXCoordPercent(ts);
-        }
-        if (percent < 0) {
-            this.verticalLinePosition = -1;
-        } else if (percent === 0) {
-            this.verticalLinePosition = 1;
-        } else {
-            this.verticalLinePosition = Math.floor(percent * (this.size.width - 11));
-        }
-        this.drawVerticalLine(this.verticalLinePosition);
-    }
-
-    timestampHoverChanged() {
-        this.interCom.responsePut({
-            action: 'timestampOnHoverChanged',
-            payload: {}
-        });
-    }
-
-    chartEntered() {
-        this.interCom.responsePut({
-            action: 'chartEntered',
-            payload: {id: this.widget.id}
-        });
-    }
-
-    clearChart(enteredWidgetId: String) {
-        if (enteredWidgetId !== this.widget.id && !this.keepLinechartDotsOnMouseOut) {
-            this.dygraphs.forEach(dygrah => dygrah.clearSelection());
-        }
-    }
-
-    initializeLineChartCtxs() {
-        this.ctxs = [];
-        this.canvases.toArray().forEach(el => {
-            const ctx = el.nativeElement.getContext('2d');
-            this.ctxs.push(ctx);
-        });
-    }
-
-    drawVerticalLine(xPos) {
-        if (this.ctxs && this.ctxs.length > 0) {
-            for (const ctx of this.ctxs) {
-                ctx.clearRect(0, 0, this.size.width, this.size.height);
-                this.verticalLineCanvasHeight = this.size.height - 6 + 'px';
-                this.verticalLineCanvasWidth = this.size.width - 51 + 'px';
-
-                if (xPos > 0) {
-                    ctx.beginPath();
-                    ctx.fillStyle = this.verticalLineFillStyle;
-                    ctx.fillRect(xPos, 0, 1, this.size.height);
-                    ctx.closePath();
-                }
-            }
         }
     }
 
@@ -1124,13 +1031,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setDefaultEvents() {
         this.widget = this.utilService.setDefaultEventsConfig(this.widget, false);
-    }
-
-    getDashboardLock() {
-        this.interCom.requestSend({
-            action: 'isDashboardLocked',
-            payload: {}
-        });
     }
 
     getEvents() {
@@ -1586,11 +1486,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 settings: this.widget.settings,
                 tickData: event.tickData
             };
-
             if (event.trackMouse) {
                 payload.trackMouse = event.trackMouse;
             }
-
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'tsTickDataChange',
