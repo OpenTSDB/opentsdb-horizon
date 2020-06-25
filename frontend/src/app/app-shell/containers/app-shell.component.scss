@@ -11,14 +11,6 @@
         // the sliding drawer (.app-navigation-drawer)
         // the app content passed through ng-content (.router-outlet)
 
-        .floater {
-            position: absolute;
-            top: 48px;
-            left: 0px;
-            z-index: 100;
-            width: 100%;
-        }
-
         .app-navigator {
             display: flex;
             flex: 1;

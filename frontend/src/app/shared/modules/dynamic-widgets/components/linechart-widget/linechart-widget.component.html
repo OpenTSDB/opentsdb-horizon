@@ -75,18 +75,10 @@
                                         [showEvents]="widget.settings.visual.showEvents"
                                         [multigraph]="multigraphEnabled"
                                         [timeseriesLegend]="tsLegendOptions"
-                                        [widget]="widget"
-                                        [keepLinechartDotsOnMouseOut]="keepLinechartDotsOnMouseOut"
-                                        [dashboardLocked]="dashboardLocked"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
-                                        (zoomed)="handleZoom($event)"
-                                        (timestampHoverChanged)="timestampHoverChanged()"
-                                        (chartEntered)="chartEntered()">
+                                        (zoomed)="handleZoom($event)">
                                     </div>
-                                    <canvas #verticalLineCanvas class="vertical-line" [height]="size.height - 6" [width]="size.width - 1"
-                                        [ngStyle]="{'width':  verticalLineCanvasWidth, 'height':  verticalLineCanvasHeight}">
-                                    </canvas>
                                     <!--<div class="dygraph-legend" #graphLegend [attr.id]="'graphlegend-' + i + '-' + j"></div>-->
                                     <div class="events-overlay" [hidden]="!widget.settings.visual.showEvents" *ngIf="!multigraphEnabled"
                                         [ngStyle]="axisEnabled(options.series).has('y') && {'padding-left': '50px'}">
