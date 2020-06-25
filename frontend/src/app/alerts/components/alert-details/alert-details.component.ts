@@ -107,6 +107,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             strokeWidth: 3,
             highlightCircleSize: 7
         },
+        highlightSeriesBackgroundAlpha: 1,
         highlightSeriesBackgroundColor: 'rgb(255, 255, 255)',
         xlabel: '',
         ylabel: '',
