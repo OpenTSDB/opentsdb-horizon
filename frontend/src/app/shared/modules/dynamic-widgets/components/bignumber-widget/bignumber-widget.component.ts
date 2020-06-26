@@ -219,6 +219,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
+    setTitle(title) {
+        this.widget.settings.title = title;
+    }
 
     setBigNumber() {
         if (!this.getVisibleMetricId()) {
@@ -554,7 +557,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
              payload: { wConfig: wConfig, newType: type }
          });
     }
-    
+
     showError() {
         // console.log('%cErrorDialog', 'background: purple; color: white;', this.error);
         const dialogConf: MatDialogConfig = new MatDialogConfig();
@@ -582,9 +585,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

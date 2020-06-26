@@ -36,6 +36,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @Input() tplVariables: any;
     @Output() filterOutput = new EventEmitter();
     @Output() closeModalOutput = new EventEmitter();
+    @Output() tagExplicitMatchOutput = new EventEmitter();
     @ViewChild('tagValueSearchInput') tagValueSearchInput: ElementRef;
     @ViewChild('tagSearchInput') tagSearchInput: ElementRef;
     @ViewChild('trigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
@@ -106,6 +107,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
             });
 
         this.setTagValueSearch();
+    }
+
+    toggleExplictTagMatch(event: any) {
+        this.tagExplicitMatchOutput.emit(event);
     }
 
     deleteFilter(index) {

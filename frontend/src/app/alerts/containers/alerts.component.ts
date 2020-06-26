@@ -300,6 +300,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.alertSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
+            this.setRouterUrl();
             this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
         }));
 
@@ -551,6 +552,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
             // this.logger.log('ROUTE CHANGE', { url });
+            const queryParams = this.activatedRoute.snapshot.queryParams;
 
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
@@ -570,7 +572,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 }
             } else if (url.length === 1 && !this.utils.checkIfNumeric(url[0].path)) {
                 // if only one item, and its not numeric, probably a namespace
-                this.setNamespace(url[0].path);
+                this.setNamespace(url[0].path, queryParams.q);
             } else if (url.length === 2 && url[1].path === '_new_') {
                 // new alert
                 this.setNamespace(url[0].path);
@@ -711,11 +713,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    setNamespace(namespace) {
+    setNamespace(namespace, search= '') {
         if (this.selectedNamespace !== namespace) {
             this.store.dispatch(new SetNamespace(namespace));
-            if (this.alertSearch) {
-                this.alertSearch.setValue('');
+            if ( this.alertSearch || search ) {
+                this.alertSearch.setValue(search);
             }
         }
 
@@ -746,7 +748,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     setRouterUrl() {
         const prefix = this.list === 'snooze' ? 'a/snooze/' : 'a/';
-        this.location.go(prefix + this.selectedNamespace);
+        const search = this.alertSearch.value;
+        const qs = this.list === 'alerts' && search ? '?q=' +  decodeURIComponent(search) : '';
+        this.location.go(prefix + this.selectedNamespace + qs);
     }
 
     /** privates */

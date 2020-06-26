@@ -2,13 +2,15 @@
     <mat-card-content>
         <div class="preview-wrapper"  #graphOutput  [ngClass]="{'is-visible': data && data.type === 'event' || (data.type === 'simple' && data.threshold && data.threshold.subType !== 'periodOverPeriod')}">
             <div class="graph-wrapper">
-                <div class="graph-output" >
+                <div #graphOutput class="graph-output" >
                     <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
                         [data]="chartData"
                         [size]="{'width': size.width - 50, 'height': size.height - 10}"
                         [options]="options"
+                        [timeseriesLegend]="tsLegendOptions"
+                        (currentTickEvent)="timeseriesTickListener($event)"
                         (zoomed)="handleZoom($event)">
                     </div>
                     <div class="dygraph-legend" #graphLegend></div>

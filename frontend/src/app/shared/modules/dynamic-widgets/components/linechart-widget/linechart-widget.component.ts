@@ -22,6 +22,7 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -82,7 +83,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         stackedGraphNaNFill: 'none', // default to all will reserve gap
         strokeWidth: 1,
         strokeBorderWidth: this.isStackedGraph ? 0 : 0,
-        highlightSeriesBackgroundAlpha: 0.5,
+        highlightSeriesBackgroundAlpha: 1,
         highlightSeriesBackgroundColor: 'rgb(255, 255, 255)',
         isZoomedIgnoreProgrammaticZoom: true,
         hideOverlayOnMouseOut: true,
@@ -635,12 +636,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'DeleteQuery':
                 this.utilService.deleteQuery(this.widget, message.id);
+                this.setAxesOption();
                 this.widget = this.utilService.deepClone(this.widget);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQueryMetric':
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
+                this.setAxesOption();
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
@@ -918,6 +921,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.options.ylabel = y1Enabled ? this.options.ylabel : '';
         this.options.y2label = y2Enabled ? this.options.y2label : '';
         this.options.axes.y2.axisLabelWidth = y2Enabled ? 50 : 0;
+        this.widget.settings.axes.y2.enabled = y2Enabled ? true : false;
+        this.widget.settings.axes.y1.enabled = y1Enabled ? true : false;
     }
 
     updateAlertValue(nConfig) {
@@ -1352,6 +1357,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // request send to update state to close edit mode
     closeViewEditMode() {
+        this.iiService.closeIsland();
         this.interCom.requestSend({
             action: 'closeViewEditMode',
             id: this.widget.id,
@@ -1413,11 +1419,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
         // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
-
-        if (this.editMode === true) {
-            return;
-        }
-
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
@@ -1452,14 +1453,27 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             };
             if (multigraph) {
+                // tslint:disable-next-line: max-line-length
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
-            this.interCom.requestSend({
-                id: this.widget.id,
-                action: 'InfoIslandOpen',
-                payload: payload
-            });
+            if ( !this.editMode ) {
+                this.interCom.requestSend({
+                    id: this.widget.id,
+                    action: 'InfoIslandOpen',
+                    payload: payload
+                });
+            } else {
+                const dataToInject = {
+                    widget: this.widget,
+                    originId: this.widget.id,
+                    data: payload.data
+                };
+                // tslint:disable-next-line: max-line-length
+                const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
+                const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+                this.iiService.openIsland(this.widgetOutputElement.nativeElement, componentOrTemplateRef, widgetOptions);
+            }
         }
 
         if (event.action === 'tickDataChange') {

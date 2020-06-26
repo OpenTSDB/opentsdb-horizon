@@ -52,11 +52,11 @@
     <!-- CONTAINER FOR THE COMMON TAGS-->
     <div class="common-tags">
         <!--<span class="common-tags-label">Tag filters</span>-->
-        <div class="common-tags-wrapper" (click)="showTagFilterMenu()">
+        <div class="common-tags-wrapper">
             <span [matMenuTriggerFor]="tagFilterMenu" #tagFilterMenuTrigger="matMenuTrigger"
                 [matMenuTriggerData]="{query: query}" class="tag-filter-menu-trigger"></span>
             <div class="tags-selected" *ngIf="query.filters.length">
-                <div class="tags-selected-header">
+                <div class="tags-selected-header" (click)="showTagFilterMenu()">
                     <span><strong>Tag Filters</strong></span>
                     <!--<span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
                         <mat-checkbox (click)="$event.stopPropagation();"
@@ -81,7 +81,7 @@
                 </mat-list>
             </div>
             <div *ngIf="!query.filters.length">
-                <button mat-button color="primary" class="add-tag-filter-button"> Add Tag filters </button>
+                <button mat-button color="primary" class="add-tag-filter-button" (click)="showTagFilterMenu()"> Add Tag filters </button>
             </div>
         </div>
     </div>
@@ -355,9 +355,10 @@
                                 background</span>
                             <span>{{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
                             <span *ngIf="type === 'LinechartWidgetComponent'">on {{ data.visual.axis || 'y1' }} </span>
-                            <span class="mat-select-arrow-wrapper" style="display: inline-flex">
+                            <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon>
+                            <!--<span class="mat-select-arrow-wrapper" style="display: inline-flex">
                                 <span class="mat-select-arrow"></span>
-                            </span>
+                            </span>-->
                         </div>
                     </div>
                 </td>
@@ -434,6 +435,7 @@
             <inline-filter-editor [query]="query" [options]="options"
                 (filterOutput)="updateFilters($event);"
                 (closeModalOutput)="closeTagFilterModal($event)"
+                (tagExplicitMatchOutput)="toggleExplictTagMatch($event)"
                 [tplVariables]="tplVariables"></inline-filter-editor>
         </div>
     </ng-template>
