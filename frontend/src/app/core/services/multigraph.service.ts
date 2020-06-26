@@ -32,6 +32,7 @@ export class MultigraphService {
       if (gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
       if (dataSrc.source) {
         for (let j = 0; j < dataSrc.data.length; j++) {
+          // tags for each group of data
           const tags = { metric_group: dataSrc.data[j].metric, ...dataSrc.data[j].tags};
           let x = xTemp;
           let y = yTemp;
@@ -41,14 +42,14 @@ export class MultigraphService {
             const tagValue = key === 'metric_group' ? tags[key] : tags[key].toLowerCase();
             if ( multiConf.x && x.indexOf(key) !== -1 ) {
               x = x.replace('{{' + key + '}}', tagValue);
-              if (multiConf.x[key] && !multiConf.x[key].includes(tagValue)) {
-                multiConf.x[key].push(tagValue);
+              if (multiConf.x[key] && !multiConf.x[key].values.includes(tagValue)) {
+                multiConf.x[key].values.push(tagValue);
               }
             }
             if ( multiConf.y && y.indexOf(key) !== -1 ) {
               y = y.replace('{{' + key + '}}', tagValue);
-              if (multiConf.y[key] && !multiConf.y[key].includes(tagValue)) {
-                multiConf.y[key].push(tagValue);
+              if (multiConf.y[key] && !multiConf.y[key].values.includes(tagValue)) {
+                multiConf.y[key].values.push(tagValue);
               }
             }
           }
@@ -75,19 +76,31 @@ export class MultigraphService {
       }
     }
     }
+
     // let build the master results table
     const xAll = multiConf.x ? [] : [['x']];
     const yAll = multiConf.y ? [] : [['y']];
     for (const tag in multiConf.x) {
       if (multiConf.x.hasOwnProperty(tag)) {
-        xAll.push(multiConf.x[tag]);
+        if (multiConf.x[tag].sortAs === 'asc') {
+          multiConf.x[tag].values.sort(this.utils.sortAlphaNum);
+        } else {
+          multiConf.x[tag].values.sort(this.utils.sortAlphaNumDesc);
+        }
+        xAll.push(multiConf.x[tag].values);
       }
     }
     for (const tag in multiConf.y) {
       if (multiConf.y.hasOwnProperty(tag)) {
-        yAll.push(multiConf.y[tag]);
+        if (multiConf.y[tag].sortAs === 'asc') {
+          multiConf.y[tag].values.sort(this.utils.sortAlphaNum);
+        } else {
+          multiConf.y[tag].values.sort(this.utils.sortAlphaNumDesc);
+        }
+        yAll.push(multiConf.y[tag].values);
       }
     }
+    // apply sort for those keys based on con
     for (let i = 0; i < xAll.length; i++) {
       xCombine = this.combineKeys(xCombine, xAll[i]);
     }
@@ -138,20 +151,20 @@ export class MultigraphService {
         if (chart.displayAs === 'x') {
           if (!conf['x']) { conf['x'] = {}; }
           conf['x'][chart.key] = {
-            sortAs: chart.sortAs,
-            value: []
+            sortAs: chart.sortAs ? chart.sortAs : 'asc',
+            values: []
           };
         } else if (chart.displayAs === 'y') {
           if (!conf['y']) { conf['y'] = {}; }
           conf['y'][chart.key] = {
-            sortAs: chart.sortAs,
-            value: []
+            sortAs: chart.sortAs ? chart.sortAs : 'asc',
+            values: []
           };
         } else {
           if (!conf['g']) { conf['g'] = {}; }
           conf['g'][chart.key] = {
-            sortAs: chart.sortAs,
-            value: []
+            sortAs: chart.sortAs ? chart.sortAs : 'asc',
+            values: []
           };
         }
       }
