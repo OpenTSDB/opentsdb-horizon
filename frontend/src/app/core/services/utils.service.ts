@@ -438,7 +438,7 @@ export class UtilsService {
         return /^\d+$/.test(val);
     }
 
-    // human sort
+    // human sort asc
     sortAlphaNum(a, b) {
         const aa = a.toLowerCase().split(/(\d+)/);
         const bb = b.toLowerCase().split(/(\d+)/);
@@ -454,6 +454,24 @@ export class UtilsService {
             }
         }
         return 0;
+    }
+
+    // human sort desc
+    sortAlphaNumDesc(a, b) {
+        const aa = a.toLowerCase().split(/(\d+)/);
+        const bb = b.toLowerCase().split(/(\d+)/);
+        for (let x = 0; x < Math.max(aa.length, bb.length); x++) {
+            if (aa[x] !== undefined && bb[x] !== undefined && aa[x] !== bb[x]) {
+                const cmp1 = (isNaN(parseInt(aa[x], 10))) ? aa[x] : parseInt(aa[x], 10);
+                const cmp2 = (isNaN(parseInt(bb[x], 10))) ? bb[x] : parseInt(bb[x], 10);
+                if (cmp1 === undefined || cmp2 === undefined) {
+                    return bb.length - aa.length;
+                } else {
+                    return (cmp1 < cmp2) ? 1 : -1;
+                }
+            }
+        }
+        return 0;     
     }
 
     getSummarizerForMetric(id, queries) {
