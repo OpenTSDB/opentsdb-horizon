@@ -194,7 +194,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                             }
                         });
                         this.needRequery = false;
-                        console.log('hill - form changes', this.widgetConfigMultigraph.getRawValue());
                     }
                 })
         );
@@ -228,8 +227,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
 
     addChartItem(data: any) {
         this.needRequery = true;
-        console.log('hill - charitem data', data);
-
         const chartItem = this.fb.group(data);
         const control = <FormArray>this.FC_chart;
         control.push(chartItem);
