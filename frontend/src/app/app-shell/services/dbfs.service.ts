@@ -5,7 +5,6 @@ import { environment } from '../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { LoggerService } from '../../core/services/logger.service';
-import { namespace } from 'd3';
 
 @Injectable()
 export class DbfsService {
@@ -268,10 +267,7 @@ export class DbfsService {
     }
 
     moveFolder(sourceId: number, destinationId: number, trashFolder?: boolean) {
-        const body = {
-            sourceId,
-            destinationId
-        };
+        const body = { 'sourceId': sourceId, 'destinationId': destinationId };
 
         const apiUrl = environment.configdb + '/dashboard/folder/move';
 

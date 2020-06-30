@@ -1,0 +1,34 @@
+<mat-toolbar class="panel-toolbar is-master-panel">
+    <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+        <div class="nav-item panel-label">
+            <strong>Admin Panel</strong>
+        </div>
+        <span class="flex-spacer"></span>
+        <div class="nav-item">
+            <button mat-icon-button (click)="closeDrawer()">
+                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+            </button>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>
+<div class="admin-panel">
+    <mat-tab-group class="admin-function-tabs" selectedIndex="0">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon fontSet="denali" fontIcon="d-notification"></mat-icon>
+                <span>Global Notifications</span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-notification-panel></app-notification-panel>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span>Another Admin Tab</span>
+            </ng-template>
+            <ng-template matTabContent>
+                The Second Content
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</div>

@@ -1,6 +1,6 @@
 <form [formGroup]="widgetConfigAxes">
     <!-- Y1 Axis -->
-    <div class="y1-axis-container column" *ngIf="widgetConfigAxes.controls.y1" formGroupName="y1">
+    <div class="y1-axis-container column" *ngIf="widgetConfigAxes.controls.y1" formGroupName="y1" [ngClass]="{'y1-axis-disabled': y1AxisEnabled_label !== 'enabled'}">
         <div class="config-control with-enable-label">
             <span class="mat-label mat-body-strong">Y1 Axis</span>
             <mat-slide-toggle *ngIf="y1AxisEnabledToggleDisplay" formControlName="enabled">
@@ -10,6 +10,9 @@
         <div class="config-control unit-control" >
             <span class="mat-label">Unit</span>
             <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.axes.y1 && widget.settings.axes.y1.unit ? widget.settings.axes.y1.unit : 'auto'" (onUnitChange)="setUnit('y1', $event)"></dropdown-unit-type>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control scale-control">
             <span class="mat-label">Scale</span>
             <mat-form-field appearance="fill">
                 <mat-select formControlName="scale">
@@ -53,13 +56,13 @@
     <div class="y2-axis-container column" *ngIf="widgetConfigAxes.controls.y2" formGroupName="y2" [ngClass]="{'y2-axis-disabled': y2AxisEnabled_label !== 'enabled'}">
         <div class="config-control with-enable-label">
             <span class="mat-label mat-body-strong">Y2 Axis</span>
-            <mat-slide-toggle formControlName="enabled">
-                <span class="mat-caption" [ngClass]="{'is-enabled': y2AxisEnabled_label === 'enabled'}">{{y2AxisEnabled_label}}</span>
-            </mat-slide-toggle>
         </div>
         <div class="config-control unit-control" >
             <span class="mat-label">Unit</span>
             <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.axes.y2 && widget.settings.axes.y2.unit ? widget.settings.axes.y2.unit : 'auto'" (onUnitChange)="setUnit('y2', $event)"></dropdown-unit-type>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control scale-control" >
             <span class="mat-label">Scale</span>
             <mat-form-field appearance="fill">
                 <mat-select formControlName="scale">

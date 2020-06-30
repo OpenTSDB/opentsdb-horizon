@@ -1,10 +1,9 @@
 <!-- LINE CHART COMPONENT -->
 <ng-template [ngIf]="widget.settings.component_type==='LinechartWidgetComponent'">
-    <div class="column stack-order-container">
+    <!-- Hiding for now
+        <div class="stack-order-container">
         <div class="config-control">
-                <span class="mat-label mat-body-strong">Stack Order</span>
-        </div>
-        <div class="config-control">
+            <span class="mat-label mat-body-strong">Stack Order </span>
             <mat-form-field  [floatLabel]="'never'" appearance="fill">
                 <mat-select placeholder="Stack Order" [formControl]="stackOrderControl">
                         <mat-option *ngFor="let option of stackOrderOptions" [value]="option.value">
@@ -13,214 +12,41 @@
                 </mat-select>
             </mat-form-field>
         </div>
-    </div>
-    <div class="column linechart-container" [formGroup]="gForms">
-        <table class="mat-table">
-            <thead>
-                <tr class="mat-header-row">
-                    <th class="mat-header-cell mat-column-index"></th>
-                    <th class="mat-header-cell mat-column-metric">Metric</th>
-                    <th class="mat-header-cell mat-column-mode">Mode</th>
-                    <th class="mat-header-cell mat-column-color-family">Color Family</th>
-                    <th class="mat-header-cell mat-column-line-weight">Line Weight</th>
-                    <th class="mat-header-cell mat-column-line-type">Line Type</th>
-                    <th class="mat-header-cell mat-column-axes">Axes</th>
-                    <th class="mat-header-cell mat-column-collapse"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let query of widget.queries; let gIndex=index">
-                    <!-- <tr class="metric-group-row">
-                        <td class="mat-cell mat-column-folder-icon">
-                            <mat-icon fontSet="denali" fontIcon="d-folder"></mat-icon>
-                        </td>
-                        <td class="mat-cell mat-column-metric">
-                            <span>{{group.title}}</span>
-                        </td>
-                        <td class="mat-cell mat-column-mode"></td>
-                        <td class="mat-cell mat-column-color-family"></td>
-                        <td class="mat-cell mat-column-line-weight"></td>
-                        <td class="mat-cell mat-column-line-type"></td>
-                        <td class="mat-cell mat-column-axes"></td>
-                        <td class="mat-cell mat-column-collapse"></td>
-                    </tr> -->
-                    <tr class="mat-row" *ngFor="let metric of query.metrics; let index = index" [formArrayName]="gIndex">
-                        <td class="mat-cell mat-column-index">
-                            <div *ngIf="index===0">Q{{ gIndex + 1 }} </div>
-                        </td>
-                        <td class="mat-cell mat-column-metric" [formGroupName]="index" >
-                            <mat-form-field appearance="fill">
-                                <input matInput formControlName="label" [placeholder]="metric.name || metric.originalExpression">
-                            </mat-form-field>
-                        </td>
-                        <td class="mat-cell mat-column-mode" > 
-                            <dropdown-visual-type  [value]="metric.settings.visual.type || 'line'" (valueChange)="setVisualType($event, gIndex, index)"></dropdown-visual-type>   
-                        </td>
-                        <td class="mat-cell mat-column-color-family" [formGroupName]="index">
-                            <color-picker (newColor)="selectColor($event, gIndex, index)" [color]="metric.settings.visual.color" [enableAuto]="'true'"></color-picker>
-                        </td>
-                        <td class="mat-cell mat-column-line-weight" [formGroupName]="index">
-                            <div *ngIf="!metric.settings.visual.type || metric.settings.visual.type ==='line'">
-                                <dropdown-line-weight formControlName="lineWeight"></dropdown-line-weight>
-                            </div>
-                        </td>
-                        <td class="mat-cell mat-column-line-type" [formGroupName]="index">
-                            <div *ngIf="!metric.settings.visual.type || metric.settings.visual.type ==='line'">
-                                <dropdown-line-type formControlName="lineType"></dropdown-line-type>
-                            </div>
-                        </td>
-                        <td class="mat-cell mat-column-axes" colspan="2">
-                            <mat-radio-group>
-                                <mat-radio-button (click)="setAxis('y1', gIndex, index)" value="y1" [checked]="!metric.settings.visual.axis || metric.settings.visual.axis === 'y1'">Y1</mat-radio-button>
-                                <mat-radio-button (click)="setAxis('y2', gIndex, index)" value="y2" [checked]="metric.settings.visual.axis === 'y2'">Y2</mat-radio-button>
-                            </mat-radio-group>
-                        </td>
-                    </tr>           
-                </ng-container>
-            </tbody>
-        </table>
-    </div>
+    </div>-->
 </ng-template>
 <!-- BAR CHART COMPONENT -->
 <ng-template [ngIf]="widget.settings.component_type==='BarchartWidgetComponent'">
-    <div class="column display-modifier-container">
+    <div class="bar-chart-visual-container">
+        <div class="mat-label">Direction</div>
         <div class="config-control">
-            <span class="mat-label mat-body-strong">Display</span>
-        </div>
-        <div class="config-control">
-            <mat-button-toggle-group class="display-modifier" vertical="true" [formControl]="displayControl">
-                <mat-button-toggle value="vertical">
+            <mat-radio-group  [formControl]="displayControl">
+                <mat-radio-button value="vertical">
                     <mat-icon fontSet="denali" fontIcon="d-chart-bar-vertical"></mat-icon>
                     <span>Vertical</span>
-                </mat-button-toggle>
-                <mat-button-toggle value="horizontal">
+                </mat-radio-button>
+                <mat-radio-button value="horizontal">
                     <mat-icon fontSet="denali" fontIcon="d-chart-bar-horizontal"></mat-icon>
                     <span>Horizontal</span>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
     </div>
-    <div class="column barchart-container" [formGroup]="gForms">
-
-        <table mat-table *ngFor="let ds of dataSources; let gIndex=index" [dataSource]="ds" [formArrayName]="gIndex">
-            <ng-container matColumnDef="settings.visual.label">
-                <th mat-header-cell *matHeaderCellDef>Metric</th>
-                <td mat-cell *matCellDef="let row;let index = index" [formGroupName]="index">
-                    <mat-form-field appearance="fill">
-                        <input matInput [placeholder]="row.name" formControlName="label">
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container cdkColumnDef="settings.visual.color">
-                <th mat-header-cell *matHeaderCellDef>Color</th>
-                <td mat-cell *matCellDef="let row;let index = index"  [formGroupName]="index">
-                    <color-picker [enableAuto]="'true'" (newColor)="selectColor($event, gIndex, index)" [color]="row.settings.visual.color"></color-picker>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="['settings.visual.label','settings.visual.color']"></tr>
-            <tr mat-row *matRowDef="let row;  columns: ['settings.visual.label','settings.visual.color']"></tr>
-        </table>
-    </div>    
 </ng-template>
 <!-- DONUT CHART COMPONENT -->
 <ng-template [ngIf]="widget.settings.component_type==='DonutWidgetComponent'">
-     <div class="column display-modifier-container">
+    <div class="donut-chart-visual-container">
+        <div class="mat-label">Style</div>
         <div class="config-control">
-            <span class="mat-label mat-body-strong">Display</span>
-        </div>
-        <div class="config-control">
-            <mat-button-toggle-group class="display-modifier" vertical="true" [formControl]="displayControl">
-                <mat-button-toggle value="pie">
+            <mat-radio-group [formControl]="displayControl">
+                <mat-radio-button value="pie">
                     <mat-icon fontSet="denali" fontIcon="d-chart-pie"></mat-icon>
                     <span>Pie Cart</span>
-                </mat-button-toggle>
-                <mat-button-toggle value="doughnut">
+                </mat-radio-button>
+                <mat-radio-button value="doughnut">
                     <mat-icon fontSet="denali" fontIcon="d-chart-donut"></mat-icon>
                     <span>Donut Chart</span>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+                </mat-radio-button>
+            </mat-radio-group>
         </div>
-    </div>
-    <div class="column circlechart-container" [formGroup]="gForms">
-        <table mat-table *ngFor="let ds of dataSources; let gIndex=index" [dataSource]="ds" [formArrayName]="gIndex">
-            <ng-container matColumnDef="settings.visual.label">
-                <th mat-header-cell *matHeaderCellDef>Metric</th>
-                <td mat-cell *matCellDef="let row;let index = index"  [formGroupName]="index">
-                    <mat-form-field appearance="fill">
-                        <input matInput [placeholder]="row.name" formControlName="label">
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="settings.visual.color">
-                <th mat-header-cell *matHeaderCellDef>Color</th>
-                <td mat-cell *matCellDef="let row;let index = index"  [formGroupName]="index">
-                    <color-picker  [enableAuto]="'true'" (newColor)="selectColor($event, gIndex, index)" [color]="row.settings.visual.color"></color-picker>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="['settings.visual.label','settings.visual.color']"></tr>
-            <tr mat-row *matRowDef="let row;  columns: ['settings.visual.label','settings.visual.color']"></tr>
-        </table>
-    </div>    
-</ng-template>
-<ng-template [ngIf]="widget.settings.component_type==='TopnWidgetComponent'">
-        <div class="column topnchart-container" [formGroup]="gForms">
-                <div class="config-control">
-                    <span class="mat-label">Metric</span>
-                </div>
-                <table mat-table *ngFor="let ds of dataSources; let gIndex=index" [dataSource]="ds" [formArrayName]="gIndex">
-                    <ng-container matColumnDef="settings.visual.label">
-                        <td mat-cell *matCellDef="let row;let index = index"  [formGroupName]="index">
-                            <mat-form-field appearance="fill">
-                                <input matInput [placeholder]="row.name" formControlName="label">
-                            </mat-form-field>
-                        </td>
-                    </ng-container>
-                    <tr mat-row *matRowDef="let row;  columns: ['settings.visual.label']"></tr>
-                </table>
-                <div class="config-control unit-control">
-                        <div class="config-control">
-                            <span class="mat-label">Unit</span>
-                        </div>
-                        <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.visual.unit? widget.settings.visual.unit : 'auto'" (onUnitChange)="setUnit($event)"></dropdown-unit-type>
-                    </div>
-        </div> 
-        <div class="column conditional-formatter">
-                <div class="topnchart-bar-config">
-                    <conditional-formatter [conditions]="widget.settings.visual.conditions" (conditionChange)="setVisualConditions($event)"></conditional-formatter>  
-                </div>
-        </div>
-   </ng-template>
-   <ng-template [ngIf]="widget.settings.component_type==='HeatmapWidgetComponent'">
-    <div class="column heatmap-unit-settings">
-            <div class="config-control">
-                <span class="mat-label">Unit</span>
-            </div>
-            <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.visual.unit? widget.settings.visual.unit : 'auto'" (onUnitChange)="setUnit($event)"></dropdown-unit-type>
-    </div>
-    <div class="column heatmap-metric-settings" [formGroup]="gForms">
-        <table class="mat-table">
-            <thead>
-                <tr class="mat-header-row">
-                    <th class="mat-header-cell mat-column-metric">Metric</th>
-                    <th class="mat-header-cell mat-column-color-family">Color</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let query of widget.queries; let gIndex=index">
-                    <tr class="mat-row" *ngFor="let metric of query.metrics; let index = index" [formArrayName]="gIndex">
-                        <td class="mat-cell mat-column-metric" [formGroupName]="index" >
-                            <mat-form-field appearance="fill">
-                                <input matInput formControlName="label" [placeholder]="metric.name || metric.originalExpression">
-                            </mat-form-field>
-                        </td>
-                        <td class="mat-cell mat-column-color-family" [formGroupName]="index">
-                            <color-picker (newColor)="selectColor($event, gIndex, index)" [color]="metric.settings.visual.color" [enableAuto]="'true'"></color-picker>
-                        </td>
-                    </tr>           
-                </ng-container>
-            </tbody>
-        </table>
     </div>
 </ng-template>

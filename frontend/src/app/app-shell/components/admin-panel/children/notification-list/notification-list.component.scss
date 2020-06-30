@@ -1,0 +1,288 @@
+@mixin notification-list-component-base() {
+    .notification-list {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: stretch;
+
+        .top-actions {
+            margin-bottom: 8px;
+
+            .mat-button,
+            .mat-flat-button,
+            .mat-stroked-button {
+                line-height: 24px;
+            }
+        }
+
+        .notification-wrapper {
+
+        }
+
+        .notifications.mat-accordion {
+
+            .mat-expansion-panel {
+                padding-left: 0;
+
+                .mat-expansion-panel-header {
+                    padding-left: 0;
+                }
+
+                .mat-expansion-panel-header-title {
+                    position: relative;
+                    width: 48px;
+                    max-width: 48px;
+                    height: 48px;
+
+                    .type {
+                        width: 48px;
+                        height: 48px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .mat-icon {
+                            margin-top: 10px;
+                        }
+                    }
+
+                    .active,
+                    .disabled {
+                        position: absolute;
+                        top: 0;
+                        width: 100%;
+                        text-align: center;
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        line-height: 12px;
+                    }
+
+                    .active {
+                        font-size: 10px;
+                    }
+
+                    .disabled {
+                        font-size: 9px;
+                    }
+                }
+
+                .mat-expansion-panel-header-description {
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .updated {
+                        font-size: 10px;
+                    }
+                }
+
+                .mat-expansion-panel-body {
+                    padding: 16px 24px;
+                }
+
+                .mat-action-row {
+                    padding: 8px;
+
+                    .mat-button,
+                    .mat-flat-button,
+                    .mat-stroked-button {
+                        line-height: 24px;
+
+                        + .mat-button,
+                        + .mat-flat-button,
+                        + .mat-stroked-button {
+                            margin-left: 8px;
+                        }
+                    }
+                }
+
+                &.mat-expanded {
+                    border-radius-bottom-left: 0;
+                    border-radius-bottom-right: 0;
+                }
+
+                &.waiting-block {
+                    pointer-events: none;
+                    filter: opacity(0.5) grayscale(1) blur(1px);
+                }
+
+                &.delete-confirm {
+                    .mat-expansion-panel-header {
+                        pointer-events: none;
+                    }
+
+                    .mat-expansion-panel-content {
+                        position: relative;
+                    }
+
+                    .delete-confirm-actions {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        right: 0;
+                        background-color: rgba(255, 255, 255, 0.85);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .delete-confirm-actions-wrapper {
+                            display: flex;
+                            flex-direction: column;
+                            padding: 16px;
+                            background-color: white;
+                            box-shadow: 0 0 0 10px rgba(0,0,0,0.15);
+                        }
+
+                        .confirmation-message {
+                            margin-bottom: 12px;
+                        }
+
+                        .confirmation-actions {
+                            display: flex;
+
+                            .mat-flat-button,
+                            .mat-stroked-button {
+                                flex: 1;
+                                margin: 0 4px;
+
+                                &:first-child {
+                                    margin-left: 0;
+                                }
+
+                                &:last-child {
+                                    margin-right: 0;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin notification-list-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+    $status: map-get($theme-config, status);
+
+    /* navbar config */
+    $sn-light: map-get($navbar-config, sn-light);
+    $sn-dark: map-get($navbar-config, sn-dark);
+    $sn-light-text: map-get($navbar-config, sn-light-text);
+    $sn-dark-text: map-get($navbar-config, sn-dark-text);
+    $sn-seperator: map-get($navbar-config, sn-seperator);
+    $sn-active: map-get($navbar-config, sn-active);
+
+    $text-color: map-get($background, navbar);
+    $icon-color: $text-color;
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+    $menu-background: if($is-dark-theme, lighten(map-get($background, card), 10%), map-get($background, card));
+    $menu-background-hover: find-color-invert($menu-background);
+
+    $cdk-menu-bg: map-get($background, menu);
+    $cdk-menu-border: $divider;
+
+    $text: map-get($foreground, text);
+
+    $info: map-get($denali-brand-6, A400);
+    $info-light: map-get($denali-brand-6, 50);
+    $info-text: map-get(map-get($denali-brand-6, contrast), A700);
+
+    $alert: map-get($denali-yellow, A700);
+    $alert-light: map-get($denali-yellow, 50);
+    $alert-text: map-get(map-get($denali-yellow, contrast), A700);
+
+    $active: map-get($denali-lime, A200);
+    $active-text: map-get(map-get($denali-lime, contrast), A200);
+
+    .notification-list {
+        .notifications.mat-accordion {
+
+            .mat-expansion-panel {
+
+                .mat-expansion-panel-header {
+                    background-color: if(
+                        $is-dark-theme,
+                        rgba($white, .25),
+                        rgba($black, .08)
+                    );
+
+                    .disabled {
+                        color: $white;
+                        background-color: $black;
+                    }
+
+                    .active {
+                        color: $active-text;
+                        background-color: $active;
+                    }
+                }
+
+                .mat-expansion-panel-header-title {
+                    .type {
+                        &.info-type {
+                            color: $info-text;
+                            background-color: $info;
+                        }
+                        &.alert-type {
+                            color: $alert-text;
+                            background-color: $alert;
+                        }
+                    }
+                }
+
+                .mat-expansion-panel-body {
+                    background-color: $white;
+
+                    .notification-preview {
+                        .summary-content,
+                        .detail-content {
+                            color: $black;
+                        }
+                    }
+                }
+
+                &.mat-expanded {
+                    .mat-expansion-panel-header {
+                        border-bottom: 1px solid $divider;
+                    }
+                }
+
+                &.active-notification {
+                    .mat-expansion-panel-header {
+                        .mat-expansion-panel-header-description {
+                            color: if($is-dark-theme, $black, $text)
+                        }
+
+                        .mat-expansion-indicator::after {
+                            color: rgba(if($is-dark-theme, $black, $text), .7);
+                        }
+                    }
+
+                    &.info-notification-type {
+                        .mat-expansion-panel-header {
+                            background-color: $info-light;
+                        }
+                    }
+
+                    &.alert-notification-type {
+                        .mat-expansion-panel-header {
+                            background-color: $alert-light;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,8 +1,6 @@
 <form [formGroup]="widgetConfigMultigraph">
     <div class="config-control inline-controls">
-        <label class="fixed-label">
-            <strong>Chart</strong>
-        </label>
+        <label class="fixed-label">Chart</label>
         <div class="form-field-group table-output">
             <!-- TABLE GROUP HERE -->
             <mat-table #chartTable [dataSource]="FC_chart['controls']" class="mat-elevation-z0"
@@ -112,9 +110,7 @@
         </div>
     </div>
     <div class="config-control inline-controls" [ngStyle]="{ 'pointer-events': isDataLoaded ? 'initial' : 'none', 'opacity': isDataLoaded ? 1 : .5}">
-        <label class="fixed-label">
-            <strong>Display</strong>
-        </label>
+        <label class="fixed-label">Display</label>
         <div class="form-field-group">
             <!-- DISPLAY OPTIONS HERE -->
             <!--<div class="display-as-type">

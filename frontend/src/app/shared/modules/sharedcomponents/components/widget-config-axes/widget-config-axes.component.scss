@@ -29,7 +29,7 @@
                 align-items: center;
 
                 > .mat-label {
-                    width: 70px;
+                    width: 150px;
                     display: inline-flex;
                     line-height: 24px;
 
@@ -127,6 +127,13 @@
                         border-bottom-left-radius: 0;
                     }
                 }
+            }
+        }
+
+        .y1-axis-container.y1-axis-disabled {
+            .config-control:not(.with-enable-label) {
+                opacity: .3;
+                pointer-events: none;
             }
         }
 

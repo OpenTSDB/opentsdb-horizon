@@ -68,6 +68,7 @@
         }
 
         #container {
+            margin: 20px 0px 0px 0px;
             display:flex;
             justify-content: center;
             &.display-legend-right {
@@ -125,6 +126,7 @@
 
             .legend text {
                 cursor: pointer;
+                fill: slategray;
             }
 
         }

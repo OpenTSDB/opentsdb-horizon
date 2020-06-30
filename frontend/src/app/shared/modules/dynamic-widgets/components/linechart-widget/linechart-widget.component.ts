@@ -22,6 +22,7 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -82,14 +83,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         stackedGraphNaNFill: 'none', // default to all will reserve gap
         strokeWidth: 1,
         strokeBorderWidth: this.isStackedGraph ? 0 : 0,
-        highlightSeriesBackgroundAlpha: 0.5,
+        highlightSeriesBackgroundAlpha: 1,
         highlightSeriesBackgroundColor: 'rgb(255, 255, 255)',
         isZoomedIgnoreProgrammaticZoom: true,
         hideOverlayOnMouseOut: true,
         isCustomZoomed: false,
         highlightSeriesOpts: {
             strokeWidth: 2,
-            highlightCircleSize: 3
+            highlightCircleSize: 5
         },
         xlabel: '',
         ylabel: '',
@@ -167,7 +168,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsCount = 10000;
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
-    eventsError: string = '';
+    // tslint:disable-next-line: max-line-length
+    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
+    eventsError = '';
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -483,6 +486,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         });
     }
 
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
+    }
+
     refreshLegendSource() {
         this.legendDataSource = new MatTableDataSource(this.buildLegendData());
     }
@@ -529,6 +538,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     updateConfig(message) {
+        let qindex = -1;
+        let mindex = -1;
         switch ( message.action ) {
             case 'SetMetaData':
                 this.utilService.setWidgetMetaData(this.widget, message.payload.data);
@@ -537,13 +548,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.utilService.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true; // set flag to requery if apply to dashboard
-                break;
-            case 'SetVisualization':
-                this.setVisualization( message.payload.gIndex, message.payload.data );
-                this.options = { ...this.options };
-                this.widget = { ...this.widget };
-                this.refreshData(false);
-                this.cdRef.detectChanges();
                 break;
             case 'SetStackOrder':
                 this.widget.settings.visual.stackOrder = message.payload.orderBy;
@@ -576,6 +580,34 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
                 break;
+            case 'UpdateQueryVisual':
+                qindex = this.widget.queries.findIndex(d => d.id === message.id);
+                mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
+                const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
+                let mids = [];
+                if ( message.payload.visual.axis && (curtype === 'line') ) {
+                    // tslint:disable-next-line: max-line-length
+                    mids = this.widget.queries[qindex].metrics.filter(d => ['area', 'bar'].includes(d.settings.visual.type)).map(d => d.id);
+                }
+                this.utilService.updateQueryVisual(this.widget, message.id, message.payload.mid, message.payload.visual, mids);
+                if ( message.payload.visual.axis ) {
+                    this.setAxesOption();
+                }
+                this.options = { ...this.options };
+                this.utilService.createNewReference(this.widget.queries, [qindex]);
+                this.widget = { ...this.widget };
+                this.refreshData(false);
+                this.cdRef.detectChanges();
+                break;
+            case 'UpdateQueryMetricVisual':
+                qindex = this.widget.queries.findIndex(d => d.id === message.id);
+                this.setVisualization(message.id, message.payload.mid, message.payload.visual);
+                this.options = { ...this.options };
+                this.utilService.createNewReference(this.widget.queries, [qindex]);
+                this.widget = { ...this.widget };
+                this.refreshData(false);
+                this.cdRef.detectChanges();
+                break;
             case 'SetShowEvents':
                 this.setShowEvents(message.payload.showEvents);
                 break;
@@ -604,12 +636,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 break;
             case 'DeleteQuery':
                 this.utilService.deleteQuery(this.widget, message.id);
+                this.setAxesOption();
                 this.widget = this.utilService.deepClone(this.widget);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQueryMetric':
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
+                this.setAxesOption();
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
@@ -887,6 +921,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.options.ylabel = y1Enabled ? this.options.ylabel : '';
         this.options.y2label = y2Enabled ? this.options.y2label : '';
         this.options.axes.y2.axisLabelWidth = y2Enabled ? 50 : 0;
+        this.widget.settings.axes.y2.enabled = y2Enabled ? true : false;
+        this.widget.settings.axes.y1.enabled = y1Enabled ? true : false;
     }
 
     updateAlertValue(nConfig) {
@@ -942,31 +978,44 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         });
     }
 
-    setVisualization( qIndex, configs ) {
-
-        configs.forEach( (config, i) => {
-            // tslint:disable-next-line:max-line-length
-            this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
-        });
-
-        const mConfigs = this.widget.queries[qIndex].metrics;
-        for ( let i = 0; i < mConfigs.length; i++ ) {
-            const vConfig = mConfigs[i].settings.visual;
-            /*
-            const label =  mConfigs[i].metric;
-            this.options.series[label] = {
-                strokeWidth: parseFloat(vConfig.lineWeight),
-                strokePattern: this.getStrokePattern(vConfig.lineType),
-                color: vConfig.color || '#000000',
-                axis: !vConfig.axis || vConfig.axis === 'y' ? 'y' : 'y2'
-            };
-            */
-            if ( vConfig.axis === 'y2' ) {
-                this.widget.settings.axes.y2.enabled = true;
+    setVisualization( qid, mid, visual ) {
+        const qindex =  this.widget.queries.findIndex(d => d.id === qid);
+        const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === mid);
+        const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
+        if ( curtype === 'line' && visual.type && ['area', 'bar'].includes(visual.type) ) {
+            visual.axis = this.widget.queries[qindex].metrics[mindex].settings.visual.axis || 'y1';
+            visual.stacked = 'true';
+            for ( let i = 0; i < this.widget.queries.length; i++ ) {
+                for ( let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
+                    if ( ['area', 'bar'].includes(this.widget.queries[i].metrics[j].settings.visual.type) ) {
+                        visual.axis = this.widget.queries[i].metrics[j].settings.visual.axis;
+                        visual.stacked = this.widget.queries[i].metrics[j].settings.visual.stacked;
+                        break;
+                    }
+                }
             }
         }
-        // call only axis changes
-        this.setAxesOption();
+        if ( ( visual.type && ['bar', 'area'].includes(visual.type)) || visual.stacked || (curtype !== 'line' && visual.axis ) ) {
+            if ( visual.type === 'bar') {
+                visual.stacked = 'true';
+            }
+            for ( let i = 0; i < this.widget.queries.length; i++ ) {
+                for ( let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
+                    if ( ['area', 'bar'].includes(this.widget.queries[i].metrics[j].settings.visual.type) ) {
+                        // tslint:disable-next-line:max-line-length
+                        this.widget.queries[i].metrics[j].settings.visual = {...this.widget.queries[i].metrics[j].settings.visual, ...visual};
+                    }
+                }
+            }
+        }
+        this.utilService.updateQueryMetricVisual(this.widget, qid, mid, visual);
+
+        if ( visual.axis || visual.stacked ) {
+            this.setAxesOption();
+        }
+        if ( visual.axis === 'y2' ) {
+            this.widget.settings.axes.y2.enabled = true;
+        }
     }
 
     setLegend(config) {
@@ -1254,6 +1303,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    toggleConfigSection(section, e) {
+        this.visibleSections[section] = !this.visibleSections[section];
+        e.stopPropagation();
+    }
+
     changeWidgetType(type) {
        const wConfig = this.utilService.deepClone(this.widget);
        wConfig.id = wConfig.id.replace('__EDIT__', '');
@@ -1303,6 +1357,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // request send to update state to close edit mode
     closeViewEditMode() {
+        this.iiService.closeIsland();
         this.interCom.requestSend({
             action: 'closeViewEditMode',
             id: this.widget.id,
@@ -1364,11 +1419,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
         // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
-
-        if (this.editMode === true) {
-            return;
-        }
-
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
@@ -1403,14 +1453,27 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             };
             if (multigraph) {
+                // tslint:disable-next-line: max-line-length
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
-            this.interCom.requestSend({
-                id: this.widget.id,
-                action: 'InfoIslandOpen',
-                payload: payload
-            });
+            if ( !this.editMode ) {
+                this.interCom.requestSend({
+                    id: this.widget.id,
+                    action: 'InfoIslandOpen',
+                    payload: payload
+                });
+            } else {
+                const dataToInject = {
+                    widget: this.widget,
+                    originId: this.widget.id,
+                    data: payload.data
+                };
+                // tslint:disable-next-line: max-line-length
+                const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
+                const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+                this.iiService.openIsland(this.widgetOutputElement.nativeElement, componentOrTemplateRef, widgetOptions);
+            }
         }
 
         if (event.action === 'tickDataChange') {

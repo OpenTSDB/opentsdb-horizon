@@ -21,7 +21,7 @@
     [matTooltip]="tooltipText"
     matTooltipClass="dtp-tooltip-text"
     #timerangePickerMenuTrigger>
-    <span> {{startTime}} to {{endTime}}</span>
+    <span> {{startTime}} to {{endTime}}{{downsampleDisplay}}</span>
     <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
 </button>
 
@@ -30,10 +30,12 @@
         <time-range-picker
             (timeSelected)="timeReceived($event)"
             (cancelSelected)="triggerAndCloseTimeRangePicker()"
+            (dbdownsampleChange)="downsampleChange($event)"
             [startTime]="startTime"
             [endTime]="endTime"
             [options]="options"
             [timezone]="timezone"
+            [downsample]="downsample"
             (keydown.tab)="$event.stopPropagation()">
         </time-range-picker>
     </div>

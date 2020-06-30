@@ -1,0 +1,15 @@
+<div *ngIf="!panelReady; else panelApplication">
+    <strong>Loading panel data...</strong>
+</div>
+
+<ng-template #panelApplication>
+<app-notification-editor *ngIf="viewMode === 'edit' || viewMode === 'create'"
+    [mode]="viewMode"
+    [notificationData]="editorData"
+    (editorActionOutput)="editorAction($event)"></app-notification-editor>
+<app-notification-list *ngIf="viewMode === 'list'"
+    [active]="activeNotification"
+    [notifications]="notificationWidgets"
+    (listActionOutput)="listAction($event)"></app-notification-list>
+</ng-template>
+

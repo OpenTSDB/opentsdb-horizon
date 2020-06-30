@@ -43,14 +43,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     categoryAxis: any = {
         type: 'category',
         ticks: {
-            autoSkip: true
+            autoSkip: true,
+            fontColor: 'slategrey'
         }
     };
 
     valueAxis: any = {
         ticks: {
             beginAtZero: true,
-            precision: 0
+            precision: 0,
+            fontColor: 'slategrey'
         },
         type: 'linear'
     };
@@ -82,6 +84,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     storeQuery: any;
     needRequery = false;
     isDestroying = false;
+    visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
 
     constructor(
         private interCom: IntercomService,
@@ -93,6 +96,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     ) { }
 
     ngOnInit() {
+
         this.doRefreshData$ = new BehaviorSubject(false);
 
         this.doRefreshDataSub = this.doRefreshData$
@@ -118,6 +122,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.options.scales.xAxes[0].gridLines = { color: '#eeeeee' };
             this.options.scales.yAxes[0].gridLines = { color: '#eeeeee' };
         });
+
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
             switch( message.action ) {
@@ -167,6 +172,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 }
             }
         });
+
+
 
         // first time when displaying chart
         if (!this.widget.settings.sorting) {
@@ -271,6 +278,10 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryMetricVisual':
+                this.util.updateQueryMetricVisual(this.widget, message.id, message.payload.mid, message.payload.visual);
+                this.refreshData(false);
+                break;
             case 'ToggleQueryMetricVisibility':
                 this.util.toggleQueryMetricVisibility(this.widget, message.id, message.payload.mid);
                 this.doRefreshData$.next(true);
@@ -328,7 +339,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.height = '100%';
         } else {
             this.width = (outputSize.width - 30) + 'px';
-            this.height = (outputSize.height - 20) + 'px';
+            this.height = (outputSize.height - 3) + 'px';
         }
         this.detectChanges();
     }
@@ -349,11 +360,13 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     }
 
     setAxisOption() {
-        const axis = this.valueAxis;
+        const axis = {...this.valueAxis};
         const config = this.widget.settings.axes && this.widget.settings.axes.y1 ?
                             this.widget.settings.axes.y1 : <Axis>{};
         axis.type = !config.scale || config.scale === 'linear' ? 'linear' : 'logarithmic';
-        axis.ticks = { beginAtZero: true };
+        /* this already is set in valueAxis... overriding here will kill the label color
+            axis.ticks = { beginAtZero: true, };
+        */
         if ( !isNaN( config.min ) && config.min ) {
             axis.ticks.min =  config.min;
         }
@@ -381,6 +394,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
     setSorting(sConfig) {
         this.widget.settings.sorting = { order: sConfig.order, limit: sConfig.limit };
+    }
+
+    toggleConfigSection(section) {
+        this.visibleSections[section] = !this.visibleSections[section];
+    }
+
+    scrollToElement($element): void {
+        setTimeout(() => {
+            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+        });
     }
 
     changeWidgetType(type) {
@@ -419,9 +442,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

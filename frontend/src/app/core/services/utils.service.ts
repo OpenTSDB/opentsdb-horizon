@@ -157,6 +157,23 @@ export class UtilsService {
         widget.queries.splice(qindex, 1);
     }
 
+    updateQueryVisual(widget, qid, mid, visual, ex= []) {
+        const qindex = widget.queries.findIndex(d => d.id === qid);
+        for ( let i = 0; i < widget.queries[qindex].metrics.length; i++ ) {
+            const id = widget.queries[qindex].metrics[i].id;
+            if ( !ex.length || !ex.includes(id)) {
+                widget.queries[qindex].metrics[i].settings.visual = { ...widget.queries[qindex].metrics[i].settings.visual, ...visual };
+            }
+        }
+    }
+
+    updateQueryMetricVisual(widget, qid, mid, visual) {
+        // toggle the individual query metric
+        const qindex = widget.queries.findIndex(d => d.id === qid);
+        const mindex = widget.queries[qindex].metrics.findIndex(d => d.id === mid);
+        widget.queries[qindex].metrics[mindex].settings.visual = { ...widget.queries[qindex].metrics[mindex].settings.visual, ...visual };
+    }
+
     toggleQueryMetricVisibility(widget, qid, mid) {
         // toggle the individual query metric
         const qindex = widget.queries.findIndex(d => d.id === qid);
@@ -905,6 +922,14 @@ export class UtilsService {
             }
         }
         return '';
+    }
+
+    createNewReference(items, exclude = []) {
+        for ( let i = 0; i < items.length; i++ ) {
+            if ( !exclude.includes(i)) {
+                items[i] = {...items[i]};
+            }
+        }
     }
 
 }

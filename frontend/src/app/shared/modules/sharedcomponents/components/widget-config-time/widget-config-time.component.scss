@@ -5,25 +5,52 @@
     .widget-config-tab.time-configuration {
 
         .form-field-group {
+            display: inline-block;
+
             .mat-form-field:not(:last-child) {
                 margin-right: 8px;
             }
         }
 
-        .form-field-group .mat-select {
-            padding: 6px;
-            border-radius: 4px;
-            width: 200px;
-            background-color: rgba(34, 122, 236, 0.08);
+        .form-field-group {
+            &.mat-select {
+                width: 200px;
+            }
+
+            .mat-select {
+                padding: 6px;
+                border-radius: 4px;
+                width: 180px;
+                //background-color: rgba(34, 122, 236, 0.08);
+            }
+        }
+
+        .columned-controls {
+            display: flex;
+            margin-bottom: 16px;
+
+            .config-control:not(:first-child) {
+                .label {
+                    width: auto;
+                    margin-right: 16px;
+                }
+            }
+
+            .config-control:not(:last-child) {
+                margin-right: 30px;
+                margin-bottom: initial;
+            }
         }
 
         .config-control > .label {
-            display: block;
-            margin-bottom: 10px;
+            display: inline-block;
+            width: 150px;
+            vertical-align: top;
+            // margin-bottom: 10px;
         }
 
         // .time-preset-options {}
-        
+
         .time-over-time-controls {
             .mat-form-field:not(:last-child) {
                 margin-right: 8px;
@@ -48,8 +75,17 @@
             }
         }
 
-        .downsample-controls .custom-downsample {
-            margin-top: 10px;
+        .downsample-controls,
+        .aggregator-controls,
+        .min-interval-controls,
+        .reporting-interval-controls {
+            display: flex;
+
+            .label {
+                display: inline-flex;
+                align-items: center;
+                vertical-align: initial;
+            }
         }
 
         .override-relative-time-controls,
@@ -61,12 +97,56 @@
                 border-top: 0;
             }
         }
+
+        .downsample-controls {
+
+            .form-field-group {
+                display: flex;
+
+                .mat-form-field {
+                    width: 108px;
+                }
+
+                .mat-select {
+                    width: 100px;
+                }
+            }
+
+            .custom-downsample {
+                margin-top: 10px;
+
+                .mat-form-field {
+                    width: 60px;
+                }
+            }
+        }
+
+        .aggregator-controls {
+            .form-field-group {
+                .mat-form-field {
+                    width: 68px;
+                }
+
+                .mat-select {
+                    width: 60px;
+                }
+            }
+        }
+
+        .min-interval-controls,
+        .reporting-interval-controls {
+            .form-field-group {
+                .mat-form-field {
+                    width: 60px;
+                }
+            }
+        }
     }
 }
 
 @mixin widget-config-time-component-theme($theme-config) {
 
-    /* Theme config parts */    
+    /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);

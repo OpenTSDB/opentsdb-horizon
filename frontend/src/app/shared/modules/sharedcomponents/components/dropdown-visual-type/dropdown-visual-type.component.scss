@@ -2,6 +2,19 @@
     .dropdown-visual-type {
         display: inline-block;
 
+        .mat-button-toggle-group.mat-button-toggle-group-horizontal.mat-button-toggle-group-appearance-standard {
+            line-height: 16px;
+
+            .mat-button-toggle-label-content {
+                line-height: 24px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(16px);
+                    margin-right: 4px;
+                }
+            }
+        }
+
         .mat-form-field {
             .mat-form-field-infix {
                 width: initial;
@@ -26,7 +39,7 @@
                         height: 14px;
                         font-size: 14px;
                         margin-right: 8px;
-                    } 
+                    }
                 }
 
                 .mat-select-arrow-wrapper {

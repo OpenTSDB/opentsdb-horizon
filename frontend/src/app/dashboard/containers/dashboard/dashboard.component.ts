@@ -36,7 +36,8 @@ import {
     UpdateDashboardTimeZone,
     UpdateDashboardTitle,
     UpdateVariables,
-    UpdateMeta
+    UpdateMeta,
+    UpdateDownsample
 } from '../../state/settings.state';
 import {
     AppShellState,
@@ -74,9 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @Select(AuthState.getAuth) auth$: Observable<string>;
     @Select(DBSettingsState.getDashboardSettings) dbSettings$: Observable<any>;
-
     @Select(DbfsState.getUserFolderData()) userFolderData$: Observable<any>;
-
     @Select(DBState.getDashboardFriendlyPath) dbPath$: Observable<string>;
     @Select(DBState.getLoadedDB) loadedRawDB$: Observable<any>;
     @Select(DBState.getDashboardStatus) dbStatus$: Observable<string>;
@@ -85,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBSettingsState.getDashboardAutoRefresh) refresh$: Observable<any>;
     @Select(DBSettingsState.getMeta) meta$: Observable<any>;
     @Select(DBSettingsState.getTplVariables) tplVariables$: Observable<any>;
+    @Select(DBSettingsState.getDownSample) downSample$: Observable<any>;
     @Select(WidgetsState.getWigets) widgets$: Observable<WidgetModel[]>;
     @Select(WidgetsState.lastUpdated) lastUpdated$: Observable<any>;
     @Select(WidgetsRawdataState.getLastModifiedWidgetRawdataByGroup) widgetGroupRawData$: Observable<any>;
@@ -175,6 +175,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     dbTime: any = {};
     isDBZoomed = false;
     meta: any = {};
+    dbDownsample: any = {};
     // variables: any;
     dbTags: any;
     dbid: string; // passing dashboard id
@@ -252,6 +253,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.meta = {};
             this.isDbTagsLoaded = false;
             this.variablePanelMode = { view: true };
+            this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
             this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
@@ -698,6 +700,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.utilService.setTabTitle(this.meta.title);
             }
         }));
+        this.subscription.add(this.downSample$.subscribe(downsample => {
+            this.dbDownsample = {...this.utilService.deepClone(downsample)};
+        }));
         this.subscription.add(this.tplVariables$.subscribe(tpl => {
             // whenever tplVariables$ trigger, we save to view too.
             if (tpl) {
@@ -787,6 +792,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     updateURLParams(p) {
         this.urlOverrideService.applyParamstoURL(p);
+    }
+    // applyCustomDownsample to widgets when user change
+    applyDBDownsample(dsample: any) {
+        // deal with copy of widget since we dont want to write to wiget config
+        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        // find all widget that using downsample as auto
+        for (let i = 0; i < cloneWidgets.length; i++) {
+            const cWidget = cloneWidgets[i];
+            const wDownsample = cWidget.settings.time.downsample;
+            // only apply to widget which is using auto downsample to override
+            if (wDownsample.value === 'auto') {
+                this.handleQueryPayload({
+                    id: cWidget.id,
+                    payload: cWidget
+                });
+            }
+        }
+    }
+    // call this in query handle to see if we need to override this
+    // wDownsample is widget downsample
+    applyDBDownsampleToWidget(wDownsample: any) {
+        if (wDownsample.value === 'auto') {
+            if (this.dbDownsample.aggregators[0] !== '') {
+                wDownsample.aggregators = this.dbDownsample.aggregators;
+            }
+            if (this.dbDownsample.downsample !== 'auto') {
+                wDownsample.value = this.dbDownsample.value;
+                wDownsample.customUnit = this.dbDownsample.customUnit;
+                wDownsample.customValue = this.dbDownsample.customValue;
+            } 
+        }
     }
     // apply when custom tag value is changed
     // should only trigger widgets that are affected by this change.
@@ -1069,6 +1105,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.isDBZoomed && message.id.indexOf('__EDIT__') === -1 && (wType === 'HeatmapWidgetComponent' || wType === 'LinechartWidgetComponent')) {
                 payload.settings.time.downsample.value = 'auto';
             }
+            // modify to apply dashboard downsample
+            this.applyDBDownsampleToWidget(payload.settings.time.downsample);
             // should we modify the widget if using dashboard tag filter
             const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
             // sending each group to get data.
@@ -1196,6 +1234,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.refresh();
                 }
                 break;
+            case 'SetDBDownsample': {
+                this.store.dispatch(new UpdateDownsample(message.payload));
+                this.applyDBDownsample(message.payload);
+            }
         }
     }
 

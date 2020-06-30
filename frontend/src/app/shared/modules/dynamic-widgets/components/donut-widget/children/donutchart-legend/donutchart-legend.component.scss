@@ -13,6 +13,7 @@
         
         > form {
             flex-direction: column;
+            margin-left: 5px;
         }
 
         .column:nth-child(n+2):nth-last-child(n+2) {
@@ -36,7 +37,7 @@
 
         .fixed-label {
             display: inline-block;
-            width: 75px;        
+            width: 150px;        
         }
 
         .config-control:not(.with-enable-label):not(.inline-controls) > .label {

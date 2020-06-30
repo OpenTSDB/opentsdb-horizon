@@ -10,11 +10,11 @@
 
 $widgets-common-config: (
     default-padding: 14px,
-    edit-padding: 20px,
+    edit-padding: 10px,
     tab-width: initial,
     action-bar-height: 30px,
     output-radius: 4px,
-    widget-output-height: 270px,
+    widget-output-height: 318px,
     edit-toolbar-height: 50px,
     edit-toolbar-border-width: 2px
 );
@@ -30,7 +30,7 @@ $widgets-common-config: (
 
     .widget-panel-content {
         @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
-        padding-top: 21px;
+        // padding-top: 21px;
 
         .widget-config {
             padding: 0 $default-padding;
@@ -45,25 +45,57 @@ $widgets-common-config: (
             padding: $default-padding $edit-view-padding;
         }
 
-        .widget-panel-content,
+        .widget-panel-content {
+            flex: 1 1 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            // background: #fff;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            padding: 10px 0px;
+            .widget-title {
+                border-bottom: 1px solid #ccc;
+            }
+        }
+
         .widget-controls-container {
             flex: 1 1 100%;
             display: flex;
             flex-direction: column;
             align-items: stretch;
             justify-content: flex-start;
+            padding: 0 0 10px 0px;
         }
 
         .widget-output-container {
             flex: 1 1 100%;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            // height: 100%;
             // overflow: hidden; hiding the chart tooltip
 
             .widget-title {
                 @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
                 flex: 1 1 $action-bar-height;
+
+                .title-label {
+                    margin-right: 8px;
+                    white-space: nowrap;
+                }
+
+                .title-content {
+                    .mat-icon-button {
+                        width: 24px;
+                        height: 24px;
+                        line-height: 24px;
+                    }
+
+                    .mat-icon-button .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                    }
+                }
 
                 .close-edit-view-btn {
                     min-width: auto;
@@ -75,16 +107,79 @@ $widgets-common-config: (
 
             .widget-output {
                 flex: 1 1 100%;
+                .no-data {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+    
+                    span {
+                        font-family: mat-font-family(map-get($app-fontface-config, mono));
+                        font-size: 10px;
+                        padding: 0 6px;
+                        line-height: 12px;
+                        border-radius: 3px;
+                    }
+                }
             }
         }
 
-        .widget-controls-container {
-            // padding-top: $edit-view-padding;
+        .widget-control-steps {
+            padding: 8px 0 0;
+            flex: 1;
+            overflow: auto;
+            max-height: 100%;
+            max-width: 100%;
+        }
 
-            .widget-actions {
-                flex: 1 1 $action-bar-height;
+        .step-section {
+            margin-bottom: 8px;
+            display: none;
+
+            .step-section-label {
+                border-top: 1px solid #e6eded; // why is color here??
+                display: inline-block;
+                padding: 2px 8px 2px 8px;
+                border-bottom-right-radius: 4px;
+                background-color: #e6eded; // why is color here???
+                width: 200px;
+
+                .step-section-label-text {
+                    flex: 1;
+                    display: flex;
+                    padding: 0 6px;
+                    cursor: pointer;
+
+                    span {
+                        flex: 1;
+                        font-size: 14px;
+                        font-weight: 500;
+                        padding: 2px 0;
+                        // color: #084b4e;
+                    }
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 16px;
+                        margin-left: 6px;
+                        margin-top: 4px;
+                        //color: #303030;
+                    }
+                }
+            }
+
+            .step-section-content {
+                padding: 8px;
+                max-width: 100vw;
+            }
+
+            &.is-visible {
+                display: block;
             }
         }
+
 
         // mat-tab-group
         .widget-configs {
@@ -358,17 +453,24 @@ $widgets-common-config: (
         }
 
         .widget-output-container {
-            padding: 15px $edit-view-padding;
-            max-height: $widget-output-height;
+            padding: 10px $edit-view-padding;
+            max-height: $widget-output-height ;
+            // background: #f2f4f5;
 
             .widget-title {
-                margin-top: $default-padding / 2;
-                margin-bottom: $default-padding / 2;
+                //margin-top: $default-padding / 2;
+                //margin-bottom: $default-padding / 2;
+                margin-top: -10px;
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: 10px;
+                padding: 7px 14px;
             }
 
             .widget-output {
                 height: 250px;
                 max-height: 250px;
+                min-height: 250px;
                 //padding: $default-padding 0;
                 border-radius: $output-radius;
                 display: flex;
@@ -395,17 +497,36 @@ $widgets-common-config: (
     $mg-background: #E6EDED;
     $mg-text: #606060;
 
+    // section markers
+    //
+    $section-tab-markers: if($is-dark-theme, rgba(map-get($foreground, link), .45), rgba(map-get($background, navbar), .45));
+    $section-tab-color: #ffffff; // most of the time, white will do. need to test
+
+    $new-bg: if($is-dark-theme, rgba(255,255,255, 0.25), #edeff4);
+
     .edit-view-container.is-active {
         .widget-output-container {
 
             .widget-output {
                 background-color: map-get($background, card);
             }
+
+            .widget-title {
+                background-color: map-get($background, card);
+
+                .title-label {
+                    color: map-get($foreground, secondary-text);
+                }
+            }
         }
     }
 
     .widget-panel-content {
 
+        .widget-controls-container {
+            background-color: map-get($background, card);
+            border-top: 1px solid rgba($divider,.15);
+        }
         .widget-configs {
 
             .mat-tab-label:not(.mat-tab-disabled):not(.mat-tab-label-active):focus {
@@ -446,6 +567,27 @@ $widgets-common-config: (
 
         .widget-actions {
             border-top: 1px solid map-get($foreground, dividers);
+        }
+
+        .step-section {
+            &:not(:first-of-type) {
+                border-top: 1px solid $new-bg;
+            }
+
+            .step-section-label {
+                background-color: $section-tab-markers;
+
+            }
+
+            .step-section-label-text {
+                span {
+                    color: $section-tab-color;
+                }
+
+                .mat-icon {
+                    color: rgba($section-tab-color, .8);
+                }
+            }
         }
     }
 

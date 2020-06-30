@@ -38,6 +38,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     private _endTime: string;
     private _timezone: string;
     private _refresh: any;
+    private _downsample: any;
 
     @Input() xPosition: MenuPositionX = 'before';
     @Input() isEditMode = false;
@@ -79,6 +80,25 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
     @Input() config: any = {'enableSync': true, 'enableRefresh': true};
 
+    @Input()
+    set downsample(ds: any) {
+        this._downsample = ds;   
+        this.downsampleDisplay = '';
+        const value = (ds.value === 'custom' ? ds.customValue + ds.customUnit : ds.value);
+        const agg = ds.aggregators[0];
+        if (agg !== '') {
+            this.downsampleDisplay = ' | ' + value + '-' + agg;
+        } else {
+            if (value !== 'auto') {
+                this.downsampleDisplay = ' | ' + value
+            }
+        }     
+    }
+    get downsample(): any {
+        return this._downsample;
+    }
+
+
     /** Outputs */
     @Output() newChange = new EventEmitter();
     @Output() autoRefreshFlagChanged = new EventEmitter();
@@ -103,6 +123,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     refreshSubcription: Subscription;
     paused$ = new BehaviorSubject<boolean>(false);
     secondsRemaining: number;
+    downsampleDisplay = '';
 
     constructor(private cdRef: ChangeDetectorRef, private utilsService: DateUtilsService) { }
 
@@ -208,6 +229,10 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
         // close mat-menu
         this.trigger.closeMenu();
+    }
+
+    downsampleChange(payload: any) {
+        this.newChange.emit({ action: 'SetDBDownsample', payload: payload.data });
     }
 
     closeTimeRangePicker() {

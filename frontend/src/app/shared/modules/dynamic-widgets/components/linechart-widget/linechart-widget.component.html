@@ -1,4 +1,19 @@
 <div class="widget-output-container" #widgetOutputContainer fxLayout="column">
+    <div class="widget-title" #widgetTitle *ngIf="editMode">
+        <div class="title-label">
+            <span class="navbar-item">Widget name:</span>
+        </div>
+        <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
+            <inline-editable class="navbar-item"
+            showEditIcon="true"
+            [fieldValue]="widget.settings.title"
+            [minLength]="3"
+            [maxLength]="100"
+            (updatedValue)="setTitle($event)">
+            </inline-editable>
+        </span>
+        <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
+    </div>
     <div class="widget-output" #widgetoutput
         [ngClass]="{
             'multigraph-enabled': multigraphEnabled,
@@ -129,9 +144,10 @@
 
 <!-- NOTE: This needs to move to other component -->
 <div class="widget-controls-container" *ngIf="editMode">
-    <div class="widget-title">
+    <!-- This got moved up top
+        <div class="widget-title">
         <span fxFlex="1 1 100%">
-            <inline-editable class="navbar-item" 
+            <inline-editable class="navbar-item"
             [fieldValue]="widget.settings.title"
             [minLength]="3"
             [maxLength]="100"
@@ -139,73 +155,95 @@
         </inline-editable>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
-    </div>
-    <!-- tabs with config content -->
-    <mat-tab-group class="widget-configs" color="primary" [@.disabled]="'true'">
-        <mat-tab label="Queries" class="test">
-            <!-- ng-template is to lazy-load tab content (see: https://material.angular.io/components/tabs/overview#lazy-loading ) -->
-            <ng-template matTabContent>
-                <widget-config-metric-queries [options]="{enableMultipleQueries: true}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Time Configuration" [disabled]="editQueryId">
-            <ng-template matTabContent>
-                <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Axes" [disabled]="editQueryId">
-            <ng-template matTabContent>
-                <widget-config-axes [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-axes>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Visual Appearance" [disabled]="editQueryId">
-            <ng-template matTabContent>
-                <widget-config-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-visual-appearance>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Legend" [disabled]="editQueryId">
-                <ng-template matTabContent>
-                    <widget-config-legend *ngIf="!multigraphEnabled" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-legend>
+    </div>-->
+    <div class="widget-control-steps has-scroller">
+        <div class="is-scroller">
+            <div class="step-section query-section is-visible" #stepqueries>
+                <div class="step-section-label">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
+                        <span> 1. Queries </span>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.queries">
+                    <widget-config-metric-queries [options]="{enableMultipleQueries: true}" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+                    <widget-config-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-visual-appearance>
+                </div>
+            </div>
+            <div class="step-section notification-section is-visible" #steptime>
+                <div class="step-section-label">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
+                        <span>2. Time Configuration</span>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.time">
+                    <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-time>
+                </div>
+            </div>
+            <div class="step-section notification-section is-visible" #stepaxes>
+                <div class="step-section-label">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('axes', $event);scrollToElement(stepaxes);">
+                        <span>3. Axes</span>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.axes ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.axes">
+                    <widget-config-axes [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-axes>
+                </div>
+            </div>
+
+            <div class="step-section notification-section is-visible" #steplegend>
+                <div class="step-section-label">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('legend', $event);scrollToElement(steplegend);">
+                        <span>4. Legend</span>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.legend ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                    </span>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.legend">
+                    <widget-config-legend *ngIf="!multigraphEnabled" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-legend>
                     <div *ngIf="multigraphEnabled" class="disabled-message">
                         Legend <b>disabled</b> with multiple graphs.
                     </div>
-                </ng-template>
-        </mat-tab>
-        <mat-tab label="Multigraph [Beta]" [disabled]="editQueryId">
-                <ng-template matTabContent>
-                    <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-multigraph>
-                </ng-template>
-        </mat-tab>
-        <mat-tab label="Meta Data" [disabled]="editQueryId">
-                <ng-template matTabContent>
-                    <widget-config-general [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-general>
-                </ng-template>
-        </mat-tab>
-        <mat-tab label="Events" class="events" [disabled]="editQueryId">
-                <ng-template matTabContent>
-                    <div class="events-config" *ngIf="!multigraphEnabled">
-                        <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-events>
-                        <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
-                        <event-list *ngIf="widget.settings.visual.showEvents" class="events-list" [events]="events" [timezone]="timezone" [startTime]="startTime" [endTime]="endTime" [previewLimit]="previewEventsCount" [loading]="eventsLoading" [error]="eventsError">
-                        </event-list>
-                    </div>
+                </div>
+            </div>
 
-                    <div *ngIf="multigraphEnabled" class="disabled-message">
-                        Events <b>disabled</b> with multiple graphs.
+            <div class="step-section notification-section is-visible" #stepmultigraph>
+                    <div class="step-section-label">
+                        <span class="step-section-label-text" (click)="toggleConfigSection('multigraph', $event);scrollToElement(stepmultigraph);">
+                            <span>5. Multigraph</span>
+                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        </span>
                     </div>
-                </ng-template>
-        </mat-tab>
-        <mat-tab>
-            <!-- custom tab label. (see: https://material.angular.io/components/tabs/overview#labels) -->
-            <!-- <ng-template mat-tab-label>
-                &lt;/&gt; Query Editor
-            </ng-template> -->
-            <ng-template matTabContent>
-                <widget-config-query-inspector [widget]="widget"></widget-config-query-inspector>
-            </ng-template>
-        </mat-tab>
-    </mat-tab-group>
-    <div class="widget-actions"  *ngIf="!editQueryId">
+                    <div class="step-section-content" *ngIf="visibleSections.multigraph">
+                        <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
+                    </div>
+            </div>
+            <div class="step-section notification-section is-visible" #stepevents>
+                    <div class="step-section-label">
+                        <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
+                            <span>6. Events</span>
+                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        </span>
+                    </div>
+                    <div class="step-section-content" *ngIf="visibleSections.events">
+                        <div class="events-config" *ngIf="!multigraphEnabled">
+                            <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
+                            <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
+                            <event-list *ngIf="widget.settings.visual.showEvents" class="events-list" [events]="events" [timezone]="timezone" [startTime]="startTime" [endTime]="endTime" [previewLimit]="previewEventsCount" [loading]="eventsLoading" [error]="eventsError">
+                            </event-list>
+                        </div>
+
+                        <div *ngIf="multigraphEnabled" class="disabled-message">
+                            Events <b>disabled</b> with multiple graphs.
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <!-- tabs with config content -->
+
+    <div class="widget-actions">
         <!-- controls to save/cancel -->
         <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
         <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>

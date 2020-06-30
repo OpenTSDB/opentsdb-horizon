@@ -11,6 +11,7 @@ import { KeypadComponent } from './components/keypad/keypad.component';
 import { DatepickerComponent } from './components/date-picker-2/datepicker.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { DownsampleComponent } from './components/downsample/downsample.component';
 
 @NgModule({
   imports: [
@@ -24,12 +25,14 @@ import { ReactiveFormsModule } from '@angular/forms';
       TimePickerComponent,
       TimeRangePickerComponent,
       KeypadComponent,
-      DatepickerComponent
+      DatepickerComponent,
+      DownsampleComponent
   ],
   providers: [],
   exports: [
     TimePickerComponent,
-    DatepickerComponent
+    DatepickerComponent,
+    DownsampleComponent
   ]
 })
 export class DateTimePickerModule { }

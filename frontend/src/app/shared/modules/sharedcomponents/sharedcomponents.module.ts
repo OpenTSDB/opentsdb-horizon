@@ -57,7 +57,14 @@ import { WidgetProjectionComponent } from './components/widget-projection/widget
 import { GraphTypeComponent } from './components/graph-type/graph-type.component';
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
+
+// pipes
 import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pipe';
+import { MetricVisualPanelComponent } from './components/metric-visual-panel/metric-visual-panel.component';
+
+import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
+import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
+import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
 
 @NgModule({
     imports: [
@@ -111,7 +118,11 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         GraphTypeComponent,
         AuraDialogComponent,
         InfoTooltipComponent,
-        FormatAutoManualFilterPipe
+        FormatAutoManualFilterPipe,
+        MetricVisualPanelComponent,
+        HexToColorNamePipe,
+        DateToRelativePipe,
+        DropdownJoinTypeComponent
     ],
     exports: [
         ThemePickerComponent,
@@ -149,7 +160,10 @@ import { FormatAutoManualFilterPipe } from '../../../core/services/automanual.pi
         SimpleNamespacesListComponent,
         WidgetProjectionComponent,
         GraphTypeComponent,
-        InfoTooltipComponent
+        InfoTooltipComponent,
+        MetricVisualPanelComponent,
+        HexToColorNamePipe,
+        DateToRelativePipe
     ],
     entryComponents: [
         InlineFilterEditorComponent,

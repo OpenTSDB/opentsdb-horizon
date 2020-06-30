@@ -1,0 +1,212 @@
+/* WIDGET CONFIG COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin time-downsample-component-base() {
+    .time-downsample-component {
+        flex-direction: column;
+
+        .advanced-toggle {
+            display: block;
+            margin-left: -16px;
+            margin-right: -16px;
+            line-height: 36px;
+            padding-left: 8px;
+
+            a {
+                color: blue;
+                text-decoration: underline;
+            }
+        }
+
+        &.advanced-open .advanced-toggle {
+            margin-bottom: 16px;
+        }
+
+        &.widget-config-tab .config-control:not(:last-child) {
+            margin-bottom: 8px;
+        }
+
+        .form-field-group {
+            display: inline-block;
+
+            .mat-form-field:not(:last-child) {
+                margin-right: 8px;
+            }
+        }
+
+        .form-field-group {
+            &.mat-select {
+                width: 200px;
+            }
+
+            .mat-select {
+                padding: 6px;
+                border-radius: 4px;
+                width: 180px;
+                //background-color: rgba(34, 122, 236, 0.08);
+            }
+        }
+
+        /*.config-control > .label {
+            display: inline-block;
+            width: 150px;
+            vertical-align: top;
+            // margin-bottom: 10px;
+        }*/
+
+        .config-control {
+            display: flex;
+            align-items: flex-start;
+
+            .mat-checkbox {
+                line-height: 24px;
+                margin-right: 24px;
+            }
+
+            &.aggregator-controls,
+            &.downsample-controls {
+                .mat-checkbox.mat-checkbox-checked {
+                    line-height: 48px;
+                }
+            }
+
+            &.downsample-controls {
+                .form-field-group {
+                    display: flex;
+
+                    .custom-downsample {
+                        display: flex;
+                        padding-top: 5px;
+
+                        .mat-form-field-subscript-wrapper {
+                            overflow: initial;
+                            padding: 0;
+                        }
+                    }
+
+                    .mat-form-field,
+                    .mat-select {
+                        width: 100px;
+                    }
+                }
+            }
+
+            &.aggregator-controls {
+                .form-field-group {
+                    .mat-form-field,
+                    .mat-select {
+                        width: 115px;
+                    }
+                }
+            }
+        }
+
+        // .time-preset-options {}
+
+        .time-over-time-controls {
+            .mat-form-field:not(:last-child) {
+                margin-right: 16px;
+            }
+        }
+
+        .downsample-controls,
+        .aggregator-controls {
+            .mat-radio-button:not(:last-child) {
+                margin-right: 20px;
+            }
+
+            .mat-radio-group {
+                .mat-radio-label {
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .mat-radio-label-content {
+                        padding-left: 0;
+                    }
+                }
+            }
+        }
+
+        /*.downsample-controls .custom-downsample {
+            margin-top: 10px;
+        }*/
+
+        .override-relative-time-controls,
+        .time-shift-controls,
+        .min-interval-controls,
+        .reporting-interval-controls,
+        .downsample-controls .custom-downsample {
+            .mat-form-field-infix {
+                border-top: 0;
+            }
+
+
+        }
+
+        .mat-radio-label-content {
+            line-height: 24px;
+            font-size: 12px;
+        }
+
+        .mat-button-toggle-group.mat-button-toggle-group-horizontal {
+            line-height: 24px;
+
+            .mat-button-toggle.mat-button-toggle-checked {
+                border-width: 1px;
+            }
+
+            .mat-button-toggle-button {
+                font-size: 12px;
+            }
+
+            .mat-button-toggle-label-content {
+                line-height: 24px;
+            }
+        }
+
+        .mat-form-field.mat-form-field-type-mat-select {
+            line-height: 24px;
+
+            .mat-form-field-infix {
+                padding: 0;
+            }
+        }
+    }
+}
+
+@mixin time-downsample-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark-theme);
+
+    $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.04));
+
+    $divider: map-get($foreground, divider);
+    $link: map-get($foreground, link);
+
+    .time-downsample-component {
+        // style rules here
+
+        &.advanced-open {
+            .advanced-toggle {
+                border-bottom: 2px solid rgba($link, .25);
+
+                .mat-button.mat-primary {
+                    .mat-button-focus-overlay {
+                        opacity: .04;
+
+                        &:hover {
+                            opacity: .08;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

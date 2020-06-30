@@ -56,8 +56,8 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
     customDownsampleValue: any = 10;
     customDownsampleUnit: any = 'm';
 
-    minInterval: any;
-    reportingInterval: any;
+    minInterval: any = '';
+    reportingInterval: any = '';
 
     overrideRelativeTime: any;
     timeShift: any;
@@ -158,6 +158,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         {
             label: '1 day',
             value: '1d'
+        },
+        {
+            label: 'custom',
+            value: 'custom'
         }
     ];
 
@@ -214,8 +218,8 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
     constructor(private fb: FormBuilder) { }
 
     ngOnInit() {
-        this.minInterval = this.widget.settings.time.downsample.minInterval;
-        this.reportingInterval = this.widget.settings.time.downsample.reportingInterval;
+        this.minInterval = this.widget.settings.time.downsample.minInterval || '';
+        this.reportingInterval = this.widget.settings.time.downsample.reportingInterval || '';
         this.selectedAggregators = this.widget.settings.time.downsample.aggregators || this.selectedAggregators;
         this.createForm();
     }
@@ -232,45 +236,57 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         this.customDownsampleUnitSub.unsubscribe();
     }
 
+    get selectedDownsampleValue(): string {
+        if (!this.widgetConfigTime) {
+            return '';
+        } else {
+            return this.widgetConfigTime.get('downsample').value;
+        }
+    }
+
     createForm() {
         // need to actually add widget config values to form controls
         // NOTE: exception is 'time preset range', which is not a form control, and sets value on click
 
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.widget.settings.time.downsample.value === 'custom' ? true : false;
+        const customUnit = this.widget.settings.time.downsample.customUnit || this.customDownsampleUnit;
+        let minInterval = (this.widget.settings.time.minInterval ?  this.widget.settings.time.minInterval : this.minInterval).trim();
+        // tslint:disable:max-line-length
+        let reportingInterval = ( this.widget.settings.time.reportingInterval ? this.widget.settings.time.reportingInterval : this.reportingInterval).trim();
+        minInterval = minInterval.match(/^([0-9]+)(s|m|h)$/);
+        reportingInterval = reportingInterval.match(/^([0-9]+)(s|m|h)$/);
+
         this.widgetConfigTime = this.fb.group({
             aggregators:
                 new FormControl(this.selectedAggregators),
             multiple: new FormControl( { value: this.widget.settings.time.downsample.multiple || this.multipleAggregators } ),
-            minInterval: new FormControl(this.widget.settings.time.minInterval || this.minInterval),
-            reportingInterval: new FormControl(this.widget.settings.time.reportingInterval || this.reportingInterval),
-            overrideRelativeTime: 
+            minInterval: new FormControl( minInterval ? minInterval[1] : this.minInterval),
+            minIntervalUnit: new FormControl( minInterval ? minInterval[2] : 's'),
+            reportingInterval: new FormControl( reportingInterval ? reportingInterval[1] : this.reportingInterval),
+            reportingIntervalUnit: new FormControl( reportingInterval ? reportingInterval[2] : 's'),
+            overrideRelativeTime:
                 new FormControl(this.widget.settings.time.overrideRelativeTime),
             shiftTime:
-                new FormControl(this.widget.settings.time.shiftTime)
-        });
-
-        // if ( !this.widget.settings.dataSummary ) {
-            const customUnit = this.widget.settings.time.downsample.customUnit || this.customDownsampleUnit;
-            this.widgetConfigTime.addControl('downsample',
-                new FormControl(this.widget.settings.time.downsample.value || this.selectedDownsample));
-            this.widgetConfigTime.addControl('customDownsampleValue',
+                new FormControl(this.widget.settings.time.shiftTime),
+            'downsample': new FormControl(this.widget.settings.time.downsample.value || this.selectedDownsample),
+            'customDownsampleValue':
                     new FormControl(
                         {
                             value: this.widget.settings.time.downsample.customValue || this.customDownsampleValue,
                             disabled: !isCustomDownsample ? true : false
                         },
                         [Validators.min(customUnit === 's' ? 10 : 1), Validators.pattern('^[0-9]+$'), Validators.required ]
-                    )
-            );
-            this.widgetConfigTime.addControl('customDownsampleUnit',
+                    ),
+            'customDownsampleUnit':
                     new FormControl(
                         {
                             value: customUnit,
                             disabled: isCustomDownsample ? false : true
                         }
                     )
-            );
+        });
+
             this.selectedDownsample_Sub = this.widgetConfigTime.get('downsample').valueChanges.subscribe(function(data) {
                 // console.log('SELECTED DOWNSAMPLE CHANGED', data, this);
                 if (data === 'custom') {
@@ -281,7 +297,6 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                     this.widgetConfigTime.controls.customDownsampleUnit.disable();
                 }
             }.bind(this));
-        // }
 
         this.customDownsampleUnitSub = this.widgetConfigTime.controls.customDownsampleUnit.valueChanges
                                         .pipe(
@@ -298,6 +313,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                                         .subscribe( function(data) {
                                             // this.multipleAggregators = this.widgetConfigTime.controls.multiple.value ? true: false;
                                             if ( this.widgetConfigTime.valid ) {
+                                                data.minInterval = data.minInterval ? data.minInterval + data.minIntervalUnit : '';
+                                                data.reportingInterval = data.reportingInterval ? data.reportingInterval + data.reportingIntervalUnit : '';
+                                                delete data.reportingIntervalUnit;
+                                                delete data.minIntervalUnit;
                                                 this.widgetChange.emit({'action': 'SetTimeConfiguration', payload: { data: data } });
                                             }
                                         }.bind(this));

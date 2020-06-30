@@ -31,6 +31,7 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
 
     @Input() value = '';
     @Input() options: any = {};
+    @Input() initFocus = false;
     @Output() nschange = new EventEmitter();
     @Output() blur = new EventEmitter();
     @ViewChild('namespaceInput') nsInput: ElementRef;
@@ -77,9 +78,11 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
                         });
 
         setTimeout(() => {
-            // this.nsInput.nativeElement.focus();
             this.visible = true;
-        }, 500);
+            if ( this.initFocus ) {
+                this.nsInput.nativeElement.focus();
+            }
+        }, 200);
     }
 
 

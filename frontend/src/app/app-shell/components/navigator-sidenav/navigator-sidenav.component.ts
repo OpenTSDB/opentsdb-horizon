@@ -17,6 +17,7 @@ export class NavigatorSidenavComponent implements OnInit {
 
     @HostBinding('class.app-navigator-sidenav') private _hostClass = true;
 
+    @Input() yamasMember: boolean = false;
     @Input() activeNav: any = {};
     @Output() activeNavChange: EventEmitter<any> = new EventEmitter();
 
@@ -29,16 +30,16 @@ export class NavigatorSidenavComponent implements OnInit {
     navItems: any[] = [
         { section: 'dashboard', label: 'Dashboards', icon: 'd-dashboard-tile' },
         // { section: 'metric-explorer',   label: 'Metric Explorer',   icon: 'd-chart-line' },
-        { section: 'alerts', label: 'Alerts', icon: 'd-notification' },
-        /*{ section: 'status',            label: 'Status',            icon: 'd-heart-health' },
+        { section: 'alerts',            label: 'Alerts',            icon: 'd-notification'},
+        /*{ section: 'status',          label: 'Status',            icon: 'd-heart-health' },
         { section: 'annotations',       label: 'Annotations',       icon: 'd-flag' },
         { section: 'admin',             label: 'Admin',             icon: 'd-user-secure', requiresUserAdmin: true },
         { section: 'favorites',         label: 'Favorites',         icon: 'd-star' },
         { section: 'namespaces',        label: 'Namespaces',        icon: 'd-briefcase' },
         { section: 'resources',         label: 'Resources',         icon: 'd-information-circle', spacerAfter: true },
         { section: 'test',              label: 'Toggle Test',       icon: 'd-setting' }*/
-        { section: 'settings',              label: 'Settings',       icon: 'd-setting' }
-
+        { section: 'settings',          label: 'Settings',          icon: 'd-setting', spacerAfter: true},
+        { section: 'admin',             label: 'Admin',             icon: 'd-user-secure', requiresUserAdmin: true }
     ];
 
     constructor(
