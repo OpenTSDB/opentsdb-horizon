@@ -1,8 +1,8 @@
 import { State , Action, Selector, StateContext, createSelector, Store } from '@ngxs/store';
 import { UserSettingsState } from './user.settings.state';
-import { DBSettingsState } from './settings.state';
-import { WidgetsState } from './widgets.state';
-import { WidgetsRawdataState } from './widgets-data.state';
+import { DBSettingsState, UpdateMeta } from './settings.state';
+import { WidgetsState, UpdateWidgets } from './widgets.state';
+import { WidgetsRawdataState, ClearWidgetsData } from './widgets-data.state';
 import { ClientSizeState } from './clientsize.state';
 import { HttpService } from '../../core/http/http.service';
 import { DashboardService } from '../services/dashboard.service';
@@ -78,6 +78,11 @@ export class DeleteDashboardSuccess {
 export class DeleteDashboardFail {
     static readonly type = '[Dashboard] Delete Dashboard Fail';
     constructor(public readonly error: any) { }
+}
+
+export class ResetDBtoDefault {
+    static readonly type = '[Dashboard] Reset dashboard to default state';
+    constructor() { }
 }
 
 /* state define */
@@ -282,5 +287,28 @@ export class DBState {
           patchData.error = {};
         }
         ctx.patchState(patchData);
+    }
+
+    @Action(ResetDBtoDefault)
+    resetDBtoDefault(ctx: StateContext<DBStateModel>, {}: ResetDBtoDefault) {
+        // reset dashboard to defaults
+        ctx.patchState({
+            id: '',
+            version: 0,
+            loading: false,
+            loaded: false,
+            error: {},
+            status: '',
+            path: '_new_',
+            fullPath: '',
+            loadedDB: {}
+        });
+
+        // reset some children states
+        ctx.dispatch([
+            new UpdateWidgets([]),
+            new ClearWidgetsData(),
+            new UpdateMeta({title: '', description: '', labels: []})
+        ]);
     }
 }
