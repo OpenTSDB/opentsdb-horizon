@@ -21,6 +21,7 @@
 @import 'shared/modules/date-time-picker/date-time-picker.style-module';
 @import 'shared/modules/color-picker/color-picker.style-module';
 @import 'shared/modules/info-island/info-island.style-module';
+@import 'shared/modules/universal-data-tooltip/universal-data-tooltip.style-module.scss';
 
 // [ STEP 2 ] - ADD MODULE'S BASE MIXINS (aka structure)
 @mixin app-core() {
@@ -35,9 +36,10 @@
     @include date-time-picker-module-core();
     @include color-picker-module-core();
     @include info-island-module-core();
+    @include universal-data-tooltip-module-core();
 
     // MOBILE Fix to disale mobile browser zooming on inputs
-    @media screen and (-webkit-min-device-pixel-ratio:0) { 
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
         select,
         select:focus,
         textarea,
@@ -61,4 +63,5 @@
     @include date-time-picker-module-theme($theme-config);
     @include color-picker-module-theme($theme-config);
     @include info-island-module-theme($theme-config);
+    @include universal-data-tooltip-module-theme($theme-config);
 }

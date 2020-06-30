@@ -6,6 +6,9 @@ import { Router,  NavigationEnd } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { LoginExpireDialogComponent } from './core/components/login-expire-dialog/login-expire-dialog.component';
 import { Select } from '@ngxs/store';
+//import { UniveralDataTooltipComponent } from './shared/modules/universal-data-tooltip/components/universal-data-tooltip/universal-data-tooltip.component';
+import { UniversalDataTooltipService } from './shared/modules/universal-data-tooltip/services/universal-data-tooltip.service';
+
 
 @Component({
     selector: 'app-root',
@@ -24,8 +27,9 @@ export class AppComponent implements OnInit, OnDestroy {
     constructor(
         private dialog: MatDialog,
         private router: Router,
-        private authService: AuthService
-    ) { 
+        private authService: AuthService,
+        private ttSrvc: UniversalDataTooltipService
+    ) {
         // register this router events to capture url changes
         this.router.events.subscribe((event) => {
           if (event instanceof NavigationEnd) {
@@ -38,6 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
     ngOnInit() {
+
+        //this.ttSrvc.addTTComponentToBody(UniveralDataTooltipComponent);
+
         this.auth$.subscribe(auth => {
             if (auth === 'invalid') {
                 // console.log('open auth dialog');
