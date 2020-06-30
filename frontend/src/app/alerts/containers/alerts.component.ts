@@ -300,7 +300,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.alertSearchDebounceTime = this.defaultDebounceTime;
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setRouterUrl();
+            if ( !this.detailsView ) {
+                this.setRouterUrl();
+            }
             this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
         }));
 
