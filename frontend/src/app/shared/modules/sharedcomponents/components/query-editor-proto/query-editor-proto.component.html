@@ -17,7 +17,7 @@
         </div>
         <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace.trim() ">
             <span class="value">
-                <namespace-autocomplete [value]="query.namespace" [options]="options" (nschange)="saveNamespace($event)"
+                <namespace-autocomplete [value]="query.namespace" [options]="options" [initFocus]="editNamespace" (nschange)="saveNamespace($event)"
                     (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
             </span>
         </div>
