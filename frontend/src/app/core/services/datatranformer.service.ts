@@ -232,7 +232,6 @@ export class DatatranformerService {
             }
         }
 
-        console.log("dseries" , dseries);
         // sort the data
         intermediateTime = new Date().getTime();
         dseries.sort((a: any, b: any) => {
