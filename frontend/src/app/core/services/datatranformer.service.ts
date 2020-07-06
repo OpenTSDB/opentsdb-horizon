@@ -235,7 +235,7 @@ export class DatatranformerService {
         // sort the data
         intermediateTime = new Date().getTime();
         dseries.sort((a: any, b: any) => {
-            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations['min'] - b.config.aggregations['min'];
+            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations ? a.config.aggregations['min'] - b.config.aggregations['min'] : 0;
         });
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
         intermediateTime = new Date().getTime();
