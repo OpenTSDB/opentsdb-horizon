@@ -41,23 +41,31 @@
         <!--
         [****    EDIT MODE    ****]
         -->
-        <div *ngIf="!readOnly && (data.type === 'simple' || data.type === 'healthcheck') " class="controls-wrapper">
+    <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail">
                     <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
-                        <inline-editable class="navbar-item"
+                        <inline-editable  *ngIf="!readOnly" class="navbar-item"
                             [fieldValue]="data.name"
                             [minLength]="3"
                             [maxLength]="100"
                             (updatedValue)="setAlertName($event)">
                         </inline-editable>
+                        <div *ngIf="readOnly">
+                            {{data.name}}
+                        </div>
                         <!--<button mat-icon-button color="primary">
                             <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                         </button>-->
                     </div>
-                    <div class="alert-history-link" *ngIf="data.id">
-                        <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
+                    <div>
+                        <span class="alert-history-link" *ngIf="data.id">
+                            <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
+                        </span>
+                        <span *ngIf="readOnly && hasWriteAccess" >
+                            <button class="edit-link" mat-button color="primary" (click)="viewMode = 'edit'">Edit Alert</button>
+                        </span>
                     </div>
                 </div>
                 <span class="flex-spacer"></span>
@@ -66,9 +74,10 @@
                 </div>-->
                 <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
             </mat-toolbar>
+
             <div class="alert-control-steps has-scroller">
                 <div class="is-scroller">
-                    <div class="step-section queries-section is-visible">
+                    <div class="step-section queries-section is-visible" *ngIf="data.type === 'simple' || !readOnly && data.type === 'healthcheck'">
                         <div class="step-section-label">
                             <span class="step-section-label-text">1. Queries</span>
                         </div>
@@ -330,7 +339,7 @@
                             </div>
                         </span>
                     </div>
-                    <div class="step-section condition-section" *ngIf="data.type === 'healthcheck'" formGroupName="threshold" [ngClass]="{'is-visible': data.id || queries && queries[0] && queries[0].filters.length > 0}">
+                    <div class="step-section condition-section" *ngIf="!readOnly && data.type === 'healthcheck'" formGroupName="threshold" [ngClass]="{'is-visible': data.id || queries && queries[0] && queries[0].filters.length > 0}">
                             <!--<div class="step-section threshold-section" formGroupName="threshold" [hidden]=" !data.id && !showDetail ">-->
                         <div class="step-section-label">
                             <span class="step-section-label-text">2. Conditions</span>
@@ -453,7 +462,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="step-section notification-section" formGroupName="notification" [ngClass]="{'is-visible': data.id || queries && queries[0] && ( queries[0].metrics.length > 0 || data.type === 'healthcheck' && queries[0].filters.length > 0)}">
+                    <div class="step-section notification-section" *ngIf="!readOnly && data.type !== 'event'" formGroupName="notification" [ngClass]="{'is-visible': data.id || queries && queries[0] && ( queries[0].metrics.length > 0 || data.type === 'healthcheck' && queries[0].filters.length > 0)}">
                         <div class="step-section-label">
                             <span class="step-section-label-text">3. Notification</span>
                         </div>
@@ -600,39 +609,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="step-section misc-details  is-visible" *ngIf="data.id">
-                        <div class="step-section-content">
-                            <div class="updated-by">Last updated by <strong>{{data.updatedBy}}</strong> on <strong>{{data.updatedTime}}</strong> </div>
-                            <div class="created-by">Created by <strong>{{data.createdBy}}</strong> on <strong>{{data.createdTime}} </strong></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
-        <!-- Event Alert -->
-        <div *ngIf="!readOnly && data.type === 'event'" class="controls-wrapper">
-            <mat-toolbar class="config-toolbar">
-                <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
-                    <div class="alert-name">
-                        <inline-editable class="navbar-item"
-                            [fieldValue]="data.name"
-                            [minLength]="3"
-                            [maxLength]="100"
-                            (updatedValue)="setAlertName($event)">
-                        </inline-editable>
-                    </div>
-                    <span class="alert-history-link" *ngIf="data.id">
-                        <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
-                    </span>
-                </div>
-                <span class="flex-spacer"></span>
-                <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
-            </mat-toolbar>
-            <div class="alert-control-steps has-scroller">
-                <div class="is-scroller">
-                    <div class="step-section threshold-section is-visible" formGroupName="threshold">
+                    <!-- Event Alert -->
+                    <div class="step-section threshold-section is-visible" *ngIf="!readOnly && data.type === 'event'" formGroupName="threshold">
                     <div class="step-section-label">
                         <span class="step-section-label-text">1. Conditions</span>
                     </div>
@@ -691,7 +671,7 @@
                         </div>
                     </div>
                     </div>
-                    <div class="step-section notification-section is-visible"  formGroupName="notification" >
+                    <div class="step-section notification-section is-visible" *ngIf="!readOnly && data.type === 'event'" formGroupName="notification" >
                     <div class="step-section-label">
                         <span class="step-section-label-text">2. Notification</span>
                     </div>
@@ -821,44 +801,13 @@
                         </div>
                     </div>
                     </div>
-                    <div class="step-section misc-details  is-visible" *ngIf="data.id">
-                        <div class="step-section-content">
-                            <div class="updated-by">Last updated by <strong>{{data.updatedBy}}</strong> on <strong>{{data.updatedTime}}</strong> </div>
-                            <div class="created-by">Created by <strong>{{data.createdBy}}</strong> on <strong>{{data.createdTime}} </strong></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                
+            
 
-        <!--
-        [****    READ ONLY MODE    ****]
-        -->
-        <div *ngIf="readOnly" class="controls-wrapper read-only-mode">
-            <mat-toolbar class="config-toolbar">
-                <div class="toolbar-item alert-name-detail">
-                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
-                    <div class="alert-name">
-                        <div>
-                            {{data.name}}
-                        </div>
-                    </div>
-
-                    <div>
-                        <span class="alert-history-link" *ngIf="data.id">
-                            <a [href]="alertEvaluationLink" target="_blank">View Alert History</a>
-                        </span>
-                        <span *ngIf="hasWriteAccess" >
-                            <button class="edit-link" mat-button color="primary" (click)="viewMode = 'edit'">Edit Alert</button>
-                        </span>
-                    </div>
-                </div>
-                <span class="flex-spacer"></span>
-                <alert-details-count *ngIf="counts.length" [counts]="counts" [namespace]="data.namespace" [alertId]="data.id"></alert-details-count>
-            </mat-toolbar>
-            <div class="alert-control-steps has-scroller">
-                <div class="is-scroller">
-                    <div class="step-section queries-section is-visible" *ngIf="['simple', 'healthcheck'].includes(data.type)">
+                    <!--
+                    [****    READ ONLY MODE    ****]
+                    -->
+                    <div class="step-section queries-section is-visible" *ngIf="readOnly && ['healthcheck'].includes(data.type)">
                         <div class="step-section-label">
                             <span class="step-section-label-text">1. Queries</span>
                         </div>
@@ -870,207 +819,7 @@
                             <span class="infectious-nan">Do not evaluate expressions if a value is missing: <strong>{{ queries.length && queries[0].settings.infectiousNan ? true : false }}</strong></span>
                         </div>
                     </div>
-                    <div class="step-section threshold-section is-visible" *ngIf="data.type === 'simple'">
-                        <div class="step-section-label">
-                            <span class="step-section-label-text">2. Threshold</span>
-                        </div>
-                        <div class="step-section-content">
-                            <!-- this might change to radio buttons -->
-
-                            <div class="form-group select-threshold-type">
-                                <div class="form-label vertical-center"><strong>Threshold type</strong></div>
-                                <div class="threshold-type-options">
-                                    {{data.threshold.subType === 'singleMetric' ? 'Single' : ''}}
-                                    {{data.threshold.subType === 'composite' ? 'Composite' : ''}}
-                                    {{data.threshold.subType === 'periodOverPeriod' ? 'Period / Period' : ''}}
-                                </div>
-                            </div>
-
-                            <!-- select query -->
-
-                            <div class="form-group select-query">
-                                <div class="form-label vertical-center"><strong>Selected Metric</strong></div>
-                                <div class="form-control-wrap auto-width">
-                                    {{utils.getNameFromID(this.utils.getMetricDropdownValue(data.queries.raw, data.threshold.singleMetric.metricId), data.queries.raw)}}
-                                </div>
-                            </div>
-
-                            <div *ngIf="data.type === 'simple' && data.threshold && data.threshold.subType !== 'periodOverPeriod'">
-                                <div class="form-group sliding-window">
-                                    <div class="form-label vertical-center"><strong>Sliding Window</strong></div>
-                                    <!-- sentence-like form -->
-                                    <div>
-                                        <div class="sentence-chain-form" *ngIf="data.threshold.singleMetric.badThreshold!=null">
-                                            <div class="sentence-item">
-                                                <span>Triggers a <strong>Bad</strong>  alert when the metric is</span>
-                                            </div>
-                                            <div class="sentence-item">
-                                                <strong>{{data.threshold.singleMetric.comparisonOperator}}</strong>
-                                            </div>
-                                            <div class="sentence-item">
-                                                <span>{{data.threshold.singleMetric.badThreshold}}</span>
-                                            </div>
-                                            <div class="sentence-item">
-                                                <strong>
-                                                    {{data.threshold.singleMetric.timeSampler === 'at_least_once' ? 'at least once' : ''}}
-                                                    {{data.threshold.singleMetric.timeSampler === 'all_of_the_times' ? 'at all times' : ''}}
-                                                    {{data.threshold.singleMetric.timeSampler === 'on_avg' ? 'on average' : ''}}
-                                                    {{data.threshold.singleMetric.timeSampler === 'in_total' ? 'in total' : ''}}
-                                                </strong>
-                                            </div>
-                                            <div class="sentence-item">
-                                                <span>during the last</span>
-                                            </div>
-                                            <div class="sentence-item">
-                                                <strong>
-                                                    {{data.threshold.singleMetric.slidingWindow === '60' ? '1 min' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '300' ? '5 min' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '600' ? '10 min' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '900' ? '15 min' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '1800' ? '30 min' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '3600' ? '1 hr' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '21600' ? '6 hr' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '43200' ? '12 hr' : ''}}
-                                                    {{data.threshold.singleMetric.slidingWindow === '86400' ? '24 hr' : ''}}
-                                                </strong>
-                                            </div>
-                                            <div class="sentence-item" *ngIf="data.threshold.singleMetric.warnThreshold!=null">
-                                                    <span>OR</span>
-                                            </div>
-                                        </div>
-                                        <div class="sentence-chain-form" *ngIf="data.threshold.singleMetric.warnThreshold!=null">
-                                                <div class="sentence-item">
-                                                    <span>Triggers a <strong>Warn</strong>  alert when the metric is</span>
-                                                </div>
-                                                <div class="sentence-item">
-                                                    <strong>{{data.threshold.singleMetric.comparisonOperator}}</strong>
-                                                </div>
-                                                <div class="sentence-item">
-                                                    <span>{{data.threshold.singleMetric.warnThreshold}}</span>
-                                                </div>
-                                                <div class="sentence-item">
-                                                    <strong>
-                                                        {{data.threshold.singleMetric.timeSampler === 'at_least_once' ? 'at least once' : ''}}
-                                                        {{data.threshold.singleMetric.timeSampler === 'all_of_the_times' ? 'at all times' : ''}}
-                                                        {{data.threshold.singleMetric.timeSampler === 'on_avg' ? 'on average' : ''}}
-                                                        {{data.threshold.singleMetric.timeSampler === 'in_total' ? 'in total' : ''}}
-                                                    </strong>
-                                                </div>
-                                                <div class="sentence-item">
-                                                    <span>during the last</span>
-                                                </div>
-                                                <div class="sentence-item">
-                                                    <time-selector [timeInSeconds]="data.threshold.singleMetric.slidingWindow" [isViewMode]="true"></time-selector>
-                                                </div>
-                                        </div>
-                                        <div class="sentence-chain-form" *ngIf="data.threshold.singleMetric.timeSampler === 'all_of_the_times'">
-                                            <div class="sentence-item">
-                                                <span>Require full window for evaluation <strong>{{ data.threshold.singleMetric.requiresFullWindow ? 'Yes,' : 'No' }}</strong></span>
-                                            </div>
-                                            <div class="sentence-item" *ngIf="data.threshold.singleMetric.reportingInterval">
-                                                <span>Reporting Interval <strong>{{ data.threshold.singleMetric.reportingInterval }}</strong></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group bad-threshold-setting" *ngIf="data.threshold.singleMetric.badThreshold!== null">
-                                    <div class="form-label"><span class="indicator-square is-bad"></span> <strong>Bad state</strong> when metric is {{alertStateDirection}}</div>
-                                    <div class="form-control-wrap auto-width">
-                                        {{data.threshold.singleMetric.badThreshold}}
-                                    </div>
-                                </div>
-
-                                <div class="form-group warning-threshold-setting" *ngIf="data.threshold.singleMetric.warnThreshold!==null">
-                                    <div class="form-label"><span class="indicator-square is-warning"></span> <strong>Warning state</strong> when metric is {{alertStateDirection}}</div>
-                                    <div class="form-control-wrap auto-width">
-                                        {{data.threshold.singleMetric.warnThreshold}}
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group recovery-threshold-setting">
-                                    <div class="form-label"><span class="indicator-square is-good"></span> <strong>Alert will recover</strong> when metric is {{recoveryStateDirection}}</div>
-                                    <div class="recovery-options">
-                                        <div class="recovery-option" *ngIf="thresholdRecoveryType === 'minimum'">
-                                            <span>configured threshold</span>
-                                            <mat-hint class="info-hint">
-                                                <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
-                                                <span>Within 0.0001% of bad threshold (or warning threshold if specified).</span>
-                                            </mat-hint>
-                                        </div>
-                                        <div class="recovery-option" *ngIf="thresholdRecoveryType === 'specific'">
-                                            <span>reaches a value</span>
-                                            <strong>{{data.threshold.singleMetric.recoveryThreshold || 'null'}}</strong>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced}">
-                                        <div class="toggle-wrap">
-                                            <a class="toggle-action" (click)="showThresholdAdvanced = !showThresholdAdvanced;">
-                                                <mat-icon fontSet="denali" [fontIcon]="showThresholdAdvanced ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
-                                                <span>{{showThresholdAdvanced ? 'Hide' : 'Show'}} advanced options</span>
-                                            </a>
-                                        </div>
-                                </div>
-                                <div *ngIf="showThresholdAdvanced">
-                                    <div class="form-group alert-nag-interval">
-                                        <div class="form-label vertical-center"><strong>Nag interval</strong></div>
-                                        <div class="nag-interval-item">
-                                            <span>
-                                                {{data.threshold.nagInterval === '0' ? 'none' : ''}}
-                                                {{data.threshold.nagInterval === '300' ? '5 min' : ''}}
-                                                {{data.threshold.nagInterval === '600' ? '10 min' : ''}}
-                                                {{data.threshold.nagInterval === '900' ? '15 min' : ''}}
-                                                {{data.threshold.nagInterval === '1800' ? '30 min' : ''}}
-                                                {{data.threshold.nagInterval === '3600' ? '1 hr' : ''}}
-                                                {{data.threshold.nagInterval === '21600' ? '6 hr' : ''}}
-                                                {{data.threshold.nagInterval === '43200' ? '12 hr' : ''}}
-                                                {{data.threshold.nagInterval === '86400' ? '24 hr' : ''}}
-                                            </span>
-                                            <mat-hint class="info-hint">
-                                                    <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
-                                                    <span>How often an alert is fired when state persists.</span>
-                                            </mat-hint>
-                                        </div>
-                                    </div>
-                                    <div class="form-group alert-nag-interval">
-                                        <div class="form-label vertical-center"><strong>Missing data </strong></div>
-                                        <div class="missing-data-item">
-                                            <span>{{data.threshold.notifyOnMissing === "true" ? 'Notify' : 'Do not notify'}}</span>
-                                            <mat-hint class="info-hint">
-                                                <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
-                                                <span>Receive separate notification if there is no data.</span>
-                                            </mat-hint>
-                                        </div>
-                                    </div>
-                                    <div class="form-group alert-auto-recovery-interval">
-                                            <div class="form-label vertical-center"><strong>Automatically recover from bad/warn state</strong></div>
-                                            <div class="auto-recovery-interval-item">
-                                                <span>{{data.threshold.autoRecoveryInterval ? ' after ' + data.threshold.autoRecoveryInterval/3600 + ' hour(s) ' : 'Never '}}</span>
-                                            </div>
-                                            <div class="auto-recovery-interval-item"> &nbsp;<span class="form-label"><strong> if no data arrives.</strong></span></div>
-                                    </div>
-                                    <div class="form-group delay-evaluation">
-                                        <div class="form-label vertical-center"><strong>Delay evaluation by</strong></div>
-                                        <span class="delay-time">{{data.threshold.delayEvaluation}}</span>
-                                        <mat-hint class="info-hint">mins</mat-hint>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div *ngIf="data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
-                                <alert-details-metric-period-over-period
-                                    #periodOverPeriodForm
-                                    [viewMode]="'true'"
-                                    [queries]="queries"
-                                    (configChange)="periodOverPeriodChanged($event)"
-                                    [config]= "periodOverPeriodConfig">
-                                </alert-details-metric-period-over-period>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="step-section conditions-section is-visible" *ngIf="data.type === 'healthcheck'">
+                    <div class="step-section conditions-section is-visible" *ngIf="readOnly && data.type === 'healthcheck'">
                         <div class="step-section-label">
                             <span class="step-section-label-text">2. Conditions</span>
                         </div>
@@ -1151,7 +900,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="step-section threshold-section is-visible" *ngIf="data.type === 'event'">
+                    <div class="step-section threshold-section is-visible" *ngIf="readOnly && data.type === 'event'">
                         <div class="step-section-label">
                             <span class="step-section-label-text">1. Conditions</span>
                         </div>
@@ -1189,7 +938,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="step-section notification-section is-visible">
+                    <div class="step-section notification-section is-visible" *ngIf="readOnly">
                         <div class="step-section-label">
                             <span class="step-section-label-text">{{['simple', 'healthcheck'].includes(data.type) ? 3: 2}}. Notification</span>
                         </div>
@@ -1297,6 +1046,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </mat-card-content>
     <mat-card-actions *ngIf="!readOnly">
