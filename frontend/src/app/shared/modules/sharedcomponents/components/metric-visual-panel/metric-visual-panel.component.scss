@@ -56,6 +56,11 @@
                 }
 
                 &.is-bn-or-tn {
+
+                    .column:not(:last-child) {
+                        margin-right: 12px;
+                    }
+
                     .column:not(:first-child) {
                         flex: 1;
                     }
@@ -63,7 +68,6 @@
                     .column:first-of-type {
                         display: flex;
                         flex-direction: column;
-                        margin-right: 24px;
                     }
                 }
             }

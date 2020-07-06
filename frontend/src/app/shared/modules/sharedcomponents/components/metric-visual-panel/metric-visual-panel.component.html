@@ -28,7 +28,7 @@
                 <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
                 <color-picker *ngIf="type === 'BignumberWidgetComponent' && colorToggleVal === 'background'" (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor" [enableAuto]="'true'"></color-picker>
             </div>
-            <div class="column" *ngIf="type === 'TopnWidgetComponent'">
+            <div class="column" *ngIf="type === 'TopnWidgetComponent'" style="display: flex; flex-direction: column;">
                 <span class="mat-body-strong">Unit</span>
                 <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
             </div>
