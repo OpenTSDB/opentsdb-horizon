@@ -82,6 +82,23 @@
             }
         }
 
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            //border: none;
+            align-items: stretch;
+
+            .mat-button-toggle {
+                flex: 1;
+            }
+
+            .mat-button-toggle-label-content {
+                line-height: 30px;
+                // padding: 0px;
+            }
+            .mat-button-toggle + .mat-button-toggle {
+                border-left: none;
+            }
+        }
+
         /*.color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
             border: none;
 
@@ -198,6 +215,21 @@
                             background-color: $link;
                         }
                     }
+                }
+            }
+        }
+
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            border-color: map-get($primary, default);
+
+            .mat-button {
+                color: map-get($primary, default);
+            }
+
+            .mat-button-toggle.mat-button-toggle-checked {
+                .mat-button {
+                    background-color: map-get($primary, default);
+                    color: mapt-get($primary, default-contrast);
                 }
             }
         }

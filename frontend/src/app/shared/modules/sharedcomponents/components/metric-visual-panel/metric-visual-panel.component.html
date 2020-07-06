@@ -20,9 +20,9 @@
         </div>
         <div class="vis-conf-col has-columns is-bn-or-tn" *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
             <div class="column">
-                <mat-button-toggle-group  class="color-toggle" [(value)]="colorToggleVal" *ngIf="type === 'BignumberWidgetComponent'">
-                    <mat-button-toggle mat-button value="color">Text</mat-button-toggle>
-                    <mat-button-toggle mat-button value="background">Background</mat-button-toggle>
+                <mat-button-toggle-group class="color-toggle" color="primary" [(value)]="colorToggleVal" *ngIf="type === 'BignumberWidgetComponent'">
+                    <mat-button-toggle mat-button color="primary" value="color">Text</mat-button-toggle>
+                    <mat-button-toggle mat-button color="primary" value="background">Background</mat-button-toggle>
                 </mat-button-toggle-group>
                 <span *ngIf="type !== 'BignumberWidgetComponent'" class="mat-body-strong">Fill color</span>
                 <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
@@ -34,7 +34,7 @@
             </div>
             <div class="column">
                 <span class="mat-body-strong">Conditional Background Color</span>
-                <conditional-formatter [conditions]="data.visual.conditions" (conditionChange)="setVisualConditions(data.metric.id, $event)"></conditional-formatter>
+                <conditional-formatter [conditions]="data.visual.conditions" [type]="type" (conditionChange)="setVisualConditions(data.metric.id, $event)"></conditional-formatter>
             </div>
         </div>
         <div class="vis-conf-col" *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent'">
