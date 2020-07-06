@@ -1,5 +1,5 @@
-<div class="config-control">
-  <div class="order-title">Sort</div>
+<div class="config-control" style="display: flex;">
+  <div class="order-title" style="align-self: center;">Sort</div>
   <mat-button-toggle-group class="mat-button-toggle-group-horizontal" name="sortOrder" [value]="order" (change)="orderChanged($event)">
     <mat-button-toggle value="top">Top</mat-button-toggle>
     <mat-button-toggle value="bottom">Bottom</mat-button-toggle>
@@ -19,7 +19,7 @@
       formControlName="limitInput"
       (input)="limitInputChanged()"
       autocomplete="off"
-      min="1" 
+      min="1"
       max="1000"/>
   </mat-form-field>
 
