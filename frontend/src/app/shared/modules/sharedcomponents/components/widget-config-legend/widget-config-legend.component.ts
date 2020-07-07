@@ -30,6 +30,17 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
 
     /** Form Control Options */
 
+    visibilityOptions: any[] = [
+        {
+            label: 'Visible',
+            value: true
+        },
+        {
+            label: 'Hidden',
+            value: false
+        }
+    ];
+
     formatOptions: any[] = [
         {
             label: 'Inline',

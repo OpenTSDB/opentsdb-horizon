@@ -12,6 +12,10 @@
 
             .mat-header-cell {
                 text-transform: uppercase;
+
+                &:first-child {
+                    padding-left: 10px;
+                }
             }
 
             .mat-row {
@@ -23,29 +27,45 @@
                 .mat-cell {
                     line-height: 1;
                 }
-                .mat-cell:last-child {
-                }
+
             }
         }
+
         .text {
             padding: 10px;
         }
 
         .operator {
-            width: 20%;
+            width: 12%;
+            min-width: 50px;
         }
+
         .value {
-            max-width: 25%;
+            width: 25%;
+            min-width: 100px
         }
+
+        .trash-button {
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
+        }
+
         .action {
             margin-top: 20px;
+
             .mat-stroked-button {
-                line-height: 30px;
+                line-height: 24px;
                 font-size: 12px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 4px;
+                }
             }
 
         }
-        
+
     }
 }
 

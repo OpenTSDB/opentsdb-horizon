@@ -23,6 +23,7 @@ export interface DbfsCommonResourceModel {
 export interface DbfsFileModel extends DbfsCommonResourceModel {
     parentPath: string;
     loaded?: boolean;
+    hidden?: boolean;
 }
 
 // folder models

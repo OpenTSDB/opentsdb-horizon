@@ -1,5 +1,11 @@
 @mixin dropdown-unit-type-component-base() {
-    @include mat-input-as-dropdown();
+    .dropdown-unit-type {
+        @include mat-input-as-dropdown();
+
+        .mat-select-arrow-wrapper {
+            cursor: pointer;
+        }
+    }
 }
 
 @mixin dropdown-unit-type-component-theme($theme-config) {

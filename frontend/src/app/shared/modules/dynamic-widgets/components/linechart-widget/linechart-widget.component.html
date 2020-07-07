@@ -230,8 +230,18 @@
                         <div class="events-config" *ngIf="!multigraphEnabled">
                             <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
                             <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
-                            <event-list *ngIf="widget.settings.visual.showEvents" class="events-list" [events]="events" [timezone]="timezone" [startTime]="startTime" [endTime]="endTime" [previewLimit]="previewEventsCount" [loading]="eventsLoading" [error]="eventsError">
+                            <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px; overflow: auto;">
+                            <event-list class="events-list"
+                                *ngIf="widget.settings.visual.showEvents"
+                                [events]="events"
+                                [timezone]="timezone"
+                                [startTime]="startTime"
+                                [endTime]="endTime"
+                                [previewLimit]="previewEventsCount"
+                                [loading]="eventsLoading"
+                                [error]="eventsError">
                             </event-list>
+                            </div>
                         </div>
 
                         <div *ngIf="multigraphEnabled" class="disabled-message">
