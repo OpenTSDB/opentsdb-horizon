@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostBinding } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
 
 // NOTE: This component needs more work. Just don't have time at the moment.
@@ -11,6 +11,8 @@ import { MatMenuTrigger } from '@angular/material';
     styleUrls: ['./dropdown-unit-type.component.scss']
 })
 export class DropdownUnitTypeComponent implements OnInit {
+
+    @HostBinding('class.dropdown-unit-type') private _hostClass = true;
 
     // unit input
     @Input() unit: any = '';
@@ -131,5 +133,9 @@ export class DropdownUnitTypeComponent implements OnInit {
             }
         }
         return false;
+    }
+
+    showUnitDropdown() {
+        this.menuTrigger.openMenu();
     }
 }

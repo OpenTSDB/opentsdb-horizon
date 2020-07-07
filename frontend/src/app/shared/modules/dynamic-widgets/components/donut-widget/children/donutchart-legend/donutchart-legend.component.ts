@@ -14,8 +14,6 @@ export class DonutchartLegendComponent implements OnInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
     @HostBinding('class.donutchart-legend-configuration') private _tabClass = true;
 
-
-
     /** Inputs */
     @Input() widget: any;
 
@@ -26,6 +24,28 @@ export class DonutchartLegendComponent implements OnInit {
     gForm: FormGroup;
 
     subs: Subscription;
+
+    visibilityOptions: any[] = [
+        {
+            label: 'Visible',
+            value: true
+        },
+        {
+            label: 'Hidden',
+            value: false
+        }
+    ];
+
+    percentagesOptions: any[] = [
+        {
+            label: 'Show',
+            value: true
+        },
+        {
+            label: 'Hide',
+            value: false
+        }
+    ];
 
     positionOptions: any[] = [
         {

@@ -488,9 +488,11 @@
         <mat-list-item *ngIf="dashboards.length === 0" class="no-item-message">
             <span class="mat-caption no-item-message">There are no dashboards.</span>
         </mat-list-item>
-        <mat-list-item *ngFor="let dashboard of dashboards" [ngClass]="{'matched-dashboard': dashboard.id === curDashboardId}">
+        <ng-container *ngFor="let dashboard of dashboards">
+        <mat-list-item *ngIf="!dashboard.hidden" [ngClass]="{'matched-dashboard': dashboard.id === curDashboardId}">
             <ng-container *ngTemplateOutlet="dashboardItem;context:{dashboard: dashboard, panelIndex: panelIndex}"></ng-container>
         </mat-list-item>
+        </ng-container>
     </mat-nav-list>
 </ng-template>
 
@@ -513,7 +515,11 @@
 </ng-template>
 
 <ng-template #dashboardItem let-dashboard="dashboard" let-panelIndex="panelIndex">
-    <div class="dnav-dashboard-item" [ngClass]="{'dnav-menu-opened': menuIsOpen === dashboard.fullPath || miniNavOpen === dashboard.fullPath, 'matched-dashboard': dashboard.id === curDashboardId}">
+    <div class="dnav-dashboard-item"
+        [ngClass]="{
+            'dnav-menu-opened': menuIsOpen === dashboard.fullPath || miniNavOpen === dashboard.fullPath,
+            'matched-dashboard': dashboard.id === curDashboardId
+        }">
         <a routerLink="/d/{{dashboard.id}}{{dashboard.fullPath}}" (click)="fileMenuAction('navigateTo', dashboard)" class="dnav-dashboard-link flex-spacer">
             <mat-icon class="dnav-dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
             <span class="dnav-dashboard-label">{{dashboard.name}}</span>
