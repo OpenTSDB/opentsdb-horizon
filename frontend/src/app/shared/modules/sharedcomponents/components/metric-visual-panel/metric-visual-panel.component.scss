@@ -56,6 +56,11 @@
                 }
 
                 &.is-bn-or-tn {
+
+                    .column:not(:last-child) {
+                        margin-right: 12px;
+                    }
+
                     .column:not(:first-child) {
                         flex: 1;
                     }
@@ -63,7 +68,6 @@
                     .column:first-of-type {
                         display: flex;
                         flex-direction: column;
-                        margin-right: 24px;
                     }
                 }
             }
@@ -79,6 +83,23 @@
                 &:first-child {
                     margin-top: 8px;
                 }
+            }
+        }
+
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            //border: none;
+            align-items: stretch;
+
+            .mat-button-toggle {
+                flex: 1;
+            }
+
+            .mat-button-toggle-label-content {
+                line-height: 30px;
+                // padding: 0px;
+            }
+            .mat-button-toggle + .mat-button-toggle {
+                border-left: none;
             }
         }
 
@@ -198,6 +219,21 @@
                             background-color: $link;
                         }
                     }
+                }
+            }
+        }
+
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            border-color: map-get($primary, default);
+
+            .mat-button {
+                color: map-get($primary, default);
+            }
+
+            .mat-button-toggle.mat-button-toggle-checked {
+                .mat-button {
+                    background-color: map-get($primary, default);
+                    color: mapt-get($primary, default-contrast);
                 }
             }
         }

@@ -1,18 +1,18 @@
 # horizon
-Horizon Yamas UI
+Horizon - a standalone UI for rich observability visualization. Out of the box, we support dashboards and alerts with an emphasis on performance. Horizon integrates easily with the Yamas observability stack. You may also write your own plugins to connect to your own datasources.
 
 ## Contribution
 
-1. Fork [Horizon](https://git.ouroath.com/monitoring/horizon)
+1. Fork [Horizon](https://github.com/VerizonMediaPrivate/horizon)
 2. Create a new branch my-new-feature
 3. Make the desired changes and push the code changes to your repository
-4. Create to PR to [Dev Branch](https://git.ouroath.com/monitoring/horizon/tree/dev)
+4. Create to PR to [Dev Branch](https://github.com/VerizonMediaPrivate/horizon/tree/master)
 
 ## Installation Guide
 
 ### 1. Download Dependencies
 
-#### Option 1: for VMs
+#### Option 1: for Verizon Media Virtual Machines
 ```
   yinst install ynodejs_core -br current
   yinst install ynpm -br current
@@ -26,7 +26,7 @@ Horizon Yamas UI
   npm install node-sass grunt-sass
 ```
 
-### 2. Set npm registry
+### 2. (Optional) Set npm registry to Verizon Media Builders
 ```  
   cd horizon
   npm set registry https://registry.npm.vzbuilders.com:4443/npm-registry
@@ -38,7 +38,7 @@ Horizon Yamas UI
   npm install
 ```
 
-### 4. Install Horizon Server (dev only)
+### 4. Install Horizon Server
 ```  
   cd horizon/server
   npm install
@@ -46,30 +46,24 @@ Horizon Yamas UI
 
 ### 5. Install Certificates
 
-#### Using backyard cookie, talk directly with OpenTSDB servers
-Make a \*.yahoo.com domain reference in your /etc/hosts file:
-
-```
-  sudo bash -c 'echo "127.0.0.1 dev.yamas.ouroath.com" >> /private/etc/hosts'
-```
-
-#### Generate self signed certificates (skip if you have done this for aura)
+#### Generate self signed certificates
 ```
 mkdir ~/.ssh/yamas
 cd ~/.ssh/yamas
-sudo ssh-keygen -f dev.yamas.key
-sudo openssl req -new -key dev.yamas.key -out dev.yamas.csr
 
- Country Name (2 letter code) [AU]:US
- State or Province Name (full name) [Some-State]:CA
- Locality Name (eg, city) []:Sunnyvale
- Organization Name (eg, company) [Internet Widgits Pty Ltd]:Yahoo Inc
- Organizational Unit Name (eg, section) []:Scitech
- Common Name (e.g. server FQDN or YOUR name) []:dev.yamas.ops.yahoo.com
- Email Address []:yamas-devel@yahoo-inc.com
+openssl genrsa -out dev.yamas.key 2048
+openssl rsa -in dev.yamas.key -out dev.yamas.key
+openssl req -sha256 -new -key dev.yamas.key -out dev.yamas.csr -subj '/CN=dev.yamas.ouroath.com'
+openssl x509 -req -sha256 -days 3650 -in dev.yamas.csr -signkey dev.yamas.key -out dev.yamas.crt
 
-sudo openssl x509 -req -days 365 -in dev.yamas.csr -signkey dev.yamas.key -out dev.yamas.crt
 sudo chown -R <userid>:staff ${HOME}/.ssh/yamas
+```
+
+#### Intercept Okta Cookies (for backend authentication)
+Make a \*.ouroath.com domain reference in your /etc/hosts file:
+
+```
+  sudo bash -c 'echo "127.0.0.1 dev.yamas.ouroath.com" >> /private/etc/hosts'
 ```
 
 ### 6. Start application - this requires 2 terminals to be opened at the same time.
@@ -83,8 +77,12 @@ sudo chown -R <userid>:staff ${HOME}/.ssh/yamas
   npm start
 ```
 
-#### 7. Load horizon:
+### 7. Login to Yamas prod (to get Okta cookies)
+```
+  https://yamas.ouroath.com/
 
+```
+### 8. Visit local Horizon
 ```
   https://dev.yamas.ouroath.com:4443/
 ```

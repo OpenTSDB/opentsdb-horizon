@@ -298,9 +298,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             debounceTime(this.alertSearchDebounceTime)
         ).subscribe(val => {
             this.alertSearchDebounceTime = this.defaultDebounceTime;
+            if ( !this.detailsView && val !== null ) {
+                this.setRouterUrl();
+            }
             val = val ? val : '';
             this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setRouterUrl();
             this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
         }));
 
@@ -441,7 +443,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 // }
                 // set the namespace if the user comes directly from edit url
                 if (!this.selectedNamespace) {
-                    this.setNamespace(_data.namespace);
+                    this.setNamespace(_data.namespace, null);
                 }
                 if (_data.id === '_new_') {
                     if (this.list === 'alerts') {
@@ -619,7 +621,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.location.go(parts.join('/'));
 
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace);
+                this.setNamespace(data.namespace, null);
 
                 // url path has 1 parts, (i.e. /a/1234)
             } else if (
@@ -631,7 +633,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.location.go(parts.join('/'));
 
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace);
+                this.setNamespace(data.namespace, null);
             }
 
             this.store.dispatch(new CheckWriteAccess(data));
@@ -713,10 +715,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    setNamespace(namespace, search= '') {
+    setNamespace(namespace, search = '') {
         if (this.selectedNamespace !== namespace) {
             this.store.dispatch(new SetNamespace(namespace));
-            if ( this.alertSearch || search ) {
+            if ( this.alertSearch ) {
                 this.alertSearch.setValue(search);
             }
         }

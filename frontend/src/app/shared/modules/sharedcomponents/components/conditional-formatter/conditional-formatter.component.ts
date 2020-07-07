@@ -10,6 +10,7 @@ import { debounceTime } from 'rxjs/operators';
 export class ConditionalFormatterComponent implements OnInit, OnDestroy {
   @HostBinding('class.conditional-formatter') private _hostClass = true;
   @Input() conditions: any = [];
+  @Input() type: any = '';
   @Output() conditionChange = new EventEmitter();
 
   operators: Array<any> = [

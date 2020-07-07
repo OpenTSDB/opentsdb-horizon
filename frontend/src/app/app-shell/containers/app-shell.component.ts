@@ -38,6 +38,7 @@ import {
 import { filter, map, take } from 'rxjs/operators';
 import { LoggerService } from '../../core/services/logger.service';
 import { ThemeService } from '../services/theme.service';
+import { ResetDBtoDefault } from '../../dashboard/state';
 
 @Component({
     selector: 'app-shell',
@@ -98,6 +99,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     // tslint:disable-next-line: no-inferrable-types
     private firstLoad: boolean = true;
 
+    private routedApp: any = '';
+
     constructor(
         private interCom: IntercomService,
         private logger: LoggerService,
@@ -132,6 +135,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event: NavigationEnd) => {
+
             const urlParts = event.urlAfterRedirects.split('?');
             const urlPath = (urlParts && urlParts.length > 0) ? urlParts[0].split('/') : [];
 
@@ -192,6 +196,24 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     this.store.dispatch(
                       new DbfsLoadUserRecents(null, null, {})
                     );
+                }
+
+                // check if there is a difference in routedApp
+                // from the new app from url
+                if (this.routedApp !== app) {
+
+                    // previous routed app was dashboard
+                    if (this.routedApp === 'd') {
+                        // need to reset dashboard state
+                        let stateSnapshot: any = this.store.snapshot();
+                        if (stateSnapshot.Dashboard !== undefined) {
+                            // reset Dashboard
+                            this.store.dispatch(new ResetDBtoDefault());
+                        }
+                    }
+
+                    // set the new routedApp
+                    this.routedApp = app;
                 }
             }
         });

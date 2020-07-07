@@ -69,7 +69,8 @@ export class DatatranformerService {
 
     const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
     const dict = {};
-    const queryResults = [];
+    // const queryResults = [];
+    const queryResultsObj = {};
     const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
     let isStacked = false;
     const groups = {};
@@ -83,7 +84,8 @@ export class DatatranformerService {
         if (result.results[i].data.length === 0) {
             continue;
         }
-        queryResults.push(result.results[i]);
+        // queryResults.push(result.results[i]);
+        queryResultsObj[i] = result.results[i];
         const [ source, mid ] = result.results[i].source.split(':');
         const qids = this.REGDSID.exec(mid);
         const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
@@ -91,19 +93,19 @@ export class DatatranformerService {
         const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
         const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
         const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
-        queryResults[i] = Object.assign( {}, queryResults[i], {visualType: vConfig.type || 'line'} );
+        queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line'} );
         if ( gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
             if (!dict[mid]) {
                 dict[mid] = { hashes: {}, summarizer: {}};
             }
             if (source === 'summarizer') {
-                const n = queryResults[i].data.length;
+                const n = queryResultsObj[i].data.length;
                 for (let j = 0; j < n; j++) {
-                    const tags = queryResults[i].data[j].tags;
+                    const tags = queryResultsObj[i].data[j].tags;
                     const hash = JSON.stringify(tags);
-                    const aggs = queryResults[i].data[j].NumericSummaryType.aggregations;
-                    const key = Object.keys(queryResults[i].data[j].NumericSummaryType.data[0])[0];
-                    const data = queryResults[i].data[j].NumericSummaryType.data[0][key];
+                    const aggs = queryResultsObj[i].data[j].NumericSummaryType.aggregations;
+                    const key = Object.keys(queryResultsObj[i].data[j].NumericSummaryType.data[0])[0];
+                    const data = queryResultsObj[i].data[j].NumericSummaryType.data[0][key];
                     const aggData = {};
                     for (let k = 0; k < aggs.length; k++) {
                         aggData[aggs[k]] = data[k];
@@ -119,14 +121,14 @@ export class DatatranformerService {
                 }
             } else {
                 dict[mid]['values'] = {}; // queryResults.data;
-                const n = queryResults[i].data.length;
+                const n = queryResultsObj[i].data.length;
                 totalSeries += n;
-                const key = queryResults[i].timeSpecification.start + '-' + queryResults[i].timeSpecification.end + '-' + queryResults[i].timeSpecification.interval;
-                mTimeConfigs[key] = {timeSpecification: queryResults[i].timeSpecification, nSeries: n};
+                const key = queryResultsObj[i].timeSpecification.start + '-' + queryResultsObj[i].timeSpecification.end + '-' + queryResultsObj[i].timeSpecification.interval;
+                mTimeConfigs[key] = {timeSpecification: queryResultsObj[i].timeSpecification, nSeries: n};
                 for (let j = 0; j < n; j++) {
-                    const tags = queryResults[i].data[j].tags;
+                    const tags = queryResultsObj[i].data[j].tags;
                     const hash = JSON.stringify(tags);
-                    dict[mid]['values'][hash] = queryResults[i].data[j].NumericType;
+                    dict[mid]['values'][hash] = queryResultsObj[i].data[j].NumericType;
                     if ( (vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) {
                         isStacked = true;
                         const axis = !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2';
@@ -138,7 +140,7 @@ export class DatatranformerService {
             }
         }
     }
-
+    const queryResults: any[] = Object.values(queryResultsObj);
     // if no series return right away
     if ( totalSeries === 0 ) {
         return [];
@@ -235,7 +237,7 @@ export class DatatranformerService {
         // sort the data
         intermediateTime = new Date().getTime();
         dseries.sort((a: any, b: any) => {
-            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations['min'] - b.config.aggregations['min'];
+            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations ? a.config.aggregations['min'] - b.config.aggregations['min'] : 0;
         });
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
         intermediateTime = new Date().getTime();
