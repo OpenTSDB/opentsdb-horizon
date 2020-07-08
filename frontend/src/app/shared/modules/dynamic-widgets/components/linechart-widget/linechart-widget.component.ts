@@ -725,7 +725,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 nHeight = nHeight - 45;
             }
 
-            nWidth = newSize.width - widthOffset - (padding * 2) - 30;
+            nWidth = newSize.width - widthOffset - 30;
         } else {
             padding = 10; // 10px on the top
             const paddingSides = 1;
@@ -1013,11 +1013,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }
         this.utilService.updateQueryMetricVisual(this.widget, qid, mid, visual);
 
-        if ( visual.axis || visual.stacked ) {
-            this.setAxesOption();
-        }
         if ( visual.axis === 'y2' ) {
             this.widget.settings.axes.y2.enabled = true;
+        }
+        if ( visual.axis || visual.stacked ) {
+            this.setAxesOption();
         }
     }
 
