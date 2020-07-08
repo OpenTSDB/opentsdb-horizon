@@ -755,7 +755,8 @@
         // query disabled
         .namespace-wrapper.query-disabled {
             & + .metric-wrapper {
-                filter: grayscale(100%) blur(1px);
+                filter: grayscale(100%);
+                opacity: .85;
                 pointer-events: none;
             }
         }

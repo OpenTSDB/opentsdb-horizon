@@ -22,14 +22,14 @@ export class DropdownJoinTypeComponent implements OnInit {
     change = new EventEmitter<string>();
 
     joinOptions: Array<any> = [
-      { value: 'INNER', label: 'INNER' },
-      { value: 'LEFT', label: 'LEFT' },
-      { value: 'LEFT_DISJOINT', label: 'LEFT DISJOINT' },
-      { value: 'NATURAL_OUTER', label: 'NATURAL' },
-      { value: 'OUTER', label: 'OUTER' },
-      { value: 'OUTER_DISJOINT', label: 'OUTER DISJOINT' },
-      { value: 'RIGHT', label: 'RIGHT' },
-      { value: 'RIGHT_DISJOINT', label: 'RIGHT DISJOINT' }
+      { value: 'INNER', label: 'inner' },
+      { value: 'LEFT', label: 'left' },
+      { value: 'LEFT_DISJOINT', label: 'left disjoint' },
+      { value: 'NATURAL_OUTER', label: 'natural' },
+      { value: 'OUTER', label: 'outer' },
+      { value: 'OUTER_DISJOINT', label: 'outer disjoint' },
+      { value: 'RIGHT', label: 'right' },
+      { value: 'RIGHT_DISJOINT', label: 'right disjoint' }
     ];
 
     aggregatorControl: FormControl;

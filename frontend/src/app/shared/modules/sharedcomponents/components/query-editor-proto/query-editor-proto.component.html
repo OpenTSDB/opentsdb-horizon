@@ -30,10 +30,12 @@
                 <mat-icon fontSet="denali" fontIcon="d-minus-square" *ngIf="!query.settings.visual.visible"></mat-icon>
             </button>
             <button mat-icon-button color="primary" *ngIf="options.cloneQuery"
+                [matTooltip]="'click to clone query'"
                 (click)="cloneQuery(); $event.stopPropagation();">
                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
             </button>
             <button mat-icon-button color="primary" [disabled]="!canDeleteQuery()" *ngIf="options.deleteQuery"
+                [matTooltip]="'click to delete query'"
                 (click)="confirmQueryDelete(label); $event.stopPropagation();">
                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             </button>
@@ -184,7 +186,8 @@
                         <!-- aggregator -->
                         <div class="metric-row-data tag-aggregator">
                             <div class="tag-aggregator-wrapper">
-                                <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
+                                <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"
+                                    *ngIf="data.metric.tagAggregator && data.metric.tagAggregator === 'sum'"></mat-icon>
                                 <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
                                     (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
                                 <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
