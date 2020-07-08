@@ -982,7 +982,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const qindex =  this.widget.queries.findIndex(d => d.id === qid);
         const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === mid);
         const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
-        if ( curtype === 'line' && visual.type && ['area', 'bar'].includes(visual.type) ) {
+        const multiGraphConf = this.widget.settings.multigraph;
+        const isMetricMultiGraph = this.multigraphEnabled && multiGraphConf && multiGraphConf.chart[0].displayAs !== 'g' ? true : false;
+        if ( curtype === 'line' && visual.type && !isMetricMultiGraph && ['area', 'bar'].includes(visual.type) ) {
             visual.axis = this.widget.queries[qindex].metrics[mindex].settings.visual.axis || 'y1';
             visual.stacked = 'true';
             for ( let i = 0; i < this.widget.queries.length; i++ ) {
@@ -995,7 +997,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             }
         }
-        if ( ( visual.type && ['bar', 'area'].includes(visual.type)) || visual.stacked || (curtype !== 'line' && visual.axis ) ) {
+        // tslint:disable-next-line:max-line-length
+        if ( ( visual.type && ['bar', 'area'].includes(visual.type) && !isMetricMultiGraph ) || visual.stacked || (curtype !== 'line' && visual.axis ) ) {
             if ( visual.type === 'bar') {
                 visual.stacked = 'true';
             }
