@@ -25,6 +25,12 @@ export class DashboardService {
         tplVariables: {
           namespaces: [],
           tvars: []
+        },
+        downsample: {
+          aggregators: [''],
+          customUnit: '',
+          customValue: '',
+          value: 'auto'
         }
     },
     widgets: [
