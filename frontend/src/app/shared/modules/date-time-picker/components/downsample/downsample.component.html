@@ -9,7 +9,7 @@
           <mat-checkbox (change)="checkOverrideResolution($event)" [checked]="overrideResolution">Override resolution</mat-checkbox>
           <div class="form-field-group" *ngIf="overrideResolution">
             <mat-form-field appearance="fill">
-                <mat-select formControlName="downsample">
+                <mat-select formControlName="downsample" (selectionChange)="setDownsample($event)">
                     <mat-option *ngFor="let downsample of timeDownsampleOptions" [value]="downsample.value">
                         {{downsample.label}}
                     </mat-option>
