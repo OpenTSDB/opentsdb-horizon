@@ -1,12 +1,23 @@
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    AfterViewInit
+} from '@angular/core';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { MatFormField } from '@angular/material';
 
 @Component({
   selector: 'metric-function',
   templateUrl: './metric-function.component.html',
   styleUrls: []
 })
-export class MetricFunctionComponent implements OnInit {
+export class MetricFunctionComponent implements OnInit, AfterViewInit {
 
   @HostBinding('class.metric-function-component') private _hostClass = true;
 
@@ -34,6 +45,8 @@ export class MetricFunctionComponent implements OnInit {
     return 200;
   }
 
+  @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+
   constructor() { }
 
   ngOnInit() {
@@ -48,6 +61,16 @@ export class MetricFunctionComponent implements OnInit {
       this.errorMessage = 'Error';
     }
     this.inputVal = new FormControl(this.fx.val);
+  }
+
+  ngAfterViewInit() {
+      // NOTE: this is for the autosizing of the function inputs
+      // NOTE: css uses the data-value attribute to correctly size item
+      // set the initial data-value
+      // needs to live on the .mat-form-field-infix
+      // aka, the wrapper around the actual input field
+      const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+      formFieldInfix.dataset.value = this.fx.val;
   }
 
   saveInput() {
