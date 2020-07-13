@@ -14,7 +14,7 @@ import { PlaceholderWidgetComponent } from './components/placeholder-widget/plac
 import { LinechartWidgetComponent } from './components/linechart-widget/linechart-widget.component';
 import { DeveloperWidgetComponent } from './components/developer-widget/developer-widget.component';
 import {
-    MarkdownModule, 
+    MarkdownModule,
     MarkedOptions
 } from 'ngx-markdown';
 
@@ -40,6 +40,9 @@ import { TopnWidgetComponent } from './components/topn-widget/topn-widget.compon
 import { HeatmapWidgetComponent } from './components/heatmap-widget/heatmap-widget.component';
 import { EventsWidgetComponent } from './components/events-widget/events-widget.component';
 
+import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/universal-data-tooltip-directives.module';
+
+
 @NgModule({
     imports: [
         CommonModule,
@@ -50,6 +53,7 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
         ChartjsModule,
         D3Module,
         SharedcomponentsModule,
+        UniversalDataTooltipDirectivesModule,
         MarkdownModule.forRoot({
             markedOptions: {
               provide: MarkedOptions,

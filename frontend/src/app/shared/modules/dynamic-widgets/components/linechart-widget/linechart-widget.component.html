@@ -25,7 +25,7 @@
         }">
         <div class="dygraph-legend" #graphLegend></div>
         <!-- STANDARD GRAPH OUTPUT -->
-        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)">
+        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
                 [style.minWidth.px]="(multigraphEnabled && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
