@@ -8,3 +8,6 @@
     <hr>
     <pre [innerHtml]="this.dialogData.query | json"></pre>
 </div>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="copyText()">Copy to Clipboard</button>
+</mat-dialog-actions>
