@@ -1,34 +1,34 @@
-import { NgModule, ModuleWithProviders} from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+// services
+import { UniversalDataTooltipService } from './services/universal-data-tooltip.service';
+
+// Directives
+////import { TtMouseListenerDirective } from './directives/tt-mouse-listener.directive';
+import { TtBoundaryListenerDirective } from './directives/tt-boundary-listener.directive';
+
+// Tooltip layouts
 import { LinechartDataTooltipComponent } from './components/linechart-data-tooltip/linechart-data-tooltip.component';
 
-import { UniversalDataTooltipServiceProvider } from './services/universal-data-tooltip.provider';
-import { TtMouseListenerDirective } from './directives/tt-mouse-listener.directive';
-import { TtScrollListenerDirective } from './directives/tt-scroll-listener.directive';
+
 
 @NgModule({
-    declarations: [
-        LinechartDataTooltipComponent,
-        TtMouseListenerDirective,
-        TtScrollListenerDirective
-    ],
-    exports: [
-        TtMouseListenerDirective,
-        TtScrollListenerDirective
-    ],
     imports: [
         CommonModule
+    ],
+    declarations: [
+        LinechartDataTooltipComponent,
+        //TtMouseListenerDirective,
+        //TtBoundaryListenerDirective
+    ],
+    exports: [
+        //TtMouseListenerDirective,
+        //TtBoundaryListenerDirective
     ],
     entryComponents: [
         LinechartDataTooltipComponent
     ]
 })
-export class UniversalDataTooltipModule {
-    public static forRoot(): ModuleWithProviders {
-        return ({
-            ngModule: UniversalDataTooltipModule,
-            providers: [ UniversalDataTooltipServiceProvider ]
-        });
-    }
-}
+export class UniversalDataTooltipModule {}
 

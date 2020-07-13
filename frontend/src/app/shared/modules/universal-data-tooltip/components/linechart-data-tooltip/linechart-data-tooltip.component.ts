@@ -1,4 +1,12 @@
-import { Component, OnInit, HostBinding, OnDestroy, Renderer2, HostListener, ViewChild, ElementRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    OnDestroy,
+    Renderer2,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import { LoggerService } from '../../../../../core/services/logger.service';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
@@ -12,7 +20,7 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 export class LinechartDataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') private _tooltipHidden = false;
+    @HostBinding('class.hidden') private _tooltipHidden = true;
     @HostBinding('style') private positionStyles: SafeStyle = '';
 
     @ViewChild('tooltipOutput', {read: ElementRef}) private ttOutputEl;
@@ -39,7 +47,6 @@ export class LinechartDataTooltipComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // this.logger.ng('UNIVERSAL DATA TOOLTIP INIT');
-        this.scrollDetector();
         this.addPositionListener();
     }
 
@@ -53,31 +60,32 @@ export class LinechartDataTooltipComponent implements OnInit, OnDestroy {
 
     private addPositionListener() {
         this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
+            if (!this._tooltipHidden) {
+                const winSize = {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                };
 
-            const winSize = {
-                width: window.innerWidth,
-                height: window.innerHeight
-            };
+                // detect window right edge proximity
+                if ((winSize.width - event.x) < 200) {
+                    this.xShift = 'left';
+                } else {
+                    this.xShift = 'right';
+                }
 
-            // detect window right edge proximity
-            if ((winSize.width - event.x) < 200) {
-                this.xShift = 'left';
-            } else {
-                this.xShift = 'right';
+                // detect window bottom edge proximity
+                if ((winSize.height - event.y) < 200) {
+                    this.yShift = 'above';
+                } else {
+                    this.yShift = 'below';
+                }
+
+                // position styles - use transform3d to get performant positioning
+                const styleString = 'transform: translate3d(' + event.x + 'px, ' + event.y + 'px, 0);';
+
+                // tell angular to trust the styles
+                this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
             }
-
-            // detect window bottom edge proximity
-            if ((winSize.height - event.y) < 200) {
-                this.yShift = 'above';
-            } else {
-                this.yShift = 'below';
-            }
-
-            // position styles - use transform3d to get performant positioning
-            const styleString = 'transform: translate3d(' + event.x + 'px, ' + event.y + 'px, 0);';
-
-            // tell angular to trust the styles
-            this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
         });
     }
 
@@ -85,32 +93,10 @@ export class LinechartDataTooltipComponent implements OnInit, OnDestroy {
         this.positionListener();
     }
 
-    private scrollDetector() {
-        // need to capture scroll events, instead of bubbling
-        this.scrollListener = window.document.addEventListener('scroll', (event: any) => {
-            // this.logger.ng('DOCUMENT SCROLL DETECTION', event);
-            // remove mousemove event (while scrolling)
-            this.removePositionListener();
-
-            // maybe hide tooltip? at least until mousemove starts again
-
-            // clear old timeout
-            clearTimeout(this.scrollTimeout);
-            this.scrollTimeout = setTimeout(() => {
-                // start listening to move again
-                this.addPositionListener();
-            }, 300);
-
-        }, {capture: true, passive: true});
-    }
-
     /* LAST */
     ngOnDestroy() {
         if (this.positionListener) {
             this.removePositionListener();
-        }
-        if (this.scrollListener) {
-            window.document.removeEventListener('scroll', this.scrollListener);
         }
         this.subscription.unsubscribe();
     }

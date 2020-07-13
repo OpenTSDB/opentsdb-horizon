@@ -29,6 +29,8 @@ export class TooltipDispatcher implements OnDestroy {
     private _domElem: HTMLElement;
     private _service: UniversalDataTooltipService;
 
+    private _boundaryElRef: HTMLElement;
+
     // placeholder for document mousemove listener
     //private positionListener: () => void;
 
@@ -78,8 +80,20 @@ export class TooltipDispatcher implements OnDestroy {
         });
     }
 
-    appScrolling(scroll: boolean) {
+    setBoundaryElRef(elRef: HTMLElement) {
+        this._boundaryElRef = elRef;
+    }
 
+    unsetBoundaryElRef() {
+        this._boundaryElRef = null;
+    }
+
+    appScrolling(scroll: boolean) {
+        if (scroll) {
+            // disable tooltip
+        } else {
+            // enable tooltip
+        }
     }
 
     private createComponent() {
