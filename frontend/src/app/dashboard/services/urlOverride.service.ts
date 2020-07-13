@@ -158,7 +158,8 @@ export class URLOverrideService {
         for (let key in url.queryParams) {
             if (url.queryParams.hasOwnProperty(key)) {
                 const decodeKey = decodeURIComponent(key);
-                decodeQueryParams[decodeKey] = url.queryParams[key];
+                decodeQueryParams[decodeKey] = decodeURI(url.queryParams[key]);
+
             }
         }
         url.queryParams = decodeQueryParams;
