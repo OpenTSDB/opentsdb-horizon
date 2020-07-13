@@ -182,7 +182,7 @@
             <ng-container matColumnDef="modifiers">
                 <th mat-header-cell *matHeaderCellDef>modifier</th>
                 <td mat-cell *matCellDef="let data; let i = dataIndex;" style="width: 100%">
-                    <div style="display: flex; align-items: flex-start;">
+                    <div style="display: flex; align-items: flex-start; flex-wrap: wrap;">
                         <!-- aggregator -->
                         <div class="metric-row-data tag-aggregator">
                             <div class="tag-aggregator-wrapper">
@@ -200,7 +200,6 @@
                                 </dropdown-metric-tags>
                             </div>
                         </div>
-
                         <!-- summarizer selector -->
                         <div class="metric-row-data summarizer-selector" *ngIf="options.enableSummarizer">
                             <div class="summarizer-selector-wrapper">
