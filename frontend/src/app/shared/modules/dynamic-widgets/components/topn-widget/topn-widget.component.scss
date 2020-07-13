@@ -7,6 +7,7 @@
     .widget-panel-content.topnchart-widget {
         flex: 1;
         display: flex;
+        padding-top: 20px;
 
         .widget-title {
             flex-direction: row;
@@ -22,7 +23,7 @@
             height: 100%;
             display: flex;
             flex: 1 1 0;
-            //overflow: scroll;
+
 
             .loading-spinner,
             .gif-spinner {
@@ -74,10 +75,11 @@
 
         #container {
             box-sizing: border-box;
-            padding: 20px 0px 0px 0px;
+            padding: px 0px 0px 0px;
             display:flex;
             flex: 1;
             justify-content: center;
+            overflow: auto;
 
             text {
                 font-family: 'Ubuntu';
@@ -116,6 +118,14 @@
                 height: 100%;
             }
 
+        }
+    }
+
+    .edit-view-container.is-active {
+        .widget-panel-content.topnchart-widget {
+            #container {
+                //padding-top: 20px;
+            }
         }
     }
 }
