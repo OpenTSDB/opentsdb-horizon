@@ -34,4 +34,17 @@ export class DebugDialogComponent implements OnInit {
     ngOnInit() {
     }
 
+    copyText() { 
+      let listener = (e: ClipboardEvent) => {
+        let clipboard = e.clipboardData || window["clipboardData"];
+        clipboard.setData("text", JSON.stringify(this.dialogData));
+        e.preventDefault();
+      };
+  
+      document.addEventListener("copy", listener, false)
+      document.execCommand("copy");
+      document.removeEventListener("copy", listener, false);
+    }
+
 }
+

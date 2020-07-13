@@ -161,7 +161,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.options.format.unit = this.widget.settings.visual.unit;
     }
     setSize(newSize) {
-        this.size = { width: newSize.width, height: newSize.height - 23 };
+        const editModifier = this.editMode ? 0 : 23;
+        this.size = { width: newSize.width, height: newSize.height - editModifier };
         this.cdRef.detectChanges();
     }
 
@@ -403,9 +404,9 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.panelClass = 'error-dialog-panel';
          dialogConf.data = {
           log: this.debugData,
-          query: this.storeQuery 
+          query: this.storeQuery
         };
-        
+
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
         this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

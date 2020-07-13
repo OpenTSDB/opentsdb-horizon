@@ -49,7 +49,6 @@ export class URLOverrideService {
         this.updateLocationURL(url);
     }
 
-
     applyURLParamsToDB(p) {
         var time = {};
         var tags = {};
@@ -68,7 +67,8 @@ export class URLOverrideService {
                         break;
                     // key doesn't start with '__' 
                     // treat it like tag key
-                    tags[k] = decodeURIComponent(v);
+                    const decodeKey = decodeURIComponent(k);
+                    tags[decodeKey] = decodeURIComponent(v);
                     break;
             }
         }
@@ -119,10 +119,10 @@ export class URLOverrideService {
         private utils: UtilsService,
         private dateUtil: DateUtilsService
     ) {
-        var url = this.getLocationURLandQueryParams();
-        var otherParams = {};
-        for (var k in url['queryParams']) {
-            var v = url['queryParams'][k];
+        const url = this.getLocationURLandQueryParams();
+        let otherParams = {};
+        for (const k in url['queryParams']) {
+            const v = url['queryParams'][k];
             switch (k.toLowerCase()) {
                 case '__tsdb_host':
                     environment.tsdb_host = decodeURIComponent(v);
@@ -153,7 +153,16 @@ export class URLOverrideService {
     }
 
     applyParamstoURL(params) {
-        let url = this.getLocationURLandQueryParams();
+        let url: any = this.getLocationURLandQueryParams();
+        let decodeQueryParams = {};
+        for (let key in url.queryParams) {
+            if (url.queryParams.hasOwnProperty(key)) {
+                const decodeKey = decodeURIComponent(key);
+                decodeQueryParams[decodeKey] = decodeURI(url.queryParams[key]);
+
+            }
+        }
+        url.queryParams = decodeQueryParams;
         let tags: any = {};
         if (params.start) {
             // tslint:disable:max-line-length

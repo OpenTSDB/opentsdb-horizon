@@ -149,9 +149,15 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnDestroy() {
         // destroy our form control subscription
-        this.selectedDownsample_Sub.unsubscribe();
-        this.widgetConfigTimeSub.unsubscribe();
-        this.customDownsampleUnitSub.unsubscribe();
+        if (this.selectedDownsample_Sub) {
+            this.selectedDownsample_Sub.unsubscribe();
+        }
+        if (this.widgetConfigTimeSub) {
+            this.widgetConfigTimeSub.unsubscribe();
+        }
+        if (this.customDownsampleUnitSub) {
+            this.customDownsampleUnitSub.unsubscribe();
+        }
     }
 
     get selectedDownsampleValue(): string {
