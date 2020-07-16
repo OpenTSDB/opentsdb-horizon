@@ -55,7 +55,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     AdminModule,
     AdhocModule,
     AppShellModule,
-    UniversalDataTooltipModule
+    UniversalDataTooltipModule.forRoot()
   ],
   providers: [
     AuthService,

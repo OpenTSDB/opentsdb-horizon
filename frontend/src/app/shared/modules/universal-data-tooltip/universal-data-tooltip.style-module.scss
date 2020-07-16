@@ -16,21 +16,27 @@
 // import your component scss
 // example: @import './components/componentName/componentName.component.scss';
 
+// Base First
+@import './components/data-tooltip/data-tooltip.component.scss';
+
 // components
 @import './components/linechart-data-tooltip/linechart-data-tooltip.component.scss';
+@import './components/heatmap-data-tooltip/heatmap-data-tooltip.component.scss';
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin universal-data-tooltip-module-core() {
     // include your core mixins
     // example: @include componentName-component-core();
+    @include data-tooltip-component-base();
     @include linechart-data-tooltip-component-base();
-
+    @include heatmap-data-tooltip-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
 @mixin universal-data-tooltip-module-theme($theme-config) {
     // include your theme mixins, passing along the $theme-config
     // example: @include componentName-component-theme($theme-config);
+    @include data-tooltip-component-theme($theme-config);
     @include linechart-data-tooltip-component-theme($theme-config);
-
+    @include heatmap-data-tooltip-component-base();
 }
