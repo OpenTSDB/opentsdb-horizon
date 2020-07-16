@@ -23,6 +23,8 @@ import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
+//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -189,7 +191,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private logger: LoggerService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private tooltipService: TooltipDataService
     ) { }
 
     ngOnInit() {
@@ -1421,7 +1424,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
+        this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
@@ -1497,6 +1500,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 action: 'tsTickDataChange',
                 payload: payload
             });
+        }
+
+        if (event.action === 'tooltipDataChange') {
+            this.tooltipService.ttDataPut(event.data);
         }
     }
 

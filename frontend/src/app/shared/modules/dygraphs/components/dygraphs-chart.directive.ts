@@ -11,6 +11,8 @@ import ThresholdsPlugin from '../../../dygraph-threshold-plugin/src/index';
 import * as moment from 'moment';
 import * as d3 from 'd3';
 import { LoggerService } from '../../../../core/services/logger.service';
+import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
+import { setLines } from '@angular/material';
 
 @Directive({
     // tslint:disable-next-line: directive-selector
@@ -27,6 +29,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Input() showEvents: boolean;
     @Input() multigraph: boolean;
     @Input() timeseriesLegend: any = {};
+    @Input() widgetId: any;
     @Output() zoomed = new EventEmitter;
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
@@ -47,7 +50,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         private element: ElementRef,
         private utils: UtilsService,
         private uConverter: UnitConverterService,
-        private logger: LoggerService
+        private logger: LoggerService,
+        private ttDataSvc: TooltipDataService
     ) { }
 
     ngOnInit() { }
@@ -73,6 +77,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 // so lets check for graph-output in alerts
                 parent = this.element.nativeElement.closest('.graph-output');
             }
+            /* COMMENT FOR NOW - Working on tooltip
             const legendCheck = parent.querySelector('.dygraph-legend');
             if (legendCheck) {
                 this.labelsDiv = legendCheck;
@@ -81,9 +86,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.labelsDiv.classList.add('dygraph-legend');
                 // this.element.nativeElement.parentNode.appendChild(this.labelsDiv);
                 parent.appendChild(this.labelsDiv);
-            }
+            }*/
 
-            this.options.labelsDiv = this.labelsDiv;
+            //this.options.labelsDiv = this.labelsDiv;
         }
 
         /* part of coming pr change*/
@@ -95,7 +100,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         const self = this;
         const mouseover = function (e, x, points, row, seriesName) {
             this.lastSeriesHighlighted = seriesName;
+            console.log('%cLINE CHART HIGHLIGHT', 'color: white; background: purple; padding: 2px;', e, x, points, row, seriesName);
 
+            //* BELOW IS FOR ISLAND LEGEND STUFF *//
             /* Commenting out for now
                 will be part of next PR that will improve tooltip movement*/
             if (!self.firstTickHighlight) {
@@ -148,6 +155,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     }
                     tickDataOutput.series.push(data);
                 }
+
 
                 self.currentTickEvent.emit({
                     action: 'tickDataChange',
@@ -268,19 +276,57 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
         };
 
+        // Line Chart Tooltip formatting
         const legendFormatter = function (data) {
             const seriesConfig = this.user_attrs_.series;
-            if (data.x == null) {
+            // console.log('%cLEGEND FORMATTER', 'color: white; background-color: maroon; padding 2px;', data, seriesConfig);
+
+            let ttEvent: any = {
+                action: 'tooltipDataChange',
+                data: {}
+            };
+            //if (data.x == null) { return ''; }
                 const labelsDiv = this.user_attrs_.labelsDiv;
                 if (labelsDiv) {
                     labelsDiv.style.display = 'none';
                 }
-                return '';
+            //    return '';
+            //}
+
+            /* REQS */
+
+
+            // formatting data for tooltip
+            if (data.x === null || data.x === undefined) {
+                // no data
+                ttEvent.data = false;
+            } else {
+                ttEvent.data.time = data.xHTML;
+                if (self.chartType !== 'heatmap') {
+                    data.series.forEach(function (series) {
+                        if (!series.isVisible || !series.isHighlighted) {
+                            return;
+                        }
+                        const tags = seriesConfig[series.label].tags;
+                        const label = seriesConfig[series.label].label;
+                        const metric = (tags.metric !== label) ? label : tags.metric;
+                        ttEvent.data.value = series.yHTML;
+                        ttEvent.data.metric = metric;
+                        ttEvent.data.tags = [];
+
+                        for (const k in tags) {
+                            if (k !== 'metric') {
+                                ttEvent.data.tags.push({key: k, value: tags[k]});
+                            }
+                        }
+                    });
+                }
             }
 
+            /* COMMENTING OUT FOR NOW
             let html = '<p>' + data.xHTML + '</p>';
             if (self.chartType !== 'heatmap') {
-                // console.log('%cLEGEND FORMATTER','color: white; background-color: maroon; padding 2px;', data, seriesConfig);
+                console.log('%cLEGEND FORMATTER','color: white; background-color: maroon; padding 2px;', data, seriesConfig);
                 data.series.forEach(function (series) {
                     if (!series.isVisible || !series.isHighlighted) {
                         return;
@@ -296,8 +342,13 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         }
                     }
                 });
-            }
-            return html;
+                html += '<p>UGGH</p>';
+            }*/
+            //return html;
+            console.log('==[LINECHART]======>>>', ttEvent);
+            //self.currentTickEvent.emit(ttEvent);
+            self.ttDataSvc.ttDataPut(ttEvent.data);
+            return '';
         };
 
         const tickFormatter = function (value, gran, opts) {
@@ -313,8 +364,12 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             return self.uConverter.convert(value, format.unit, dunit, { unit: format.unit, precision: precision });
         };
 
+        // heatmap legend
         const setHeatmapLegend = function (event, g, x, bucket) {
 
+
+
+            /* OLD
             const labelsDiv = g.user_attrs_.labelsDiv;
             const options = g.user_attrs_;
             const tooltipData = options.series[bucket] && options.series[bucket][x] ? options.series[bucket][x] : [];
@@ -358,6 +413,50 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
             labelsDiv.style.left = (event.offsetX + xOffset) + 'px';
             labelsDiv.style.top = (event.offsetY + yOffset) + 'px';
+            */
+
+            /* NEW */
+
+            let ttEvent: any = {
+                action: 'tooltipDataChange',
+                data: {}
+            };
+
+            /* REQS
+                options
+                d3
+                moment
+                UnitConverter
+                */
+
+
+            const options = g.user_attrs_;
+            const tooltipData = options.series[bucket] && options.series[bucket][x] ? options.series[bucket][x] : [];
+            const format = options.axes.y.tickFormat;
+            const precision = format.precision ? format.precision : 2;
+
+            const yScale = d3.scaleQuantize()
+                .domain(options.axes.y.valueRange)
+                .range(Array.from(Array(options.heatmap.buckets), (x, index) => (index + 1)));
+            const range: any = yScale.invertExtent(bucket);
+
+            ttEvent.data.time = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
+            ttEvent.data.affectedSeries = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision }) + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
+            ttEvent.data.bucketRange = [range[0], range[1]];
+
+            ttEvent.data.tooltipData = [];
+            const n = tooltipData.length < 5 ? tooltipData.length : 5;
+            for (let i = 0; i < n; i++) {
+                const dunit = self.uConverter.getNormalizedUnit(tooltipData[i].v, format);
+                const val = self.uConverter.convert(tooltipData[i].v, format.unit, dunit, { unit: format.unit, precision: precision });
+
+                let ttData = {label: tooltipData[i].label, value: val};
+                ttEvent.data.tooltipData.push(ttData);
+            }
+
+            console.log('==[HEATMAP]======>>>', ttEvent);
+            self.ttDataSvc.ttDataPut(ttEvent.data);
+            //self.currentTickEvent.emit(ttEvent);
         };
 
         if (!changes) {
@@ -389,6 +488,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         this.options.highlightCallback = mouseover;
                     }
                     this.options.legendFormatter = legendFormatter;
+                    this.options.showLabelsOnHighlight = false;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
                         // we only handle xzoom
                         if (!yRanges) {
@@ -413,6 +513,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                             g.drawGraph_();
                         }
                     };
+
+                    /*this.options.interactionModel.mousemove = function (event, g, context) {
+                        console.log('%cLINE CHART MOUSEMOVE', 'color: white; background: red; padding: 2px;', event, g, context);
+                    }*/
 
                     if (this.timeseriesLegend) {
                         //this.options.clickCallback = clickCallback;
@@ -511,17 +615,27 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                 g.clearSelection();
                             }
 
-
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
                                 const ts = g.toDataXCoord(cx2);
                                 const hasData = g.user_attrs_.series[bucket] && g.user_attrs_.series[bucket][ts];
+
+                                if (labelsDiv) {
+                                    labelsDiv.style.display = 'none';
+                                }
+
                                 if (hasData) {
                                     setHeatmapLegend(event, g, ts, bucket);
                                 } else {
-                                    if (labelsDiv) {
+                                    /*if (labelsDiv) {
                                         labelsDiv.style.display = 'none';
-                                    }
+                                    }*/
+                                    let ttEvent: any = {
+                                        action: 'tooltipDataChange',
+                                        data: false
+                                    };
+                                    self.ttDataSvc.ttDataPut(false);
+                                    // self.currentTickEvent.emit(ttEvent);
                                 }
 
                                 const x = cx2 - width / 2;
@@ -665,7 +779,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: any) {
-        this.labelsDiv.style.display = 'none';
+        //this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
         if (this._g) {
             this._g.clearSelection();

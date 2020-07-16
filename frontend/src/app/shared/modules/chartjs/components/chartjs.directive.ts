@@ -4,6 +4,7 @@ import 'chart.js';
 import customTooltip from '../../../chart.js/tooltip/custom-tooltip';
 import * as thresholdPlugin from '../../../chartjs-threshold-plugin/src/index';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
+import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
 
 Chart.defaults.global.defaultFontColor = '#000000';
 // Chart.defaults.global.defaultFontFamily = 'Monaco, monospace';
@@ -58,7 +59,7 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
      */
     _meta: any = {};
 
-    constructor( private element: ElementRef, private uConverter: UnitConverterService ) { 
+    constructor( private element: ElementRef, private uConverter: UnitConverterService, private ttDataSvc: TooltipDataService ) {
         const self = this;
         const tooltipFormatter = function(item, data) {
             const axis = self.chartType.indexOf('horizontal') >= 0 ? 'x' : 'y';
@@ -79,13 +80,51 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                 return 'Value: ' +  self.uConverter.convert(data['datasets'][0]['data'][item['index']],'',dunit, { unit: '', precision: '' }) + taghtml;
             }
         };
+
+        const tooltipFormatter2 = function(item, data) {
+            const axis = self.chartType.indexOf('horizontal') >= 0 ? 'x' : 'y';
+            const datasetIndex = item.datasetIndex;
+            const index = item.index;
+            const tags = data.datasets[datasetIndex].tooltipData[index];
+            let ctags = [];
+            for (const k in tags ) {
+                ctags.push({key: k, value: tags[k]});
+                //taghtml += '<p>' + k + ': ' +  tags[k] + '</p> OHNOES';
+            }
+            let cvalue: any;
+            if ( self.options.scales && self.options.scales[ axis + 'Axes' ][0].ticks.format ) {
+                const tickFormat = self.options.scales[axis + 'Axes'][0].ticks.format;
+                const unit = tickFormat.unit;
+                const dunit = self.uConverter.getNormalizedUnit(item[axis + 'Label'], self.options.scales[axis + 'Axes'][0].ticks.format);
+                //return 'AAAValue: ' + self.uConverter.convert(item[axis + 'Label'], unit, dunit ,{ unit: unit, precision: tickFormat.precision } ) + taghtml;
+                cvalue = self.uConverter.convert(item[axis + 'Label'], unit, dunit ,{ unit: unit, precision: tickFormat.precision } );
+            } else {
+                const dunit = self.uConverter.getNormalizedUnit(data['datasets'][0]['data'][item['index']], self.options.scales[axis + 'Axes'][0].ticks.format);
+                //return 'BBBValue: ' +  self.uConverter.convert(data['datasets'][0]['data'][item['index']],'',dunit, { unit: '', precision: '' }) + taghtml;
+                cvalue = self.uConverter.convert(data['datasets'][0]['data'][item['index']],'',dunit, { unit: '', precision: '' });
+            }
+
+            //return JSON.stringify({tags: ctags,value: cvalue});
+            return {tags: ctags, value: cvalue};
+        };
         this.defaultOptions.tooltips = {
                                         enabled: false,
                                         position: 'nearest',
-                                        custom: customTooltip,
+                                        /*custom: customTooltip,
                                         callbacks: {
                                             title: function() {},
                                             label : tooltipFormatter
+                                        }*/
+                                        custom: (ttModel) => {
+                                            if (!ttModel.body) {
+                                                self.ttDataSvc.ttDataPut(false);
+                                            } else {
+                                                self.ttDataSvc.ttDataPut(ttModel.body[0].lines[0]);
+                                            }
+                                        },
+                                        callbacks: {
+                                            title: function() {},
+                                            label : tooltipFormatter2
                                         }
                                     } ;
     }

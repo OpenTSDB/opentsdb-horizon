@@ -17,6 +17,8 @@ import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { environment } from '../../../../../../environments/environment';
+import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
+//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -114,7 +116,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private dataTransformer: DatatranformerService,
       private util: UtilsService,
       private elRef: ElementRef,
-      private unit: UnitConverterService
+      private unit: UnitConverterService,
+      private tooltipService: TooltipDataService
   ) { }
 
   ngOnInit() {
@@ -529,6 +532,10 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             payload: payload
         });
     }
+
+    if (event.action === 'tooltipDataChange') {
+        this.tooltipService.ttDataPut(event.data);
+    }
   }
 
   toggleConfigSection(section) {
@@ -578,9 +585,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
     dialogConf.panelClass = 'error-dialog-panel';
      dialogConf.data = {
       log: this.debugData,
-      query: this.storeQuery 
+      query: this.storeQuery
     };
-    
+
     // re-use?
     this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
     this.debugDialog.afterClosed().subscribe((dialog_out: any) => {
