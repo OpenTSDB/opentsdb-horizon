@@ -1,7 +1,6 @@
 <div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
-    <p>{{tooltipData.time}}</p>
-    <p>Value: {{tooltipData.value}}</p>
-    <p>Metric: {{tooltipData.metric}}</p>
+    <p>{{tooltipData.label}}</p>
+    <p>{{tooltipData.nValue}} <span *ngIf="tooltipData.sValue">({{tooltipData.sValue}})</span></p>
     <ng-container *ngIf="tooltipData.tags && tooltipData.tags.length > 0">
         <p *ngFor="let tag of tooltipData.tags">{{tag.key}}: {{tag.value}}</p>
     </ng-container>

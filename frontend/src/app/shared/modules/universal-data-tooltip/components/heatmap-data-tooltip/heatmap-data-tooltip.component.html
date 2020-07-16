@@ -1,0 +1,10 @@
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
+    <p>{{tooltipData.time}}</p>
+    <p>{{tooltipData.affectedSeries}}</p>
+    <p>Bucket Range: {{tooltipData.bucketRange}}</p>
+    <ng-container *ngIf="tooltipData.tooltipData && tooltipData.tooltipData.length > 0">
+        <table>
+            <tr *ngFor="let tt of tooltipData.tooltipData"><td>{{tt.value}}</td><td>{{tt.label}}</td></tr>
+        </table>
+    </ng-container>
+</div>

@@ -7,98 +7,55 @@ import {
     ViewChild,
     ElementRef
 } from '@angular/core';
+import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { LoggerService } from '../../../../../core/services/logger.service';
-import { Subscription, Observable, Subject } from 'rxjs';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+import { TooltipDataService } from '../../services/tooltip-data.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
-    selector: 'universal-data-tooltip',
-    templateUrl: './linechart-data-tooltip.component.html',
-    styleUrls: ['./linechart-data-tooltip.component.scss']
+    selector: 'linechart-data-tooltip',
+    templateUrl: './linechart-data-tooltip.component.html'
 })
-export class LinechartDataTooltipComponent implements OnInit, OnDestroy {
+export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') private _tooltipHidden = true;
-    @HostBinding('style') private positionStyles: SafeStyle = '';
+    @HostBinding('class.hidden') public tooltipHidden = true;
 
-    @ViewChild('tooltipOutput', {read: ElementRef}) private ttOutputEl;
-
-    // output shift direction (which direction the tooltip goes depending on edge proximity)
-    xShift: string = 'right';
-    yShift: string = 'below';
-
-    // placeholder for document mousemove listener
-    private positionListener: () => void;
-
-    // Subscriptions
-    private subscription: Subscription = new Subscription();
-
-    // local private variables
-    private scrollTimeout: any;
-    private scrollListener: any;
+    @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
     constructor(
-        // private logger: LoggerService,
-        private renderer: Renderer2,
-        private sanitizer: DomSanitizer
-    ) {}
+        ttDataSvc: TooltipDataService,
+        renderer: Renderer2,
+        sanitizer: DomSanitizer,
+        logger: LoggerService,
+    ) {
+        super(
+            ttDataSvc,
+            renderer,
+            sanitizer,
+            logger
+        );
+        // this.logger.ng('LINECHART CONSTRUCTOR');
+    }
 
     ngOnInit() {
-        // this.logger.ng('UNIVERSAL DATA TOOLTIP INIT');
-        this.addPositionListener();
-    }
 
-    show() {
-        this._tooltipHidden = false;
-    }
-
-    hide() {
-        this._tooltipHidden = true;
-    }
-
-    private addPositionListener() {
-        this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
-            if (!this._tooltipHidden) {
-                const winSize = {
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                };
-
-                // detect window right edge proximity
-                if ((winSize.width - event.x) < 200) {
-                    this.xShift = 'left';
-                } else {
-                    this.xShift = 'right';
-                }
-
-                // detect window bottom edge proximity
-                if ((winSize.height - event.y) < 200) {
-                    this.yShift = 'above';
-                } else {
-                    this.yShift = 'below';
-                }
-
-                // position styles - use transform3d to get performant positioning
-                const styleString = 'transform: translate3d(' + event.x + 'px, ' + event.y + 'px, 0);';
-
-                // tell angular to trust the styles
-                this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
-            }
+        super.ngOnInit();
+        super.dataStreamSubscribe((data: any) => {
+            // this.logger.log('LINECHART DATA CB', data);
+            return this.dataFormatter(data);
         });
     }
 
-    private removePositionListener() {
-        this.positionListener();
+    private dataFormatter(data: any): any {
+        // this.logger.log('LINECHART DATA FORMATTER', data);
+        return data;
     }
 
     /* LAST */
     ngOnDestroy() {
-        if (this.positionListener) {
-            this.removePositionListener();
-        }
-        this.subscription.unsubscribe();
+        super.ngOnDestroy();
     }
 
 }

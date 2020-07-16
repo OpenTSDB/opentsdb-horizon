@@ -1,43 +1,7 @@
 @mixin linechart-data-tooltip-component-base() {
 
     .linechart-data-tooltip {
-        position: absolute;
-        z-index: 10000;
-        display: block;
-        /* transform will be used by script to move element */
-        transform-style: preserve-3d;
-        backface-visibility: hidden;
-        // transition:transform 0.2s cubic-bezier(.02,1.23,.79,1.08);
 
-        &.hidden {
-            display: none;
-        }
-
-        .tooltip-output {
-            position: absolute;
-            background: chartreuse;
-            padding: 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-            word-break: unset;
-            @include mat-elevation(2);
-
-            &.shift-below {
-                top: calc(100% + 8px);
-            }
-
-            &.shift-above {
-                bottom: calc(100% + 8px);
-            }
-
-            &.shift-left {
-                right: calc(100% + 8px);
-            }
-
-            &.shift-right {
-                left: calc(100% + 8px);
-            }
-        }
     }
 }
 
