@@ -1,5 +1,6 @@
 import { Directive, ElementRef, OnDestroy, OnInit, Input } from '@angular/core';
-import { UniversalDataTooltipService } from '../services/universal-data-tooltip.service';
+//import { UniversalDataTooltipService } from '../services/universal-data-tooltip.service';
+import { TooltipComponentService } from '../services/tooltip-component.service';
 
 @Directive({
     // tslint:disable-next-line: directive-selector
@@ -7,7 +8,7 @@ import { UniversalDataTooltipService } from '../services/universal-data-tooltip.
 })
 export class TtMouseListenerDirective implements OnDestroy, OnInit {
 
-    @Input('ttType') tooltipType: string = 'linechart'; // line is default
+    @Input() ttType: string = 'linechart'; // line is default
 
     private _mouseEnterListener: any;
     private _mouseOutListener: any;
@@ -15,7 +16,8 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
     private _mouseMoveListener: any;
 
     constructor(
-        private service: UniversalDataTooltipService,
+        //private service: UniversalDataTooltipService,
+        private ttCompSvc: TooltipComponentService,
         private elRef: ElementRef
     ) {
         console.log('***** MOUSE LISTENER *****');
@@ -25,17 +27,25 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
         this._mouseEnterListener = this.elRef.nativeElement.addEventListener('mouseenter', (event: any) => {
 
             // tell service we are entering an element that has tooltips
-            this.service.tooltipListen(this.tooltipType);
+            // so it can set up the correct tooltip layout
+            this.ttCompSvc.tooltipType(this.ttType);
 
         }, {capture: true, passive: true});
 
         this._mouseOutListener = this.elRef.nativeElement.addEventListener('mouseout', (event: any) => {
 
             // tell service we are exiting an element that has tooltips
-            this.service.tooltipMute();
+            // we just hide it, in case the next one is the same type
+            this.ttCompSvc.tooltipMute();
 
         }, {capture: true, passive: true});
     }
+
+    /*
+    tooltipData(data: any) {
+        this.service.ttDataPut(data);
+    }
+    */
 
     /* last */
     ngOnDestroy() {
