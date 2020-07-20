@@ -100,7 +100,7 @@
                 <td mat-cell *matCellDef="let data; let i = dataIndex;">
                     <div class="metric-row-data metric-index"
                         (click)="toggleMetric(data.metric.id)"
-                        [matTooltip]="data.metric.settings.visual.visible ? 'click to disable' : 'click to enable'">
+                        [matTooltip]="inAlertEditor ? '' : data.metric.settings.visual.visible ? 'click to disable' : 'click to enable'">
                         <span class="label">
                             <input type="radio" name="metric" *ngIf="!options.enableMultiMetricSelection"
                                 [checked]="data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
@@ -186,8 +186,9 @@
                         <!-- aggregator -->
                         <div class="metric-row-data tag-aggregator">
                             <div class="tag-aggregator-wrapper">
-                                <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"
-                                    *ngIf="data.metric.tagAggregator && data.metric.tagAggregator === 'sum'"></mat-icon>
+                                <mat-icon class="aggregator-icon" fontSet="denali"
+                                    [fontIcon]="tagAggregatorIconMap[data.metric.tagAggregator]"
+                                    *ngIf="data.metric.tagAggregator"></mat-icon>
                                 <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
                                     (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
                                 <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
