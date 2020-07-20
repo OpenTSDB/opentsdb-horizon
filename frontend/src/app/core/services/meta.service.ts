@@ -70,6 +70,13 @@ export class MetaService {
         }
       }
 
+      if ( params[i].tagkeys && params[i].tagkeys.length ) {
+        filters.push({
+          'type': 'TagKeyRegex',
+          'filter': params[i].tagkeys.join('|')
+        });
+      }
+
       if ( mSource === 'aurastatus' && (type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
         filters.unshift({
           'type': 'FieldLiteralOr',
@@ -92,7 +99,6 @@ export class MetaService {
       }
       metaQuery.queries.push(query);
     }
-
     return metaQuery;
   }
 

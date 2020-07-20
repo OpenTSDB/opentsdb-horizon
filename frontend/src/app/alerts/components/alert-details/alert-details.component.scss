@@ -101,12 +101,36 @@
             flex-direction: row;
             max-height: 100%;
             max-width: 100%;
-            flex: 1 1 180px;
+            flex: 1 1 200px;
 
             .graph-wrapper,
             .legend-wrapper {
                 flex: 1;
                 display: flex;
+            }
+
+            .legend {
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
+                flex: 0 0 200px;
+            }
+            .metric-name {
+                padding: 3px;
+                border-radius: 3px;
+                cursor: pointer;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
+                }
+
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 16px;
+                    margin-right: 4px;
+                }
             }
 
             &.is-visible {
@@ -118,7 +142,7 @@
                 padding-top: 5px;
                 .graph-output {
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     justify-content: center;
                     .chart {
                         display: flex;

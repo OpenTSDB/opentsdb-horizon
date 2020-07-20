@@ -1,0 +1,78 @@
+<div class="suppress-alert" [ngClass]="{'read-only' :  config.disabled }" [formGroup]="suppressForm">
+    <div class="sentence-chain-form">
+        <div class="sentence-item" style="flex-direction:column">
+            <span class="display-name" *ngIf="!metricEdit" (click)="metricEdit=true;">
+              {{suppressForm.get('query').get('metric').get('name').value || 'Select metric'}}
+              <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+            </span>
+            <metric-autocomplete *ngIf="metricEdit"
+                                [namespace]="suppressForm.get('query').get('namespace').value"
+                                [metrics]="[suppressForm.get('query').get('metric').get('name').value]"
+                                [tagkeys]="tags" 
+                                [focus]="true"
+                                [empty]="true"
+                                (blur)="metricEdit=false"
+                                (metricOutput)="updateSuppressConfig('name', $event[0]);">
+            </metric-autocomplete>
+
+            <mat-error *ngIf="suppressForm.get('query').get('metric').get('name').errors && suppressForm.get('query').get('metric').get('name').errors.required">Metric should not be empty</mat-error>
+        </div>
+        <div class="sentence-item">
+                <tag-aggregator  [value]="suppressForm.get('query').get('metric').get('tagAggregator').value"
+                (change)="updateSuppressConfig('tagAggregator', $event)"></tag-aggregator>
+        </div>
+        <div class="sentence-item">
+            <span>By</span>
+        </div>
+        <div class="sentence-item" style="flex-direction:column">
+            <dropdown-metric-tags
+                [tags]="tags"
+                [selected]="[suppressForm.get('query').get('metric').get('groupByTags').value]"
+                [all]="false"
+                [multiple]="false"
+                (change)="updateSuppressConfig('groupByTags', $event[0])"></dropdown-metric-tags>
+                <mat-error *ngIf="suppressForm.get('query').get('metric').get('groupByTags').errors && suppressForm.get('query').get('metric').get('groupByTags').errors.required">Please select the tag</mat-error>
+        </div>
+        <div class="sentence-item">
+            <span>is</span>
+        </div>
+        <div class="sentence-item">
+            <mat-form-field appearance="fill">
+                <mat-label></mat-label>
+                <mat-select placeholder="Select" formControlName="comparisonOperator" disableOptionCentering>
+                    <mat-option value="missing">missing</mat-option>
+                    <mat-option value="above">above</mat-option>
+                    <mat-option value="above_or_equal_to">above or equal to</mat-option>
+                    <mat-option value="below">below</mat-option>
+                    <mat-option value="below_or_equal_to">below or equal to</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="sentence-item threshold" *ngIf="suppressForm.get('comparisonOperator').value !== 'missing'">
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput type="number" onkeypress="return event.charCode >= 48" formControlName="threshold" autocomplete="off" placeholder="Enter value">
+            </mat-form-field>
+            <mat-error *ngIf="suppressForm.get('threshold').errors && suppressForm.get('threshold').errors.required">Threshold should not be empty</mat-error>
+        </div>
+        <div class="sentence-item threshold">
+            <span>for the last </span>
+            <!--<time-selector [timeInSeconds]="data.slidingWindow" [isViewMode]="true"></time-selector>-->
+            <mat-hint class="info-hint">
+                <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
+                <span>sliding window is same as the one above</span>
+            </mat-hint>
+        </div>
+    </div>
+    <div class="sentence-chain-form">
+            <div class="sentence-item">
+                <span>The metric is reported every</span>
+            </div>
+            <div class="sentence-item reporting-interval">
+                <mat-form-field appearance="fill" floatLabel="never">
+                    <input matInput type="number" min="0" onkeypress="return event.charCode >= 48" formControlName="reportingInterval" autocomplete="off" placeholder="Enter value">
+                </mat-form-field>
+                <mat-hint class="info-hint">seconds</mat-hint>
+            </div>
+            <mat-error *ngIf="suppressForm.get('reportingInterval').errors && suppressForm.get('reportingInterval').errors.invalid">Reporting interval should be > 0</mat-error>
+        </div>
+</div>

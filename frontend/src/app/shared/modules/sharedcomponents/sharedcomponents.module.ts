@@ -163,7 +163,8 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
         InfoTooltipComponent,
         MetricVisualPanelComponent,
         HexToColorNamePipe,
-        DateToRelativePipe
+        DateToRelativePipe,
+        TagAggregatorComponent
     ],
     entryComponents: [
         InlineFilterEditorComponent,

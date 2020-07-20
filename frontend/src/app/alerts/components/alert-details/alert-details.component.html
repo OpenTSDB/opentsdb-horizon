@@ -3,11 +3,31 @@
         <div class="preview-wrapper"  #graphOutput  [ngClass]="{'is-visible': data && data.type === 'event' || (data.type === 'simple' && data.threshold && data.threshold.subType !== 'periodOverPeriod')}">
             <div class="graph-wrapper">
                 <div #graphOutput class="graph-output" >
+                    <div class="legend">
+                        <ng-container *ngFor="let query of queries">
+                            <ng-container *ngFor="let metric of query.metrics">
+                                <div *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value" class="metric-name" (click)="toggleQueryMetric(metric.id)">
+                                    <span class="label">
+                                        <mat-icon fontSet="denali" 
+                                            [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
+                                        <span>{{metric.name}}</span>
+                                    </span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name && suppressConfig.query.metric.groupByTags">
+                            <span class="label">
+                                <mat-icon fontSet="denali" 
+                                [fontIcon]="!chartInvisibleMetrics.includes('m1') ? 'd-check-square' : 'd-minus-square'"></mat-icon>
+                                <span>{{ suppressConfig.query.metric.name }}</span>
+                            </span>
+                        </div>
+                    </div>
                     <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
                         [data]="chartData"
-                        [size]="{'width': size.width - 50, 'height': size.height - 10}"
+                        [size]="{'width': size.width - 200, 'height': size.height - 10}"
                         [options]="options"
                         [timeseriesLegend]="tsLegendOptions"
                         (currentTickEvent)="timeseriesTickListener($event)"
@@ -28,10 +48,30 @@
             </event-list>
         </div>
 
-        <div *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
+        <div class="preview-wrapper is-visible" *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
+            <div class="legend" style="margin-top:40px">
+                <ng-container *ngFor="let query of queries">
+                    <ng-container *ngFor="let metric of query.metrics">
+                        <div  *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value" class="metric-name" (click)="toggleQueryMetric(metric.id)">
+                            <span class="label">
+                                <mat-icon fontSet="denali" 
+                                    [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
+                                <span>{{metric.name}}</span>
+                            </span>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name && suppressConfig.query.metric.groupByTags">
+                    <span class="label">
+                        <mat-icon fontSet="denali" 
+                        [fontIcon]="!chartInvisibleMetrics.includes('m1') ? 'd-check-square' : 'd-minus-square'"></mat-icon>
+                        <span>{{ suppressConfig.query.metric.name }}</span>
+                    </span>
+                </div>
+            </div>
             <alert-details-metric-period-over-period-preview
                 [chartData]="chartData"
-                [size]="size"
+                [size]="{'width': size.width - 200, 'height': size.height - 10}"
                 [options]="options"
                 [nQueryDataLoading]="nQueryDataLoading"
                 [thresholdConfig]="periodOverPeriodConfig">
@@ -136,6 +176,8 @@
                                     #periodOverPeriodForm
                                     [queries]="queries"
                                     (configChange)="periodOverPeriodChanged($event)"
+                                    [suppressConfig] = "suppressConfig"
+                                    [tags]="tags"
                                     [config]= "periodOverPeriodConfig">
                                 </alert-details-metric-period-over-period>
                                 <span *ngIf="data && data.type === 'simple' && data.threshold.subType !== 'periodOverPeriod'">
@@ -250,7 +292,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced}">
+                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': !showThresholdAdvanced}">
                                             <div class="toggle-wrap">
                                                 <a class="toggle-action" (click)="showThresholdAdvanced = !showThresholdAdvanced;">
                                                     <mat-icon fontSet="denali" [fontIcon]="showThresholdAdvanced ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
@@ -295,6 +337,14 @@
                                                     </mat-hint>
                                                 </div>
                                             </div>
+                                            <div class="form-group suppress-alert">
+                                                <div class="form-label vertical-center"><strong>Suppress alert if</strong></div>
+                                                <alert-details-suppress-config 
+                                                    [config]="suppressConfig" 
+                                                    [tags]="tags"
+                                                    (configChange)="updateSuppressConfig($event)">
+                                                </alert-details-suppress-config>
+                                                </div>
                                             <div class="form-group alert-auto-recovery-interval">
                                                     <div class="form-label vertical-center"><strong>Automatically recover from bad/warn state</strong></div>
                                                     <div>
@@ -1064,6 +1114,8 @@
                                     #periodOverPeriodForm
                                     [viewMode]="'true'"
                                     [queries]="queries"
+                                    [suppressConfig]="suppressConfig"
+                                    [tags]="tags"
                                     (configChange)="periodOverPeriodChanged($event)"
                                     [config]= "periodOverPeriodConfig">
                                 </alert-details-metric-period-over-period>
