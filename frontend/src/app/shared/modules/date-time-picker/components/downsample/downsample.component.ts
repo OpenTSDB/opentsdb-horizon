@@ -121,10 +121,19 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.downsample && this.widgetConfigTime) {
-            // we need to update form as soon as it changes
-            this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false}); 
-            this.widgetConfigTime.controls.customDownsampleValue.setValue(changes.downsample.currentValue.customValue, {emitEvent: false});
-            this,this.widgetConfigTime.controls.customDownsampleUnit.setValue(changes.downsample.currentValue.customUnit, {emitEvent: false});
+            // we need to update form as soon as it changes 
+            this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false});
+            // set to prev is they change to custom
+            if (changes.downsample.currentValue.value === 'custom')  {
+                // can be load from save dashboard
+                if (changes.downsample.currentValue.customValue !== '' && changes.downsample.currentValue.customUnit !== '') {
+                    this.widgetConfigTime.controls.customDownsampleValue.setValue(changes.downsample.currentValue.customValue, {emitEvent: false});
+                    this.widgetConfigTime.controls.customDownsampleUnit.setValue(changes.downsample.currentValue.customUnit, {emitEvent: false}); 
+                } else {
+                    this.setCustomDownsample(changes.downsample.previousValue.value);
+                }
+            } 
+
             this.selectedAggregators = changes.downsample.currentValue.aggregators;
             this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
             this.overrideResolution = changes.downsample.currentValue.value === 'auto' ? false : true;
@@ -140,9 +149,15 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnDestroy() {
         // destroy our form control subscription
-        this.selectedDownsample_Sub.unsubscribe();
-        this.widgetConfigTimeSub.unsubscribe();
-        this.customDownsampleUnitSub.unsubscribe();
+        if (this.selectedDownsample_Sub) {
+            this.selectedDownsample_Sub.unsubscribe();
+        }
+        if (this.widgetConfigTimeSub) {
+            this.widgetConfigTimeSub.unsubscribe();
+        }
+        if (this.customDownsampleUnitSub) {
+            this.customDownsampleUnitSub.unsubscribe();
+        }
     }
 
     get selectedDownsampleValue(): string {
@@ -153,43 +168,29 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
+    setCustomDownsample(ds: string = '10m') {
+        let customValue: any = ds.slice(0,-1);
+        let customUnit = ds.slice(-1);
+        if (customUnit === 'd') {
+            customValue = customValue * 24;
+            customUnit = 'h';
+        }
+        this.widgetConfigTime.controls.customDownsampleValue.setValue(customValue, {emitEvent: false});
+        this.widgetConfigTime.controls.customDownsampleUnit.setValue(customUnit, {emitEvent: false});        
+    }
+
     createForm() {
         // ?INFO: these are mapped to the form variables set at top
         const isCustomDownsample = this.downsample.value === 'custom' ? true : false;
-        const customUnit = this.downsample.customUnit || this.customDownsampleUnit;
+        const customUnit = this.downsample.customUnit;
 
         this.widgetConfigTime = this.fb.group({
             aggregators:
                 new FormControl(this.selectedAggregators),
             'downsample': new FormControl(this.downsample.value || this.selectedDownsample),
-            'customDownsampleValue':
-                new FormControl(
-                    {
-                        value: this.downsample.customValue || this.customDownsampleValue,
-                        disabled: !isCustomDownsample ? true : false
-                    },
-                    [Validators.min(customUnit === 's' ? 10 : 1), Validators.pattern('^[0-9]+$'), Validators.required]
-                ),
-            'customDownsampleUnit':
-                new FormControl(
-                    {
-                        value: customUnit,
-                        disabled: isCustomDownsample ? false : true
-                    }
-                )
+            'customDownsampleValue': new FormControl(this.downsample.customValue),
+            'customDownsampleUnit': new FormControl(customUnit)
         });
-
-        this.selectedDownsample_Sub = this.widgetConfigTime.get('downsample').valueChanges.subscribe(function (data) {
-            // console.log('SELECTED DOWNSAMPLE CHANGED', data, this);
-            if (data === 'custom') {
-                this.widgetConfigTime.controls.customDownsampleValue.enable();
-                this.widgetConfigTime.controls.customDownsampleUnit.enable();
-            } else {
-                this.widgetConfigTime.controls.customDownsampleValue.disable();
-                this.widgetConfigTime.controls.customDownsampleUnit.disable();
-            }
-        }.bind(this));
-
         this.customDownsampleUnitSub = this.widgetConfigTime.controls.customDownsampleUnit.valueChanges
             .pipe(
                 distinctUntilChanged()
@@ -205,16 +206,35 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
                 debounceTime(100)
             )
             .subscribe(function (data) {
+                // when just switch to custom it is invalid so we need to check
+                if (data.downsample === 'custom') {
+                    if (data.customDownsampleValue === '' || data.customDownsampleUnit === '') {
+                        this.widgetConfigTime.setErrors({ 'invalid': true });
+                    }
+                }
                 if (this.widgetConfigTime.valid) {
                     this.downsampleChange.emit({ data });
                 }
             }.bind(this));
     }
 
-
     setAggregator(e) {
         this.selectedAggregators = [e.value];
         this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
+    }
+
+    setDownsample(e) {
+        if (e.value === 'custom') {
+            // previous value
+            if (this.selectedDownsample === 'auto') {
+                this.widgetConfigTime.controls.customDownsampleValue.setValue(this.customDownsampleValue);
+                this.widgetConfigTime.controls.customDownsampleUnit.setValue(this.customDownsampleUnit); 
+            } else {
+                this.setCustomDownsample(this.selectedDownsample);
+            }
+        }
+        //now set this value
+        this.selectedDownsample = e.value;
     }
 
     changeToggle() {

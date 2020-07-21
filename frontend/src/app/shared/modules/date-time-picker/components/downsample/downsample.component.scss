@@ -13,7 +13,6 @@
             padding-left: 8px;
 
             a {
-                color: blue;
                 text-decoration: underline;
             }
         }
@@ -191,6 +190,12 @@
 
     .time-downsample-component {
         // style rules here
+
+        .advanced-toggle {
+            a {
+                color: map-get($foreground, link);
+            }
+        }
 
         &.advanced-open {
             .advanced-toggle {

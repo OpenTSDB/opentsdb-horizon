@@ -1,9 +1,13 @@
 <ng-template [ngIf]="!options.noVal" [ngIfElse]="noValueView">
-  <mat-form-field appearance="standard" floatLabel="never" [style.width.px]="controlWidth" [ngClass]="{'readonly-mode': !isEdit}" >
+  <mat-form-field appearance="standard" floatLabel="never" [ngClass]="{'readonly-mode': !isEdit}" >
     <div matPrefix>{{fx.fxCall}}</div>
     <input matInput [formControl]="inputVal" (keyup.enter)="saveInput()" (click)="editInput()" [readonly]="!isEdit"
-      (blur)="saveInput()" autocomplete="off">
-    <mat-icon matSuffix fontSet="denali" fontIcon="d-close" (click)="delFx(fx.id)"></mat-icon>
+      (blur)="saveInput()" autocomplete="off"
+      size="1" oninput="this.parentNode.dataset.value = this.value">
+    <!--<mat-icon matSuffix fontSet="denali" fontIcon="d-close" (click)="delFx(fx.id)"></mat-icon> -->
+    <button mat-mini-fab matSuffix class="delete-function-button" (click)="delFx(fx.id)">
+        <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+    </button>
     <mat-hint *ngIf="inputVal.errors">{{getErrorMessage()}}</mat-hint>
   </mat-form-field>
 </ng-template>

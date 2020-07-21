@@ -1230,9 +1230,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.setAutoRefresh(message.payload);
                 break;
             case 'RefreshDashboard':
-                if (this.tplVariablePanel.mode.view) {
-                    this.refresh();
-                }
+                // let they refresh as they wish.
+                this.refresh();
                 break;
             case 'SetDBDownsample': {
                 this.store.dispatch(new UpdateDownsample(message.payload));

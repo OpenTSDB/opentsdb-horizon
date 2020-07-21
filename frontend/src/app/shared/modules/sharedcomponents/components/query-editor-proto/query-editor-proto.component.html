@@ -30,10 +30,12 @@
                 <mat-icon fontSet="denali" fontIcon="d-minus-square" *ngIf="!query.settings.visual.visible"></mat-icon>
             </button>
             <button mat-icon-button color="primary" *ngIf="options.cloneQuery"
+                [matTooltip]="'click to clone query'"
                 (click)="cloneQuery(); $event.stopPropagation();">
                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
             </button>
             <button mat-icon-button color="primary" [disabled]="!canDeleteQuery()" *ngIf="options.deleteQuery"
+                [matTooltip]="'click to delete query'"
                 (click)="confirmQueryDelete(label); $event.stopPropagation();">
                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             </button>
@@ -98,7 +100,7 @@
                 <td mat-cell *matCellDef="let data; let i = dataIndex;">
                     <div class="metric-row-data metric-index"
                         (click)="toggleMetric(data.metric.id)"
-                        [matTooltip]="data.metric.settings.visual.visible ? 'click to disable' : 'click to enable'">
+                        [matTooltip]="inAlertEditor ? '' : data.metric.settings.visual.visible ? 'click to disable' : 'click to enable'">
                         <span class="label">
                             <input type="radio" name="metric" *ngIf="!options.enableMultiMetricSelection"
                                 [checked]="data.metric.settings.visual.visible" (click)="toggleMetric(data.metric.id)">
@@ -180,11 +182,13 @@
             <ng-container matColumnDef="modifiers">
                 <th mat-header-cell *matHeaderCellDef>modifier</th>
                 <td mat-cell *matCellDef="let data; let i = dataIndex;" style="width: 100%">
-                    <div style="display: flex; align-items: flex-start;">
+                    <div style="display: flex; align-items: flex-start; flex-wrap: wrap;">
                         <!-- aggregator -->
                         <div class="metric-row-data tag-aggregator">
                             <div class="tag-aggregator-wrapper">
-                                <mat-icon class="aggregator-icon" fontSet="denali" fontIcon="d-value-sum"></mat-icon>
+                                <mat-icon class="aggregator-icon" fontSet="denali"
+                                    [fontIcon]="tagAggregatorIconMap[data.metric.tagAggregator]"
+                                    *ngIf="data.metric.tagAggregator"></mat-icon>
                                 <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
                                     (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
                                 <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
@@ -197,7 +201,6 @@
                                 </dropdown-metric-tags>
                             </div>
                         </div>
-
                         <!-- summarizer selector -->
                         <div class="metric-row-data summarizer-selector" *ngIf="options.enableSummarizer">
                             <div class="summarizer-selector-wrapper">
