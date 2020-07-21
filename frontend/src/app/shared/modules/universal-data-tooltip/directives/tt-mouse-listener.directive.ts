@@ -26,9 +26,19 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
     ngOnInit() {
         this._mouseEnterListener = this.elRef.nativeElement.addEventListener('mouseenter', (event: any) => {
 
+            // find the outer boundary
+            const el = this.elRef.nativeElement;
+            let mBoundaryEl;
+            if (el.closest('.gridster-stage')) {
+                mBoundaryEl = el.closest('.widget-loader');
+            }
+            else if (el.closest('.edit-view-container')) {
+                mBoundaryEl = this.elRef.nativeElement;
+            }
+
             // tell service we are entering an element that has tooltips
             // so it can set up the correct tooltip layout
-            this.ttCompSvc.tooltipType(this.ttType);
+            this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
 
         }, {capture: true, passive: true});
 

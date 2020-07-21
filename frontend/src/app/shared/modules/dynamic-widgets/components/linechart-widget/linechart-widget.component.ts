@@ -1031,7 +1031,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     setLegendDiv() {
-        this.options.labelsDiv = (this.dygraphLegend) ? this.dygraphLegend.nativeElement : {};
+        this.options.labelsDiv = (this.dygraphLegend) ? this.dygraphLegend.nativeElement : {exists: false};
         this.legendDisplayColumns = ['color'].concat(this.widget.settings.legend.columns || []).concat(['name']);
     }
 

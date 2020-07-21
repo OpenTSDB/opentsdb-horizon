@@ -23,7 +23,7 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
 
         // scroll listener is also the boundary
         // so let ttCompSvc know what element to check against
-        this.ttCompSvc.boundaryRegister(this.elRef);
+        this.ttCompSvc.boundaryRegister(this.elRef.nativeElement);
 
         // watch for any scrolling, and disable tooltip if that happens
         this._scrollListener = this.elRef.nativeElement.addEventListener('scroll', (event: any) => {

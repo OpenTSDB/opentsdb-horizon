@@ -24,6 +24,8 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
 
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
+    positionStrategy: string = 'sticky';
+
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,

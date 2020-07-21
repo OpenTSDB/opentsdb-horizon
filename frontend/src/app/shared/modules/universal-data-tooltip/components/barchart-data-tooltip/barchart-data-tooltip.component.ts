@@ -17,6 +17,8 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
 
     @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
+    positionStrategy: 'sticky';
+
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,

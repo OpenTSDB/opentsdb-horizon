@@ -12,31 +12,95 @@
             display: none;
         }
 
-        .tooltip-output {
-            position: absolute;
-            background: chartreuse;
-            padding: 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-            word-break: unset;
-            @include mat-elevation(2);
+        &.move-position-strategy {
+            .tooltip-output {
+                position: absolute;
+                background: chartreuse;
+                padding: 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+                word-break: unset;
+                @include mat-elevation(2);
 
-            &.shift-below {
-                top: calc(100% + 8px);
-            }
+                &.shift-below {
+                    top: calc(100% + 8px);
+                }
 
-            &.shift-above {
-                bottom: calc(100% + 8px);
-            }
+                &.shift-above {
+                    bottom: calc(100% + 8px);
+                }
 
-            &.shift-left {
-                right: calc(100% + 8px);
-            }
+                &.shift-left {
+                    right: calc(100% + 8px);
+                }
 
-            &.shift-right {
-                left: calc(100% + 8px);
+                &.shift-right {
+                    left: calc(100% + 8px);
+                }
             }
         }
+
+        &.sticky-position-strategy {
+            .tooltip-output {
+                position: absolute;
+                background: rgba(0,0,0,.85);
+                padding: 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+                word-break: unset;
+                min-width: 100%;
+                //@include mat-elevation(2);
+
+                &.shift-below {
+                    top: 100%;
+
+                    &.shift-left {
+                        border-top-right-radius: 0;
+
+                        &:not(.is-wider) {
+                            border-top-left-radius: 0;
+                        }
+                    }
+
+                    &.shift-right {
+                        border-top-left-radius: 0;
+
+                        &:not(.is-wider) {
+                            border-top-right-radius: 0;
+                        }
+                    }
+                }
+
+                &.shift-above {
+                    bottom: 100%;
+
+                    &.shift-left {
+                        border-bottom-right-radius: 0;
+
+                        &:not(.is-wider) {
+                            border-bottom-left-radius: 0;
+                        }
+                    }
+
+                    &.shift-right {
+                        border-bottom-left-radius: 0;
+
+                        &:not(.is-wider) {
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+                }
+
+                &.shift-left {
+                    right: 0;
+                }
+
+                &.shift-right {
+                    left: 0;
+                }
+            }
+        }
+
     }
 }
 

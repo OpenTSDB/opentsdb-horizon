@@ -35,7 +35,12 @@ export class TooltipComponentService {
     /* ELEMENTS */
     private _componentRef: ComponentRef<any>;
     private _domElem: HTMLElement;
-    private _boundaryElRef: ElementRef;
+    private _boundaryElRef: HTMLElement;
+    private _mouseElRef: HTMLElement;
+
+    get mouseElRef(): HTMLElement {
+        return this._mouseElRef;
+    }
 
     /* VARIABLES */
     private _prevTtType: string;
@@ -53,7 +58,7 @@ export class TooltipComponentService {
     */
 
     // comes from tt-scroll-listener
-    boundaryRegister(elRef: ElementRef) {
+    boundaryRegister(elRef: HTMLElement) {
         // this.logger.log('BOUNDARY REGISTER', elRef);
         this._boundaryElRef = elRef;
     }
@@ -74,9 +79,16 @@ export class TooltipComponentService {
     }
 
     // comes from tt-mouse-listener
-    tooltipType(type: string) {
+    tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
         console.log('TOOLTIP TYPE', type);
+        if (this._mouseElRef !== mouseBoundaryEl) {
+            this._mouseElRef = mouseBoundaryEl;
 
+            if (type === this._prevTtType) {
+                // same tooltip type, but need to update the mouse boundary element
+                this._componentRef.instance.mouseBoundaryEl = this.mouseElRef;
+            }
+        }
         if (type !== this._prevTtType) {
             // destroy old component
             if (this._componentRef) {
@@ -84,7 +96,6 @@ export class TooltipComponentService {
             }
             this.createComponent(type);
         }
-
         this._componentRef.instance.show();
     }
 
@@ -119,7 +130,8 @@ export class TooltipComponentService {
             this._componentRef =
                 factory.create(this.injector);
 
-            //this._componentRef.instance.dataStream(this.ttStreamListen());
+            this._componentRef.instance.mouseBoundaryEl = this._mouseElRef;
+            this._componentRef.instance.scrollBoundaryEl = this._boundaryElRef;
 
             this._domElem =
                 (this._componentRef.hostView as EmbeddedViewRef<any>)
@@ -152,26 +164,6 @@ export class TooltipComponentService {
             return TOOLTIP_TYPES[name];
         } else {
             return TOOLTIP_TYPES['linechart']; // default
-        }
-        switch (name) {
-
-            // each will have their own, but right now default to linechart
-            case 'heatmap':
-                return HeatmapDataTooltipComponent;
-                break;
-            case 'barchart':
-            case 'donut':
-            case 'topn':
-            case 'linechart':
-                return LinechartDataTooltipComponent;
-                break;
-            // these don't have tooltips?
-            case 'bignumber':
-            case 'markdown':
-            case 'events':
-            default:
-                return false;
-                break;
         }
     }
 }

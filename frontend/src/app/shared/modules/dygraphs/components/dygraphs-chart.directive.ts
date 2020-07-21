@@ -86,9 +86,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.labelsDiv.classList.add('dygraph-legend');
                 // this.element.nativeElement.parentNode.appendChild(this.labelsDiv);
                 parent.appendChild(this.labelsDiv);
-            }*/
+            }
+            this.options.labelsDiv = this.labelsDiv;
+            */
 
-            //this.options.labelsDiv = this.labelsDiv;
+            // still create an element, but not in document, because dygraph legend plugin still looks for it
+            // TODO: create a custom dygraph legend/label plugin that will eliminate the need for this
+            const fakeLabelsDiv = document.createElement('div');
+            fakeLabelsDiv.classList.add('dygraph-legend');
+            this.options.labelsDiv = fakeLabelsDiv;
         }
 
         /* part of coming pr change*/
@@ -278,16 +284,20 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
         // Line Chart Tooltip formatting
         const legendFormatter = function (data) {
-            const seriesConfig = this.user_attrs_.series;
-            // console.log('%cLEGEND FORMATTER', 'color: white; background-color: maroon; padding 2px;', data, seriesConfig);
+            const options = this.user_attrs_;
+            const seriesConfig = options.series;
+            console.log('%cLEGEND FORMATTER', 'color: white; background-color: maroon; padding 2px;', data, seriesConfig);
 
             let ttEvent: any = {
                 action: 'tooltipDataChange',
-                data: {}
+                data: {
+                    multigraph: self.multigraph
+                }
             };
             //if (data.x == null) { return ''; }
                 const labelsDiv = this.user_attrs_.labelsDiv;
-                if (labelsDiv) {
+                console.log('LABELS DIV', typeof(labelsDiv));
+                if (labelsDiv && !labelsDiv.hasOwnProperty('exists')) {
                     labelsDiv.style.display = 'none';
                 }
             //    return '';
@@ -301,17 +311,23 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 // no data
                 ttEvent.data = false;
             } else {
-                ttEvent.data.time = data.xHTML;
+                ttEvent.data.timestamp = data.x;
+                ttEvent.data.timestampFormatted =
+                    options.labelsUTC ? moment(data.x).utc().format('YYYY/MM/DD HH:mm') : moment(data.x).format('YYYY/MM/DD HH:mm');
+
                 if (self.chartType !== 'heatmap') {
                     data.series.forEach(function (series) {
                         if (!series.isVisible || !series.isHighlighted) {
                             return;
                         }
-                        const tags = seriesConfig[series.label].tags;
+
                         const label = seriesConfig[series.label].label;
-                        const metric = (tags.metric !== label) ? label : tags.metric;
-                        ttEvent.data.value = series.yHTML;
-                        ttEvent.data.metric = metric;
+                        const tags = seriesConfig[series.label].tags;
+
+                        ttEvent.data.color = seriesConfig[series.label].color;
+                        ttEvent.data.value = series.y;
+                        ttEvent.data.valueFormatted = series.yHTML;
+                        ttEvent.data.metric = (tags.metric !== label) ? label : tags.metric;
                         ttEvent.data.tags = [];
 
                         for (const k in tags) {
@@ -419,7 +435,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
             let ttEvent: any = {
                 action: 'tooltipDataChange',
-                data: {}
+                data: {
+                    multigraph: self.multigraph
+                }
             };
 
             /* REQS
@@ -440,7 +458,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 .range(Array.from(Array(options.heatmap.buckets), (x, index) => (index + 1)));
             const range: any = yScale.invertExtent(bucket);
 
-            ttEvent.data.time = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
+            ttEvent.data.timestamp = x;
+            ttEvent.data.timestampFormatted = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
+
             ttEvent.data.affectedSeries = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision }) + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
             ttEvent.data.bucketRange = [range[0], range[1]];
 
