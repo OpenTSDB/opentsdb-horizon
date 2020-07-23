@@ -10,7 +10,7 @@ import {
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { LoggerService } from '../../../../../core/services/logger.service';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { TooltipDataService } from '../../services/tooltip-data.service';
+import { TooltipDataService, TooltipData } from '../../services/tooltip-data.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -20,11 +20,10 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') public tooltipHidden = true;
-
+    // @HostBinding('class.hidden') public tooltipHidden = true;
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
-    positionStrategy: string = 'sticky';
+    //positionStrategy: string = 'sticky';
 
     constructor(
         ttDataSvc: TooltipDataService,
@@ -44,7 +43,7 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
     ngOnInit() {
 
         super.ngOnInit();
-        super.dataStreamSubscribe((data: any) => {
+        super._dataStreamSubscribe((data: any) => {
             // this.logger.log('LINECHART DATA CB', data);
             return this.dataFormatter(data);
         });

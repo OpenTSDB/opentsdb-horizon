@@ -14,7 +14,7 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 export class HeatmapDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.heatmap-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') public tooltipHidden = true;
+    // @HostBinding('class.hidden') public tooltipHidden = true;
 
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
@@ -35,7 +35,15 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
 
     ngOnInit() {
         super.ngOnInit();
-        super.dataStreamSubscribe();
+        super.dataStreamSubscribe((data: any) => {
+            // this.logger.log('HEATMAP DATA CB', {data});
+            return this.dataFormatter(data);
+        });
+    }
+
+    private dataFormatter(data: any): any {
+        // this.logger.log('HEATMAP DATA FORMATTER', data);
+        return data;
     }
 
     /* Last */

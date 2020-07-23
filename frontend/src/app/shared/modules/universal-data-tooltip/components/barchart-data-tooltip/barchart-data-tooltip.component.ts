@@ -13,7 +13,7 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 export class BarchartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.barchart-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') public tooltipHidden = true;
+    // @HostBinding('class.hidden') public tooltipHidden = true;
 
     @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
@@ -38,14 +38,6 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         super.ngOnInit();
         super.dataStreamSubscribe((data: any) => {
             this.logger.log('BC DATA', data);
-            if (!data) {
-                this.hide();
-                return false;
-            } else {
-                this.show();
-                return data;
-            }
-
         });
     }
 

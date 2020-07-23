@@ -19,11 +19,28 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
         return this.positionStrategy === 'sticky';
     }
 
-    public tooltipHidden: boolean;
+    private _tooltipHidden: boolean;
+    @HostBinding('class.hidden')
+    private get tooltipHidden(): boolean {
+        if (!this.tooltipData) {
+            return true; // if no data, automatically hide it
+        }
+        return this._tooltipHidden;
+    };
+
+    private set tooltipHidden(val: boolean) {
+        this._tooltipHidden = val;
+    }
+
     public ttOutputEl: ElementRef;
     public tooltipData: any = {};
     public mouseBoundaryEl: HTMLElement;
     public scrollBoundaryEl: HTMLElement;
+
+    // NEW STUFF
+    public _ttData: any = {};
+    public _ttPosition: any = {};
+    // END NEW STUFF
 
     // output shift direction (which direction the tooltip goes depending on edge proximity)
     public xShift: string = 'right'; // right || left
@@ -35,6 +52,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     private positionListener: () => void;
 
     private dataStream$: Observable<any>;
+    private _dataStream$: Observable<any>;
 
     private subscription: Subscription = new Subscription();
 
@@ -48,6 +66,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     ngOnInit() {
         // start listening to tooltip data service
         this.dataStream$ = this.ttDataSvc.ttStreamListen();
+        this._dataStream$ = this.ttDataSvc._ttStreamListen();
         // start watching mouse position
         this.addPositionListener();
     }
@@ -55,12 +74,27 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     dataStreamSubscribe(dataFormatter?: Function) {
         this.subscription.add(this.dataStream$.subscribe((data: any) => {
             // this.logger.log('DT STREAM DATA', data);
-            if (data === false) {
+            if (!data) {
                 this.hide();
             } else {
+                this.tooltipData = (dataFormatter) ? dataFormatter(data) : data;
                 this.show();
             }
-            this.tooltipData = (dataFormatter) ? dataFormatter(data) : data;
+        }));
+    }
+
+    _dataStreamSubscribe(dataFormatter?: Function) {
+        this.subscription.add(this._dataStream$.subscribe((ttData: any) => {
+            this.logger.log('DT STREAM DATA', ttData);
+            if (!ttData) {
+                this._ttData = false;
+                this.hide();
+            } else {
+                this._ttPosition = ttData.position;
+                this._ttData = (dataFormatter) ? dataFormatter(ttData.data) : ttData.data;
+                this.show();
+                this._positioner();
+            }
         }));
     }
 
@@ -79,10 +113,12 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     }
 
     addPositionListener() {
+
         // if the strategy is 'sticky'
         if (this.positionStrategy === 'sticky') {
             this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
-                if (!this.tooltipHidden) {
+                this.logger.ng('TOOLTIP HIDDEN', event);
+                if (!this.tooltipHidden && this.tooltipData) {
                     const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
                     const winSize = {
                         width: window.innerWidth,
@@ -107,7 +143,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                     const offset = 4;
 
                     // detect window right edge proximity
-                    //if ((winSize.width - event.x) < (outputCoords.width + offsetAmount)) {
                     if ((wrapCoords.right + outputCoords.width) > winSize.width) {
                         this.xShift = 'left';
                     } else {
@@ -116,7 +151,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                     translate.x = wrapCoords.left;
 
                     // detect window bottom edge proximity
-                    //if ((winSize.height - wrapCoords.bottom) < (outputCoords.height + offsetAmount)) {
                     if ((wrapCoords.bottom + outputCoords.height) > winSize.height) {
                         this.yShift = 'above';
                         translate.y = wrapCoords.top + offset;
@@ -144,7 +178,8 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
         // if the strategy is 'move' (move with mouse)
         if (this.positionStrategy === 'move') {
             this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
-                if (!this.tooltipHidden) {
+                // this.logger.ng('TOOLTIP HIDDEN', {hidden: this.tooltipHidden, data: this.tooltipData });
+                if (!this.tooltipHidden && this.tooltipData) {
                     const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
                     const winSize = {
                         width: window.innerWidth,
@@ -181,6 +216,14 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     removePositionListener() {
         this.positionListener();
+    }
+
+    /* POSITIONER */
+    private _positioner() {
+        this.logger.ng('POSITIONER', this._ttPosition);
+        if (this.positionListener) {
+            this.positionListener(); // remove
+        }
     }
 
     /* Last */

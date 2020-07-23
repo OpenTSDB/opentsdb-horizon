@@ -13,7 +13,7 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 export class DonutDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.donut-data-tooltip') private _hostClass = true;
-    @HostBinding('class.hidden') public tooltipHidden = true;
+    // @HostBinding('class.hidden') public tooltipHidden = true;
 
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 

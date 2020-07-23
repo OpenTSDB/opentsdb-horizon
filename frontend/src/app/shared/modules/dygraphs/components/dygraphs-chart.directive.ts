@@ -14,6 +14,8 @@ import { LoggerService } from '../../../../core/services/logger.service';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
 import { setLines } from '@angular/material';
 
+
+
 @Directive({
     // tslint:disable-next-line: directive-selector
     selector: '[dygraphsChart]',
@@ -108,7 +110,12 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             this.lastSeriesHighlighted = seriesName;
             console.log('%cLINE CHART HIGHLIGHT', 'color: white; background: purple; padding: 2px;', e, x, points, row, seriesName);
 
-            //* BELOW IS FOR ISLAND LEGEND STUFF *//
+            //***************************************
+            //**  BELOW IS FOR ISLAND LEGEND STUFF  *
+            //***************************************
+            const options = this.user_attrs_;
+            const series = options.series;
+
             /* Commenting out for now
                 will be part of next PR that will improve tooltip movement*/
             if (!self.firstTickHighlight) {
@@ -116,8 +123,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
 
             if (self.timeseriesLegend.open && self.timeseriesLegend.trackMouse) {
-                const options = this.user_attrs_;
-                const series = options.series;
+                //const options = this.user_attrs_;
+                //const series = options.series;
 
                 // raw data row index
                 // need this because we want to populate the non-visible lines (if any)
@@ -284,16 +291,22 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
         // Line Chart Tooltip formatting
         const legendFormatter = function (data) {
+
+            //***************************************
+            //**  COMMON VARIABLES                  *
+            //***************************************
             const options = this.user_attrs_;
             const seriesConfig = options.series;
-            console.log('%cLEGEND FORMATTER', 'color: white; background-color: maroon; padding 2px;', data, seriesConfig);
 
-            let ttEvent: any = {
-                action: 'tooltipDataChange',
-                data: {
-                    multigraph: self.multigraph
-                }
+            //* Setup base tooltip data object */
+            let ttData: any = {
+                multigraph: self.multigraph
             };
+
+
+            console.log('%cLEGEND FORMATTER', 'color: white; background-color: maroon; padding 2px;', data, arguments);
+
+
             //if (data.x == null) { return ''; }
                 const labelsDiv = this.user_attrs_.labelsDiv;
                 console.log('LABELS DIV', typeof(labelsDiv));
@@ -309,10 +322,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             // formatting data for tooltip
             if (data.x === null || data.x === undefined) {
                 // no data
-                ttEvent.data = false;
+                self.ttDataSvc._ttDataPut(false);
             } else {
-                ttEvent.data.timestamp = data.x;
-                ttEvent.data.timestampFormatted =
+                ttData.timestamp = data.x;
+                ttData.timestampFormatted =
                     options.labelsUTC ? moment(data.x).utc().format('YYYY/MM/DD HH:mm') : moment(data.x).format('YYYY/MM/DD HH:mm');
 
                 if (self.chartType !== 'heatmap') {
@@ -324,19 +337,21 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         const label = seriesConfig[series.label].label;
                         const tags = seriesConfig[series.label].tags;
 
-                        ttEvent.data.color = seriesConfig[series.label].color;
-                        ttEvent.data.value = series.y;
-                        ttEvent.data.valueFormatted = series.yHTML;
-                        ttEvent.data.metric = (tags.metric !== label) ? label : tags.metric;
-                        ttEvent.data.tags = [];
+                        ttData.color = seriesConfig[series.label].color;
+                        ttData.value = series.y;
+                        ttData.valueFormatted = series.yHTML;
+                        ttData.metric = (tags.metric !== label) ? label : tags.metric;
+                        ttData.tags = [];
 
                         for (const k in tags) {
                             if (k !== 'metric') {
-                                ttEvent.data.tags.push({key: k, value: tags[k]});
+                                ttData.tags.push({key: k, value: tags[k]});
                             }
                         }
                     });
                 }
+
+                self.ttDataSvc._ttDataPut({data: ttData, position: {}});
             }
 
             /* COMMENTING OUT FOR NOW
@@ -361,9 +376,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 html += '<p>UGGH</p>';
             }*/
             //return html;
-            console.log('==[LINECHART]======>>>', ttEvent);
-            //self.currentTickEvent.emit(ttEvent);
-            self.ttDataSvc.ttDataPut(ttEvent.data);
+            console.log('==[LINECHART]======>>>', ttData);
+            // self.currentTickEvent.emit(ttEvent);
+            //self.ttDataSvc.ttDataPut({data: ttData, position: });
+            //self.ttDataSvc._ttDataPut({data: ttData, position: plotArea});
             return '';
         };
 
@@ -383,7 +399,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         // heatmap legend
         const setHeatmapLegend = function (event, g, x, bucket) {
 
-
+            // console.log('%cHEATMAP LEGEND', 'color: white; background-color: maroon; padding 2px;', {event, g, x, bucket});
 
             /* OLD
             const labelsDiv = g.user_attrs_.labelsDiv;
@@ -461,22 +477,26 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             ttEvent.data.timestamp = x;
             ttEvent.data.timestampFormatted = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
 
-            ttEvent.data.affectedSeries = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision }) + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
+            const percentage = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision });
+            ttEvent.data.affectedSeries = percentage + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
             ttEvent.data.bucketRange = [range[0], range[1]];
 
-            ttEvent.data.tooltipData = [];
+            ttEvent.data.color = options.heatmap.color; // base color of heatmap
+            ttEvent.data.percentage = percentage; // use this to calculate opacity of heatmap color;
+
+            ttEvent.data.bucketValues = [];
             const n = tooltipData.length < 5 ? tooltipData.length : 5;
             for (let i = 0; i < n; i++) {
                 const dunit = self.uConverter.getNormalizedUnit(tooltipData[i].v, format);
                 const val = self.uConverter.convert(tooltipData[i].v, format.unit, dunit, { unit: format.unit, precision: precision });
 
-                let ttData = {label: tooltipData[i].label, value: val};
-                ttEvent.data.tooltipData.push(ttData);
+                let ttData = {label: tooltipData[i].label, value: val, tags: tooltipData[i].tags };
+                ttEvent.data.bucketValues.push(ttData);
             }
 
-            console.log('==[HEATMAP]======>>>', ttEvent);
+            // console.log('==[HEATMAP]======>>>', ttEvent);
             self.ttDataSvc.ttDataPut(ttEvent.data);
-            //self.currentTickEvent.emit(ttEvent);
+            // self.currentTickEvent.emit(ttEvent);
         };
 
         if (!changes) {
@@ -504,10 +524,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.options.plugins = [ThresholdsPlugin];
 
                 if (this.chartType === 'line') {
-                    if (this.options.labelsDiv) {
+                    // if (this.options.labelsDiv) {
                         this.options.highlightCallback = mouseover;
-                    }
-                    this.options.legendFormatter = legendFormatter;
+                    // }
+                    //this.options.legendFormatter = legendFormatter;
                     this.options.showLabelsOnHighlight = false;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
                         // we only handle xzoom
@@ -535,8 +555,128 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     };
 
                     /*this.options.interactionModel.mousemove = function (event, g, context) {
-                        console.log('%cLINE CHART MOUSEMOVE', 'color: white; background: red; padding: 2px;', event, g, context);
-                    }*/
+                        console.log('%cLINE CHART MOUSEMOVE', 'color: white; background: red; padding: 2px;', event, g, context, arguments);
+
+                        // first check if within plotted area
+                        const plotArea = g.layout_.getPlotArea();
+                        const graphDiv = g.graphDiv;
+                        const graphDivCoords = graphDiv.getBoundingClientRect();
+                        const offsetCheck = {
+                            xMin: graphDivCoords.left + plotArea.x,
+                            xMax: graphDivCoords.right,
+                            yMin: graphDivCoords.top,
+                            yMax: graphDivCoords.top + plotArea.h
+                        };
+
+                        console.log('********* EVENT **********', {offsetCheck, event: {x: event.x, y: event.y}});
+
+                        if (
+                            (event.x > offsetCheck.xMin && event.x < offsetCheck.xMax) &&
+                            (event.y > offsetCheck.yMin && event.y < offsetCheck.yMax)
+                        ) {
+
+                            const ACCEPTABLE_OFFSET_RANGE = 8;
+
+                            let graphPos = Dygraph.findPos(graphDiv),
+                                canvasX = Dygraph.pageX(event) - graphPos.x,
+                                canvasY = Dygraph.pageY(event) - graphPos.y,
+                                rows = g.numRows(),
+                                cols = g.numColumns(),
+                                axes = g.numAxes(),
+                                diffX, diffY, xPos, yPos, inputTime, row, col, axe;
+
+                            for (row = 0; row < rows; row++) {
+                                inputTime = g.getValue(row, 0);
+                                xPos = g.toDomCoords(inputTime, null)[0];
+                                diffX = Math.abs(canvasX - xPos);
+
+                                if (diffX < ACCEPTABLE_OFFSET_RANGE) {
+                                    for (col = 1; col < cols; col++) {
+                                        let inputValue = g.getValue(row, col);
+                                        if (inputValue === null) {
+                                            continue;
+                                        }
+
+                                        for (axe = 0; axe < axes; axe++) {
+                                            yPos = g.toDomCoords(null, inputValue, axe)[1];
+                                            diffY = Math.abs(canvasY - yPos);
+
+                                            if (diffY < ACCEPTABLE_OFFSET_RANGE) {
+
+                                                let closestPoint = g.findClosestPoint(xPos, yPos);
+                                                if (closestPoint) {
+                                                    console.log('CLOSEST POINT', { closestPoint, xPos, yPos, inputValue });
+                                                    const options = g.user_attrs_;
+                                                    const seriesConfig = options.series;
+
+                                                    let ttData: any = {
+                                                        multigraph: self.multigraph
+                                                    };
+
+                                                    ttData.timestamp = closestPoint.xval;
+                                                    ttData.timestampFormatted =
+                                                        options.labelsUTC ?
+                                                            moment(closestPoint.point.xval).utc().format('YYYY/MM/DD HH:mm') :
+                                                            moment(closestPoint.point.xval).format('YYYY/MM/DD HH:mm');
+
+                                                    if (self.chartType !== 'heatmap') {
+
+                                                        let labels = g.getLabels();
+                                                        let highlightSeries = g.getHighlightSeries();
+
+                                                        if (labels) {
+                                                            var yOptViews = [];
+                                                            var num_axes = g.numAxes();
+                                                            for (var i = 0; i < num_axes; i++) {
+                                                                // TODO(danvk): remove this use of a private API
+                                                                yOptViews[i] = g.optionsViewForAxis_('y' + (i ? 1 + i : ''));
+                                                            }
+                                                            for (let i = 1; i < labels.length; i++) {
+                                                                let series = g.getPropertiesForSeries(labels[i]);
+
+                                                                if (!series.visible || closestPoint.seriesName !== highlightSeries) {
+                                                                    continue;
+                                                                }
+
+
+                                                                let yOptView = yOptViews[series.axis - 1];
+                                                                let fmtFunc = yOptView('valueFormatter');
+
+                                                                const label = labels[i];
+                                                                const tags = seriesConfig[label].tags;
+
+                                                                ttData.color = seriesConfig[labels[i]].color;
+                                                                ttData.value = closestPoint.inputValue;
+                                                                ttData.valueFormatted = fmtFunc.call(g, closestPoint.point.yval, yOptView, closestPoint.point.name, g, row, labels.indexOf(closestPoint.seriesName));
+                                                                ttData.metric = (tags.metric !== label) ? label : tags.metric;
+                                                                ttData.tags = [];
+
+                                                                for (const k in tags) {
+                                                                    if (k !== 'metric') {
+                                                                        ttData.tags.push({key: k, value: tags[k]});
+                                                                    }
+                                                                }
+
+                                                            }
+                                                        }
+
+
+                                                    }
+                                                    self.ttDataSvc._ttDataPut({data: ttData, position: {x: event.x, y: event.y, plotArea}});
+                                                } else {
+                                                    self.ttDataSvc._ttDataPut(false);
+                                                }
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            self.ttDataSvc._ttDataPut(false);
+                        }
+
+                    };*/
 
                     if (this.timeseriesLegend) {
                         //this.options.clickCallback = clickCallback;
@@ -645,17 +785,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                 }
 
                                 if (hasData) {
-                                    setHeatmapLegend(event, g, ts, bucket);
+                                    setHeatmapLegend(event, g, ts, bucket); // set legend formatter
                                 } else {
-                                    /*if (labelsDiv) {
-                                        labelsDiv.style.display = 'none';
-                                    }*/
-                                    let ttEvent: any = {
-                                        action: 'tooltipDataChange',
-                                        data: false
-                                    };
-                                    self.ttDataSvc.ttDataPut(false);
-                                    // self.currentTickEvent.emit(ttEvent);
+                                    self.ttDataSvc.ttDataPut(false); // tell tooltip no data
                                 }
 
                                 const x = cx2 - width / 2;
@@ -675,6 +807,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                 ctx.stroke();
                                 g._prevBucketHighlightBucket = { x: x, y: y, w: width, h: height, bucket: bucket };
                             } else {
+                                self.ttDataSvc.ttDataPut(false); // tell tooltip no data
                                 if (labelsDiv) {
                                     labelsDiv.style.display = 'none';
                                 }
