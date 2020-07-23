@@ -46,8 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.dialog.closeAll();
             }
         });
-
-        const authCheck = interval(60 * 1000);
+        // change hearth beat to every 10 mins instead of 1 min
+        const authCheck = interval(600 * 1000);
         this.authCheckSub = authCheck.subscribe(val => {
             return this.authService.getCookieStatus(true)
                 .subscribe(
