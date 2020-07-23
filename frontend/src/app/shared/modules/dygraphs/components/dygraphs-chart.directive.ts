@@ -37,10 +37,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     private gDimension: any;
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
-
     public labelsDiv: any;
-    /* Commenting out for now
-        will be part of next PR that will improve tooltip movement*/
     public firstTickHighlight = false;
 
     constructor(
@@ -580,11 +577,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: any) {
-
         if (this.firstTickHighlight && this.labelsDiv) {
             const tooltip = this.labelsDiv;
-            tooltip.style.display = 'block';
-
             let parent = tooltip.closest('.widget-output');
             let widgetScrollContainer;
             if (parent) {
@@ -599,68 +593,62 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             // widget output element
             let wrapperEl;
             if (this.multigraph) {
-                wrapperEl = parent.querySelector('.graph-cell');
+                wrapperEl = event.target.closest('.graph-cell');
             } else {
                 wrapperEl = widgetScrollContainer;
             }
 
-            // widget output el size
+            // canvas dimensions
             const wrapperSize = wrapperEl.getBoundingClientRect();
 
-            const coords = {
-                top: (event.clientY - wrapperSize.top) - widgetScrollContainer.scrollTop,
-                left: (event.clientX - wrapperSize.left) - widgetScrollContainer.scrollLeft
+            // window dimensions
+            const winSize = {
+                width: window.innerWidth,
+                height: window.innerHeight
             };
 
-            let xOffset = 0;
-            let yOffset = 0;
-
+            // tooltip dimensions
             const tooltipSize = {
                 width: tooltip.clientWidth,
                 height: tooltip.clientHeight
             };
 
-            let closeToRight: boolean = false;
-            // if close to the right edge, put it left of the cursor
-            if (coords.left > (wrapperSize.width - (tooltipSize.width - 30))) {
-                xOffset = - (tooltipSize.width + 10);
-                closeToRight = true;
-                // check if it goes off the left edge of scrollContainer, then put back on right of cursor
-                if ((((coords.left + xOffset) - widgetScrollContainer.scrollLeft) + (xOffset)) < 0) {
-                    xOffset = 15;
-                }
+            // parent dimensions
+            const parentSize = parent.getBoundingClientRect();
+
+            // adjusted coordinates
+            let coords: any = {
+                left: event.clientX - parentSize.left,
+                top: event.clientY - parentSize.top
+            };
+
+            // offsets
+            let xOffset = 0;
+            let yOffset = 0;
+            const offsetAmount = 10;
+
+            // detect window right edge proximity
+            if ((winSize.width - event.x) < (tooltipSize.width + (offsetAmount * 2))) {
+                // left
+                xOffset = - (tooltipSize.width + offsetAmount);
             } else {
-                // just ensure it is offset from cursor
-                xOffset = 15;
+                // right
+                xOffset = offsetAmount;
             }
 
-            // if close to bottom edge, put it above the cursor
-            if (coords.top > (wrapperSize.height - (tooltipSize.height - 30))) {
-                yOffset = - (tooltipSize.height + 10);
-                // check if it goes off the top edge of scrollContainer, then put back below cursor
-                if ((((coords.top + yOffset) - widgetScrollContainer.scrollTop) + (yOffset)) < 0) {
-                    yOffset = 15;
-                }
-                // TODO: check if goes off bottom of dashboardScrollContainer
-                // i.e. scrolled down dashboard maybe half way, and hover over graph near bottom
-                // tooltip might go below the scroll. Need to detect so it can adjust. figure out the math
+            // detect window bottom edge proximity
+            if ((winSize.height - event.y) < (tooltipSize.height + (offsetAmount * 2))) {
+                // above
+                yOffset = - (tooltipSize.height + offsetAmount);
             } else {
-                // just ensure it is offset from cursor
-                yOffset = 15;
+                // below
+                yOffset = offsetAmount;
             }
-
-            // set styles
-            if (closeToRight) {
-                tooltip.style.right = (wrapperSize.width - coords.left) + 'px';
-                tooltip.style.left = 'initial';
-            } else {
-                tooltip.style.left = (coords.left + xOffset) + 'px';
-                tooltip.style.right = 'initial';
-            }
-
+            tooltip.style.display = 'block';
+            tooltip.style.left = (coords.left + xOffset) + 'px';
             tooltip.style.top = (coords.top + yOffset) + 'px';
-
         }
+
     }
 
     @HostListener('mouseleave', ['$event'])
