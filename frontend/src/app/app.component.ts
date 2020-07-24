@@ -60,7 +60,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 return this.authService.getCookieStatus(true)
                     .subscribe(
                         (res) => {
-                            console.log("heatbeat check res", res);
                             localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
                         }
                     );
