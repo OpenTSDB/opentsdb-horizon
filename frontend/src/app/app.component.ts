@@ -35,8 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
         });
     }
 
-
-
     ngOnInit() {
         this.auth$.subscribe(auth => {
             if (auth === 'invalid') {
@@ -48,15 +46,25 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.dialog.closeAll();
             }
         });
-        // change hearth beat to every 10 mins instead of 1 min
-        const authCheck = interval(600 * 1000);
+        // store last heartbeat check to localStorage
+        if (!localStorage.getItem('lastHeartBeat')) {
+            localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
+        }
+        // interval for 1 min
+        const authCheck = interval(60 * 1000);
         this.authCheckSub = authCheck.subscribe(val => {
-            return this.authService.getCookieStatus(true)
-                .subscribe(
+            const now = new Date().getTime();
+            const lastHB = parseInt(localStorage.getItem('lastHeartBeat'), 10);
+            // only active tab and 10 mins ago
+            if (!document.hidden && (now - lastHB >= 600000)) {
+                return this.authService.getCookieStatus(true)
+                    .subscribe(
                         (res) => {
                             console.log("heatbeat check res", res);
+                            localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
                         }
-                );
+                    );
+            }
         });
     }
 
