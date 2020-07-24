@@ -4,6 +4,7 @@ import { Store } from '@ngxs/store';
 import { SetAuth } from '../../shared/state/auth.state';
 import { Observable , of} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { DbfsState } from '../../app-shell/state/dbfs.state';
 
 @Injectable()
 export class AuthService {
@@ -37,9 +38,10 @@ export class AuthService {
         returns Observable<string> cookie-valid | cookie-invalid | cookie-renewed | cookie-check-error
     */
     getCookieStatus(heartbeat= false) {
+        const user = this.store.selectSnapshot(DbfsState.getUser());
         const self = this;
         self.store.dispatch(new SetAuth('unknown'));
-        return this.http.get('/heartbeat')
+        return this.http.get('/heartbeat?userid='+ (user ? user.alias : ''))
             .pipe(
                 map(
                     (res) => {
