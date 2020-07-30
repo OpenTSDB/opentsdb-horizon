@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
-import { FormGroup , FormBuilder, ValidatorFn, AbstractControl} from '@angular/forms';
+import { FormBuilder, ValidatorFn, AbstractControl, FormControl} from '@angular/forms';
 import { HostBinding } from '@angular/core';
 
 @Component({
@@ -11,7 +11,7 @@ import { HostBinding } from '@angular/core';
     templateUrl: 'datepicker.component.html',
     styleUrls: ['datepicker.component.scss'],
 })
-export class DatepickerComponent implements OnInit {
+export class DatepickerComponent implements OnInit, OnChanges {
     // tslint:disable:no-inferrable-types
     // tslint:disable:no-output-on-prefix
     @Input('date')
@@ -33,6 +33,7 @@ export class DatepickerComponent implements OnInit {
     @Input() formatError: String;
     @Input() placeholder: string;
     @Input() inputBoxName: string;
+    @Input() required = true;
     @Input() options: any = { enableFuture: false};
 
     @Output() dateChange = new EventEmitter<string>();
@@ -60,7 +61,7 @@ export class DatepickerComponent implements OnInit {
     calendarTitleFormat: string = 'MMMM YYYY';
     dateFormat = 'YYYY-MM-DD';
     displayDayCalendar: boolean = true;
-    dateForm: FormGroup;
+    dateCntrl: FormControl;
     submitted = false;
     shouldUpdateTimestamp: boolean = true;
     calendarButtonEntered = false;
@@ -81,26 +82,36 @@ export class DatepickerComponent implements OnInit {
         this.setInternalTimestamps();
     }
 
+    ngOnChanges(changes: SimpleChanges ) {
+        if ( changes.required && changes.required.previousValue !== undefined && changes.required.currentValue !== undefined ) {
+            this.dateCntrl.setErrors(null);
+            this.dateCntrl.updateValueAndValidity();
+        }
+    }
+
     setInternalTimestamps() {
-        if (this.isInitialized && this.date && this.timezone) {
-            this.unixTimestamp = this.utilsService.timeToMoment(this.date, this.timezone).unix();
+        if (this.isInitialized && this.timezone) {
+            this.unixTimestamp = this.utilsService.timeToMoment(this.date ? this.date : 'now', this.timezone).unix();
             this.tempUnixTimestamp = this.unixTimestamp;
             this.monthCalendarTitle = this.utilsService.timeToMoment(this.tempUnixTimestamp.toString(), this.timezone).year().toString();
-            this.dateForm = this.formBuilder.group({
-                dateInput: [this.date, [this.formatValidator(), this.maxDateValidator(), this.minDateValidator()]],
-            });
+            this.dateCntrl = new FormControl(this.date, [this.formatValidator(), this.maxDateValidator(), this.minDateValidator()]);
         }
     }
 
-    // convenience getter for easy access to form fields
-    get formFields() { return this.dateForm.controls; }
 
     dateInputChanged() {
-        if (this.dateForm.valid) {
-            this.date = this.dateForm.value.dateInput;
+        if (this.dateCntrl.valid) {
+            this.date = this.dateCntrl.value;
         }
+        this.onChange.emit();
     }
 
+    validate() {
+        // if optional set to old value, if not valid (on blur)
+        if ( !this.dateCntrl.valid && !this.required ) {
+            this.dateCntrl.setValue(this.date);
+        }
+    }
     generateDayNames = () => {
         const date = moment('2017-04-02'); // sunday
         for (let i = 0; i < 7; i++) {
@@ -111,8 +122,9 @@ export class DatepickerComponent implements OnInit {
 
     openCalendar = (event: any) => {
         this.showCalendar = true;
-        if (this.utilsService.timeToMoment(this.date, this.timezone)) {
-            this.generateCalendar(this.utilsService.timeToMoment(this.date, this.timezone).format(this.dateFormat));
+        const date = this.date ? this.date : 'now';
+        if (this.utilsService.timeToMoment(date, this.timezone)) {
+            this.generateCalendar(this.utilsService.timeToMoment(date, this.timezone).format(this.dateFormat));
         }
         this.open.emit();
     }
@@ -278,10 +290,11 @@ export class DatepickerComponent implements OnInit {
     formatValidator(): ValidatorFn {
         return (control: AbstractControl): {[key: string]: any} | null => {
             let forbidden: boolean = true;
-            if (this.utilsService.timeToMoment(control.value, this.timezone)) {
+            const v = control.value.trim();
+            if ( ( !this.required && !v ) || this.utilsService.timeToMoment(v, this.timezone)) {
                 forbidden = false;
             }
-            return forbidden ? {'format': {value: control.value}} : null;
+            return forbidden ? {'format': {value: v}} : null;
         };
     }
 
@@ -371,6 +384,7 @@ export class DatepickerComponent implements OnInit {
         this.isDateValid = true;
         this.generateCalendar(selectedDate.format(this.dateFormat));
         this.closeCalendar();
+        this.onChange.emit();
     }
 
     monthSelected(monthIndex: string) { // 0 represents Jan

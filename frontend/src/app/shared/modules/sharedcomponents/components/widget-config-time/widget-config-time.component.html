@@ -95,6 +95,22 @@
                 </div>
             </div>
         </div>
+        <div class="columned-controls">
+            <div class="config-control override-time-controls">
+                <label class="label">Override Time</label>
+                <div class="form-field-group">
+                    <time-range-picker
+                    (timeSelected)="setOverrideTime($event)"
+                    (onError)="setTimeError($event)"
+                    [startTime]="startTime"
+                    [endTime]="endTime"
+                    [options]="options"
+                    [timezone]="'local'"
+                    [downsample]="''">
+                </time-range-picker>
+                </div>
+            </div>
+        </div>
 
     </div>
 

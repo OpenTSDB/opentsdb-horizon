@@ -48,6 +48,7 @@ export class TimeRangePickerComponent implements OnInit {
     @Output() timeSelected = new EventEmitter<ISelectedTime>();
     @Output() cancelSelected = new EventEmitter();
     @Output() dbdownsampleChange = new EventEmitter();
+    @Output() onError = new EventEmitter();
 
     @ViewChild('daytimePickerStart') startTimeReference: DatepickerComponent;
     @ViewChild('daytimePickerEnd') endTimeReference: DatepickerComponent;
@@ -64,6 +65,8 @@ export class TimeRangePickerComponent implements OnInit {
 
     startTimeDisplay: string; // for ngmodel
     endTimeDisplay: string;   // for ngmodel
+    startRequired = true;
+    endRequired = true;
 
     showApply: boolean;
     presetSelected: Preset;
@@ -80,6 +83,8 @@ export class TimeRangePickerComponent implements OnInit {
 
     ngOnInit() {
       this.showApply = false;
+      this.startRequired = this.options.required;
+      this.endRequired = this.options.required;
     }
 
     downsampleChange(payload: any) {
@@ -130,7 +135,7 @@ export class TimeRangePickerComponent implements OnInit {
     }
 
     applyClicked() {
-      if (!this.startTimeReference.formFields.dateInput.errors && !this.endTimeReference.formFields.dateInput.errors) {
+      if (!this.startTimeReference.dateCntrl.errors && !this.endTimeReference.dateCntrl.errors) {
         this.closeCalendarsAndHideButtons();
 
         // strips relative time
@@ -144,6 +149,7 @@ export class TimeRangePickerComponent implements OnInit {
 
         this.timeSelected.emit(this.getTimeSelected());
       }
+      this.closeAllPresets();
     }
 
     cancelClicked() {
@@ -157,7 +163,7 @@ export class TimeRangePickerComponent implements OnInit {
       } else {
         this.startTime = amount + this.presetSelected.abbr;
       }
-      this.endTime = this.options.defaultEndText;
+      this.endTime = this.options.defaultEndText || 'now';
       this.togglePreset(this.presetSelected);
       this.applyClicked();
     }
@@ -204,6 +210,37 @@ export class TimeRangePickerComponent implements OnInit {
       this.showApply = true;
       this.removeSelectedPreset();
       this.closeAllPresets();
+    }
+
+    startDateChanged() {
+      if ( this.options.autoTrigger && this.validateDateRange() ) {
+          setTimeout(() => { this.applyClicked(); } );
+      }
+    }
+
+    endDateChanged() {
+      if ( this.options.autoTrigger && this.validateDateRange() ) {
+        setTimeout(() => { this.applyClicked(); } );
+      }
+    }
+
+    validateDateRange() {
+      let isValid = true;
+      if ( !this.options.required && this.startTimeReference.dateCntrl.value === '' && this.endTimeReference.dateCntrl.value === '') {
+        this.startRequired = this.endRequired = false;
+      }
+      if ( this.startTimeReference.dateCntrl.value === '' && this.endTimeReference.dateCntrl.value !== '' ) {
+        this.startRequired = true;
+        isValid = false;
+      }
+      if ( this.startTimeReference.dateCntrl.value !== '' && this.endTimeReference.dateCntrl.value === '' ) {
+        this.endRequired = true;
+        isValid = false;
+      }
+      if ( !isValid ) {
+        this.onError.emit();
+      }
+      return isValid;
     }
 
     enterKeyedOnInputBox() {

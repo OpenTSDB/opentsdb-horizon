@@ -36,10 +36,12 @@
             [minDateError]="options.startMinDateError"
             [placeholder]="options.startTimePlaceholder"
             [inputBoxName]="options.startTimeInputBoxName"
+            [required]="startRequired"
             [date]="startTime"
             (open)="startCalendarOpened()"
             (close)="startCalendarClosed()"
             (onEnter)="enterKeyedOnInputBox()"
+            (onChange)="startDateChanged()"
             (onFocus)="startInputFocused()">
         </datepicker2>
 
@@ -51,19 +53,21 @@
             [maxDateError]="options.endMaxDateError"
             [minDateError]="options.endMinDateError"
             [inputBoxName]="options.endTimeInputBoxName"
+            [required]="endRequired"
             [date]="endTime"
             (open)="endCalendarOpened()"
             (close)="endCalendarClosed()"
             (onEnter)="enterKeyedOnInputBox()"
+            (onChange)="endDateChanged()"
             (onFocus)="endInputFocused()">
         </datepicker2>
     </div>
-    <div>
+    <div *ngIf="downsample">
         <downsample (downsampleChange)="downsampleChange($event)" [downsample]="downsample"></downsample>
     </div>
 </div>
-<div class="dtp-action-controls" *ngIf="showApply" fxLayout.xs="row">
-    <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="daytimePickerStart.formFields.dateInput.errors || daytimePickerEnd.formFields.dateInput.errors">Apply</button>
+<div class="dtp-action-controls" *ngIf="!options.autoTrigger && showApply" fxLayout.xs="row">
+    <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="daytimePickerStart.dateCntrl.errors || daytimePickerEnd.dateCntrl.errors">Apply</button>
     <button mat-stroked-button color="primary" id="button-cancel" (click)="cancelClicked()" fxFlex.xs="1 1 100%">Cancel</button>
 </div>
 

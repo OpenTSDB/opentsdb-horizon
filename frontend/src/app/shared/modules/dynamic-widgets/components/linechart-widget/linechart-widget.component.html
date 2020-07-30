@@ -255,7 +255,7 @@
 
     <div class="widget-actions">
         <!-- controls to save/cancel -->
-        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
+        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to Dashboard</button>
         <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
     </div>
 </div>

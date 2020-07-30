@@ -1098,7 +1098,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
         const groupby = payload.settings.multigraph ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
-        const dt = this.getDashboardDateRange();
+        const overrideTime = payload.settings.time.overrideTime;
+        const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
             // override downsample to auto when the dashboard is zoomed
@@ -1167,10 +1168,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleEventQueryPayload(message: any) {
         if ( message.payload.eventQueries[0].namespace) {
-            const dbTime = this.getDashboardDateRange();
+            const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
+            const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
             this.store.dispatch(new GetEvents(
-                {   start: dbTime.start,
-                    end: dbTime.end
+                {   start: dt.start,
+                    end: dt.end
                 },
                 message.payload.eventQueries,
                 message.id,
@@ -1191,10 +1193,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    getDashboardDateRange() {
-        const startTime = this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone);
-        const endTime = this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone);
+    getDateRange( range ) {
+        const startTime = this.dateUtil.timeToMoment(range.start, range.zone);
+        const endTime = this.dateUtil.timeToMoment(range.end, range.zone);
         return { start: startTime.valueOf(), end: endTime.valueOf() };
+    }
+
+    getDashboardDateRange() {
+        return this.getDateRange(this.dbTime);
     }
 
     // this will call based on gridster reflow and size changes event

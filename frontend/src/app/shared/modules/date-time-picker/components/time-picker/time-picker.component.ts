@@ -184,6 +184,8 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     setDefaultOptionsValues() {
         this.options = new TimeRangePickerOptions();
 
+        this.options.required = true;
+        this.options.autoTrigger = false;
         this.options.startFutureTimesDisabled = true;
         this.options.endFutureTimesDisabled = true;
 
