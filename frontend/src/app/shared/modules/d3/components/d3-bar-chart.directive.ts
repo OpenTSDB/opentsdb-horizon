@@ -62,7 +62,8 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         }
         const self = this;
         const mousemove = function (d) {
-            const containerPos = self.element.nativeElement.parentNode.parentNode.getBoundingClientRect();
+            console.log('====>>> TOPN MOUSE MOVE', d, d3.color);
+            // const containerPos = self.element.nativeElement.parentNode.parentNode.getBoundingClientRect();
             /*tooltip.style("left", d3.event.x - containerPos.x + "px");
             tooltip.style("top", d3.event.y - containerPos.y + 30 + "px");
             let taghtml = '';
@@ -85,9 +86,14 @@ export class D3BarChartDirective implements OnInit, OnChanges {
             const sValue = self.unitService.convert(d.value, unitOptions.unit, tooltipUnitOptions, tooltipUnitOptions);
 
             const ttData: any = {
+                color: (d.color && d.color.length > 0) ? d.color : false,
                 label: d.label,
-                nValue: nValue,
-                sValue: (nValue !== sValue) ? sValue : false,
+                value: {
+                    n: nValue,
+                    s: (nValue !== sValue) ? sValue : false
+                },
+                nValue,
+                sValue,
                 tags: []
             };
 
@@ -95,7 +101,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 ttData.tags.push({key: k, value: d.tooltipData[k]});
             }
 
-            self.ttDataSvc.ttDataPut(ttData);
+            self.ttDataSvc._ttDataPut({data: ttData, position: {x: d3.event.clientX, y: d3.event.clientY}});
         };
         //const mouseover = function (d) { tooltip.style("display", "inline-block"); }
         const mouseover = function (d) {
