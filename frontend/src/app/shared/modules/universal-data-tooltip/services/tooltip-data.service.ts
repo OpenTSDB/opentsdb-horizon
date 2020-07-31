@@ -10,7 +10,7 @@ export interface TooltipData { data: any; position: any; };
 export class TooltipDataService implements OnInit {
 
     /* STREAMS */
-    private tooltipStream: Subject<any> = new Subject(); // tooltip data
+    //private tooltipStream: Subject<any> = new Subject(); // tooltip data
 
     private _tooltipStream: Subject<TooltipData | Boolean> = new Subject(); // tooltip data
 
@@ -18,17 +18,15 @@ export class TooltipDataService implements OnInit {
         private logger: LoggerService
     ) {}
 
-    ngOnInit() {
-        //this.tooltipStream = new Subject();
-    }
+    ngOnInit() {}
 
-    ttStreamListen(): Observable<any> {
+    /*ttStreamListen(): Observable<any> {
         return this.tooltipStream.asObservable();
     }
 
     ttDataPut(payload: any) {
         this.tooltipStream.next(payload);
-    }
+    }*/
 
     /* Testing New Stuff */
 
@@ -37,6 +35,7 @@ export class TooltipDataService implements OnInit {
     }
 
     _ttDataPut(data: TooltipData | Boolean) {
+        this.logger.api('_ttDataPut', data);
         this._tooltipStream.next(data);
     }
 
