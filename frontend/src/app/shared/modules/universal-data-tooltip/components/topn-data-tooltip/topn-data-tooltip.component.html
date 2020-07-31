@@ -1,7 +1,7 @@
 <div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
-    <p>{{tooltipData.label}}</p>
-    <p>{{tooltipData.nValue}} <span *ngIf="tooltipData.sValue">({{tooltipData.sValue}})</span></p>
-    <ng-container *ngIf="tooltipData.tags && tooltipData.tags.length > 0">
-        <p *ngFor="let tag of tooltipData.tags">{{tag.key}}: {{tag.value}}</p>
+    <p><span class="color-chip" [style.color]="_ttData.color" *ngIf="_ttData.color"></span> {{_ttData.label}}</p>
+    <p>Value: {{_ttData.value.n}} <span *ngIf="_ttData.value.s">({{_ttData.value.s}})</span></p>
+    <ng-container *ngIf="_ttData.tags && _ttData.tags.length > 0">
+        <p *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</p>
     </ng-container>
 </div>
