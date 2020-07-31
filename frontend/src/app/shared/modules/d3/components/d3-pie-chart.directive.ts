@@ -52,14 +52,16 @@ export class D3PieChartDirective implements OnInit, OnChanges {
             tooltip.html( d.data.label + '<p>Value: ' +  d3.format('.3s')(d.data.value) + '</p>' + taghtml);
             */
             const ttData: any = {
+                color: d.data.color,
                 label: d.data.label,
-                value: d3.format('.3s')(d.data.value),
+                value: d.data.value,
+                valueFormatted: d3.format('.3s')(d.data.value),
                 tags: []
             };
             for (const k in d.data.tooltipData) {
                 ttData.tags.push({ key: k, value: d.data.tooltipData[k] });
             }
-            self.ttDataSvc.ttDataPut(ttData);
+            self.ttDataSvc._ttDataPut({data: ttData, position: {x: d3.event.clientX, y: d3.event.clientY}});
         };
         //const mouseover = function(d) { tooltip.style("display", "inline-block");}
         const mouseover = function (d) {
