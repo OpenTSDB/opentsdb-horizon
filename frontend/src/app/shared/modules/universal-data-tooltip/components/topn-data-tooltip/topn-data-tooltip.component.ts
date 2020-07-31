@@ -13,9 +13,10 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 export class TopnDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.topn-data-tooltip') private _hostClass = true;
-    // @HostBinding('class.hidden') public tooltipHidden = true;
 
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
+
+    positionStrategy: string = 'sticky';
 
     constructor(
         ttDataSvc: TooltipDataService,
@@ -29,15 +30,11 @@ export class TopnDataTooltipComponent extends DataTooltipComponent implements On
             sanitizer,
             logger
         );
-        this.logger.ng('TOPN CONSTRUCTOR');
     }
 
     ngOnInit() {
         super.ngOnInit();
-        super.dataStreamSubscribe((data: any) => {
-            this.logger.log('TOPN DATA', data);
-            return data;
-        });
+        super._dataStreamSubscribe();
     }
 
     /* Last */

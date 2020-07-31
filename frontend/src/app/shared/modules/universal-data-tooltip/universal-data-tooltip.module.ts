@@ -12,8 +12,6 @@ import { DonutDataTooltipComponent } from './components/donut-data-tooltip/donut
 import { BarchartDataTooltipComponent } from './components/barchart-data-tooltip/barchart-data-tooltip.component';
 import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/heatmap-data-tooltip.component';
 
-
-
 @NgModule({
     imports: [
         CommonModule
@@ -23,8 +21,7 @@ import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/h
         TopnDataTooltipComponent,
         DonutDataTooltipComponent,
         BarchartDataTooltipComponent,
-        HeatmapDataTooltipComponent,
-        //DataTooltipComponent
+        HeatmapDataTooltipComponent
     ],
     exports: [],
     entryComponents: [
@@ -32,8 +29,7 @@ import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/h
         TopnDataTooltipComponent,
         DonutDataTooltipComponent,
         BarchartDataTooltipComponent,
-        HeatmapDataTooltipComponent,
-        //DataTooltipComponent
+        HeatmapDataTooltipComponent
     ]
 })
 export class UniversalDataTooltipModule {

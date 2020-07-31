@@ -1,5 +1,4 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-//import { UniversalDataTooltipttCompSvc } from '../ttCompSvcs/universal-data-tooltip.ttCompSvc';
 import { TooltipComponentService } from '../services/tooltip-component.service';
 
 @Directive({
@@ -12,12 +11,9 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
     private _scrollTimeout: any;
 
     constructor(
-        //private ttCompSvc: UniversalDataTooltipttCompSvc,
         private ttCompSvc: TooltipComponentService,
         private elRef: ElementRef
-    ) {
-        console.log('************ BOUNDARY LISTENER *************');
-    }
+    ) {}
 
     ngOnInit() {
 

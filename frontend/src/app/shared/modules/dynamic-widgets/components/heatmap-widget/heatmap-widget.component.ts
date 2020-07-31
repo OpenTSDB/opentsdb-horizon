@@ -17,8 +17,6 @@ import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { environment } from '../../../../../../environments/environment';
-import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
-//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -116,8 +114,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private dataTransformer: DatatranformerService,
       private util: UtilsService,
       private elRef: ElementRef,
-      private unit: UnitConverterService,
-      private tooltipService: TooltipDataService
+      private unit: UnitConverterService
   ) { }
 
   ngOnInit() {
@@ -531,10 +528,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             action: 'tsTickDataChange',
             payload: payload
         });
-    }
-
-    if (event.action === 'tooltipDataChange') {
-        this.tooltipService.ttDataPut(event.data);
     }
   }
 

@@ -22,25 +22,23 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     private _tooltipHidden: boolean;
     @HostBinding('class.hidden')
     private get tooltipHidden(): boolean {
-        if (!this.tooltipData) {
+        if (!this._ttData) {
             return true; // if no data, automatically hide it
         }
         return this._tooltipHidden;
-    };
+    }
 
     private set tooltipHidden(val: boolean) {
         this._tooltipHidden = val;
     }
 
     public ttOutputEl: ElementRef;
-    public tooltipData: any = {};
     public mouseBoundaryEl: HTMLElement;
     public scrollBoundaryEl: HTMLElement;
 
     // NEW STUFF
     public _ttData: any = {};
     public _ttPosition: any = {};
-    // END NEW STUFF
 
     // output shift direction (which direction the tooltip goes depending on edge proximity)
     public xShift: string = 'right'; // right || left
@@ -48,10 +46,9 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     public positionStrategy: string = 'move'; // move || sticky
 
-    // placeholder for document mousemove listener
-    private positionListener: () => void;
+    // placeholder for optional document mousemove listener
+    private _positionListener: () => void;
 
-    private dataStream$: Observable<any>;
     private _dataStream$: Observable<any>;
 
     private subscription: Subscription = new Subscription();
@@ -65,171 +62,179 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // start listening to tooltip data service
-        this.dataStream$ = this.ttDataSvc.ttStreamListen();
         this._dataStream$ = this.ttDataSvc._ttStreamListen();
-        // start watching mouse position
-        this.addPositionListener();
     }
 
-    dataStreamSubscribe(dataFormatter?: Function) {
-        this.subscription.add(this.dataStream$.subscribe((data: any) => {
-            // this.logger.log('DT STREAM DATA', data);
-            if (!data) {
-                this.hide();
-            } else {
-                this.tooltipData = (dataFormatter) ? dataFormatter(data) : data;
-                this.show();
-            }
-        }));
-    }
-
-    _dataStreamSubscribe(dataFormatter?: Function) {
+    _dataStreamSubscribe(dataFormatter?: Function, positionAdjuster?: Function) {
         this.subscription.add(this._dataStream$.subscribe((ttData: any) => {
-            this.logger.log('DT STREAM DATA', ttData);
+            this.logger.log('__DT STREAM DATA', ttData);
             if (!ttData) {
                 this._ttData = false;
                 this.hide();
             } else {
-                this._ttPosition = ttData.position;
+                // assign data, and run through formatter (if any)
                 this._ttData = (dataFormatter) ? dataFormatter(ttData.data) : ttData.data;
+
+                // if you didn't assign a position listener, assuming position coming from chart library
+                // otherwise position coming from window level mouseevent
+                if (!this._positionListener) {
+                    this._ttPosition = (positionAdjuster) ? positionAdjuster(ttData.position) : ttData.position;
+                    // position it
+                    this._positioner();
+                }
+                // show it
                 this.show();
-                this._positioner();
+                this.logger.log('__DT STREAM DATA[PARSED]', {
+                    data: this._ttData,
+                    position: this._ttPosition
+                });
             }
         }));
     }
 
     show() {
-        // console.log('===> SHOW');
+        console.log('===> SHOW');
         this.tooltipHidden = false;
     }
 
     hide() {
-        // console.log('===> HIDE');
+        console.log('===> HIDE');
         this.tooltipHidden = true;
+        this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
     }
 
     getTooltipOutputDiv() {
         return this.ttOutputEl.nativeElement;
     }
 
-    addPositionListener() {
-
-        // if the strategy is 'sticky'
-        if (this.positionStrategy === 'sticky') {
-            this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
-                this.logger.ng('TOOLTIP HIDDEN', event);
-                if (!this.tooltipHidden && this.tooltipData) {
-                    const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
-                    const winSize = {
-                        width: window.innerWidth,
-                        height: window.innerHeight
-                    };
-
-                    const scrollBoundaryOffsets: any = {
-                        x: this.scrollBoundaryEl.scrollLeft,
-                        y: this.scrollBoundaryEl.scrollTop
-                    };
-
-                    let translate: any = {
-                        x: 0,
-                        y: 0
-                    };
-
-                    // start style string
-                    let styleString: string = 'min-width: ' + wrapCoords.width + 'px; height: 1px;';
-
-                    // get dimensions of tooltip
-                    const outputCoords = this.ttOutputEl.nativeElement.getBoundingClientRect();
-                    const offset = 4;
-
-                    // detect window right edge proximity
-                    if ((wrapCoords.right + outputCoords.width) > winSize.width) {
-                        this.xShift = 'left';
-                    } else {
-                        this.xShift = 'right';
-                    }
-                    translate.x = wrapCoords.left;
-
-                    // detect window bottom edge proximity
-                    if ((wrapCoords.bottom + outputCoords.height) > winSize.height) {
-                        this.yShift = 'above';
-                        translate.y = wrapCoords.top + offset;
-                    } else {
-                        this.yShift = 'below';
-                        translate.y = (wrapCoords.top + wrapCoords.height) - offset;
-                    }
-
-                    if (outputCoords.width > wrapCoords.width) {
-                        this.renderer.addClass(this.ttOutputEl.nativeElement, 'is-wider');
-                    } else {
-                        this.renderer.removeClass(this.ttOutputEl.nativeElement, 'is-wider');
-                    }
-
-                    // position styles - use transform3d to get performant positioning
-                    styleString += 'transform: translate3d(' + translate.x + 'px, ' + translate.y + 'px, 0);';
-
-                    // tell angular to trust the styles
-                    this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
-
-                }
-            });
-        }
-
-        // if the strategy is 'move' (move with mouse)
-        if (this.positionStrategy === 'move') {
-            this.positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
-                // this.logger.ng('TOOLTIP HIDDEN', {hidden: this.tooltipHidden, data: this.tooltipData });
-                if (!this.tooltipHidden && this.tooltipData) {
-                    const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
-                    const winSize = {
-                        width: window.innerWidth,
-                        height: window.innerHeight
-                    };
-
-                    // get dimensions of tooltip
-                    const outputCoords = this.ttOutputEl.nativeElement.getBoundingClientRect();
-                    const offsetAmount = 20;
-
-                    // detect window right edge proximity
-                    if ((winSize.width - event.x) < (outputCoords.width + offsetAmount)) {
-                        this.xShift = 'left';
-                    } else {
-                        this.xShift = 'right';
-                    }
-
-                    // detect window bottom edge proximity
-                    if ((winSize.height - event.y) < (outputCoords.height + offsetAmount)) {
-                        this.yShift = 'above';
-                    } else {
-                        this.yShift = 'below';
-                    }
-
-                    // position styles - use transform3d to get performant positioning
-                    const styleString = 'transform: translate3d(' + event.x + 'px, ' + event.y + 'px, 0);';
-
-                    // tell angular to trust the styles
-                    this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
-                }
-            });
-        }
+    _removePositionListener() {
+        this._positionListener();
     }
 
-    removePositionListener() {
-        this.positionListener();
+    // in case charting library doesn't provide full mousemove event coordinates from window level,
+    // or it just does something weird... This at least captures window level mouse movement that we can use
+    _addPositionListener() {
+        this._positionListener = this.renderer.listen(window.document, 'mousemove', (event) => {
+            const pos = {
+                x: event.x,
+                y: event.y
+            }
+            this._ttPosition = pos;
+            this._positioner();
+        });
     }
-
     /* POSITIONER */
     private _positioner() {
-        this.logger.ng('POSITIONER', this._ttPosition);
-        if (this.positionListener) {
-            this.positionListener(); // remove
+        this.logger.ng('_POSITIONER', this._ttPosition);
+
+        if (!this.tooltipHidden && this._ttData && this._ttPosition) {
+
+            const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
+            const winSize = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+
+            // get dimensions of tooltip
+            const outputCoords = this.ttOutputEl.nativeElement.getBoundingClientRect();
+
+            /** POSITION STRATEGY :: STICKY **/
+            if (this.positionStrategy === 'sticky') {
+                const scrollBoundaryOffsets: any = {
+                    x: this.scrollBoundaryEl.scrollLeft,
+                    y: this.scrollBoundaryEl.scrollTop
+                };
+
+                let translate: any = {
+                    x: 0,
+                    y: 0
+                };
+
+                const offset = 2;
+
+                // start style string
+                let styleString: string = 'min-width: ' + (wrapCoords.width + offset * 2) + 'px; height: 1px;';
+
+                // detect window right edge proximity
+                if ((wrapCoords.right + outputCoords.width) > winSize.width) {
+                    this.xShift = 'left';
+                } else {
+                    this.xShift = 'right';
+                }
+                translate.x = wrapCoords.left - offset;
+
+                // detect window bottom edge proximity
+                if ((wrapCoords.bottom + outputCoords.height) > winSize.height) {
+                    this.yShift = 'above';
+                    translate.y = wrapCoords.top - (offset - 1);
+                } else {
+                    this.yShift = 'below';
+                    translate.y = (wrapCoords.top + wrapCoords.height) + ( offset - 1);
+                }
+
+                if (outputCoords.width > wrapCoords.width) {
+                    this.renderer.addClass(this.ttOutputEl.nativeElement, 'is-wider');
+                } else {
+                    this.renderer.removeClass(this.ttOutputEl.nativeElement, 'is-wider');
+                }
+
+                // position styles - use transform3d to get performant positioning
+                styleString += 'transform: translate3d(' + translate.x + 'px, ' + translate.y + 'px, 0);';
+
+                // tell angular to trust the styles
+                this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
+
+                this.renderer.addClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
+                this.renderer.removeClass(this.mouseBoundaryEl, 'shift-' + ((this.yShift === 'above') ? 'below' : 'above'));
+                this.renderer.addClass(this.mouseBoundaryEl, 'shift-' + this.yShift);
+
+            }
+
+            /** POSITION STRATEGY :: MOUSEMOVE **/
+            if (this.positionStrategy === 'move') {
+
+                const offsetAmount = 20;
+
+                // detect window right edge proximity
+                if ((winSize.width - this._ttPosition.x) < (outputCoords.width + offsetAmount)) {
+                    this.xShift = 'left';
+                } else {
+                    this.xShift = 'right';
+                }
+
+                // detect window bottom edge proximity
+                if ((winSize.height - this._ttPosition.y) < (outputCoords.height + offsetAmount)) {
+                    this.yShift = 'above';
+                } else {
+                    this.yShift = 'below';
+                }
+
+                // position styles - use transform3d to get performant positioning
+                const styleString = 'transform: translate3d(' + this._ttPosition.x + 'px, ' + this._ttPosition.y + 'px, 0);';
+
+                // tell angular to trust the styles
+                this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
+
+
+            }
+        } else {
+            this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
+            this.renderer.addClass(this.mouseBoundaryEl, 'shift-above');
+            this.renderer.addClass(this.mouseBoundaryEl, 'shift-below');
         }
+
     }
 
     /* Last */
     ngOnDestroy() {
-        if (this.positionListener) {
-            this.removePositionListener();
+        if (this._positionListener) {
+            this._removePositionListener();
+        }
+        this.subscription.unsubscribe();
+        if (this.positionStrategy === 'sticky') {
+            this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
+            this.renderer.removeClass(this.mouseBoundaryEl, 'shift-above');
+            this.renderer.removeClass(this.mouseBoundaryEl, 'shift-below');
         }
     }
 

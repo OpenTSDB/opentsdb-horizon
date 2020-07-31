@@ -17,6 +17,8 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
 
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
+    positionStrategy: string = 'sticky';
+
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
@@ -34,10 +36,7 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
 
     ngOnInit() {
         super.ngOnInit();
-        super.dataStreamSubscribe((data: any) => {
-            this.logger.log('DONUT DATA', data);
-            return data;
-        });
+        super._dataStreamSubscribe();
     }
 
     /* Last */

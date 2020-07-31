@@ -51,16 +51,12 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
         }, {capture: true, passive: true});
     }
 
-    /*
-    tooltipData(data: any) {
-        this.service.ttDataPut(data);
-    }
-    */
-
     /* last */
     ngOnDestroy() {
         // remove events
-        this.elRef.nativeElement.removeEvent('mouseenter', this._mouseEnterListener);
-        this.elRef.nativeElement.removeEvent('mouseenter', this._mouseOutListener);
+        if (this.elRef) {
+            this.elRef.nativeElement.removeEvent('mouseenter', this._mouseEnterListener);
+            this.elRef.nativeElement.removeEvent('mouseenter', this._mouseOutListener);
+        }
     }
 }

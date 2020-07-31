@@ -191,8 +191,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private logger: LoggerService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
-        private themeService: ThemeService,
-        private tooltipService: TooltipDataService
+        private themeService: ThemeService
     ) { }
 
     ngOnInit() {
@@ -211,7 +210,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.logger.log('THEME TYPE', { themeType });
 
             this.options = {...this.options,
-                //highlightSeriesBackgroundAlpha: (themeType === 'light') ? 0.5 : 0.8,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
             this.cdRef.markForCheck();
@@ -258,7 +256,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             }
 
             if (message && (message.id === this.widget.id)) {
-                // this.logger.intercom('[linechartWidgetComponent] responseGet', message);
                 switch (message.action) {
                     case 'InfoIslandClosed':
                         this.updatedShowEventStream(false);
@@ -1500,10 +1497,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 action: 'tsTickDataChange',
                 payload: payload
             });
-        }
-
-        if (event.action === 'tooltipDataChange') {
-            this.tooltipService.ttDataPut(event.data);
         }
     }
 
