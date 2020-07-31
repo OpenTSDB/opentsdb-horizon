@@ -1,6 +1,23 @@
 @mixin heatmap-data-tooltip-component-base() {
     .heatmap-data-tooltip {
+        .color-chip {
+            &::after {
+                border: 1px solid rgba($black, .04);
+            }
 
+            &::before {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 6px;
+                background-color: currentColor;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 1;
+            }
+        }
     }
 }
 

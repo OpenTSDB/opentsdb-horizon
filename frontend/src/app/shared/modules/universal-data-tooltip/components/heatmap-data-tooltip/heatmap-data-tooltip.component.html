@@ -1,11 +1,11 @@
-<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="tooltipData" #tooltipOutput>
-    <p>{{tooltipData.timestampFormatted}}</p>
-    <p>{{tooltipData.seriesAffected}}</p>
-    <p>Bucket Range: {{tooltipData.bucketRange}}</p>
-    <ng-container *ngIf="tooltipData.bucketValues && tooltipData.bucketValues.length > 0">
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
+    <p>{{_ttData.timestampFormatted}}</p>
+    <p><span class="color-chip" [style.color]="_ttData.color" *ngIf="_ttData.color"></span> {{_ttData.affectedSeries}}</p>
+    <p>Bucket Range: {{_ttData.bucketRange}}</p>
+    <ng-container *ngIf="_ttData.bucketValues && _ttData.bucketValues.length > 0">
         <table>
-            <tr *ngFor="let tt of tooltipData.bucketValues">
-                <td>{{tt.value}}</td>
+            <tr *ngFor="let tt of _ttData.bucketValues">
+                <td>{{tt.value}} &nbsp;&nbsp;</td>
                 <td>{{tt.label}}</td>
             </tr>
         </table>
