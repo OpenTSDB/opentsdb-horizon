@@ -1,8 +1,12 @@
-<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
-    <p>{{_ttData.timestampFormatted}}</p>
-    <p>Value: {{_ttData.valueFormatted}}</p>
-    <p>Metric: {{_ttData.metric}}</p>
-    <ng-container *ngIf="_ttData.tags && _ttData.tags.length > 0">
-        <p *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</p>
-    </ng-container>
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
+    <div class="value-marker">
+        <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.valueFormatted}}</span>
+        <span class="time">{{_ttData.timestampFormatted}}</span>
+    </div>
+    <div class="other-data">
+        <p>metric: {{_ttData.metric}}</p>
+        <ng-container *ngIf="_ttData.tags && _ttData.tags.length > 0">
+            <p *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</p>
+        </ng-container>
+    </div>
 </div>

@@ -11,6 +11,7 @@ import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { LoggerService } from '../../../../../core/services/logger.service';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { TooltipDataService, TooltipData } from '../../services/tooltip-data.service';
+import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -20,16 +21,19 @@ import { TooltipDataService, TooltipData } from '../../services/tooltip-data.ser
 export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
-    // @HostBinding('class.hidden') public tooltipHidden = true;
+
     @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
 
-    //positionStrategy: string = 'sticky';
+    positionStrategy: string = 'sticky';
+
+    private utils: UtilsService;
 
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
         logger: LoggerService,
+        _utils: UtilsService
     ) {
         super(
             ttDataSvc,
@@ -37,20 +41,23 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
             sanitizer,
             logger
         );
-        // this.logger.ng('LINECHART CONSTRUCTOR');
+        this.utils = _utils;
     }
 
     ngOnInit() {
 
         super.ngOnInit();
         super._dataStreamSubscribe((data: any) => {
-            // this.logger.log('LINECHART DATA CB', data);
             return this.dataFormatter(data);
         });
     }
 
-    private dataFormatter(data: any): any {
-        // this.logger.log('LINECHART DATA FORMATTER', data);
+    dataFormatter(data: any) {
+
+        // get color contrast
+        const contrast = this.utils.findContrastColor(data.color);
+        data.colorContrast = contrast.hex;
+        this.logger.api('LINE CHART DATA FORMATTER', data);
         return data;
     }
 
