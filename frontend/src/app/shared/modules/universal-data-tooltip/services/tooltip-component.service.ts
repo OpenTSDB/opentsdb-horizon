@@ -59,7 +59,6 @@ export class TooltipComponentService {
 
     // comes from tt-scroll-listener
     boundaryRegister(elRef: HTMLElement) {
-        // this.logger.log('BOUNDARY REGISTER', elRef);
         this._boundaryElRef = elRef;
     }
 
@@ -71,16 +70,15 @@ export class TooltipComponentService {
         // hide tooltip while scrolling
         if (this._componentRef) {
             if (scrolling) {
+                this._componentRef.instance._ttData = false; // reset data
                 this._componentRef.instance.hide();
-            } else {
-                this._componentRef.instance.show();
             }
         }
     }
 
     // comes from tt-mouse-listener
     tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
-        console.log('TOOLTIP TYPE', type);
+        // console.log('TOOLTIP TYPE', type);
         if (this._mouseElRef !== mouseBoundaryEl) {
             this._mouseElRef = mouseBoundaryEl;
 
@@ -96,18 +94,17 @@ export class TooltipComponentService {
             }
             this.createComponent(type);
         }
-        this._componentRef.instance.show();
     }
 
     tooltipListen() {
-        console.log('TOOLTIP LISTEN');
+        // console.log('TOOLTIP LISTEN');
         if (this._componentRef) {
             this._componentRef.instance.show();
         }
     }
 
     tooltipMute() {
-        console.log('TOOLTIP MUTE');
+        // console.log('TOOLTIP MUTE');
         if (this._componentRef) {
             this._componentRef.instance.hide();
         }
@@ -118,8 +115,7 @@ export class TooltipComponentService {
     // tooltip component (type)
 
     private createComponent(type: string) {
-        this.logger.success('CREATE COMPONENT', {type});
-        // create new component
+        // create new tooltip component
         this._prevTtType = type;
         const ttType = this.getTooltipToLoad(type);
 
@@ -137,12 +133,6 @@ export class TooltipComponentService {
                 (this._componentRef.hostView as EmbeddedViewRef<any>)
                 .rootNodes[0] as HTMLElement;
 
-            console.group('COMPONENT CREATE');
-            console.log('type', type);
-            console.log('ref', this._componentRef);
-            console.log('domEl', this._domElem);
-            console.groupEnd();
-
             this.appRef.attachView(this._componentRef.hostView);
             document.body.appendChild(this._domElem);
         }
@@ -150,7 +140,6 @@ export class TooltipComponentService {
     }
 
     private detachComponent() {
-        this.logger.error('DETACH COMPONENT', {});
         if (this._componentRef && this._domElem) {
             this.appRef.detachView(this._componentRef.hostView);
             document.body.removeChild(this._domElem);
@@ -159,11 +148,10 @@ export class TooltipComponentService {
     }
 
     private getTooltipToLoad(name: string): any {
-        this.logger.log('GET TOOLTIP TO LOAD', {type: name});
         if (TOOLTIP_TYPES[name]) {
             return TOOLTIP_TYPES[name];
         } else {
-            return TOOLTIP_TYPES['linechart']; // default
+            return false;
         }
     }
 }
