@@ -5,6 +5,7 @@ import customTooltip from '../../../chart.js/tooltip/custom-tooltip';
 import * as thresholdPlugin from '../../../chartjs-threshold-plugin/src/index';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 Chart.defaults.global.defaultFontColor = '#000000';
 // Chart.defaults.global.defaultFontFamily = 'Monaco, monospace';
@@ -59,8 +60,14 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
      */
     _meta: any = {};
 
-    constructor( private element: ElementRef, private uConverter: UnitConverterService, private ttDataSvc: TooltipDataService ) {
+    constructor(
+        private element: ElementRef,
+        private uConverter: UnitConverterService,
+        private ttDataSvc: TooltipDataService,
+        private logger: LoggerService
+    ) {
         const self = this;
+        // OLD ONE
         const tooltipFormatter = function(item, data) {
             const axis = self.chartType.indexOf('horizontal') >= 0 ? 'x' : 'y';
             const datasetIndex = item.datasetIndex;
@@ -81,6 +88,7 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
             }
         };
 
+        // NEW ONE
         const tooltipFormatter2 = function(item, data) {
             const axis = self.chartType.indexOf('horizontal') >= 0 ? 'x' : 'y';
             const datasetIndex = item.datasetIndex;
@@ -89,24 +97,55 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
             let ctags = [];
             for (const k in tags ) {
                 ctags.push({key: k, value: tags[k]});
-                //taghtml += '<p>' + k + ': ' +  tags[k] + '</p> OHNOES';
             }
             let cvalue: any;
+            let unit: any;
+            let dunit: any;
+            let value: any;
+            let color: any = data.datasets[datasetIndex].backgroundColor[index];
+            let label: any = (item.label) ? item.label : tags.metric;
             if ( self.options.scales && self.options.scales[ axis + 'Axes' ][0].ticks.format ) {
                 const tickFormat = self.options.scales[axis + 'Axes'][0].ticks.format;
-                const unit = tickFormat.unit;
-                const dunit = self.uConverter.getNormalizedUnit(item[axis + 'Label'], self.options.scales[axis + 'Axes'][0].ticks.format);
-                //return 'AAAValue: ' + self.uConverter.convert(item[axis + 'Label'], unit, dunit ,{ unit: unit, precision: tickFormat.precision } ) + taghtml;
-                cvalue = self.uConverter.convert(item[axis + 'Label'], unit, dunit ,{ unit: unit, precision: tickFormat.precision } );
+                value = item[axis + 'Label'];
+                unit = tickFormat.unit;
+                dunit = self.uConverter.getNormalizedUnit(
+                    value,
+                    self.options.scales[axis + 'Axes'][0].ticks.format
+                );
+                cvalue = self.uConverter.convert(
+                    value,
+                    unit,
+                    dunit,
+                    { unit: unit, precision: tickFormat.precision }
+                );
             } else {
-                const dunit = self.uConverter.getNormalizedUnit(data['datasets'][0]['data'][item['index']], self.options.scales[axis + 'Axes'][0].ticks.format);
-                //return 'BBBValue: ' +  self.uConverter.convert(data['datasets'][0]['data'][item['index']],'',dunit, { unit: '', precision: '' }) + taghtml;
-                cvalue = self.uConverter.convert(data['datasets'][0]['data'][item['index']],'',dunit, { unit: '', precision: '' });
+                value = data['datasets'][0]['data'][item['index']];
+                dunit = self.uConverter.getNormalizedUnit(
+                    value,
+                    self.options.scales[axis + 'Axes'][0].ticks.format
+                );
+                cvalue = self.uConverter.convert(
+                    value,
+                    '',
+                    dunit,
+                    { unit: '', precision: '' }
+                );
             }
 
-            //return JSON.stringify({tags: ctags,value: cvalue});
-            return {tags: ctags, value: cvalue};
+            self.logger.log('TT FORMATTER', {
+                item, data, axis, unit, dunit
+            });
+
+            //
+            return {
+                tags: ctags,
+                value: value,
+                valueFormatted: cvalue,
+                color: color,
+                label: label
+            };
         };
+
         this.defaultOptions.tooltips = {
                                         enabled: false,
                                         position: 'nearest',
@@ -116,10 +155,15 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                                             label : tooltipFormatter
                                         }*/
                                         custom: (ttModel) => {
+                                            console.log('BARCHART TTMODEL', ttModel);
+
                                             if (!ttModel.body) {
-                                                self.ttDataSvc.ttDataPut(false);
+                                                self.ttDataSvc._ttDataPut(false);
                                             } else {
-                                                self.ttDataSvc.ttDataPut(ttModel.body[0].lines[0]);
+                                                const data = ttModel.body[0].lines[0];
+                                                const position = {x: ttModel.caretX, y: ttModel.caretY};
+                                                self.logger.ng('TTDATA', {data, position});
+                                                self.ttDataSvc._ttDataPut({data, position});
                                             }
                                         },
                                         callbacks: {
