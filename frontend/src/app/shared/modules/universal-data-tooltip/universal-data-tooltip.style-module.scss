@@ -22,6 +22,9 @@
 // components
 @import './components/linechart-data-tooltip/linechart-data-tooltip.component.scss';
 @import './components/heatmap-data-tooltip/heatmap-data-tooltip.component.scss';
+@import './components/barchart-data-tooltip/barchart-data-tooltip.component.scss';
+@import './components/donut-data-tooltip/donut-data-tooltip.component.scss';
+@import './components/topn-data-tooltip/topn-data-tooltip.component.scss';
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin universal-data-tooltip-module-core() {
@@ -30,6 +33,9 @@
     @include data-tooltip-component-base();
     @include linechart-data-tooltip-component-base();
     @include heatmap-data-tooltip-component-base();
+    @include barchart-data-tooltip-component-base();
+    @include donut-data-tooltip-component-base();
+    @include topn-data-tooltip-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
@@ -38,5 +44,8 @@
     // example: @include componentName-component-theme($theme-config);
     @include data-tooltip-component-theme($theme-config);
     @include linechart-data-tooltip-component-theme($theme-config);
-    @include heatmap-data-tooltip-component-base();
+    @include heatmap-data-tooltip-component-theme($theme-config);
+    @include barchart-data-tooltip-component-theme($theme-config);
+    @include donut-data-tooltip-component-theme($theme-config);
+    @include topn-data-tooltip-component-theme($theme-config);
 }
