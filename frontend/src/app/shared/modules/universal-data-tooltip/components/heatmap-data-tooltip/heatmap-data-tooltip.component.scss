@@ -18,6 +18,31 @@
                 z-index: 1;
             }
         }
+
+        .tooltip-output {
+            .value-marker {
+                display: flex;
+
+                span {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    font-size: 14px;
+
+                    &.value {
+                        font-weight: bold;
+                    }
+
+                    &.time {
+                        flex: 1;
+                    }
+                }
+            }
+            .other-data {
+                padding: 4px 8px;
+                margin-top: 2px;
+                font-size: 10px
+            }
+        }
     }
 }
 
@@ -33,7 +58,16 @@
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
 
-    .heatmap-data-tooltip {
+    $vm-background: map-get($foreground, text);
+    $vm-text: find-color-invert($vm-background);
 
+    .heatmap-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                background: rgba($vm-background, .65);
+                color: $vm-text;
+            }
+        }
     }
 }

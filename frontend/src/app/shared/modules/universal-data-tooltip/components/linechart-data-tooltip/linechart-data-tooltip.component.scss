@@ -29,22 +29,22 @@
 }
 
 @mixin linechart-data-tooltip-component-theme($theme-config) {
-     /* Theme config parts */
-     $tname: map-get($theme-config, theme-name);
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
 
-     $primary: map-get($theme-config, primary);
-     $accent: map-get($theme-config, accent);
-     $warn: map-get($theme-config, warn);
-     $foreground: map-get($theme-config, foreground);
-     $background: map-get($theme-config, background);
-     $widget: map-get($theme-config, widgets);
-     $is-dark: map-get($theme-config, is-dark);
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
 
-     $vm-background: map-get($foreground, text);
-     $vm-text: find-color-invert($vm-background);
-     //$vm-background: rgba(map-get($background, card), .65);
+    $vm-background: map-get($foreground, text);
+    $vm-text: find-color-invert($vm-background);
+    //$vm-background: rgba(map-get($background, card), .65);
 
-     .linechart-data-tooltip {
+    .linechart-data-tooltip {
         .tooltip-output {
             .value-marker,
             .other-data {
@@ -52,5 +52,5 @@
                 color: $vm-text;
             }
         }
-     }
+    }
 }
