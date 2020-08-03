@@ -57,7 +57,7 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
         // get color contrast
         const contrast = this.utils.findContrastColor(data.color);
         data.colorContrast = contrast.hex;
-        this.logger.api('LINE CHART DATA FORMATTER', data);
+        //this.logger.api('LINE CHART DATA FORMATTER', data);
         return data;
     }
 

@@ -31,7 +31,7 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
             sanitizer,
             logger
         );
-        this.logger.ng('DONUT CONSTRUCTOR');
+        // this.logger.ng('DONUT CONSTRUCTOR');
     }
 
     ngOnInit() {

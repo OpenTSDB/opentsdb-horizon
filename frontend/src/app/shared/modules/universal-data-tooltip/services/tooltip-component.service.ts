@@ -78,7 +78,7 @@ export class TooltipComponentService {
 
     // comes from tt-mouse-listener
     tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
-        // console.log('TOOLTIP TYPE', type);
+        //console.log('TOOLTIP TYPE', type, mouseBoundaryEl);
         if (this._mouseElRef !== mouseBoundaryEl) {
             this._mouseElRef = mouseBoundaryEl;
 

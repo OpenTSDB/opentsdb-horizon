@@ -132,9 +132,9 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                 );
             }
 
-            self.logger.log('TT FORMATTER', {
+            /*self.logger.log('TT FORMATTER', {
                 item, data, axis, unit, dunit
-            });
+            });*/
 
             //
             return {
@@ -162,7 +162,7 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                                             } else {
                                                 const data = ttModel.body[0].lines[0];
                                                 const position = {x: ttModel.caretX, y: ttModel.caretY};
-                                                self.logger.ng('TTDATA', {data, position});
+                                                // self.logger.ng('TTDATA', {data, position});
                                                 self.ttDataSvc._ttDataPut({data, position});
                                             }
                                         },

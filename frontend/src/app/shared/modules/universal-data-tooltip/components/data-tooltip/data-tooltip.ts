@@ -67,7 +67,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     _dataStreamSubscribe(dataFormatter?: Function, positionAdjuster?: Function) {
         this.subscription.add(this._dataStream$.subscribe((ttData: any) => {
-            this.logger.log('__DT STREAM DATA', ttData);
+            // this.logger.log('__DT STREAM DATA', ttData);
             if (!ttData) {
                 this._ttData = false;
                 this.hide();
@@ -84,21 +84,21 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                 }
                 // show it
                 this.show();
-                this.logger.log('__DT STREAM DATA[PARSED]', {
+                /*this.logger.log('__DT STREAM DATA[PARSED]', {
                     data: this._ttData,
                     position: this._ttPosition
-                });
+                });*/
             }
         }));
     }
 
     show() {
-        console.log('===> SHOW');
+        // console.log('===> SHOW');
         this.tooltipHidden = false;
     }
 
     hide() {
-        console.log('===> HIDE');
+        // console.log('===> HIDE');
         this.tooltipHidden = true;
         this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
     }
@@ -125,7 +125,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     }
     /* POSITIONER */
     private _positioner() {
-        this.logger.ng('_POSITIONER', this._ttPosition);
+        // this.logger.ng('_POSITIONER', this.mouseBoundaryEl);
 
         if (!this.tooltipHidden && this._ttData && this._ttPosition) {
 

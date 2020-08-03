@@ -1421,7 +1421,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
+        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
