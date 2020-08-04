@@ -22,7 +22,15 @@
             .other-data {
                 padding: 4px 8px;
                 margin-top: 2px;
-                font-size: 10px
+                font-size: 10px;
+
+                p {
+                    display: inline-block;
+
+                    &:not(:last-child) {
+                        margin-right: 12px;
+                    }
+                }
             }
         }
     }
@@ -40,15 +48,21 @@
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
 
-    $vm-background: map-get($foreground, text);
-    $vm-text: find-color-invert($vm-background);
+    //$vm-background: map-get($foreground, text);
+    //$vm-text: find-color-invert($vm-background);
     //$vm-background: rgba(map-get($background, card), .65);
+
+    $primary-accent: map-get($primary, A100);
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    $vm-background: if($is-dark, $white, $primary-accent);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
 
     .linechart-data-tooltip {
         .tooltip-output {
             .value-marker,
             .other-data {
-                background: rgba($vm-background, .65);
+                //background: rgba($vm-background, .65);
                 color: $vm-text;
             }
         }

@@ -150,7 +150,8 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                     y: 0
                 };
 
-                const offset = 2;
+                //const offset = 2; // for the box-shadow-border
+                const offset = 0; // no box-shadow-border
 
                 // start style string
                 let styleString: string = 'min-width: ' + (wrapCoords.width + offset * 2) + 'px; height: 1px;';

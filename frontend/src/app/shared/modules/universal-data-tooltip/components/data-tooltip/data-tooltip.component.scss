@@ -1,7 +1,7 @@
 @mixin data-tooltip-component-base() {
     .data-tooltip {
         position: absolute;
-        z-index: 10000;
+        z-index: 10;
         display: block;
         /* transform will be used by script to move element */
         transform-style: preserve-3d;
@@ -148,14 +148,20 @@
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
 
-    $sticky-bg: if($is-dark, $white, $black);
-    $sticky-txt: if($is-dark, $black, $white);
-    $sticky-opacity: if($is-dark, .85, .65);
+    $primary-accent: map-get($primary, A100);
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    //$sticky-bg: if($is-dark, $white, $primary-accent);
+    //$sticky-txt: if($is-dark, $black, $primary-accent-contrast);
+    $sticky-bg: $primary-accent;
+    $sticky-txt: $primary-accent-contrast;
+    $sticky-opacity: if($is-dark, .80, .80);
     $sticky-shim: map-get($background, background);
 
     $move-bg: if($is-dark, darken($white, 25%), lighten($black, 25%));
     $move-txt: find-color-invert($move-bg);
 
+    $shadow-color: map-get($primary, default);
+    $shadow-opacity: .65;
 
     .data-tooltip {
         &.move-position-strategy {
@@ -169,6 +175,7 @@
         &.sticky-position-strategy {
 
             .tooltip-output {
+                box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
                 background: rgba($sticky-bg, $sticky-opacity);
                 color: rgba($sticky-txt, .95);
             }
@@ -176,14 +183,16 @@
     }
 
     .tooltip-mouse-boundary-hover {
+        box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
+
         &.shift-above {
-            box-shadow: 0 -2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
+            //box-shadow: 0 -2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
         }
 
         &.shift-below {
-            box-shadow: 0 2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
+            //box-shadow: 0 2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
         }
-        // box-shadow: 0 0 0 2px rgba($sticky-bg, $sticky-opacity);
+
     }
 
 }

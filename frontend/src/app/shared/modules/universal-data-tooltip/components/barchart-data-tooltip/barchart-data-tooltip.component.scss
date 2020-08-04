@@ -21,7 +21,15 @@
             .other-data {
                 padding: 4px 8px;
                 margin-top: 2px;
-                font-size: 10px
+                font-size: 10px;
+
+                p {
+                    display: inline-block;
+
+                    &:not(:last-child) {
+                        margin-right: 12px;
+                    }
+                }
             }
         }
     }
@@ -46,7 +54,7 @@
         .tooltip-output {
             .value-marker,
             .other-data {
-                background: rgba($vm-background, .65);
+                // background: rgba($vm-background, .65);
                 color: $vm-text;
             }
         }
