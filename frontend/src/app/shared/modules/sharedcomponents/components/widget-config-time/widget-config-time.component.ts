@@ -216,6 +216,22 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
             value: '30 days'
         }
     ];
+
+    toggleTimeUnitOptions: Array<any> = [
+        {
+            label: 'Secs',
+            value: 's'
+        },
+        {
+            label: 'Min',
+            value: 'm'
+        },
+        {
+            label: 'Hrs',
+            value: 'h'
+        }
+    ];
+
     options: any = {};
     startTime = '';
     endTime = '';

@@ -8,7 +8,7 @@
             overflow: initial;
         }
 
-        .mat-menu-content { 
+        .mat-menu-content {
             padding: 0px;
         }
 
@@ -36,7 +36,7 @@
 
         .custom-time-range {
             h2 {
-                height: 30px;
+                height: 32px;
                 line-height: 32px;
                 font-size: 90%;
             }
@@ -46,7 +46,7 @@
 
             h2 {
                 height: 24px;
-                line-height: 32px;
+                line-height: 24px;
                 font-size: 90%;
             }
 
@@ -58,29 +58,29 @@
                 width: 15px;
                 //border: transparent;
             }
-            
+
             .mat-raised-button,
             .mat-flat-button {
                 border-radius: 0;
-                
-                min-width: initial; 
+
+                min-width: initial;
                 width: 100%;
             }
         }
-        
+
         .dp-time-header {
             font-size: 20px
         }
-          
+
         .dtpicker-start {
             margin-bottom: 15px;
             width: 256px;
         }
-        
+
         .dtpicker-end {
             width: 256px;
         }
-        
+
         #button-apply {
             //margin-top: 10px;
 
@@ -171,8 +171,10 @@
         }
 
         .time-preset-button {
-            background-color: map-get($primary, 100);
-            color: map-get($primary, '100-contrast');
+            // background-color: map-get($primary, 100);
+            background-color: rgba(map-get($primary, default), 0.15);
+            // color: map-get($primary, '100-contrast');
+            color: map-get($foreground, link);
 
             &.is-selected {
                 background-color: map-get($primary, default);

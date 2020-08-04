@@ -74,11 +74,16 @@
                     <mat-form-field appearance="fill">
                         <input matInput placeholder="5" formControlName="minInterval" type="number" autocomplete="off">
                     </mat-form-field>
-                    <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="minIntervalUnit">
+                    <!--<mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="minIntervalUnit">
                         <mat-button-toggle value="s" name="customDownsampleUnit">Secs</mat-button-toggle>
                         <mat-button-toggle value="m" name="customDownsampleUnit">Min</mat-button-toggle>
                         <mat-button-toggle value="h" name="customDownsampleUnit">Hrs</mat-button-toggle>
-                    </mat-button-toggle-group>
+                    </mat-button-toggle-group>-->
+                    <mat-radio-group formControlName="minIntervalUnit">
+                        <mat-radio-button
+                            *ngFor="let option of toggleTimeUnitOptions"
+                            [value]="option.value">{{option.label}}</mat-radio-button>
+                    </mat-radio-group>
                 </div>
             </div>
             <div class="config-control reporting-interval-controls">
@@ -87,11 +92,16 @@
                     <mat-form-field appearance="fill">
                         <input matInput placeholder="10" formControlName="reportingInterval" type="number" autocomplete="off">
                     </mat-form-field>
-                    <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="reportingIntervalUnit">
+                    <!--<mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="reportingIntervalUnit">
                         <mat-button-toggle value="s" name="customDownsampleUnit">Secs</mat-button-toggle>
                         <mat-button-toggle value="m" name="customDownsampleUnit">Min</mat-button-toggle>
                         <mat-button-toggle value="h" name="customDownsampleUnit">Hrs</mat-button-toggle>
-                    </mat-button-toggle-group>
+                    </mat-button-toggle-group>-->
+                    <mat-radio-group formControlName="reportingIntervalUnit">
+                        <mat-radio-button
+                            *ngFor="let option of toggleTimeUnitOptions"
+                            [value]="option.value">{{option.label}}</mat-radio-button>
+                    </mat-radio-group>
                 </div>
             </div>
         </div>
