@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as _moment from 'moment';
+import { isArray } from 'util';
 const moment = _moment;
 
 @Injectable({
@@ -431,9 +432,15 @@ export class UtilsService {
             const convColor = this.hexToRgb(color);
             color = [convColor.r, convColor.g, convColor.b];
         }
+
         // if rgb object, convert to array
         if (typeof(color) === 'object' && color.r && color.g && color.b) {
             color = [color.r, color.g, color.b];
+        }
+
+        // catch if its not an array
+        if (!Array.isArray(color)) {
+            return false;
         }
 
         // http://www.w3.org/TR/AERT#color-contrast

@@ -155,8 +155,6 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                                             label : tooltipFormatter
                                         }*/
                                         custom: (ttModel) => {
-                                            console.log('BARCHART TTMODEL', ttModel);
-
                                             if (!ttModel.body) {
                                                 self.ttDataSvc._ttDataPut(false);
                                             } else {
