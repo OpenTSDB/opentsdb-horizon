@@ -107,6 +107,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     tagFilters = [];
     tplVars = []; // a wrapper object for tplVariables.tvars for pipe since alert component using it.
 
+    inAlertEditor: boolean = false;
+
     visualPanelHighlight: any = false;
 
     timeAggregatorOptions: Array<any> = [
@@ -131,6 +133,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             value: 'last'
         }
     ];
+
+    tagAggregatorIconMap: any = {
+        'sum': 'd-value-sum',
+        'min': 'd-value-minimum',
+        'max': 'd-value-maximum',
+        'avg': 'd-value-average',
+        'count': 'd-value-all'
+    };
 
     summarizerOptions: Array<string> = ['avg', 'last', 'first', 'sum', 'min', 'max', 'count'];
     queryChanges$: BehaviorSubject<boolean>;
@@ -417,6 +427,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             });
         // call this in case of not modify filter list yet
         this.buildTagFilters(this.query.filters);
+
+        // check if inside alert editor
+        if (this.elRef.nativeElement.closest('.alert-details-component')) {
+            this.inAlertEditor = true;
+        }
     }
 
     ngOnDestroy() {
