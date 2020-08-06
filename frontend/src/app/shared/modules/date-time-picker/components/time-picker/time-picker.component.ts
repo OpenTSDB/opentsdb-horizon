@@ -98,6 +98,8 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
         return this._downsample;
     }
 
+    @Input() tot: any = {};
+
 
     /** Outputs */
     @Output() newChange = new EventEmitter();
@@ -235,6 +237,11 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
     downsampleChange(payload: any) {
         this.newChange.emit({ action: 'SetDBDownsample', payload: payload.data });
+    }
+
+    totChange(payload: any) {
+        console.log("timePicker", payload)
+        this.newChange.emit({ action: 'SetToT', payload: payload });
     }
 
     closeTimeRangePicker() {

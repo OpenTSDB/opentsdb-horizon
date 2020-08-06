@@ -37,7 +37,8 @@ import {
     UpdateDashboardTitle,
     UpdateVariables,
     UpdateMeta,
-    UpdateDownsample
+    UpdateDownsample,
+    UpdateToT
 } from '../../state/settings.state';
 import {
     AppShellState,
@@ -85,6 +86,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBSettingsState.getMeta) meta$: Observable<any>;
     @Select(DBSettingsState.getTplVariables) tplVariables$: Observable<any>;
     @Select(DBSettingsState.getDownSample) downSample$: Observable<any>;
+    @Select(DBSettingsState.getToT) tot$: Observable<any>;
     @Select(WidgetsState.getWigets) widgets$: Observable<WidgetModel[]>;
     @Select(WidgetsState.lastUpdated) lastUpdated$: Observable<any>;
     @Select(WidgetsRawdataState.getLastModifiedWidgetRawdataByGroup) widgetGroupRawData$: Observable<any>;
@@ -173,6 +175,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // other variables
     dbSettings: any;
     dbTime: any = {};
+    dbToT: any;
+    dbPrevToT: any;
     isDBZoomed = false;
     meta: any = {};
     dbDownsample: any = {};
@@ -202,6 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
     isDbTagsLoaded$ = new Subject();
     isDbTagsLoaded = false;
+    isToTChanged = false;
     eWidgets: any = {}; // to whole eligible widgets with custom dashboard tags
     tagKeysByNamespaces = [];
 
@@ -257,6 +262,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.store.dispatch(new ClearWidgetsData());
             this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
+            this.isToTChanged = false;
+            this.dbPrevToT = { period: '', value: 0 };
+            this.dbToT = { period: '', value: 0 };
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
                 this.store.dispatch(new LoadDashboard(this.dbid));
@@ -703,6 +711,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.downSample$.subscribe(downsample => {
             this.dbDownsample = {...this.utilService.deepClone(downsample)};
         }));
+        this.subscription.add(this.tot$.subscribe(tot => {
+            this.dbToT = tot ? this.utilService.deepClone(tot) : {};
+            if (this.isToTChanged && !deepEqual(this.dbPrevToT, this.dbToT) &&
+                    ((this.dbToT.value && this.dbToT.period) || (this.dbPrevToT.value && this.dbPrevToT.period && (this.dbToT.value || this.dbToT.period)) )) {
+                this.isToTChanged = false;
+                this.applyToTChange();
+            }
+            this.dbPrevToT = this.utilService.deepClone(this.dbToT);
+        }));
         this.subscription.add(this.tplVariables$.subscribe(tpl => {
             // whenever tplVariables$ trigger, we save to view too.
             if (tpl) {
@@ -1037,6 +1054,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+    applyToTChange() {
+        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        // find all widget that using downsample as auto
+        for (let i = 0; i < cloneWidgets.length; i++) {
+            const cWidget = cloneWidgets[i];
+            const settings = cWidget.settings;
+            // only apply to linechart widget
+            if (settings.component_type === 'LinechartWidgetComponent') {
+                this.handleQueryPayload({
+                    id: cWidget.id,
+                    payload: cWidget
+                });
+            }
+        }
+    }
+
     // to passing raw data to widget
     updateWidgetGroup(wid, rawdata, error = null) {
         const clientSize = this.store.selectSnapshot(ClientSizeState);
@@ -1144,7 +1177,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 dbid: this.dbid
             };
             if (Object.keys(queries).length && sources.length) {
-                const query = this.queryService.buildQuery(payload, dt, queries, { sources: sources });
+                const tot = this.dbToT.period && this.dbToT.value ? this.dbToT : '';
+                const query = this.queryService.buildQuery(payload, dt, queries, { sources: sources, tot: tot });
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
                 // ask widget to loading signal
@@ -1239,10 +1273,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // let they refresh as they wish.
                 this.refresh();
                 break;
-            case 'SetDBDownsample': {
+            case 'SetDBDownsample': 
                 this.store.dispatch(new UpdateDownsample(message.payload));
                 this.applyDBDownsample(message.payload);
-            }
+                break;
+            case 'SetToT': 
+                this.isToTChanged = true;
+                this.store.dispatch(new UpdateToT(message.payload));
+                break;
         }
     }
 

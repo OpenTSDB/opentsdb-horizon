@@ -63,7 +63,7 @@
         </datepicker2>
     </div>
     <div *ngIf="downsample">
-        <downsample (downsampleChange)="downsampleChange($event)" [downsample]="downsample"></downsample>
+        <downsample (downsampleChange)="downsampleChange($event)" (totChange)="setToT($event)" [tot]="tot" [downsample]="downsample"></downsample>
     </div>
 </div>
 <div class="dtp-action-controls" *ngIf="!options.autoTrigger && showApply" fxLayout.xs="row">

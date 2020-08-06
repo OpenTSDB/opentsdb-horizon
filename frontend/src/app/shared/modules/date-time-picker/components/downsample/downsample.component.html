@@ -44,6 +44,29 @@
               </mat-form-field>
           </div>
       </div>
+      <div class="config-control time-over-time-controls">
+        <!--<label class="label">Override Aggregator</label>-->
+        <div> Time Over Time</div>
+        <div class="form-field-group time-over-time">
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Number{{tot.value}}</mat-label>
+                    <mat-select [value]="totValue" (selectionChange)="setTimeOverTime('value', $event.value)" disableOptionCentering="true">
+                        <mat-option value=0>None</mat-option>
+                        <mat-option *ngFor="let value  of [1, 2, 3, 4, 5, 6, 7]" [value]="value">{{ value }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Period</mat-label>
+                    <mat-select [value]="totPeriod" (selectionChange)="setTimeOverTime('period', $event.value)" disableOptionCentering="true">
+                        <mat-option *ngFor="let option of timeOverTimePeriodOptions" [value]="option.value">{{ option.label }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
 <!--
       <div class="config-control min-interval-controls">
           <label class="label">Minimum Interval</label>

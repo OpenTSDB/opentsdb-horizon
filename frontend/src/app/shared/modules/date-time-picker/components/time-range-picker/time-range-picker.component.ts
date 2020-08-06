@@ -44,10 +44,12 @@ export class TimeRangePickerComponent implements OnInit {
       return this._timezone;
     }
     @Input() downsample: any;
+    @Input() tot: any;
     @Input() options: TimeRangePickerOptions;
     @Output() timeSelected = new EventEmitter<ISelectedTime>();
     @Output() cancelSelected = new EventEmitter();
     @Output() dbdownsampleChange = new EventEmitter();
+    @Output() dbToTChange = new EventEmitter();
     @Output() onError = new EventEmitter();
 
     @ViewChild('daytimePickerStart') startTimeReference: DatepickerComponent;
@@ -90,6 +92,10 @@ export class TimeRangePickerComponent implements OnInit {
     downsampleChange(payload: any) {
       // pass it thru
       this.dbdownsampleChange.emit(payload);
+    }
+
+    setToT(payload: any) {
+      this.dbToTChange.emit(payload);
     }
 
     getTimeSelected(): ISelectedTime {

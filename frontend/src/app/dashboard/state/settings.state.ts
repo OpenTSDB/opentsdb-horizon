@@ -3,6 +3,7 @@ import { HttpService } from '../../core/http/http.service';
 import { DashboardService } from '../services/dashboard.service';
 import { DateUtilsService } from '../../core/services/dateutils.service';
 import { UtilsService } from '../../core/services/utils.service';
+import * as deepEqual from 'fast-deep-equal';
 
 export interface DBSettingsModel {
     mode: string;
@@ -28,6 +29,10 @@ export interface DBSettingsModel {
     tplVariables: {
         namespaces: string[];
         tvars: any[];
+    };
+    tot: {
+        period: string;
+        value: number;
     };
     downsample: {
         aggregators: string[];
@@ -96,6 +101,11 @@ export class UpdateDownsample {
     constructor(public readonly payload: any) {}
 }
 
+export class UpdateToT {
+    public static type ='[Dashboard] Update ToT';
+    constructor(public readonly payload: any) {}
+}
+
 @State<DBSettingsModel>({
     name: 'Settings',
     defaults: {
@@ -118,6 +128,10 @@ export class UpdateDownsample {
         tplVariables: {
             namespaces: [],
             tvars: []
+        },
+        tot: {
+            period: '',
+            value: 0
         },
         downsample: {
             aggregators: [''],
@@ -164,6 +178,10 @@ export class DBSettingsState {
         return state.downsample;
     }
 
+    @Selector() static getToT(state: DBSettingsModel) {
+        return state.tot;
+    }
+
     @Action(UpdateDownsample)
     updateDownsample(ctx: StateContext<DBSettingsModel>, { payload }: UpdateDownsample) {
         const state = ctx.getState();
@@ -179,6 +197,11 @@ export class DBSettingsState {
             downsample.customValue = payload.customDownsampleValue;
         }
         ctx.patchState({...state, downsample: downsample});
+    }
+
+    @Action(UpdateToT)
+    updateToT(ctx: StateContext<DBSettingsModel>, { payload }: UpdateToT) {
+        ctx.patchState({tot: payload});
     }
 
     @Action(UpdateMode)
