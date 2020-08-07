@@ -44,6 +44,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     filteredKeyOptions: Observable<string[]>; // options for key autosuggest
     filteredValueOptions: string[][];
     filterValLoading = true;
+    filterValLoadingErr = false;
     prevSelectedTagk = '';
     disableDone = false;
     trackingSub: any = {};
@@ -192,13 +193,19 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.cdRef.markForCheck();
                 }
                 this.filterValLoading = true;
+                this.filterValLoadingErr = false;
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
                         this.filterValLoading = false;
                         if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
-                            this.cdRef.markForCheck();
                         }
+                        this.cdRef.markForCheck();
+                    },
+                    err => {
+                        this.filterValLoading = false;
+                        this.filterValLoadingErr = true;
+                        this.cdRef.markForCheck();
                     });
             });
     }
@@ -303,6 +310,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     onVariableFocus(index: number) {
+        this.filterValLoading =  true;
         this.tagValueViewFocusTimeout = setTimeout(() => {
             this.manageFilterControl(index);
         }, 300);
@@ -387,6 +395,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 } 
                 break;
             case 'display':
+                this.filterValLoading = true;
                 this.tagValueFocusTimeout = setTimeout(() => {
                     this.manageFilterControl(index);
                 }, 300);

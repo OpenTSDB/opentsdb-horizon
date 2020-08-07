@@ -60,6 +60,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     tagValueSub: Subscription;
     visible = false;
     regexVars = /^!?\[.*\]$/;
+    tagValueSearch = false;
+    tagSearch = false;
 
     constructor(
         private elRef: ElementRef,
@@ -135,6 +137,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         if (this.tagKeySub) {
             this.tagKeySub.unsubscribe();
         }
+        this.tagSearch = true;
         this.tagKeySub = this.httpService.getNamespaceTagKeys(query, this.options.metaSource)
                                             .subscribe(res => {
                                                     const selectedKeys = this.filters.map(item => item.tagk);
@@ -143,11 +146,13 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                                                     if (this.loadFirstTagValues && options.length) {
                                                         this.handlerTagClick(options[0].name);
                                                     }
+                                                    this.tagSearch = false;
                                                     this.loadFirstTagValues = false;
                                                     this.tagOptions = options;
                                                     this.tagSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
                                                 },
                                                 err => {
+                                                    this.tagSearch = false;
                                                     this.tagOptions = [];
                                                     this.tagFilteredOptions = [];
                                                     const message = err.error.error ? err.error.error.message : err.message;
@@ -195,6 +200,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     if (this.tplVariables.tvars) {
                         tplVars = this.tplVariables.tvars.filter(v => v.tagk === this.selectedTag);
                     }
+                    this.tagValueSearch = true;
+                    this.cdRef.detectChanges();
                     this.tagValueSub = this.httpService.getTagValuesByNamespace(query, this.options.metaSource)
                         .subscribe(res => {
                             // append tpl vars to the top of the list of value
@@ -204,12 +211,14 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                                 }
                             }
                             this.filteredTagValues = res;
+                            this.tagValueSearch = false;
                             this.cdRef.detectChanges();
                         },
                             err => {
                                 this.filteredTagValues = [];
                                 const message = err.error.error ? err.error.error.message : err.message;
                                 this.message['tagValueControl'] = { 'type': 'error', 'message': message };
+                                this.tagValueSearch = false;
                                 this.cdRef.detectChanges();
                             });
                 }
@@ -233,6 +242,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.selectedTag = tag;
         this.tagValueTypeControl.setValue('literalor');
         this.tagValueSearchControl.setValue(null);
+        this.tagValueSearch = true;
         this.filteredTagValues = [];
     }
 
