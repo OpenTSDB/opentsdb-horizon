@@ -13,7 +13,6 @@ import { IntercomService, IMessage } from '../../../core/services/intercom.servi
 @Component({
   selector: 'app-dboard-content',
   templateUrl: './dboard-content.component.html',
-  styleUrls: ['./dboard-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })

@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private router: Router,
         private authService: AuthService
-    ) { 
+    ) {
         // register this router events to capture url changes
         this.router.events.subscribe((event) => {
           if (event instanceof NavigationEnd) {

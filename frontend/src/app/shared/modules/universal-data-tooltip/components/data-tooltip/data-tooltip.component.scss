@@ -1,0 +1,198 @@
+@mixin data-tooltip-component-base() {
+    .data-tooltip {
+        position: absolute;
+        z-index: 10;
+        display: block;
+        /* transform will be used by script to move element */
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+
+        .color-chip {
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            box-shadow: 0 0 0 2px $white;
+            background-color: $white;
+            margin-right: 6px;
+            display: inline-block;
+            color: gray;
+            position: relative;
+
+            &::after {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 6px;
+                background-color: currentColor;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 1;
+            }
+        }
+
+        .tooltip-output {
+            position: absolute;
+            padding: 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            word-break: unset;
+        }
+
+        &.hidden {
+            display: none;
+        }
+
+        &.move-position-strategy {
+            .tooltip-output {
+                @include mat-elevation(2);
+
+                &.shift-below {
+                    top: calc(100% + 8px);
+                }
+
+                &.shift-above {
+                    bottom: calc(100% + 8px);
+                }
+
+                &.shift-left {
+                    right: calc(100% + 8px);
+                }
+
+                &.shift-right {
+                    left: calc(100% + 8px);
+                }
+            }
+        }
+
+        &.sticky-position-strategy {
+            .tooltip-output {
+                min-width: 100%;
+                padding: 2px;
+
+                &.shift-below {
+                    top: 100%;
+
+                    &.shift-left {
+                        border-top-right-radius: 0;
+
+                        &.is-wider {
+                            border-top-left-radius: 0;
+                        }
+                    }
+
+                    &.shift-right {
+                        border-top-left-radius: 0;
+
+                        &.is-wider {
+                            border-top-right-radius: 0;
+                        }
+                    }
+
+                    &:not(.is-wider) {
+                        border-top-right-radius: 0;
+                        border-top-left-radius: 0;
+                    }
+                }
+
+                &.shift-above {
+                    bottom: 100%;
+
+                    &.shift-left {
+                        border-bottom-right-radius: 0;
+
+                        &.is-wider {
+                            border-bottom-left-radius: 0;
+                        }
+                    }
+
+                    &.shift-right {
+                        border-bottom-left-radius: 0;
+
+                        &.is-wider {
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+
+                    &:not(.is-wider) {
+                        border-bottom-right-radius: 0;
+                        border-bottom-left-radius: 0;
+                    }
+
+
+                }
+
+                &.shift-left {
+                    right: 0;
+                }
+
+                &.shift-right {
+                    left: 0;
+                }
+            }
+        }
+
+    }
+}
+
+@mixin data-tooltip-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $primary-accent: map-get($primary, A100);
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    //$sticky-bg: if($is-dark, $white, $primary-accent);
+    //$sticky-txt: if($is-dark, $black, $primary-accent-contrast);
+    $sticky-bg: $primary-accent;
+    $sticky-txt: $primary-accent-contrast;
+    $sticky-opacity: if($is-dark, .80, .80);
+    $sticky-shim: map-get($background, background);
+
+    $move-bg: if($is-dark, darken($white, 25%), lighten($black, 25%));
+    $move-txt: find-color-invert($move-bg);
+
+    $shadow-color: map-get($primary, default);
+    $shadow-opacity: .65;
+
+    .data-tooltip {
+        &.move-position-strategy {
+            .tooltip-output {
+                background: $move-bg;
+                color: $move-txt;
+                border: 1px solid currentColor;
+            }
+        }
+
+        &.sticky-position-strategy {
+
+            .tooltip-output {
+                box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
+                background: rgba($sticky-bg, $sticky-opacity);
+                color: rgba($sticky-txt, .95);
+            }
+        }
+    }
+
+    .tooltip-mouse-boundary-hover {
+        box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
+
+        &.shift-above {
+            //box-shadow: 0 -2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
+        }
+
+        &.shift-below {
+            //box-shadow: 0 2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
+        }
+
+    }
+
+}

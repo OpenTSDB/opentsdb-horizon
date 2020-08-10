@@ -578,9 +578,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
     dialogConf.panelClass = 'error-dialog-panel';
      dialogConf.data = {
       log: this.debugData,
-      query: this.storeQuery 
+      query: this.storeQuery
     };
-    
+
     // re-use?
     this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
     this.debugDialog.afterClosed().subscribe((dialog_out: any) => {

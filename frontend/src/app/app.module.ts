@@ -19,6 +19,7 @@ import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
 // our
 import { AdminModule } from './admin/admin.module';
 import { AdhocModule } from './adhoc/adhoc.module';
+import { UniversalDataTooltipModule } from './shared/modules/universal-data-tooltip/universal-data-tooltip.module';
 
 import { AuthInterceptor } from './core/http/auth.interceptor';
 import { AuthService } from './core/services/auth.service';
@@ -54,6 +55,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     AdminModule,
     AdhocModule,
     AppShellModule,
+    UniversalDataTooltipModule.forRoot()
   ],
   providers: [
     AuthService,
@@ -70,7 +72,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: CustomHammerConfig
-    }    
+    }
   ],
   bootstrap: [AppComponent]
 })
