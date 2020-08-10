@@ -31,6 +31,8 @@ import { InfoIslandModule } from '../shared/modules/info-island/info-island.modu
 import { AlertDetailsCountComponent } from './components/alert-details/children/alert-details-count/alert-details-count.component';
 
 // directives
+import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
+
 
 @NgModule({
     imports: [
@@ -42,6 +44,7 @@ import { AlertDetailsCountComponent } from './components/alert-details/children/
         SharedcomponentsModule,
         DygraphsModule,
         AlertsRoutingModule,
+        UniversalDataTooltipDirectivesModule,
         NgxsModule.forFeature([
             AlertState,
             AlertsState,
