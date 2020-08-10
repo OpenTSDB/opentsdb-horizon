@@ -63,8 +63,7 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
     constructor(
         private element: ElementRef,
         private uConverter: UnitConverterService,
-        private ttDataSvc: TooltipDataService,
-        private logger: LoggerService
+        private ttDataSvc: TooltipDataService
     ) {
         const self = this;
         // OLD ONE
