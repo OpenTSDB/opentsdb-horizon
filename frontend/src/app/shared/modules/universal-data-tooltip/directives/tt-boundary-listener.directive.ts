@@ -42,7 +42,9 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
     /* last */
     ngOnDestroy() {
         this.ttCompSvc.boundaryUnregister();
-        this.elRef.nativeElement.removeEvent('scroll', this._scrollListener);
+        if (this.elRef) {
+            this.elRef.nativeElement.removeEventListener('scroll', this._scrollListener);
+        }
     }
 
 }
