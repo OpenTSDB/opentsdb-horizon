@@ -32,9 +32,11 @@
         </div>
         <mat-selection-list #tagOptionsList (selectionChange)="onTagSelection($event, tagOptionsList.selectedOptions.selected)">
             <mat-list-option checkboxPosition="before" value='all' [selected]="optionIsSelected('all')" *ngIf="all">Everything</mat-list-option>
-            <mat-list-option *ngFor="let option of filteredTagOptions" checkboxPosition="before" [value]="option.name" [selected]="optionIsSelected(option.name)">
+            <ng-container *ngFor="let option of filteredTagOptions">
+            <mat-list-option *ngIf="!option.filtered" checkboxPosition="before" [value]="option.name" [selected]="optionIsSelected(option.name)">
                 {{option.name}}
             </mat-list-option>
+            </ng-container>
         </mat-selection-list>
     </div>
 </mat-menu>

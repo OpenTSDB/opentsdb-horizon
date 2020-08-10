@@ -1,0 +1,17 @@
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
+    <div class="value-marker">
+        <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.affectedSeries}}</span>
+        <span class="time">{{_ttData.timestampFormatted}}</span>
+    </div>
+    <div clas="other-data">
+        <p>Bucket Range: {{_ttData.bucketRange}}</p>
+        <ng-container *ngIf="_ttData.bucketValues && _ttData.bucketValues.length > 0">
+            <table>
+                <tr *ngFor="let tt of _ttData.bucketValues">
+                    <td>{{tt.value}} &nbsp;&nbsp;</td>
+                    <td>{{tt.label}}</td>
+                </tr>
+            </table>
+        </ng-container>
+    </div>
+</div>

@@ -282,17 +282,15 @@
                     display: flex;
                     flex-direction: column;
                     flex: 1;
-
-                    .gif-spinner {
-                        width: 100%;
-                        text-align: center;
-                        margin-top: 20px;
-                        background-color: transparent;
-                    }
-
                     &.error-info-messaging {
                         word-break: break-all;
                         padding: 8px;
+                    }
+                    &.spinner {
+                        flex: none;
+                        align-items: center;
+                        justify-content: center;
+                        height: 32px;
                     }
                 }
 

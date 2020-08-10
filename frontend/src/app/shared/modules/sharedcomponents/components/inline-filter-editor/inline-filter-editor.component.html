@@ -11,6 +11,9 @@
                             autocomplete="off">
                     </mat-form-field>
                 </div>
+                <div class="column-output spinner" *ngIf="tagSearch">
+                    <mat-spinner color="primary" diameter="20"></mat-spinner>
+                </div>
                 <div class="tag-key-search-results has-scroller">
                     <div class="is-scroller">
                         <div class="option-item tag-key-option" *ngFor="let option of tagFilteredOptions"
@@ -47,14 +50,11 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div class="column-output"
-                    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message === undefined">
-                    <div class="gif-spinner">
-                        <img src="/assets/spinner-26x26.gif" />
-                    </div>
+                <div class="column-output spinner" *ngIf="tagValueSearch">
+                    <mat-spinner color="primary" diameter="20"></mat-spinner>
                 </div>
-                <div class="column-output" *ngIf="filteredTagValues && filteredTagValues.length > 0">
-                    <div class="tag-values-count">
+                <div class="column-output">
+                    <div class="tag-values-count"  *ngIf="!tagValueSearch">
                         <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag
                             {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
                     </div>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="column-output error-info-messaging"
                     [ngClass]="message.tagValueControl.type === 'error'? 'error': 'info'"
-                    *ngIf="filteredTagValues && filteredTagValues.length === 0 && message.tagValueControl.message">
+                    *ngIf="!tagValueSearch && message.tagValueControl.message">
                     <mat-icon>error</mat-icon>
                     <span>{{ message['tagValueControl']['message'] }}</span>
                 </div>

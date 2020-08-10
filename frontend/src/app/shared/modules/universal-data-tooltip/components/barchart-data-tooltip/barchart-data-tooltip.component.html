@@ -1,0 +1,11 @@
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
+    <div class="value-marker">
+        <div class="value-marker">
+            <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.valueFormatted}}</span>
+            <span class="time">{{_ttData.label}}</span>
+        </div>
+    </div>
+    <div class="other-data" *ngIf="_ttData.tags && _ttData.tags.length > 0">
+        <p *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</p>
+    </div>
+</div>

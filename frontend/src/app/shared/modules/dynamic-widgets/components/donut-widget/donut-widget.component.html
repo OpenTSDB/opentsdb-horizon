@@ -14,7 +14,7 @@
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="DonutWidgetComponent"></graph-type>
     </div>
-    <div class="widget-output" #widgetoutput>
+    <div class="widget-output" #widgetoutput ttMouseListener ttType="donut">
         <div id="container" #container [ngClass]="{
             'display-legend-right': widget.settings.legend.display && widget.settings.legend.position=='right',
             'display-legend-left': widget.settings.legend.display && widget.settings.legend.position=='left'}">

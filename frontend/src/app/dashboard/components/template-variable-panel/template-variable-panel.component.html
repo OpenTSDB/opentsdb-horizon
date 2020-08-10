@@ -18,9 +18,11 @@
                             </mat-option>
                             <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
                                 <img src="/assets/spinner-26x26.gif" />
-                              </div>
+                            </div>
+                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                No matches found
+                            </mat-option>
                         </mat-autocomplete>
-
                     </mat-form-field>
                 </li>
                 <li>
@@ -144,7 +146,10 @@
                                             </mat-option>
                                             <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
                                                 <img src="/assets/spinner-26x26.gif" />
-                                              </div>
+                                            </div>
+                                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                                No matches found
+                                            </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
                                 </div>

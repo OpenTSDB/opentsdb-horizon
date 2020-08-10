@@ -362,6 +362,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
                     break;
+                case 'downloadDataQuery':
+                    this.downloadDataQuery(message);
+                    break;
+                case 'downloadWidgetData':
+                    this.downloadWidgetData(message.payload);
+                    break;
                 case 'getQueryData':
                     this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
                     this.handleQueryPayload(message);
@@ -1122,9 +1128,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.variablePanelMode = {...mode};
 
     }
-    // dispatch payload query by group
-    handleQueryPayload(message: any) {
+
+    getQuery(message: any) {
         let groupid = '';
+        let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
         // tslint:disable-next-line:max-line-length
@@ -1171,19 +1178,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     queries[i] = query;
                 }
             }
+            if (Object.keys(queries).length && sources.length) {
+                query = this.queryService.buildQuery(payload, dt, queries, { sources: sources });
+            }
+        }
+        return query;
+    }
+
+    // dispatch payload query by group
+    handleQueryPayload(message: any) {
+        if (message.payload.queries.length) {
             const gquery: any = {
                 wid: message.id,
                 isEditMode: this.viewEditMode,
                 dbid: this.dbid
             };
-            if (Object.keys(queries).length && sources.length) {
-                const tot = this.dbToT.period && this.dbToT.value ? this.dbToT : '';
-                const query = this.queryService.buildQuery(payload, dt, queries, { sources: sources, tot: tot });
+            const query = this.getQuery(message);
+            if ( query ) {
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
                 // ask widget to loading signal
                 this.interCom.responsePut({
-                    id: payload.id,
+                    id: message.payload.id,
                     payload: {
                         storeQuery: query
                     },
@@ -1464,6 +1480,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    downloadDataQuery(message) {
+        const ts = new Date().getTime();
+        const query = this.getQuery(message);
+        const wd = message.payload;
+        const data = 'API URL: https://metrics.yamas.ouroath.com:443/api/query/graph\n\n' +
+                    'HEADER:\n' +
+                    'Content-Type: application/json\n\n' +
+                    'CURL: curl -ki --cert /var/lib/sia/certs/<CERT>.cert.pem --key /var/lib/sia/keys/<KEY>.key.pem -X POST -d@<QUERY>.json -H \'Content-Type: application/json\' \'https://metrics.yamas.ouroath.com/api/query/graph\'\n\n' +
+                    'QUERY:\n' + JSON.stringify(query);
+
+        const file = new Blob([data], {type: 'text/text'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = wd.settings.title.toLowerCase() + '_query_' + ts + '.txt';
+        a.click();
+    }
+
+    downloadWidgetData(wd) {
+        const ts = new Date().getTime();
+        const data = this.wData[wd.id];
+        const content = JSON.stringify(data);
+        const file = new Blob([content], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = wd.settings.title.toLowerCase() + '_data_' + ts + '.json';
+        a.click();
     }
 
     dashboardFavoriteAction(remove?: boolean) {

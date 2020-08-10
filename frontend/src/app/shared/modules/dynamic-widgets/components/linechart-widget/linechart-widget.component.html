@@ -23,9 +23,9 @@
             'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position=='bottom' && options.labels.length > 1,
             'display-legend-left': widget.settings.legend.display && widget.settings.legend.position=='left' && options.labels.length > 1
         }">
-        <div class="dygraph-legend" #graphLegend></div>
+        <div class="dygraph-legend" #graphLegend style="display: none !important;"></div>
         <!-- STANDARD GRAPH OUTPUT -->
-        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)">
+        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="multigraphEnabled">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
                 [style.minWidth.px]="(multigraphEnabled && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
@@ -67,6 +67,7 @@
                                     <div #dygraph class="graph-chart" *ngIf="(inViewport[yKey] !== undefined && inViewport[yKey][xKey] === true) || !multigraphEnabled"
                                         [ngClass]="{'hide': widget.settings.legend.display &&  ( size.width <= 10 || size.height <= 10 ) }"
                                         dygraphsChart
+                                        [widgetId]="widget.id"
                                         [chartType]="chartType"
                                         [data]="graphData[yKey][xKey]"
                                         [size]="{'width':(size.width - 6), 'height': (size.height - 6)}"

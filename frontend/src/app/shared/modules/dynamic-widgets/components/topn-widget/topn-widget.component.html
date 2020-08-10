@@ -14,7 +14,7 @@
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="TopnWidgetComponent"></graph-type>
     </div>
-    <div class="widget-output" #widgetoutput>
+    <div class="widget-output" #widgetoutput ttMouseListener ttType="topn">
         <div id="container" #container>
             <div class="chart" [style.height]="size.height + 'px'"
                 D3BarChart

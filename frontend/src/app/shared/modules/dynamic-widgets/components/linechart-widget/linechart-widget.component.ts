@@ -23,6 +23,8 @@ import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
+//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -210,7 +212,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.logger.log('THEME TYPE', { themeType });
 
             this.options = {...this.options,
-                //highlightSeriesBackgroundAlpha: (themeType === 'light') ? 0.5 : 0.8,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
             this.cdRef.markForCheck();
@@ -257,7 +258,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             }
 
             if (message && (message.id === this.widget.id)) {
-                // this.logger.intercom('[linechartWidgetComponent] responseGet', message);
                 switch (message.action) {
                     case 'InfoIslandClosed':
                         this.updatedShowEventStream(false);
@@ -1038,7 +1038,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     setLegendDiv() {
-        this.options.labelsDiv = (this.dygraphLegend) ? this.dygraphLegend.nativeElement : {};
+        this.options.labelsDiv = (this.dygraphLegend) ? this.dygraphLegend.nativeElement : {exists: false};
         this.legendDisplayColumns = ['color'].concat(this.widget.settings.legend.columns || []).concat(['name']);
     }
 

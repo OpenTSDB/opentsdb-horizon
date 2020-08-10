@@ -14,10 +14,9 @@
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="BarchartWidgetComponent"></graph-type>
     </div>
-    <div class="widget-output" #widgetoutput>
+    <div class="widget-output" #widgetoutput  ttMouseListener ttType="barchart">
         <div id="container" [style.width]="width" [style.height]="height">
             <canvas id="canvas" chartjs [chartType]="type" [data]="data" [options]="options"></canvas>
-            <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
             <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                 <img src="/assets/spinner-26x26.gif" />
             </div>

@@ -425,6 +425,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     this.triggerQueryChanges();
                 }
             });
+        this.sortFilters(this.query.filters);
         // call this in case of not modify filter list yet
         this.buildTagFilters(this.query.filters);
 
@@ -565,8 +566,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // we need to resolve it to diffrent obj to handle it to metric auto-complete
         this.query.filters = filters;
         this.queryChanges$.next(true);
+        this.sortFilters(filters);
         this.buildTagFilters(filters);
     }
+
+    sortFilters(filters) {
+        filters.sort((a: any, b: any) => {
+            return this.utils.sortAlphaNum(a.tagk, b.tagk);
+        });
+    }
+
     // helper function to create clean tag filters for metric auto-complete
     buildTagFilters (filters : any[]) {
         // clone it so we do not alert original object

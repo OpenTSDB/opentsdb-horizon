@@ -45,6 +45,8 @@ import { WidgetDeleteDialogComponent } from './components/widget-delete-dialog/w
 import { TemplateVariablePanelComponent } from './components/template-variable-panel/template-variable-panel.component';
 import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 
+import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -64,7 +66,8 @@ import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert
             UserSettingsState,
             EventsState
         ]),
-        DynamicWidgetsModule
+        DynamicWidgetsModule,
+        UniversalDataTooltipDirectivesModule
     ],
     declarations: [
         DashboardComponent,
