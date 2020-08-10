@@ -27,6 +27,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
 
+    Object = Object;
     private listenSub: Subscription;
     // tslint:disable-next-line:no-inferrable-types
     private isDataLoaded: boolean = false;
@@ -85,6 +86,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     needRequery = false;
     isDestroying = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
+    formErrors: any = {};
 
     constructor(
         private interCom: IntercomService,
@@ -250,7 +252,15 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;

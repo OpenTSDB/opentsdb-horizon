@@ -27,6 +27,7 @@ export class YamasService {
     queries: any = [];
     downsample: any;
     time: any;
+    tot: any;
     transformedQuery: any;
     // used to map the sub graphs for use in expressions so we can link to the final
     // function in the list.
@@ -57,10 +58,20 @@ export class YamasService {
         const outputIds = [];
         const outputIdToSummarizer = new Map();
         const outputSourceIds = options && options.sources ? options.sources : [];
+        this.tot = options.tot ? options.tot : null;
         let querySources = [];
         for ( let i = 0; i < outputSourceIds.length; i++ ) {
             const [qindex, mindex] = this.utils.getMetricIndexFromId(outputSourceIds[i], this.queries);
             this.getMetricSources(qindex, mindex, querySources);
+        }
+
+        // time over time
+        let totM = 1, totPeriod = 'h', totN = 0;
+        if ( this.tot ) {
+            const regres = /(\d+)?(\w)/.exec(this.tot.period);
+            totM = regres[1] ? parseInt(regres[1], 10) : 1;
+            totPeriod = regres[2];
+            totN = this.tot.value;
         }
 
         // add metric definitions
@@ -74,55 +85,58 @@ export class YamasService {
                 for (let j = 0; j < this.queries[i].metrics.length; j++) {
                     const id = this.queries[i].metrics[j].id;
                     if ( !this.queries[i].metrics[j].expression && (!querySources.length || querySources.includes(id) ) ) {
-                        const q: any = this.getMetricQuery(i, j);
-                        const subGraph = [ q ];
-                        if ( this.queries[i].metrics[j].groupByTags && this.queries[i].metrics[j].groupByTags.length && !this.checkTagsExistInFilter(i, this.queries[i].metrics[j].groupByTags) ) {
-                            const filter = this.getFilterQuery(i, j);
-                            q.filter = filter.filter;
-                        } else if ( filterId ) {
-                            hasCommonFilter = true;
-                            q.filterId = filterId;
-                        }
-
-                        const dsId = q.id + '_downsample';
-                        subGraph.push(this.getQueryDownSample(downsample, this.downsample.aggregator, dsId, [q.id]));
-
-                        const groupbyId = q.id + '_groupby';
-                        const groupByQuery = this.getQueryGroupBy(this.queries[i].metrics[j].tagAggregator, this.queries[i].metrics[j].groupByTags, [dsId], groupbyId);
-                        subGraph.push(groupByQuery);
-
-                        let lastId = '';
-                        this.getFunctionQueries(i, j, subGraph);
-                        for (const node of subGraph) {
-                            lastId = node.id;
-                            this.transformedQuery.executionGraph.push(node);
-                        }
-                        this.metricSubGraphs.set(q.id, subGraph);
-                        let outputId = subGraph[subGraph.length - 1].id;
-
-                        if (periodOverPeriodEnabled) { // set egads nodes and outputIds
-                            const slidingWindowQuery = this.getPeriodOverPeriodSlidingWindowConfig(periodOverPeriod, lastId, q.id);
-
-                            // todo: insert common filters into PoP query
-                            const periodOverPeriodQuery = this.getPeriodOverPeriod(periodOverPeriod, subGraph, time.start, q.id);
-
-                            subGraph.push(slidingWindowQuery);
-                            this.transformedQuery.executionGraph.push(slidingWindowQuery);
-                            this.transformedQuery.executionGraph.push(periodOverPeriodQuery);
-                            outputId = periodOverPeriodQuery.id;
-                        } else { // normal query - set outputIds
-                            // const outputId = subGraph[subGraph.length - 1].id;
-                            // outputIds.push(outputId);
-
-                            if (this.queries[i].metrics[j].summarizer) { // build for summarizer (which works with topN)
-                                outputIdToSummarizer[outputId] = this.queries[i].metrics[j].summarizer;
+                        for ( let k = 0; k <= totN; k++ ) {
+                            const timeshift = k === 0 ? '' : (k * totM) + totPeriod;
+                            const q: any = this.getMetricQuery(i, j, timeshift);
+                            const subGraph = [ q ];
+                            if ( this.queries[i].metrics[j].groupByTags && this.queries[i].metrics[j].groupByTags.length && !this.checkTagsExistInFilter(i, this.queries[i].metrics[j].groupByTags) ) {
+                                const filter = this.getFilterQuery(i, j);
+                                q.filter = filter.filter;
+                            } else if ( filterId ) {
+                                hasCommonFilter = true;
+                                q.filterId = filterId;
                             }
-                        }
-                        if (!outputSourceIds.length || outputSourceIds.includes(id) ) {
-                            outputIds.push(outputId);
-                        }
 
-                        this.metricSubGraphs.set(q.id, subGraph);
+                            const dsId = q.id + '_downsample';
+                            subGraph.push(this.getQueryDownSample(downsample, this.downsample.aggregator, dsId, [q.id]));
+
+                            const groupbyId = q.id + '_groupby';
+                            const groupByQuery = this.getQueryGroupBy(this.queries[i].metrics[j].tagAggregator, this.queries[i].metrics[j].groupByTags, [dsId], groupbyId);
+                            subGraph.push(groupByQuery);
+
+                            let lastId = '';
+                            this.getFunctionQueries(i, j, subGraph);
+                            for (const node of subGraph) {
+                                lastId = node.id;
+                                this.transformedQuery.executionGraph.push(node);
+                            }
+                            this.metricSubGraphs.set(q.id, subGraph);
+                            let outputId = subGraph[subGraph.length - 1].id;
+
+                            if (periodOverPeriodEnabled) { // set egads nodes and outputIds
+                                const slidingWindowQuery = this.getPeriodOverPeriodSlidingWindowConfig(periodOverPeriod, lastId, q.id);
+
+                                // todo: insert common filters into PoP query
+                                const periodOverPeriodQuery = this.getPeriodOverPeriod(periodOverPeriod, subGraph, time.start, q.id);
+
+                                subGraph.push(slidingWindowQuery);
+                                this.transformedQuery.executionGraph.push(slidingWindowQuery);
+                                this.transformedQuery.executionGraph.push(periodOverPeriodQuery);
+                                outputId = periodOverPeriodQuery.id;
+                            } else { // normal query - set outputIds
+                                // const outputId = subGraph[subGraph.length - 1].id;
+                                // outputIds.push(outputId);
+
+                                if (this.queries[i].metrics[j].summarizer) { // build for summarizer (which works with topN)
+                                    outputIdToSummarizer[outputId] = this.queries[i].metrics[j].summarizer;
+                                }
+                            }
+                            if (!outputSourceIds.length || outputSourceIds.includes(id) ) {
+                                outputIds.push(outputId);
+                            }
+
+                            this.metricSubGraphs.set(q.id, subGraph);
+                        }
                     }
                 }
 
@@ -145,34 +159,37 @@ export class YamasService {
                 for (let j = 0; j < this.queries[i].metrics.length; j++) {
                     const id = this.queries[i].metrics[j].id;
                     if ( this.queries[i].metrics[j].expression && (!querySources.length || querySources.includes(id) ) ) {
-                        const q = this.getExpressionQuery(i, j);
-                        expNodes.push(q);
-                        const subGraph = [ q ];
-                        this.getFunctionQueries(i, j, subGraph);
-                        for (const node of subGraph) {
-                            this.transformedQuery.executionGraph.push(node);
-                        }
-                        this.metricSubGraphs.set(q.id, subGraph);
-                        let outputId = subGraph[subGraph.length - 1].id;
-
-                        if (periodOverPeriodEnabled) { // set egads nodes and outputIds
-                            const nodesExceptSlidingWindow = this.getNodes(q.sources, this.metricSubGraphs);
-                            const eId = q.id;
-
-                            const slidingWindowQuery = this.getPeriodOverPeriodSlidingWindowConfig(periodOverPeriod, eId, eId);
-                            const periodOverPeriodQuery = this.getPeriodOverPeriod(periodOverPeriod, nodesExceptSlidingWindow.concat(q).concat(slidingWindowQuery) , time.start, q.id, this.transformedQuery.filters);
-                            this.transformedQuery.executionGraph.push(slidingWindowQuery);
-                            this.transformedQuery.executionGraph.push(periodOverPeriodQuery);
-                            outputId = periodOverPeriodQuery.id;
-                        } else {
-                            // const outputId = subGraph[subGraph.length - 1].id;
-                            // outputIds.push(outputId);
-                            if (this.queries[i].metrics[j].summarizer) { // build for summarizer (which works with topN)
-                                outputIdToSummarizer[outputId] = this.queries[i].metrics[j].summarizer;
+                        for ( let k = 0; k <= totN; k++ ) {
+                            const timeshift = k === 0 ? '' : (k * totM) + totPeriod;
+                            const q = this.getExpressionQuery(i, j, timeshift);
+                            expNodes.push(q);
+                            const subGraph = [ q ];
+                            this.getFunctionQueries(i, j, subGraph);
+                            for (const node of subGraph) {
+                                this.transformedQuery.executionGraph.push(node);
                             }
-                        }
-                        if (!outputSourceIds.length || outputSourceIds.includes(id) ) {
-                            outputIds.push(outputId);
+                            this.metricSubGraphs.set(q.id, subGraph);
+                            let outputId = subGraph[subGraph.length - 1].id;
+
+                            if (periodOverPeriodEnabled) { // set egads nodes and outputIds
+                                const nodesExceptSlidingWindow = this.getNodes(q.sources, this.metricSubGraphs);
+                                const eId = q.id;
+
+                                const slidingWindowQuery = this.getPeriodOverPeriodSlidingWindowConfig(periodOverPeriod, eId, eId);
+                                const periodOverPeriodQuery = this.getPeriodOverPeriod(periodOverPeriod, nodesExceptSlidingWindow.concat(q).concat(slidingWindowQuery) , time.start, q.id, this.transformedQuery.filters);
+                                this.transformedQuery.executionGraph.push(slidingWindowQuery);
+                                this.transformedQuery.executionGraph.push(periodOverPeriodQuery);
+                                outputId = periodOverPeriodQuery.id;
+                            } else {
+                                // const outputId = subGraph[subGraph.length - 1].id;
+                                // outputIds.push(outputId);
+                                if (this.queries[i].metrics[j].summarizer) { // build for summarizer (which works with topN)
+                                    outputIdToSummarizer[outputId] = this.queries[i].metrics[j].summarizer;
+                                }
+                            }
+                            if (!outputSourceIds.length || outputSourceIds.includes(id) ) {
+                                outputIds.push(outputId);
+                            }
                         }
                     }
                 }
@@ -244,10 +261,10 @@ export class YamasService {
         return nodes;
     }
 
-    getMetricQuery(qindex, mindex) {
+    getMetricQuery(qindex, mindex, timeShift ) {
         const mid = this.utils.getDSId(this.queries, qindex, mindex);
         const q: IQuery = {
-            id: mid, // using the loop index for now, might need to generate its own id
+            id: mid + ( timeShift ? '-' + timeShift : '' ) , // using the loop index for now, might need to generate its own id
             type: 'TimeSeriesDataSource',
             metric: {
                 type: 'MetricLiteral',
@@ -257,7 +274,7 @@ export class YamasService {
             fetchLast: false,
         };
 
-        const timeShift = this.utils.getTotalTimeShift(this.queries[qindex].metrics[mindex].functions);
+        timeShift = timeShift ? timeShift : this.utils.getTotalTimeShift(this.queries[qindex].metrics[mindex].functions);
         if (timeShift) {
             q.timeShiftInterval = timeShift;
         }
@@ -620,7 +637,7 @@ export class YamasService {
         return id;
     }
 
-    getExpressionQuery(qindex, mindex) {
+    getExpressionQuery(qindex, mindex, timeshift) {
         const config = this.queries[qindex].metrics[mindex];
         let transformedExp = config.expression;
         const eid = this.utils.getDSId(this.queries, qindex, mindex);
@@ -638,7 +655,7 @@ export class YamasService {
             if (!sourceIdAndType.hasOwnProperty('id') || !sourceIdAndType.hasOwnProperty('expression')) {
                 continue;
             }
-            const sourceId = sourceIdAndType.id;
+            const sourceId = sourceIdAndType.id + (!timeshift ? '' : '-' + timeshift);
             const isExpression = sourceIdAndType.expression;
             transformedExp = transformedExp.replace(idreg, ' ' + sourceId + ' ' );
             // the source id will be replaced with the sourceid of function definition of the metric/expression later
@@ -651,7 +668,7 @@ export class YamasService {
             joinTags[tag] = tag;
         }
         const econfig = {
-            id: eid,
+            id: eid + (!timeshift ? '' : '-' + timeshift),
             type: 'expression',
             expression: transformedExp,
             join: {

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { TimeRangePickerOptions } from '../../../../modules/date-time-picker/models/models';
 
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -60,6 +61,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
     reportingInterval: any = '';
 
     overrideRelativeTime: any;
+    overrideTime: any = {};
     timeShift: any;
     multipleAggregators = false;
 
@@ -215,13 +217,89 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         }
     ];
 
+    toggleTimeUnitOptions: Array<any> = [
+        {
+            label: 'Secs',
+            value: 's'
+        },
+        {
+            label: 'Min',
+            value: 'm'
+        },
+        {
+            label: 'Hrs',
+            value: 'h'
+        }
+    ];
+
+    options: any = {};
+    startTime = '';
+    endTime = '';
+
     constructor(private fb: FormBuilder) { }
 
     ngOnInit() {
         this.minInterval = this.widget.settings.time.downsample.minInterval || '';
         this.reportingInterval = this.widget.settings.time.downsample.reportingInterval || '';
         this.selectedAggregators = this.widget.settings.time.downsample.aggregators || this.selectedAggregators;
+        this.startTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.start : '';
+        this.endTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.end : '';
+        this.setDefaultOptionsValues();
         this.createForm();
+
+    }
+
+    setDefaultOptionsValues() {
+        this.options = new TimeRangePickerOptions();
+
+        this.options.required = false;
+        this.options.autoTrigger = true;
+        this.options.startFutureTimesDisabled = true;
+        this.options.endFutureTimesDisabled = true;
+
+        this.options.defaultStartText = '';
+        this.options.defaultEndText = '';
+        this.options.defaultStartHoursFromNow = 1;
+        this.options.defaultEndHoursFromNow = 0;
+
+        this.options.startMaxDateError = 'Future not allowed';
+        this.options.endMaxDateError = 'Future not allowed';
+
+        this.options.startMinDateError = 'Must be > 1B seconds after unix epoch';
+        this.options.endMinDateError = 'Must be > 1B seconds after unix epoch';
+
+        this.options.startDateFormatError =  'Invalid. Try <span class="code">1h</span> (or <span class="code">6min</span>, ';
+        this.options.startDateFormatError += '<span class="code">5d</span>, <span class="code">4w</span>, <span class="code">3mo</span>, ';
+        this.options.startDateFormatError += '<span class="code">2qtr</span>, <span class="code">1y</span>, ';
+        this.options.startDateFormatError += '<span class="code">08/15/2018</span>).';
+
+        this.options.endDateFormatError =  'Invalid. Try <span class="code">now</span> (or <span class="code">1h</span> ';
+        this.options.endDateFormatError += 'or <span class="code">2w</span>).';
+
+        this.options.startTimePlaceholder = '1h (or min,d,w,mo,q,y)';
+        this.options.endTimePlaceholder = 'now';
+
+        this.options.startTimeInputBoxName = 'Start Date';
+        this.options.endTimeInputBoxName = 'End Date';
+
+        this.options.minMinuteDuration = 2;
+    }
+
+    setOverrideTime(e) {
+        if ( this.startTime !== e.startTimeDisplay || this.endTime !== e.endTimeDisplay ) {
+            this.startTime = e.startTimeDisplay;
+            this.endTime = e.endTimeDisplay;
+            this.widgetConfigTime.get('overrideTime').setValue({
+                start: e.startTimeDisplay,
+                end: e.endTimeDisplay
+            });
+        } else {
+            this.widgetChange.emit({'action': 'SetTimeError', payload: { error: false } });
+        }
+    }
+
+    setTimeError(e) {
+        this.widgetChange.emit({'action': 'SetTimeError', payload: { error: true } });
     }
 
     ngAfterViewInit() {
@@ -278,6 +356,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                         },
                         [Validators.min(customUnit === 's' ? 10 : 1), Validators.pattern('^[0-9]+$'), Validators.required ]
                     ),
+            'overrideTime' : {
+                start: this.startTime,
+                end: this.endTime
+            },
             'customDownsampleUnit':
                     new FormControl(
                         {
@@ -317,6 +399,9 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                                                 data.reportingInterval = data.reportingInterval ? data.reportingInterval + data.reportingIntervalUnit : '';
                                                 delete data.reportingIntervalUnit;
                                                 delete data.minIntervalUnit;
+                                                if ( !data.overrideTime.start || !data.overrideTime.end ) {
+                                                    delete data.overrideTime;
+                                                }
                                                 this.widgetChange.emit({'action': 'SetTimeConfiguration', payload: { data: data } });
                                             }
                                         }.bind(this));

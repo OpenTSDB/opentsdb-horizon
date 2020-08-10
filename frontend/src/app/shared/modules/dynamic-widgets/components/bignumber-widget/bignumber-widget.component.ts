@@ -26,6 +26,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     @Input() editMode: boolean;
     @Input() widget: any;
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+
+    Object = Object;
     // tslint:disable:no-inferrable-types
     // tslint:disable:prefer-const
     private listenSub: Subscription;
@@ -84,6 +86,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
+    formErrors: any = {};
 
     @ViewChild('myCanvas') myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
@@ -450,7 +453,15 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     updateConfig(message) {
         switch ( message.action ) {
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.needRequery = true;
                 this.refreshData();

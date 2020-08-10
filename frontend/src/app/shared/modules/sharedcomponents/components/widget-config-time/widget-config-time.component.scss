@@ -98,6 +98,13 @@
             }
         }
 
+        .override-time-controls {
+            align-items: baseline;
+            .calendar-container {
+                position: absolute;
+            }
+        }
+
         .downsample-controls {
 
             .form-field-group {

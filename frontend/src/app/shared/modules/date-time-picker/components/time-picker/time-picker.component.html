@@ -31,11 +31,13 @@
             (timeSelected)="timeReceived($event)"
             (cancelSelected)="triggerAndCloseTimeRangePicker()"
             (dbdownsampleChange)="downsampleChange($event)"
+            (dbToTChange)="totChange($event)"
             [startTime]="startTime"
             [endTime]="endTime"
             [options]="options"
             [timezone]="timezone"
             [downsample]="downsample"
+            [tot]="tot"
             (keydown.tab)="$event.stopPropagation()">
         </time-range-picker>
     </div>

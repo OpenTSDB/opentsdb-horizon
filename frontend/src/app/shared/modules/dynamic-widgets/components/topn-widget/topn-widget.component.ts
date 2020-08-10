@@ -27,6 +27,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild('container') private container: ElementRef;
 
+    Object = Object;
     private listenSub: Subscription;
     // tslint:disable-next-line:no-inferrable-types
     private isDataLoaded: boolean = false;
@@ -53,6 +54,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     storeQuery: any;
     needRequery = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
+    formErrors: any = {};
 
     constructor(
         private interCom: IntercomService,
@@ -198,7 +200,15 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;

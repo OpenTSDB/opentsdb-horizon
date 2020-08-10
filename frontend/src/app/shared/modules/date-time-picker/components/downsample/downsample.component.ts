@@ -27,9 +27,11 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
 
     /** Inputs */
     @Input() downsample: any;
+    @Input() tot: any;
 
     /** Outputs */
     @Output() downsampleChange = new EventEmitter();
+    @Output() totChange = new EventEmitter();
 
     /** Local Variables */
 
@@ -112,6 +114,30 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         }
     ];
 
+    timeOverTimePeriodOptions: Array<any> = [
+        {
+            label: 'None',
+            value: ''
+        },
+        {
+            label: 'Hours',
+            value: 'h'
+        },
+        {
+            label: 'Days',
+            value: 'd'
+        },
+        {
+            label: 'Weeks',
+            value: 'w'
+        },
+        {
+            label: '30 days',
+            value: '30d'
+        }
+    ];
+    totPeriod = '';
+    totValue = '0';
     constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef) { }
 
     ngOnInit() {
@@ -144,6 +170,11 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
             } else {
                 this.openMoreSettings = false;
             }     
+        }
+        if ( changes.tot && changes.tot.currentValue ) {
+            this.tot = changes.tot.currentValue;
+            this.totPeriod = this.tot.period || '';
+            this.totValue = this.tot.value || '0';
         }
     }
 
@@ -265,5 +296,10 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
                 this.widgetConfigTime.controls.aggregators.setValue(this.selectedAggregators);
             }
         }
+    }
+
+    setTimeOverTime(key, value) {
+        this.tot[key] = value;
+        this.totChange.emit ( this.tot );
     }
 }

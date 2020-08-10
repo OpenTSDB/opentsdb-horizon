@@ -117,6 +117,7 @@ export class UtilsService {
         widget.settings.time = {
                                     shiftTime: config.shiftTime,
                                     overrideRelativeTime: config.overrideRelativeTime,
+                                    overrideTime: config.overrideTime || '',
                                     downsample: {
                                         value: config.downsample,
                                         aggregators: config.aggregators,

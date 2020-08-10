@@ -60,6 +60,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     @ViewChildren('graphLegend', {read: ElementRef}) graphLegends: QueryList<ElementRef>;
     @ViewChildren('graphdiv', { read: ElementRef}) graphdivs: QueryList<ElementRef>;
+    Object = Object;
     inViewport: any = {};
     private subscription: Subscription = new Subscription();
     isDataLoaded = false;
@@ -172,6 +173,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     axisLabelsWidth = 55;
     // tslint:disable-next-line: max-line-length
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
+    formErrors: any = {};
     eventsError = '';
 
     // behaviors that get passed to island legend
@@ -544,7 +546,15 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'SetMetaData':
                 this.utilService.setWidgetMetaData(this.widget, message.payload.data);
                 break;
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.utilService.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true; // set flag to requery if apply to dashboard
@@ -1042,7 +1052,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'getEventData',
-                payload: {eventQueries: this.widget.eventQueries, limit: this.eventsCount}
+                payload: {eventQueries: this.widget.eventQueries, settings: this.widget.settings, limit: this.eventsCount}
             });
         }
     }
