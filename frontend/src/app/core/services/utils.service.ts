@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as _moment from 'moment';
+import { isArray } from 'util';
 const moment = _moment;
 
 @Injectable({
@@ -53,11 +54,11 @@ export class UtilsService {
     // reserve whatever user type as regexp
     convertPattern(searchPattern) {
         searchPattern = searchPattern ? searchPattern.trim() : '';
-        if (searchPattern.length === 0) { 
-            return '.*'; 
+        if (searchPattern.length === 0) {
+            return '.*';
         } else {
             searchPattern = searchPattern.replace(/\s+/g, '.*');
-            return searchPattern; 
+            return searchPattern;
         }
     }
 
@@ -407,6 +408,54 @@ export class UtilsService {
             h /= 6;
         }
         return [h, s, v];
+    }
+
+    // utility to parse hex to rgb
+    hexToRgb(hex: string): any {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    /* determine whether white or black is appropriate contrast color
+        Argument types
+        color: string - #hex
+        color: object - {r,g,b}
+        color: array[3] - [0,0,0]
+    */
+    findContrastColor(color: any) {
+        // if string, convert to rgb array
+        if (typeof(color) === 'string' && color[0] === '#') {
+            const convColor = this.hexToRgb(color);
+            color = [convColor.r, convColor.g, convColor.b];
+        }
+
+        // if rgb object, convert to array
+        if (typeof(color) === 'object' && color.r && color.g && color.b) {
+            color = [color.r, color.g, color.b];
+        }
+
+        // catch if its not an array
+        if (!Array.isArray(color)) {
+            return false;
+        }
+
+        // http://www.w3.org/TR/AERT#color-contrast
+        const brightness = Math.round(((parseInt(color[0]) * 299) +
+                            (parseInt(color[1]) * 587) +
+                            (parseInt(color[2]) * 114)) / 1000);
+
+        const contrast: any = {
+            hex: (brightness > 125) ? '#000000' : '#ffffff',
+            type: (brightness > 125) ? 'black' : 'white'
+        };
+
+        contrast.rgb = this.hexToRgb(contrast.hex);
+
+        return contrast;
     }
 
     arrayUnique(items) {

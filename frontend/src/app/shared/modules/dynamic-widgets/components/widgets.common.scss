@@ -51,7 +51,6 @@ $widgets-common-config: (
             flex-direction: column;
             align-items: stretch;
             justify-content: flex-start;
-            // background: #fff;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             padding: 10px 0px;
@@ -73,8 +72,6 @@ $widgets-common-config: (
             flex: 1 1 100%;
             display: flex;
             flex-direction: column;
-            // height: 100%;
-            // overflow: hidden; hiding the chart tooltip
 
             .widget-title {
                 @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
@@ -113,7 +110,7 @@ $widgets-common-config: (
                     display: flex;
                     align-items: center;
                     justify-content: center;
-    
+
                     span {
                         font-family: mat-font-family(map-get($app-fontface-config, mono));
                         font-size: 10px;
@@ -156,7 +153,6 @@ $widgets-common-config: (
                         font-size: 14px;
                         font-weight: 500;
                         padding: 2px 0;
-                        // color: #084b4e;
                     }
 
                     .mat-icon {
@@ -165,7 +161,6 @@ $widgets-common-config: (
                         font-size: 16px;
                         margin-left: 6px;
                         margin-top: 4px;
-                        //color: #303030;
                     }
                 }
             }
@@ -180,7 +175,6 @@ $widgets-common-config: (
             }
         }
 
-
         // mat-tab-group
         .widget-configs {
             flex: 1 1 100%;
@@ -194,7 +188,6 @@ $widgets-common-config: (
             }
 
             .mat-tab-header {
-                //padding: 0 $edit-view-padding;
                 padding: 0;
                 border-bottom: 0;
 
@@ -258,8 +251,6 @@ $widgets-common-config: (
         left: 0;
         right: 0;
         bottom: 0;
-        //overflow: auto;
-
     }
 
     .multi-graph-container {
@@ -458,8 +449,6 @@ $widgets-common-config: (
             // background: #f2f4f5;
 
             .widget-title {
-                //margin-top: $default-padding / 2;
-                //margin-bottom: $default-padding / 2;
                 margin-top: -10px;
                 margin-left: -10px;
                 margin-right: -10px;
@@ -471,7 +460,6 @@ $widgets-common-config: (
                 height: 250px;
                 max-height: 250px;
                 min-height: 250px;
-                //padding: $default-padding 0;
                 border-radius: $output-radius;
                 display: flex;
                 justify-content: stretch;
@@ -600,8 +588,6 @@ $widgets-common-config: (
             }
         }
 
-        // .graph-header-row {}
-
         /* graph row/cells */
 
         .graph-row-label {
@@ -613,11 +599,7 @@ $widgets-common-config: (
             }
         }
 
-        // .graph-row { }
-
         .graph-cell {
-            // box-shadow: inset 0 -1px 0 0 $divider, inset -1px 0 0 0 $divider;
-
             .no-data {
                 span {
                     border: 1px solid $divider;
@@ -631,20 +613,6 @@ $widgets-common-config: (
                 }
             }
         }
-
-        /*&.multigraph-grid-mode {
-
-            .graph-cell {}
-
-            .graph-row {}
-        }
-
-        &.multigraph-freeflow-mode {
-
-            .graph-cell { }
-
-            .graph-row {}
-        }*/
     }
 
     .multigraph-enabled {
