@@ -33,6 +33,16 @@
                                 <mat-icon fontSet="denali" fontIcon="d-notification"></mat-icon>
                                 <span>Create Alert</span>
                             </button>
+                            <button mat-menu-item (click)="downloadJSON()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                                <span>JSON data</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadDataQuery()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                                <span>Data query</span>
+                            </button>
                             <!--<button mat-menu-item (click)="widgetShare()">
                                 <mat-icon fontSet="denali" fontIcon="d-share"></mat-icon>
                                 <span>Share</span>

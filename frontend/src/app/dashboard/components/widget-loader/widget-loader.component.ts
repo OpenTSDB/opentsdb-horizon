@@ -268,6 +268,22 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
     }
 
+    downloadDataQuery() {
+        this.interCom.requestSend(<IMessage> {
+            action: 'downloadDataQuery',
+            id: this.widget.id,
+            payload: this.widget
+        });
+    }
+
+    downloadJSON() {
+        this.interCom.requestSend(<IMessage> {
+            action: 'downloadWidgetData',
+            id: this.widget.id,
+            payload: this.widget
+        });
+    }
+
     widgetShare() {
         console.log('SHARE WIDGET CLICKED');
     }

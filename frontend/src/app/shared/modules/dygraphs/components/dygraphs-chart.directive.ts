@@ -442,7 +442,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         if (g.user_attrs_.isCustomZoomed) {
                             self.zoomed.emit({ start: null, end: null, isZoomed: false });
                         } else if (self._g.isZoomed()) { // zooming out (double click)
-                            self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            // self.zoomed.emit({ start: null, end: null, isZoomed: false });
                             g.axes_.forEach((axis, i) => {
                                 const axisKey = i === 0 ? 'y' : 'y2';
                                 if (axis.valueRange) {
