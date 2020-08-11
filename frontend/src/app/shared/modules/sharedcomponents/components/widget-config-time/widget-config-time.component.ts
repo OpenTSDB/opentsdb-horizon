@@ -254,6 +254,8 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
 
         this.options.required = false;
         this.options.autoTrigger = true;
+        this.options.enableFuture = false;
+        this.options.resetValueOnBlur = true;
         this.options.startFutureTimesDisabled = true;
         this.options.endFutureTimesDisabled = true;
 
