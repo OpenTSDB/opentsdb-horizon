@@ -108,7 +108,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     validate() {
         // if optional set to old value, if not valid (on blur)
-        if ( !this.dateCntrl.valid && !this.required ) {
+        if ( !this.dateCntrl.valid && this.dateCntrl.value && this.options.resetValueOnBlur ) {
             this.dateCntrl.setValue(this.date);
         }
     }

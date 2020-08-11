@@ -1179,7 +1179,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
             }
             if (Object.keys(queries).length && sources.length) {
-                query = this.queryService.buildQuery(payload, dt, queries, { sources: sources });
+                const tot = this.dbToT.period && this.dbToT.value ? this.dbToT : '';
+                query = this.queryService.buildQuery(payload, dt, queries, { sources: sources, tot: tot  });
             }
         }
         return query;
