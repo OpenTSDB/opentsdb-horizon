@@ -15,6 +15,9 @@
                     <!--<button mat-icon-button (click)="openIsland();">
                         <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
                     </button>-->
+                    <span *ngIf="widget.settings.time && widget.settings.time.overrideTime" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
+                        <mat-icon class="time-lock" fontSet="denali" fontIcon="d-time-lock"></mat-icon>
+                    </span>
                     <button mat-icon-button [matMenuTriggerFor]="widgetMenu">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
                     </button>

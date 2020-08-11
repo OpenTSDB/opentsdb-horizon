@@ -240,7 +240,6 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     }
 
     totChange(payload: any) {
-        console.log("timePicker", payload)
         this.newChange.emit({ action: 'SetToT', payload: payload });
     }
 
