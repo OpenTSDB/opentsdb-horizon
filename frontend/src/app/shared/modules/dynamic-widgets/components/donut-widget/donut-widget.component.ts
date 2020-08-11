@@ -31,6 +31,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('container') private container: ElementRef;
     @ViewChild('chartLegend') private chartLegend: ElementRef;
 
+    Object = Object;
     private listenSub: Subscription;
     private isDataLoaded = false;
     type$: BehaviorSubject<string>;
@@ -61,6 +62,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     storeQuery: any;
     needRequery = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'legend': false };
+    formErrors: any = {};
 
     constructor(
         private interCom: IntercomService,
@@ -219,7 +221,15 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;

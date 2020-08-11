@@ -32,7 +32,8 @@ import { DownsampleComponent } from './components/downsample/downsample.componen
   exports: [
     TimePickerComponent,
     DatepickerComponent,
-    DownsampleComponent
+    DownsampleComponent,
+    TimeRangePickerComponent
   ]
 })
 export class DateTimePickerModule { }

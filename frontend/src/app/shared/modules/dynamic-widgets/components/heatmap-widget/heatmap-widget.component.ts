@@ -40,6 +40,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('graphLegend') private dygraphLegend: ElementRef;
   @ViewChild('dygraph') private dygraph: ElementRef;
 
+  Object = Object;
   private listenSub: Subscription;
   private isDataLoaded = false;
   private isStackedGraph = false;
@@ -106,6 +107,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   storeQuery: any;
   needRequery = false;
   visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
+  formErrors: any = {};
 
   constructor(
       private cdRef: ChangeDetectorRef,
@@ -218,7 +220,15 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
         case 'SetMetaData':
             this.util.setWidgetMetaData(this.widget, message.payload.data);
             break;
-        case 'SetTimeConfiguration':
+        case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
+            case 'SetTimeConfiguration':
+                delete this.formErrors.time;
             this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
             this.doRefreshData$.next(true);
             this.needRequery = true; // set flag to requery if apply to dashboard

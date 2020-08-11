@@ -16,6 +16,7 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
     ) {}
 
     ngOnInit() {
+        // console.log('%cTT BOUNDARY LISTENER', 'color: white; background: purple; padding: 2px 3px;', this.elRef);
 
         // scroll listener is also the boundary
         // so let ttCompSvc know what element to check against
@@ -42,7 +43,9 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
     /* last */
     ngOnDestroy() {
         this.ttCompSvc.boundaryUnregister();
-        this.elRef.nativeElement.removeEvent('scroll', this._scrollListener);
+        if (this.elRef) {
+            this.elRef.nativeElement.removeEventListener('scroll', this._scrollListener);
+        }
     }
 
 }

@@ -68,6 +68,7 @@ export class DatatranformerService {
     }
 
     const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
+    const periods = { 'h': 'Hour', 'd': 'Day', 'w': 'Week'}
     const dict = {};
     // const queryResults = [];
     const queryResultsObj = {};
@@ -183,6 +184,14 @@ export class DatatranformerService {
                 if ( source === 'summarizer') {
                     continue;
                 }
+                let totLabel = mid.split('-')[1];
+                if ( totLabel ) {
+                    const totregres = /(\d+)?(\w)/.exec(totLabel);
+                    const totVal = totregres[1] ? parseInt(totregres[1], 10) : 1;
+                    const totPeriod = totregres[2];
+                    totLabel = ' [' + totVal + '-' + periods[totPeriod] + (totVal > 1 ? 's' : '') + ']';
+                }
+                totLabel = totLabel ? totLabel : '';
                 const qids = this.REGDSID.exec(mid);
                 const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
                 const mIndex = this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
@@ -224,7 +233,7 @@ export class DatatranformerService {
                         } else {
                             groups['line'] = true;
                         }
-                        config.label = this.getLableFromMetricTags(vConfig.label ? vConfig.label : '', config.tags);
+                        config.label = this.getLableFromMetricTags(vConfig.label ? vConfig.label : '', config.tags) + totLabel;
                         dseries.push({  mid: mid,
                                         config: config,
                                         data: data,

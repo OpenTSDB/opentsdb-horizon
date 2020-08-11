@@ -6,11 +6,9 @@ import { IDygraphOptions } from '../IDygraphOptions';
 import Dygraph from 'dygraphs/src-es5/dygraph.js';
 import DygraphInteraction from '../../../dygraphs/misc/dygraph-interaction-model';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
-import { UtilsService } from '../../../../core/services/utils.service';
 import ThresholdsPlugin from '../../../dygraph-threshold-plugin/src/index';
 import * as moment from 'moment';
 import * as d3 from 'd3';
-import { LoggerService } from '../../../../core/services/logger.service';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
 
 @Directive({
@@ -43,9 +41,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
     constructor(
         private element: ElementRef,
-        private utils: UtilsService,
         private uConverter: UnitConverterService,
-        private logger: LoggerService,
         private ttDataSvc: TooltipDataService
     ) { }
 
@@ -442,7 +438,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         if (g.user_attrs_.isCustomZoomed) {
                             self.zoomed.emit({ start: null, end: null, isZoomed: false });
                         } else if (self._g.isZoomed()) { // zooming out (double click)
-                            self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            // self.zoomed.emit({ start: null, end: null, isZoomed: false });
                             g.axes_.forEach((axis, i) => {
                                 const axisKey = i === 0 ? 'y' : 'y2';
                                 if (axis.valueRange) {

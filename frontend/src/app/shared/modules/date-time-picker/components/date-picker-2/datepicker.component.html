@@ -1,24 +1,28 @@
 <!-- INPUT FIELD -->
 <span class="input-field">
-    <mat-form-field [formGroup]="dateForm" appearance="fill" style="min-width: 296px;">
+    <mat-form-field appearance="fill" style="min-width: 296px;">
         <mat-label>{{inputBoxName}}</mat-label>
         <input matInput
             #dateInput
             (input)="dateInputChanged()"
             (focus)="inputFocused()"
             (keyup.enter)="enterKeyed()"
+            (keydown.enter)="$event.stopPropagation(); false"
             type="text"
-            formControlName="dateInput"
+            [formControl]="dateCntrl"
+            autocomplete="off"
+            (blur)="validate()"
             class="form-control"/>
         <button mat-button matSuffix mat-icon-button (click)="toggleCalendar()" (keydown)="enterKeyedOnCalendarButton($event)">
             <mat-icon fontSet="denali" fontIcon="d-calendar" color="primary"></mat-icon>
         </button>
     </mat-form-field>
     
-    <div *ngIf="formFields.dateInput.errors" class="invalid-feedback">
-        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.format && date"><div [innerHTML]="formatError"> </div></mat-error>
-        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.maxDate"><div> {{maxDateError}} </div></mat-error>
-        <mat-error id="formatValidation"  *ngIf="formFields.dateInput.errors.minDate"><div> {{minDateError}} </div></mat-error>
+    <div *ngIf="dateCntrl.errors" class="invalid-feedback">
+        <mat-error id="formatValidation"  *ngIf="dateCntrl.errors.required"><div>required.</div></mat-error>
+        <mat-error id="formatValidation"  *ngIf="dateCntrl.errors.format"><div [innerHTML]="formatError"> </div></mat-error>
+        <mat-error id="formatValidation"  *ngIf="dateCntrl.errors.maxDate"><div> {{maxDateError}} </div></mat-error>
+        <mat-error id="formatValidation"  *ngIf="dateCntrl.errors.minDate"><div> {{minDateError}} </div></mat-error>
     </div>
 </span>
 

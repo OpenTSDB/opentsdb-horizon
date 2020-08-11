@@ -23,6 +23,8 @@ export class TimeRangePickerOptions {
 
     startTime: string;
     endTime: string;
+    required?: boolean;
+    autoTrigger?: boolean;
 
     startDateFormatError: string;
     endDateFormatError: string;

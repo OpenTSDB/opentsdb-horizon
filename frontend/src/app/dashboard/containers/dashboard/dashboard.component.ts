@@ -37,7 +37,8 @@ import {
     UpdateDashboardTitle,
     UpdateVariables,
     UpdateMeta,
-    UpdateDownsample
+    UpdateDownsample,
+    UpdateToT
 } from '../../state/settings.state';
 import {
     AppShellState,
@@ -85,6 +86,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBSettingsState.getMeta) meta$: Observable<any>;
     @Select(DBSettingsState.getTplVariables) tplVariables$: Observable<any>;
     @Select(DBSettingsState.getDownSample) downSample$: Observable<any>;
+    @Select(DBSettingsState.getToT) tot$: Observable<any>;
     @Select(WidgetsState.getWigets) widgets$: Observable<WidgetModel[]>;
     @Select(WidgetsState.lastUpdated) lastUpdated$: Observable<any>;
     @Select(WidgetsRawdataState.getLastModifiedWidgetRawdataByGroup) widgetGroupRawData$: Observable<any>;
@@ -173,6 +175,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // other variables
     dbSettings: any;
     dbTime: any = {};
+    dbToT: any;
+    dbPrevToT: any;
     isDBZoomed = false;
     meta: any = {};
     dbDownsample: any = {};
@@ -202,6 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
     isDbTagsLoaded$ = new Subject();
     isDbTagsLoaded = false;
+    isToTChanged = false;
     eWidgets: any = {}; // to whole eligible widgets with custom dashboard tags
     tagKeysByNamespaces = [];
 
@@ -257,6 +262,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.store.dispatch(new ClearWidgetsData());
             this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
+            this.isToTChanged = false;
+            this.dbPrevToT = { period: '', value: 0 };
+            this.dbToT = { period: '', value: 0 };
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
                 this.store.dispatch(new LoadDashboard(this.dbid));
@@ -353,6 +361,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
+                    break;
+                case 'downloadDataQuery':
+                    this.downloadDataQuery(message);
+                    break;
+                case 'downloadWidgetData':
+                    this.downloadWidgetData(message.payload);
                     break;
                 case 'getQueryData':
                     this.notifyWidgetLoaderUserHasWriteAccess(this.writeSpaces.length > 1);
@@ -703,6 +717,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.downSample$.subscribe(downsample => {
             this.dbDownsample = {...this.utilService.deepClone(downsample)};
         }));
+        this.subscription.add(this.tot$.subscribe(tot => {
+            this.dbToT = tot ? this.utilService.deepClone(tot) : {};
+            if (this.isToTChanged && !deepEqual(this.dbPrevToT, this.dbToT) &&
+                    ((this.dbToT.value && this.dbToT.period) || (this.dbPrevToT.value && this.dbPrevToT.period && (this.dbToT.value || this.dbToT.period)) )) {
+                this.isToTChanged = false;
+                this.applyToTChange();
+            }
+            this.dbPrevToT = this.utilService.deepClone(this.dbToT);
+        }));
         this.subscription.add(this.tplVariables$.subscribe(tpl => {
             // whenever tplVariables$ trigger, we save to view too.
             if (tpl) {
@@ -1037,6 +1060,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+    applyToTChange() {
+        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        // find all widget that using downsample as auto
+        for (let i = 0; i < cloneWidgets.length; i++) {
+            const cWidget = cloneWidgets[i];
+            const settings = cWidget.settings;
+            // only apply to linechart widget
+            if (settings.component_type === 'LinechartWidgetComponent') {
+                this.handleQueryPayload({
+                    id: cWidget.id,
+                    payload: cWidget
+                });
+            }
+        }
+    }
+
     // to passing raw data to widget
     updateWidgetGroup(wid, rawdata, error = null) {
         const clientSize = this.store.selectSnapshot(ClientSizeState);
@@ -1089,16 +1128,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.variablePanelMode = {...mode};
 
     }
-    // dispatch payload query by group
-    handleQueryPayload(message: any) {
+
+    getQuery(message: any) {
         let groupid = '';
+        let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
         // tslint:disable-next-line:max-line-length
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
         const groupby = payload.settings.multigraph ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
-        const dt = this.getDashboardDateRange();
+        const overrideTime = payload.settings.time.overrideTime;
+        const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
             // override downsample to auto when the dashboard is zoomed
@@ -1137,18 +1178,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     queries[i] = query;
                 }
             }
+            if (Object.keys(queries).length && sources.length) {
+                const tot = this.dbToT.period && this.dbToT.value ? this.dbToT : '';
+                query = this.queryService.buildQuery(payload, dt, queries, { sources: sources, tot: tot  });
+            }
+        }
+        return query;
+    }
+
+    // dispatch payload query by group
+    handleQueryPayload(message: any) {
+        if (message.payload.queries.length) {
             const gquery: any = {
                 wid: message.id,
                 isEditMode: this.viewEditMode,
                 dbid: this.dbid
             };
-            if (Object.keys(queries).length && sources.length) {
-                const query = this.queryService.buildQuery(payload, dt, queries, { sources: sources });
+            const query = this.getQuery(message);
+            if ( query ) {
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
                 // ask widget to loading signal
                 this.interCom.responsePut({
-                    id: payload.id,
+                    id: message.payload.id,
                     payload: {
                         storeQuery: query
                     },
@@ -1167,10 +1219,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleEventQueryPayload(message: any) {
         if ( message.payload.eventQueries[0].namespace) {
-            const dbTime = this.getDashboardDateRange();
+            const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
+            const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
             this.store.dispatch(new GetEvents(
-                {   start: dbTime.start,
-                    end: dbTime.end
+                {   start: dt.start,
+                    end: dt.end
                 },
                 message.payload.eventQueries,
                 message.id,
@@ -1191,10 +1244,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    getDashboardDateRange() {
-        const startTime = this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone);
-        const endTime = this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone);
+    getDateRange( range ) {
+        const startTime = this.dateUtil.timeToMoment(range.start, range.zone);
+        const endTime = this.dateUtil.timeToMoment(range.end, range.zone);
         return { start: startTime.valueOf(), end: endTime.valueOf() };
+    }
+
+    getDashboardDateRange() {
+        return this.getDateRange(this.dbTime);
     }
 
     // this will call based on gridster reflow and size changes event
@@ -1233,10 +1290,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // let they refresh as they wish.
                 this.refresh();
                 break;
-            case 'SetDBDownsample': {
+            case 'SetDBDownsample': 
                 this.store.dispatch(new UpdateDownsample(message.payload));
                 this.applyDBDownsample(message.payload);
-            }
+                break;
+            case 'SetToT': 
+                this.isToTChanged = true;
+                this.store.dispatch(new UpdateToT(message.payload));
+                break;
         }
     }
 
@@ -1420,6 +1481,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    downloadDataQuery(message) {
+        const ts = new Date().getTime();
+        const query = this.getQuery(message);
+        const wd = message.payload;
+        const data = 'API URL: https://metrics.yamas.ouroath.com:443/api/query/graph\n\n' +
+                    'HEADER:\n' +
+                    'Content-Type: application/json\n\n' +
+                    'CURL: curl -ki --cert /var/lib/sia/certs/<CERT>.cert.pem --key /var/lib/sia/keys/<KEY>.key.pem -X POST -d@<QUERY>.json -H \'Content-Type: application/json\' \'https://metrics.yamas.ouroath.com/api/query/graph\'\n\n' +
+                    'QUERY:\n' + JSON.stringify(query);
+
+        const file = new Blob([data], {type: 'text/text'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = wd.settings.title.toLowerCase() + '_query_' + ts + '.txt';
+        a.click();
+    }
+
+    downloadWidgetData(wd) {
+        const ts = new Date().getTime();
+        const data = this.wData[wd.id];
+        const content = JSON.stringify(data);
+        const file = new Blob([content], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = wd.settings.title.toLowerCase() + '_data_' + ts + '.json';
+        a.click();
     }
 
     dashboardFavoriteAction(remove?: boolean) {
