@@ -77,10 +77,11 @@ $dark-theme: (
         info-contrast:    #ffffff
     ),
     scrollbar: (
-       padding: 2px,
-       size: 8px,
-       track-bg: black,
-       thumb-bg: #8ACFED
+       padding: 1px,
+       size: 10px,
+       track-bg: rgba(138, 207, 237, .05),
+       track-border: rgba(138, 207, 237, .15),
+       thumb-bg: rgba(138, 207, 237, .4)
     ),
     dashboard-filters: (
         auto-mode-bg: #33FF74,
