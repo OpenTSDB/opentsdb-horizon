@@ -1396,7 +1396,6 @@
     .markdown-body .pl-12 {
         padding-left: 128px !important;
     }
-
 }
 
 @mixin app-common-theme($theme-config) {
@@ -1567,118 +1566,63 @@
         background-color: rgba(map-get($background, card), .8);
     }
 
-    //@include app-scrollbar($theme-config);
-
-    /** scrollbar stuff **/
+    /** scrollbar base **/
 
     $scrollbar: map-get($theme-config, scrollbar);
 
     $scrollbar-padding: map-get($scrollbar, padding);
     $scrollbar-size: map-get($scrollbar, size);
-    $scrollbar-track: $scrollbar-size;
-    $scrollbar-radius: $scrollbar-size;
+    $scrollbar-radius: $scrollbar-size / 2;
     $scrollbar-track-bg: map-get($scrollbar, track-bg);
+    $scrollbar-track-border: map-get($scrollbar, track-border);
     $scrollbar-thumb-bg: map-get($scrollbar, thumb-bg);
 
     * {
-        // background of the bar itself
+        // this is the trick to hide the scrollbar
         &::-webkit-scrollbar {
-            background-color: rgba(0,0,0,0.1);
+            background: transparent;
 
             &:vertical {
-                width: ($scrollbar-size + ($scrollbar-padding * 2));
+                width: 0;
             }
 
             &:horizontal {
-                height: ($scrollbar-size + ($scrollbar-padding * 2));
+                height: 0;
             }
         }
-        // draggable scrolling element resizes depending on the size of the scrollable element
-        &::-webkit-scrollbar-thumb {
-            border-radius: $scrollbar-radius;
-            -webkit-box-shadow: inset 0 0 1 darken($scrollbar-thumb-bg, 20%);
-            background: $scrollbar-thumb-bg; //fallback
-            background: -webkit-linear-gradient(left, $scrollbar-thumb-bg, darken($scrollbar-thumb-bg, 10%));
-            background: linear-gradient(left, $scrollbar-thumb-bg, darken($scrollbar-thumb-bg, 10%));
-            border: $scrollbar-padding solid $scrollbar-track-bg;
+
+        &::-webkit-scrollbar-corner {
+            // may change this depending on how it looks in different themes
+            background-color: transparent;
         }
 
-        // empty space “below” the progress bar
+        &::-webkit-scrollbar-thumb {
+            border-radius: $scrollbar-radius;
+            background-color: $scrollbar-thumb-bg; // default color
+            border: ($scrollbar-padding * 2) solid rgba(0, 0, 0, 0); // transparent - gives spacing around thumb
+            background-clip: padding-box; // needed to enforce spacing of transparent border
+        }
+
         &::-webkit-scrollbar-track {
             //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
             border-radius: 0;
-            background-color: rgba($scrollbar-track-bg, 0.6);
-            border: 1px solid darken($scrollbar-track-bg, 10%);
+            //background-color: $scrollbar-track-bg;
+            //border: 1px solid $scrollbar-track-border;
         }
 
-        // bottom corner of the scrollable element, where two scrollbar meet
-        &::-webkit-scrollbar-corner {
-            background-color: transparent;
-        }
+        // show the scrollbar on hover
+        &:hover {
+            &::-webkit-scrollbar {
+                &:vertical {
+                    width: $scrollbar-size !important;
+                }
 
+                &:horizontal {
+                    height: $scrollbar-size !important;
+                }
+            }
+        }
     }
-}
 
-@mixin app-scrollbar($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
 
-    /* Scrollbar config parts */
-    $scrollbar-size: 12px;
-    $scrollbar-radius: 0;
-
-    // STYLE ALL THE SCROLLBARS
-    * {
-        // background of the bar itself
-        &::-webkit-scrollbar {
-            background-color: transparent;
-            &:vertical {
-                width: $scrollbar-size;
-            }
-            &:horizontal {
-                height: $scrollbar-size;
-            }
-        }
-        //  directional buttons on the scrollbar
-        /*&::-webkit-scrollbar-button {
-            background: purple;
-            width: $scrollbar-size - 2;
-            height: $scrollbar-size - 2;
-        }*/
-        // empty space “below” the progress bar
-        &::-webkit-scrollbar-track {
-            background-color: transparent;
-            border: 0;
-            padding: 2px;
-        }
-        // top-most layer of the the progress bar not covered by the thumb
-        &::-webkit-scrollbar-track-piece {
-            //background: cyan;
-
-            &:start {
-                background-color: map-get($foreground, divider);
-            }
-            &:end {
-                background-color: map-get($foreground, divider);
-            }
-        }
-        // draggable scrolling element resizes depending on the size of the scrollable element
-        &::-webkit-scrollbar-thumb {
-            background-color: if($is-dark, map-get($primary, default), map-get($background, navbar));
-            //border-radius: $scrollbar-radius;
-        }
-        // bottom corner of the scrollable element, where two scrollbar meet
-        &::-webkit-scrollbar-corner {
-            background-color: transparent;
-        }
-        // draggable resizing handle that appears above the scrollbar-corner at the bottom corner of some elements
-        /*&::-webkit-resizer {
-            background-color: transparent;
-        }*/
-    }
 }
