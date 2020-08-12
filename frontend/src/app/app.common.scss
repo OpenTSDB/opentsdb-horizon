@@ -48,6 +48,7 @@
         }
     }
 
+    // not sure this block is still needed since the gridster upgrade
     .gridster-item-prototype {
         display: block;
         position: relative;
@@ -1089,7 +1090,7 @@
 
     .markdown-body table {
         display: block;
-        overflow: auto;
+        overflow: overlay;
         width: 100%;
     }
 
@@ -1163,7 +1164,7 @@
         border-radius: 3px;
         font-size: 85%;
         line-height: 1.45;
-        overflow: auto;
+        overflow: overlay;
         padding: 16px;
     }
 

@@ -125,7 +125,7 @@ $widgets-common-config: (
         .widget-control-steps {
             padding: 8px 0 0;
             flex: 1;
-            overflow: auto;
+            overflow: overlay;
             max-height: 100%;
             max-width: 100%;
         }
@@ -230,7 +230,7 @@ $widgets-common-config: (
                 //padding-top: $default-padding;
                 display: flex;
                 position: relative;
-                overflow: auto;
+                overflow: overlay;
             }
 
             // NOTE: The actual config tab content styles are located under sharedcomponents module
@@ -382,7 +382,7 @@ $widgets-common-config: (
     .widget-output.multigraph-enabled {
 
         .multigraph-output {
-            overflow: auto;
+            overflow: overlay;
         }
 
         .multi-graph-container.multigraph-grid-mode {

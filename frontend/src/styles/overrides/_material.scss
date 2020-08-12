@@ -11,7 +11,7 @@ mat-nav-list {
   min-width: 200px;
   width: 20%;
   border-right: 1px solid grey;
-  overflow: auto;
+  overflow: overlay;
 }
 
 mat-nav-list .active, mat-nav-list .mat-list-item-focus.active:focus {
