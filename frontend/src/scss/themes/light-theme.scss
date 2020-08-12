@@ -72,10 +72,11 @@ $light-theme: (
         info-contrast: #ffffff
     ),
     scrollbar: (
-       padding: 2px,
-       size: 8px,
-       track-bg: map_get($mat-grey, 300),
-       thumb-bg: map_get($denali-brand-6, 500)
+        padding: 1px,
+        size: 10px,
+        track-bg: rgba(0, 0, 0, .05),
+        track-border: rgba(0, 0, 0, .15),
+        thumb-bg: rgba(0, 0, 0, .2)
     ),
     dashboard-filters: (
         auto-mode-bg: #33FF74,

@@ -100,7 +100,7 @@
 
         .metric-wrapper {
             position: relative;
-            overflow: auto;
+            overflow: overlay;
             padding: 10px;
 
             .common-tags {

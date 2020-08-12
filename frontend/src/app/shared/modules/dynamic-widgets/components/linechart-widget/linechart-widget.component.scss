@@ -37,8 +37,8 @@
                 // max-width: 100%;
                 // background: beige;
             }
-            
-            
+
+
         }
 
         .hide {
@@ -89,7 +89,7 @@
                 position: initial; // override dygraph style
                 list-style: none;
                 height: 100%;
-                overflow: auto;
+                overflow: overlay;
                 z-index: 0;
                 // background-color: #fee;
 
