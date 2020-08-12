@@ -4,7 +4,7 @@
         min-width: 600px;
         display: flex;
         flex-direction: column;
-        
+
         .snooze-configuration-wrapper {
             border-radius: 0;
             padding: 0;
@@ -61,10 +61,10 @@
             }
 
             .error {
-                color:red; 
-                height: 30px; 
-                text-align:center; 
-                padding: 2px; 
+                color:red;
+                height: 30px;
+                text-align:center;
+                padding: 2px;
             }
         }
 
@@ -78,7 +78,7 @@
             .alert-control-steps {
                 padding: 8px 0 0;
                 flex: 1;
-                overflow: auto;
+                overflow: overlay;
             }
 
             .step-section {
@@ -87,7 +87,7 @@
 
                 .step-section-label {
                     border-top: 1px solid #E0E0E0; // why is color here??
-                    
+
                     .step-section-label-text {
                         display: inline-block;
                         padding: 2px 24px 2px 8px;
@@ -115,7 +115,7 @@
                 &:not(.select-threshold-type) {
                     margin-bottom: 12px;
                 }
-                
+
                 .form-label,
                 .toggle-wrap {
                     height: 32px;
@@ -222,7 +222,7 @@
                     }
                 }
 
-                
+
 
             }
 
@@ -322,7 +322,7 @@
             height: 52px;
         }
     }
-    
+
     .alert-options-cdk-panel.mat-menu-panel {
         min-width: calc(65vw - 250px);
         max-width: 100%;
@@ -373,7 +373,7 @@
                 display: flex;
                 flex: 1;
                 flex-direction: column;
-                margin-left: 12px; 
+                margin-left: 12px;
 
                 .type {
                     line-height: 12px;
