@@ -65,6 +65,7 @@ import { MetricVisualPanelComponent } from './components/metric-visual-panel/met
 import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
 import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
+import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 
 @NgModule({
     imports: [
@@ -122,7 +123,8 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
         MetricVisualPanelComponent,
         HexToColorNamePipe,
         DateToRelativePipe,
-        DropdownJoinTypeComponent
+        DropdownJoinTypeComponent,
+        AliasDisplayPipe
     ],
     exports: [
         ThemePickerComponent,
@@ -163,7 +165,8 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
         InfoTooltipComponent,
         MetricVisualPanelComponent,
         HexToColorNamePipe,
-        DateToRelativePipe
+        DateToRelativePipe,
+        AliasDisplayPipe
     ],
     entryComponents: [
         InlineFilterEditorComponent,
