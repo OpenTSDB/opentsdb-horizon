@@ -21,71 +21,72 @@ export class MultigraphService {
     const results = {};
     // we need to handle the case that query or metric is disable
     for (let i = 0; i < rawdata.results.length; i++) {
-      const [ source, mid ] = rawdata.results[i].source.split(':');
+      const [source, mid] = rawdata.results[i].source.split(':');
       const qids = this.REGDSID.exec(mid);
       const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
-      const mIndex = this.utils.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
+      const mIndex = this.utils.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2]);
       const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
       const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
       const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
       const dataSrc = rawdata.results[i];
-      if (gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
-      if (dataSrc.source) {
-        for (let j = 0; j < dataSrc.data.length; j++) {
-          // tags for each group of data
-          const tags = { metric_group: dataSrc.data[j].metric, ...dataSrc.data[j].tags};
-          let x = xTemp;
-          let y = yTemp;
-          const tagKeys = Object.keys(tags);
-          for ( let k = 0; k < tagKeys.length; k++ ) {
-            const key = tagKeys[k];
-            const tagValue = key === 'metric_group' ? tags[key] : tags[key].toLowerCase();
-            if ( multiConf.x && x.indexOf(key) !== -1 ) {
-              x = x.replace('{{' + key + '}}', tagValue);
-              if (multiConf.x[key] && !multiConf.x[key].values.includes(tagValue)) {
-                multiConf.x[key].values.push(tagValue);
+      if (gConfig && gConfig.settings.visual.visible && vConfig.visible) {
+        if (dataSrc.source) {
+          for (let j = 0; j < dataSrc.data.length; j++) {
+            // tags for each group of data
+            //const tags = { metric_group: dataSrc.data[j].metric, ...dataSrc.data[j].tags };
+            const alias = vConfig.label === '' ? '' : ':' + vConfig.label
+            const tags = { metric_group: mConfig.id + '-' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
+            let x = xTemp;
+            let y = yTemp;
+            const tagKeys = Object.keys(tags);
+            for (let k = 0; k < tagKeys.length; k++) {
+              const key = tagKeys[k];
+              const tagValue = key === 'metric_group' ? tags[key] : tags[key].toLowerCase();
+              if (multiConf.x && x.indexOf(key) !== -1) {
+                x = x.replace('{{' + key + '}}', tagValue);
+                if (multiConf.x[key] && !multiConf.x[key].values.includes(tagValue)) {
+                  multiConf.x[key].values.push(tagValue);
+                }
+              }
+              if (multiConf.y && y.indexOf(key) !== -1) {
+                y = y.replace('{{' + key + '}}', tagValue);
+                if (multiConf.y[key] && !multiConf.y[key].values.includes(tagValue)) {
+                  multiConf.y[key].values.push(tagValue);
+                }
               }
             }
-            if ( multiConf.y && y.indexOf(key) !== -1 ) {
-              y = y.replace('{{' + key + '}}', tagValue);
-              if (multiConf.y[key] && !multiConf.y[key].values.includes(tagValue)) {
-                multiConf.y[key].values.push(tagValue);
-              }
+            // console.log("series" + j , "x="+x, "y="+y );
+            if (!lookupData[y]) {
+              lookupData[y] = {};
             }
+            if (!lookupData[y][x]) {
+              lookupData[y][x] = {
+                results: []
+              };
+            }
+            let srcIndex = lookupData[y][x].results.findIndex(d => d.source === dataSrc.source);
+            if (srcIndex === -1) {
+              lookupData[y][x].results.push({
+                source: dataSrc.source,
+                timeSpecification: dataSrc.timeSpecification,
+                data: []
+              });
+              srcIndex = lookupData[y][x].results.length - 1;
+            }
+            lookupData[y][x].results[srcIndex].data.push(dataSrc.data[j]);
           }
-          // console.log("series" + j , "x="+x, "y="+y );
-          if ( !lookupData[y] ) {
-            lookupData[y] = {};
-          }
-          if ( !lookupData[y][x] ) {
-            lookupData[y][x] = {
-              results: []
-            };
-          }
-          let srcIndex = lookupData[y][x].results.findIndex(d => d.source === dataSrc.source);
-          if ( srcIndex === -1 ) {
-            lookupData[y][x].results.push({
-                                            source: dataSrc.source,
-                                            timeSpecification: dataSrc.timeSpecification,
-                                            data: []
-                                          });
-            srcIndex = lookupData[y][x].results.length - 1;
-          }
-          lookupData[y][x].results[srcIndex].data.push(dataSrc.data[j]);
         }
       }
     }
-    }
-
     // let build the master results table
     const xAll = multiConf.x ? [] : [['x']];
     const yAll = multiConf.y ? [] : [['y']];
     for (const tag in multiConf.x) {
       if (multiConf.x.hasOwnProperty(tag)) {
         if (multiConf.x[tag].sortAs === 'asc') {
-          multiConf.x[tag].values.sort(this.utils.sortAlphaNum);
+          multiConf.x[tag].values.sort(this.utils.sortAliasAlphaNum);
         } else {
-          multiConf.x[tag].values.sort(this.utils.sortAlphaNumDesc);
+          multiConf.x[tag].values.sort(this.utils.sortAliasAlphaNumDesc);
         }
         xAll.push(multiConf.x[tag].values);
       }
@@ -93,9 +94,9 @@ export class MultigraphService {
     for (const tag in multiConf.y) {
       if (multiConf.y.hasOwnProperty(tag)) {
         if (multiConf.y[tag].sortAs === 'asc') {
-          multiConf.y[tag].values.sort(this.utils.sortAlphaNum);
+          multiConf.y[tag].values.sort(this.utils.sortAliasAlphaNum);
         } else {
-          multiConf.y[tag].values.sort(this.utils.sortAlphaNumDesc);
+          multiConf.y[tag].values.sort(this.utils.sortAliasAlphaNumDesc);
         }
         yAll.push(multiConf.y[tag].values);
       }
