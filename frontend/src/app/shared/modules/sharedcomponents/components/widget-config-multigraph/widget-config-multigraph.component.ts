@@ -65,7 +65,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     availableTagOptions: Array<any> = [];
 
     sortAsOptions: Array<any> = [
-        { label: 'No Sort', value: 'not_sort'},
         { label: 'Asc', value: 'asc'},
         { label: 'Desc', value: 'desc'}
     ];
