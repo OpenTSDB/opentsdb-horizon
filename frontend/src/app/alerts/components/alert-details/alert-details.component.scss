@@ -233,6 +233,12 @@
                 max-width: 100%;
             }
 
+            @-moz-document url-prefix() {
+                .alert-control-steps {
+                    overlay: auto;
+                }
+            }
+
             .query-metric-row.read-only * {
                 cursor: default;
 

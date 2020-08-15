@@ -64,6 +64,12 @@
                 overflow: overlay;
             }
 
+            @-moz-document url-prefix() {
+                .list-all {
+                    overflow: auto;
+                }
+            }
+
             .mat-list.mat-list-base {
                 padding-top: 0;
 
@@ -116,6 +122,12 @@
                     width: 100%;
                     max-height: 100%;
                     overflow: overlay;
+                }
+
+                @-moz-document url-prefix() {
+                    .mat-list.mat-list-base {
+                        overflow: auto;
+                    }
                 }
             }
         }

@@ -81,6 +81,12 @@
                 overflow: overlay;
             }
 
+            @-moz-document url-prefix() {
+                .alert-control-steps {
+                    overflow: auto;
+                }
+            }
+
             .step-section {
                 margin-bottom: 8px;
                 display: block;

@@ -181,6 +181,12 @@
                 }
             }
         }
+
+        @-moz-document url-prefix() {
+            .event-stream-list {
+                overflow: auto;
+            }
+        }
     }
 
     // MATERIAL FIXES

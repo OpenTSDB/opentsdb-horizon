@@ -102,6 +102,12 @@
                 }
             }
 
+            @-moz-document url-prefix() {
+                .graph-legend {
+                    overflow: auto;
+                }
+            }
+
             .loading-spinner,
             .gif-spinner {
                 position: absolute;
@@ -293,6 +299,16 @@
                 padding: 8px 0px;
                 //display: block;
                 position: relative;
+            }
+        }
+
+        .event-preview-list-wrapper {
+            overflow: overlay;
+        }
+
+        @-moz-document url-prefix() {
+            .event-preview-list-wrapper {
+                overflow: auto;
             }
         }
     }
