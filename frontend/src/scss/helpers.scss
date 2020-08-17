@@ -1,4 +1,4 @@
-/** 
+/**
  * YAMAS - HORIZON HELPER CLASSES
  */
 
@@ -46,6 +46,12 @@
 
 .is-scroller {
     @include is-scroller();
+}
+
+@-moz-document url-prefix() {
+    .is-scroller {
+        overflow: auto;
+    }
 }
 
 // * Content Editable (Single Line)

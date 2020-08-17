@@ -130,6 +130,12 @@
             ul li {
                 overflow: overlay;
             }
+
+            @-moz-document url-prefix() {
+                ul li {
+                    overflow: auto;
+                }
+            }
         }
 
         // FOLDERS LIST

@@ -35,6 +35,12 @@
                 overflow: overlay;
             }
 
+            @-moz-document url-prefix() {
+                .chartContainer {
+                    overflow: auto;
+                }
+            }
+
             // .chart { }
             .chart svg {
                 width: 100%;

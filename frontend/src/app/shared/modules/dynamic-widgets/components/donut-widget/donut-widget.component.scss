@@ -120,6 +120,12 @@
                 overflow: overlay;
             }
 
+            @-moz-document url-prefix() {
+                .legend {
+                    overflow: auto;
+                }
+            }
+
             .legend svg {
                 position: relative!important;
             }

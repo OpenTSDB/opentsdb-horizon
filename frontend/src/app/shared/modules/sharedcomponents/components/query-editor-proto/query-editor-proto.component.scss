@@ -222,6 +222,12 @@
             }
         }
 
+        @-moz-document url-prefix() {
+            .metric-wrapper {
+                overflow: auto;
+            }
+        }
+
         .vertical-line-spacer {
             height: 16px;
             width: 6px;
