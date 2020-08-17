@@ -83,21 +83,13 @@ export class MultigraphService {
     const yAll = multiConf.y ? [] : [['y']];
     for (const tag in multiConf.x) {
       if (multiConf.x.hasOwnProperty(tag)) {
-        if (multiConf.x[tag].sortAs === 'asc') {
-          multiConf.x[tag].values.sort(this.utils.sortAliasAlphaNum);
-        } else {
-          multiConf.x[tag].values.sort(this.utils.sortAliasAlphaNumDesc);
-        }
+        multiConf.x[tag].values.sort(this.utils.sortAliasforMultigraph(multiConf.x[tag].sortAs));
         xAll.push(multiConf.x[tag].values);
       }
     }
     for (const tag in multiConf.y) {
       if (multiConf.y.hasOwnProperty(tag)) {
-        if (multiConf.y[tag].sortAs === 'asc') {
-          multiConf.y[tag].values.sort(this.utils.sortAliasAlphaNum);
-        } else {
-          multiConf.y[tag].values.sort(this.utils.sortAliasAlphaNumDesc);
-        }
+        multiConf.y[tag].values.sort(this.utils.sortAliasforMultigraph(multiConf.y[tag].sortAs));        
         yAll.push(multiConf.y[tag].values);
       }
     }
