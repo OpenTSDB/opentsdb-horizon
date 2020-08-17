@@ -1094,6 +1094,12 @@
         width: 100%;
     }
 
+    @-moz-document url-prefix() {
+        .markdown-body table {
+            overflow: auto;
+        }
+    }
+
     .markdown-body table th {
         font-weight: 600;
     }
@@ -1166,6 +1172,13 @@
         line-height: 1.45;
         overflow: overlay;
         padding: 16px;
+    }
+
+    @-moz-document url-prefix() {
+        .markdown-body .highlight pre,
+        .markdown-body pre {
+            overlay: auto;
+        }
     }
 
     .markdown-body pre code {
@@ -1625,5 +1638,11 @@
         }
     }
 
+    @-moz-document url-prefix() {
+        * {
+            scrollbar-color: $scrollbar-thumb-bg $scrollbar-track-bg; /* thumb and track color */
+            scrollbar-width: $scrollbar-size;
+        }
+    }
 
 }

@@ -45,6 +45,12 @@
             }
         }
 
+        @-moz-document url-prefix() {
+            .widget-output {
+                overflow: auto;
+            }
+        }
+
         .query-container {
             display: flex;
             padding: 10px;

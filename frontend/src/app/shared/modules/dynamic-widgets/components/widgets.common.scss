@@ -130,6 +130,12 @@ $widgets-common-config: (
             max-width: 100%;
         }
 
+        @-moz-document url-prefix() {
+            .widget-control-steps {
+                overflow: auto;
+            }
+        }
+
         .step-section {
             margin-bottom: 8px;
             display: none;
@@ -231,6 +237,12 @@ $widgets-common-config: (
                 display: flex;
                 position: relative;
                 overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                .mat-tab-body-content {
+                    overflow: auto;
+                }
             }
 
             // NOTE: The actual config tab content styles are located under sharedcomponents module
@@ -383,6 +395,12 @@ $widgets-common-config: (
 
         .multigraph-output {
             overflow: overlay;
+        }
+
+        @-moz-document url-prefix() {
+            .multigraph-output {
+                overflow: auto;
+            }
         }
 
         .multi-graph-container.multigraph-grid-mode {

@@ -32,6 +32,12 @@
             overflow: overlay;
         }
 
+        @-moz-document url-prefix() {
+            .main-content {
+                overflow: auto;
+            }
+        }
+
         .landing-page-hero,
         .landing-page-utilities {
             padding: 10px;

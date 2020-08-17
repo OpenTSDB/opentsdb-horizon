@@ -78,6 +78,12 @@
                 }
             }
 
+            @-moz-document url-prefix() {
+                .graph-legend {
+                    overflow: auto;
+                }
+            }
+
             .loading-spinner,
             .gif-spinner {
                 position: absolute;
