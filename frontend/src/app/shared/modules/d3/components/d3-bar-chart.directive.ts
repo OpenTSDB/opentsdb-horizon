@@ -62,7 +62,6 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         }
         const self = this;
         const mousemove = function (d) {
-            console.log('====>>> TOPN MOUSE MOVE', d, d3.color);
             // const containerPos = self.element.nativeElement.parentNode.parentNode.getBoundingClientRect();
             /*tooltip.style("left", d3.event.x - containerPos.x + "px");
             tooltip.style("top", d3.event.y - containerPos.y + 30 + "px");

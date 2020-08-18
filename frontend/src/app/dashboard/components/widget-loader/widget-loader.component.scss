@@ -6,6 +6,16 @@
         display: flex;
         flex: 1 1 auto;
 
+        .widget-menu-trigger {
+            visibility: hidden;
+        }
+
+        &:hover {
+            .widget-menu-trigger {
+                visibility: visible;
+            }
+        }
+
         .mat-card {
             padding: initial;
         }
