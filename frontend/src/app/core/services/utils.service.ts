@@ -487,8 +487,8 @@ export class UtilsService {
     checkIfNumeric(val: string): boolean {
         return /^\d+$/.test(val);
     }
-
-    // human sort
+    
+    // human sort asc
     sortAlphaNum(a, b) {
         const aa = a.toLowerCase().split(/(\d+)/);
         const bb = b.toLowerCase().split(/(\d+)/);
@@ -504,6 +504,47 @@ export class UtilsService {
             }
         }
         return 0;
+    }
+    // human sort desc
+    sortAlphaNumDesc(a, b) {
+        const aa = a.toLowerCase().split(/(\d+)/);
+        const bb = b.toLowerCase().split(/(\d+)/);
+        for (let x = 0; x < Math.max(aa.length, bb.length); x++) {
+            if (aa[x] !== undefined && bb[x] !== undefined && aa[x] !== bb[x]) {
+                const cmp1 = (isNaN(parseInt(aa[x], 10))) ? aa[x] : parseInt(aa[x], 10);
+                const cmp2 = (isNaN(parseInt(bb[x], 10))) ? bb[x] : parseInt(bb[x], 10);
+                if (cmp1 === undefined || cmp2 === undefined) {
+                    return bb.length - aa.length;
+                } else {
+                    return (cmp1 < cmp2) ? 1 : -1;
+                }
+            }
+        }
+        return 0;     
+    }
+
+    // passing order and default is asc
+    sortAliasforMultigraph(order: string = 'asc') {
+        return function(a, b) {
+            const aPart = a.split(':');
+            const bPart = b.split(':');
+            const a1 = aPart.length === 2 ? aPart[1] : aPart[0];
+            const b1 = bPart.length === 2 ? bPart[1] : bPart[0];
+            const aa = a1.toLowerCase().split(/(\d+)/);
+            const bb = b1.toLowerCase().split(/(\d+)/);
+            for (let x = 0; x < Math.max(aa.length, bb.length); x++) {
+                if (aa[x] !== undefined && bb[x] !== undefined && aa[x] !== bb[x]) {
+                    const cmp1 = (isNaN(parseInt(aa[x], 10))) ? aa[x] : parseInt(aa[x], 10);
+                    const cmp2 = (isNaN(parseInt(bb[x], 10))) ? bb[x] : parseInt(bb[x], 10);
+                    if (cmp1 === undefined || cmp2 === undefined) {
+                        return order === 'asc' ? aa.length - bb.length : bb.lenght - aa.lenght;
+                    } else {
+                        return order === 'asc' ? (cmp1 < cmp2) ? -1 : 1 : (cmp1 < cmp2) ? 1 : -1;
+                    }
+                }
+            }
+            return 0;            
+        }
     }
 
     getSummarizerForMetric(id, queries) {

@@ -64,8 +64,13 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
 
     availableTagOptions: Array<any> = [];
 
+    sortAsOptions: Array<any> = [
+        { label: 'Asc', value: 'asc'},
+        { label: 'Desc', value: 'desc'}
+    ];
+
     /** Mat Table Stuff */
-    chartDisplayColumns: string[] = ['remove', 'label', 'x', 'y', 'g', 'order'];
+    chartDisplayColumns: string[] = ['remove', 'label', 'sort', 'x', 'y', 'g', 'order'];
 
     // default mutilgraph
     multigraph: any = {
@@ -73,6 +78,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             {
                 key: 'metric_group',
                 displayAs: 'g', // g|x|y
+                sortAs: 'asc'
             }
         ],
         layout: 'grid', // grid | freeflow
@@ -124,7 +130,8 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             }
             const item = {
                 key: groupByTags[i],
-                displayAs: 'g'
+                displayAs: 'g',
+                sortAs: 'asc'
             };
             this.multigraph.chart.push(item);
         }
@@ -132,6 +139,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     createForm(multigraph: any) {
+       
         // setup the group
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
@@ -150,9 +158,12 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             emitEvent: true
         });
 
-        for (const i in this.multigraph.chart) {
-            if (this.multigraph.chart[i]) {
-                const chartItem = this.multigraph.chart[i];
+        for (const i in multigraph.chart) {
+            if (multigraph.chart[i]) {
+                let chartItem = multigraph.chart[i];
+                if (!chartItem.sortAs) {
+                    chartItem.sortAs = 'asc';
+                }
                 this.addChartItem(chartItem);
             }
         }
@@ -222,7 +233,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
 
     addTagKeyChartItem(key: string) {
         const control = <FormArray>this.FC_chart;
-        const chartItem = { key, displayAs: 'g', order: (control['controls'].length - 1) };
+        const chartItem = { key, displayAs: 'g', sortAs: 'asc', order: (control['controls'].length - 1) };
         this.addChartItem(chartItem);
     }
 

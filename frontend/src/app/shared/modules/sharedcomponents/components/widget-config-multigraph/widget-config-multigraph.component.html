@@ -36,6 +36,18 @@
                     </mat-cell>
                 </ng-container>
 
+                <!-- sort -->
+                <ng-container matColumnDef="sort">
+                    <mat-header-cell *matHeaderCellDef>SORT</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                        <mat-select formControlName="sortAs" [value]="FC_chart['controls'][rowIndex].get('sortAs').value">
+                            <mat-option *ngFor="let option of sortAsOptions" [value]="option.value">
+                                {{option.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-cell>
+                </ng-container>
+
                 <!-- display as row graph -->
                 <ng-container matColumnDef="y">
                     <mat-header-cell *matHeaderCellDef>AS ROWS</mat-header-cell>
