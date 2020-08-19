@@ -480,6 +480,7 @@ export class DashboardService {
       delete widgets[i].gridPos.ySm;
       delete widgets[i].gridPos.wSm;
       delete widgets[i].gridPos.hSm;
+      delete widgets[i].settings.time.zoomTime;
     }
     // will remove later, if no need to check this.
     const settings = this.utils.deepClone(dbstate.Settings);

@@ -74,6 +74,9 @@ export class DatatranformerService {
     const queryResultsObj = {};
     const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
     let isStacked = false;
+    // for time over time, turn bar or area to line type
+    let hasToT = false;
+    const midExToTNSeries = {}; 
     const groups = {};
     const stackedYAxes = [];
     let yMax = 0, y2Max = 0;
@@ -88,16 +91,25 @@ export class DatatranformerService {
         // queryResults.push(result.results[i]);
         queryResultsObj[i] = result.results[i];
         const [ source, mid ] = result.results[i].source.split(':');
+        const midExToT = mid.split('-')[0];
+        const tot = mid.split('-')[1];
+        if (tot) {
+            hasToT = true;
+            isStacked = false;
+        }
         const qids = this.REGDSID.exec(mid);
         const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
         const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
         const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
         const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
         const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
-        queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line'} );
+        queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line', mid} );
         if ( gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
             if (!dict[mid]) {
                 dict[mid] = { hashes: {}, summarizer: {}};
+            }
+            if ( !midExToTNSeries[midExToT] ) {
+                midExToTNSeries[midExToT] = 0;
             }
             if (source === 'summarizer') {
                 const n = queryResultsObj[i].data.length;
@@ -124,13 +136,14 @@ export class DatatranformerService {
                 dict[mid]['values'] = {}; // queryResults.data;
                 const n = queryResultsObj[i].data.length;
                 totalSeries += n;
+                midExToTNSeries[midExToT] += n;
                 const key = queryResultsObj[i].timeSpecification.start + '-' + queryResultsObj[i].timeSpecification.end + '-' + queryResultsObj[i].timeSpecification.interval;
                 mTimeConfigs[key] = {timeSpecification: queryResultsObj[i].timeSpecification, nSeries: n};
                 for (let j = 0; j < n; j++) {
                     const tags = queryResultsObj[i].data[j].tags;
                     const hash = JSON.stringify(tags);
                     dict[mid]['values'][hash] = queryResultsObj[i].data[j].NumericType;
-                    if ( (vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) {
+                    if ( !hasToT && ((vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) ) {
                         isStacked = true;
                         const axis = !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2';
                         if ( !stackedYAxes.includes(axis) ) {
@@ -165,7 +178,7 @@ export class DatatranformerService {
         normalizedData[i][0] = new Date(parseInt(ts[i], 10));
     }
 
-    queryResults.sort((a, b) => a.visualType - b.visualType);
+    queryResults.sort((a, b) => a.mid.localeCompare(b.mid));
     options.axes.y.tickFormat.max = yMax;
     options.axes.y.tickFormat.min = min['y1'];
     options.axes.y2.tickFormat.max = y2Max;
@@ -181,6 +194,7 @@ export class DatatranformerService {
             const dseries = [];
             for ( let i = 0;  i < queryResults.length; i++ ) {
                 const [ source, mid ] = queryResults[i].source.split(':');
+                const midExToT = mid.split('-')[0];
                 if ( source === 'summarizer') {
                     continue;
                 }
@@ -189,7 +203,7 @@ export class DatatranformerService {
                     const totregres = /(\d+)?(\w)/.exec(totLabel);
                     const totVal = totregres[1] ? parseInt(totregres[1], 10) : 1;
                     const totPeriod = totregres[2];
-                    totLabel = ' [' + totVal + '-' + periods[totPeriod] + (totVal > 1 ? 's' : '') + ']';
+                    totLabel = ' [' + totVal + '-' + periods[totPeriod] + (totVal > 1 ? 's' : '') + ' ago]';
                 }
                 totLabel = totLabel ? totLabel : '';
                 const qids = this.REGDSID.exec(mid);
@@ -199,12 +213,15 @@ export class DatatranformerService {
                 const qid = widget.queries[qIndex].id;
                 const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
                 const mConfig = gConfig && widget.queries[qIndex].metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : {};
-                const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
+                const vConfig = mConfig && mConfig.settings ? this.util.deepClone(mConfig.settings.visual) : {};
+                vConfig.type = hasToT ? 'line' : vConfig.type;
                 const n = queryResults[i].data.length;
                 const colorIndex = vConfig.color === 'auto' || !vConfig.color ? wdQueryStats.mVisibleAutoColorIds.indexOf( qid + '-' + mConfig.id ) : -1;
                 const color = vConfig.color === 'auto' || !vConfig.color ? autoColors[colorIndex] : mConfig.settings.visual.color;
-                colors[mid] = n === 1 ?
-                    [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics === 1 && (vConfig.color === 'auto' || !vConfig.color) ? null : color , n ) ;
+                if ( !colors[midExToT] ) {
+                    colors[midExToT] = midExToTNSeries[midExToT] === 1 ?
+                        [color] :  this.util.getColors( !hasToT && wdQueryStats.nVisibleMetrics === 1 && (vConfig.color === 'auto' || !vConfig.color) ? null : color , midExToTNSeries[midExToT] ) ;
+                }
                 for ( let j = 0; j < n; j ++ ) {
                     const data = queryResults[i].data[j].NumericType;
                     const tags = queryResults[i].data[j].tags;
@@ -245,9 +262,11 @@ export class DatatranformerService {
 
         // sort the data
         intermediateTime = new Date().getTime();
-        dseries.sort((a: any, b: any) => {
-            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || (a.config.aggregations ? b.config.aggregations['min'] - a.config.aggregations['min'] : 0);
-        });
+            if ( !hasToT ) {
+            dseries.sort((a: any, b: any) => {
+                return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || (a.config.aggregations ? b.config.aggregations['min'] - a.config.aggregations['min'] : 0);
+            });
+        }
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
@@ -264,7 +283,8 @@ export class DatatranformerService {
             }
             options.visibilityHash[dseries[i].hash] = options.visibility[i];
             options.series[label] = dseries[i].config;
-            options.series[label].color = colors[dseries[i].mid].pop();
+            const midExToT = dseries[i].mid.split('-')[0];
+            options.series[label].color = !hasToT ? colors[midExToT].pop() : colors[midExToT].shift();
             options.series[label].hash = dseries[i].hash;
             const seriesIndex = options.labels.indexOf(label);
             const axis = dseries[i].config.axis;
