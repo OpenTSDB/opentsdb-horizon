@@ -2,6 +2,7 @@ import { Component, OnInit, HostBinding, Input, ViewChild, ElementRef, OnDestroy
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
@@ -71,6 +72,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     readonly maxCaptionLength: number = 36;
     readonly maxLabelLength: number = 10; // postfix, prefix, unit
 
+    isCustomZoomed = false;
     needRequery = false;
     nQueryDataLoading = 0;
     error: any;
@@ -96,7 +98,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         public dialog: MatDialog,
         public util: UtilsService,
         public UN: UnitConverterService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private dateUtil: DateUtilsService
         ) { }
 
     ngOnInit() {
@@ -117,8 +120,27 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
 
-            if (message.action === 'TimeChanged' || message.action === 'reQueryData' || message.action === 'ZoomDateRange') {
+            if (message.action === 'TimeChanged' || message.action === 'reQueryData') {
                 this.refreshData();
+            } else if ( message.action === 'ZoomDateRange') {
+                const overrideTime = this.widget.settings.time.overrideTime;
+                if ( message.payload.date.isZoomed && overrideTime ) {
+                    const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                    const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                    if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                        this.isCustomZoomed = message.payload.date.isZoomed;
+                        this.widget.settings.time.zoomTime = message.payload.date;
+                        this.refreshData();
+                    }
+                // tslint:disable-next-line: max-line-length
+                } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                    this.isCustomZoomed = message.payload.date.isZoomed;
+                    this.refreshData();
+                }
+                // unset the zoom time
+                if ( !message.payload.date.isZoomed ) {
+                    delete this.widget.settings.time.zoomTime;
+                }
             }
             if (message && (message.id === this.widget.id)) { // 2. Get and set the metric
                 switch (message.action) {
