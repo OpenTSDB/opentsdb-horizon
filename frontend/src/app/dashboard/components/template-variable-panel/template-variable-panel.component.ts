@@ -117,7 +117,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             } else {
                 this.initEditFormGroup(true);
             }
-        } 
+        }
     }
     doEdit() {
         this.modeChange.emit({ view: false });
@@ -137,7 +137,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         // only when it not there
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
-        } 
+        }
 
         this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
@@ -197,7 +197,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
                         this.filterValLoading = false;
-                        if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
+                        if (results && results.length > 0 && this.filteredValueOptions[index]) {
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                         }
                         this.cdRef.markForCheck();
@@ -219,7 +219,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     payload: this.tplVariables.viewTplVariables.tvars
                 });
             }
-        }     
+        }
         this.filteredValueOptions = [];
         this.listForm.controls['listVariables'] = this.fb.array([]);
         if (this.tplVariables.viewTplVariables.tvars) {
@@ -317,7 +317,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     onVariableBlur(event: any, index: number) {
-        if (this.isSecondBlur) { 
+        if (this.isSecondBlur) {
             this.isSecondBlur = false;
             return;
         }
@@ -349,8 +349,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
                     } else {
                         selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
-                    }                                    
-                }              
+                    }
+                }
             }
             if (this.tplVariables.viewTplVariables.tvars[index].filter !== selControl.get('filter').value) {
                 this.tplVariables.viewTplVariables.tvars[index].filter = selControl.get('filter').value;
@@ -392,7 +392,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     ).subscribe(val => {
                         this.justValidateForm(val.toString(), index);
                     });
-                } 
+                }
                 break;
             case 'display':
                 this.filterValLoading = true;
@@ -431,8 +431,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.cdRef.markForCheck();
                     return;
                 }
-            } 
-        }       
+            }
+        }
     }
     // since alias/name has to be unique with db filters
     private validateAlias(val: string, index: number, selControl: any, originAlias: string[]) {
@@ -482,7 +482,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         const tagk = rowControl.get('tagk').value;
                         if (!aliasInfo[tagk]) {
                             aliasInfo[tagk] = [];
-                        } 
+                        }
                         aliasInfo[tagk].push(tmpObj);
                     }
                 }
@@ -515,8 +515,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         if (cname === 'display') {
             if (selControl.invalid) { return; }
-            // to check filter again return list       
-            this.tagValueBlurTimeout = setTimeout(() => {              
+            // to check filter again return list
+            this.tagValueBlurTimeout = setTimeout(() => {
                 let idx = -1;
                 if (val === '') {
                     selControl.get('filter').setValue('', { eventEmit: true});
@@ -630,10 +630,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.tplVariables.editTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index);
         selControl.get('display').setValue(display, { eventEmit: false });
-        selControl.get('filter').setValue(event.option.value, { eventEmit: false }); 
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });
         if (this.tplVariables.editTplVariables.tvars[index].filter !== event.option.value) {
             this.updateState(selControl);
-        }       
+        }
     }
 
     selectVarValueOption(event: any, index: number) {
@@ -657,7 +657,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.tplVariables.viewTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index, 'listVariables');
         selControl.get('display').setValue(display, { eventEmit: false });
-        selControl.get('filter').setValue(event.option.value, { eventEmit: false });        
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });
         // the event is matAutocomplete event, we deal later to clear focus
         if (this.tplVariables.viewTplVariables.tvars[index].filter !== event.option.value) {
             this.tplVariables.viewTplVariables.tvars[index].filter = event.option.value;
@@ -867,7 +867,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             });
         }
     }
-  */  
+  */
     // DragDrop Table reorder event
     dropTable(event: any) {
         // console.log('DROP TABLE EVENT', event);

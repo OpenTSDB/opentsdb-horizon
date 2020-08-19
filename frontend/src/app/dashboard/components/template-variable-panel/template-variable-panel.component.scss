@@ -313,6 +313,23 @@
             display: flex;
             align-items: center;
 
+            &.tag-key-control,
+            &.alias-control {
+                .mat-form-field .mat-form-field-infix {
+                    width: 100%;
+                    min-width: 100px;
+                    max-width: 120px;
+                }
+            }
+
+            &.values-control {
+                .mat-form-field .mat-form-field-infix {
+                    width: 100%;
+                    min-width: 120px;
+                    max-width: 150px;
+                }
+            }
+
 
             &.actions-control {
                 justify-content: center;
