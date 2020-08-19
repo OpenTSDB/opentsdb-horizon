@@ -19,7 +19,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         private interCom: IntercomService,
         private util: UtilsService,
         private dateUtil: DateUtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
     ) { }
 
     /** Inputs */
@@ -31,6 +31,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     startTime: number;
     endTime: number;
     timezone: string;
+    isCustomZoomed = false;
     previewEventsCount = 100;
     eventsCount = 100;
     loading: boolean = false;
@@ -49,8 +50,27 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
             switch (message.action) {
                 case 'TimeChanged':
                 case 'reQueryData':
-                case 'ZoomDateRange':
                     this.getEvents();
+                    break;
+                case 'ZoomDateRange':
+                    const overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.getEvents();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.isCustomZoomed = message.payload.date.isZoomed;
+                        this.getEvents();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
                     break;
             }
 
