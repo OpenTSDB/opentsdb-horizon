@@ -528,8 +528,11 @@ export class UtilsService {
         return function(a, b) {
             const aPart = a.split(':');
             const bPart = b.split(':');
-            const a1 = aPart.length === 2 ? aPart[1] : aPart[0];
-            const b1 = bPart.length === 2 ? bPart[1] : bPart[0];
+            let a1 = aPart.length === 3 ? aPart[2] : aPart[1];
+            let b1 = bPart.length === 3 ? bPart[2] : bPart[1];
+            // when row/column does not include metric
+            if (a1 === undefined) a1 = a;
+            if (b1 === undefined) b1 = b;
             const aa = a1.toLowerCase().split(/(\d+)/);
             const bb = b1.toLowerCase().split(/(\d+)/);
             for (let x = 0; x < Math.max(aa.length, bb.length); x++) {
@@ -537,7 +540,7 @@ export class UtilsService {
                     const cmp1 = (isNaN(parseInt(aa[x], 10))) ? aa[x] : parseInt(aa[x], 10);
                     const cmp2 = (isNaN(parseInt(bb[x], 10))) ? bb[x] : parseInt(bb[x], 10);
                     if (cmp1 === undefined || cmp2 === undefined) {
-                        return order === 'asc' ? aa.length - bb.length : bb.lenght - aa.lenght;
+                        return order === 'asc' ? aa.length - bb.length : bb.length - aa.length;
                     } else {
                         return order === 'asc' ? (cmp1 < cmp2) ? -1 : 1 : (cmp1 < cmp2) ? 1 : -1;
                     }
