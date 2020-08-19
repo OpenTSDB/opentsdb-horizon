@@ -50,7 +50,7 @@
         <div class="form-field-group time-over-time">
             <div>
                 <mat-form-field appearance="fill">
-                    <mat-label>Number{{tot.value}}</mat-label>
+                    <mat-label>Number</mat-label>
                     <mat-select [value]="totValue" (selectionChange)="setTimeOverTime('value', $event.value)" disableOptionCentering="true">
                         <mat-option value=0>None</mat-option>
                         <mat-option *ngFor="let value  of [1, 2, 3, 4, 5, 6, 7]" [value]="value">{{ value }}</mat-option>
