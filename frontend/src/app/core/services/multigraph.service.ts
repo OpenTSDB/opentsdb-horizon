@@ -35,7 +35,7 @@ export class MultigraphService {
             // tags for each group of data
             //const tags = { metric_group: dataSrc.data[j].metric, ...dataSrc.data[j].tags };
             const alias = vConfig.label === '' ? '' : ':' + vConfig.label
-            const tags = { metric_group: mConfig.id + '-' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
+            const tags = { metric_group: mConfig.id + ':' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
             let x = xTemp;
             let y = yTemp;
             const tagKeys = Object.keys(tags);
