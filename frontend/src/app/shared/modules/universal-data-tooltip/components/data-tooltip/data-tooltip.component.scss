@@ -166,8 +166,9 @@
     .data-tooltip {
         &.move-position-strategy {
             .tooltip-output {
-                background: $move-bg;
-                color: $move-txt;
+                box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
+                background: rgba($sticky-bg, $sticky-opacity);
+                color: rgba($sticky-txt, .95);
                 border: 1px solid currentColor;
             }
         }
