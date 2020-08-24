@@ -150,49 +150,18 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                // utility to get greatest common denominator
-                const gcd = function (a: any, b: any) {
-                    return (b === 0) ? a : gcd (b, (a % b));
-                };
-
-                let winRatio = gcd(winSize.width, winSize.height);
-                let wigRatio = gcd(wrapCoords.width, wrapCoords.height);
-
-                this.logger.log('ASPECT RATIOS', {
-                    windowAspect: (winSize.width / winRatio) +  ':' + (winSize.height / winRatio),
-                    widgetAspect: (wrapCoords.width / wigRatio) + ':' + (wrapCoords.height / wigRatio),
-                    winRatio,
-                    wigRatio,
-                    winSize,
-                    wrapCoords
-                })
-
                 this.logger.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior
-                const widthCheck = parseFloat(((wrapCoords.width / winSize.width) * 100).toFixed(2));
-                const heightCheck = parseFloat(((wrapCoords.height / winSize.height) * 100).toFixed(2));
+                const widthRatio = (wrapCoords.width / winSize.width) * 100;
+                const heightRatio = (wrapCoords.height / winSize.height) * 100;
 
-                this.logger.log('CHECKS', {widthCheck, heightCheck});
-                let ratio;
-                if (winSize.height > winSize.width) {
-                    ratio = ((winSize.width / winSize.height) * 100) * .5;
-                } else {
-                    ratio = ((winSize.height / winSize.width) * 100) * .5;
-                }
-                let widgetRatio;
-                if (wrapCoords.height > wrapCoords.width) {
-                    widgetRatio = ((wrapCoords.width / wrapCoords.height) * 100) * .5;
-                } else {
-                    widgetRatio = ((wrapCoords.height / wrapCoords.width) * 100) * .5;
-                }
+                // ratio limit
+                const ratioLimit = 40;
 
-                this.logger.log('WIN SIZE', {...winSize, widthCheck, heightCheck, ratio, widgetRatio});
-
-
-                // check if any of the ratio's are larger that 20%
-                if (widthCheck >= ratio || heightCheck >= ratio) {
+                // check if any of the ratio's are larger than max ratio
+                if (widthRatio >= ratioLimit || heightRatio >= ratioLimit) {
                     this.largeWidgetOverride = true;
                 } else {
                     this.largeWidgetOverride = false;
