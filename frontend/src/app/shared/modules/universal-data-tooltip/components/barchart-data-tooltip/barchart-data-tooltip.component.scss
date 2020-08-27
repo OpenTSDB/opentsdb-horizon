@@ -48,7 +48,10 @@
     $is-dark: map-get($theme-config, is-dark);
 
     $vm-background: map-get($foreground, text);
-    $vm-text: find-color-invert($vm-background);
+    $primary-accent: map-get($primary, A100);
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    $vm-background: if($is-dark, $white, $primary-accent);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
 
     .barchart-data-tooltip {
         .tooltip-output {

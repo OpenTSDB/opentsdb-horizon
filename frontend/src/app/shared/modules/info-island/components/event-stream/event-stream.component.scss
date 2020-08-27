@@ -17,7 +17,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            overflow: auto;
+            overflow: overlay;
 
             &.not-ready {
                 display: none;
@@ -63,26 +63,26 @@
                     .tag-key {
                         font-weight: bold;
                     }
-    
+
                     .tag-value {
                         padding-left: 4px;
                         font-family: mat-font-family($mono-fontface);
                         word-break: break-all;
                     }
-    
+
                     fieldset {
                         border-radius: 5px;
                         padding: 5px;
                     }
-    
+
                     legend {
                         padding-left: 2px;
                         padding-right: 2px;
                     }
-    
+
                     .event-summary {
                         padding: 0px 24px 8px 30px;
-    
+
                         .event-tags {
                             margin-top: 5px;
                             margin-bottom: 5px;
@@ -95,9 +95,9 @@
                                 // padding-bottom: 5px;
                             }
                         }
-    
+
                         .event-properties {
-                            
+
                             .event-property {
                                 float: left;
                                 margin-left: 5px;
@@ -106,8 +106,8 @@
                                 padding-right: 5px;
                                 // padding-bottom: 5px;
                             }
-                        }              
-    
+                        }
+
                         .event-message {
                             margin-top: 5px;
                         }
@@ -127,7 +127,7 @@
                         }
                         .event-time {
                             font-family: mat-font-family($mono-fontface);
-                            font-size: mat-font-size($mono-fontface, caption);  
+                            font-size: mat-font-size($mono-fontface, caption);
                         }
                     }
 
@@ -179,6 +179,12 @@
                         }
                     }
                 }
+            }
+        }
+
+        @-moz-document url-prefix() {
+            .event-stream-list {
+                overflow: auto;
             }
         }
     }
@@ -250,7 +256,7 @@
                     }
 
                     //.mat-expansion-indicator { }
-                    
+
                 }
 
                 .mat-expansion-panel-body {
@@ -275,20 +281,20 @@
                             background: if($is-dark, $bg, white);
                             border: if($is-dark, 1px solid black, 1px solid #e0e0e0);
                         }
-        
+
                         .event-summary {
                             background: $header-bg;
-        
+
                             &:not(:last-child) {
                                 border-bottom: 1px solid $header-bg;
                             }
                         }
-        
+
                         .event-tag {
                             background: $header-bg;
                             border-radius: 5px;
                         }
-        
+
                         .event-property {
                             background: $header-bg;
                             border-radius: 5px;
@@ -299,15 +305,15 @@
                 // when event-panel (accordion item) is open
                 &.mat-expanded {
                     .mat-expansion-panel-header {
-                    //    .mat-expansion-indicator { }   
+                    //    .mat-expansion-indicator { }
                         background: $header-bg;
                     }
 
                     .mat-expansion-panel-body {
                         border-bottom: 1px solid $divider;
-    
+
                         .event-summary {
-                            
+
                         }
                     }
                 }

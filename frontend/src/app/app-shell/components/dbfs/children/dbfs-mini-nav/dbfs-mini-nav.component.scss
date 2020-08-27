@@ -128,7 +128,13 @@
             }
 
             ul li {
-                overflow: auto;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                ul li {
+                    overflow: auto;
+                }
             }
         }
 

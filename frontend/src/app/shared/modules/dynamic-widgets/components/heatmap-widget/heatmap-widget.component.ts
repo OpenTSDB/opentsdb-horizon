@@ -6,6 +6,7 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
@@ -119,7 +120,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private dataTransformer: DatatranformerService,
       private util: UtilsService,
       private elRef: ElementRef,
-      private unit: UnitConverterService
+      private unit: UnitConverterService,
+      private dateUtil: DateUtilsService
   ) { }
 
   ngOnInit() {
@@ -138,9 +140,28 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
           switch (message.action) {
               case 'TimeChanged':
               case 'reQueryData':
+                this.refreshData();
+                break;
               case 'ZoomDateRange':
-                  this.refreshData();
-                  break;
+                const overrideTime = this.widget.settings.time.overrideTime;
+                if ( message.payload.date.isZoomed && overrideTime ) {
+                    const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                    const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                    if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        this.widget.settings.time.zoomTime = message.payload.date;
+                        this.refreshData();
+                    }
+                // tslint:disable-next-line: max-line-length
+                } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                    this.options.isCustomZoomed = message.payload.date.isZoomed;
+                    this.refreshData();
+                }
+                // unset the zoom time
+                if ( !message.payload.date.isZoomed ) {
+                    delete this.widget.settings.time.zoomTime;
+                }
+                break;
               case 'TimezoneChanged':
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };

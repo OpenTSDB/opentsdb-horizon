@@ -101,6 +101,12 @@
                 }
             }
 
+            @-moz-document url-prefix() {
+                .widget-output {
+                    overflow: auto;
+                }
+            }
+
             .widget-configs {
 
                 .mat-tab-body-wrapper {

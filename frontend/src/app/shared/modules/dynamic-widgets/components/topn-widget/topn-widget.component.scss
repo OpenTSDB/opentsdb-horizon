@@ -79,7 +79,7 @@
             display:flex;
             flex: 1;
             justify-content: center;
-            overflow: auto;
+            overflow: overlay;
 
             text {
                 font-family: 'Ubuntu';
@@ -114,11 +114,23 @@
                 overflow: overlay;
                 align-items: center;
             }
+
+            @-moz-document url-prefix() {
+                .chart {
+                    overflow: auto;
+                }
+            }
+
             .chart svg {
                 width: 100%;
                 height: 100%;
             }
+        }
 
+        @-moz-document url-prefix() {
+            #container {
+                overflow: auto;
+            }
         }
     }
 

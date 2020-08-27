@@ -535,22 +535,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'SetZoomDateRange':
                     // while zooming in, update the local var
                     // reset from state when zoom out happens
+                    let overrideOnly = false;
                     if ( message.payload.isZoomed ) {
-                        this.isDBZoomed = true;
                         // tslint:disable:max-line-length
-                        message.payload.start = message.payload.start !== -1 ? message.payload.start : this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone).unix();
-                        message.payload.end = message.payload.end !== -1 ? message.payload.end : this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone).unix();
-                        this.dbTime.start = this.dateUtil.timestampToTime(message.payload.start, this.dbTime.zone);
-                        this.dbTime.end = this.dateUtil.timestampToTime(message.payload.end, this.dbTime.zone);
-                    }  else { // zoomed out
-                        this.isDBZoomed = false;
-                        const dbSettings = this.store.selectSnapshot(DBSettingsState);
-                        this.dbTime = {...dbSettings.time};
+                        const start = this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone).unix();
+                        const end = this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone).unix();
+                        message.payload.start = message.payload.start !== -1 ? message.payload.start : start;
+                        message.payload.end = message.payload.end !== -1 ? message.payload.end : end;
+
+                        const newStart = this.dateUtil.timestampToTime(message.payload.start, this.dbTime.zone);
+                        const newEnd = this.dateUtil.timestampToTime(message.payload.end, this.dbTime.zone);
+                        this.isDBZoomed = true;
+                        if ( start <= message.payload.start && end >= message.payload.end ) {
+                            this.dbTime.start = newStart;
+                            this.dbTime.end = newEnd;
+                        } else {
+                            overrideOnly = true;
+                        }
+                    }  else if ( this.isDBZoomed ) {
+                            this.isDBZoomed = false;
+                            const dbSettings = this.store.selectSnapshot(DBSettingsState);
+                            this.dbTime = {...dbSettings.time};
+                    } else {
+                        overrideOnly = true;
                     }
 
                     this.interCom.responsePut({
                         action: 'ZoomDateRange',
-                        payload: { zoomingWid: message.id, date: message.payload }
+                        payload: { zoomingWid: message.id, overrideOnly: overrideOnly, date: { ...message.payload, zone: this.dbTime.zone } }
                     });
                     this.updateURLParams(this.dbTime);
                     break;
@@ -1188,8 +1200,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
         const groupby = payload.settings.multigraph ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
-        const overrideTime = payload.settings.time.overrideTime;
-        const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
+        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
+
+        const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
             // override downsample to auto when the dashboard is zoomed
@@ -1229,7 +1242,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
             }
             if (Object.keys(queries).length && sources.length) {
-                const tot = this.dbToT.period && this.dbToT.value ? this.dbToT : '';
+                const tot = wType === 'LinechartWidgetComponent' && this.dbToT.period && this.dbToT.value ? this.dbToT : '';
                 query = this.queryService.buildQuery(payload, dt, queries, { sources: sources, tot: tot  });
             }
         }
@@ -1295,8 +1308,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getDateRange( range ) {
-        const startTime = this.dateUtil.timeToMoment(range.start, range.zone);
-        const endTime = this.dateUtil.timeToMoment(range.end, range.zone);
+        const startTime = this.dateUtil.timeToMoment(range.start.toString(), range.zone);
+        const endTime = this.dateUtil.timeToMoment(range.end.toString(), range.zone);
         return { start: startTime.valueOf(), end: endTime.valueOf() };
     }
 

@@ -31,7 +31,7 @@
         }
 
         .widget-output {
-            overflow: auto;
+            overflow: overlay;
             align-items: flex-start;
             padding: 0;
 
@@ -42,6 +42,12 @@
             .event-result-title {
                 font-weight: bold;
                 padding-left: 10px;
+            }
+        }
+
+        @-moz-document url-prefix() {
+            .widget-output {
+                overflow: auto;
             }
         }
 

@@ -15,7 +15,7 @@
         flex: 1;
         z-index: 2;
         width: inherit;
-        
+
     }
 
     // CDK ITEMS - panel for "multiple" autocomplete
@@ -61,7 +61,13 @@
             }
 
             .list-all {
-                overflow: auto;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                .list-all {
+                    overflow: auto;
+                }
             }
 
             .mat-list.mat-list-base {
@@ -104,7 +110,7 @@
                         min-width: auto;
                         line-height: 16px;
                         padding: 0 6px;
-                        
+
                         .mat-icon {
                             @include sizeDenaliIcon(12px);
                             margin-right: 5px;
@@ -115,7 +121,13 @@
                 .mat-list.mat-list-base {
                     width: 100%;
                     max-height: 100%;
-                    overflow: auto;
+                    overflow: overlay;
+                }
+
+                @-moz-document url-prefix() {
+                    .mat-list.mat-list-base {
+                        overflow: auto;
+                    }
                 }
             }
         }
@@ -148,14 +160,14 @@
 
     .metric-autocomplete {
 
-        
-        
+
+
     }
 
     // CDK ITEMS - panel for "multiple" autocomplete
 
     .metric-autocomplete-cdk-panel.mat-menu-panel {
-        
+
         .metric-search-result {
 
             .list-all {
@@ -164,7 +176,7 @@
 
             .mat-list.mat-list-base {
 
-                
+
 
                 .mat-list-item-content {
                     .mat-icon {

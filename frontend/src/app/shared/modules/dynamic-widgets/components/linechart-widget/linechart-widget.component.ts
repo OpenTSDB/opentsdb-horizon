@@ -7,6 +7,7 @@ import { DatatranformerService } from '../../../../../core/services/datatranform
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, Observable } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
@@ -188,7 +189,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private logger: LoggerService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private dateUtil: DateUtilsService
     ) { }
 
     ngOnInit() {
@@ -233,8 +235,24 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     this.cdRef.markForCheck();
                     break;
                 case 'ZoomDateRange':
-                    this.options.isCustomZoomed = message.payload.date.isZoomed;
-                    this.refreshData();
+                    const overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.refreshData();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        this.refreshData();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
                     break;
                 case 'tsLegendOptionsChange':
                     this.tsLegendOptions = message.payload;

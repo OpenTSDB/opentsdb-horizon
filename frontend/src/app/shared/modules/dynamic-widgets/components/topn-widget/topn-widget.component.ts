@@ -3,6 +3,7 @@ import { Component, OnInit, HostBinding, Input,
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, BehaviorSubject} from 'rxjs';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
@@ -64,7 +65,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         public dialog: MatDialog,
         private util: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private elRef: ElementRef
+        private elRef: ElementRef,
+        private dateUtil: DateUtilsService
     ) { }
 
     ngOnInit() {
@@ -84,8 +86,27 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             switch ( message.action ) {
                 case 'TimeChanged':
                 case 'reQueryData':
-                case 'ZoomDateRange':
                     this.refreshData();
+                    break;
+                case 'ZoomDateRange':
+                    const overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.refreshData();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        this.refreshData();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
                     break;
             }
             if (message && (message.id === this.widget.id)) {

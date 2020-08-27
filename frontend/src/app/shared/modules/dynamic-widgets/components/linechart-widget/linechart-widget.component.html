@@ -36,7 +36,7 @@
                 <div class="graph-header-row" #multigraphHeaderRow *ngIf="multigraphColumns.length > 0 && multigraphMode === 'grid'">
                     <div class="graph-header-cell" *ngFor="let columnName of multigraphColumns" [style.width.px]="size.width">
                         <div class="graph-header-cell-inner">
-                            <span>{{columnName}}</span>
+                            <span>{{columnName | aliasmetric}}</span>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <ng-container *ngIf="multigraphEnabled && multigraphMode === 'grid' && yKey !== 'y'">
                         <div class="graph-row-label">
                             <div class="graph-row-label-inner" [style.marginLeft.px]="graphRowLabelMarginLeft">
-                                <span>{{yKey}}</span>
+                                <span>{{yKey | aliasmetric }}</span>
                             </div>
                         </div>
                     </ng-container>
@@ -60,7 +60,7 @@
                                 [style.maxWidth]="(multigraphEnabled && multigraphMode === 'freeflow') ? size.width + 'px' : 'initial'">
                                 <div class="graph-header" *ngIf="multigraphEnabled && multigraphMode === 'freeflow'">
                                     <div class="graph-header-inner">
-                                        <span>{{(yKey !== 'y') ? yKey + ': ' : ''}}{{xKey}}</span>
+                                        <span>{{(yKey !== 'y') ? (yKey | aliasmetric) + ': ' : ''}}{{xKey | aliasmetric }}</span>
                                     </div>
                                 </div>
                                 <div class="no-data" *ngIf="graphData[yKey][xKey].ts.length === 0" [style.minWidth.px]="size.width">
@@ -234,7 +234,7 @@
                         <div class="events-config" *ngIf="!multigraphEnabled">
                             <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
                             <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
-                            <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px; overflow: auto;">
+                            <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
                             <event-list class="events-list"
                                 *ngIf="widget.settings.visual.showEvents"
                                 [events]="events"

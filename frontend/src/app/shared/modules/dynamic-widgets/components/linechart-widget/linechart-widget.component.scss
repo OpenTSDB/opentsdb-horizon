@@ -37,8 +37,8 @@
                 // max-width: 100%;
                 // background: beige;
             }
-            
-            
+
+
         }
 
         .hide {
@@ -89,7 +89,7 @@
                 position: initial; // override dygraph style
                 list-style: none;
                 height: 100%;
-                overflow: auto;
+                overflow: overlay;
                 z-index: 0;
                 // background-color: #fee;
 
@@ -99,6 +99,12 @@
                     .nowrap {
                         white-space: nowrap;
                     }
+                }
+            }
+
+            @-moz-document url-prefix() {
+                .graph-legend {
+                    overflow: auto;
                 }
             }
 
@@ -297,6 +303,16 @@
             }
     
 
+        }
+
+        .event-preview-list-wrapper {
+            overflow: overlay;
+        }
+
+        @-moz-document url-prefix() {
+            .event-preview-list-wrapper {
+                overflow: auto;
+            }
         }
     }
 }

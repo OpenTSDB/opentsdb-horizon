@@ -228,9 +228,15 @@
             .alert-control-steps {
                 padding: 8px 0 0;
                 flex: 1;
-                overflow: auto;
+                overflow: overlay;
                 max-height: 100%;
                 max-width: 100%;
+            }
+
+            @-moz-document url-prefix() {
+                .alert-control-steps {
+                    overlay: auto;
+                }
             }
 
             .query-metric-row.read-only * {
