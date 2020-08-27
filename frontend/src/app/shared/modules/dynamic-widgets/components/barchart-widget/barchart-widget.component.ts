@@ -22,8 +22,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.barchart-widget') private _componentClass = true;
 
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
 
@@ -75,8 +75,10 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     data: any = [ ];
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
-    width = '100%';
-    height = '100%';
+    isEditContainerResized = false;
+    width: any = '100%';
+    height: any = '100%';
+    widgetOutputElHeight = 60;
     nQueryDataLoading = 0;
     error: any;
     errorDialog: MatDialogRef < ErrorDialogComponent > | null;
@@ -94,6 +96,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         public dialog: MatDialog,
         private util: UtilsService,
         private unit: UnitConverterService,
+        private elRef: ElementRef,
         private cdRef: ChangeDetectorRef
     ) { }
 
@@ -185,7 +188,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
         setTimeout(()=>{
-            this.refreshData(this.editMode ? false : true);
+            this.refreshData(this.mode !== 'view' ? false : true);
             this.setOptions();
         });
     }
@@ -340,18 +343,25 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     setSize(newSize) {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
-        const nativeEl = (this.editMode) ?
+        const nativeEl = (this.mode !== 'view') ?
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height / 2 
+                                                                : nativeEl.getBoundingClientRect().height + 60;
         const outputSize = nativeEl.getBoundingClientRect();
-        if (this.editMode) {
-            this.width = '100%';
-            this.height = '100%';
+        if (this.mode !== 'view') {
+            this.width = outputSize.width;
+            this.height = this.widgetOutputElHeight - 73;
         } else {
-            this.width = (outputSize.width - 30) + 'px';
-            this.height = (outputSize.height - 3) + 'px';
+            this.width = (outputSize.width - 30);
+            this.height = (outputSize.height - 3);
         }
         this.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     detectChanges() {
@@ -481,8 +491,19 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     ngOnDestroy() {
         this.isDestroying = true;
+        this.newSizeSub.unsubscribe();
         if (this.listenSub) {
             this.listenSub.unsubscribe();
         }

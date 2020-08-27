@@ -483,6 +483,7 @@ export class DashboardService {
     }
     // will remove later, if no need to check this.
     const settings = this.utils.deepClone(dbstate.Settings);
+    delete settings.mode;
     if (settings.tplVariables.override) {
       delete settings.tplVariables.override;
     }

@@ -14,7 +14,7 @@ import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
-import { DBState, LoadDashboard, SaveDashboard, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
+import { DBState, LoadDashboard, SaveDashboard, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
@@ -81,6 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBState.getLoadedDB) loadedRawDB$: Observable<any>;
     @Select(DBState.getDashboardStatus) dbStatus$: Observable<string>;
     @Select(DBState.getDashboardError) dbError$: Observable<any>;
+    @Select(DBState.getSnapshotId) snapshotId$: Observable<string>;
     @Select(DBSettingsState.getDashboardTime) dbTime$: Observable<any>;
     @Select(DBSettingsState.getDashboardAutoRefresh) refresh$: Observable<any>;
     @Select(DBSettingsState.getMeta) meta$: Observable<any>;
@@ -191,6 +192,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     variablePanelMode: any = { view : true };
     userNamespaces: any[] = [];
     viewEditMode = false;
+    snapshot = true;
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
     dashboardDeleteDialog: MatDialogRef<DashboardDeleteDialogComponent> | null;
@@ -265,6 +267,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.isToTChanged = false;
             this.dbPrevToT = { period: '', value: 0 };
             this.dbToT = { period: '', value: 0 };
+            this.snapshot = this.activatedRoute.snapshot.pathFromRoot[1].routeConfig.path === 'snap' ? true : false;
+            this.viewEditMode = false;
+            this.newWidget = null;
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
                 this.store.dispatch(new LoadDashboard(this.dbid));
@@ -432,27 +437,61 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // case that widget is updated we need to get new set of dashboard tags
                     this.isDbTagsLoaded = false;
                     break;
+                case 'SaveSnapshot':
+                    // data.parentPath = '/namespace/' + nsData.alias;
+                    // data.parentId = this.folders[data.parentPath].id;
+
+                    // const userFolder = this.folders['/' + this.user.userid.split('.').join('/')];
+                    const dbState = this.utilService.deepClone(this.store.selectSnapshot(DBState));
+                    const snapTitle = message.payload.widget.settings.title;
+                    const widget = message.payload.widget;
+                    dbState.Settings.meta.title = snapTitle;
+                    let aliases = [];
+                    for (let i = 0; i < widget.queries.length; i++) {
+                        const query = widget.queries[i];
+                        for ( let j = 0; j < query.filters.length; j++ ) {
+                            const filter = query.filters[j];
+                            if (filter.customFilter && filter.customFilter.length) {
+                                aliases = aliases.concat(filter.customFilter);
+                            }
+                        }
+                    }
+                    dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
+                    dbState.Widgets.widgets = [message.payload.widget];
+                    const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
+                    const payload: any = {
+                        'name': snapTitle,
+                        'content': dbcontent
+                    };
+                    payload.parentPath = '/9/syed';
+                    payload.parentId = 9;
+                    this.store.dispatch(new SaveSnapshot('_new_', payload));
+                    break;
                 case 'dashboardSaveRequest':
                     // DashboardSaveRequest comes from the save button
                     // we just need to update the title of dashboard
+                    if ( this.snapshot ) {
+                        this.store.dispatch(new UpdateWidgets([this.newWidget]));
+                    }
                     if (message.payload.updateFirst === true) {
                         this.store.dispatch(new UpdateDashboardTitle(message.payload.name));
                     }
-                    const dbcontent = this.dbService.getStorableFormatFromDBState(this.store.selectSnapshot(DBState));
-                    const payload: any = {
-                        'name': dbcontent.settings.meta.title,
-                        'content': dbcontent
+                    let dbcontent2 = this.store.selectSnapshot(DBState);
+                    dbcontent2 = this.dbService.getStorableFormatFromDBState(dbcontent2);
+                    const payload2: any = {
+                        'name': dbcontent2.settings.meta.title,
+                        'content': dbcontent2
                     };
                     if (message.payload.parentPath) {
-                        payload.parentPath = message.payload.parentPath;
+                        payload2.parentPath = message.payload.parentPath;
                     }
                     if (message.payload.parentId) {
-                        payload.parentId = message.payload.parentId;
+                        payload2.parentId = message.payload.parentId;
                     }
                     if (this.dbid !== '_new_') {
-                        payload.id = this.dbid;
+                        payload2.id = this.dbid;
                     }
-                    this.store.dispatch(new SaveDashboard(this.dbid, payload));
+                    this.store.dispatch(new SaveDashboard(this.dbid, payload2));
 
                     break;
                 case 'updateTemplateVariables':
@@ -552,7 +591,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // need to carry new loaded dashboard id from confdb
                 this.dbid = db.id;
                 this.isDBZoomed = false;
-                this.store.dispatch(new LoadDashboardSettings(db.content.settings)).subscribe(() => {
+                this.store.dispatch(new LoadDashboardSettings({...db.content.settings, mode: this.snapshot ? 'snap' : 'dashboard'})).subscribe(() => {
                     // update WidgetsState after settings state sucessfully loaded
                     this.store.dispatch(new UpdateWidgets(db.content.widgets));
                 });
@@ -646,6 +685,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
+        this.subscription.add(this.snapshotId$.subscribe(id => {
+            console.log('snapshotid', id);
+            if ( id ) {
+                window.open('/d/' + id , '_blank');
+            }
+        }));
+
         this.subscription.add(this.dbError$.subscribe(error => {
             if (Object.keys(error).length > 0) {
                 console.error(error);
@@ -657,13 +703,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
                 // sort widget by grid row, then assign
-                let sortWidgets = this.utilService.deepClone(widgets);
-                sortWidgets.sort((a,b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                this.widgets = this.utilService.deepClone(sortWidgets);
+                const sortWidgets = this.utilService.deepClone(widgets);
+                if ( !this.snapshot ) {
+                    sortWidgets.sort((a,b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+                    this.widgets = this.utilService.deepClone(sortWidgets);
 
-                // set oldWidgets when widgets is not empty and oldWidgets is empty
-                if (this.widgets.length && this.oldWidgets.length === 0) {
-                    this.oldWidgets = [...this.widgets];
+                    // set oldWidgets when widgets is not empty and oldWidgets is empty
+                    if (this.widgets.length && this.oldWidgets.length === 0) {
+                        this.oldWidgets = [...this.widgets];
+                    }
+                } else {
+                    this.newWidget = sortWidgets[0];
                 }
             }
         }));
@@ -683,7 +733,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
 
             // do not intercom if widgets are still loading
-            if (!this.widgets.length) {
+            if (!this.widgets.length && !this.newWidget) {
                 return;
             }
 
@@ -1267,6 +1317,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // setup the new widget type and using as input to dashboard-content to load edting it.
     addNewWidget(selectedWidget: any) {
+        this.store.dispatch(new UpdateMode('edit'));
         this.newWidget = this.dbService.getWidgetPrototype(selectedWidget.type, this.widgets);
     }
 
@@ -1367,9 +1418,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     doesUserHaveWriteAccess() {
-        if (this.dbOwner && this.dbOwner.length) {
-            return this.writeSpaces.includes(this.dbOwner);
-        } else {
+        const user = this.store.selectSnapshot(DbfsState.getUser());
+        const createdBy = this.store.selectSnapshot(DBState.getCreator);
+        if ( !this.snapshot ) {
+            if (this.dbOwner && this.dbOwner.length) {
+                return this.writeSpaces.includes(this.dbOwner);
+            } else {
+                return true;
+            }
+        } else if ( user.userid === createdBy ) {
             return true;
         }
     }

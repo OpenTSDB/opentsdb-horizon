@@ -21,8 +21,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.topnchart-widget') private _componentClass = true;
 
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild('container') private container: ElementRef;
@@ -43,6 +43,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     size: any = { width: 0, height: 0 };
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
+    widgetOutputElHeight = 60;
+    isEditContainerResized = false;
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
     legendWidth = 0;
@@ -61,7 +63,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         private dataTransformer: DatatranformerService,
         public dialog: MatDialog,
         private util: UtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private elRef: ElementRef
     ) { }
 
     ngOnInit() {
@@ -132,7 +135,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
     }
 
     ngAfterViewInit() {
@@ -148,7 +151,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newSize$ = new BehaviorSubject(initSize);
 
         this.newSizeSub = this.newSize$.subscribe(size => {
-            this.setSize(size);
+            setTimeout(() => this.setSize(size), 0);
         });
         const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
              const newSize = {
@@ -163,9 +166,15 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.options.format.unit = this.widget.settings.visual.unit;
     }
     setSize(newSize) {
-        const editModifier = this.editMode ? 0 : 23;
+        const editModifier = this.mode !== 'view' ? 0 : 23;
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height / 2 
+                                                                : newSize.height + 60;
         this.size = { width: newSize.width, height: newSize.height - editModifier };
         this.cdRef.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     setTitle(title) {
@@ -442,9 +451,19 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     ngOnDestroy() {
-        this.listenSub.unsubscribe();
         this.newSizeSub.unsubscribe();
+        this.listenSub.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 }

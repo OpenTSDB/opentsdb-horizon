@@ -37,15 +37,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.linechart-widget') private _componentClass = true;
 
-    private _editMode: boolean = false;
-    @Input()
-    get editMode(): boolean {
-        return this._editMode;
-    }
-    set editMode(value: boolean) {
-        this._editMode = value;
-    }
     @Input() widget: WidgetModel;
+    @Input() mode = 'view'; // view/explore/edit
     @Output() widgetOut = new EventEmitter<any>();
 
     @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
@@ -120,6 +113,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     };
     data: any = { ts: [[0]] };
     size: any = { width: 120, height: 60};
+    widgetOutputElHeight = 60;
+    isEditContainerResized = false;
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
     legendWidth;
@@ -466,7 +461,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
 
         // Timing issue? trying to move to afterViewInit
         this.setOptions();
@@ -481,7 +476,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
         this.newSizeSub = this.newSize$.subscribe(flag => {
-            this.setSize();
+            setTimeout(() => this.setSize(), 0);
         });
         const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
             this.newSize$.next(dummyFlag);
@@ -692,10 +687,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     setSize(cdCheck: boolean = true) {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
-        const nativeEl = (this.editMode) ?
-            this.widgetOutputElement.nativeElement.parentElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const nativeEl = ( this.mode !== 'view' ) ?
+            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const newSize = nativeEl.getBoundingClientRect();
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height / 2
+                                                            : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 70;
         // let newSize = outputSize;
         let nWidth, nHeight, padding;
 
@@ -723,13 +721,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             heightOffset = heightOffset <= 80 ? 80 : heightOffset;
         }
 
-        if (this.editMode) {
+        if ( this.mode !== 'view' ) {
             let titleSize = { width: 0, height: 0 };
             if (this.widgetTitle) {
                 titleSize = this.widgetTitle.nativeElement.getBoundingClientRect();
             }
             padding = 15; // 8px top and bottom
-            nHeight = newSize.height - heightOffset - titleSize.height - (padding * 2);
+            nHeight = newSize.height - heightOffset;
 
             if (this.widget.settings.visual.showEvents) {  // give room for events
                 nHeight = nHeight - 45;
@@ -830,6 +828,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.legendHeight = !heightOffset ? nHeight + 'px' : heightOffset + 'px';
 
             this.size = { width: nWidth, height: nHeight };
+            // this.size = { width: nWidth, height: nHeight > 250 ? nHeight : 250 }; on edit
         }
         // Canvas Width resize
         this.eventsWidth = nWidth - (this.axisEnabled(this.options.series).size * this.axisLabelsWidth);
@@ -838,6 +837,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         if (cdCheck) {
             this.cdRef.detectChanges();
         }
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     axisEnabled(series) {
@@ -1390,6 +1393,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         });
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     // get keys from graph data object
     getGraphDataObjectKeys(obj: any): string[] {
         if (!obj || obj === undefined || obj === null) {
@@ -1470,7 +1483,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
-            if ( !this.editMode ) {
+            if ( this.mode === 'view' ) {
                 this.interCom.requestSend({
                     id: this.widget.id,
                     action: 'InfoIslandOpen',
@@ -1485,7 +1498,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 // tslint:disable-next-line: max-line-length
                 const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
-                this.iiService.openIsland(this.widgetOutputElement.nativeElement, componentOrTemplateRef, widgetOptions);
+                // tslint:disable-next-line: max-line-length
+                this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
+                    width: widgetOptions.width + 35,
+                    height: widgetOptions.height + 70 });
             }
         }
 
@@ -1558,8 +1574,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     /* ON DESTROY */
     ngOnDestroy() {
-        this.subscription.unsubscribe();
         this.newSizeSub.unsubscribe();
+        this.subscription.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 

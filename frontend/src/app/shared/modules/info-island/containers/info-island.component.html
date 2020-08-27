@@ -1,5 +1,6 @@
 <div class="info-island-container"
     cdkDrag
+    [cdkDragDisabled] = "!options.draggable"
     cdkDragRootElement=".cdk-overlay-pane"
     [ngStyle]="{'width.px': options.width, 'height.px': options.height}"
     [@infoIslandAnimation]="animationState"
