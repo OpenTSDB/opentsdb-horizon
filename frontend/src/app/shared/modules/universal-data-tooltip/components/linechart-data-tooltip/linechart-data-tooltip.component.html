@@ -1,4 +1,4 @@
-<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" #tooltipOutput>
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
     <div class="value-marker">
         <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.valueFormatted}}</span>
         <span class="time">{{_ttData.timestampFormatted}}</span>

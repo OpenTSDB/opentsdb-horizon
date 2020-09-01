@@ -3,7 +3,7 @@
         <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.affectedSeries}}</span>
         <span class="time">{{_ttData.timestampFormatted}}</span>
     </div>
-    <div clas="other-data">
+    <div class="other-data">
         <p>Bucket Range: {{_ttData.bucketRange}}</p>
         <ng-container *ngIf="_ttData.bucketValues && _ttData.bucketValues.length > 0">
             <table>
