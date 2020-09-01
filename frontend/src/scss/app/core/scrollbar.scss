@@ -1,0 +1,71 @@
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    $scrollbar: map-get($theme-config, scrollbar);
+
+    $scrollbar-padding: map-get($scrollbar, padding);
+    $scrollbar-size: map-get($scrollbar, size);
+    $scrollbar-radius: $scrollbar-size / 2;
+    $scrollbar-track-bg: map-get($scrollbar, track-bg);
+    $scrollbar-track-border: map-get($scrollbar, track-border);
+    $scrollbar-thumb-bg: map-get($scrollbar, thumb-bg);
+
+    /* [[  THEME  ]] (#{$theme-name}) - scrollbar  */
+    @at-root [theme='#{$theme-name}'] {
+
+        * {
+            // this is the trick to hide the scrollbar
+            &::-webkit-scrollbar {
+                background: transparent;
+
+                &:vertical {
+                    width: 0;
+                }
+
+                &:horizontal {
+                    height: 0;
+                }
+            }
+
+            &::-webkit-scrollbar-corner {
+                // may change this depending on how it looks in different themes
+                background-color: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border-radius: $scrollbar-radius;
+                background-color: $scrollbar-thumb-bg; // default color
+                border: ($scrollbar-padding * 2) solid rgba(0, 0, 0, 0); // transparent - gives spacing around thumb
+                background-clip: padding-box; // needed to enforce spacing of transparent border
+            }
+
+            &::-webkit-scrollbar-track {
+                //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                border-radius: 0;
+                //background-color: $scrollbar-track-bg;
+                //border: 1px solid $scrollbar-track-border;
+            }
+
+            // show the scrollbar on hover
+            &:hover {
+                &::-webkit-scrollbar {
+                    &:vertical {
+                        width: $scrollbar-size !important;
+                    }
+
+                    &:horizontal {
+                        height: $scrollbar-size !important;
+                    }
+                }
+            }
+        }
+
+        @-moz-document url-prefix() {
+            * {
+                scrollbar-color: $scrollbar-thumb-bg $scrollbar-track-bg; /* thumb and track color */
+                scrollbar-width: $scrollbar-size;
+            }
+        }
+    }
+}

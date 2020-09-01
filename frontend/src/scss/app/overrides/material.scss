@@ -1,0 +1,271 @@
+/* MATERIAL OVERRIDES */
+// Material Table
+.mat-table.is-dense {
+    width: 100%;
+
+    td.mat-cell,
+    th.mat-header-cell {
+        padding: 0 8px;
+    }
+
+    td.mat-cell:first-child,
+    td.mat-footer-cell:first-child,
+    th.mat-header-cell:first-child {
+        padding-left: 16px;
+    }
+
+    td.mat-cell:last-child,
+    td.mat-footer-cell:last-child,
+    th.mat-header-cell:last-child {
+        padding-right: 16px;
+    }
+
+    tr.mat-header-row {
+        height: 30px;
+    }
+
+    th.mat-header-cell {
+        text-transform: uppercase;
+    }
+}
+
+.mat-form-field {
+
+    // if mat-form-field[floatLabel="never"
+    &.mat-form-field-hide-placeholder {
+        .mat-form-field-wrapper {
+            padding-bottom: initial;
+        }
+
+        .mat-form-field-flex {
+            line-height: 1;
+            border-radius: 4px;
+        }
+
+        .mat-form-field-infix {
+            padding: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 0;
+        }
+
+        .mat-form-field-underline {
+            bottom: 0;
+        }
+
+        // MatInput
+        .mat-input-element {
+            padding: 0 8px;
+        }
+    }
+
+    // if mat-form-field[appearance="fill"]
+    &.mat-form-field-appearance-fill,
+    &.mat-form-field-appearance-outline {
+        .mat-form-field-wrapper {
+            padding-bottom: initial;
+        }
+
+        .mat-form-field-flex {
+            padding: 0;
+        }
+
+        .mat-form-field-infix {
+            padding: 8px;
+            border-top: 0;
+        }
+
+        .mat-form-field-underline {
+            bottom: 0;
+        }
+
+        .mat-form-field-ripple {
+            height: 1 !important;
+        }
+
+        .mat-form-field-subscript-wrapper {
+            top: calc(100% - .4em);
+        }
+
+        .mat-form-field-label-wrapper {
+            top: -1.1875em;
+            left: 8px;
+            padding-top: 1.1875em;
+
+            .mat-form-field-label {
+                top: 1.1875em;
+                margin-top: .5em;
+            }
+        }
+
+        &.mat-form-field-can-float {
+            &.mat-form-field-should-float {
+                .mat-form-field-label {
+                    transform: translateY(-1.6875em) scale(0.75)
+                }
+            }
+        }
+
+        // MatInput
+
+        // MatSelect
+        .mat-select {
+            .mat-select-trigger {
+                width: 100%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mat-select-value {
+                display: flex;
+                width: 100%;
+                max-width: initial;
+            }
+
+            .mat-select-arrow-wrapper {
+                height: 100%;
+                transform: initial;
+                display: inline-flex;
+                vertical-align: initial;
+                align-items: center;
+            }
+        }
+    }
+
+    &.mat-form-field-appearance-outline {
+        .mat-form-field-outline {
+            top: 0;
+        }
+
+        .mat-form-field-outline-thick {
+            .mat-form-field-outline-end,
+            .mat-form-field-outline-gap,
+            .mat-form-field-outline-start {
+                border-width: 1px;
+            }
+        }
+    }
+}
+
+.mat-list-base {
+    .mat-option {
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+    }
+}
+
+.mat-autocomplete-panel {
+    .mat-option {
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+    }
+}
+
+.mat-radio-group {
+    .mat-radio-button:not(:last-child) {
+        margin-right: 10px;
+    }
+}
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+    $primary-default: map-get($primary, default);
+    $text: map-get($foreground, text);
+
+    /* [[  THEME  ]] (#{$theme-name}) - material overrides  */
+    [theme='#{$theme-name}'] {
+
+        // CDK items are outside of component namespace class - be sure to give them very unique names
+        .mat-menu-panel {
+            background-color: map-get($background, menu);
+
+            .mat-menu-item.is-active .mat-icon {
+                color: map-get($accent, default);
+            }
+        }
+
+        .mat-autocomplete-panel {
+            background-color: map-get($background, menu);
+        }
+
+        .mat-tab-group.mat-primary .mat-ink-bar,
+        .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+            background: map-get($background, ink-bar);
+        }
+
+        .mat-datepicker-content {
+            border: 1px solid map-get($accent, default);
+            background-color: map-get($background, menu);
+        }
+
+        // Mat Form Field
+        .mat-form-field {
+            &.mat-form-field-appearance-fill {
+                .mat-form-field-flex  {
+                    background-color: transparent;
+                }
+
+                // remove the underline... inkbar will show on focus
+                // make it transparent, because there is some sort of animation
+                .mat-form-field-underline::before {
+                    background-color: rgba($text, .2);
+                }
+
+                &:hover:not(.mat-focused) {
+                    .mat-form-field-flex {
+                        background-color: rgba($primary-default, .08);
+                    }
+
+                    .mat-form-field-underline {
+                        background-color: $primary-default;
+
+                        .mat-form-field-ripple {
+                            background-color: rgba($primary-default, 0.3);
+                        }
+                    }
+                }
+
+                &.mat-focused,
+                &:hover {
+                    .mat-form-field-flex {
+                        background-color: rgba($primary-default, .08);
+                    }
+                }
+            }
+
+            &.mat-form-field-legacy {
+                .mat-form-field-underline {
+                    background-color: rgba(0,0,0,0); // this is transparent
+                }
+            }
+
+            &.mat-form-field-appearance-outline {
+                .mat-form-field-outline,
+                .mat-form-field-outline-thick {
+                    color: rgba(map-get($primary, default), 0.60);
+                }
+
+                &.mat-focused {
+                    .mat-form-field-outline,
+                    .mat-form-field-outline-thick {
+                        color: rgba(map-get($primary, default), 0.60);
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,133 @@
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
+
+// common styles for the panel content components
+.panel-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    font-weight: 300;
+    font-size: 12px;
+}
+
+// common top bar of the side nav panels
+// usually only contains title and a close button
+// Exception is DBFS panel which has a lot more controls
+.panel-toolbar {
+    @include mat-elevation(0);
+    @include unselectable;
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.icon-nav {
+            flex: 1 1 100%;
+        }
+    }
+
+    .back-to-master {
+        width: 24px;
+        transform: translateX(0);
+        transition: all 200ms ease-in-out;
+    }
+
+    .panel-label {
+        cursor: pointer;
+
+        strong {
+            font-weight: 400;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+    }
+
+    &.is-master-panel {
+
+        .back-to-master {
+            width: 0px;
+            transform: translateX(-50px);
+        }
+
+        .panel-label {
+            cursor: default;
+
+            strong {
+                text-transform: capitalize;
+            }
+        }
+    }
+
+    &.mat-toolbar-multiple-rows,
+    &.mat-toolbar-single-row {
+        min-height: $navbar-height !important;
+        height: $navbar-height;
+    }
+
+    // most panels, this is the close button
+    .mat-icon-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+
+        .mat-button-wrapper {
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mat-icon {
+            line-height: 1;
+            width: 24px;
+            height: 24px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.test-navigator {
+    .navigator-panel {
+        .navigator-panel-wrapper {
+            .navigator-panel-item {
+                padding: 16px;
+            }
+        }
+    }
+}
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $panel-toolbar-text-color: if($is-dark, map-get($foreground, navbar-text), map-get($background, navbar));
+
+    /* [[  THEME  ]] (#{$theme-name}) - app-shell common  */
+    [theme='#{$theme-name}'] {
+
+        .panel-toolbar {
+            background: transparent;
+            border-bottom: 1px solid map-get($foreground, divider);
+            color: $panel-toolbar-text-color;
+
+            &.is-master-panel {
+                .header-label {
+                    color: rgba(map-get($background, navbar),.85);
+                }
+            }
+        }
+    }
+}

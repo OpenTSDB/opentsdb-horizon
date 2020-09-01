@@ -1,0 +1,36 @@
+// html,
+body {
+    @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
+}
+
+// IMAGE PRELOADING
+:root:before {
+    content: url(/assets/spinner-26x26.gif)
+             url(/assets/widget-icon-sprite.png)
+             url(/assets/email-contact.svg)
+             url(/assets/http-contact.svg)
+             url(/assets/oc-contact.svg)
+             url(/assets/opsgenie-contact.svg)
+             url(/assets/slack-contact.svg);
+    /* partial fallback */
+    background-image: url(/assets/spinner-26x26.gif);
+    visibility: hidden;
+    position: absolute;
+    left: -999em;
+}
+
+
+
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    $background: map-get($theme-config, background);
+
+    /* [[  THEME  ]] (#{$theme-name}) - scrollbar  */
+    @at-root [theme='#{$theme-name}'] {
+        &.mat-app-background {
+            background-color: map-get($background, background);
+        }
+    }
+
+}

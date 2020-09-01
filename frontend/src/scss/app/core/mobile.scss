@@ -1,0 +1,10 @@
+// MOBILE Fix to disale mobile browser zooming on inputs
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select,
+    select:focus,
+    textarea,
+    textarea:focus,
+    input {
+        font-size: 16px;
+    }
+}

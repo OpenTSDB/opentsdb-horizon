@@ -1,0 +1,23 @@
+//**
+//* SCSS BASE LOADER - COMPONENT STYLES
+//* just includes variables/mixins/functions
+//* for use within components to build localized styles
+//*/
+
+// we need material theming support
+@import "~@angular/material/theming";
+
+// colors
+@import './colors.scss';
+
+// config items
+@import './config.scss';
+
+// mixins
+@import './mixins.scss';
+
+// typography
+@import './typography.scss';
+
+// application theme definitions
+@import './theming.scss';

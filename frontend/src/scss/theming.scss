@@ -1,51 +1,6 @@
-/**
- * YAMAS - HORIZON THEMING
- */
-
-
-$base-font-size: 10px;
-
-// IMPORT MATERIAL THEMING SUPPORT
-@import '~@angular/material/theming';
-
-// Typography
-// NOTE: Will pair these down to one family after testing a few
-@import 'typography/typography-mixins';
-// monospace/sans-serif font faces
-@import 'typography/ibm-plex-mono';
-@import 'typography/ibm-plex-sans';
-@import 'typography/ubuntu-mono';
-@import 'typography/ubuntu-sans';
-@import 'typography/roboto-mono';
-@import 'typography/roboto-sans';
-@import 'typography/helvetica-neue-sans';
-
-$app-available-typefaces: (
-    ibm-plex-mono: $ibm-mono-typeface-config,
-    ibm-plex-sans: $ibm-sans-typeface-config,
-    ubuntu-mono: $ubuntu-mono-typeface-config,
-    ubuntu-sans: $ubuntu-sans-typeface-config,
-    roboto-mono: $roboto-mono-typeface-config,
-    roboto-sans: $roboto-sans-typeface-config,
-    helvetica-neue: $helvetica-neue-sans-typeface-config
-);
-
-// generate font-face imports
-@each $font-face, $font-config in $app-available-typefaces {
-    @include generate-typeface-imports($font-config);
-}
-
-// import denali icons
-@import 'denali-icons';
-
-// right now
-$app-fontface-config: (
-    mono: generate-material-compatible-typography-config(map-get($app-available-typefaces, ubuntu-mono)),
-    sans: generate-material-compatible-typography-config(map-get($app-available-typefaces, ubuntu-sans))
-);
-
-// IMPORT APPLICATION MODULE STYLE/THEME LOADERS
-@import 'app/app.style-module';
+//**
+//* YAMAS - HORIZON THEMING
+//*/
 
 // IMPORT THEME CONFIGS
 @import 'themes/dark-theme';
@@ -58,41 +13,3 @@ $app-available-themes: (
     light: $light-theme,
     dark: $dark-theme
 );
-
-// NOTE: Sometimes there is a weird browser console warning saying something about theme not being loaded.
-// * This is a known bug with the current version of Angular Material2, and hopefully they will fix it soon.
-// * In the meantime...There are a couple of options to fix this if the warning really bugs you.
-// * Uncomment your option below
-
-// NOTE: OPTION 1 - import a predefined angular theme. Kind of sucks if you really don't want any of the predefined themes.
-// * Recommended only if you plan on using one of the themes, otherwise it just adds weight to your css load
-// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-
-// NOTE: OPTION 2 - Looks like the check that triggers the console warning may be looking for this class.
-// * Recommended method - definitely much lighter for the css load;
-// * You need to uncomment 5 lines starting at the '@at-root'
-@at-root {
-    .mat-theme-loaded-marker {
-        display: none;
-    }
-}
-
-@include setBaseFontSize($base-font-size);
-
-// RENDER MATERIAL CORE (structure)
-@include mat-core(map-get($app-fontface-config, sans));
-
-// APPLICATION CORE (structure)
-@include app-core();
-
-// THEME RULES
-@each $theme-name, $theme-config in $app-available-themes {
-
-    /* [[  THEME  ]] #($theme)  */
-    [theme='#{$theme-name}'] {
-        //* Material core theme */
-        @include angular-material-theme($theme-config);
-        //* Component themes */
-        @include generate-app-theme($theme-config);
-    }
-}

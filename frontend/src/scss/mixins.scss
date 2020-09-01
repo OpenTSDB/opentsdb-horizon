@@ -407,8 +407,8 @@
 @mixin sizeDenaliIcon($size: 24px) {
     width: $size;
     height: $size;
-    line-height: $size;
-    font-size: $size;
+    line-height: 1;
+    font-size: 100%;
 }
 
 // * for debugging sass maps
