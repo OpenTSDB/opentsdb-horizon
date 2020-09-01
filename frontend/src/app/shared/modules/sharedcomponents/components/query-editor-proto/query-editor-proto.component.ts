@@ -22,6 +22,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
+import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragHandle} from '@angular/cdk/drag-drop';
+
 
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 
@@ -379,7 +381,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         'name',
         // 'alias',
         'modifiers',
-        'action'
+        'action',
+        'visual'
     ];
 
     // MAT-TABLE DATA SOURCE
@@ -439,6 +442,25 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.queryChangeSub.unsubscribe();
     }
 
+    dropTable(event: any) {
+        // console.log('DROP TABLE EVENT', event);
+        // const prevIndex = this.FC_chart['controls'].findIndex((d) => d === event.item.data);
+        // moveItemInArray(this.FC_chart['controls'], prevIndex, event.currentIndex);
+        // this.setChartDataOrder();
+        // this.chartTable.renderRows();
+        const curIndex = event.currentIndex;
+        const dragItem = this.query.metrics[event.previousIndex];
+        const dropItem = this.query.metrics[event.currentIndex];
+        this.query.metrics[event.currentIndex] = dragItem;
+        this.query.metrics[event.previousIndex] = dropItem;
+        this.initMetricDataSource();
+        // const prevIndex = this.query.metrics.findIndex((d) => d === event.item.data.metric.id);
+        console.log("dropTable", this.query.metrics, event.currentIndex, event.previousIndex)
+        // moveItemInArray(this.metricTableDataSource.data, prevIndex, event.currentIndex);
+        // this.initMetricDataSource();
+        // this.table.renderRows();
+    }
+
     initOptions() {
         const defaultOptions = {
             'deleteQuery': false,
@@ -467,16 +489,30 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
         // extract metrics only, then format with pre-constructed label, a type, and reference to the metric data
         const metrics = [];
+        // this.query.metrics.filter(d => d.expression === undefined);
+        let mIndex = 0, eIndex = 0, indexLabel = '';
+        for ( let i = 0 ; i < this.query.metrics.length; i++ ) {
+            const isExpression = this.query.metrics[i].expression !== undefined;
+            if (  !isExpression ) {
+                mIndex++;
+                indexLabel = 'm' + mIndex;
+            } else {
+                eIndex++;
+                indexLabel = 'e' + eIndex;
+            }
+            metrics.push({ indexLabel: indexLabel, type: isExpression ? 'expression' : 'metric', metric: this.query.metrics[i], visual: this.options.enableMultiMetricSelection ? this.query.metrics[i].settings.visual : this.widget.settings.visual });
+        }
+
+        /*
         this.getMetricsByType('metrics').forEach((metric, i) => {
             metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
             // tslint:disable:max-line-length
             if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+                // metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
             }
         });
 
         // placeholder row for Add Metric form
-        metrics.push({addMetric: true});
 
         // extract expressions only, then format with pre-constructed label, a type, and reference to the expression data
         const expressions = [];
@@ -484,15 +520,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
             // tslint:disable:max-line-length
             if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+                // expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
             }
         });
+        */
 
+        metrics.push({addMetric: true});
         // placeholder row for Add Expression form
-        expressions.push({addExpression: true});
+        metrics.push({addExpression: true});
 
         // merge the arrays and create datasource
-        this.metricTableDataSource = new MatTableDataSource(metrics.concat(expressions));
+        this.metricTableDataSource = new MatTableDataSource(metrics);
     }
 
     initFormControls() {
@@ -676,14 +714,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
             for ( let i = 0; i < this.metricTableDataSource.data.length; i++ ) {
                 if ( this.metricTableDataSource.data[i].visual ) {
-                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
+                    // tslint:disable-next-line:max-line-length
+                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                     } else if ( message.action === 'UpdateQueryVisual' && (newConfig.color ||  newConfig.type ) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                         // set existing bar axis
+                        // tslint:disable-next-line:max-line-length
                         if ( newConfig.type && ['area', 'bar'].includes(newConfig.type) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type)) {
                             this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...overrideConfig};
                         }
+                    // tslint:disable-next-line:max-line-length
                     } else if ( message.action === 'UpdateQueryVisual' && newConfig.axis && (curtype !== 'line' || !this.metricTableDataSource.data[i].visual.type || this.metricTableDataSource.data[i].visual.type === 'line') )  {
                         this.metricTableDataSource.data[i].visual.axis = newConfig.axis;
                     }

@@ -309,6 +309,19 @@
                 min-height: initial;
             }
 
+            .mat-cell.cdk-column-metric-row-data {
+                width: 100%;
+            }
+
+            .metric-row1-data, .metric-row2-data {
+                display: flex;
+                width: 100%;
+            }
+
+            .metric-row1-data > div, .metric-row2-data  > div {
+                display: table-cell;
+            }
+
             .metric-row-data {
                 height: inherit;
                 // margin-right: 8px;

@@ -241,7 +241,10 @@ export class DatatranformerService {
                             tags: { metric: !mConfig.expression ?
                                     queryResults[i].data[j].metric : mLabel, ...tags},
                             aggregations: aggData,
-                            group: vConfig.type ? vConfig.type : 'line'
+                            group: vConfig.type ? vConfig.type : 'line',
+                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex : '0',
+                            stackOrderBy: vConfig.stackOrderBy || 'min',
+                            stackOrder: vConfig.stackOrder || 'asc'
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
@@ -264,7 +267,9 @@ export class DatatranformerService {
         intermediateTime = new Date().getTime();
             if ( !hasToT ) {
             dseries.sort((a: any, b: any) => {
-                return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || (a.config.aggregations ? b.config.aggregations['min'] - a.config.aggregations['min'] : 0);
+                // area/bar plotter draws the series from last to first
+                return  (b.config.order1.localeCompare(a.config.order1, 'en', { numeric: true, sensitivity: 'base' })) ||
+                        (a.config.aggregations ? (a.config.stackOrder === 'asc' ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0);
             });
         }
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
@@ -272,7 +277,6 @@ export class DatatranformerService {
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
         for ( let i = 0; i < dseries.length; i++ ) {
-            // console.log('==> DSERIES', dseries);
             const label = options.labels.length.toString();
             options.labels.push(label);
             // check visibility hash for existing data

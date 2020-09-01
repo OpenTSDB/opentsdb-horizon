@@ -1,5 +1,6 @@
 import {
-    Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges
+    Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges,
+    ChangeDetectorRef, ViewChild
 } from '@angular/core';
 
 import {
@@ -38,6 +39,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     /** Outputs */
     @Output() widgetChange = new EventEmitter;
 
+    @ViewChild('queriesContainer') private queriesContainer: ElementRef;
+
 
     /** Local variables */
 
@@ -67,7 +70,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         public dialog: MatDialog,
         private interCom: IntercomService,
         private util: UtilsService,
-        private elRef: ElementRef
+        private elRef: ElementRef,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -91,6 +95,23 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             'enableMultipleQueries': false,
             'enableMultiMetricSelection': true };
         this.options = Object.assign(defaultOptions, this.options);
+    }
+
+    dropTable(event: any) {
+        const curIndex = event.currentIndex;
+        const dragItem = this.widget.queries[event.previousIndex];
+        const dropItem = this.widget.queries[event.currentIndex];
+        this.widget.queries[event.currentIndex] = dragItem;
+        this.widget.queries[event.previousIndex] = dropItem;
+    }
+
+    dragStart (e) {
+        this.queriesContainer.nativeElement.classList.add('drag-mode');
+        console.log(e)
+    }
+
+    dragEnd (e) {
+        this.queriesContainer.nativeElement.classList.remove('drag-mode');
     }
 
     addNewQuery() {

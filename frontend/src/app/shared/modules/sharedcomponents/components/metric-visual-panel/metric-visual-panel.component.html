@@ -63,6 +63,25 @@
             </mat-radio-group>
             </div>
         </div>
+        <div class="vis-conf-col" *ngIf="type === 'LinechartWidgetComponent'">
+            <div *ngIf="this.mode !=='line'">
+                <strong>Stack Order</strong>
+                <div style="display: flex;">
+                    <mat-radio-group class="vertical-radio-group" (change)="setStackOrderBy(data.metric.id, $event.value)" [value]="data.visual.stackOrderBy || 'min'">
+                        <mat-radio-button value="min">Min</mat-radio-button>
+                        <mat-radio-button value="max">Max</mat-radio-button>
+                        <mat-radio-button value="avg">Avg</mat-radio-button>
+                        <mat-radio-button value="sum">Sum</mat-radio-button>
+                        <mat-radio-button value="count">Count</mat-radio-button>
+                        <mat-radio-button value="last">Last</mat-radio-button>
+                    </mat-radio-group>
+                    <mat-button-toggle-group class="mat-button-toggle-group-horizontal sort-toggle" name="sortOrder" [value]="data.visual.stackOrder || 'asc'" (change)="setStackOrder(data.metric.id, $event.value)">
+                        <mat-button-toggle value="asc"><mat-icon fontSet="denali" fontIcon="d-arrow-up"></mat-icon></mat-button-toggle>
+                        <mat-button-toggle value="desc"><mat-icon fontSet="denali" fontIcon="d-arrow-down"></mat-icon></mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+            </div>
+        </div>
     </mat-card-content>
     <mat-card-footer>
         <div>
