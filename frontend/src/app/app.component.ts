@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding, OnDestroy} from '@angular/core';
+import { Component, OnInit, HostBinding, OnDestroy, ViewEncapsulation} from '@angular/core';
 import { AuthState } from './shared/state/auth.state';
 import { Observable, interval, Subscription } from 'rxjs';
 import { MatDialog} from '@angular/material';

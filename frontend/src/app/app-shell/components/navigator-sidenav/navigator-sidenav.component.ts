@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'app-navigator-sidenav',
     templateUrl: './navigator-sidenav.component.html',
-    styleUrls: []
+    styleUrls: [ './navigator-sidenav.component.scss' ]
 })
 export class NavigatorSidenavComponent implements OnInit {
 

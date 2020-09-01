@@ -3,10 +3,15 @@ import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.comp
 
 @Component({
   selector: 'admin-panel',
-  templateUrl: './admin-panel.component.html'
+  templateUrl: './admin-panel.component.html',
+  styleUrls: ['./admin-panel.component.scss'],
+  host: {
+      '[class.admin-navigator]': 'true',
+      '[class.panel-content]': 'true'
+  }
 })
 export class AdminPanelComponent implements OnInit {
-    @HostBinding('class.admin-navigator') private _hostClass = true;
+    //@HostBinding('class.admin-navigator') private _hostClass = true;
 
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
 

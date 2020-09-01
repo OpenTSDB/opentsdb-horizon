@@ -10,7 +10,8 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     selector: 'app-notification-panel',
-    templateUrl: './notification-panel.component.html'
+    templateUrl: './notification-panel.component.html',
+    styleUrls: ['./notification-panel.component.scss']
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {
 

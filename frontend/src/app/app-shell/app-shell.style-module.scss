@@ -3,67 +3,58 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // common
-@import './app-shell.common';
+//@import './app-shell.common';
 
 // containers
-@import './containers/app-shell.component';
+//@import './containers/app-shell.component';
 
 // components
-@import './components/navigator-sidenav/navigator-sidenav.component';
-@import './components/app-navbar/app-navbar.component';
-@import './components/navigator-panel/navigator-panel.component';
-@import './components/dbfs/dbfs.component';
-@import './components/dbfs/children/dbfs-mini-nav/dbfs-mini-nav.component';
+//@import './components/navigator-sidenav/navigator-sidenav.component';
+//@import './components/app-navbar/app-navbar.component';
+//@import './components/navigator-panel/navigator-panel.component';
+//@import './components/dbfs/dbfs.component';
+//@import './components/dbfs/children/dbfs-mini-nav/dbfs-mini-nav.component';
 
-@import './components/settings-panel/settings-panel.component';
-@import './components/admin-panel/admin-panel.component';
+//@import './components/settings-panel/settings-panel.component';
+//@import './components/admin-panel/admin-panel.component';
 
-@import './components/global-notification-banner/global-notification-banner.component';
+//@import './components/global-notification-banner/global-notification-banner.component';
 
 
-$navbar-config: (
-    'navbar-height': 48px,
-    'logo-height': 32px,
-    'sn-light': #374a5a,
-    'sn-dark': #233244,
-    'sn-light-text': #86929c,
-    'sn-dark-text': #c1c5ca,
-    'sn-seperator': #4b5c6a,
-    'sn-active': #2974d8
-);
+
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin app-shell-module-core() {
 
-    @include app-shell-common-base();
+    //@include app-shell-common-base();
     // include your core mixins
     // example: @include componentName-component-core();
-    @include app-shell-component-base();
+    //@include app-shell-component-base();
 
-    @include app-navigator-sidenav-component-base();
-    @include app-navbar-component-base();
-    @include navigator-panel-component-base();
-    @include dbfs-component-base();
-    @include dbfs-mini-nav-component-base();
-    @include settings-panel-component-base();
-    @include admin-panel-component-base();
-    @include global-notification-component-base();
+    //@include app-navigator-sidenav-component-base();
+    //@include app-navbar-component-base();
+    //@include navigator-panel-component-base();
+   // @include dbfs-component-base();
+    //@include dbfs-mini-nav-component-base();
+    //@include settings-panel-component-base();
+    //@include admin-panel-component-base();
+    //@include global-notification-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
 @mixin app-shell-module-theme($theme-config) {
-    @include app-shell-common-theme($theme-config);
+    //@include app-shell-common-theme($theme-config);
     // include your theme mixins, passing along the $theme-config
     // example: @include componentName-component-theme($theme-config);
 
-    @include app-shell-component-theme($theme-config);
+    //@include app-shell-component-theme($theme-config);
 
-    @include app-navigator-sidenav-component-theme($theme-config);
-    @include app-navbar-component-theme($theme-config);
-    @include navigator-panel-component-theme($theme-config);
-    @include dbfs-component-theme($theme-config);
-    @include dbfs-mini-nav-component-theme($theme-config);
-    @include settings-panel-component-theme($theme-config);
-    @include admin-panel-component-theme($theme-config);
-    @include global-notification-component-theme($theme-config);
+    //@include app-navigator-sidenav-component-theme($theme-config);
+    //@include app-navbar-component-theme($theme-config);
+    //@include navigator-panel-component-theme($theme-config);
+    //@include dbfs-component-theme($theme-config);
+    //@include dbfs-mini-nav-component-theme($theme-config);
+    //@include settings-panel-component-theme($theme-config);
+    //@include admin-panel-component-theme($theme-config);
+    //@include global-notification-component-theme($theme-config);
 }

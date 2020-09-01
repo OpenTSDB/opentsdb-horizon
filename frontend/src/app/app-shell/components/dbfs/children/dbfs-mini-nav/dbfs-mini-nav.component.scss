@@ -1,227 +1,231 @@
-@mixin dbfs-mini-nav-component-base() {
+@import 'loader-base';
 
-    $mini-nav-dimension: 300px;
-    $mini-nav-font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+$mini-nav-dimension: 300px;
+$mini-nav-font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
 
-    $bar-dimension: 32px;
-    $bar-spacing: 2px;
+$bar-dimension: 32px;
+$bar-spacing: 2px;
 
-    $toolbar-height: ($bar-dimension + ($bar-spacing*2));
+$toolbar-height: ($bar-dimension + ($bar-spacing*2));
 
-    $action-bar-height: ($bar-dimension + ($bar-spacing*4));
-    $action-bar-button-height: ($bar-dimension - ($bar-spacing*2));
+$action-bar-height: ($bar-dimension + ($bar-spacing*4));
+$action-bar-button-height: ($bar-dimension - ($bar-spacing*2));
 
-    .mini-navigator-component {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        max-width: 100%;
-        min-width: 100%;
+:host.mini-navigator-component {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 100%;
+    min-width: 100%;
+
+    .mat-icon {
+        @include sizeDenaliIcon(12px);
+    }
+
+    .mat-icon-button {
+        &,
+        .mat-button-wrapper,
+        .mat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &,
+        .mat-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .mat-button-wrapper,
+        .mat-icon {
+            line-height: 1;
+        }
 
         .mat-icon {
-            height: 12px;
-            width: 12px;
-            font-size: 100%;
+            font-size: 18px;
+        }
+    }
+
+    .mini-navigator-toolbar {
+        &,
+        .mat-toolbar-row {
+            height: $toolbar-height;
+            min-height: $toolbar-height;
+        }
+
+        .mat-toolbar-row {
+            padding: 0 $bar-spacing;
+            font-size: $mini-nav-font-size;
         }
 
         .mat-icon-button {
-            &,
-            .mat-button-wrapper,
-            .mat-icon {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            &,
-            .mat-icon {
-                width: 24px;
-                height: 24px;
-            }
+            width: $bar-dimension;
+            height: $bar-dimension;
+            line-height: $bar-dimension;
+        }
 
-            .mat-button-wrapper,
-            .mat-icon {
-                line-height: 1;
-            }
+        .nav-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item.back-to-master {
+            margin-right: ($bar-spacing*2);
+            width: 24px;
+            transform: translateX(0);
+            transition: all 200ms ease-in-out;
+        }
+
+        .nav-item.add-folder {
+            margin-right: ($bar-spacing*2);
 
             .mat-icon {
                 font-size: 18px;
             }
         }
 
-        .mini-navigator-toolbar {
-            &,
-            .mat-toolbar-row {
-                height: $toolbar-height;
-                min-height: $toolbar-height;
-            }
-
-            .mat-toolbar-row {
-                padding: 0 $bar-spacing;
-                font-size: $mini-nav-font-size;
-            }
-
-            .mat-icon-button {
-                width: $bar-dimension;
-                height: $bar-dimension;
-                line-height: $bar-dimension;
-            }
-
-            .nav-item {
-                display: flex;
-                align-items: center;
-            }
-
+        &.is-master-panel {
             .nav-item.back-to-master {
-                margin-right: ($bar-spacing*2);
-                width: 24px;
-                transform: translateX(0);
-                transition: all 200ms ease-in-out;
-            }
-
-            .nav-item.add-folder {
-                margin-right: ($bar-spacing*2);
-
-                .mat-icon {
-                    font-size: 18px;
-                }
-            }
-
-            &.is-master-panel {
-                .nav-item.back-to-master {
-                    margin-right: ($bar-spacing*3);
-                    width: 0;
-                    transform: translateX(-50px);
-                }
-            }
-        }
-
-        .mini-navigator-actions {
-            display: flex;
-            align-items: center;
-            padding: 0 ($bar-spacing*4);
-            height: ($action-bar-height + $bar-spacing);
-            max-height: 100%;
-            min-height: ($action-bar-height + $bar-spacing);
-
-            .mat-button,
-            .mat-flat-button,
-            .mat-stroked-button {
-                line-height: $action-bar-button-height;
-                font-size: $mini-nav-font-size;
-            }
-        }
-
-        // navigator panel
-        .navigator-panel {
-            max-height: 100%;
-
-            .navigator-panel-wrapper {
-                display: flex;
-                height: 100%;
-                position: relative;
-
-                ul {
-                    position: absolute;
-                    top: 0;
-                    bottom: 0;
-                }
-            }
-
-            ul li {
-                overflow: overlay;
-            }
-
-            @-moz-document url-prefix() {
-                ul li {
-                    overflow: auto;
-                }
-            }
-        }
-
-        // FOLDERS LIST
-        .mini-navigator-folders {
-            display: flex;
-            flex-direction: column;
-
-            .folder-list.mat-list-base {
-                padding: 0;
-
-            }
-
-            .folder-nav-item.mat-list-item {
-                height: 32px;
-
-                .mat-list-item-content {
-                    padding: 0 8px;
-                }
-            }
-        }
-
-        // FOLDER ITEM
-        .mini-navigator-folder-item {
-            flex: 1;
-            display: flex;
-            justify-content: stretch;
-            align-items: stretch;
-            height: 36px;
-            font-weight: 300;
-            font-size: 12px;
-
-            &.is-editing {
-                margin-right: 12px;
-            }
-
-            .mat-icon {
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
-            }
-
-            .folder-icon {
-                margin-right: 8px;
-            }
-
-            .list-item {
-                display: flex;
-                align-items: center;
-
-                &.edit-form {
-                    &,
-                    .mat-form-field {
-                        flex: 1;
-                    }
-                    .mat-form-field-prefix {
-                        margin-left: 6px;
-                    }
-                }
-
-                &.goto-next-folder {
-                    margin-right: 8px;
-                }
-            }
-
-            .folder-name {
-                span {
-                    max-width: 198px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
+                margin-right: ($bar-spacing*3);
+                width: 0;
+                transform: translateX(-50px);
             }
         }
     }
 
-    // CDK
-    $dnav-width: $mini-nav-dimension + 2px;
-    $dnav-height: $mini-nav-dimension + 6px;
+    .mini-navigator-actions {
+        display: flex;
+        align-items: center;
+        padding: 0 ($bar-spacing*4);
+        height: ($action-bar-height + $bar-spacing);
+        max-height: 100%;
+        min-height: ($action-bar-height + $bar-spacing);
 
+        .mat-button,
+        .mat-flat-button,
+        .mat-stroked-button {
+            line-height: $action-bar-button-height;
+            font-size: $mini-nav-font-size;
+        }
+    }
+
+    // navigator panel
+    ::ng-deep .navigator-panel {
+        max-height: 100%;
+
+        .navigator-panel-wrapper {
+            display: flex;
+            height: 100%;
+            position: relative;
+        }
+
+        ul {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+        }
+
+        ul li {
+            overflow: overlay;
+        }
+
+        @-moz-document url-prefix() {
+            ul li {
+                overflow: auto;
+            }
+        }
+    }
+
+    // FOLDERS LIST
+    .mini-navigator-folders {
+        display: flex;
+        flex-direction: column;
+
+        .mat-list .mat-list-item,
+        .mat-nav-list .mat-list-item {
+
+            .folder-icon,
+            .goto-next-folder {
+                margin-right: 8px;
+                color: inherit;
+            }
+        }
+
+        .folder-list.mat-list-base {
+            padding: 0;
+        }
+
+        .folder-nav-item.mat-list-item {
+            height: 32px;
+
+            ::ng-deep .mat-list-item-content {
+                padding: 0 8px;
+            }
+        }
+    }
+
+    // FOLDER ITEM
+    .mini-navigator-folder-item {
+        flex: 1;
+        display: flex;
+        justify-content: stretch;
+        align-items: stretch;
+        height: 36px;
+        font-weight: 300;
+        font-size: 12px;
+
+        &.is-editing {
+            margin-right: 12px;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(12px);
+        }
+
+        .folder-icon {
+            margin-right: 8px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+
+            &.edit-form {
+                &,
+                .mat-form-field {
+                    flex: 1;
+                }
+                .mat-form-field-prefix {
+                    margin-left: 6px;
+                }
+            }
+
+            &.goto-next-folder {
+                margin-right: 8px;
+            }
+        }
+
+        .folder-name {
+            span {
+                max-width: 198px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+// CDK
+$dnav-width: $mini-nav-dimension + 2px;
+$dnav-height: $mini-nav-dimension + 6px;
+
+@at-root ::ng-deep {
     .dnav-cdk-mini-navigator.mat-menu-panel {
         overflow: hidden;
-
-        &.mat-menu-panel {
-            max-width: $dnav-width; // 2px is for the 1px border width
-            max-height: $dnav-height; //
-        }
+        max-width: $dnav-width;
+        max-height: $dnav-height;
 
         .mat-menu-content {
             display: flex;
@@ -248,17 +252,20 @@
     }
 }
 
-@mixin dbfs-mini-nav-component-theme($theme-config) {
-    /* Theme config parts */
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
-    $status: map-get($theme-config, status);
 
-    /* navbar config */
+    $status: map-get($theme-config, status);
+    $status-success: map-get($status, success);
+
     $sn-light: map-get($navbar-config, sn-light);
     $sn-dark: map-get($navbar-config, sn-dark);
     $sn-light-text: map-get($navbar-config, sn-light-text);
@@ -282,98 +289,93 @@
 
     $menu-divider: if($is-dark-theme, $divider, $navbar-background);
 
-    .mini-navigator-component {
-        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+    /* [[  THEME  ]] (#{$theme-name}) - DBFS Mini Nav component  */
+    //:host-context([theme='#{$theme-name}']) {
+    @at-root [theme='#{$theme-name}'] {
+        :host.mini-navigator-component {
+            background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
 
-        .mini-navigator-toolbar {
-            background: transparent;
-            color: $item-text;
-            //border-bottom: 1px solid rgba($navbar-text,.25);
-            box-shadow: inset 0 -1px 0 0 rgba($menu-divider, .12);
-        }
-
-        .mini-navigator-actions {
-            //border-top: 1px solid rgba($navbar-text,.25);
-            color: $item-text;
-            box-shadow: inset 0 1px 0 0 rgba($menu-divider,.12);
-        }
-
-        // FOLDERS LIST
-        .mini-navigator-folders {
-            // content here
-
-            .mat-list .mat-list-item,
-            .mat-nav-list .mat-list-item {
-                color: rgba($item-text,.65);
-
-                .path-icon,
-                .folder-icon,
-                .dashboard-icon
-                .goto-next-folder {
-                    margin-right: 8px;
-                    color: inherit;
-                }
-
-                &.is-active,
-                &.is-selected {
-                    color: rgba(find-color-invert($navbar-background),.85);
-                }
-
-                &.is-selected {
-                    background-color: $navbar-background;
-                }
-
-                &:not(:last-child) {
-                    border-bottom: 1px solid rgba($menu-divider,.07);
-                }
-
-                &:first-child {
-                    border-top: 1px solid transparent;
-                }
+            .mini-navigator-toolbar {
+                background: transparent;
+                color: $item-text;
+                box-shadow: inset 0 -1px 0 0 rgba($menu-divider, .12);
             }
 
-        }
-
-        // FOLDER ITEM
-        .mini-navigator-folder-item {
-            .save-folder-name {
-                color: map-get($status, success);
+            .mini-navigator-actions {
+                color: $item-text;
+                box-shadow: inset 0 1px 0 0 rgba($menu-divider,.12);
             }
 
-            .list-item.edit-form {
+            // FOLDERS LIST
+            .mini-navigator-folders {
+                // content here
 
-                .mat-form-field {
-                    .mat-input-element::placeholder {
-                        color: rgba($navbar-text, .25);
+                .mat-list .mat-list-item,
+                .mat-nav-list .mat-list-item {
+                    color: rgba($item-text,.65);
+
+                    &.is-active,
+                    &.is-selected {
+                        color: rgba(find-color-invert($navbar-background),.85);
+                    }
+
+                    &.is-selected {
+                        background-color: $navbar-background;
+                    }
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid rgba($menu-divider,.07);
+                    }
+
+                    &:first-child {
+                        border-top: 1px solid transparent;
+                    }
+                }
+
+            }
+
+            // FOLDER ITEM
+            .mini-navigator-folder-item {
+                .save-folder-name {
+                    color: $status-success;
+                }
+
+                .list-item.edit-form {
+                    .mat-form-field {
+                        .mat-input-element::placeholder {
+                            color: rgba($navbar-text, .25);
+                        }
+                    }
+                }
+
+                .dnav-folder-menu {
+                    .mat-icon-button {
+                        background: rgba($black, .2);
                     }
                 }
             }
+        }
 
-            .dnav-folder-menu {
-                .mat-icon-button {
-                    background: rgba(0, 0, 0, .2);
+        // cdk items
+        ::ng-deep {
+            .dnav-cdk-mini-navigator.mat-menu-panel {
+                background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+                border: 1px solid rgba($navbar-background, .15);
+
+                .mat-menu-item {
+                    color: rgba($item-text,.85);
+
+                    .mat-icon {
+                        color: $item-text;
+                    }
+
+                    &:hover {
+                        background-color: rgba($menu-background-hover, .08);
+                    }
                 }
             }
         }
     }
 
-    // CDK
-    .dnav-cdk-mini-navigator {
-        //transform: translate3d(40px, -32px, 0);
-        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-        border: 1px solid rgba($navbar-background, .15);
 
-        $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
-        .mat-menu-item {
-            color: rgba($item-text,.85);
-
-            .mat-icon {
-                color: $item-text;
-            }
-
-            &:hover {
-                background-color: rgba($menu-background-hover, .08);
-            }
-        }
-    }
 }

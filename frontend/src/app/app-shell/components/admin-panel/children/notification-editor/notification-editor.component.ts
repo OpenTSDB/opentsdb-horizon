@@ -7,7 +7,8 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     selector: 'app-notification-editor',
-    templateUrl: './notification-editor.component.html'
+    templateUrl: './notification-editor.component.html',
+    styleUrls: ['./notification-editor.component.scss']
 })
 export class NotificationEditorComponent implements OnInit, OnDestroy {
     @HostBinding('class.notification-editor') private _hostClass = true;

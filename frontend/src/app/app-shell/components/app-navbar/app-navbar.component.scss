@@ -1,167 +1,48 @@
-/* NAVBAR COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
-// core (aka structure)
-@mixin app-navbar-component-base() {
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
+@import 'loader-base';
 
-    .app-navbar {
-        //@include mat-elevation(2);
-        z-index: 2;
-        position: relative;
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
 
-        .app-home-link {
-            min-width: auto;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+:host.app-navbar {
+    z-index: 2;
+    position: relative;
 
-        .app-yamas-logo {
-            height: $logo-height;
-            //margin: 0 4px 3px 0;
-            vertical-align: middle;
-        }
-
-        .dashboard-name {
-            @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), title);
-        }
-
-        .icon-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mat-toolbar {
-            .mat-toolbar-row {
-                padding-left: initial;
-            }
-        }
-
-        .mat-toolbar-multiple-rows,
-        .mat-toolbar-single-row {
-            min-height: $navbar-height !important;
-            height: $navbar-height;
-        }
-
-        .navbar-item {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto 5px;
-
-            &.navbar-icon-item {
-                margin: auto 10px;
-            }
-        }
-
-        .navbar-sliding-toggle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 0 !important;
-            padding: 0 2px;
-            display: inline-block;
-    
-            .sliding-toggle-group {
-                padding: 0 2px; 
-                
-                .mat-tab-link {
-                    font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-                    height: 24px;
-                    padding: 0 4px;
-                    min-width: 50px;
-                    opacity: 1;
-                    z-index: 1;
-                    background-color: transparent;
-                    user-select: none;
-
-                    &.mat-tab-label-active,
-                    &:not(.mat-tab-disabled):not(.mat-tab-label-active) {
-                        &,
-                        &:focus {
-                            background-color: transparent !important;
-                        }
-                    }
-        
-                    &:not(.mat-tab-disabled):focus {
-                        background-color: transparent !important;
-                    }
-                }
-    
-                .mat-ink-bar {
-                    height: 20px;
-                    bottom: 2px;
-                    border-radius: 4px;
-                }
-            }
-            
-        }
+    .mat-toolbar .mat-toolbar-row {
+        padding-left: initial;
     }
 
-    // cdk items
-    .mat-menu-panel.nav-bar-dropmenu {
-        margin-top: 3px;
+    .mat-toolbar-multiple-rows,
+    .mat-toolbar-single-row {
+        min-height: $navbar-height !important;
+        height: $navbar-height;
     }
 }
-// theme (aka look-n-feel)
-@mixin app-navbar-component-theme($theme-config) {
 
-    /* Theme config parts */
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    $is-dark: map-get($theme-config, is-dark);
 
-    .app-navbar {
+    $accent-default: map-get($accent, default);
 
-        .mat-toolbar {
-            background: map-get($background, navbar);
-            color: map-get($foreground, navbar-text);
+    $navbar-bg: map-get($background, navbar);
+    $navbar-text: map-get($foreground, navbar-text);
 
-            .mat-icon-button {
-                .mat-icon {
-                    color: map-get($foreground, navbar-icons)
-                }
-            }
-        }
+    $navbar-icons-color: map-get($foreground, navbar-icons);
 
-        .navbar-item {
-            .menu-trigger-underline {
-                box-shadow: inset 0 -3px 0 map-get($accent, default);
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .menu-trigger-highlight {
-                background-color: rgba(map-get($accent, default), .1);
-            }
-        }
-
-        .navbar-sliding-toggle {
-            .sliding-toggle-group {
-                background-color: darken(map-get($background, navbar), 4%);
-    
-                .mat-tab-link {
-                    &,
-                    &.mat-tab-label-active {
-                        color: map-get($foreground, navbar-text);
-                    }
-                }
-    
-                .mat-ink-bar {
-                    background-color: rgba(map-get($foreground, navbar-text), .25);
-                }
+    /* [[  THEME  ]] (#{$theme-name}) - app-navbar component  */
+    @at-root [theme='#{$theme-name}'] {
+        :host.app-navbar {
+            .mat-toolbar {
+                background: $navbar-bg;
+                color: $navbar-text;
             }
         }
     }
-
-    // cdk items
-    .mat-menu-panel.nav-bar-dropmenu {
-        @include mat-elevation(5);
-    }
-    
 }

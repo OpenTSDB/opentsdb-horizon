@@ -12,10 +12,15 @@ import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.comp
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'settings-panel',
-    templateUrl: './settings-panel.component.html'
+    templateUrl: './settings-panel.component.html',
+    styleUrls: ['./settings-panel.component.scss'],
+    host: {
+        '[class.settings-navigator]': 'true',
+        '[class.panel-content]': 'true'
+    }
 })
 export class SettingsPanelComponent implements OnInit {
-    @HostBinding('class.settings-navigator') private _hostClass = true;
+    //@HostBinding('class.settings-navigator') private _hostClass = true;
 
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
 

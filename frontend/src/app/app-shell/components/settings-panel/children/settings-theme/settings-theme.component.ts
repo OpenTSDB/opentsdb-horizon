@@ -6,7 +6,8 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'settings-theme',
-    templateUrl: './settings-theme.component.html'
+    templateUrl: './settings-theme.component.html',
+    styleUrls: ['./settings-theme.component.scss']
 })
 export class SettingsThemeComponent implements OnInit {
 

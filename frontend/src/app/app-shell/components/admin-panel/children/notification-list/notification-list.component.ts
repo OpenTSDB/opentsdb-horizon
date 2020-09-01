@@ -4,7 +4,8 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 
 @Component({
     selector: 'app-notification-list',
-    templateUrl: './notification-list.component.html'
+    templateUrl: './notification-list.component.html',
+    styleUrls: ['./notification-list.component.scss']
 })
 export class NotificationListComponent implements OnInit {
     @HostBinding('class.notification-list') private _hostClass = true;

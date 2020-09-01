@@ -71,11 +71,15 @@ import {
 // tslint:disable-next-line: component-selector
     selector: 'dbfs',
     templateUrl: './dbfs.component.html',
-    styleUrls: ['./dbfs.component.scss']
+    styleUrls: ['./dbfs.component.scss'],
+    host: {
+        '[class.dashboard-navigator]': 'true',
+        '[class.panel-content]': 'true'
+    }
 })
 export class DbfsComponent implements OnInit, OnDestroy {
 
-    @HostBinding('class.dashboard-navigator') private _hostClass = true;
+    //@HostBinding('class.dashboard-navigator') private _hostClass = true;
 
     @ViewChildren('moreMenuTrigger', {read: MatMenuTrigger}) moreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('miniNavTrigger', {read: MatMenuTrigger}) miniNavTriggers: QueryList<MatMenuTrigger>;

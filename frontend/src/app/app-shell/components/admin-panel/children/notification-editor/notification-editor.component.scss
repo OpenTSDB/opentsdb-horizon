@@ -1,172 +1,139 @@
-@mixin notification-editor-component-base() {
-    .notification-editor {
+@import 'loader-base';
+
+:host.notification-editor {
+    align-items: stretch;
+    min-height: calc(100% - 30px);
+
+    &,
+    .notification-form,
+    .notification-details {
         display: flex;
+        flex-direction: column;
         flex: 1;
+    }
+
+    > strong {
+        font-size: 16px;
+    }
+
+    .notification-type,
+    .notification-summary,
+    .notification-details {
+        margin-top: 16px;
+
+        > label {
+            font-weight: bold;
+        }
+    }
+
+    .notification-type .mat-radio-group {
+        margin-left: 6px;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+
+        .mat-button,
+        .mat-flat-button,
+        .mat-stroked-button {
+            + .mat-button,
+            + .mat-flat-button,
+            + .mat-stroked-button {
+                margin-left: 8px;
+            }
+        }
+    }
+
+    .notification-summary .mat-form-field.mat-form-field-type-mat-input {
+        width: 100%;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        flex: 1 1 100%;
+        flex-direction: column;
+
+        ::ng-deep {
+
+            .mat-form-field-wrapper,
+            .mat-form-field-flex,
+            .mat-form-field-infix {
+                height: 100%;
+                width: 100%;
+                flex: 1 1 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .mat-input-element {
+                flex: 1;
+            }
+        }
+
+    }
+
+    .notification-details .mat-form-field.mat-form-field-type-mat-input {
+        height: 100%;
+        width: 100%;
+        flex: 1 1 100%;
+        display: flex;
         flex-direction: column;
         align-items: stretch;
-        min-height: calc(100% - 30px);
+        justify-content: stretch;
 
-        > strong {
-            font-size: 16px;
-        }
-
-        .notification-form,
-        .notification-details {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .notification-type,
-        .notification-summary,
-        .notification-details {
-            margin-top: 16px;
-
-            > label {
-                font-weight: bold;
-            }
-        }
-
-        .notification-type {
-            .mat-radio-group {
-                margin-left: 6px;
-            }
-        }
-
-        .actions {
-            display: flex;
-            flex-direction: row;
-            align-items: stretch;
-
-            .mat-button,
-            .mat-flat-button,
-            .mat-stroked-button {
-
-                + .mat-button,
-                + .mat-flat-button,
-                + .mat-stroked-button {
-                    margin-left: 8px;
-                }
-            }
-        }
-
-        .notification-summary {
-            .mat-form-field.mat-form-field-type-mat-input {
-                width: 100%;
-                //height: 50px;
-                display: flex;
-                align-items: stretch;
-                justify-content: stretch;
-                flex: 1 1 100%;
-                flex-direction: column;
-
-                .mat-form-field-wrapper {
-                    height: 100%;
-                    width: 100%;
-                    flex: 1 1 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
-
-                .mat-form-field-flex,
-                .mat-form-field-infix {
-                    //min-height: 50px;
-                    height: 100%;
-                    width: 100%;
-                    flex: 1 1 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
-
-                .mat-input-element {
-                    flex: 1;
-                }
-            }
-        }
-
-        .notification-details {
-            .mat-form-field.mat-form-field-type-mat-input {
-                width: 100%;
+        ::ng-deep {
+            .mat-form-field-wrapper,
+            .mat-form-field-flex,
+            .mat-form-field-infix {
                 height: 100%;
-                display: flex;
-                align-items: stretch;
-                justify-content: stretch;
+                width: 100%;
                 flex: 1 1 100%;
+                display: flex;
                 flex-direction: column;
+            }
 
-                .mat-form-field-wrapper {
-                    height: 100%;
-                    width: 100%;
-                    flex: 1 1 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
+            .mat-form-field-flex,
+            .mat-form-field-infix {
+                min-height: 100px;
+            }
 
-                .mat-form-field-flex,
-                .mat-form-field-infix {
-                    min-height: 100px;
-                    height: 100%;
-                    width: 100%;
-                    flex: 1 1 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
+            .mat-input-element {
+                min-height: 100px;
+                height: 100%;
+                flex: 1;
+            }
 
-                .mat-input-element {
-                    min-height: 100px;
-                    height: 100%;
-                    flex: 1;
-                }
-
-                textarea {
-                    background: transparent;
-                }
+            textarea {
+                background: transparent;
             }
         }
+    }
 
-        .detail-preview {
-            width: 100%;
-            min-height: 100px;
-            flex: 1 1 100%;
-            padding: 8px;
-            margin: 8px 0;
-            background-color: $white;
-        }
+    .detail-preview {
+        width: 100%;
+        min-height: 100px;
+        flex: 1 1 100%;
+        padding: 8px;
+        margin: 8px 0;
+        background-color: $white;
     }
 }
 
-@mixin notification-editor-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
-    $status: map-get($theme-config, status);
+//* THEMING **/
+//@each $theme-name, $theme-config in $app-available-themes {
 
-    /* navbar config */
-    $sn-light: map-get($navbar-config, sn-light);
-    $sn-dark: map-get($navbar-config, sn-dark);
-    $sn-light-text: map-get($navbar-config, sn-light-text);
-    $sn-dark-text: map-get($navbar-config, sn-dark-text);
-    $sn-seperator: map-get($navbar-config, sn-seperator);
-    $sn-active: map-get($navbar-config, sn-active);
+    //* Theme config parts */
+    //$primary: map-get($theme-config, primary);
+    //$accent: map-get($theme-config, accent);
+    //$warn: map-get($theme-config, warn);
+    //$foreground: map-get($theme-config, foreground);
+    //$background: map-get($theme-config, background);
+    //$is-dark: map-get($theme-config, is-dark);
 
-    $text-color: map-get($background, navbar);
-    $icon-color: $text-color;
-    $divider: map-get($foreground, divider);
-
-    $navbar-background: map-get($background, navbar);
-    $navbar-text: find-color-invert($navbar-background);
-
-    $menu-background: if($is-dark-theme, lighten(map-get($background, card), 10%), map-get($background, card));
-    $menu-background-hover: find-color-invert($menu-background);
-
-    $cdk-menu-bg: map-get($background, menu);
-    $cdk-menu-border: $divider;
-
-    .notification-editor {
-
-    }
-}
+    //* [[  THEME  ]] (#{$theme-name}) - notification editor component  */
+    //@at-root [theme='#{$theme-name}'] {
+    //    :host.notification-editor {
+    //    }
+    //}
+//}
