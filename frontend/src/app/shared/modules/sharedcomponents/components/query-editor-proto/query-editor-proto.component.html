@@ -53,18 +53,12 @@
     *ngIf="query.namespace || query.metrics.length || query.filters.length">
     <!-- CONTAINER FOR THE COMMON TAGS-->
     <div class="common-tags">
-        <!--<span class="common-tags-label">Tag filters</span>-->
         <div class="common-tags-wrapper">
             <span [matMenuTriggerFor]="tagFilterMenu" #tagFilterMenuTrigger="matMenuTrigger"
                 [matMenuTriggerData]="{query: query}" class="tag-filter-menu-trigger"></span>
             <div class="tags-selected" *ngIf="query.filters.length">
                 <div class="tags-selected-header" (click)="showTagFilterMenu()">
                     <span><strong>Tag Filters</strong></span>
-                    <!--<span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
-                        <mat-checkbox (click)="$event.stopPropagation();"
-                            [checked]="query.settings.explicitTagMatch"
-                            (change)="toggleExplictTagMatch($event)">Only match selected tag keys</mat-checkbox>
-                    </span>-->
                     <button mat-icon-button color="primary">
                         <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                     </button>
