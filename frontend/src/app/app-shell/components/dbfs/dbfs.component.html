@@ -64,11 +64,7 @@
 <navigator-panel #navPanel>
     <ng-container *ngFor="let panel of panels; let i = index;">
         <ng-container *navigatorPanelItem>
-            <!--<div class="panel-title" *ngIf="panels.length === 1 && currentPanelIndex === 0">
-                <strong *ngIf="currentPanelTab === 'personal'">{{user.alias | titlecase}}&nbsp;</strong> <span>{{(getResource(panels[0].folderResource)).name}}</span>
-            </div>-->
             <ng-container>
-                <!--<ng-container *ngTemplateOutlet="pathTree;context:{panels: panels, i: i}"></ng-container>-->
                 <ng-container *ngTemplateOutlet="breadcrumbPath;context:{panels: panels, i: i}"></ng-container>
             </ng-container>
             <!-- root folder -->
@@ -221,20 +217,6 @@
 </ng-template>
 
 <!-- BREAD CRUMBS -->
-<!--<ng-template #pathTree let-panels="panels", let-i="i">
-    <mat-nav-list class="path-tree">
-        <ng-container *ngFor="let leaf of panels; let n = index;">
-            <mat-list-item class="path-tree-item leaf-{{n}}"
-                *ngIf="leaf.folderResource !== ':panel-root:' && n <= i"
-                [ngClass]="{'is-active': n === i}"
-                (click)="navtoSpecificPanel(n, i)">
-                <mat-icon class="path-icon" fontSet="denali" [fontIcon]="folders[leaf.folderResource].icon ? folders[leaf.folderResource].icon : 'd-folder'"></mat-icon>
-                <span>{{folders[leaf.folderResource].name}}</span>
-            </mat-list-item>
-        </ng-container>
-    </mat-nav-list>
-</ng-template>-->
-
 <ng-template #breadcrumbPath let-panels="panels" let-i="i">
     <div class="breadcrumb-path">
         <ng-container *ngFor="let leaf of panels; let n = index; let first = first; let last = last;">
@@ -586,7 +568,6 @@
         </a>
     </div>
 </ng-template>
-
 
 <ng-template #simpleFolderDisplay let-data="data" let-icon="icon" let-loading="loading" let-showcount="showcount">
     <div class="dnav-folder-item dnav-item">

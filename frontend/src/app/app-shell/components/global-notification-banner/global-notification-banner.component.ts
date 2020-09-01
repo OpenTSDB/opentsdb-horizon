@@ -9,17 +9,11 @@ import {
 } from '@angular/core';
 
 import {
-    DbfsState
-} from '../../state/dbfs.state';
-
-import {
     DbfsResourcesState,
-    DbfsLoadSubfolder,
     DbfsLoadTopFolder,
 } from '../../state/dbfs-resources.state';
 
 import { Subscription, Observable, interval } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
 import { LoggerService } from '../../../core/services/logger.service';
 import { LocalStorageService } from '../../services/local-storage.service';

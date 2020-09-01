@@ -6,9 +6,7 @@ import {
     ElementRef,
     HostBinding,
     Input,
-    OnInit,
     QueryList,
-    TemplateRef,
     ViewChild,
     ViewChildren
 } from '@angular/core';
@@ -64,8 +62,6 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     goNext(isDone?: any) {
-        // console.log('%cGO NEXT', 'background-color: blue; color: white; padding: 4px;');
-
         if (this.currentSlide + 1 === this.items.length) { return; }
 
         this.currentSlide = (this.currentSlide + 1) % this.items.length;
@@ -110,13 +106,6 @@ export class NavigatorPanelComponent implements AfterViewInit {
         this.currentSlide = idx;
         const offset = this.currentSlide * this.itemWidth;
 
-        /*console.group('%cSHIFT TO', 'background-color: purple; color: white; padding: 4px;');
-        console.log('idx', idx);
-        console.log('from', fromIdx);
-        console.log('tmpOffset', tmpOffset);
-        console.log('offset', offset);
-        console.groupEnd();*/
-
         const myAnimation: AnimationFactory = this.buildAnimation(offset);
 
         this.player = myAnimation.create(this.panel.nativeElement);
@@ -136,7 +125,6 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     resetTo(idx: any, isDone?: any) {
-        // console.log('PANEL RESET TO', idx);
         this.currentSlide = idx;
         const offset = this.currentSlide * this.itemWidth;
         const myAnimation: AnimationFactory = this.buildAnimation(offset, true);
@@ -153,7 +141,6 @@ export class NavigatorPanelComponent implements AfterViewInit {
     /** Privates */
 
     private buildAnimation(offset, immediate: boolean = false) {
-        // console.log('%cOFFSET', 'background-color: purple; color: white; padding: 4px;', offset);
         return this.builder.build([
             animate((immediate) ? 0 : this.timing, style({ transform: `translateX(-${offset}px)` }))
         ]);
