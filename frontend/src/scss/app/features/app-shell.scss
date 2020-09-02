@@ -9,6 +9,10 @@ $logo-height: map-get($navbar-config, 'logo-height');
     flex: 1;
     font-weight: 300;
     font-size: 12px;
+
+    .mat-icon {
+        @include sizeDenaliIcon(12px);
+    }
 }
 
 // common top bar of the side nav panels
@@ -82,13 +86,13 @@ $logo-height: map-get($navbar-config, 'logo-height');
         }
 
         .mat-icon {
-            line-height: 1;
-            width: 24px;
-            height: 24px;
-            font-size: 18px;
             display: flex;
             align-items: center;
         }
+    }
+
+    .mat-icon {
+        @include sizeDenaliIcon(18px);
     }
 }
 

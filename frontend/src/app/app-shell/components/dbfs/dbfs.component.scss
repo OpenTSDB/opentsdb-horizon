@@ -13,7 +13,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
             font-weight: 300;
             font-size: 12px;
 
-            .path-icon,
             .folder-icon,
             .dashboard-icon {
                 margin-right: 8px;
@@ -40,12 +39,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
         }
     }
 
-    .mat-icon {
-        height: 12px;
-        width: 12px;
-        font-size: 100%;
-    }
-
     // dashboard toolbar at top of panel
     .panel-toolbar {
         // we remove padding because in DBFS, the top is just icon buttons that have their own padding
@@ -68,17 +61,18 @@ $logo-height: map-get($navbar-config, 'logo-height');
             font-weight: 400;
         }
 
-        .mat-icon-button,
-        .mat-icon {
+        .mat-icon-button {
             width: 24px;
             height: 24px;
             line-height: 1;
-            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .mat-icon {
+            @include sizeDenaliIcon(18px);
+        }
     }
 
     .breadcrumb-path {
@@ -120,6 +114,10 @@ $logo-height: map-get($navbar-config, 'logo-height');
         .path-seperator {
             margin-top: 3px;
             margin-bottom: 3px;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(18px);
         }
     }
 
@@ -187,6 +185,10 @@ $logo-height: map-get($navbar-config, 'logo-height');
             width: 24px;
             height: 24px;
             line-height: 1;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(12px);
         }
 
         .mat-icon-button,
