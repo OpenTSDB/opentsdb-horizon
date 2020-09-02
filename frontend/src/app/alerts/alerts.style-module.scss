@@ -16,7 +16,7 @@
 // import your component scss
 // example: @import './components/componentName/componentName.component.scss';
 
-@import './alerts.common';
+//@import './alerts.common';
 
 // containers
 @import './containers/alerts.component'; // nothing to style yet
@@ -37,10 +37,10 @@
     // include your core mixins
     // example: @include componentName-component-core();
 
-    @include alerts-common-base();
+    //@include alerts-common-base();
 
     // containers
-    @include alerts-container-component-base(); // nothing to style yet
+    //@include alerts-container-component-base(); // nothing to style yet
 
     // components
     @include snooze-details-component-base();
@@ -58,10 +58,10 @@
     // include your theme mixins, passing along the $theme-config
     // example: @include componentName-component-theme($theme-config);
 
-    @include alerts-common-theme($theme-config);
+    //@include alerts-common-theme($theme-config);
 
     // container
-    @include alerts-container-component-theme($theme-config); //nothing to style yet
+    //@include alerts-container-component-theme($theme-config); //nothing to style yet
 
     // components
     @include snooze-details-component-theme($theme-config);
