@@ -71,7 +71,7 @@
                                 </info-tooltip>
                             </th>
                             <th>Tag Key <sup>*</sup></th>
-                            <th>Filter Name <sup>*</sup></th>
+                            <th>Alias Name <sup>*</sup></th>
                             <th>Default value (optional)</th>
                             <th style="white-space: nowrap;">
                                 <span>Applied</span>
@@ -136,6 +136,10 @@
                             <!-- default value -->
                             <td>
                                 <div class="settings-control values-control">
+                                    <<!--<div style="width:180px" [matMenuTriggerFor]="filterScope">
+                                        abc [more...]
+                                    </div>-->
+                                  
                                     <mat-form-field appearance="fill" color="primary" floatLabel="never">
                                         <input matInput placeholder="Enter default value" formControlName="display"
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
@@ -152,6 +156,7 @@
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
+                                    <span [matMenuTriggerFor]="filterScope">[more...]</span>
                                 </div>
                             </td>
                             <!-- counts -->
@@ -220,5 +225,12 @@
             </div>
         </div>
     </div>
+    <!-- mat-menu for scope editing-->
+    <mat-menu #filterScope="matMenu">
+        <div fxLayout="column">
+            <div fxFlex="1">col1</div>
+            <div fxFlex="1">col2</div>
+        </div>
+    </mat-menu>
 </ng-template>
 <input type=text #focusEl class="hidden-focus">
