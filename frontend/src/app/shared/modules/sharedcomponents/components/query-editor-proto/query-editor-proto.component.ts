@@ -442,25 +442,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.queryChangeSub.unsubscribe();
     }
 
-    dropTable(event: any) {
-        // console.log('DROP TABLE EVENT', event);
-        // const prevIndex = this.FC_chart['controls'].findIndex((d) => d === event.item.data);
-        // moveItemInArray(this.FC_chart['controls'], prevIndex, event.currentIndex);
-        // this.setChartDataOrder();
-        // this.chartTable.renderRows();
-        const curIndex = event.currentIndex;
-        const dragItem = this.query.metrics[event.previousIndex];
-        const dropItem = this.query.metrics[event.currentIndex];
-        this.query.metrics[event.currentIndex] = dragItem;
-        this.query.metrics[event.previousIndex] = dropItem;
-        this.initMetricDataSource();
-        // const prevIndex = this.query.metrics.findIndex((d) => d === event.item.data.metric.id);
-        console.log("dropTable", this.query.metrics, event.currentIndex, event.previousIndex)
-        // moveItemInArray(this.metricTableDataSource.data, prevIndex, event.currentIndex);
-        // this.initMetricDataSource();
-        // this.table.renderRows();
-    }
-
     initOptions() {
         const defaultOptions = {
             'deleteQuery': false,
@@ -1092,6 +1073,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             }
         }
         return false;
+    }
+
+    reorderMetric(event: any) {
+        const curIndex = event.currentIndex;
+        const dragItem = this.query.metrics[event.previousIndex];
+        const dropItem = this.query.metrics[event.currentIndex];
+        this.query.metrics[event.currentIndex] = dragItem;
+        this.query.metrics[event.previousIndex] = dropItem;
+        this.initMetricDataSource();
+        this.requestChanges('UpdateQueryMetricOrder', { qid: this.query.id, query: this.query });
     }
 
     cloneMetric(id) {

@@ -608,6 +608,20 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
                 break;
+            case 'UpdateQueryOrder':
+                this.widget.queries = this.utilService.deepClone(message.payload.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricOrder':
+                qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                this.widget.queries[qindex] = message.payload.query;
+                this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
             case 'UpdateQueryVisual':
                 qindex = this.widget.queries.findIndex(d => d.id === message.id);
                 mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);

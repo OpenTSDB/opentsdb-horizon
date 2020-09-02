@@ -103,6 +103,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         const dropItem = this.widget.queries[event.currentIndex];
         this.widget.queries[event.currentIndex] = dragItem;
         this.widget.queries[event.previousIndex] = dropItem;
+        this.widgetChange.emit({ action: 'UpdateQueryOrder', payload: { queries: this.widget.queries } });
     }
 
     dragStart (e) {
@@ -206,6 +207,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 break;
             case 'DeleteQuery':
                 this.widgetChange.emit({ id: message.id, action: 'DeleteQuery' });
+                break;
+            case 'UpdateQueryMetricOrder':
+                this.widgetChange.emit(message);
                 break;
             case 'DeleteQueryMetric':
                 const expCount = this.getExpressionCount();

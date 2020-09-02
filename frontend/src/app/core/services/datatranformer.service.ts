@@ -533,6 +533,8 @@ export class DatatranformerService {
 
         let cIndex = 0;
         const results = queryData.results ? queryData.results : [];
+        const dseries = [];
+        const colors = {};
         for ( let i = 0;  i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -548,7 +550,7 @@ export class DatatranformerService {
             }
             const n = results[i].data.length;
             const color = mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ? autoColors[cIndex++] : mConfig.settings.visual.color;
-            const colors = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics === 1 && (mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color) ? null : color , n ) ;
+            colors[mid] = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics === 1 && (mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color) ? null : color , n ) ;
             for ( let j = 0;  j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;
@@ -559,11 +561,17 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                options.labels.push(label);
-                datasets[0].data.push(aggData[aggrIndex]);
-                datasets[0].backgroundColor.push(colors[j]);
-                datasets[0].tooltipData.push({ metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags });
+                dseries.push({  mid: mid, order: qIndex + '-' + mIndex, label: label, value: aggData[aggrIndex], tooltipData: { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags } });
             }
+        }
+        dseries.sort((a: any, b: any) => {
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
+        });
+        for ( let i = 0; i < dseries.length; i++ ) {
+            options.labels.push(dseries[i].label);
+            datasets[0].data.push(dseries[i].value);
+            datasets[0].backgroundColor.push(colors[dseries[i].mid].pop());
+            datasets[0].tooltipData.push(dseries[i].tooltipData);
         }
         return [...datasets];
     }
@@ -600,6 +608,8 @@ export class DatatranformerService {
         autoColors = wdQueryStats.nVisibleAutoColors > 1 ? autoColors : [autoColors];
 
         let cIndex = 0;
+        const dseries = [];
+        const colors = {};
         for ( let i = 0; i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -616,7 +626,7 @@ export class DatatranformerService {
 
             const n = results[i].data.length;
             const color = mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ? autoColors[cIndex++]: mConfig.settings.visual.color;
-            const colors = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics  === 1 && ( mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ) ? null: color , n ) ;
+            colors[mid] = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics  === 1 && ( mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ) ? null: color , n ) ;
             for ( let j = 0; j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;
@@ -627,11 +637,15 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                const o = { label: label, value: aggData[aggrIndex], color: colors[j], tooltipData: tags};
-                options.data.push(o);
+                dseries.push({ mid: mid, label: label, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
             }
         }
-
+        dseries.sort((a: any, b: any) => {
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
+        });
+        for ( let i = 0; i < dseries.length; i++ ) {
+            options.data.push( { label: dseries[i].label, value: dseries[i].value, color: colors[dseries[i].mid].pop(), tooltipData: dseries[i].tooltipData } );
+        }
         return {...options};
     }
 

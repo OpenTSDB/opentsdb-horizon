@@ -96,7 +96,7 @@
         <table class="metric-list-wrapper-table" mat-table #metricTable [dataSource]="metricTableDataSource" 
                 cdkDropList
         [cdkDropListData]="metricTableDataSource.data"
-        (cdkDropListDropped)="dropTable($event)"
+        (cdkDropListDropped)="reorderMetric($event)"
         class="query-metric-table mat-elevation-z0">
 
             <!-- INDEX Column -->
