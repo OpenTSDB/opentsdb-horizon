@@ -63,13 +63,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagValueViewBlurTimeout: any;
     tagValueViewFocusTimeout: any;
 
+    tagSearchInputControl: FormControl = new FormControl('');
+
     constructor(
         private fb: FormBuilder,
         private interCom: IntercomService,
         private dbService: DashboardService,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private httpService: HttpService) {
+        private httpService: HttpService
+    ) {
         // predefine there
          this.listForm = this.fb.group({
             listVariables: this.fb.array([])
@@ -77,7 +80,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.editForm = this.fb.group({
             formTplVariables: this.fb.array([])
         });
-        }
+    }
 
     ngOnInit() {}
 
