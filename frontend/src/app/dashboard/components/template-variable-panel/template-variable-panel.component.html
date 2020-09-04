@@ -136,10 +136,9 @@
                             <!-- default value -->
                             <td>
                                 <div class="settings-control values-control">
-                                    <<!--<div style="width:180px" [matMenuTriggerFor]="filterScope">
+                                    <!--<div style="width:180px" [matMenuTriggerFor]="filterScope">
                                         abc [more...]
                                     </div>-->
-                                  
                                     <mat-form-field appearance="fill" color="primary" floatLabel="never">
                                         <input matInput placeholder="Enter default value" formControlName="display"
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
@@ -226,10 +225,34 @@
         </div>
     </div>
     <!-- mat-menu for scope editing-->
-    <mat-menu #filterScope="matMenu">
-        <div fxLayout="column">
-            <div fxFlex="1">col1</div>
-            <div fxFlex="1">col2</div>
+    <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu">
+        <div class="filter-scope-columns"
+            fxLayout="row"
+            fxLayoutAlign="stretch stretch"
+            (click)="$event.stopPropagation()"
+            (keydown.tab)="$event.stopPropagation()">
+            <div class="scope-column col-left " fxFlex="1 1 100%">
+                <div class="list-filter">
+                    <!-- input field for filtering -->
+                    <mat-form-field class="tag-search-input-field" appearance="outline" color="primary"
+                        floatLabel="never">
+                        <input matInput placeholder="Search tag keys" [formControl]="tagSearchInputControl" #tagSearchInput
+                            autocomplete="off">
+                    </mat-form-field>
+                </div>
+                <div class="list-items has-scroller">
+                    <div class="is-scroller">
+                        <!-- loop of filtered items-->
+                        <div class="list-item"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="scope-column col-right has-scroller" fxFlex="1 1 100%">
+                <div class="is-scroller">
+                    <!-- loop of items -->
+                    col2
+                </div>
+            </div>
         </div>
     </mat-menu>
 </ng-template>

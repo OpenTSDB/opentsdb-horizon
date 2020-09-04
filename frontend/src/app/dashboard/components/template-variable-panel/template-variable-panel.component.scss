@@ -449,6 +449,53 @@
             }
         }
     }
+
+    // cdk items
+    .filter-scope-cdk-menu.mat-menu-panel {
+        max-width: initial; // reset this... can change to value later if needed
+        min-height: 150px; // change this to whatever min width you want
+        display: flex;
+
+        .mat-menu-content {
+            padding: 0;
+            display: flex;
+            flex: 1;
+        }
+
+        .filter-scope-columns {
+            flex: 1;
+
+            .scope-column {
+                display: flex;
+                flex-direction: column;
+                min-width: 150px;
+            }
+
+            .col-left {
+                .list-filter,
+                .list-items .is-scroller {
+                    padding: 4px;
+                }
+
+                .list-items {
+                    flex: 1;
+                }
+
+                .tag-search-input-field.mat-form-field {
+                    .mat-form-field-infix {
+                        min-width: 100px;
+                        width: 100%;
+                    }
+                }
+            }
+
+            .col-right {
+                .is-scroller {
+                    padding: 4px;
+                }
+            }
+        }
+    }
 }
 
 @mixin template-variable-panel-component-theme($theme-config) {
@@ -669,6 +716,17 @@
         .mat-option:first-child {
             border-bottom: 1px solid $divider;
             background-color: rgba(map-get($primary, default), 0.08);
+        }
+    }
+
+    // cdk items
+    .filter-scope-cdk-menu.mat-menu-panel {
+        // .mat-menu-content {}
+
+        .filter-scope-columns {
+            .scope-column:not(:last-child) {
+                border-right: 1px solid $divider;
+            }
         }
     }
 
