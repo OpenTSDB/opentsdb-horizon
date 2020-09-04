@@ -1,7 +1,7 @@
 @mixin donut-data-tooltip-component-base() {
     .donut-data-tooltip {
         .tooltip-output {
-            .value-marker {
+            /*.value-marker {
                 display: flex;
 
                 span {
@@ -30,7 +30,7 @@
                         margin-right: 12px;
                     }
                 }
-            }
+            }*/
         }
     }
 }

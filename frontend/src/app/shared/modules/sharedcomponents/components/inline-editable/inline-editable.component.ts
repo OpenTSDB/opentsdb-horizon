@@ -1,6 +1,6 @@
 import {
     Component, Input, EventEmitter, Output, ViewChild, Renderer2,
-    ElementRef, HostListener, HostBinding, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy
+    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { LoggerService } from '../../../../../core/services/logger.service';
@@ -14,7 +14,7 @@ import { MatInput } from '@angular/material';
     styleUrls: []
 })
 
-export class InlineEditableComponent implements OnInit, OnChanges {
+export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy {
     @HostBinding('class.inline-editable') private _hostClass = true;
 
     @Input() fieldValue: string;
@@ -31,6 +31,7 @@ export class InlineEditableComponent implements OnInit, OnChanges {
     placeholder = '_placeholder';
 
     private showEditableEventListener: any;
+    private documentKeydownEventListener: any;
 
     constructor(
         private renderer: Renderer2,
@@ -81,6 +82,14 @@ export class InlineEditableComponent implements OnInit, OnChanges {
             this.inputControl.focus();
         }, 200);
 
+        this.documentKeydownEventListener = this.renderer.listen('document','keydown', (event) => {
+            if (event.key === 'Escape') {
+                this.resetFormField();
+                // remove document.click listener
+                this.showEditableEventListener();
+            }
+        });
+
         // click outside the edit zone
         // saving listener to variable, so we can remove it
         // (yes renderer2.listen returns function that removes event)
@@ -88,6 +97,8 @@ export class InlineEditableComponent implements OnInit, OnChanges {
             this.logger.log('SHOW EDITABLE', event);
             if (!this.container.nativeElement.contains(event.target)) {
                 this.resetFormField();
+                // remove document.keydown listener
+                this.documentKeydownEventListener();
                 // remove document.click listener
                 this.showEditableEventListener();
             }
@@ -104,6 +115,8 @@ export class InlineEditableComponent implements OnInit, OnChanges {
         } else if (!this.fieldFormControl.errors) {
             this.resetFormField();
         }
+        // remove document.keydown listener
+        this.documentKeydownEventListener();
         // remove document.click listener
         this.showEditableEventListener();
     }
@@ -113,11 +126,11 @@ export class InlineEditableComponent implements OnInit, OnChanges {
         this.fieldFormControl.setValue(this.fieldValue);
     }
 
-    @HostListener('document:keydown', ['$event'])
-    closeEditIfEscapePressed(event: KeyboardEvent) {
-        if (event.key === 'Escape') {
-            this.resetFormField();
-            // remove document.click listener
+    ngOnDestroy() {
+        if (this.documentKeydownEventListener) {
+            this.documentKeydownEventListener();
+        }
+        if (this.showEditableEventListener) {
             this.showEditableEventListener();
         }
     }

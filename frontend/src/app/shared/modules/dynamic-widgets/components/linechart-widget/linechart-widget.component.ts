@@ -883,8 +883,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             if ( !isNaN( parseFloat(config.min) ) ) {
                 axis.valueRange[0] =  config.min;
             }
-            if ( !isNaN(parseFloat(config.max)) ) {
-                axis.valueRange[1] = config.max;
+            const max = parseFloat(config.max);
+            if ( !isNaN(max) ) {
+                axis.valueRange[1] = max + max * 0.0001;
             }
 
             if (  axisKeys[i] === 'y1' || axisKeys[i] === 'y2' ) {
