@@ -150,7 +150,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                this.logger.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior
