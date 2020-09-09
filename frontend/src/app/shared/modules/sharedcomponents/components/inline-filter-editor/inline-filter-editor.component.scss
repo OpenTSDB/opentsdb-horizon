@@ -29,6 +29,11 @@
             }
         }
 
+        .option-group-item {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
         .option-item {
             padding: 0;
             font-size: 10px;
@@ -59,7 +64,7 @@
                 margin: auto 0;
                 justify-content: flex-start;
 
-                > span {
+                .automode {
                     padding-left: 2px;
                     padding-right: 2px;
                 }
@@ -103,15 +108,54 @@
         .tag-filters {
             display: flex;
             align-items: flex-start;
+            flex-direction: column;
 
             &.is-active {
                 align-items: stretch;
             }
 
-            .container {
-                min-height: 200px;
+            .header {
+                padding: 5px 5px;
+                min-height: 40px;
                 width: 100%;
                 display: flex;
+                border-radius: 5px;
+                .mat-button-toggle-group {
+                    height: 40px;
+                }
+
+                .dashboard-filters    {
+                    margin-left: 10px;
+                    display: flex;
+                    flex: 1;
+                    align-items: center;
+                    .filter-item {
+                        display: flex;
+                        align-items: center;
+                        margin-left: 5px;
+                    }
+                }
+                .mat-icon {
+                    font-size: 15px;
+                    width:16px;
+                    height: 16px;
+                }
+            }
+
+            .container {
+                min-height: 250px;
+                width: 100%;
+                display: flex;
+                margin-top: 2px;
+
+                .tag-filter-caption {
+                    font-size: 14px;
+                    padding: 3px 0px;
+                }
+
+                .tag-filter-hint {
+                    font-size: 10px;
+                }
             }
         }
 
@@ -221,10 +265,15 @@
                     align-items: stretch;
                     justify-content: stretch;
                     max-width: 300px;
+                    padding: 2px 5px;
 
                     &.tag-values {
                         min-width: 300px;
                     }
+                }
+
+                .tag-filter-options-column.basic-search {
+                    max-width: 500px;
                 }
 
                 .tag-filter-options-column:last-child {
@@ -244,6 +293,19 @@
 
                     .mat-chip {
                         font-weight: 400;
+                        .mat-icon {
+                            visibility: hidden;
+                        }
+                    }
+
+                    .mat-chip:hover {
+                        .mat-icon {
+                            visibility: visible;
+                        }
+                    }
+
+                    .mat-chip > span {
+                        margin: 0px 3px;
                     }
 
                     .mat-standard-chip {
@@ -271,9 +333,9 @@
                     }
 
                     .mat-icon {
-                        width: 15px;
-                        height: 15px;
-                        font-size: 15px;
+                        width: 14px;
+                        height: 14px;
+                        font-size: 14px;
                     }
 
                 }
@@ -328,15 +390,38 @@
                 }
 
                 .tag-key-search,
+                .tag-key-value-search,
                 .tag-values-search,
                 .tag-values-selected-header {
-                    padding: $filter-block-padding;
+                    // padding: $filter-block-padding;
+                    margin: 3px 0px;
                 }
 
                 .tag-key-search,
+                .tag-key-value-search,
                 .tag-values-search-input {
                     .mat-form-field {
                         width: 100%;
+                    }
+                }
+
+                .tag-key-value-search {
+                    
+                    .mat-chip.mat-standard-chip {
+                        background: none;
+                    }
+
+                    .mat-standard-chip {
+                        border-radius: 0px;
+                        padding: 7px 3px;
+                        min-height: 15px;
+                        margin: 0px;
+                        font-weight: 500;
+                    }
+
+                                        
+                    .mat-chip-list-wrapper input.mat-input-element {
+                        font-weight: 400;
                     }
                 }
 
@@ -481,11 +566,34 @@
             border-bottom: 2px solid $divider;
         }
 
+        .automode {
+            color: rgba(0,0,0,.8);
+
+            &.auto-mode {
+                background-color: $dbf-automode-bg;
+                border: 1px solid darken($dbf-automode-bg, 15%);
+            }
+
+            &.manual-mode {
+                background-color: $dbf-manualmode-bg;
+                border: 1px solid darken($dbf-manualmode-bg, 15%);
+            }
+        }
+        
+        .highlight-text {
+            background: #cce2ff;
+        }
+        
+        .mat-icon {
+            color: $option-highlight-text;
+        }
+
         .option-item {
 
             .mat-icon {
                 color: $option-highlight-text;
             }
+
 
             //&.added {
                 /*background-color: $query-block-bg;*/
@@ -510,22 +618,6 @@
                 }*/
             //}
 
-            .option-cell.label {
-                .automode {
-                    color: rgba(0,0,0,.8);
-
-                    &.auto-mode {
-                        background-color: $dbf-automode-bg;
-                        border: 1px solid darken($dbf-automode-bg, 15%);
-                    }
-
-                    &.manual-mode {
-                        background-color: $dbf-manualmode-bg;
-                        border: 1px solid darken($dbf-manualmode-bg, 15%);
-                    }
-                }
-            }
-
             // modifiers
             &.expression {
                 .link {
@@ -545,9 +637,27 @@
 
 
         .tag-filters {
+
+            .header {
+                border: 1px solid #ccc;
+            }
+    
             .container {
-                min-height: 200px;
-                //background: $card-background;
+                border: 1px solid #ccc;
+    
+                .tag-filter-caption {
+                    color: #ccc;
+                }
+    
+                .tag-filter-hint {
+                    color: #ccc;
+                }
+            }
+
+            .link {
+                cursor: pointer;
+                padding: 2px 2px;
+                color: $option-highlight-text;
             }
         }
 
@@ -582,6 +692,8 @@
                 .tag-filter-options-column:last-child {
                     .mat-standard-chip {
                         background: rgba($option-highlight-text, 0.15);
+                        // #016eff hover
+                        // exclude #e8e8e8
 
                         &.automode {
                             color: rgba(0,0,0,.8);
@@ -594,6 +706,31 @@
                             &.manual-mode {
                                 background-color: $dbf-manualmode-bg;
                                 border: 1px solid darken($dbf-manualmode-bg, 15%);
+                            }
+                        }
+                    }
+
+                    .mat-standard-chip:hover {
+                        background: #016eff;
+                        color: white;
+                        .mat-icon {
+                            color: white;
+                        }
+                    }
+
+                    .mat-standard-chip {
+                        &.exclude {
+                            background: #e8e8e8;
+                        }
+
+                        &.exclude:hover {
+                            background: #d5d5d5;
+                            color: #303030;
+                            .mat-icon {
+                                color: #303030;
+                            }
+                            .mat-icon.exclude {
+                                color: red;
                             }
                         }
                     }

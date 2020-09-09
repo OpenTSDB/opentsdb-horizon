@@ -40,28 +40,34 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @ViewChild('tagValueSearchInput') tagValueSearchInput: ElementRef;
     @ViewChild('tagSearchInput') tagSearchInput: ElementRef;
     @ViewChild('trigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('searchInput') searchInput: ElementRef;
 
     namespace: string;
     filters: any[];
     metrics: any[];
     queryBeforeEdit: any;
+    searchType = 'basic';
     tagOptions = [];
     tagFilteredOptions = [];
     filteredTagValues = [];
+    searchResults = {};
     selectedTag = '';
-    loadFirstTagValues = true;
+    loadFirstTagValues = false;
     tagValueTypeControl = new FormControl('literalor');
+    searchControl: FormControl;
     tagSearchControl: FormControl;
     tagValueSearchControl: FormControl;
-    message: any = { 'tagControl': { message: '' }, 'tagValueControl': { message: '' } };
+    message: any = { 'searchControl': { message: '' }, 'tagControl': { message: '' }, 'tagValueControl': { message: '' } };
     queryChanges$: BehaviorSubject<boolean>;
     queryChangeSub: Subscription;
+    searchSub: Subscription;
     tagKeySub: Subscription;
     tagValueSub: Subscription;
     visible = false;
     regexVars = /^!?\[.*\]$/;
     tagValueSearch = false;
     tagSearch = false;
+    basicSearch = false;
 
     constructor(
         private elRef: ElementRef,
@@ -88,7 +94,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 }
             });
         this.setTagKeys();
+        this.setSearch();
+        this.setTagValueSearch();
         this.initFormControls();
+        console.log("tplVariables", this.tplVariables)
     }
 
     initFormControls() {
@@ -98,6 +107,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 debounceTime(100)
             )
             .subscribe(search => {
+                console.log("tagSearchControl", search)
                 search = search.trim();
                 search = search === '' ? '.*' : search;
                 search = search.replace(/\s+/g, '.*').toLowerCase();
@@ -105,10 +115,17 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 for ( let i = 0; i < this.tagOptions.length; i++ ) {
                     this.tagFilteredOptions = this.tagOptions.filter(d => regex.test(d.name.toLowerCase()));
                 }
+                if (this.loadFirstTagValues && this.tagFilteredOptions.length) {
+                    this.handlerTagClick(this.tagFilteredOptions[0].name);
+                    this.loadFirstTagValues = false;
+                }
+                if ( !this.selectedTag && !this.tagFilteredOptions.length ) {
+                    this.filteredTagValues = [];
+                }
                 this.cdRef.detectChanges();
             });
 
-        this.setTagValueSearch();
+        // this.setTagValueSearch();
     }
 
     toggleExplictTagMatch(event: any) {
@@ -117,6 +134,21 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     deleteFilter(index) {
         this.requestChanges();
+    }
+
+    setSearchType(type) {
+        this.searchType = type;
+        if ( type === 'advanced' ) {
+            if ( !this.selectedTag ) {
+                this.tagSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+                this.loadFirstTagValues = true;
+                // this.handlerTagClick(this.tagOptions[0].name);
+            } else {
+                this.tagSearchControl.setValue('');
+            }
+        } else {
+            // this.selectedTag = '';
+        }
     }
 
     setTagKeys() {
@@ -143,13 +175,9 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                                                     const selectedKeys = this.filters.map(item => item.tagk);
                                                     res = res.filter(item => selectedKeys.indexOf(item.name) === -1);
                                                     const options = selectedKeys.map(item => ({ 'name': item })).concat(res);
-                                                    if (this.loadFirstTagValues && options.length) {
-                                                        this.handlerTagClick(options[0].name);
-                                                    }
                                                     this.tagSearch = false;
-                                                    this.loadFirstTagValues = false;
                                                     this.tagOptions = options;
-                                                    this.tagSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+                                                    this.cdRef.detectChanges();
                                                 },
                                                 err => {
                                                     this.tagSearch = false;
@@ -160,6 +188,55 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                                                     this.cdRef.detectChanges();
                                                 }
                                             );
+    }
+
+    setSearch() {
+        this.searchControl = new FormControl('');
+        this.searchControl.valueChanges
+            .pipe(
+                // startWith(''),
+                debounceTime(200)
+            )
+            .subscribe(value => {
+                const query: any = {
+                    namespace: this.namespace,
+                    // add condition since adding var may not with not existing value so fitler length is zero.
+                    tags: this.filters.filter(item => item.tagk !== this.selectedTag && item.filter.length > 0),
+                    metrics: []
+                };
+                query.search = value ? value : '';
+
+                // filter by metrics
+                if (this.metrics) {
+                    for (let i = 0, len = this.metrics.length; i < len; i++) {
+                        if (!this.metrics[i].expression) {
+                            query.metrics.push(this.metrics[i].name);
+                        }
+                    }
+                    query.metrics = query.metrics.filter((x, i, a) => a.indexOf(x) === i);
+                }
+                this.message['searchControl'] = {};
+                if (this.searchSub) {
+                    this.searchSub.unsubscribe();
+                }
+
+                this.basicSearch = true;
+                this.cdRef.detectChanges();
+                this.searchSub = this.httpService.getTagKeysAndTagValuesByNamespace(query, this.options.metaSource)
+                    .subscribe(res => {
+                        console.log("res", res);
+                        this.searchResults = { tagKeys: Object.keys(res.tagKeysAndValues), tagKeysAndValues: res.tagKeysAndValues };
+                        this.basicSearch = false;
+                        this.cdRef.detectChanges();
+                    },
+                        err => {
+                            this.searchResults = { tagValueKeys: [], tagKeysAndValues: {}};
+                            const message = err.error.error ? err.error.error.message : err.message;
+                            this.message['searchControl'] = { 'type': 'error', 'message': message };
+                            this.basicSearch = false;
+                            this.cdRef.detectChanges();
+                    });
+            });
     }
 
     setTagValueSearch() {
@@ -240,21 +317,39 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     handlerTagClick(tag) {
         this.selectedTag = tag;
-        this.tagValueTypeControl.setValue('literalor');
         this.tagValueSearchControl.setValue(null);
         this.tagValueSearch = true;
         this.filteredTagValues = [];
     }
 
+    setTag(tag) {
+        this.handlerTagClick(tag);
+    }
+
+    unsetTag() {
+        this.selectedTag = '';
+        setTimeout(() => {
+            this.searchInput.nativeElement.focus();
+        });
+    }
+
     // to remove tag key and all of its values
-    removeTagValues(tag) {
+    removeTagValues(tag, selected) {
         this.filters.splice(this.getTagIndex(tag), 1);
         this.setTagKeys();
         this.tagValueSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
         this.queryChanges$.next(true);
         // because it acts like it is not selected after you remove it, but looks selected
         // simulate the click again
-        this.handlerTagClick(tag);
+        if ( selected ) {
+            this.handlerTagClick(tag);
+        }
+    }
+
+    isTagSupported(tag) {
+        const index = this.tagOptions.findIndex(d => d.name === tag);
+        console.log("tag", tag, this.tagOptions, index)
+        return index !== -1;
     }
 
     getTagIndex(tag) {
@@ -291,11 +386,12 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     updateTagValueSelection(tag, v, operation) {
+        console.log("updateTagValueSelection", tag, v, operation)
         let tagIndex = this.getTagIndex(tag);
         v = v.trim();
         if (tagIndex === -1 && operation === 'add') {
             tagIndex = this.filters.length;
-            const filter: any = { tagk: this.selectedTag, filter: [], customFilter: [] };
+            const filter: any = { tagk: tag, filter: [], customFilter: [] };
             filter.groupBy = false;
             this.filters[tagIndex] = filter;
         }
@@ -343,7 +439,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
         }
 
-        if ( tag !== this.selectedTag ) {
+        if ( this.selectedTag && tag !== this.selectedTag ) {
             this.tagValueSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
         }
         this.setTagKeys();
@@ -395,6 +491,9 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.queryChangeSub.unsubscribe();
+        if ( this.searchSub ) {
+            this.searchSub.unsubscribe();
+        }
         if (this.tagKeySub) {
             this.tagKeySub.unsubscribe();
         }

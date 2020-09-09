@@ -27,12 +27,28 @@ export class MetaService {
       const query: any = {};
       query.id = params[i].id || 'id-' + i;
       query.namespace =  type !== 'NAMESPACES' ? params[i].namespace : this.utilsService.convertPatternTSDBCompat(params[i].search);
-      if ( type === 'TAG_KEYS_AND_VALUES') {
+      if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
         filters.push({
           type: 'TagValueRegex',
           filter: this.utilsService.convertPattern(params[i].search),
           tagKey: params[i].tagkey
+        });
+      } else if ( type === 'TAG_KEYS_AND_VALUES' && !params[i].tagkey ) {
+        filters.push({
+          type: 'Chain',
+          op: 'OR',
+          'filters': [
+            {
+              'type': 'TagKeyRegex',
+              'filter': this.utilsService.convertPattern(params[i].search)
+            },
+            {
+              'type': 'TagValueRegex',
+              'filter': this.utilsService.convertPattern(params[i].search),
+              'tagKey': '.*'
+            }
+          ]
         });
       }
       switch( type ) {

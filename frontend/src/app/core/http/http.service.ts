@@ -210,6 +210,129 @@ export class HttpService {
                         );
     }
 
+    getTagKeysAndTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+          });
+        // const apiUrl =  environment.metaApi + '/search/timeseries'; 
+        const apiUrl = 'https://dev-mt-2-gq1.yamas.ouroath.com/api/search/timeseries';
+        /*
+        let query = {
+            "from": 0,
+            "to": 1,
+            "order": "ASCENDING",
+            "type": "TAG_KEYS_AND_VALUES",
+            "source": "",
+            "aggregationSize": 10,
+            "queries": [
+              {
+                "id": "id-0",
+                "namespace": "Yamas",
+                "filter": {
+                  "type": "Chain",
+                  "op": "AND",
+                  "filters": [
+                    {
+                      "type": "Chain",
+                      "op": "AND",
+                      "filters": [
+                        {
+                          "type": "MetricLiteral",
+                          "metric": "spikebuster.newCardinality.c.sum"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Chain",
+                      "op": "OR",
+                      "filters": [
+                        {
+                          "type": "TagKeyRegex",
+                          "filter": "ho"
+                        },
+                        {
+                          "type": "TagValueRegex",
+                          "filter": "ho",
+                          "tagKey": ".*"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          };
+          */
+        const query = this.metaService.getQuery(source, 'TAG_KEYS_AND_VALUES', queryObj, false);
+        console.log(JSON.stringify(query), "query");
+        // return of({'tagKeysAndValues': {}});
+          return this.http.post(apiUrl, query, { headers, withCredentials: true })
+                            .pipe(
+                                map((res: any) => res && res.results[0] ? res.results[0] : {'tagKeysAndValues': {}})
+                            );
+                            //*/
+        const res = {
+            "results": [
+              {
+                "totalHits": 2014,
+                "id": "id-0",
+                "namespaces": [
+                  "Yamas"
+                ],
+                "timeseries": [],
+                "metrics": [],
+                "tagKeysAndValues": {
+                  "colo": {
+                    "hits": 2014,
+                    "values": [
+                      {
+                        "name": "bf1",
+                        "count": 261
+                      },
+                      {
+                        "name": "bf2",
+                        "count": 682
+                      },
+                      {
+                        "name": "corp-bf1",
+                        "count": 3
+                      },
+                      {
+                        "name": "corp-gq1",
+                        "count": 2
+                      },
+                      {
+                        "name": "gq1",
+                        "count": 999
+                      },
+                      {
+                        "name": "ir2",
+                        "count": 12
+                      },
+                      {
+                        "name": "ne1",
+                        "count": 23
+                      },
+                      {
+                        "name": "sg3",
+                        "count": 16
+                      },
+                      {
+                        "name": "tw1",
+                        "count": 16
+                      }
+                    ]
+                  }
+                },
+                "tagKeys": [],
+                "tagValues": []
+              }
+            ]
+          };
+        return of(res.results[0]);
+        // */
+    }
+
     // results should filter the lists from already selected filters
     getTagValues(queryObj: any): Observable<string[]> {
         const headers = new HttpHeaders({
