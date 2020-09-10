@@ -869,6 +869,94 @@
     // CDK DRAG ITEM IS PLACED AT BODY LEVEL
     .cdk-drag.cdk-drag-preview {
 
+        .action-icons {
+            float: right;
+
+            .mat-icon-button {
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+
+            .mat-icon {
+                font-size: 16px;
+            }
+        }
+
+        .metric-alias,
+        .visual-panel-dropdown-text {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+
+        .visual-panel-dropdown-text {
+            padding: 0 4px;
+
+            .color-chip {
+                width: 10px;
+                height: 10px;
+                display: inline-block;
+                margin-right: 6px;
+            }
+
+            span:not(:empty) {
+                margin-right: 4px;
+
+                .color-chip {
+                    margin-left: 4px;
+                }
+            }
+
+            span:empty:not(.color-chip) {
+                display: none;
+            }
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
+        }
+
+        .metric-alias {
+            margin-left: 10px;
+
+            .display-name {
+                padding: 0 4px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-left: 8px;
+                }
+            }
+
+            .alias-input-field {
+                .mat-form-field-prefix {
+                    align-self: stretch;
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0 4px;
+                }
+            }
+        }
+
+        .toolbar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .mat-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            strong {
+                padding-left: 20px;
+            }
+        }
+
+
+
         // query item (div)
         &.query-metric-row {
 
@@ -878,11 +966,9 @@
         &.metric-query-item.mat-row {
             height: initial;
 
-            td.mat-cell,
-            td.mat-footer-cell,
-            th.mat-header-cell {
+            td.mat-cell {
                 vertical-align: top;
-                padding: 4px 8px 0;
+                padding: 0;
                 border-bottom: 0px;
 
                 &:first-of-type {
@@ -900,6 +986,7 @@
                 max-width: 50px;
                 width: 50px;
                 font-weight: 500;
+                padding-left: 4px;
 
                 input[type="radio"] {
                     margin-right: 5px;
@@ -1481,6 +1568,167 @@
             .mat-nav-list {
                 .mat-list-item.is-active {
                     background-color: rgba(map-get($primary, default), 0.06);
+                }
+            }
+        }
+    }
+
+    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
+    .cdk-drag.cdk-drag-preview {
+
+        .metric-alias {
+            .display-name {
+               background-color: transparent;
+                color: rgba(
+                    if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    ),
+                    0.5
+                );
+
+                .mat-icon {
+                    color: $link;
+                }
+
+                .alias-text.has-alias {
+                    color: map-get($foreground, text);
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: rgba($link, 0.1);
+                    color: if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    );
+                }
+            }
+        }
+
+        .visual-panel-dropdown-text {
+            color: rgba(
+                if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                ),
+                0.5
+            );
+            margin-left: 4px;
+
+            &:hover {
+                background-color: rgba($link, 0.1);
+                color: if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                );
+            }
+
+            .mat-icon {
+                color: $link;
+            }
+        }
+
+        // query item (div)
+        &.query-metric-row {
+
+        }
+
+        // metric item (tr.mat-row)
+        &.metric-query-item.mat-row {
+
+            .metric-row-data {
+                &.metric-index {
+                    background-color: if(
+                        $is-dark,
+                        rgba($brand-color, 1),
+                        rgba($brand-color, 0.15)
+                    );
+                    color: if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    );
+
+                    /* ▼▼▼ Not sure this is still needed - need to check */
+                    .mat-flat-button {
+                        background: if(
+                            $is-dark,
+                            rgba(255, 255, 255, 0.08),
+                            rgba(0, 0, 0, 0.03)
+                        );
+
+                        .mat-select-arrow-wrapper {
+                            border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
+
+                            .mat-select-arrow {
+                                color: if(
+                                    $is-dark,
+                                    rgba(255, 255, 255, 0.7),
+                                    rgba(0, 0, 0, 0.7)
+                                );
+                            }
+                        }
+                    }
+                }
+
+                &.metric-name,
+                &.expression {
+                    .display-name {
+                        background-color: transparent;
+
+                        .mat-icon {
+                            color: $link;
+                        }
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.tag-aggregator {
+                    .tag-aggregator-wrapper {
+                        background-color: transparent;
+
+                        .aggregator-icon {
+                            color: rgba(map-get($foreground, text), 0.8);
+                        }
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.summarizer-selector {
+                    .mat-button {
+                        color: map-get($foreground, link);
+                    }
+
+                    .summarizer-selector-wrapper {
+                        border: 1px solid $lighter-divider;
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.custom-function {
+                    background-color: transparent;
+
+                    .custom-function-wrapper {
+                        //border: 1px solid $lighter-divider;
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
                 }
             }
         }
