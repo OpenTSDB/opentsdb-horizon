@@ -11,7 +11,7 @@
         type="text"
         #namespaceInput>
 </mat-form-field>
-<mat-autocomplete #namespaceAuto="matAutocomplete" (optionSelected)="namespaceOptionSelected($event)" class="namespace-autocomplete-cdk-menu">
+<mat-autocomplete panelWidth="initial" #namespaceAuto="matAutocomplete" (optionSelected)="namespaceOptionSelected($event)" class="namespace-autocomplete-cdk-menu">
     <mat-option *ngFor="let option of filteredNamespaceOptions" [value]="option">
         {{ option }}
     </mat-option>
