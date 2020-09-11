@@ -321,6 +321,20 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.widget = {...this.widget};
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryOrder':
+                this.widget.queries = this.util.deepClone(message.payload.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricOrder':
+                const qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                this.widget.queries[qindex] = message.payload.query;
+                this.widget.queries = this.util.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
             case 'ToggleDBFilterUsage':
                 this.widget.settings.useDBFilter = message.payload.apply;
                 this.refreshData();
