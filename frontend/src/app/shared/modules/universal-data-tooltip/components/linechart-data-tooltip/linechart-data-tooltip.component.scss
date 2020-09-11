@@ -2,12 +2,12 @@
 
     .linechart-data-tooltip {
         .tooltip-output {
-            .value-marker {
+            /*.value-marker {
                 display: flex;
 
                 span {
                     display: inline-block;
-                    padding: 4px 8px;
+                    padding: 2px 8px;
                     font-size: 14px;
 
                     &.value {
@@ -20,8 +20,8 @@
                 }
             }
             .other-data {
-                padding: 4px 8px;
-                margin-top: 2px;
+                padding: 2px 4px 0 4px;
+                // margin-top: 2px;
                 font-size: 10px;
 
                 p {
@@ -31,7 +31,7 @@
                         margin-right: 12px;
                     }
                 }
-            }
+            }*/
         }
     }
 }
@@ -56,7 +56,6 @@
     $primary-accent-contrast: map-get($primary, A100-contrast);
     $vm-background: if($is-dark, $white, $primary-accent);
     $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
 
     .linechart-data-tooltip {
         .tooltip-output {
