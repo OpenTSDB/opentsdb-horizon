@@ -108,7 +108,6 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
     dragStart (e) {
         this.queriesContainer.nativeElement.classList.add('drag-mode');
-        console.log(e)
     }
 
     dragEnd (e) {
