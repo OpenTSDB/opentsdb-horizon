@@ -97,23 +97,6 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         this.options = Object.assign(defaultOptions, this.options);
     }
 
-    dropTable(event: any) {
-        const curIndex = event.currentIndex;
-        const dragItem = this.widget.queries[event.previousIndex];
-        const dropItem = this.widget.queries[event.currentIndex];
-        this.widget.queries[event.currentIndex] = dragItem;
-        this.widget.queries[event.previousIndex] = dropItem;
-        this.widgetChange.emit({ action: 'UpdateQueryOrder', payload: { queries: this.widget.queries } });
-    }
-
-    dragStart (e) {
-        this.queriesContainer.nativeElement.classList.add('drag-mode');
-    }
-
-    dragEnd (e) {
-        this.queriesContainer.nativeElement.classList.remove('drag-mode');
-    }
-
     addNewQuery() {
         this.widget.queries.push(this.getNewQueryConfig());
     }
@@ -263,6 +246,24 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             }
         }
         return metrics;
+    }
+
+
+    reorderQuery(event: any) {
+        const curIndex = event.currentIndex;
+        const dragItem = this.widget.queries[event.previousIndex];
+        const dropItem = this.widget.queries[event.currentIndex];
+        this.widget.queries[event.currentIndex] = dragItem;
+        this.widget.queries[event.previousIndex] = dropItem;
+        this.widgetChange.emit({ action: 'UpdateQueryOrder', payload: { queries: this.widget.queries } });
+    }
+
+    dragStart (e) {
+        this.queriesContainer.nativeElement.classList.add('drag-mode');
+    }
+
+    dragEnd (e) {
+        this.queriesContainer.nativeElement.classList.remove('drag-mode');
     }
 
     ngOnDestroy() {
