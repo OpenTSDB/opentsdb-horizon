@@ -1267,6 +1267,9 @@
                 .mat-select-arrow-wrapper {
                     color: map-get($foreground, link);
                 }
+                .mat-icon {
+                    color: $link;
+                }
             }
         }
 
@@ -1311,6 +1314,10 @@
                         }
                     }
                 }
+            }
+
+            .mat-icon {
+                color: $link;
             }
         }
 
