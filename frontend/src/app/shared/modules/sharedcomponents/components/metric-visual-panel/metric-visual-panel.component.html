@@ -72,12 +72,11 @@
                         <mat-radio-button value="max">Max</mat-radio-button>
                         <mat-radio-button value="avg">Avg</mat-radio-button>
                         <mat-radio-button value="sum">Sum</mat-radio-button>
-                        <mat-radio-button value="count">Count</mat-radio-button>
                         <mat-radio-button value="last">Last</mat-radio-button>
                     </mat-radio-group>
                     <mat-button-toggle-group class="mat-button-toggle-group-horizontal sort-toggle" name="sortOrder" [value]="data.visual.stackOrder || 'asc'" (change)="setStackOrder(data.metric.id, $event.value)">
-                        <mat-button-toggle value="asc"><mat-icon fontSet="denali" fontIcon="d-arrow-up"></mat-icon></mat-button-toggle>
-                        <mat-button-toggle value="desc"><mat-icon fontSet="denali" fontIcon="d-arrow-down"></mat-icon></mat-button-toggle>
+                        <mat-button-toggle value="asc" matTooltip="sort: ascending">asc</mat-button-toggle>
+                        <mat-button-toggle value="desc" matTooltip="sort: descending">desc</mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
             </div>

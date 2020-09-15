@@ -74,6 +74,9 @@
             .sort-toggle {
                 height: 30px;
                 margin: 5px 0px 0px 10px;
+                .mat-button-toggle-label-content {
+                    height: 20px;
+                }
             }
         }
 
