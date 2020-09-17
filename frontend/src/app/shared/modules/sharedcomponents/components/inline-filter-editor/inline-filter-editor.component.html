@@ -1,7 +1,10 @@
 <div class="tag-filters query-filter-block">
     <div class="header">
-        <mat-button-toggle-group   class="mat-button-toggle-group-horizontal" (change)="setSearchType($event.value)" [value]="searchType">
-            <mat-button-toggle mat-flat-button value="basic">Basic</mat-button-toggle>
+        <div class="icon-wrap">
+            <mat-icon fontSet="denali" fontIcon="d-tag-filter" color="primary"></mat-icon>
+        </div>
+        <mat-button-toggle-group class="mat-button-toggle-group-horizontal" (change)="setSearchType($event.value)" [value]="searchType">
+            <mat-button-toggle mat-flat-button value="basic">Simple</mat-button-toggle>
             <mat-button-toggle mat-flat-button value="advanced">Advanced</mat-button-toggle>
         </mat-button-toggle-group>
         <div class="dashboard-filters">
@@ -68,7 +71,7 @@
                     </div>
                     <div class="tag-values-search-results has-scroller">
                         <div class="is-scroller">
-                            <div class="option-item" *ngIf="tagValueSearchControl.value" 
+                            <div class="option-item" *ngIf="tagValueSearchControl.value"
                             (click)="updateTagValueSelection(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
                             <div class="option-cell add-remove">
                                 <mat-icon>{{ getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
@@ -111,11 +114,11 @@
                                        [matChipInputFor]="chipList"
                                        [matChipInputSeparatorKeyCodes]="[]"
                                        [matChipInputAddOnBlur]="false"
-                                       [formControl]="tagValueSearchControl" 
+                                       [formControl]="tagValueSearchControl"
                                        #tagValueSearchInput
                                        autocomplete="off">
                               </mat-chip-list>
-                        <!--<input  
+                        <!--<input
                             (keydown.enter)="addTagValueRegexp()" >-->
                     </mat-form-field>
                 </div>
@@ -146,7 +149,7 @@
                     <div class="is-scroller">
                         <div class="option-group tag-key-option" *ngFor="let tagkey of searchResults.tagKeys;">
                             <ng-container *ngIf="{matches: tagkey.toLowerCase().indexOf(searchControl.value.toLowerCase())!== -1, n: searchResults.tagKeysAndValues[tagkey].values.length } as tagkeyMeta">
-                                <div class="option-group-item" (click)="setTag(tagkey)"  
+                                <div class="option-group-item" (click)="setTag(tagkey)"
                                             [innerHTML]="tagkey | highlighttext: searchControl.value"></div>
                                 <div class="option-item" *ngFor="let option of searchResults.tagKeysAndValues[tagkey].values | slice:0:(tagkeyMeta.matches ? 3 : tagkeyMeta.n)"
                                     (click)="updateTagValueSelection(tagkey, option.name, (getTagValueIndex(tagkey, option.name) === -1 ? 'add' : 'remove'))">
@@ -156,11 +159,11 @@
                                         <mat-icon *ngIf="getTagValueIndex(tagkey, option.name) !== -1">
                                             remove_circle_outline</mat-icon>
                                     </div>
-                                    <div class="option-cell label" 
+                                    <div class="option-cell label"
                                         [innerHTML]="option.name | highlighttext: searchControl.value">
                                     </div>
                                 </div>
-                                <div *ngIf="tagkeyMeta.matches && tagkeyMeta.n > 3"> 
+                                <div *ngIf="tagkeyMeta.matches && tagkeyMeta.n > 3">
                                     <a (click)="setTag(tagkey)" class="link">View more</a>
                                 </div>
                             </ng-container>
@@ -174,7 +177,7 @@
                 </div>
                 <div class="tag-values-search-results has-scroller" *ngIf="selectedTag">
                     <div class="is-scroller">
-                        <div class="option-item" *ngIf="tagValueSearchControl.value" 
+                        <div class="option-item" *ngIf="tagValueSearchControl.value"
                             (click)="updateTagValueSelection(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
                             <div class="option-cell add-remove">
                                 <mat-icon>{{ getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
@@ -190,7 +193,7 @@
                                 <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">
                                     remove_circle_outline</mat-icon>
                             </div>
-                            <div class="option-cell label" 
+                            <div class="option-cell label"
                                 [innerHTML]=" option.name[0] !== '[' ? (option.name | highlighttext: tagValueSearchControl.value) : ([option.name] | formatAutoManualFilter: tplVariables.tvars )">
                             </div>
                         </div>
@@ -213,7 +216,7 @@
                                 <mat-chip-list>
                                     <strong>{{ filter.tagk }}:</strong>
                                     <mat-chip *ngFor="let fItem of filter.filter" color="blue" removable="false" [ngClass]="{ 'exclude': fItem[0] === '!'}">
-                                        <mat-icon fontSet="denali" [fontIcon]="fItem[0] !== '!' ? 'd-decline' : 'd-decline-solid'" 
+                                        <mat-icon fontSet="denali" [fontIcon]="fItem[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
                                             class="exclude"
                                             (click)="toggleExclude(filter.tagk, fItem, fItem[0] === '!' ? false : true);"
                                             [matTooltip]="fItem[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
@@ -223,7 +226,7 @@
                                     <mat-chip *ngFor="let fItem of filter.customFilter" class="automode"
                                         [ngClass]="{'auto-mode': getAutoManualClass(fItem), 'manual-mode': !getAutoManualClass(fItem)}"
                                         removable="false">
-                                        <mat-icon fontSet="denali" [fontIcon]="fItem[0] !== '!' ? 'd-decline' : 'd-decline-solid'" 
+                                        <mat-icon fontSet="denali" [fontIcon]="fItem[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
                                             class="exclude"
                                             (click)="toggleExclude(filter.tagk, fItem, fItem[0] === '!' ? false : true);"
                                             [matTooltip]="fItem[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
