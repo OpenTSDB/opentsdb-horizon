@@ -131,13 +131,24 @@
                     display: flex;
                     flex: 1;
                     align-items: center;
+                    font-size: 12px;
                     flex-wrap: wrap;
+
                     .filter-item {
                         display: flex;
                         align-items: center;
                         margin-left: 5px;
+
+                        .mat-icon {
+                            margin-right: 3px;
+                        }
+
+                        span.automode {
+                            padding: 0 2px;
+                        }
                     }
                 }
+
                 .mat-icon {
                     @include sizeDenaliIcon(16px);
                 }
@@ -728,10 +739,11 @@
                     .mat-standard-chip {
                         &.exclude {
                             background-color: #e8e8e8;
+                            color: rgba($black, .6);
                         }
 
                         &.exclude:hover {
-                            background-color: $divider;
+                            background-color: darken(#e8e8e8, 15%);
                             color: $black;
                             .mat-icon {
                                 color: $black;
