@@ -97,7 +97,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.setSearch();
         this.setTagValueSearch();
         this.initFormControls();
-        console.log("tplVariables", this.tplVariables)
     }
 
     initFormControls() {
@@ -107,7 +106,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 debounceTime(100)
             )
             .subscribe(search => {
-                console.log("tagSearchControl", search)
                 search = search.trim();
                 search = search === '' ? '.*' : search;
                 search = search.replace(/\s+/g, '.*').toLowerCase();
@@ -224,7 +222,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 this.cdRef.detectChanges();
                 this.searchSub = this.httpService.getTagKeysAndTagValuesByNamespace(query, this.options.metaSource)
                     .subscribe(res => {
-                        console.log("res", res);
                         this.searchResults = { tagKeys: Object.keys(res.tagKeysAndValues), tagKeysAndValues: res.tagKeysAndValues };
                         this.basicSearch = false;
                         this.cdRef.detectChanges();
@@ -348,7 +345,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     isTagSupported(tag) {
         const index = this.tagOptions.findIndex(d => d.name === tag);
-        console.log("tag", tag, this.tagOptions, index)
         return index !== -1;
     }
 
@@ -386,7 +382,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     updateTagValueSelection(tag, v, operation) {
-        console.log("updateTagValueSelection", tag, v, operation)
         let tagIndex = this.getTagIndex(tag);
         v = v.trim();
         if (tagIndex === -1 && operation === 'add') {
