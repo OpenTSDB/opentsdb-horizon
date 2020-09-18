@@ -317,6 +317,7 @@
 
                     .mat-chip:hover {
                         .mat-icon {
+                            cursor: pointer;
                             visibility: visible;
                         }
                     }
@@ -801,8 +802,8 @@
         /*border: 1px solid $cdk-menu-border;
         background-color: $cdk-menu-bg;*/
         // remove default mat-menu-panel styles
-        background: transparent;
-        background-color: transparent;
+        // background: transparent;
+        // background-color: transparent;
         box-shadow: none;
         border: 0;
         overflow: initial;

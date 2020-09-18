@@ -230,7 +230,7 @@
                                             class="exclude"
                                             (click)="toggleExclude(filter.tagk, fItem, fItem[0] === '!' ? false : true);"
                                             [matTooltip]="fItem[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
-                                        <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
+                                        <span>{{ fItem }}</span>
                                         <mat-icon (click)="updateTagValueSelection(filter.tagk, fItem, 'remove');">clear</mat-icon>
                                     </mat-chip>
                                 </mat-chip-list>
