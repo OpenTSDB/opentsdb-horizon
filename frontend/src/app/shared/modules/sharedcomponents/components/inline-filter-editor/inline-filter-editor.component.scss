@@ -132,6 +132,7 @@
                     flex: 1;
                     align-items: center;
                     font-size: 12px;
+                    flex-wrap: wrap;
 
                     .filter-item {
                         display: flex;
@@ -327,6 +328,7 @@
 
                     .mat-chip:hover {
                         .mat-icon {
+                            cursor: pointer;
                             visibility: visible;
                         }
                     }
@@ -339,12 +341,12 @@
                         // background: #eaf1fb;
                         margin: 2px;
                         min-height: 18px;
-                        max-height: 18px;
-                        height: 18px;
+                        max-height: initial;
+                        height: auto;
                         padding: 2px 6px;
                         font-size: 10px;
-                        border-radius: 12px;
-                        line-height: 18px;
+                        border-radius: 8px;
+                        line-height: 1;
                     }
 
                     .prefix.mat-icon{
@@ -812,8 +814,8 @@
         /*border: 1px solid $cdk-menu-border;
         background-color: $cdk-menu-bg;*/
         // remove default mat-menu-panel styles
-        background: transparent;
-        background-color: transparent;
+        // background: transparent;
+        // background-color: transparent;
         box-shadow: none;
         border: 0;
         overflow: initial;
