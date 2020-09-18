@@ -329,12 +329,12 @@
                         // background: #eaf1fb;
                         margin: 2px;
                         min-height: 18px;
-                        max-height: 18px;
-                        height: 18px;
+                        max-height: initial;
+                        height: auto;
                         padding: 2px 6px;
                         font-size: 10px;
-                        border-radius: 12px;
-                        line-height: 18px;
+                        border-radius: 8px;
+                        line-height: 1;
                     }
 
                     .prefix.mat-icon{

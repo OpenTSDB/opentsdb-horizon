@@ -270,10 +270,6 @@
                     padding-right: 8px;
                     width: 50px;
                 }
-
-                /*&:not(:last-child) {
-                    padding-right: 8px;
-                }*/
             }
 
             .cdk-column-metric-index {
@@ -307,6 +303,19 @@
 
             .mat-cell {
                 min-height: initial;
+            }
+
+            .mat-cell.cdk-column-metric-row-data {
+                width: 100%;
+            }
+
+            .metric-row1-data, .metric-row2-data {
+                display: flex;
+                width: 100%;
+            }
+
+            .metric-row1-data > div, .metric-row2-data  > div {
+                display: table-cell;
             }
 
             .metric-row-data {
@@ -787,36 +796,6 @@
         .mat-menu-content:not(:empty) {
             padding: 0;
         }
-
-        /* these styles belong in the component styles for metric-visual-panel
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #ccc; // TODO: move color to theme section
-            padding-bottom: 3px;
-        }
-
-        .footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-top: 1px solid #ccc; // TODO: move color to theme section
-            padding-top: 3px;
-        }
-
-        .table-visual-settings {
-            th {
-                padding-left: 12px;
-            }
-            td {
-                vertical-align: top;
-                padding: 3px 10px;
-                .color-picker-component-control {
-                    border-top: 0px solid #cccccc; // TODO: move color to theme section
-                }
-            }
-        }*/
     }
 
     .function-selection-cdk-menu.mat-menu-panel {
@@ -884,6 +863,338 @@
 
             .mat-icon {
                 @include sizeDenaliIcon(14px);
+            }
+        }
+    }
+
+    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
+    .cdk-drag.cdk-drag-preview {
+
+        .action-icons {
+            float: right;
+
+            .mat-icon-button {
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+
+            .mat-icon {
+                font-size: 16px;
+            }
+        }
+
+        .metric-alias,
+        .visual-panel-dropdown-text {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+
+        .visual-panel-dropdown-text {
+            padding: 0 4px;
+
+            .color-chip {
+                width: 10px;
+                height: 10px;
+                display: inline-block;
+                margin-right: 6px;
+            }
+
+            span:not(:empty) {
+                margin-right: 4px;
+
+                .color-chip {
+                    margin-left: 4px;
+                }
+            }
+
+            span:empty:not(.color-chip) {
+                display: none;
+            }
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
+        }
+
+        .metric-alias {
+            margin-left: 10px;
+
+            .display-name {
+                padding: 0 4px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-left: 8px;
+                }
+            }
+
+            .alias-input-field {
+                .mat-form-field-prefix {
+                    align-self: stretch;
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0 4px;
+                }
+            }
+        }
+
+        .toolbar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .mat-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            strong {
+                padding-left: 20px;
+            }
+        }
+
+
+
+        // query item (div)
+        &.query-metric-row {
+
+        }
+
+        // metric item (tr.mat-row)
+        &.metric-query-item.mat-row {
+            height: initial;
+
+            td.mat-cell {
+                vertical-align: top;
+                padding: 0;
+                border-bottom: 0px;
+
+                &:first-of-type {
+                    vertical-align: middle;
+                    padding-left: 0px;
+                }
+
+                &:last-of-type {
+                    padding-right: 8px;
+                    width: 50px;
+                }
+            }
+
+            .cdk-column-metric-index {
+                max-width: 50px;
+                width: 50px;
+                font-weight: 500;
+                padding-left: 4px;
+
+                input[type="radio"] {
+                    margin-right: 5px;
+                }
+            }
+
+            .cdk-column-alias {
+                white-space: nowrap;
+            }
+
+            // .cdk-column-name {}
+
+            .cdk-column-modifiers {
+                flex: 1;
+            }
+
+            .mat-header-row {
+                display: none;
+            }
+
+            .mat-header-row,
+            .mat-row {
+                min-height: initial;
+            }
+
+            .mat-cell {
+                min-height: initial;
+            }
+
+            .mat-cell.cdk-column-metric-row-data {
+                width: 100%;
+            }
+
+            .metric-row1-data, .metric-row2-data {
+                display: flex;
+                width: 100%;
+            }
+
+            .metric-row1-data > div, .metric-row2-data  > div {
+                display: table-cell;
+            }
+
+            .metric-row-data {
+                height: inherit;
+                // margin-right: 8px;
+                // margin-bottom: 4px;
+                min-height: inherit;
+                display: inline-flex;
+                align-items: center;
+                white-space: nowrap;
+
+                &.metric-index {
+                    padding: 3px;
+                    border-radius: 3px;
+                    cursor: pointer;
+
+                    .label {
+                        display: inline-flex;
+                        align-items: center;
+                    }
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 16px;
+                        margin-right: 4px;
+                    }
+                }
+
+                &.metric-name,
+                &.alias,
+                &.expression {
+                    width: 100%;
+
+                    .display-name {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+                        cursor: pointer;
+                        border-radius: 4px;
+
+                        span {
+                            flex: 1;
+                            padding-left: 6px;
+                            text-overflow: ellipsis;
+                            display: inline-block;
+                            overflow: hidden;
+                        }
+
+                        .alias-text {
+                            color: #999; // TODO: move color to theme section
+                            padding: 0px;
+                        }
+                        .mat-icon {
+                            width: 16px;
+                            height: 16px;
+                            font-size: 12px;
+                            line-height: 16px;
+                            margin-left: 2px;
+                            opacity: 0;
+                            transition: opacity 200ms ease-in-out;
+                        }
+
+                        &:hover {
+                            .mat-icon {
+                                opacity: 1;
+                            }
+                        }
+                    }
+
+                    .mat-form-field {
+                        width: 100%;
+                    }
+                }
+
+                &.tag-aggregator {
+                    .tag-aggregator-wrapper {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+                        border-radius: 4px;
+
+                        .aggregator-icon {
+                            @include sizeDenaliIcon(14px);
+
+                            & + .by-spacer {
+                                margin-left: 4px;
+                            }
+                        }
+
+                        .tag-aggregator-component,
+                        .dropdown-metric-tags {
+                            .mat-button {
+                                padding: 0 8px;
+                                width: initial;
+
+                                .button-label {
+                                    padding: 0 8px;
+                                }
+                            }
+                        }
+
+                        .tag-aggregator-component {
+                            align-self: stretch;
+                        }
+
+                        .dropdown-metric-tags {
+                            padding-right: 0;
+                        }
+                    }
+                }
+
+                &.summarizer-selector {
+                    .summarizer-selector-wrapper {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        height: 32px;
+
+                        .summarizer-title {
+                            padding-left: 5px;
+                            padding-right: 5px;
+                        }
+
+                        .mat-button {
+                            line-height: 32px;
+
+                            .mat-button-wrapper {
+                                display: flex;
+
+                                .mat-select-arrow-wrapper {
+                                    display: flex;
+                                    align-items: center;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &.custom-function,
+                &.add-function {
+                    display: none;
+                }
+
+
+            }
+        }
+
+        .metric-action-buttons {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin-top: 10px;
+
+            .mat-icon-button,
+            .mat-stroked-button,
+            .mat-button {
+                margin-right: 6px;
+                line-height: 24px;
+                font-size: 12px;
+
+                .mat-icon {
+                    margin-right: 5px;
+                    @include sizeDenaliIcon(12px);
+                }
             }
         }
     }
@@ -957,6 +1268,9 @@
                 .mat-select-arrow-wrapper {
                     color: map-get($foreground, link);
                 }
+                .mat-icon {
+                    color: $link;
+                }
             }
         }
 
@@ -1001,6 +1315,10 @@
                         }
                     }
                 }
+            }
+
+            .mat-icon {
+                color: $link;
             }
         }
 
@@ -1264,4 +1582,164 @@
     }
 
 
+    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
+    .cdk-drag.cdk-drag-preview {
+
+        .metric-alias {
+            .display-name {
+               background-color: transparent;
+                color: rgba(
+                    if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    ),
+                    0.5
+                );
+
+                .mat-icon {
+                    color: $link;
+                }
+
+                .alias-text.has-alias {
+                    color: map-get($foreground, text);
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: rgba($link, 0.1);
+                    color: if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    );
+                }
+            }
+        }
+
+        .visual-panel-dropdown-text {
+            color: rgba(
+                if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                ),
+                0.5
+            );
+            margin-left: 4px;
+
+            &:hover {
+                background-color: rgba($link, 0.1);
+                color: if(
+                    $is-dark,
+                    $text,
+                    $brand-color
+                );
+            }
+
+            .mat-icon {
+                color: $link;
+            }
+        }
+
+        // query item (div)
+        &.query-metric-row {
+
+        }
+
+        // metric item (tr.mat-row)
+        &.metric-query-item.mat-row {
+
+            .metric-row-data {
+                &.metric-index {
+                    background-color: if(
+                        $is-dark,
+                        rgba($brand-color, 1),
+                        rgba($brand-color, 0.15)
+                    );
+                    color: if(
+                        $is-dark,
+                        $text,
+                        $brand-color
+                    );
+
+                    /* ▼▼▼ Not sure this is still needed - need to check */
+                    .mat-flat-button {
+                        background: if(
+                            $is-dark,
+                            rgba(255, 255, 255, 0.08),
+                            rgba(0, 0, 0, 0.03)
+                        );
+
+                        .mat-select-arrow-wrapper {
+                            border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
+
+                            .mat-select-arrow {
+                                color: if(
+                                    $is-dark,
+                                    rgba(255, 255, 255, 0.7),
+                                    rgba(0, 0, 0, 0.7)
+                                );
+                            }
+                        }
+                    }
+                }
+
+                &.metric-name,
+                &.expression {
+                    .display-name {
+                        background-color: transparent;
+
+                        .mat-icon {
+                            color: $link;
+                        }
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.tag-aggregator {
+                    .tag-aggregator-wrapper {
+                        background-color: transparent;
+
+                        .aggregator-icon {
+                            color: rgba(map-get($foreground, text), 0.8);
+                        }
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.summarizer-selector {
+                    .mat-button {
+                        color: map-get($foreground, link);
+                    }
+
+                    .summarizer-selector-wrapper {
+                        border: 1px solid $lighter-divider;
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+
+                &.custom-function {
+                    background-color: transparent;
+
+                    .custom-function-wrapper {
+                        //border: 1px solid $lighter-divider;
+
+                        &:hover {
+                            background-color: rgba($link, 0.1);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
