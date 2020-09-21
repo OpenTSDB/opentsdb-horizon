@@ -526,8 +526,8 @@ export class UtilsService {
     // passing order and default is asc
     sortAliasforMultigraph(order: string = 'asc') {
         return function(a, b) {
-            const aPart = a.split(':');
-            const bPart = b.split(':');
+            const aPart = a.split('~');
+            const bPart = b.split('~');
             let a1 = aPart.length === 3 ? aPart[2] : aPart[1];
             let b1 = bPart.length === 3 ? bPart[2] : bPart[1];
             // when row/column does not include metric
