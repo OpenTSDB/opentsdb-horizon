@@ -66,6 +66,14 @@ export class MetricVisualPanelComponent implements OnInit {
     this.setMetricVisual(id, 'stacked', stacked);
   }
 
+  setStackOrderBy(id, orderBy) {
+    this.setMetricVisual(id, 'stackOrderBy', orderBy);
+  }
+
+  setStackOrder(id, order) {
+    this.setMetricVisual(id, 'stackOrder', order);
+  }
+
   setUnit(id, unit) {
     this.setMetricVisual(id, 'unit', unit);
   }

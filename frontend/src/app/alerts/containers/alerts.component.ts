@@ -66,6 +66,7 @@ import { UtilsService } from '../../core/services/utils.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
 import { DataShareService } from '../../core/services/data-share.service';
+import { InfoIslandService } from '../../shared/modules/info-island/services/info-island.service';
 const moment = _moment;
 
 @Component({
@@ -273,7 +274,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private interCom: IntercomService,
         private logger: LoggerService,
         private utils: UtilsService,
-        private dataShare: DataShareService
+        private dataShare: DataShareService,
+        private infoIslandService: InfoIslandService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -429,6 +431,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     panelClass: 'info'
                 });
             }
+            this.infoIslandService.closeIsland();
             this.retriggerAlertSearch();
             this.retriggerSnoozeSearch();
         }));
@@ -571,6 +574,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     // tslint:disable-next-line:max-line-length
                     const ns = url[1] && url[1].path ? url[1].path : (this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
                     this.setNamespace(ns);
+                    this.infoIslandService.closeIsland();
                 }
             } else if (url.length === 1 && !this.utils.checkIfNumeric(url[0].path)) {
                 // if only one item, and its not numeric, probably a namespace
@@ -593,6 +597,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             } else if (url.length === 0 && this.detailsView && this.selectedNamespace.length > 0) {
                 this.location.go('/a/' + (this.list === 'snooze' ? 'snooze/' : '') + this.selectedNamespace);
                 this.detailsView = false;
+                this.infoIslandService.closeIsland();
                 this.setNavbarPortal();
 
             } else if (this.userNamespaces.length || this.allNamespaces.length) {
@@ -601,6 +606,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
                 if (this.detailsView) {
                     this.detailsView = false;
+                    this.infoIslandService.closeIsland;
                 }
             }
         }));
@@ -1106,6 +1112,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
         }
+        this.infoIslandService.closeIsland();
         this.retriggerAlertSearch();
         this.retriggerSnoozeSearch();
     }
