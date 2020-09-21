@@ -225,11 +225,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         }));
 
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
-
+            let overrideTime;
             switch (message.action) {
                 case 'TimeChanged':
                     this.options.isCustomZoomed = false;
-                    this.refreshData();
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( !overrideTime ) {
+                        this.refreshData();
+                    }
                     break;
                 case 'reQueryData':
                     this.refreshData();
@@ -240,7 +243,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     this.cdRef.markForCheck();
                     break;
                 case 'ZoomDateRange':
-                    const overrideTime = this.widget.settings.time.overrideTime;
+                    overrideTime = this.widget.settings.time.overrideTime;
                     if ( message.payload.date.isZoomed && overrideTime ) {
                         const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
                         const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
@@ -607,6 +610,20 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.setOptions();
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
+                break;
+            case 'UpdateQueryOrder':
+                this.widget.queries = this.utilService.deepClone(message.payload.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricOrder':
+                qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                this.widget.queries[qindex] = message.payload.query;
+                this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
                 break;
             case 'UpdateQueryVisual':
                 qindex = this.widget.queries.findIndex(d => d.id === message.id);

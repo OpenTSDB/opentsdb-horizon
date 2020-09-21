@@ -26,6 +26,7 @@ import { IntercomService } from '../../../core/services/intercom.service';
 import { DatepickerComponent } from '../../../shared/modules/date-time-picker/components/date-picker-2/datepicker.component';
 
 import * as moment from 'moment';
+import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 
 @Component({
@@ -94,11 +95,12 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
         private fb: FormBuilder,
         private utils: UtilsService,
         private interCom: IntercomService,
-        private metaService: MetaService
+        private metaService: MetaService,
+        private infoIslandService: InfoIslandService
     ) { }
 
     ngOnInit() {
-        this.pickerOptions = {  startFutureTimesDisabled: false, 
+        this.pickerOptions = {  startFutureTimesDisabled: false,
                                 endFutureTimesDisabled: true,
                                 defaultStartText: '',
                                 defaultEndText: '',
@@ -130,7 +132,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.alertListMeta && changes.alertListMeta.currentValue) {
             const alertListMeta = changes.alertListMeta.currentValue;
             for ( let i = 0; this.data.alertIds && i < this.data.alertIds.length; i++ ) {
-                const option = alertListMeta.find(d => d.id === this.data.alertIds[i]); 
+                const option = alertListMeta.find(d => d.id === this.data.alertIds[i]);
                 if ( option ) {
                     this.alertLabels.push(option);
                 }
@@ -302,6 +304,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.infoIslandService.closeIsland();
         this.interCom.requestSend({
             action: 'clearSystemMessage',
             payload: {}

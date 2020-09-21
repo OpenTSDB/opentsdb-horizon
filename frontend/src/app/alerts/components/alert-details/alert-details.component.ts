@@ -393,6 +393,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.countSub.unsubscribe();
         }
         this.utils.setTabTitle();
+        this.infoIslandService.closeIsland();
     }
 
     ngAfterContentInit() {
@@ -1434,7 +1435,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             payload: { options: this.options}
         });
     }
-    
+
     setSeriesVisibilityConfig(index: number, visibility: boolean) {
         const options = this.options;
         this.options.visibility[index] = visibility;
@@ -1647,7 +1648,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             input.value = '';
         }
     }
-    
+
     trimRecipientName(name) {
         return name.replace(/^\#/, '');
     }
