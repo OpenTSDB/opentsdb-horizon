@@ -1,7 +1,7 @@
 @mixin data-tooltip-component-base() {
     .data-tooltip {
         position: absolute;
-        z-index: 10;
+        z-index: 1001;
         display: block;
         /* transform will be used by script to move element */
         transform-style: preserve-3d;
@@ -71,8 +71,11 @@
             }
         }
 
-        &.hidden {
-            display: none;
+        // .hidden to normally hide/show
+        // the other checks for empty style attribute
+        &.hidden,
+        &[style=''] {
+            visibility: hidden;
         }
 
         &.move-position-strategy {
