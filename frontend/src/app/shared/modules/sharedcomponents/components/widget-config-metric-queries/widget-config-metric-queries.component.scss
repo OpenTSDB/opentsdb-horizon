@@ -184,7 +184,7 @@
 
         .query-group-list.drag-mode {
             .metric-wrapper {
-                display: none;    
+                display: none;
             }
         }
 
@@ -244,7 +244,7 @@
 
     .cdk-drag-preview {
         .metric-wrapper {
-            display: none;    
+            display: none;
         }
     }
     .cdk-drag-placeholder {
@@ -301,6 +301,16 @@
         */
 
         .query-metric-row {
+            position: relative;
+
+            .cdk-drag-handle.metric-query-drag-handle {
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                right: 97px;
+                top: 10px;
+            }
+
             .add-new-query-button {
                 line-height: 24px;
 
