@@ -45,7 +45,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     public scrollBoundaryEl: HTMLElement;
 
     // NEW STUFF
-    public _ttData: any = {};
+    public _ttData: any = false;
     public _ttPosition: any = {};
 
     // output shift direction (which direction the tooltip goes depending on edge proximity)
@@ -92,10 +92,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                 }
                 // show it
                 this.show();
-                /*this.logger.log('__DT STREAM DATA[PARSED]', {
-                    data: this._ttData,
-                    position: this._ttPosition
-                });*/
+
             }
         }));
     }
@@ -136,6 +133,14 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     private _positioner() {
         // this.logger.ng('_POSITIONER', this.mouseBoundaryEl);
 
+        if (!this.ttOutputEl || !this.ttOutputEl.nativeElement) {
+            this.tooltipHidden = true;
+        } else {
+            if (this.tooltipHidden === true) {
+                this.tooltipHidden = false;
+            }
+        }
+
         if (!this.tooltipHidden && this._ttData && this._ttPosition) {
 
             const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
@@ -150,7 +155,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                this.logger.action('CHECK FOR LARGE WIDGET');
+                //this.logger.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior

@@ -606,6 +606,13 @@
                                         </mat-radio-group>
                                     </div>
                                 </div>
+                                <div class="form-group alert-opsgenie-autoclose">
+                                    <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
+                                    <div class="opsgenie-autoclose-flag">
+                                        <mat-checkbox formControlName="opsgenieAutoClose" value="true"></mat-checkbox>
+                                        <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -796,6 +803,13 @@
                                     <mat-radio-group formControlName="opsgeniePriority">
                                         <mat-radio-button *ngFor="let option of opsGeniePriorityOptions" value="{{option.value}}">{{option.label}}</mat-radio-button>
                                     </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="form-group alert-opsgenie-autoclose">
+                                <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
+                                <div class="opsgenie-autoclose-flag">
+                                    <mat-checkbox formControlName="opsgenieAutoClose" value="true"></mat-checkbox>
+                                    <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                 </div>
                             </div>
                         </div>
@@ -1033,6 +1047,12 @@
                                     <div class="form-label vertical-center"><strong>OpsGenie Priority</strong></div>
                                     <div class="priority-type-options">
                                         <span>{{data.notification.opsgeniePriority}}</span>
+                                    </div>
+                                </div>
+                                <div class="form-group alert-opsgenie-autoclose">
+                                    <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
+                                    <div class="opsgenie-autoclose-flag">
+                                        <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
                                     </div>
                                 </div>
                             </div>
