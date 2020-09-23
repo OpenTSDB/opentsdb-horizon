@@ -50,7 +50,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     tagOptions = [];
     tagFilteredOptions = [];
     filteredTagValues = [];
-    searchResults = {};
+    searchResults: any = {};
     selectedTag = '';
     loadFirstTagValues = false;
     tagValueTypeControl = new FormControl('literalor');
@@ -97,6 +97,9 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.setSearch();
         this.setTagValueSearch();
         this.initFormControls();
+        setTimeout(() => {
+            this.searchInput.nativeElement.focus();
+        });
     }
 
     initFormControls() {
@@ -144,8 +147,17 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
             } else {
                 this.tagSearchControl.setValue('');
             }
+            setTimeout(() => {
+                this.tagValueSearchInput.nativeElement.focus();
+            });
         } else {
-            // this.selectedTag = '';
+            setTimeout(() => {
+                if ( this.searchInput ) {
+                    this.searchInput.nativeElement.focus();
+                } else {
+                    this.tagValueSearchInput.nativeElement.focus();
+                }
+            });
         }
     }
 
@@ -193,7 +205,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.searchControl.valueChanges
             .pipe(
                 // startWith(''),
-                debounceTime(200)
+                debounceTime(300)
             )
             .subscribe(value => {
                 const query: any = {
@@ -269,21 +281,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     if (this.tagValueSub) {
                         this.tagValueSub.unsubscribe();
                     }
-                    // any var template match with selected tag
-                    let tplVars: any = [];
-                    if (this.tplVariables.tvars) {
-                        tplVars = this.tplVariables.tvars.filter(v => v.tagk === this.selectedTag);
-                    }
                     this.tagValueSearch = true;
                     this.cdRef.detectChanges();
                     this.tagValueSub = this.httpService.getTagValuesByNamespace(query, this.options.metaSource)
                         .subscribe(res => {
-                            // append tpl vars to the top of the list of value
-                            if (Array.isArray(tplVars) && tplVars.length > 0) {
-                                for (let i = 0; i < tplVars.length; i++) {
-                                    res.unshift({name: '[' + tplVars[i].alias + ']'});
-                                }
-                            }
                             this.filteredTagValues = res;
                             this.tagValueSearch = false;
                             this.cdRef.detectChanges();
@@ -312,15 +313,30 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         this.requestChanges();
     }
 
-    handlerTagClick(tag) {
+    handlerTagClick(tag, search= null) {
+        const index = search ? search.indexOf(':') : -1 ;
+        const tagkSearch = index !== -1 ? search.substring(0, index ) : '';
+        let tagValSearch = '';
+
+        if ( search && tag.search(new RegExp(search, 'i')) !== -1 ) {
+            tagValSearch = '';
+        } else if ( tagkSearch && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
+            tagValSearch = search.substring(index + 1);
+        } else {
+            tagValSearch = search;
+        }
         this.selectedTag = tag;
-        this.tagValueSearchControl.setValue(null);
-        this.tagValueSearch = true;
-        this.filteredTagValues = [];
+        // tslint:disable:max-line-length
+        this.tagValueSearchControl.setValue(tagValSearch, {emitEvent: search && this.searchResults.tagKeysAndValues[tag].values.length ? false : true });
+        this.tagValueSearch = search && this.searchResults.tagKeysAndValues[tag].values.length ? false : true;
+        this.filteredTagValues = search && this.searchResults.tagKeysAndValues[tag].values.length ? this.searchResults.tagKeysAndValues[tag].values : [];
+        setTimeout(() => {
+            this.tagValueSearchInput.nativeElement.focus();
+        });
     }
 
-    setTag(tag) {
-        this.handlerTagClick(tag);
+    setTag(tag, search= null) {
+        this.handlerTagClick(tag, search);
     }
 
     unsetTag() {
@@ -343,9 +359,14 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    isTagSupported(tag) {
+    canAddDashboardFilter(tag, alias) {
         const index = this.tagOptions.findIndex(d => d.name === tag);
-        return index !== -1;
+        const tagIndex = this.getTagIndex(tag);
+        let aliasIndex = -1;
+        if ( tagIndex !== -1 ) {
+            aliasIndex = this.filters[tagIndex].customFilter.findIndex(d => { d = d[0] === '!' ? d.substr(1) : d; return d === alias; });
+        }
+        return index !== -1 && aliasIndex === -1;
     }
 
     getTagIndex(tag) {
