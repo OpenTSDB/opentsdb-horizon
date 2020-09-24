@@ -10,7 +10,7 @@
         <div class="dashboard-filters">
             <span>Dashboard Filters: </span>
             <ng-container *ngFor="let tvar of tplVariables.tvars">
-                <div class="filter-item" *ngIf="isTagSupported(tvar.tagk)" (click)="updateTagValueSelection(tvar.tagk, '[' + tvar.alias + ']', 'add')">
+                <div class="filter-item" *ngIf="canAddDashboardFilter(tvar.tagk, '[' + tvar.alias + ']')" (click)="updateTagValueSelection(tvar.tagk, '[' + tvar.alias + ']', 'add')">
                     <mat-icon>add_circle_outline</mat-icon>
                     <span class="automode" [ngClass]="{'auto-mode': tvar.mode === 'auto', 'manual-mode': tvar.mode === 'manual'}">[{{tvar.alias}}]</span>
                 </div>
@@ -104,9 +104,9 @@
             <div class="tag-filter-options-column tag-keys basic-search" *ngIf="searchType === 'basic'">
                 <div class="tag-filter-caption">TAG SEARCH</div>
                 <div class="tag-key-value-search">
-                    <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
-                        floatLabel="never">
-                        <input matInput placeholder="Search" [formControl]="searchControl" #searchInput
+                    <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary">
+                        <mat-icon matPrefix fontSet="denali" fontIcon="d-search" *ngIf="!selectedTag"></mat-icon>
+                        <input matInput [formControl]="searchControl" #searchInput
                             autocomplete="off" *ngIf="!selectedTag">
                             <mat-chip-list #chipList *ngIf="selectedTag">
                                 <mat-chip (removed)="unsetTag()">{{selectedTag}} / </mat-chip>
@@ -148,10 +148,13 @@
                 <div class="tag-key-search-results has-scroller" *ngIf="!selectedTag && searchControl.value ">
                     <div class="is-scroller">
                         <div class="option-group tag-key-option" *ngFor="let tagkey of searchResults.tagKeys;">
-                            <ng-container *ngIf="{matches: tagkey.toLowerCase().indexOf(searchControl.value.toLowerCase())!== -1, n: searchResults.tagKeysAndValues[tagkey].values.length } as tagkeyMeta">
-                                <div class="option-group-item" (click)="setTag(tagkey)"
-                                            [innerHTML]="tagkey | highlighttext: searchControl.value"></div>
-                                <div class="option-item" *ngFor="let option of searchResults.tagKeysAndValues[tagkey].values | slice:0:(tagkeyMeta.matches ? 3 : tagkeyMeta.n)"
+                            <ng-container *ngIf="{ n: searchResults.tagKeysAndValues[tagkey].values.length } as tagkeyMeta">
+                                <div class="option-group-item" (click)="setTag(tagkey, searchControl.value)">
+                                    <span [innerHTML]="tagkey | highlighttext: searchControl.value"></span>
+                                    <span *ngIf="tagkeyMeta.n > 5" class="link"> more.. </span>
+                                    <span *ngIf="tagkeyMeta.n > 5" class="info"> ( Showing top 5 ) </span>
+                                </div>
+                                <div class="option-item" *ngFor="let option of searchResults.tagKeysAndValues[tagkey].values | slice:0:5"
                                     (click)="updateTagValueSelection(tagkey, option.name, (getTagValueIndex(tagkey, option.name) === -1 ? 'add' : 'remove'))">
                                     <div class="option-cell add-remove">
                                         <mat-icon *ngIf="getTagValueIndex(tagkey, option.name) === -1">
@@ -162,9 +165,6 @@
                                     <div class="option-cell label"
                                         [innerHTML]="option.name | highlighttext: searchControl.value">
                                     </div>
-                                </div>
-                                <div *ngIf="tagkeyMeta.matches && tagkeyMeta.n > 3">
-                                    <a (click)="setTag(tagkey)" class="link">View more</a>
                                 </div>
                             </ng-container>
                         </div>
@@ -185,7 +185,7 @@
                             <div class="option-cell label">regexp({{tagValueSearchControl.value.trim()}})</div>
                         </div>
                         <div class="option-item" *ngFor="let option of filteredTagValues"
-                            [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}"
+                            [ngClass]="{'added': filters[selectedTagIndex] && filters[selectedTagIndex].filter.indexOf(option.name) >= 0 }"
                             (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
                             <div class="option-cell add-remove">
                                 <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1">
@@ -194,7 +194,7 @@
                                     remove_circle_outline</mat-icon>
                             </div>
                             <div class="option-cell label"
-                                [innerHTML]=" option.name[0] !== '[' ? (option.name | highlighttext: tagValueSearchControl.value) : ([option.name] | formatAutoManualFilter: tplVariables.tvars )">
+                                [innerHTML]=" option.name | highlighttext: tagValueSearchControl.value ">
                             </div>
                         </div>
                     </div>
@@ -220,7 +220,7 @@
                                             class="exclude"
                                             (click)="toggleExclude(filter.tagk, fItem, fItem[0] === '!' ? false : true);"
                                             [matTooltip]="fItem[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
-                                        <span>{{ fItem[0]=== '!' ? fItem.substr(1) : fItem }}</span>
+                                        <span>{{ fItem }}</span>
                                         <mat-icon (click)="updateTagValueSelection(filter.tagk, fItem, 'remove');">clear</mat-icon>
                                     </mat-chip>
                                     <mat-chip *ngFor="let fItem of filter.customFilter" class="automode"

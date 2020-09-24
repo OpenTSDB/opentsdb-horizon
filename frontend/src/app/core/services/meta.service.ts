@@ -34,21 +34,10 @@ export class MetaService {
           filter: this.utilsService.convertPattern(params[i].search),
           tagKey: params[i].tagkey
         });
-      } else if ( type === 'TAG_KEYS_AND_VALUES' && !params[i].tagkey ) {
+      } else if ( type === 'BASIC' ) {
         filters.push({
-          type: 'Chain',
-          op: 'OR',
-          'filters': [
-            {
-              'type': 'TagKeyRegex',
-              'filter': this.utilsService.convertPattern(params[i].search)
-            },
-            {
-              'type': 'TagValueRegex',
-              'filter': this.utilsService.convertPattern(params[i].search),
-              'tagKey': '.*'
-            }
-          ]
+          type: 'AnyFieldRegex',
+          filter: this.utilsService.convertPattern(params[i].search),
         });
       }
       switch( type ) {

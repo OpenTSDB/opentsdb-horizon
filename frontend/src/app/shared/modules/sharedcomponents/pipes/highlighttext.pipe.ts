@@ -9,7 +9,7 @@ export class HighlightTextPipe implements PipeTransform {
             return value;
         }
         const re = new RegExp( '(' + regexp + ')', 'gi' );
-        const value1 = value ? value.replace( re, '<span class="highlight-text">$1</span>') : '';
+        const value1 = value ? '<span>' + value.replace( re, '<span class="highlight-text">$1</span>') + '</span>' : '';
         return this.domSanitizer.bypassSecurityTrustHtml(value1);
     }
 }
