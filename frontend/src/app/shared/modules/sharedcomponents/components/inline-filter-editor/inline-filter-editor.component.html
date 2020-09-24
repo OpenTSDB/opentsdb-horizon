@@ -24,7 +24,7 @@
             <div class="tag-filter-options-column tag-keys" *ngIf="searchType === 'advanced'">
                 <div class="tag-filter-caption">TAG KEYS</div>
                 <div class="tag-key-search">
-                    <mat-form-field class="tag-search-input-field" appearance="fill" color="primary"
+                    <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
                         floatLabel="never">
                         <input matInput placeholder="Search tag keys" [formControl]="tagSearchControl" #tagSearchInput
                             autocomplete="off">
@@ -56,7 +56,7 @@
                 <div class="tag-filter-caption">TAG VALUES</div>
                 <div class="tag-values-search">
                     <div class="tag-values-search-input">
-                        <mat-form-field appearance="fill" [color]="'primary'" floatLabel="never">
+                        <mat-form-field appearance="fill" class="noticeable-field" [color]="'primary'" floatLabel="never">
                             <input #tagValueSearchInput [formControl]="tagValueSearchControl" matInput placeholder="Search tag values" autocomplete="off">
                         </mat-form-field>
                     </div>
@@ -104,7 +104,7 @@
             <div class="tag-filter-options-column tag-keys basic-search" *ngIf="searchType === 'basic'">
                 <div class="tag-filter-caption">TAG SEARCH</div>
                 <div class="tag-key-value-search">
-                    <mat-form-field class="tag-search-input-field" appearance="fill" color="primary"
+                    <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
                         floatLabel="never">
                         <input matInput placeholder="Search" [formControl]="searchControl" #searchInput
                             autocomplete="off" *ngIf="!selectedTag">
