@@ -23,7 +23,7 @@
         </div>
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
-            <mat-icon style="cursor: move;" cdkDragHandle>reorder</mat-icon>
+            <mat-icon style="cursor: move;">reorder</mat-icon>
             <button mat-icon-button color="primary" *ngIf="options.toggleQuery"
                 [matTooltip]="query.settings.visual.visible ? 'click to disable' : 'click to enable'"
                 (click)="toggleQuery(); $event.stopPropagation();">
@@ -87,7 +87,7 @@
     <div class="metric-list-wrapper">
         <!-- LOOP THROUGH METRICS
                 SECOND COLUMN IS EMPTY TO BE ABLE TO TAKE THE ABSOLUTE POSITIONED COMMON TAGS BOX -->
-        <table class="metric-list-wrapper-table" mat-table #metricTable [dataSource]="metricTableDataSource" 
+        <table class="metric-list-wrapper-table" mat-table #metricTable [dataSource]="metricTableDataSource"
                 cdkDropList
         [cdkDropListData]="metricTableDataSource.data"
         (cdkDropListDropped)="reorderMetric($event)"
