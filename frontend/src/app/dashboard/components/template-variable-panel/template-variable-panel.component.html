@@ -136,9 +136,6 @@
                             <!-- default value -->
                             <td>
                                 <div class="settings-control values-control">
-                                    <!--<div style="width:180px" [matMenuTriggerFor]="filterScope">
-                                        abc [more...]
-                                    </div>-->
                                     <mat-form-field appearance="fill" color="primary" floatLabel="never">
                                         <input matInput placeholder="Enter default value" formControlName="display"
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
@@ -155,7 +152,7 @@
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                    <span [matMenuTriggerFor]="filterScope">[more...]</span>
+                                    <span [matMenuTriggerFor]="filterScope" [matMenuTriggerData]="{tpl: tpl.value, index: i}">[more...]</span>
                                 </div>
                             </td>
                             <!-- counts -->
@@ -226,6 +223,7 @@
     </div>
     <!-- mat-menu for scope editing-->
     <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu">
+        <ng-template matMenuContent let-tpl="tpl" let-index="index">
         <div class="filter-scope-columns"
             fxLayout="row"
             fxLayoutAlign="stretch stretch"
@@ -236,8 +234,8 @@
                     <!-- input field for filtering -->
                     <mat-form-field class="tag-search-input-field" appearance="outline" color="primary"
                         floatLabel="never">
-                        <input matInput placeholder="Search tag keys" [formControl]="tagSearchInputControl" #tagSearchInput
-                            autocomplete="off">
+                        <input matInput placeholder="Search tag keys" [formControl]="tagValueSearchInputControl"
+                            (focus)="scopeSearchFocus(tpl, index)" (blur)="scopeSearchBlur()" autocomplete="off">
                     </mat-form-field>
                 </div>
                 <div class="list-items has-scroller">
@@ -254,6 +252,7 @@
                 </div>
             </div>
         </div>
+    </ng-template>
     </mat-menu>
 </ng-template>
 <input type=text #focusEl class="hidden-focus">

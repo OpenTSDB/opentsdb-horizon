@@ -63,7 +63,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagValueViewBlurTimeout: any;
     tagValueViewFocusTimeout: any;
 
-    tagSearchInputControl: FormControl = new FormControl('');
+    tagValueScopeSub: Subscription;
+    tagValueSearchInputControl: FormControl = new FormControl('');
+    tagkeyScope = '';
 
     constructor(
         private fb: FormBuilder,
@@ -82,7 +84,11 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         });
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.tagValueScopeSub = this.tagValueSearchInputControl.valueChanges.subscribe(val => {
+            console.log('hill - value is ', val);
+        });
+    }
 
     // to set reset these variable, will be call from dashboard component.
     reset() {
@@ -854,6 +860,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             }
         });
     }
+
+    scopeSearchFocus(tpl: any) {
+        console.log('hill - focus ', tpl);
+        this.tagkeyScope = tpl.tagk; 
+    }
+    // trick to clear the input box value.
+    scopeSearchBlur() {
+        this.tagValueSearchInputControl.setValue('');
+    }
 /*
     resetFilterValue(event: any, index: number) {
         event.stopPropagation();
@@ -901,6 +916,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             if (this.trackingSub.hasOwnProperty(sub) && this.trackingSub[sub] instanceof Subscription) {
                 this.trackingSub[sub].unsubscribe();
             }
+        }
+        if (this.tagValueScopeSub) {
+            this.tagValueScopeSub.unsubscribe();
         }
     }
     get listVariables(): FormArray {
