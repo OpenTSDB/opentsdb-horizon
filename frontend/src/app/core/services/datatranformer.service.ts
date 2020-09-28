@@ -588,11 +588,12 @@ export class DatatranformerService {
             }
         } else if ( !label ) {
             label = tags.metric;
-            for ( let k in tags ) {
+            // remove the tag concat for label since now we do carry tags info.
+            /* for ( let k in tags ) {
                 if ( k !== 'metric' ) {
                     label = label + '-' + tags[k];
                 }
-            }
+            } */
         }
         label = label.length > len ? label.substr(0, len - 2) + '..' : label;
         return label;
