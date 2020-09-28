@@ -51,7 +51,7 @@
             <ng-container *ngFor="let resultTag of resultTagKeys" [matColumnDef]="resultTag">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header >{{resultTag}}</th>
                 <td mat-cell *matCellDef="let element" [ngClass]="{'tag-highlight': !multigraph && highlightTag.key === resultTag && highlightTag.value === element.series.tags[resultTag]}" (click)="timeseriesVisibilityBy('tag', {'tag': resultTag, 'value': element.series.tags[resultTag]})" (mouseover)="tableHighlightTag(resultTag, element.series.tags[resultTag]);" (mouseleave)="tableHighlightTag('', '')">
-                    <span>{{element.series.tags[resultTag]}}</span>
+                    <span>{{element.series.tags[resultTag] || 'n/a'}}</span>
                 </td>
             </ng-container>
 
