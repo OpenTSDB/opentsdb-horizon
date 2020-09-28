@@ -1,8 +1,5 @@
 <div class="landing-page-hero" *ngIf="showHero" style="flex: 1 1 300px; justify-content: flex-start; padding-top: 40px">
         <h2 class="hero-title mat-title">
-            <span class="user-avatar mat-elevation-z2" *ngIf="user && user.alias">
-                <img src="https://git.ouroath.com/{{user.alias}}.png?size=40" />
-            </span>
             <span>Hi {{(user && user.firstName) ? user.firstName : user.alias}}!</span>
             <span>Welcome to Yamas!</span>
         </h2>
