@@ -227,9 +227,6 @@
                         }
                     }
                 }
-
-
-
             }
 
 
@@ -254,23 +251,28 @@
             .query-editor-proto .metric-wrapper{
                 border-left: 0px;
                 border-right: 0px;
+
                 .common-tags {
-                    background-color: #ffffff;
                     padding: 0px;
                     margin-left: 0px;
+
                     .common-tags-wrapper {
                         margin: 0px;
+
                         .mat-button {
                             padding-left: 0px;
                         }
                     }
+
                     .common-tags-label {
                         display: none;
                     }
                 }
+
                 .tags-selected-header {
                     border-bottom: 0px;
                 }
+
                 .tags-selected .tag {
                     margin-left: 0px;
                 }
@@ -422,6 +424,18 @@
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
 
+    $link-color: map-get($foreground, link);
+    $divider-color: map-get($foreground, divider);
+
+    $brand-color: map-get($background, navbar);
+    $brand-color-inverse: map-get($foreground, navbar-text);
+
+    $card: map-get($background, card);
+
+    $dygraph-tooltip-bg: if($is-dark, map-get($background, menu), #f0f0f0);
+    $dygraph-tooltip-border: if($is-dark, lighten(map-get($background, menu), 10%) , #cccccc);
+
+    $text-color: map-get($foreground, text);
 
     .snooze-alert-dialog-component {
         .mat-dialog-title {
@@ -440,6 +454,18 @@
                     &.mat-button-toggle-checked {
                         background-color: rgba(map-get($primary, default), .08);
                     }
+                }
+            }
+        }
+
+        .controls-wrapper {
+            .step-section-label {
+                border-top: 1px solid $divider-color;
+
+                .step-section-label-text {
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                    background-color: if($is-dark, rgba($brand-color-inverse, 0.15), rgba($brand-color, 0.15));
+                    border-bottom-right-radius: 20px 24px;
                 }
             }
         }

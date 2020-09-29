@@ -32,7 +32,7 @@
                 <ng-container matColumnDef="label">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element; let rowIndex = index">
-                        {{element.get('key').value}}
+                        {{element.get('key').value === 'metric_group' ? 'Metrics' : element.get('key').value}}
                     </mat-cell>
                 </ng-container>
 

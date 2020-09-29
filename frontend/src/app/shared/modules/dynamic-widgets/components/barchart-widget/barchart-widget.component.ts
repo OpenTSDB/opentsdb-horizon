@@ -129,13 +129,19 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
+            let overrideTime;
             switch( message.action ) {
                 case 'TimeChanged':
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( !overrideTime ) {
+                        this.refreshData();
+                    }
+                    break;
                 case 'reQueryData':
                     this.refreshData();
                     break;
                 case 'ZoomDateRange':
-                    const overrideTime = this.widget.settings.time.overrideTime;
+                    overrideTime = this.widget.settings.time.overrideTime;
                     if ( message.payload.date.isZoomed && overrideTime ) {
                         const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
                         const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
@@ -336,6 +342,20 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 break;
             case 'DeleteQuery':
                 this.util.deleteQuery(this.widget, message.id);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryOrder':
+                this.widget.queries = this.util.deepClone(message.payload.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricOrder':
+                const qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                this.widget.queries[qindex] = message.payload.query;
+                this.widget.queries = this.util.deepClone(this.widget.queries);
                 this.widget = {...this.widget};
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
