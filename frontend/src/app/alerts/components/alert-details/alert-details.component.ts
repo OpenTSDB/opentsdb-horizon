@@ -393,6 +393,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.countSub.unsubscribe();
         }
         this.utils.setTabTitle();
+        this.infoIslandService.closeIsland();
     }
 
     ngAfterContentInit() {
@@ -508,6 +509,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 subject: data.notification.subject  || '',
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
+                opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
                 // opsgenieTags: data.notification.opsgenieTags || '',
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
@@ -675,6 +677,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 subject: data.notification.subject  || '',
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
+                opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
                 // opsgenieTags: data.notification.opsgenieTags || '',
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
@@ -755,6 +758,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 subject: data.notification.subject  || '',
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
+                opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
                 ocTier: data.notification.ocTier || this.defaultOCTier
@@ -1434,7 +1438,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             payload: { options: this.options}
         });
     }
-    
+
     setSeriesVisibilityConfig(index: number, visibility: boolean) {
         const options = this.options;
         this.options.visibility[index] = visibility;
@@ -1647,7 +1651,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             input.value = '';
         }
     }
-    
+
     trimRecipientName(name) {
         return name.replace(/^\#/, '');
     }
@@ -1701,6 +1705,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if ( this.notificationRecipients.value.opsgenie && !event.opsgenie) {
             this.alertForm['controls'].notification.get('opsgeniePriority').setValue('');
+            this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
         }
         this.notificationRecipients.setValue(event);
 

@@ -64,6 +64,7 @@ import { URLOverrideService } from '../../services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
+import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -244,7 +245,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
-        private dataShare: DataShareService
+        private dataShare: DataShareService,
+        private iiService: InfoIslandService
     ) { }
 
     ngOnInit() {
@@ -272,6 +274,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new LoadDashboard(url[0].path));
                 // favorite subscription
             }
+            // clear info island if any
+            this.iiService.closeIsland();
             // remove system messages - TODO: when adding more apps, put this in app-shell and listen for router change.
             this.interCom.requestSend({
                 action: 'clearSystemMessage',
@@ -856,7 +860,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 wDownsample.value = this.dbDownsample.value;
                 wDownsample.customUnit = this.dbDownsample.customUnit;
                 wDownsample.customValue = this.dbDownsample.customValue;
-            } 
+            }
         }
     }
     // apply when custom tag value is changed
@@ -1303,11 +1307,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // let they refresh as they wish.
                 this.refresh();
                 break;
-            case 'SetDBDownsample': 
+            case 'SetDBDownsample':
                 this.store.dispatch(new UpdateDownsample(message.payload));
                 this.applyDBDownsample(message.payload);
                 break;
-            case 'SetToT': 
+            case 'SetToT':
                 this.isToTChanged = true;
                 this.store.dispatch(new UpdateToT(message.payload));
                 break;
@@ -1554,5 +1558,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscription.unsubscribe();
         this.utilService.setTabTitle();
+        this.iiService.closeIsland();
     }
 }

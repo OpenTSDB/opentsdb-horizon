@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from './utils.service';
+import { DatatranformerService } from './datatranformer.service';
+import { _MatAutocompleteMixinBase } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +10,19 @@ export class MultigraphService {
 
   REGDSID = /q?(\d+)?_?(m|e)(\d+).*/;
 
-  constructor(private utils: UtilsService) { }
+  constructor(private utils: UtilsService, private tranxService: DatatranformerService) { }
 
   // fill up tag values from rawdata
   fillMultiTagValues(widget: any, multiConf: any, rawdata: any): any {
     const startTime = new Date().getTime();
-    const xTemp = multiConf.x ? '{{' + Object.keys(multiConf.x).join('}}/{{') + '}}' : 'x';
-    const yTemp = multiConf.y ? '{{' + Object.keys(multiConf.y).join('}}/{{') + '}}' : 'y';
+    const xTemp = multiConf.x ? '{{{' + Object.keys(multiConf.x).join('}}}/{{{') + '}}}' : 'x';
+    const yTemp = multiConf.y ? '{{{' + Object.keys(multiConf.y).join('}}}/{{{') + '}}}' : 'y';
     let xCombine = [];
     let yCombine = [];
-    const lookupData = {};
+    let lookupData = {};
     const results = {};
+    const regex = /\{\{([\w-.:\/]+)\}\}/ig;
+    const aliasMap = {};
     // we need to handle the case that query or metric is disable
     for (let i = 0; i < rawdata.results.length; i++) {
       const [source, mid] = rawdata.results[i].source.split(':');
@@ -29,13 +33,28 @@ export class MultigraphService {
       const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
       const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
       const dataSrc = rawdata.results[i];
+      const mLabel = this.utils.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
       if (gConfig && gConfig.settings.visual.visible && vConfig.visible) {
         if (dataSrc.source) {
           for (let j = 0; j < dataSrc.data.length; j++) {
-            // tags for each group of data
-            //const tags = { metric_group: dataSrc.data[j].metric, ...dataSrc.data[j].tags };
-            const alias = vConfig.label === '' ? '' : ':' + vConfig.label
-            const tags = { metric_group: mConfig.id + ':' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
+            let alias = vConfig.label === '' ? '' : '~' + vConfig.label;
+            // collecting alias marco key values
+            if (alias.trim() !== '') {
+              const matches = alias.match(regex);
+              if (matches) {
+                const mTags = { metric: !mConfig.expression ? dataSrc.data[j].metric : mLabel, ...dataSrc.data[j].tags };
+                for (let i = 0, len = matches.length; i < len; i++) {
+                  const key = matches[i].replace(/\{|\}/g, '');
+                  if (mTags[key]) {
+                    if (!aliasMap[key]) { aliasMap[key] = []; }
+                    if (!aliasMap[key].includes(mTags[key])) {
+                      aliasMap[key].push(mTags[key]);
+                    }
+                  }
+                }
+              }
+            }
+            const tags = { metric_group: mConfig.id + '~' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
             let x = xTemp;
             let y = yTemp;
             const tagKeys = Object.keys(tags);
@@ -43,13 +62,13 @@ export class MultigraphService {
               const key = tagKeys[k];
               const tagValue = key === 'metric_group' ? tags[key] : tags[key].toLowerCase();
               if (multiConf.x && x.indexOf(key) !== -1) {
-                x = x.replace('{{' + key + '}}', tagValue);
+                x = x.replace('{{{' + key + '}}}', tagValue);
                 if (multiConf.x[key] && !multiConf.x[key].values.includes(tagValue)) {
                   multiConf.x[key].values.push(tagValue);
                 }
               }
               if (multiConf.y && y.indexOf(key) !== -1) {
-                y = y.replace('{{' + key + '}}', tagValue);
+                y = y.replace('{{{' + key + '}}}', tagValue);
                 if (multiConf.y[key] && !multiConf.y[key].values.includes(tagValue)) {
                   multiConf.y[key].values.push(tagValue);
                 }
@@ -75,8 +94,25 @@ export class MultigraphService {
             }
             lookupData[y][x].results[srcIndex].data.push(dataSrc.data[j]);
           }
+          }
         }
+    }
+    // turn array to string and slice them
+    let aliasObj = {};
+    if (Object.keys(aliasMap).length > 0) {
+      for (let key in aliasMap) {
+        aliasObj[key] = aliasMap[key].sort().join('');
+        aliasObj[key] = aliasObj[key].length > 20 ? aliasObj[key].slice(0, 20) + '...' : aliasObj[key];
       }
+      let lookupStr = JSON.stringify(lookupData);
+      let multiConfStr = JSON.stringify(multiConf);
+      for (let key in aliasObj) {
+        let _regex = new RegExp('{{' + key + '}}', 'gi');
+        lookupStr = lookupStr.replace(_regex, aliasObj[key]);
+        multiConfStr = multiConfStr.replace(_regex, aliasObj[key]);
+      }
+      lookupData = JSON.parse(lookupStr);
+      multiConf = JSON.parse(multiConfStr);
     }
     // let build the master results table
     const xAll = multiConf.x ? [] : [['x']];

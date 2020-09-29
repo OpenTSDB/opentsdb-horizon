@@ -79,21 +79,17 @@ export class TooltipComponentService {
     // comes from tt-mouse-listener
     tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
         //console.log('TOOLTIP TYPE', type, mouseBoundaryEl);
+
         if (this._mouseElRef !== mouseBoundaryEl) {
             this._mouseElRef = mouseBoundaryEl;
+        }
 
-            if (type === this._prevTtType) {
-                // same tooltip type, but need to update the mouse boundary element
-                this._componentRef.instance.mouseBoundaryEl = this.mouseElRef;
-            }
+        // destroy old component
+        if (this._componentRef) {
+            this.detachComponent();
         }
-        if (type !== this._prevTtType) {
-            // destroy old component
-            if (this._componentRef) {
-                this.detachComponent();
-            }
-            this.createComponent(type);
-        }
+        // bring in the new
+        this.createComponent(type);
     }
 
     tooltipListen() {
