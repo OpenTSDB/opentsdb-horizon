@@ -153,8 +153,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 } else {
                     ttData.valueFormatted = self.uConverter.convert(pv.yval, format.unit, dunit, { unit: format.unit, precision: precision });
                 }
-
-                ttData.metric = (tags.metric !== label) ? label : tags.metric;
+                const tempLabel = (tags.metric !== label) ? label : tags.metric;
+                ttData.metric = tempLabel.indexOf(tags.metric) > -1 ? tags.metric : tempLabel;
+                // ttData.metric = (tags.metric !== label) ? label : tags.metric;
                 ttData.tags = [];
 
                 for (const k in tags) {
