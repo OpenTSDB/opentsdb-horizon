@@ -4,9 +4,9 @@
         <span class="time">{{_ttData.timestampFormatted}}</span>
     </div>
     <div class="other-data">
-        <p>metric: {{_ttData.metric}}</p>
+        <div>metric: {{_ttData.metric}}</div>
         <ng-container *ngIf="_ttData.tags && _ttData.tags.length > 0">
-            <p *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</p>
+            <div *ngFor="let tag of _ttData.tags">{{tag.key}}: {{tag.value}}</div>
         </ng-container>
     </div>
 </div>
