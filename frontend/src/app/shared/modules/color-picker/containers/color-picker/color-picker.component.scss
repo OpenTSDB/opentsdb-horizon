@@ -151,6 +151,31 @@
             border: 2px solid transparent;
         }
 
+        .palette-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-height: 200px;
+            overflow: auto;
+            .palette-item {
+                position: relative;
+                cursor: pointer;
+                height: 30px;
+                width: 180px;
+            }
+            .palette-item:hover {
+                border: 2px solid blue;
+            }
+            img {
+                height: 26px;
+            }
+            .image-caption {
+                position: absolute;
+                top: 4px;
+                left: 5px;
+            }
+        }
+
         .auto-color {
             width: 140px;
             height: 24px;
@@ -186,10 +211,10 @@
             margin-top: 5px;
             width: 186px;
             font-family: Helvetica;
+            display: flex;
 
-            // custom color button
-            .mat-button {
-                width: 100%;
+            .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+                padding: 0px 5px;
             }
             /*button {
                 padding-right: 22px;
@@ -251,6 +276,13 @@
         .toggle {
             border-top: 1px solid map-get($foreground, divider);
             color: map-get($primary, default);
+        }
+
+        .palette-container {
+            .palette-item:hover,
+            .palette-item.selected {
+                border: 2px solid map-get($primary, default);
+            }
         }
     }
 }

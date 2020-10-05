@@ -51,6 +51,7 @@ export class ColorPickerComponent implements OnInit {
 
     /* Inputs */
     @Input() enableAuto: boolean; // allow auto to be selected - outputs {hex: 'auto', color: 'auto'}
+    @Input() enablePalette = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
     @Input() get pickerMode(): string {
@@ -73,7 +74,7 @@ export class ColorPickerComponent implements OnInit {
         if (this.isRgbValid(value)) {
             this._color = this.rgbToHex(value);
         } else {
-            this._color = coerceHexaColor(value) || 'Auto';
+            this._color = coerceHexaColor(value) || ( this.enablePalette && value ? value : 'Auto' );
         }
 
         // if on embedded view, do not attempt to switch between default and custom
@@ -108,6 +109,56 @@ export class ColorPickerComponent implements OnInit {
     // tslint:disable:no-inferrable-types
     selectingCustomColor: boolean = false;
     _colorPickerSelectorHeight: number = 136;
+    mode = 'palette';
+
+    palettes: any = [
+        {'name': 'blues', 'label': 'Blues', 'path': 'color-palette-blues.png'},
+        {'name': 'greens', 'label': 'Greens', 'path': 'color-palette-greens.png'},
+        {'name': 'greys', 'label': 'Greys', 'path': 'greys.png'},
+        {'name': 'oranges', 'label': 'Oranges', 'path': 'color-palette-oranges.png'},
+        {'name': 'purples', 'label': 'Purples', 'path': 'color-palette-purples.png'},
+        {'name': 'reds', 'label': 'Reds', 'path': 'color-palette-reds.png'},
+        {'name': 'BuGn', 'label': 'BuGn', 'path': 'color-palette-BuGn.png'},
+        {'name': 'BuPu', 'label': 'BuPu', 'path': 'color-palette-BuPu.png'},
+        {'name': 'GnBu', 'label': 'GnBu', 'path': 'color-palette-GnBu.png'},
+        {'name': 'OrRd', 'label': 'OrRd', 'path': 'color-palette-OrRd.png'},
+        {'name': 'PuBuGn', 'label': 'PuBuGn', 'path': 'color-palette-PuBuGn.png'},
+        {'name': 'PuBu', 'label': 'PuBu', 'path': 'color-palette-PuBu.png'},
+        {'name': 'PuRd', 'label': 'PuRd', 'path': 'color-palette-PuRd.png'},
+        {'name': 'RdPu', 'label': 'RdPu', 'path': 'color-palette-RdPu.png'},
+        {'name': 'YlGnBu', 'label': 'YlGnBu', 'path': 'color-palette-YlGnBu.png'},
+        {'name': 'YlGn', 'label': 'YlGn', 'path': 'color-palette-YlGn.png'},
+        {'name': 'ylOrBr', 'label': 'YlOrBr', 'path': 'color-palette-ylOrBr'},
+        {'name': 'ylOrRd', 'label': 'YlOrRd', 'path': 'color-palette-ylOrRd'},
+        {'name': 'cividis', 'label': 'Cividis', 'path': 'color-palette-cividis.png'},
+        {'name': 'viridis', 'label': 'Viridis', 'path': 'color-palette-viridis.png'},
+        {'name': 'inferno', 'label': 'Inferno', 'path': 'color-palette-inferno.png'},
+        {'name': 'magma', 'label': 'Magma', 'path': 'color-palette-magma.png'},
+        {'name': 'plasma', 'label': 'Plasma', 'path': 'color-palette-plasma.png'},
+        {'name': 'warm', 'label': 'Warm', 'path': 'color-palette-warm.png'},
+        {'name': 'cool', 'label': 'Cool', 'path': 'color-palette-cool.png'},
+        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault', 'path': 'color-palette-CubehelixDefault.png'}, //
+        {'name': 'turbo', 'label': 'Turbo', 'path': 'color-palette-turbo.png'},
+        {'name': 'BrBG', 'label': 'BrBG', 'path': 'color-palette-BrBG.png'},
+        {'name': 'PRGn', 'label': 'PRGn', 'path': 'color-palette-PRGn.png'},
+        {'name': 'PiYG', 'label': 'PiYG', 'path': 'color-palette-PiYG.png'},
+        {'name': 'PuOr', 'label': 'PuOr', 'path': 'color-palette-PuOr.png'},
+        {'name': 'RdBu', 'label': 'RdBu', 'path': 'color-palette-RdBu.png'},
+        {'name': 'RdGy', 'label': 'RdGy', 'path': 'color-palette-RdGy.png'},
+        {'name': 'RdYlBu', 'label': 'RdYlBu', 'path': 'color-palette-RdYlBu.png'},
+        {'name': 'RdYlGn', 'label': 'RdYlGn', 'path': 'color-palette-RdYlGn.png'},
+        {'name': 'Spectral', 'label': 'Spectral', 'path': 'color-palette-Spectral.png'},
+        {'name': 'sinebow', 'label': 'Sinebow', 'sinebow': 'color-palette-sinebow.png'},
+        {'name': 'rainbow', 'label': 'Rainbow', 'path': 'color-palette-rainbow.png'},
+        {'name': 'Category10', 'label': 'Category10', 'path': 'color-palette-Category10.png'},
+        {'name': 'Accent', 'label': 'Accent', 'path': 'color-palette-Accent.png'},
+        {'name': 'Dark2', 'label': 'Dark2', 'path': 'color-palette-Dark2.png'},
+        {'name': 'Paired', 'label': 'Paired', 'path': 'color-palette-Paired.png'},
+        {'name': 'Set1', 'label': 'Set1', 'path': 'color-palette-Set1.png'},
+        {'name': 'Set2', 'label': 'Set2', 'path': 'color-palette-Set2.png'},
+        {'name': 'Set3', 'label': 'Set3', 'path': 'color-palette-Set3.png'},
+        {'name': 'Tableau10', 'label': 'Tableau10', 'path': 'color-palette-Tableau10.png'}
+    ];
 
     constructor(
         private elementRef: ElementRef,
@@ -145,17 +196,25 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.selectingCustomColor = false;
-        } else if (this.colorToName(this.color) === this.color) {
-            this.selectingCustomColor = true;
+        console.log("determineIfCustomColor", this.color);
+        const index =  this.palettes.findIndex( d => d.name === this.color );
+        if ( this.enablePalette && index !== -1 ) {
+            this.mode = 'palette';
+        } else if (this.colorToName(this.color) || this.color && this.color.toLowerCase() === 'auto') {
+            this.mode = 'default';
         } else {
-            this.selectingCustomColor = false;
+            this.mode = 'custom';
         }
     }
 
-    toggleSelector() {
-        this.selectingCustomColor = !this.selectingCustomColor;
+    toggleSelector(mode) {
+        // reset the color if single to palette or palette to single
+        if ( mode === 'palette' || this.mode === 'palette' ) {
+            this.color = '';
+            this.emitColor();
+        }
+        console.log("toggleSelector", mode, this.mode, this.color)
+        this.mode = mode;
     }
 
     colorSelected(hexColor: string): void {
@@ -168,6 +227,11 @@ export class ColorPickerComponent implements OnInit {
         }
     }
 
+    colorSchemeSelected(scheme) {
+        this.color = scheme;
+        this.newColor.emit( {'scheme': scheme} );
+    }
+
     emitColor() {
         if (this.color.toLowerCase() === 'auto') {
             this.newColor.emit( { hex: 'auto', rgb: 'auto'});
@@ -177,7 +241,7 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorToName(hexColor: string): string {
-        let colorName = hexColor;
+        let colorName = '';
         // tslint:disable-next-line:prefer-const
         for (let color of this.DefaultColors) {
             if (color.value === hexColor) {
