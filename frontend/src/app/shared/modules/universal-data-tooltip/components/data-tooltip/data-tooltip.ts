@@ -163,8 +163,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                 const heightRatio = (wrapCoords.height / winSize.height) * 100;
 
                 // ratio limit
-                const ratioLimit = 40;
-
+                const ratioLimit = 30;
                 // check if any of the ratio's are larger than max ratio
                 if (widthRatio >= ratioLimit || heightRatio >= ratioLimit) {
                     this.largeWidgetOverride = true;
