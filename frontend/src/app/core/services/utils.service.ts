@@ -3,8 +3,6 @@ import { Title } from '@angular/platform-browser';
 import * as _moment from 'moment';
 import * as d3 from 'd3';
 
-import { isArray } from 'util';
-import { color } from 'd3';
 const moment = _moment;
 
 @Injectable({
@@ -382,7 +380,7 @@ export class UtilsService {
         return colors;
     }
 
-    getColors2(color = null, n = 1) {
+    getColorsHSV(color = null, n = 1) {
         const colors = [];
         let hue;
         if (color) {

@@ -276,10 +276,9 @@ export class DatatranformerService {
             dseries.sort((a: any, b: any) => {
                 // area/bar plotter draws the series from last to first
                 return  ( a.config.group.localeCompare(b.config.group) ||
-                                // !hasToT ? (b.config.order1.localeCompare(a.config.order1, 'en', { numeric: true, sensitivity: 'base' })) :
                                     (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
-                        // the order is reverse as the area/bar plotter draws series from last to first
-                        (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0);
+                                    // the order is reverse as the area/bar plotter draws series from last to first
+                                    (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0);
             });
         // }
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
