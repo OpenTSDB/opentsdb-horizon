@@ -74,8 +74,9 @@
         <!-- Custom Color Selector -->
         <div *ngIf="mode === 'palette'">
             <div class="palette-container">
-                <div *ngFor="let palette of palettes" class="palette-item" [ngClass]="{'selected': palette.name === color }" (click)="colorSchemeSelected(palette.name)">
-                    <img src="/assets/color-palette-{{palette.name}}.png" />
+                <div *ngFor="let palette of palettes" class="palette-item palette-{{palette.name}}" [ngClass]="{'selected': palette.name === color }" (click)="colorSchemeSelected(palette.name)">
+                    <!--<img src="/assets/color-palette-{{palette.name}}.png" />-->
+                    <img src="assets/shim.gif" />
                     <span class="image-caption">{{palette.label}}</span>
                 </div>
             </div>
