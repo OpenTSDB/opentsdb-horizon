@@ -358,11 +358,17 @@ export class UtilsService {
     getColorsFromScheme(name, n ) {
         let colors = [];
         name = name[0].toUpperCase() + name.slice(1);
-        // console.log("name=" + name, n, d3[`scheme${name}`], d3[`interpolate${name}`])
-
-        //if (d3[`scheme${name}`] && d3[`scheme${name}`][n]) {
-          //  colors = d3[`scheme${name}`][n];
-        //} else {
+        const categorical = ['Category10', 'Accent', 'Dark2', 'Paired', 'Set1', 'Set2', 'Set3', 'Tableau10'];
+        if ( categorical.includes(name) ) {
+          const schemeColors = d3[`scheme${name}`];
+          const cn = schemeColors.length;
+          colors = this.deepClone(schemeColors);
+          if ( cn < n ) {
+              for ( let i = cn; i < n; i++) {
+                colors.push( schemeColors[i % cn] );
+              }
+          }
+        } else {
             const interpolate = d3[`interpolate${name}`];
             if ( n <= 2 ) {
                 colors.push(d3.rgb(interpolate(0.5)).hex());
@@ -372,7 +378,7 @@ export class UtilsService {
                 colors.push(d3.rgb(interpolate(i / (n - 1) )).hex());
                 }
             }
-        //}
+        }
         return colors;
     }
 

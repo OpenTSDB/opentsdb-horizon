@@ -231,6 +231,18 @@ $available-palettes:
                         }
                     }
                 }
+                &.palette-cividis,
+                &.palette-viridis,
+                &.palette-inferno,
+                &.palette-magma,
+                &.palette-plasma,
+                &.palette-CubehelixDefault,
+                &.palette-PRGn,
+                &.palette-PuOr {
+                    span {
+                        color: white;
+                    }
+                }
             }
 
             .palette-item:hover {
