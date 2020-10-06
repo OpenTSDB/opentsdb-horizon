@@ -60,12 +60,20 @@
                 padding: 2px 4px 0 4px;
                 // margin-top: 2px;
                 font-size: 10px;
+                max-width: 100%;
+                display: flex;
+                flex-wrap: wrap;
 
-                p {
+                p, div {
                     display: inline-block;
+                    width: auto;
 
                     &:not(:last-child) {
                         margin-right: 12px;
+                    }
+
+                    .tag-key {
+                        font-weight: bold;
                     }
                 }
             }
@@ -81,6 +89,7 @@
         &.move-position-strategy {
             .tooltip-output {
                 @include mat-elevation(2);
+                max-width: 50vw;
 
                 &.shift-below {
                     top: calc(100% + 8px);
