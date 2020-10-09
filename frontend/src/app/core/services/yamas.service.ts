@@ -369,7 +369,7 @@ export class YamasService {
             'baselinePeriod': periodOverPeriodConfig.period + 's',
             'baselineNumPeriods': parseInt(periodOverPeriodConfig.lookbacks, 10),
             'baselineAggregator': 'avg',
-            'excludeMax': parseInt(periodOverPeriodConfig.highestOutlierToRemove, 10),
+            'excludeMax': parseInt(periodOverPeriodConfig.highestOutliersToRemove, 10),
             'excludeMin': parseInt(periodOverPeriodConfig.lowestOutliersToRemove, 10),
             'upperThresholdBad': parseInt(periodOverPeriodConfig.badUpperThreshold, 10),
             'upperThresholdWarn': parseInt(periodOverPeriodConfig.warnUpperThreshold, 10),
