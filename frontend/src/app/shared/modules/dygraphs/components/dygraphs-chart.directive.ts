@@ -426,9 +426,13 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
                     this.options.showLabelsOnHighlight = false;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
+                        const n = self.data.ts.length;
                         // we only handle xzoom
-                        if (!yRanges) {
-                            self.zoomed.emit({ start: minDate / 1000, end: maxDate / 1000, isZoomed: true });
+                        if (!yRanges && n > 0 ) {
+                            const actualStart = new Date(self.data.ts[0][0]).getTime() / 1000;
+                            const actualEnd = new Date(self.data.ts[n - 1][0]).getTime() / 1000;
+                            // tslint:disable-next-line:max-line-length
+                            self.zoomed.emit({ start: minDate / 1000, end: maxDate / 1000, isZoomed: true, actualStart: actualStart, actualEnd: actualEnd });
                         }
                     };
                     this.options.drawCallback = drawCallback;
