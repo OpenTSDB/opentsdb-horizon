@@ -56,7 +56,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     @HostBinding('class.markdown-widget-component')
     get isMarkdownWidget() {
-        console.log('%cMARKDOWN WIDGET CHECK', 'color: white; font-weight: bold; padding: 3px; background: purple;', this.widget)
         return this.widget && this.widget.settings.component_type === 'MarkdownWidgetComponent';
     }
 
@@ -176,7 +175,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         // mainly to load new dynamic widget from selecting type in PlaceholderWidget
         if (changes.widget) {
-            console.log('%cWIDGET CHANGES', 'color: white; background: red;', changes);
 
             if ( changes.widget.previousValue !== undefined && changes.widget.currentValue ) {
                 const oldConfig = changes.widget.previousValue;
@@ -342,15 +340,15 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     widgetShare() {
-        console.log('SHARE WIDGET CLICKED');
+        // ('SHARE WIDGET CLICKED');
     }
 
     widgetExportJSON() {
-        console.log('EXPORT JSON CLICKED');
+        // console.log('EXPORT JSON CLICKED');
     }
 
     widgetExportImage() {
-        console.log('EXPORT IMAGE CLICKED');
+        // console.log('EXPORT IMAGE CLICKED');
     }
 
     widgetRemove() {
