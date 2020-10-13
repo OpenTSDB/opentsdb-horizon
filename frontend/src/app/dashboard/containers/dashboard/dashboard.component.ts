@@ -14,7 +14,7 @@ import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
-import { DBState, LoadDashboard, SaveDashboard, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
+import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
@@ -273,9 +273,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
                 this.store.dispatch(new LoadDashboard(this.dbid));
-            } else {
+            } else if ( !this.snapshot ) {
                 this.store.dispatch(new LoadDashboard(url[0].path));
                 // favorite subscription
+            } else {
+                this.store.dispatch(new LoadSnapshot(url[0].path));
             }
             // remove system messages - TODO: when adding more apps, put this in app-shell and listen for router change.
             this.interCom.requestSend({
@@ -461,10 +463,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
                     const payload: any = {
                         'name': snapTitle,
+                        'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
+                        'sourceId': this.dbid !== '_new_' ? this.dbid : '',
                         'content': dbcontent
                     };
-                    payload.parentPath = '/9/syed';
-                    payload.parentId = 9;
                     this.store.dispatch(new SaveSnapshot('_new_', payload));
                     break;
                 case 'dashboardSaveRequest':
@@ -636,10 +638,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (path !== '_new_' && path !== undefined) {
                 let fullPath = this.location.path();
                 let urlParts = fullPath.split('?');
+                const startPath = this.snapshot ? '/snap' : '/d';
                 if (urlParts.length > 1) {
-                    this.location.replaceState('/d' + path, urlParts[1]);
+                    this.location.replaceState(startPath + path, urlParts[1]);
                 } else {
-                    this.location.replaceState('/d' + path);
+                    this.location.replaceState(startPath + path);
                 }
 
                 // possibly need to update the dbid
@@ -700,7 +703,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.snapshotId$.subscribe(id => {
             console.log('snapshotid', id);
             if ( id ) {
-                window.open('/d/' + id , '_blank');
+                window.open('/snap/' + id , '_blank');
             }
         }));
 
@@ -726,6 +729,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                 } else {
                     this.newWidget = sortWidgets[0];
+                    setTimeout( () => {
+                        this.interCom.responsePut({
+                            action: 'SnapshotMeta',
+                            payload: {
+                                        createdBy: dbstate.loadedDB.createdBy, sourceName: dbstate.loadedDB.sourceName,
+                                        sourceId: dbstate.loadedDB.sourceId, source: dbstate.loadedDB.sourceType,
+                                        createdTime: this.dateUtil.timestampToTime((dbstate.loadedDB.createdTime / 1000).toString(), this.dbTime.zone)}
+                        });
+                    });
                 }
             }
         }));
@@ -881,7 +893,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // applyCustomDownsample to widgets when user change
     applyDBDownsample(dsample: any) {
         // deal with copy of widget since we dont want to write to wiget config
-        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        const cloneWidgets = this.utilService.deepClone( this.snapshot ? [this.newWidget] : this.widgets );
         // find all widget that using downsample as auto
         for (let i = 0; i < cloneWidgets.length; i++) {
             const cWidget = cloneWidgets[i];
@@ -1123,7 +1135,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     applyToTChange() {
-        const cloneWidgets = this.utilService.deepClone(this.widgets);
+        const cloneWidgets = this.utilService.deepClone( this.snapshot ? [this.newWidget] : this.widgets );
         // find all widget that using downsample as auto
         for (let i = 0; i < cloneWidgets.length; i++) {
             const cWidget = cloneWidgets[i];
@@ -1385,6 +1397,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     setTitle(e: any) {
         this.store.dispatch(new UpdateDashboardTitle(e));
+    }
+
+    saveSnapshot() {
+        let content = this.store.selectSnapshot(DBState);
+        content = this.dbService.getStorableFormatFromDBState(content);
+        content.widgets = [this.newWidget];
+        const payload: any = {
+            'name': content.settings.meta.title,
+            'content': content
+        };
+
+        payload.id = this.dbid;
+        this.store.dispatch(new SaveSnapshot(this.dbid, payload));
     }
 
     receiveDashboardAction(event: any) {

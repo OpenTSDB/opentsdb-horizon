@@ -62,6 +62,21 @@ export class SaveDashboardFail {
     constructor(public readonly error: any) { }
 }
 
+export class LoadSnapshot {
+    static readonly type = '[Dashboard] Load Snapshot';
+    constructor(public id: string) {}
+}
+
+export class LoadSnapshotSuccess {
+    static readonly type = '[Dashboard] Load Snapshot Success';
+    constructor(public readonly payload: any) {}
+}
+
+export class LoadSnapshotFail {
+    static readonly type = '[Dashboard] Load Snapshot Fail';
+    constructor(public readonly error: any) { }
+}
+
 export class SaveSnapshot {
     static readonly type = '[Dashboard] Save Snapshot';
     constructor(public id: string, public payload: any) {}
@@ -280,11 +295,46 @@ export class DBState {
         ctx.patchState({...state, status: 'save-failed', error: error });
     }
 
+    @Action(LoadSnapshot)
+    loadSnapshot(ctx: StateContext<DBStateModel>, { id }: LoadSnapshot) {
+        this.logger.action('State :: Load Snapshot', { id });
+        ctx.patchState({ loading: true});
+        return this.httpService.getSnapshotById(id).pipe(
+            map(res => {
+                const dashboard: any = res.body;
+                this.dbService.updateTimeFromURL(dashboard);
+                this.dbService.updateTplVariablesFromURL(dashboard);
+                ctx.dispatch(new LoadSnapshotSuccess(dashboard));
+            }),
+            catchError( error => ctx.dispatch(new LoadSnapshotFail(error)))
+        );
+    }
+
+    @Action(LoadSnapshotSuccess)
+    loadSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadSnapshotSuccess) {
+        this.logger.success('State :: Load Snapshot [SUCCESS]', { payload });
+        ctx.patchState({
+            id: payload.id,
+            version: payload.content.version,
+            createdBy: payload.createdBy,
+            loaded: true,
+            loading: false,
+            path: payload.path,
+            fullPath: '/' + payload.name,
+            loadedDB: payload
+        });
+    }
+
+    @Action(LoadSnapshotFail)
+    loadSnapshotFail(ctx: StateContext<DBStateModel>, { error }: LoadSnapshotFail) {
+        ctx.dispatch({ loading: false, loaded: false, error: error, loadedDB: {} });
+    }
+
     @Action(SaveSnapshot)
     saveSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveSnapshot) {
             ctx.patchState({ status: 'save-progress', error: {} });
             this.logger.action('State :: Save Snapshot', { id, payload });
-            return this.httpService.saveDashboard(id, payload).pipe(
+            return this.httpService.saveSnapshot(id, payload).pipe(
                 map( (res: any) => {
                     ctx.dispatch(new SaveSnapshotSuccess(res.body));
                 }),

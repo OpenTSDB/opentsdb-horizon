@@ -91,6 +91,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     doRefreshDataSub: Subscription;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
     formErrors: any = {};
+    meta: any = {};
 
     @ViewChild('myCanvas') myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
@@ -144,6 +145,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 if ( !message.payload.date.isZoomed ) {
                     delete this.widget.settings.time.zoomTime;
                 }
+            } else if ( message.action === 'SnapshotMeta' ) {
+                    this.meta = message.payload;
             }
             if (message && (message.id === this.widget.id)) { // 2. Get and set the metric
                 switch (message.action) {

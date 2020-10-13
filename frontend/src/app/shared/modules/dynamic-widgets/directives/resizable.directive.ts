@@ -35,30 +35,20 @@ export class ResizableDirective implements OnInit {
 
     const newHeight = (wid) => {
       const newHeight = Math.max(this.resizableMinHeight, wid);
-      this.el.nativeElement.style.height = (newHeight) + "px";
+      this.el.nativeElement.style.height = (newHeight) + 'px';
       return newHeight;
     }
 
-
-    const dragMoveG = (evt) => {
-      if (!this.dragging) {
-        return;
-      }
-      // el.nativeElement.style.cursor = "col-resize";
-      // const newWidth = Math.max(this.resizableMinHeight, (evt.clientY - el.nativeElement.offsetTop)) + "px";
-      this.el.nativeElement.style.height = (evt.clientY - this.el.nativeElement.offsetTop) + "px";
-      evt.stopPropagation();
-    };
-
     const mouseMoveGlobal = (evt) => {
+      document.body.style.cursor = this.dragging ? 'ns-resize' : 'default';
       if (!this.dragging) {
         return;
       }
-      // console.log(evt, el.nativeElement.getBoundingClientRect(), el.nativeElement.offsetTop)
+      this.el.nativeElement.style.cursor = 'ns-resize';
       const position = this.el.nativeElement.getBoundingClientRect();
       const height = newHeight(evt.clientY - position.top + this.resizableGrabHeight);
       this.resizeOut.emit();
-      evt.stopPropagation({ height: height });
+      evt.preventDefault();
     };
 
     const mouseUpGlobal = (evt) => {
@@ -73,17 +63,15 @@ export class ResizableDirective implements OnInit {
     const mouseDown = (evt) => {
       if (this.inDragRegion(evt)) {
         this.dragging = true;
-        preventGlobalMouseEvents();
-        evt.stopPropagation();
       }
     };
 
 
     const mouseMove = (evt) => {
       if (this.inDragRegion(evt) || this.dragging) {
-        this.el.nativeElement.style.cursor = "ns-resize";
+        this.el.nativeElement.style.cursor = 'ns-resize';
       } else {
-        this.el.nativeElement.style.cursor = "default";
+        this.el.nativeElement.style.cursor = 'default';
       }
     }
 
@@ -92,7 +80,7 @@ export class ResizableDirective implements OnInit {
       document.addEventListener('mouseup', mouseUpGlobal, true);
       this.el.nativeElement.addEventListener('mousedown', mouseDown, true);
       this.el.nativeElement.addEventListener('mousemove', mouseMove, true);
-      this.el.nativeElement.style["border-bottom"] =  "3px solid #000";
+      // this.el.nativeElement.style["border-bottom"] =  "3px solid #000";
     }
   }
 

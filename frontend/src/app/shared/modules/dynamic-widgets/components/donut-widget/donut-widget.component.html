@@ -11,6 +11,9 @@
                 [maxLength]="100"
                 (updatedValue)="setTitle($event)">
             </inline-editable>
+            <span class="info" *ngIf="mode === 'snap'">
+                This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
+            </span>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="DonutWidgetComponent" *ngIf="mode === 'edit'"></graph-type>
         <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">

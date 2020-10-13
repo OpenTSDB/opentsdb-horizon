@@ -90,6 +90,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     isDestroying = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
     formErrors: any = {};
+    meta: any = {};
 
     constructor(
         private interCom: IntercomService,
@@ -156,6 +157,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                     if ( !message.payload.date.isZoomed ) {
                         delete this.widget.settings.time.zoomTime;
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
             if (message && (message.id === this.widget.id)) {

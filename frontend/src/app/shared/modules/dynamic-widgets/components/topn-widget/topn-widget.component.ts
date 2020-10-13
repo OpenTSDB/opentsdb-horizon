@@ -50,6 +50,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     doRefreshDataSub: Subscription;
     legendWidth = 0;
     nQueryDataLoading = 0;
+    meta: any = {};
     error: any;
     errorDialog: MatDialogRef < ErrorDialogComponent > | null;
     debugData: any; // debug data from the data source.
@@ -107,6 +108,9 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                     if ( !message.payload.date.isZoomed ) {
                         delete this.widget.settings.time.zoomTime;
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
             if (message && (message.id === this.widget.id)) {

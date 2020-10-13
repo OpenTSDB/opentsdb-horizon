@@ -96,7 +96,10 @@
     </span>
 
     <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && (!viewEditMode || snapshot)">
-        <navbar-dashboard-actions-menu mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+        <navbar-dashboard-actions-menu *ngIf="!viewEditMode" mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+        <button mat-flat-button class="save-dashboard-button" *ngIf="snapshot && doesUserHaveWriteAccess()" (click)="saveSnapshot()">
+            <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
+        </button>
     </span>
 
 

@@ -134,6 +134,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     timer = null;
     preventSingleClick: boolean;
     clickTimer: any;
+    meta: any = {};
 
     // MULTIGRAPH
     // TODO: These multigraph values need to be retrieved from widget settings
@@ -267,6 +268,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.legendFocus = false;
                         this.cdRef.markForCheck();
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
 

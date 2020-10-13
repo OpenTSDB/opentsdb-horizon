@@ -66,6 +66,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     needRequery = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'legend': false };
     formErrors: any = {};
+    meta: any = {};
 
     constructor(
         private interCom: IntercomService,
@@ -121,6 +122,9 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                     if ( !message.payload.date.isZoomed ) {
                         delete this.widget.settings.time.zoomTime;
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
             if (message && (message.id === this.widget.id)) {

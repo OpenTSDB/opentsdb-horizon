@@ -83,6 +83,11 @@ $widgets-common-config: (
                 }
 
                 .title-content {
+                    .info {
+                        font-size: 12px;
+                        font-weight: 300;
+                    }
+                    
                     .mat-icon-button {
                         width: 24px;
                         height: 24px;

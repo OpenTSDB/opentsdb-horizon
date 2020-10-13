@@ -112,6 +112,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   needRequery = false;
   visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
   formErrors: any = {};
+  meta: any = {};
 
   constructor(
       private cdRef: ChangeDetectorRef,
@@ -165,6 +166,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
               case 'TimezoneChanged':
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };
+                  break;
+             case 'SnapshotMeta':
+                  this.meta = message.payload;
                   break;
           }
 
