@@ -84,13 +84,19 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
+            let overrideTime;
             switch ( message.action ) {
                 case 'TimeChanged':
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( !overrideTime ) {
+                        this.refreshData();
+                    }
+                    break;
                 case 'reQueryData':
                     this.refreshData();
                     break;
                 case 'ZoomDateRange':
-                    const overrideTime = this.widget.settings.time.overrideTime;
+                    overrideTime = this.widget.settings.time.overrideTime;
                     if ( message.payload.date.isZoomed && overrideTime ) {
                         const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
                         const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();

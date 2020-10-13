@@ -44,15 +44,6 @@
             <mat-icon fontSet="denali" [fontIcon]="isUserFavorited ? 'd-star-solid' : 'd-star'"></mat-icon>
         </button>
     </span>
-
-    <!--
-    <span class="navbar-item nav-dashboard-template-var-trigger" *ngIf="tplVariables.length === 0">
-        <button mat-raised-button class="mat-elevation-z0" (click)="variablePanelMode = 'edit'">
-            <mat-icon fontSet="denali" fontIcon="d-setting"></mat-icon>
-            <span>Config custom tags</span>
-        </button>
-    </span>
-    -->
     <span class="flex-spacer"></span>
 
     <span class="navbar-item nav-add-new-widget" *ngIf="!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
@@ -78,7 +69,6 @@
             </ng-template>
         </mat-menu>
     </span>
-
     <time-picker class="navbar-item nav-date-time-picker"
         (newChange)="handleTimePickerChanges($event)"
         [downsample]="dbDownsample"
@@ -90,7 +80,6 @@
         [refresh]="refresh$ | async"
         [xPosition]="menuXAlignValue">
     </time-picker>
-
     <span class="navbar-item nav-timezone-toggle">
         <navbar-timezone-toggle [timezone]="dbTime.zone" (change)="setTimezone($event);"></navbar-timezone-toggle>
     </span>
@@ -101,11 +90,4 @@
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
         </button>
     </span>
-
-
-    <!-- DISABLE FOR NOW
-    <span class="navbar-item navbar-icon-item nav-theme-picker">
-        <theme-picker mat-button></theme-picker>
-    </span>
-    -->
 </ng-template>

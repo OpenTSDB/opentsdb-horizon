@@ -10,12 +10,18 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     @HostBinding('style') positionStyles: SafeStyle = '';
 
     @HostBinding('class.move-position-strategy')
-    get movePositionStrategry(): boolean {
+    get movePositionStrategy(): boolean {
+        if (this.largeWidgetOverride !== undefined && this.largeWidgetOverride === true) {
+            return true;
+        }
         return this.positionStrategy === 'move';
     }
 
     @HostBinding('class.sticky-position-strategy')
-    get stickyPositionStrategry(): boolean {
+    get stickyPositionStrategy(): boolean {
+        if (this.largeWidgetOverride !== undefined && this.largeWidgetOverride === true) {
+            return false;
+        }
         return this.positionStrategy === 'sticky';
     }
 
@@ -32,12 +38,14 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
         this._tooltipHidden = val;
     }
 
+    private largeWidgetOverride;
+
     public ttOutputEl: ElementRef;
     public mouseBoundaryEl: HTMLElement;
     public scrollBoundaryEl: HTMLElement;
 
     // NEW STUFF
-    public _ttData: any = {};
+    public _ttData: any = false;
     public _ttPosition: any = {};
 
     // output shift direction (which direction the tooltip goes depending on edge proximity)
@@ -84,10 +92,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
                 }
                 // show it
                 this.show();
-                /*this.logger.log('__DT STREAM DATA[PARSED]', {
-                    data: this._ttData,
-                    position: this._ttPosition
-                });*/
+
             }
         }));
     }
@@ -101,6 +106,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
         // console.log('===> HIDE');
         this.tooltipHidden = true;
         this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
+        this.largeWidgetOverride = undefined;
     }
 
     getTooltipOutputDiv() {
@@ -127,6 +133,14 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     private _positioner() {
         // this.logger.ng('_POSITIONER', this.mouseBoundaryEl);
 
+        if (!this.ttOutputEl || !this.ttOutputEl.nativeElement) {
+            this.tooltipHidden = true;
+        } else {
+            if (this.tooltipHidden === true) {
+                this.tooltipHidden = false;
+            }
+        }
+
         if (!this.tooltipHidden && this._ttData && this._ttPosition) {
 
             const wrapCoords = this.mouseBoundaryEl.getBoundingClientRect();
@@ -138,8 +152,28 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // get dimensions of tooltip
             const outputCoords = this.ttOutputEl.nativeElement.getBoundingClientRect();
 
+            // if strategy is sticky, check if we need large widget override
+            if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
+
+                //this.logger.action('CHECK FOR LARGE WIDGET');
+                // check if widget is fairly large in comparison to window
+                // if too large, skip sticky position strategy (if it is set)
+                // and revert to normal tooltip behavior
+                const widthRatio = (wrapCoords.width / winSize.width) * 100;
+                const heightRatio = (wrapCoords.height / winSize.height) * 100;
+
+                // ratio limit
+                const ratioLimit = 30;
+                // check if any of the ratio's are larger than max ratio
+                if (widthRatio >= ratioLimit || heightRatio >= ratioLimit) {
+                    this.largeWidgetOverride = true;
+                } else {
+                    this.largeWidgetOverride = false;
+                }
+            }
+
             /** POSITION STRATEGY :: STICKY **/
-            if (this.positionStrategy === 'sticky') {
+            if (this.positionStrategy === 'sticky' && !this.largeWidgetOverride) {
                 const scrollBoundaryOffsets: any = {
                     x: this.scrollBoundaryEl.scrollLeft,
                     y: this.scrollBoundaryEl.scrollTop
@@ -192,7 +226,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             }
 
             /** POSITION STRATEGY :: MOUSEMOVE **/
-            if (this.positionStrategy === 'move') {
+            if (this.positionStrategy === 'move' || this.largeWidgetOverride) {
 
                 const offsetAmount = 20;
 
@@ -215,8 +249,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
                 // tell angular to trust the styles
                 this.positionStyles = this.sanitizer.bypassSecurityTrustStyle(styleString);
-
-
             }
         } else {
             this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');

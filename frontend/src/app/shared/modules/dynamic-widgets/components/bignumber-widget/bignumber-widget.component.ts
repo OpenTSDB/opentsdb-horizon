@@ -123,11 +123,16 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
             });
 
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
-
-            if (message.action === 'TimeChanged' || message.action === 'reQueryData') {
+            let overrideTime;
+            if ( message.action === 'TimeChanged' ) {
+                overrideTime = this.widget.settings.time.overrideTime;
+                if ( !overrideTime ) {
+                    this.refreshData();
+                }
+            } else if ( message.action === 'reQueryData' ) {
                 this.refreshData();
             } else if ( message.action === 'ZoomDateRange') {
-                const overrideTime = this.widget.settings.time.overrideTime;
+                overrideTime = this.widget.settings.time.overrideTime;
                 if ( message.payload.date.isZoomed && overrideTime ) {
                     const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
                     const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();

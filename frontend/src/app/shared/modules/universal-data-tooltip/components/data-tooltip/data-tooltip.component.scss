@@ -1,7 +1,7 @@
 @mixin data-tooltip-component-base() {
     .data-tooltip {
         position: absolute;
-        z-index: 10;
+        z-index: 1001;
         display: block;
         /* transform will be used by script to move element */
         transform-style: preserve-3d;
@@ -34,19 +34,62 @@
 
         .tooltip-output {
             position: absolute;
-            padding: 8px;
+            padding: 4px;
             border-radius: 4px;
             white-space: nowrap;
             word-break: unset;
+
+            .value-marker {
+                display: flex;
+
+                span {
+                    display: inline-block;
+                    padding: 2px 8px;
+                    font-size: 14px;
+
+                    &.value {
+                        font-weight: bold;
+                    }
+
+                    &.time {
+                        flex: 1;
+                    }
+                }
+            }
+            .other-data {
+                padding: 2px 4px 0 4px;
+                // margin-top: 2px;
+                font-size: 10px;
+                max-width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+
+                p, div {
+                    display: inline-block;
+                    width: auto;
+
+                    &:not(:last-child) {
+                        margin-right: 12px;
+                    }
+
+                    .tag-key {
+                        font-weight: bold;
+                    }
+                }
+            }
         }
 
-        &.hidden {
-            display: none;
+        // .hidden to normally hide/show
+        // the other checks for empty style attribute
+        &.hidden,
+        &[style=''] {
+            visibility: hidden;
         }
 
         &.move-position-strategy {
             .tooltip-output {
                 @include mat-elevation(2);
+                max-width: 50vw;
 
                 &.shift-below {
                     top: calc(100% + 8px);
@@ -154,7 +197,8 @@
     //$sticky-txt: if($is-dark, $black, $primary-accent-contrast);
     $sticky-bg: $primary-accent;
     $sticky-txt: $primary-accent-contrast;
-    $sticky-opacity: if($is-dark, .80, .80);
+    //$sticky-opacity: if($is-dark, .80, .80);
+    $sticky-opacity: 1;
     $sticky-shim: map-get($background, background);
 
     $move-bg: if($is-dark, darken($white, 25%), lighten($black, 25%));
@@ -163,11 +207,15 @@
     $shadow-color: map-get($primary, default);
     $shadow-opacity: .65;
 
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
+
     .data-tooltip {
         &.move-position-strategy {
             .tooltip-output {
-                background: $move-bg;
-                color: $move-txt;
+                box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
+                background: rgba($sticky-bg, $sticky-opacity);
+                color: rgba($sticky-txt, .95);
                 border: 1px solid currentColor;
             }
         }
@@ -178,6 +226,12 @@
                 box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
                 background: rgba($sticky-bg, $sticky-opacity);
                 color: rgba($sticky-txt, .95);
+
+                .value-marker,
+                .other-data {
+                    //background: rgba($vm-background, .65);
+                    color: $vm-text;
+                }
             }
         }
     }
@@ -185,13 +239,13 @@
     .tooltip-mouse-boundary-hover {
         box-shadow: 0 0 5px rgba($shadow-color, $shadow-opacity);
 
-        &.shift-above {
+        /*&.shift-above {
             //box-shadow: 0 -2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
         }
 
         &.shift-below {
             //box-shadow: 0 2px 0 0 $sticky-shim, 0 0px 0px 2px rgba($sticky-bg, $sticky-opacity);
-        }
+        }*/
 
     }
 
