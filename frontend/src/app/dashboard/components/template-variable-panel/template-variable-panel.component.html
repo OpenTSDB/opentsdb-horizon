@@ -152,7 +152,7 @@
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                    <span [matMenuTriggerFor]="filterScope" [matMenuTriggerData]="{tpl: tpl.value, index: i}">[more...]</span>
+                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose('close')" (menuOpened)="scopeOpen(tpl, i)" [matMenuTriggerData]="{tpl: tpl.value, index: i}">[more...]</span>
                                 </div>
                             </td>
                             <!-- counts -->
@@ -234,21 +234,20 @@
                     <!-- input field for filtering -->
                     <mat-form-field class="tag-search-input-field" appearance="outline" color="primary"
                         floatLabel="never">
-                        <input matInput placeholder="Search tag keys" [formControl]="tagValueSearchInputControl"
-                            (focus)="scopeSearchFocus(tpl, index)" (blur)="scopeSearchBlur()" autocomplete="off">
+                        <input matInput placeholder="Search tag keys" [formControl]="tagValueSearchInputControl" (focus)="scopeSearchFocus(tpl, index)" autocomplete="off">
                     </mat-form-field>
                 </div>
-                <div class="list-items has-scroller">
+                <div class="list-items has-scroller" style="min-height: 100%">
                     <div class="is-scroller">
                         <!-- loop of filtered items-->
-                        <div class="list-item"></div>
+                        <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)">{{item}}</div>
                     </div>
                 </div>
             </div>
             <div class="scope-column col-right has-scroller" fxFlex="1 1 100%">
                 <div class="is-scroller">
                     <!-- loop of items -->
-                    col2
+                    <div *ngFor="let val of tagScope" class="list-item">{{val}}</div>
                 </div>
             </div>
         </div>
