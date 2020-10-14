@@ -193,7 +193,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     variablePanelMode: any = { view : true };
     userNamespaces: any[] = [];
     viewEditMode = false;
-    snapshot = true;
+    snapshot = false;
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
     dashboardDeleteDialog: MatDialogRef<DashboardDeleteDialogComponent> | null;
@@ -705,8 +705,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.snapshotId$.subscribe(id => {
-            console.log('snapshotid', id);
-            if ( id ) {
+            if ( id && this.snapshot && id !== this.dbid ) {
                 window.open('/snap/' + id , '_blank');
             }
         }));

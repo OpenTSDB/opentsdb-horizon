@@ -1684,7 +1684,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         this.httpService.saveSnapshot(this.data.id, payload).subscribe(
             (res: any) => {
-                console.log("snap result", res);
                 window.open('/snap/' + res.body.id , '_blank');
             }
         );

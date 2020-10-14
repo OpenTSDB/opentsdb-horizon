@@ -11,7 +11,7 @@ import { ChartjsModule } from '../chartjs/chartjs.module';
 import { ResizableDirective } from '../dynamic-widgets/directives/resizable.directive';
 
 import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
-import { RouterModule} from '@angular/router'
+import { RouterModule} from '@angular/router';
 import { PlaceholderWidgetComponent } from './components/placeholder-widget/placeholder-widget.component';
 import { LinechartWidgetComponent } from './components/linechart-widget/linechart-widget.component';
 import { DeveloperWidgetComponent } from './components/developer-widget/developer-widget.component';
