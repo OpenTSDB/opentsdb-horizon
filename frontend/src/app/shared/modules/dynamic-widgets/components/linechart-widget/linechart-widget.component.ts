@@ -1209,13 +1209,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     handleZoom(zConfig) {
-        // console.log('ZOOM ZOOM', zConfig);
-        const n = this.data.ts.length;
-        if ( zConfig.isZoomed && n > 0 ) {
-            const startTime = new Date(this.data.ts[0][0]).getTime() / 1000;
-            const endTime = new Date(this.data.ts[n - 1][0]).getTime() / 1000;
-            zConfig.start = Math.floor(zConfig.start) <= startTime ? -1 : Math.floor(zConfig.start);
-            zConfig.end = Math.ceil(zConfig.end) >= endTime ? -1 : Math.floor(zConfig.end);
+        if ( zConfig.isZoomed  ) {
+            zConfig.start = Math.floor(zConfig.start) <= zConfig.actualStart ? -1 : Math.floor(zConfig.start);
+            zConfig.end = Math.ceil(zConfig.end) >= zConfig.actualEnd ? -1 : Math.floor(zConfig.end);
         }
         // zoom.start===-1 or zoom.end=== -1, the start or end times will be calculated from the datepicker start or end time
         this.interCom.requestSend({

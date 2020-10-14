@@ -1,3 +1,51 @@
+$available-palettes:
+    'blues',
+    'greens',
+    'greys',
+    'oranges',
+    'purples',
+    'reds',
+    'BuGn',
+    'BuPu',
+    'GnBu',
+    'OrRd',
+    'PuBuGn',
+    'PuBu',
+    'PuRd',
+    'RdPu',
+    'YlGnBu',
+    'YlGn',
+    'ylOrBr',
+    'ylOrRd',
+    'cividis',
+    'viridis',
+    'inferno',
+    'magma',
+    'plasma',
+    'warm',
+    'cool',
+    'CubehelixDefault',
+    'turbo',
+    'BrBG',
+    'PRGn',
+    'PiYG',
+    'PuOr',
+    'RdBu',
+    'RdGy',
+    'RdYlBu',
+    'RdYlGn',
+    'Spectral',
+    'sinebow',
+    'rainbow',
+    'Category10',
+    'Accent',
+    'Dark2',
+    'Paired',
+    'Set1',
+    'Set2',
+    'Set3',
+    'Tableau10';
+
 @mixin color-picker-component-base() {
 
     .color-picker-component {
@@ -84,19 +132,12 @@
             }
         }
 
-
-
-
-
-
         ///// OLD STYLE //////
         .mat-raised-button {
             //main button
             padding: 0px;
             width: 186px;
         }
-
-        
     }
 
     // CDK OVERLAY ITEM / EMBEDDED CONTROL
@@ -151,6 +192,72 @@
             border: 2px solid transparent;
         }
 
+        .palette-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-height: 200px;
+            overflow: auto;
+
+            .palette-item {
+                position: relative;
+                cursor: pointer;
+                height: 26px;
+                width: 180px;
+                margin-bottom: 4px;
+                overflow: hidden;
+
+                .image-caption {
+                    position: absolute;
+                    top: 4px;
+                    left: 5px;
+                }
+
+                img {
+                    height: 26px;
+                    width: 180px;
+                    background-image: url('/assets/color-palette-sprite.png');
+                    background-repeat: no-repeat;
+                    background-position-x: 0;
+                }
+
+                @each $palette in $available-palettes {
+                    $palette-index: index($available-palettes, $palette);
+                    $palette-index: $palette-index - 1;
+                    $palette-offset: -($palette-index * 26);
+                    &.palette-#{$palette} {
+                        img {
+                            background-position-y: #{$palette-offset}px;
+                        }
+                    }
+                }
+                &.palette-cividis,
+                &.palette-viridis,
+                &.palette-inferno,
+                &.palette-magma,
+                &.palette-plasma,
+                &.palette-CubehelixDefault,
+                &.palette-warm,
+                &.palette-cool,
+                &.palette-turbo,
+                &.palette-BrBG,
+                &.palette-PRGn,
+                &.palette-PiYG,
+                &.palette-PuOr,
+                &.palette-RdBu,
+                &.palette-RdGy {
+                    span {
+                        color: white;
+                    }
+                }
+            }
+
+            .palette-item:hover {
+                //border: 2px solid blue;
+                box-shadow:inset 0 0 0 2px blue;
+            }
+        }
+
         .auto-color {
             width: 140px;
             height: 24px;
@@ -186,10 +293,10 @@
             margin-top: 5px;
             width: 186px;
             font-family: Helvetica;
+            display: flex;
 
-            // custom color button
-            .mat-button {
-                width: 100%;
+            .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+                padding: 0px 5px;
             }
             /*button {
                 padding-right: 22px;
@@ -229,7 +336,7 @@
         ///// OLD STYLES /////
         .mat-raised-button {
             background: #F3F6FE;
-        } 
+        }
     }
 
     // CDK OVERLAY ITEM / EMBEDDED CONTROL
@@ -251,6 +358,13 @@
         .toggle {
             border-top: 1px solid map-get($foreground, divider);
             color: map-get($primary, default);
+        }
+
+        .palette-container {
+            .palette-item:hover,
+            .palette-item.selected {
+                border: 2px solid map-get($primary, default);
+            }
         }
     }
 }
