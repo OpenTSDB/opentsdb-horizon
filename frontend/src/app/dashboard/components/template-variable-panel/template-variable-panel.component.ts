@@ -65,7 +65,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
     tagValueScopeSub: Subscription;
     tagValueSearchInputControl: FormControl = new FormControl('');
-    tagkeyScope = '';
+    scopeIndex = -1;
+    tagValueSearch: string[] = [];
+    tagScope: string[] = [];
 
     constructor(
         private fb: FormBuilder,
@@ -85,8 +87,25 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     ngOnInit() {
-        this.tagValueScopeSub = this.tagValueSearchInputControl.valueChanges.subscribe(val => {
+        this.tagValueScopeSub = this.tagValueSearchInputControl.valueChanges
+        .pipe(
+            debounceTime(200)
+        ).subscribe(val => {
             console.log('hill - value is ', val);
+            if (this.scopeIndex > -1) {
+                const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
+                console.log('hill - tpl is ', tpl);
+                const query: any = {
+                    tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val }
+                };
+                query.namespaces = tpl.namespaces;
+                this.httpService.getTagValues(query).subscribe(results => {
+                    console.log('hill - results', results);
+                    this.tagValueSearch = results;
+                    this.cdRef.markForCheck();
+                });
+            }
+                      
         });
     }
 
@@ -861,12 +880,31 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         });
     }
 
-    scopeSearchFocus(tpl: any) {
-        console.log('hill - focus ', tpl);
-        this.tagkeyScope = tpl.tagk; 
+    addToScope(val: string, index: number) {
+        if(!this.tplVariables.editTplVariables.tvars[index].scope) {
+            this.tplVariables.editTplVariables.tvars[index].scope = [];
+        }
+        if(!this.tplVariables.editTplVariables.tvars[index].scope.includes(val)) {
+            this.tplVariables.editTplVariables.tvars[index].scope.push(val);
+        }
+        this.tagScope = this.tplVariables.editTplVariables.tvars[index].scope;
+        this.cdRef.markForCheck();
     }
-    // trick to clear the input box value.
-    scopeSearchBlur() {
+
+    scopeSearchFocus(tpl: any) {
+        // console.log('hill - focus ', tpl);
+         
+    }
+
+    scopeClose(obj: any) {
+        this.tagValueSearchInputControl.setValue('', {emitEvent: false});
+        this.tagValueSearch = [];
+        this.scopeIndex = -1;
+    }
+    scopeOpen(tpl: any, index: number) {
+        console.log('hill - menu open', tpl, index);
+        this.scopeIndex = index;
+        this.tagScope = tpl.value.scope ? [] : tpl.value.scope;
         this.tagValueSearchInputControl.setValue('');
     }
 /*
