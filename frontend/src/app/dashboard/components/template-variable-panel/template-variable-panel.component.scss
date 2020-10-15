@@ -464,6 +464,10 @@
 
         .filter-scope-columns {
             flex: 1;
+            max-height: 100%;
+            min-height: 100%;
+            max-width: 100%;
+            min-height: 100%;
 
             .scope-column {
                 display: flex;
@@ -471,16 +475,29 @@
                 min-width: 150px;
             }
 
+            .list-filter,
+            .list-items .is-scroller {
+                padding: 4px;
+            }
+
+            .list-items {
+                flex: 1;
+            }
+
+            .list-item {
+                font-size: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 8px;
+                }
+            }
+
             .col-left {
-                .list-filter,
-                .list-items .is-scroller {
-                    padding: 4px;
-                }
-
-                .list-items {
-                    flex: 1;
-                }
-
                 .tag-search-input-field.mat-form-field {
                     .mat-form-field-infix {
                         min-width: 100px;
@@ -726,6 +743,10 @@
         .filter-scope-columns {
             .scope-column:not(:last-child) {
                 border-right: 1px solid $divider;
+            }
+
+            .list-item:hover {
+                background-color: rgba(map-get($primary, default), 0.08);
             }
         }
     }
