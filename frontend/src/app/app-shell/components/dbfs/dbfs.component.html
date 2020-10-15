@@ -552,8 +552,8 @@
         <a class="dnav-favorite-link flex-spacer" routerLink="/d/{{data.id}}{{data.fullPath}}" (click)="fileMenuAction('navigateTo', data)">
             <mat-icon class="dnav-dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
             <span class="dnav-favorite-detail">
-                <span class="root-path">Belongs to: {{data.rootPath}}</span>
                 <span class="dnav-favorite-label">{{data.name}}</span>
+                <span class="root-path">Belongs to: {{data.rootPath}}</span>
                 <span class="favorite-date">{{data.favoritedTime | date:'medium'}}</span>
             </span>
         </a>
