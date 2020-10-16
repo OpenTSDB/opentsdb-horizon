@@ -29,7 +29,8 @@ export class DropdownJoinTypeComponent implements OnInit {
       { value: 'OUTER', label: 'outer' },
       { value: 'OUTER_DISJOINT', label: 'outer disjoint' },
       { value: 'RIGHT', label: 'right' },
-      { value: 'RIGHT_DISJOINT', label: 'right disjoint' }
+      { value: 'RIGHT_DISJOINT', label: 'right disjoint' },
+      { value: 'CROSS', label: 'cross' }
     ];
 
     aggregatorControl: FormControl;
