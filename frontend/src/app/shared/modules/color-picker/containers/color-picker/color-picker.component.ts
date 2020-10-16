@@ -196,7 +196,6 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        console.log("determineIfCustomColor", this.color);
         const index =  this.palettes.findIndex( d => d.name === this.color );
         if ( this.enablePalette && index !== -1 ) {
             this.mode = 'palette';
@@ -209,12 +208,12 @@ export class ColorPickerComponent implements OnInit {
 
     toggleSelector(mode) {
         // reset the color if single to palette or palette to single
-        if ( mode === 'palette' || this.mode === 'palette' ) {
+        const oldMode = this.mode;
+        this.mode = mode;
+        if ( mode === 'palette' || oldMode === 'palette' ) {
             this.color = '';
             this.emitColor();
         }
-        console.log("toggleSelector", mode, this.mode, this.color)
-        this.mode = mode;
     }
 
     colorSelected(hexColor: string): void {
