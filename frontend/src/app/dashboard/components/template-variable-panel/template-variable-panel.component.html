@@ -232,26 +232,32 @@
             <div class="scope-column col-left " fxFlex="1 1 100%">
                 <div class="list-filter">
                     <!-- input field for filtering -->
-                    <mat-form-field class="tag-search-input-field" appearance="outline" color="primary"
+                    <mat-form-field class="tag-search-input-field" appearance="fill" color="primary"
                         floatLabel="never">
-                        <input matInput placeholder="Search tag keys" [formControl]="tagValueSearchInputControl" (focus)="scopeSearchFocus(tpl, index)" autocomplete="off">
+                        <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" (focus)="scopeSearchFocus(tpl, index)" autocomplete="off">
                     </mat-form-field>
                 </div>
-                <div class="list-items has-scroller" style="min-height: 100%">
+                <div class="list-items has-scroller">
                     <div class="is-scroller">
                         <!-- loop of filtered items-->
-                        <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)">{{item}}</div>
+                        <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)" title="{{item}}">
+                            <mat-icon fontSet="denali" fontIcon="d-add-circle" color="primary"></mat-icon>
+                            <span>{{item}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="scope-column col-right has-scroller" fxFlex="1 1 100%">
                 <div class="is-scroller">
                     <!-- loop of items -->
-                    <div *ngFor="let val of tagScope" class="list-item">{{val}}</div>
+                    <div *ngFor="let val of tagScope" class="list-item">
+                        <mat-icon fontSet="denali" fontIcon="d-minus-circle" color="primary"></mat-icon>
+                        <span>{{val}}</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </ng-template>
+        </ng-template>
     </mat-menu>
 </ng-template>
 <input type=text #focusEl class="hidden-focus">
