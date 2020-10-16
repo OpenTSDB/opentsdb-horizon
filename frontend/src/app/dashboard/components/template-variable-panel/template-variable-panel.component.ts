@@ -891,6 +891,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.cdRef.markForCheck();
     }
 
+    removeFromScope(val: string, index: number) {
+        debugger;
+        const idx = this.tplVariables.editTplVariables.tvars[index].scope.findIndex(val);
+        if (idx > -1) {
+            this.tplVariables.editTplVariables.tvars[index].scope.splice(idx, 1);
+            this.cdRef.markForCheck();
+        }
+    }
+
     scopeSearchFocus(tpl: any) {
         // console.log('hill - focus ', tpl);
          
