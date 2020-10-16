@@ -13,6 +13,7 @@ import { WidgetDeleteDialogComponent } from '../widget-delete-dialog/widget-dele
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -22,6 +23,56 @@ import { Subscription } from 'rxjs';
 })
 export class WidgetLoaderComponent implements OnInit, OnChanges {
     @HostBinding('class.widget-loader') private hostClass = true;
+
+    @HostBinding('class.linechart-widget-component')
+    get isLinechartWidget() {
+        return this.widget && this.widget.settings.component_type === 'LinechartWidgetComponent';
+    }
+
+    @HostBinding('class.heatmap-widget-component')
+    get isHeatmapWidget() {
+        return this.widget && this.widget.settings.component_type === 'HeatmapWidgetComponent';
+    }
+
+    @HostBinding('class.barchart-widget-component')
+    get isBarchartWidget() {
+        return this.widget && this.widget.settings.component_type === 'BarchartWidgetComponent';
+    }
+
+    @HostBinding('class.donut-widget-component')
+    get isDonutWidget() {
+        return this.widget && this.widget.settings.component_type === 'DonutWidgetComponent';
+    }
+
+    @HostBinding('class.topn-widget-component')
+    get isTopnWidget() {
+        return this.widget && this.widget.settings.component_type === 'TopnWidgetComponent';
+    }
+
+    @HostBinding('class.bignumber-widget-component')
+    get isBignumberWidget() {
+        return this.widget && this.widget.settings.component_type === 'BignumberWidgetComponent';
+    }
+
+    @HostBinding('class.markdown-widget-component')
+    get isMarkdownWidget() {
+        return this.widget && this.widget.settings.component_type === 'MarkdownWidgetComponent';
+    }
+
+    @HostBinding('class.events-widget-component')
+    get isEventsWidget() {
+        return this.widget && this.widget.settings.component_type === 'EventsWidgetComponent';
+    }
+
+    @HostBinding('class.inverse-menu-color')
+    get needsInverseMenuColor() {
+        if (this.widget && (this.widget.settings.component_type === 'MarkdownWidgetComponent' || this.widget.settings.component_type === 'BignumberWidgetComponent')) {
+            const colorInvert: any = this.utils.findContrastColor(this.widget.settings.visual.backgroundColor);
+            return colorInvert.type === 'white';
+        }
+        return false;
+    }
+
     @Input() widget: any;
     @Output() editComponent = new EventEmitter<any>();
 
@@ -46,10 +97,13 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private dialog: MatDialog,
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
+        private utils: UtilsService,
         private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
+        console.log('%cWIDGET', 'color: white; background: red;', this.widget);
+
         setTimeout(() => {
             this.loadComponent();
             this.cdRef.markForCheck();
@@ -121,6 +175,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         // mainly to load new dynamic widget from selecting type in PlaceholderWidget
         if (changes.widget) {
+
             if ( changes.widget.previousValue !== undefined && changes.widget.currentValue ) {
                 const oldConfig = changes.widget.previousValue;
                 const newConfig = changes.widget.currentValue;
@@ -285,15 +340,15 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     widgetShare() {
-        console.log('SHARE WIDGET CLICKED');
+        // ('SHARE WIDGET CLICKED');
     }
 
     widgetExportJSON() {
-        console.log('EXPORT JSON CLICKED');
+        // console.log('EXPORT JSON CLICKED');
     }
 
     widgetExportImage() {
-        console.log('EXPORT IMAGE CLICKED');
+        // console.log('EXPORT IMAGE CLICKED');
     }
 
     widgetRemove() {

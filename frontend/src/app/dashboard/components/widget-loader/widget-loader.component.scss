@@ -83,6 +83,12 @@
             }
         }
 
+        &.inverse-menu-color {
+            .mat-toolbar .mat-icon-button {
+                color: rgba($white, .87);
+            }
+        }
+
 
 
         // .mat-card-content.panel-body

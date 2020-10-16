@@ -250,7 +250,7 @@ export class DatatranformerService {
                             aggregations: aggData,
                             group: vConfig.type ? vConfig.type : 'line',
                             order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
-                            stackOrderBy: vConfig.stackOrderBy || 'min',
+                            stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
                             stackOrder: vConfig.stackOrder || 'asc'
                         };
                         if ( vConfig.type === 'bar') {
@@ -277,8 +277,9 @@ export class DatatranformerService {
                 // area/bar plotter draws the series from last to first
                 return  ( a.config.group.localeCompare(b.config.group) ||
                                     (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
+                                    ( a.config.group === 'line' && !schemeMeta['midScheme'][a.mid] ? a.config.label.localeCompare(b.config.label) :
                                     // the order is reverse as the area/bar plotter draws series from last to first
-                                    (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0);
+                                    (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0));
             });
         // }
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
@@ -589,16 +590,27 @@ export class DatatranformerService {
             const n = schemeMeta['schemeN'][schemes[i]];
             schemeMeta['colors'][schemes[i]] = this.util.getColorsFromScheme(schemes[i], n);
         }
+
+        let cIndex = 0;
+        const autoColors =  this.util.getColors();
+        // assing colors based on series label
+        dseries.sort((a: any, b: any) => {
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+        });
+        for ( let i = 0; i < dseries.length; i++ ) {
+            const mid = dseries[i].mid;
+            dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
+        }
+
+        // display based on value
         dseries.sort((a: any, b: any) => {
             return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
         });
-        let cIndex = 0;
-        const autoColors =  this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.labels.push(dseries[i].label);
             datasets[0].data.push(dseries[i].value);
-            datasets[0].backgroundColor.push(dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift() : autoColors[ cIndex++ % nAutoColors ] ));
+            datasets[0].backgroundColor.push(dseries[i].color ? dseries[i].color : schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift());
             datasets[0].tooltipData.push(dseries[i].tooltipData);
         }
         return [...datasets];
@@ -672,9 +684,7 @@ export class DatatranformerService {
                 dseries.push({ mid: mid, label: label, color: color, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
             }
         }
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
+
         const schemes = Object.keys(schemeMeta['schemeN']);
         for ( let i = 0; i < schemes.length; i++ ) {
             const n = schemeMeta['schemeN'][schemes[i]];
@@ -682,12 +692,27 @@ export class DatatranformerService {
         }
         const autoColors =  this.util.getColors();
         let cIndex = 0;
+
+        // assing colors based on series label
+        dseries.sort((a: any, b: any) => {
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+        });
+        for ( let i = 0; i < dseries.length; i++ ) {
+            const mid = dseries[i].mid;
+            dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
+        }
+
+        // display based on value
+        dseries.sort((a: any, b: any) => {
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
+        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.data.push( { label: dseries[i].label, value: dseries[i].value,
-                                    color: dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift() : autoColors[cIndex++ % nAutoColors] ),
+                                    color: dseries[i].color ? dseries[i].color : schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift(),
                                     tooltipData: dseries[i].tooltipData } );
         }
+
         return {...options};
     }
 

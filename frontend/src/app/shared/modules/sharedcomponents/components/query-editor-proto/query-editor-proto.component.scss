@@ -782,7 +782,8 @@
 
     .tag-filters-menu-wrapper.mat-menu-panel {
         max-width: 100%;
-        width: calc(100vw - 122px);
+        width: calc(100vw - 118px);
+
         .mat-menu-content:not(:empty) {
             padding: 0px;
         }
@@ -1579,6 +1580,7 @@
             }
         }
     }
+
 
     // CDK DRAG ITEM IS PLACED AT BODY LEVEL
     .cdk-drag.cdk-drag-preview {
