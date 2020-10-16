@@ -1522,6 +1522,18 @@
             }
         }
 
+        &.mat-form-field-appearance-fill.noticeable-field {
+            .mat-form-field-flex  {
+                background-color: rgba($primary-default, 0.05);
+            }
+
+            &:hover:not(.mat-focused) {
+                .mat-form-field-flex {
+                    background-color: rgba($primary-default, .08);
+                }
+            }
+        }
+
         &.mat-form-field-legacy {
             .mat-form-field-underline {
                 background-color: rgba(0,0,0,0); // this is transparent
