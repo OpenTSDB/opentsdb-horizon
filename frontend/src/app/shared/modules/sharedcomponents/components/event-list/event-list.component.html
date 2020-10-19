@@ -9,7 +9,7 @@
                 <mat-expansion-panel-header collapsedHeight="32px" expandedHeight="32px" >
                     <mat-panel-title>
                         <span class="event-time">{{titles[i]}}</span>
-                        <span class="event-title"> {{event.title}} </span> 
+                        <span class="event-title"> {{event.title}} </span>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div *ngIf="expandedBucketIndex === i" class="event-summary">
@@ -29,15 +29,15 @@
                             <span class="event-property">
                                 <span class="tag-key">namespace:</span> <span class="tag-value">{{ event.namespace }}</span>
                             </span>
-    
+
                             <span class="event-property">
                                 <span class="tag-key">source:</span> <span class="tag-value">{{ event.source }}</span>
                             </span>
-    
+
                             <span class="event-property" *ngIf="event.priority">
                                 <span class="tag-key">priority:</span> <span class="tag-value">{{ event.priority }}</span>
                             </span>
-    
+
                             <span class="event-property" *ngFor="let tag of additionalProps[i]">
                                 <span class="tag-key">{{tag.key}}: </span> <span class="tag-value">{{ tag.value }}</span>
                             </span>
@@ -48,9 +48,7 @@
                         <fieldset>
                             <legend>Message</legend>
                             <div class="event-details-text-wrapper">
-                                <div class="event-details-text">
-                                    {{event.message}}
-                                </div>
+                                <div class="event-details-text" [innerHTML]="event.message | nl2br | safe:'html'"></div>
                             </div>
                         </fieldset>
                     </div>
