@@ -911,14 +911,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // first cross-query
         for (let i = 0; i < result.length; i++) {
             if (result[i].includes('.')) {
-                const regex = new RegExp( result[i] + '(?!})', 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }
         // then shorthand
         for (let i = 0; i < result.length; i++) {
             if (!result[i].includes('.')) {
-                const regex = new RegExp( result[i] +  '(?!})' , 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }
