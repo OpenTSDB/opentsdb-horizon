@@ -265,6 +265,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     filter: new FormControl((data.filter) ? data.filter : '', []),
                     mode: new FormControl((data.mode) ? data.mode : 'auto'),
                     display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
+                    scope: new FormControl(data.scope ? data.scope : []),
                     applied: data.applied,
                     isNew: data.isNew
                 };
@@ -335,6 +336,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             filter: new FormControl((data.filter) ? data.filter : '', []),
             mode: new FormControl((data.mode) ? data.mode : 'auto'),
             display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
+            scope: new FormControl(data.scope ? data.scope : []),
             applied: data.applied,
             isNew: data.isNew
         };
@@ -887,20 +889,18 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     addToScope(val: string, index: number) {
-        if(!this.tplVariables.editTplVariables.tvars[index].scope) {
-            this.tplVariables.editTplVariables.tvars[index].scope = [];
+        if (!this.tagScope.includes(val)) {
+            this.tagScope.push(val);
         }
-        if(!this.tplVariables.editTplVariables.tvars[index].scope.includes(val)) {
-            this.tplVariables.editTplVariables.tvars[index].scope.push(val);
-        }
-        this.tagScope = this.tplVariables.editTplVariables.tvars[index].scope;
         this.cdRef.markForCheck();
     }
 
     removeFromScope(val: string, index: number) {
-        const idx = this.tplVariables.editTplVariables.tvars[index].scope.indexOf(val);
+        // const idx = this.tplVariables.editTplVariables.tvars[index].scope.indexOf(val);
+        const idx = this.tagScope.indexOf(val);
         if (idx > -1) {
-            this.tplVariables.editTplVariables.tvars[index].scope.splice(idx, 1);
+            // this.tplVariables.editTplVariables.tvars[index].scope.splice(idx, 1);
+            this.tagScope.splice(idx, 1);
             this.cdRef.markForCheck();
         }
     }
@@ -909,6 +909,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.tagValueSearch = [];
         this.scopeIndex = -1;
         const selControl = this.getSelectedControl(index);
+        selControl.get('scope').setValue(this.tagScope);
         this.updateState(selControl, false);
     }
     scopeOpen(index: number) {
