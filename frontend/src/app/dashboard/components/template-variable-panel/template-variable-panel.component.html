@@ -152,7 +152,9 @@
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose('close')" (menuOpened)="scopeOpen(tpl, i)" [matMenuTriggerData]="{tpl: tpl.value, index: i}">[more...]</span>
+                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i}">
+                                        [...more]
+                                    </span>
                                 </div>
                             </td>
                             <!-- counts -->
@@ -223,7 +225,7 @@
     </div>
     <!-- mat-menu for scope editing-->
     <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu">
-        <ng-template matMenuContent let-tpl="tpl" let-index="index">
+        <ng-template matMenuContent let-index="index">
         <div class="filter-scope-columns"
             fxLayout="row"
             fxLayoutAlign="stretch stretch"
@@ -234,7 +236,7 @@
                     <!-- input field for filtering -->
                     <mat-form-field class="tag-search-input-field" appearance="fill" color="primary"
                         floatLabel="never">
-                        <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" (focus)="scopeSearchFocus(tpl, index)" autocomplete="off">
+                        <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" autocomplete="off">
                     </mat-form-field>
                 </div>
                 <div class="list-items has-scroller">
@@ -243,6 +245,9 @@
                         <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)" title="{{item}}">
                             <mat-icon fontSet="denali" fontIcon="d-add-circle" color="primary"></mat-icon>
                             <span>{{item}}</span>
+                        </div>
+                        <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                            <img src="/assets/spinner-26x26.gif" />
                         </div>
                     </div>
                 </div>
