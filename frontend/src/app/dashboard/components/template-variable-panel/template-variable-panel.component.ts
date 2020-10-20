@@ -92,6 +92,11 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             debounceTime(200)
         ).subscribe(val => {
             console.log('hill - value is ', val);
+            this.filterValLoading = true;
+            const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
+            this.tagValueSearch = [];
+            this.tagValueSearch[0] = regexStr;
+            this.cdRef.markForCheck();
             if (this.scopeIndex > -1) {
                 const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
                 console.log('hill - tpl is ', tpl);
@@ -100,8 +105,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 };
                 query.namespaces = tpl.namespaces;
                 this.httpService.getTagValues(query).subscribe(results => {
+                    this.filterValLoading = false;
                     console.log('hill - results', results);
-                    this.tagValueSearch = results;
+                    this.tagValueSearch = this.tagValueSearch.concat(results);
                     this.cdRef.markForCheck();
                 });
             }
@@ -892,28 +898,23 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     removeFromScope(val: string, index: number) {
-        debugger;
-        const idx = this.tplVariables.editTplVariables.tvars[index].scope.findIndex(val);
+        const idx = this.tplVariables.editTplVariables.tvars[index].scope.indexOf(val);
         if (idx > -1) {
             this.tplVariables.editTplVariables.tvars[index].scope.splice(idx, 1);
             this.cdRef.markForCheck();
         }
     }
-
-    scopeSearchFocus(tpl: any) {
-        // console.log('hill - focus ', tpl);
-         
-    }
-
-    scopeClose(obj: any) {
+    scopeClose(index: number) {
         this.tagValueSearchInputControl.setValue('', {emitEvent: false});
         this.tagValueSearch = [];
         this.scopeIndex = -1;
+        const selControl = this.getSelectedControl(index);
+        this.updateState(selControl, false);
     }
-    scopeOpen(tpl: any, index: number) {
-        console.log('hill - menu open', tpl, index);
+    scopeOpen(index: number) {
         this.scopeIndex = index;
-        this.tagScope = tpl.value.scope ? [] : tpl.value.scope;
+        this.tagScope = this.tplVariables.editTplVariables.tvars[index].scope ? this.tplVariables.editTplVariables.tvars[index].scope : [];
+        this.cdRef.markForCheck();
         this.tagValueSearchInputControl.setValue('');
     }
 /*
