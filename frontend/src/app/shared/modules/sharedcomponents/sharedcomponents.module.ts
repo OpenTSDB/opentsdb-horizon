@@ -67,6 +67,8 @@ import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
 import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightTextPipe } from './pipes/highlighttext.pipe';
+import { SafePipe } from './pipes/safe.pipe';
+import {  Nl2BrPipe } from './pipes/nl2br.pipe';
 
 @NgModule({
     imports: [
@@ -126,7 +128,9 @@ import { HighlightTextPipe } from './pipes/highlighttext.pipe';
         DateToRelativePipe,
         DropdownJoinTypeComponent,
         AliasDisplayPipe,
-        HighlightTextPipe
+        HighlightTextPipe,
+        SafePipe,
+        Nl2BrPipe
     ],
     exports: [
         ThemePickerComponent,
