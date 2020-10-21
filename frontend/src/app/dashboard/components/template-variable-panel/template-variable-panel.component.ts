@@ -92,7 +92,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         .pipe(
             debounceTime(200)
         ).subscribe(val => {
-            console.log('hill - value is ', val);
             this.filterValLoading = true;
             const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
             this.tagValueSearch = [];
@@ -100,19 +99,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             this.cdRef.markForCheck();
             if (this.scopeIndex > -1) {
                 const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
-                console.log('hill - tpl is ', tpl);
                 const query: any = {
                     tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val }
                 };
                 query.namespaces = tpl.namespaces;
                 this.httpService.getTagValues(query).subscribe(results => {
                     this.filterValLoading = false;
-                    console.log('hill - results', results);
                     this.tagValueSearch = this.tagValueSearch.concat(results);
                     this.cdRef.markForCheck();
                 });
-            }
-                      
+            }                    
         });
     }
 
