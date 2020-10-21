@@ -152,7 +152,7 @@
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i}">
+                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i, alias: tpl.get('alias').value}">
                                         [...more]
                                     </span>
                                 </div>
@@ -225,7 +225,8 @@
     </div>
     <!-- mat-menu for scope editing-->
     <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu">
-        <ng-template matMenuContent let-index="index">
+        <ng-template matMenuContent let-index="index" let-alias="alias">
+        <div style="padding:2px 3px;background-color:#eee;">Setting value scope for "<b>{{alias}}</b>"</div>
         <div class="filter-scope-columns"
             fxLayout="row"
             fxLayoutAlign="stretch stretch"
