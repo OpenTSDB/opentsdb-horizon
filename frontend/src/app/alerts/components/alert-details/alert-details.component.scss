@@ -256,6 +256,18 @@
                 }
             }
 
+            .query-metric-row {
+                position: relative;
+
+                .cdk-drag-handle.metric-query-drag-handle {
+                    width: 20px;
+                    height: 20px;
+                    position: absolute;
+                    right: 97px;
+                    top: 10px;
+                }
+            }
+
             .query-metric-row.read-only * {
                 cursor: default;
 
@@ -297,6 +309,38 @@
 
                 &.is-visible {
                     display: block;
+                }
+            }
+
+            // General toolbar items
+            .toolbar-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .mat-icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                strong {
+                    padding-left: 20px;
+                }
+            }
+
+            .toolbar-action-icons,
+            .action-icons {
+                float: right;
+
+                .mat-icon-button {
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                }
+
+                .mat-icon {
+                    font-size: 16px;
                 }
             }
 

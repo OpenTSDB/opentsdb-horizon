@@ -210,6 +210,18 @@ export class HttpService {
                         );
     }
 
+    getTagKeysAndTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+          });
+        const apiUrl =  environment.metaApi + '/search/timeseries'; 
+        const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
+        return this.http.post(apiUrl, query, { headers, withCredentials: true })
+                            .pipe(
+                                map((res: any) => res && res.results[0] ? res.results[0] : {'tagKeysAndValues': {}})
+                            );
+    }
+
     // results should filter the lists from already selected filters
     getTagValues(queryObj: any): Observable<string[]> {
         const headers = new HttpHeaders({

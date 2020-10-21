@@ -79,6 +79,8 @@
 
                 .mat-list-item-content {
                     font-size: 14px;
+                    white-space: nowrap;
+                    word-break: keep-all;
 
                     .mat-icon {
                         @include sizeDenaliIcon(10px);

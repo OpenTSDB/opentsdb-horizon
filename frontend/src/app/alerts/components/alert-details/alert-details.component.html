@@ -101,6 +101,7 @@
                                         deleteQuery: data.type === 'simple',
                                         enableExplicitTagMatch: data.type === 'simple'}"
                                     (queryOutput)="updateQuery($event);"></query-editor-proto>
+                                <div cdkDragHandle class="metric-query-drag-handle"></div>
                             </div>
                         </div>
                         <div class="query-metric-row" *ngIf="queries.length && queries[0].metrics.length">

@@ -12,7 +12,7 @@ $developing-theme: (
     is-dark: false,
     foreground: (
         base: #000000,
-        divider: $dark-dividers,
+        divider: rgba(#000000, 0.0526),
         dividers: $dark-dividers,
         disabled: $dark-disabled-text,
         disabled-button: rgba(#000000, 0.26),
