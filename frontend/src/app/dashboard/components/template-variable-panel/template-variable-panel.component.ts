@@ -68,6 +68,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     scopeIndex = -1;
     tagValueSearch: string[] = [];
     tagScope: string[] = [];
+    useDBFScope = false;
 
     constructor(
         private fb: FormBuilder,
@@ -216,31 +217,41 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 if ( this.trackingSub[qid] ) {
                     this.trackingSub[qid].unsubscribe();
                 }
-                // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
-                const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
-                // assign regexpStr to first element right away
-                if (this.filteredValueOptions[index]) {
-                    if (this.filteredValueOptions[index].length > 1) {
-                        this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
-                    }
-                    this.filteredValueOptions[index][0] = regexStr;
-                    this.cdRef.markForCheck();
-                }
                 this.filterValLoading = true;
                 this.filterValLoadingErr = false;
-                this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
-                    results => {
-                        this.filterValLoading = false;
-                        if (results && results.length > 0 && this.filteredValueOptions[index]) {
-                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
+                // if they have scope defined then we use scope instead
+                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {
+                    this.filterValLoading = false;
+                    this.useDBFScope = true;
+                    this.filteredValueOptions[index] = selControl.get('scope').value;
+                    this.cdRef.markForCheck();
+                } else {
+                    this.useDBFScope = false;
+                    // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                    const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
+                    // assign regexpStr to first element right away
+                    if (this.filteredValueOptions[index]) {
+                        if (this.filteredValueOptions[index].length > 1) {
+                            this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
                         }
+                        this.filteredValueOptions[index][0] = regexStr;
                         this.cdRef.markForCheck();
-                    },
-                    err => {
-                        this.filterValLoading = false;
-                        this.filterValLoadingErr = true;
-                        this.cdRef.markForCheck();
-                    });
+                    }
+
+                    this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
+                        results => {
+                            this.filterValLoading = false;
+                            if (results && results.length > 0 && this.filteredValueOptions[index]) {
+                                this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
+                            }
+                            this.cdRef.markForCheck();
+                        },
+                        err => {
+                            this.filterValLoading = false;
+                            this.filterValLoadingErr = true;
+                            this.cdRef.markForCheck();
+                        });
+                }
             });
     }
     initListFormGroup(checkRun: boolean = false) {
