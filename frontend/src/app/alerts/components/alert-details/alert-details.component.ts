@@ -1643,7 +1643,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
             widgets : [
                 {
+                    id: 'aaa',
                     settings: {
+                        title: this.data.name || 'Untitled Alert',
                         data_source: 'yamas',
                         component_type: 'LinechartWidgetComponent',
                         visual: {
@@ -1682,7 +1684,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             'content': dConfig
         };
 
-        this.httpService.saveSnapshot(this.data.id, payload).subscribe(
+        this.httpService.saveSnapshot('_new_', payload).subscribe(
             (res: any) => {
                 window.open('/snap/' + res.body.id , '_blank');
             }

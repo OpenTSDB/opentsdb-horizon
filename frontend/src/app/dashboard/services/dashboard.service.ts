@@ -468,24 +468,27 @@ export class DashboardService {
   }
 
   getStorableFormatFromDBState(dbstate) {
+    console.log("dbstate", dbstate);
     const widgets = this.utils.deepClone(dbstate.Widgets.widgets);
     for (let i = 0; i < widgets.length; i++) {
-      widgets[i].gridPos.x = widgets[i].gridPos.xMd;
-      widgets[i].gridPos.y = widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.xMd;
-      delete widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.wMd;
-      delete widgets[i].gridPos.hMd;
-      delete widgets[i].gridPos.xSm;
-      delete widgets[i].gridPos.ySm;
-      delete widgets[i].gridPos.wSm;
-      delete widgets[i].gridPos.hSm;
+      if ( widgets[i].gridPos ) {
+        widgets[i].gridPos.x = widgets[i].gridPos.xMd;
+        widgets[i].gridPos.y = widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.xMd;
+        delete widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.wMd;
+        delete widgets[i].gridPos.hMd;
+        delete widgets[i].gridPos.xSm;
+        delete widgets[i].gridPos.ySm;
+        delete widgets[i].gridPos.wSm;
+        delete widgets[i].gridPos.hSm;
+      }
       delete widgets[i].settings.time.zoomTime;
     }
     // will remove later, if no need to check this.
     const settings = this.utils.deepClone(dbstate.Settings);
     delete settings.mode;
-    if (settings.tplVariables.override) {
+    if ( settings.tplVariables && settings.tplVariables.override ) {
       delete settings.tplVariables.override;
     }
     const dashboard = {

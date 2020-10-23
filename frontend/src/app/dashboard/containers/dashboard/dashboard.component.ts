@@ -462,7 +462,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }
                         }
                     }
-                    dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
+                    if ( dbState.Settings.tplVariables ) {
+                        dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
+                    }
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
                     const payload: any = {
@@ -705,7 +707,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.snapshotId$.subscribe(id => {
-            if ( id && this.snapshot && id !== this.dbid ) {
+            if ( id && ( !this.snapshot || ( this.snapshot && id !== this.dbid)) ) {
                 window.open('/snap/' + id , '_blank');
             }
         }));
