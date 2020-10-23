@@ -453,26 +453,54 @@
     // cdk items
     .filter-scope-cdk-menu.mat-menu-panel {
         max-width: initial; // reset this... can change to value later if needed
-        min-height: 150px; // change this to whatever min width you want
+        min-height: 200px; // change this to whatever min width you want
+        min-width: 400px;
         display: flex;
+        overflow: hidden;
 
         .mat-menu-content {
             padding: 0;
             display: flex;
             flex: 1;
+
+            & > div {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+            }
         }
+
+        /*.filter-scope-column-headers {
+            display: flex;
+
+            .header-column {
+                min-width: 150px;
+                padding: 2px 3px;
+                display: flex;
+                align-items: center;
+                font-size: 10px;
+                text-transform: uppercase;
+            }
+        }*/
 
         .filter-scope-columns {
             flex: 1;
             max-height: 100%;
-            min-height: 100%;
             max-width: 100%;
-            min-height: 100%;
+
+            .header-column {
+                width: 100%;
+                padding: 2px 3px;
+                display: flex;
+                align-items: center;
+                font-size: 10px;
+                text-transform: uppercase;
+            }
 
             .scope-column {
                 display: flex;
                 flex-direction: column;
-                min-width: 150px;
+                min-width: 200px;
             }
 
             .list-filter,
@@ -485,20 +513,44 @@
             }
 
             .list-item {
-                font-size: 12px;
+                font-size: 10px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 cursor: pointer;
 
                 .mat-icon {
-                    @include sizeDenaliIcon(14px);
+                    @include sizeDenaliIcon(12px);
                     margin-right: 8px;
+                }
+
+                &.mat-chip {
+                    min-height: 16px;
+                    padding: 2px 4px;
+                    max-width: 100%;
+                    display: inline-flex;
+
+                    .scope-value {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        flex: 1;
+                    }
+
+                    .mat-icon:first-child {
+                        margin-right: 4px;
+                    }
+
+                    .mat-icon:last-child {
+                        margin-right: 0;
+                        margin-left: 4px;
+                    }
                 }
             }
 
             .col-left {
                 .tag-search-input-field.mat-form-field {
+                    width: 100%;
+
                     .mat-form-field-infix {
                         min-width: 100px;
                         width: 100%;
@@ -740,7 +792,21 @@
     .filter-scope-cdk-menu.mat-menu-panel {
         // .mat-menu-content {}
 
+        /*.filter-scope-column-headers {
+            background-color: $divider;
+
+            .header-column {
+                color: rgba($text, .6);
+            }
+        }*/
+
         .filter-scope-columns {
+
+            .header-column {
+                background-color: $divider;
+                color: rgba($text, .6);
+            }
+
             .scope-column:not(:last-child) {
                 border-right: 1px solid $divider;
             }

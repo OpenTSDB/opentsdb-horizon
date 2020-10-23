@@ -108,7 +108,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.tagValueSearch = this.tagValueSearch.concat(results);
                     this.cdRef.markForCheck();
                 });
-            }                    
+            }
         });
     }
 
@@ -911,6 +911,11 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             this.cdRef.markForCheck();
         }
     }
+
+    excludeFromScope(val: string, index: number) {
+        // do some to exclude it
+    }
+
     scopeClose(index: number) {
         this.tagValueSearchInputControl.setValue('', {emitEvent: false});
         this.tagValueSearch = [];
