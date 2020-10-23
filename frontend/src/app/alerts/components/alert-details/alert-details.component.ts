@@ -43,6 +43,7 @@ import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-de
 import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
+import { DashboardConverterService } from '../../../core/services/dashboard-converter.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
 import { environment } from "../../../../environments/environment";
@@ -300,7 +301,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private router: Router,
         private location: LocationStrategy,
         private infoIslandService: InfoIslandService,
-        private hostElRef: ElementRef
+        private hostElRef: ElementRef,
+        private dbConverterSrv: DashboardConverterService
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -1611,6 +1613,80 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         // emit to save the alert
         this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
             payload: { data: this.utils.deepClone([data])}} );
+    }
+
+    handlePoPPreviewEvents(message) {
+        if ( message.action === 'SaveSnapshot') {
+            this.saveSnapshot();
+        }
+    }
+
+    saveSnapshot() {
+        const dConfig: any = {
+            version: this.dbConverterSrv.getDBCurrentVersion(),
+            settings: {
+                time:  {
+                    start: this.startTime,
+                    end: this.endTime,
+                    zone: 'local'
+                },
+                downsample: {
+                    aggregators: [''],
+                    customUnit: '',
+                    customValue: '',
+                    value: 'auto'
+                },
+                meta : {
+                    title: this.data.name
+                }
+            },
+
+            widgets : [
+                {
+                    settings: {
+                        data_source: 'yamas',
+                        component_type: 'LinechartWidgetComponent',
+                        visual: {
+                            showEvents: false
+                        },
+                        axes: {
+                            y1 : {
+                                enabled: true
+                            },
+                            y2 : {}
+                        },
+                        legend: {
+                            display: false,
+                        },
+                        time: {
+                            downsample: {
+                                value: 'auto',
+                                aggregator: 'avg',
+                                customValue: '',
+                                customUnit: ''
+                            }
+                        }
+                    },
+                    queries: this.queries
+                }
+            ]
+        };
+
+        if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
+            dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
+        }
+        const payload: any = {
+            'name': this.data.name || 'Untitled Alert',
+            'sourceType': 'ALERT',
+            'sourceId': this.data.id !== '_new_' ? this.data.id : '',
+            'content': dConfig
+        };
+
+        this.httpService.saveSnapshot(this.data.id, payload).subscribe(
+            (res: any) => {
+                window.open('/snap/' + res.body.id , '_blank');
+            }
+        );
     }
 
     cancelEdit() {

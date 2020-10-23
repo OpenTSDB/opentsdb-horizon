@@ -23,9 +23,13 @@
                     </button>
                     <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">
                         <ng-container *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
-                            <button mat-menu-item (click)="editWidget()">
+                            <button mat-menu-item (click)="loadWidget('edit')" *ngIf="hasWriteAccess">
                                 <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                <span>Edit View</span>
+                                <span>Edit & Explore</span>
+                            </button>
+                            <button mat-menu-item (click)="loadWidget('explore')" *ngIf="!hasWriteAccess">
+                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                <span>Explore</span>
                             </button>
                             <button mat-menu-item (click)="widgetClone()">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>

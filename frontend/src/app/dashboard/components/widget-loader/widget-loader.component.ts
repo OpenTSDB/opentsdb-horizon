@@ -74,6 +74,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     @Input() widget: any;
+    @Input() hasWriteAccess = false;
     @Output() editComponent = new EventEmitter<any>();
 
     @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;
@@ -291,10 +292,11 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     // when user clicks on view-edit
     // emit component factory and config for edit/view full mode
-    editWidget() {
+    loadWidget(mode = 'edit') {
         this.editComponent.emit({
             'compFactory': this.componentFactory,
-            'widget': this.widget
+            'widget': this.widget,
+            'mode': mode
         });
         // intercom to container to update state
         this.interCom.requestSend(<IMessage> {

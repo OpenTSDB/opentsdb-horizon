@@ -54,8 +54,8 @@
             right: 0;
             bottom: 0;*/
             width: 100%;
-            height: 100%;
-            display: flex;
+            // height: calc(100% - 40px); // no on edit
+            // display: flex; // no on edit
 
             .dygraph-legend {
                 display: none;
@@ -294,12 +294,15 @@
      // when we are in edit view
      .edit-view-container.is-active {
         .widget-panel-content.linechart-widget {
-            .widget-output {
-                //top: 30px;
-                padding: 8px 0px;
-                //display: block;
-                position: relative;
+            .widget-output-container {
+                // background: yellowgreen;
+                // display: block;
+                // flex: 1 1 auto;
+                // height: 50%;
+                // max-height: calc(100% - 200px);
             }
+    
+
         }
 
         .event-preview-list-wrapper {

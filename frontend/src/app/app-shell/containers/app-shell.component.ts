@@ -302,6 +302,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                     activeNav.section = 'alerts';
                     break;
                 case 'd':
+                case 'snap':
                     // dashboards
                     activeNav.section = 'dashboard';
                     break;

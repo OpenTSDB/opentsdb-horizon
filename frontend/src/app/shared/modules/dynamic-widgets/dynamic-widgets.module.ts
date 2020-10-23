@@ -8,8 +8,10 @@ import { MaterialModule } from '../material/material.module';
 import { DygraphsModule } from '../dygraphs/dygraphs.module';
 import { D3Module } from '../d3/d3.module';
 import { ChartjsModule } from '../chartjs/chartjs.module';
-import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
+import { ResizableDirective } from '../dynamic-widgets/directives/resizable.directive';
 
+import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
+import { RouterModule} from '@angular/router';
 import { PlaceholderWidgetComponent } from './components/placeholder-widget/placeholder-widget.component';
 import { LinechartWidgetComponent } from './components/linechart-widget/linechart-widget.component';
 import { DeveloperWidgetComponent } from './components/developer-widget/developer-widget.component';
@@ -52,6 +54,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         DygraphsModule,
         ChartjsModule,
         D3Module,
+        RouterModule,
         SharedcomponentsModule,
         UniversalDataTooltipDirectivesModule,
         MarkdownModule.forRoot({
@@ -94,6 +97,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         TopnWidgetComponent,
         HeatmapWidgetComponent,
         EventsWidgetComponent,
+        ResizableDirective
     ],
     entryComponents: [
         PlaceholderWidgetComponent,

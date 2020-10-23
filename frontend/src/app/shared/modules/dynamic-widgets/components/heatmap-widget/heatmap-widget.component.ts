@@ -32,8 +32,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   @HostBinding('class.widget-panel-content') private _hostClass = true;
   @HostBinding('class.heatmap-widget') private _componentClass = true;
 
-  @Input() editMode: boolean;
   @Input() widget: WidgetModel;
+  @Input() mode = 'view'; // view/explore/edit
 
   @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
   @ViewChild('widgetTitle') private widgetTitle: ElementRef;
@@ -98,6 +98,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   };
   newSize$: BehaviorSubject<any>;
   newSizeSub: Subscription;
+  widgetOutputElSize: any;
+  widgetOutputElHeight = 60;
+  isEditContainerResized = false;
   doRefreshData$: BehaviorSubject<boolean>;
   doRefreshDataSub: Subscription;
   nQueryDataLoading: number;
@@ -109,6 +112,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   needRequery = false;
   visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
   formErrors: any = {};
+  meta: any = {};
 
   constructor(
       private cdRef: ChangeDetectorRef,
@@ -169,6 +173,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };
                   break;
+             case 'SnapshotMeta':
+                  this.meta = message.payload;
+                  break;
           }
 
           if (message && (message.id === this.widget.id)) {
@@ -216,7 +223,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       });
       // when the widget first loaded in dashboard, we request to get data
       // when in edit mode first time, we request to get cached raw data.
-      setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+      setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
       this.setOptions();
   }
 
@@ -230,7 +237,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       this.newSize$ = new BehaviorSubject(initSize);
 
       this.newSizeSub = this.newSize$.subscribe(size => {
-          this.setSize();
+        setTimeout(() => this.setSize(), 0);
           // this.newSize = size;
       });
       const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
@@ -464,9 +471,11 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   setSize() {
-       const nativeEl = (this.editMode) ?
-          this.widgetOutputElement.nativeElement.parentElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
-
+       const nativeEl = (this.mode !== 'view') ?
+          this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height / 2 
+          : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
       // let newSize = outputSize;
       let nWidth, nHeight, padding;
@@ -476,13 +485,13 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       const heightOffset = 0;
 
 
-      if (this.editMode) {
+      if (this.mode !== 'view') {
           let titleSize = {width: 0, height: 0};
           if (this.widgetTitle) {
               titleSize = this.widgetTitle.nativeElement.getBoundingClientRect();
           }
           padding = 8; // 8px top and bottom
-          nHeight = newSize.height - heightOffset - titleSize.height - (padding * 2);
+          nHeight = newSize.height - heightOffset;
           nWidth = newSize.width - widthOffset  - (padding * 2) - 30;
       } else {
           padding = 10; // 10px on the top
@@ -495,6 +504,10 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       this.options.xRangePad = this.options.heatmap.x.length ? nWidth / (this.options.heatmap.x.length * 2) : 0;
       this.size = {width: nWidth, height: nHeight };
       this.cdRef.detectChanges();
+  }
+
+  handleEditResize(e) {
+    this.isEditContainerResized = true;
   }
 
   requestCachedData() {
@@ -519,7 +532,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   timeseriesTickListener(event: any) {
     // console.log('TIMESERIES TICK LISTENER', { widget: this.widget, event});
 
-    if (this.editMode === true) {
+    if (this.mode !== 'view' === true) {
         return;
     }
 
@@ -645,9 +658,19 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       });
   }
 
+  saveAsSnapshot() {
+    const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+    cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+    this.interCom.requestSend({
+        action: 'SaveSnapshot',
+        id: cloneWidget.id,
+        payload: { widget: cloneWidget, needRequery: false }
+    });
+  }
+
   ngOnDestroy() {
-      this.listenSub.unsubscribe();
       this.newSizeSub.unsubscribe();
+      this.listenSub.unsubscribe();
       this.doRefreshDataSub.unsubscribe();
   }
 
