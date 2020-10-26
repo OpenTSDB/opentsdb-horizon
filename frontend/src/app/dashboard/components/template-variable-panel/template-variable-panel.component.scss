@@ -536,6 +536,10 @@
                         flex: 1;
                     }
 
+                    .mat-icon {
+                        visibility: hidden;
+                    }
+
                     .mat-icon:first-child {
                         margin-right: 4px;
                     }
@@ -543,6 +547,11 @@
                     .mat-icon:last-child {
                         margin-right: 0;
                         margin-left: 4px;
+                    }
+
+                    &:hover .mat-icon {
+                        cursor: pointer;
+                        visibility: visible;
                     }
                 }
             }
@@ -574,6 +583,7 @@
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
     $is-dark-theme: map-get($theme-config, is-dark);
     $dbfilter: map-get($theme-config, dashboard-filters);
 
@@ -591,6 +601,10 @@
 
     $primary-default: map-get($primary, default);
     $text: map-get($foreground, text);
+
+    $option-highlight-text: map-get($foreground, link);
+    $option-highlight-bg: rgba($option-highlight-text, 0.5);
+    $option-highlight-bg-hover: rgba($option-highlight-text, 0.65);
 
     .template-variable-panel-component {
         background-color: map-get($background, card);
@@ -811,9 +825,38 @@
                 border-right: 1px solid $divider;
             }
 
-            .list-item:hover {
-                background-color: rgba(map-get($primary, default), 0.08);
+            .mat-standard-chip {
+                background-color: rgba($option-highlight-text, 0.15);
             }
+
+            .mat-standard-chip:hover {
+                background-color: #016eff;
+                color: $white;
+
+                .mat-icon {
+                    color: currentColor;
+                }
+            }
+
+            .mat-standard-chip {
+                &.exclude {
+                    background-color: #e8e8e8;
+                    color: rgba($black, .6);
+                }
+
+                &.exclude:hover {
+                    background-color: darken(#e8e8e8, 15%);
+                    color: $black;
+
+                    .mat-icon {
+                        color: $black;
+                    }
+                    .mat-icon.exclude {
+                        color: map-get($status, error);
+                    }
+                }
+            }
+
         }
     }
 
