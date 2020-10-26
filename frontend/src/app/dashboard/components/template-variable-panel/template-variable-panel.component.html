@@ -226,16 +226,26 @@
     <!-- mat-menu for scope editing-->
     <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu">
         <ng-template matMenuContent let-index="index" let-alias="alias">
-        <div style="padding:2px 3px;background-color:#eee;">Setting value scope for "<b>{{alias}}</b>"</div>
+        <!--<div class="filter-scope-column-headers">
+            <div class="header-column">
+                <span>Available tag values</span>
+            </div>
+            <div class="header-column">
+                <span>Selected value scope for "<b>{{alias}}</b>"</span>
+            </div>
+        </div>-->
         <div class="filter-scope-columns"
             fxLayout="row"
             fxLayoutAlign="stretch stretch"
             (click)="$event.stopPropagation()"
             (keydown.tab)="$event.stopPropagation()">
             <div class="scope-column col-left " fxFlex="1 1 100%">
+                <div class="header-column">
+                    <span>Available tag values</span>
+                </div>
                 <div class="list-filter">
                     <!-- input field for filtering -->
-                    <mat-form-field class="tag-search-input-field" appearance="fill" color="primary"
+                    <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
                         floatLabel="never">
                         <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" autocomplete="off">
                     </mat-form-field>
@@ -253,12 +263,25 @@
                     </div>
                 </div>
             </div>
-            <div class="scope-column col-right has-scroller" fxFlex="1 1 100%">
-                <div class="is-scroller">
-                    <!-- loop of items -->
-                    <div *ngFor="let val of tagScope" class="list-item" (click)="removeFromScope(val, index)">
-                        <mat-icon fontSet="denali" fontIcon="d-minus-circle" color="primary"></mat-icon>
-                        <span>{{val}}</span>
+            <div class="scope-column col-right" fxFlex="1 1 100%">
+                <div class="header-column">
+                    <span>Scoped values for "<b>{{alias}}</b>"</span>
+                </div>
+                <div class="list-items has-scroller">
+                    <div class="is-scroller">
+                        <!-- loop of items -->
+                        <!--<div *ngFor="let val of tagScope" class="list-item" (click)="removeFromScope(val, index)">
+                            <mat-icon fontSet="denali" fontIcon="d-minus-circle" color="primary"></mat-icon>
+                            <span>{{val}}</span>
+                        </div>-->
+                        <mat-chip *ngFor="let val of tagScope" class="list-item" color="primary" removable="false" [ngClass]="{ 'exclude': val[0] === '!'}" title="{{val}}">
+                            <mat-icon fontSet="denali" [fontIcon]="val[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
+                                class="exclude"
+                                (click)="excludeFromScope(val, index);"
+                                [matTooltip]="val[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
+                            <span class="scope-value">{{ val }}</span>
+                            <mat-icon (click)="removeFromScope(val, index);">clear</mat-icon>
+                        </mat-chip>
                     </div>
                 </div>
             </div>
