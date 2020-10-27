@@ -642,7 +642,7 @@
             background: rgba($link, .2);
         }
 
-        .tag-values-search-input, 
+        .tag-values-search-input,
         .tag-search-input-field {
             .mat-form-field-flex {
                 background-color: rgba($primary-default, 0.08);
@@ -778,6 +778,7 @@
                         &.exclude:hover {
                             background-color: darken(#e8e8e8, 15%);
                             color: $black;
+
                             .mat-icon {
                                 color: $black;
                             }
