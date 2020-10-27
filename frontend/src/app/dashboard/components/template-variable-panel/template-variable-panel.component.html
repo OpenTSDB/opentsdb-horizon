@@ -277,9 +277,9 @@
                         <mat-chip *ngFor="let val of tagScope" class="list-item" color="primary" removable="false" [ngClass]="{ 'exclude': val[0] === '!'}" title="{{val}}">
                             <mat-icon fontSet="denali" [fontIcon]="val[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
                                 class="exclude"
-                                (click)="excludeFromScope(val, index);"
+                                (click)="toggleExcludeFromScope(val, index);"
                                 [matTooltip]="val[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
-                            <span class="scope-value">{{ val }}</span>
+                            <span class="scope-value">{{ val[0] === '!' ? val.substr(1) : val }}</span>
                             <mat-icon (click)="removeFromScope(val, index);">clear</mat-icon>
                         </mat-chip>
                     </div>
