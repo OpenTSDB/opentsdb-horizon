@@ -898,8 +898,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     addToScope(val: string, index: number) {
         if (!this.tagScope.includes(val)) {
             this.tagScope.push(val);
+            this.cdRef.markForCheck();
         }
-        this.cdRef.markForCheck();
     }
 
     removeFromScope(val: string, index: number) {
@@ -912,8 +912,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
     }
 
-    excludeFromScope(val: string, index: number) {
-        // do some to exclude it
+    toggleExcludeFromScope(val: string, index: number) {
+        // by puutting ! infront of exlude value
+        const valStrip = val.charAt(0) === '!' ? val.substr(1) : val;
+        const idx = this.tagScope.indexOf(val);
+        if (idx > -1) {
+            this.tagScope[idx] = this.tagScope[idx].charAt(0) === '!' ? valStrip : '!' + valStrip;
+            this.cdRef.markForCheck();
+        }
     }
 
     scopeClose(index: number) {
