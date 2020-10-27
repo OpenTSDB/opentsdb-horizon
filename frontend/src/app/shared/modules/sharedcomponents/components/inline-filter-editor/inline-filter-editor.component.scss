@@ -30,7 +30,7 @@
         }
 
         .option-group-item {
-            // cursor: pointer;
+            cursor: pointer;
             font-weight: 500;
             .info {
                 font-weight: 200;
@@ -201,6 +201,11 @@
 
                 .tag-filter-hint {
                     font-size: 10px;
+                    display: flex;
+                    span {
+                        margin-right: auto;
+                        height: 18px;
+                    }
                 }
             }
         }

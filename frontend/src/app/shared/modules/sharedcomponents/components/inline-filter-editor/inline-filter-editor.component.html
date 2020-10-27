@@ -122,12 +122,10 @@
                             (keydown.enter)="addTagValueRegexp()" >-->
                     </mat-form-field>
                 </div>
-                <div class="tag-filter-hint" *ngIf="!(basicSearch || tagSearch || tagValueSearch)">
+                <div class="tag-filter-hint">
                     <span *ngIf="!selectedTag && !searchControl.value">Tag Key Suggestions</span>
                     <span *ngIf="searchControl.value || selectedTag">Search Results</span>
-                </div>
-                <div class="column-output spinner" *ngIf="basicSearch || tagSearch || tagValueSearch">
-                    <mat-spinner color="primary" diameter="20"></mat-spinner>
+                    <span *ngIf="basicSearch || tagSearch || tagValueSearch"><mat-spinner color="primary" diameter="20"></mat-spinner></span>
                 </div>
                 <div class="tag-key-search-results has-scroller" *ngIf="!selectedTag && !searchControl.value ">
                     <div class="is-scroller">
@@ -177,12 +175,12 @@
                 </div>
                 <div class="tag-values-search-results has-scroller" *ngIf="selectedTag">
                     <div class="is-scroller">
-                        <div class="option-item" *ngIf="tagValueSearchControl.value"
-                            (click)="updateTagValueSelection(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
+                        <div class="option-item"
+                            (click)="updateTagValueSelection(selectedTag, 'regexp(' + ( tagValueSearchControl.value ? tagValueSearchControl.value.trim() : '.*' )  + ')', getTagValueIndex(selectedTag, 'regexp(' + ( tagValueSearchControl.value ? tagValueSearchControl.value.trim() : '.*' ) + ')') === -1 ? 'add' : 'remove')">
                             <div class="option-cell add-remove">
-                                <mat-icon>{{ getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
+                                <mat-icon>{{ getTagValueIndex(selectedTag, 'regexp(' + ( tagValueSearchControl.value ? tagValueSearchControl.value.trim() : '.*' ) + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
                             </div>
-                            <div class="option-cell label">regexp({{tagValueSearchControl.value.trim()}})</div>
+                            <div class="option-cell label">regexp({{ tagValueSearchControl.value ? tagValueSearchControl.value.trim() : '.*' }})</div>
                         </div>
                         <div class="option-item" *ngFor="let option of filteredTagValues"
                             [ngClass]="{'added': filters[selectedTagIndex] && filters[selectedTagIndex].filter.indexOf(option.name) >= 0 }"
