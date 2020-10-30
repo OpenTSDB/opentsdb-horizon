@@ -231,7 +231,12 @@ export class HttpService {
         const namespaces = queryObj.namespaces || [];
         for (let i = 0, len = namespaces.length; i < len; i++) {
             if (!newQueryParams[namespaces[i]]) {
-                newQueryParams[namespaces[i]] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespaces[i], metrics: [] };
+                newQueryParams[namespaces[i]] = { 
+                    tagkey: queryObj.tag.key, 
+                    search: queryObj.tag.value, 
+                    namespace: namespaces[i], 
+                    metrics: [], 
+                    tags: queryObj.tagsFilter };
             }
         }
 
@@ -241,12 +246,19 @@ export class HttpService {
             const namespace = res[1];
             const metric = res[2] + '.' + res[3];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespace, metrics: [] };
+                newQueryParams[namespace] = { 
+                    tagkey: queryObj.tag.key, 
+                    search: queryObj.tag.value, 
+                    namespace: namespace, 
+                    metrics: [],
+                    tags: queryObj.tagsFilter };
             }
             newQueryParams[namespace].metrics.push(metric);
         }
+        console.log('hill - before query', newQueryParams);
         const apiUrl = environment.metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS_AND_VALUES', Object.values(newQueryParams), false);
+        console.log('hill - after query format', query);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
