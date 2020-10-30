@@ -69,6 +69,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagValueSearch: string[] = [];
     tagScope: string[] = [];
     useDBFScope = false;
+    doSearch = false;
 
     constructor(
         private fb: FormBuilder,
@@ -88,6 +89,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     ngOnInit() {
+        // this is for getting tag value for scope
         this.tagValueScopeSub = this.tagValueSearchInputControl.valueChanges
         .pipe(
             debounceTime(200)
@@ -100,7 +102,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             if (this.scopeIndex > -1) {
                 const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
                 const query: any = {
-                    tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val }
+                    tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val },
+                    tagsFilter: []
                 };
                 query.namespaces = tpl.namespaces;
                 this.httpService.getTagValues(query).subscribe(results => {
@@ -181,20 +184,20 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 const tagk = selControl.get('tagk').value;
                 const metrics = [];
                 // get tag values that matches metrics or namespace if metrics is empty
-                for ( let i = 0; i < this.widgets.length; i++ ) {
+                for (let i = 0; i < this.widgets.length; i++) {
                     const queries = this.widgets[i].queries;
-                    for ( let j = 0; j < queries.length; j++ ) {
+                    for (let j = 0; j < queries.length; j++) {
                         const filters = queries[j].filters;
                         let aliasFound = false;
-                        for ( let k = 0; k < filters.length; k++ ) {
-                            if ( filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
+                        for (let k = 0; k < filters.length; k++) {
+                            if (filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
                                 aliasFound = true;
                             }
                         }
-                        if ( aliasFound ) {
-                            for ( let k = 0; k < queries[j].metrics.length; k++ ) {
+                        if (aliasFound) {
+                            for (let k = 0; k < queries[j].metrics.length; k++) {
                                 if (!queries[j].metrics[k].expression) {
-                                    metrics.push( queries[j].namespace + '.' + queries[j].metrics[k].name );
+                                    metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
                                 }
                             }
                         }
@@ -203,26 +206,41 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 const query: any = {
                     tag: { key: tagk, value: val }
                 };
-                if ( metrics.length ) {
+                if (metrics.length) {
                     query.metrics = metrics;
                 } else {
                     // tslint:disable-next-line: max-line-length
                     query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
                 }
                 const qid = 'v-' + name + index;
-                if ( this.trackingSub[qid] ) {
+                if (this.trackingSub[qid]) {
                     this.trackingSub[qid].unsubscribe();
                 }
                 this.filterValLoading = true;
                 this.filterValLoadingErr = false;
                 // if they have scope defined then we use scope instead
-                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {
-                    this.filterValLoading = false;
-                    this.useDBFScope = true;
-                    this.filteredValueOptions[index] = selControl.get('scope').value;
-                    this.cdRef.markForCheck();
+                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {    
+                    this.useDBFScope = true;           
+                    for (let i = 0; i < selControl.get('scope').value.length; i++) {
+                        let v = selControl.get('scope').value[i];
+                        if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+                            this.doSearch = true;
+                            query.tagsFilter = [{
+                                tagk: tagk,
+                                filter: selControl.get('scope').value
+                            }];
+                            break;
+                        }
+                    }
+                    if (!this.doSearch) {                     
+                        this.filterValLoading = false;
+                        this.filteredValueOptions[index] = selControl.get('scope').value;
+                        this.cdRef.markForCheck();
+                    }
                 } else {
                     this.useDBFScope = false;
+                    this.doSearch = true;
+                    query.tagsFilter = [];
                     // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
                     const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
                     // assign regexpStr to first element right away
@@ -233,20 +251,25 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         this.filteredValueOptions[index][0] = regexStr;
                         this.cdRef.markForCheck();
                     }
-
-                    this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
-                        results => {
-                            this.filterValLoading = false;
-                            if (results && results.length > 0 && this.filteredValueOptions[index]) {
-                                this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
-                            }
-                            this.cdRef.markForCheck();
-                        },
-                        err => {
-                            this.filterValLoading = false;
-                            this.filterValLoadingErr = true;
-                            this.cdRef.markForCheck();
-                        });
+                }
+                console.log('hill - query', query);
+                if (this.doSearch) {
+                this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
+                    results => {
+                        console.log('hill - resukts', results);
+                        this.filterValLoading = false;
+                        if (results && results.length > 0 && this.filteredValueOptions[index]) {
+                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
+                        }
+                        this.doSearch = false;
+                        this.cdRef.markForCheck();
+                    },
+                    err => {
+                        this.filterValLoading = false;
+                        this.filterValLoadingErr = true;
+                        this.doSearch = false;
+                        this.cdRef.markForCheck();
+                    });
                 }
             });
     }
