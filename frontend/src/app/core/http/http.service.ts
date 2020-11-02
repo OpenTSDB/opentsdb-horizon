@@ -255,10 +255,8 @@ export class HttpService {
             }
             newQueryParams[namespace].metrics.push(metric);
         }
-        console.log('hill - before query', newQueryParams);
         const apiUrl = environment.metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS_AND_VALUES', Object.values(newQueryParams), false);
-        console.log('hill - after query format', query);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
