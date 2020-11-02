@@ -70,6 +70,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagScope: string[] = [];
     useDBFScope = false;
     doSearch = false;
+    scopeCache: string[][] = [];
+    scopeModify = false;
 
     constructor(
         private fb: FormBuilder,
@@ -100,13 +102,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             this.tagValueSearch[0] = regexStr;
             this.cdRef.markForCheck();
             if (this.scopeIndex > -1) {
+                if (this.trackingSub[this.scopeIndex]) {
+                    this.trackingSub[this.scopeIndex].unsubscribe();
+                }
                 const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
                 const query: any = {
                     tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val },
                     tagsFilter: []
                 };
                 query.namespaces = tpl.namespaces;
-                this.httpService.getTagValues(query).subscribe(results => {
+                this.trackingSub[this.scopeIndex] = this.httpService.getTagValues(query).subscribe(results => {
                     this.filterValLoading = false;
                     this.tagValueSearch = this.tagValueSearch.concat(results);
                     this.cdRef.markForCheck();
@@ -172,7 +177,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
         }
-
+        if (!this.scopeCache[index]) {
+            this.scopeCache[index] = [];
+        }
         this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
                 startWith(initVal),
@@ -220,21 +227,31 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 this.filterValLoadingErr = false;
                 // if they have scope defined then we use scope instead
                 if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {    
-                    this.useDBFScope = true;           
-                    for (let i = 0; i < selControl.get('scope').value.length; i++) {
-                        let v = selControl.get('scope').value[i];
-                        if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
-                            this.doSearch = true;
-                            query.tagsFilter = [{
-                                tagk: tagk,
-                                filter: selControl.get('scope').value
-                            }];
-                            break;
+                    this.useDBFScope = true;
+                    if (!this.scopeCache[index].length) {
+                        for (let i = 0; i < selControl.get('scope').value.length; i++) {
+                            let v = selControl.get('scope').value[i];
+                            if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+                                this.doSearch = true;
+                                query.tagsFilter = [{
+                                    tagk: tagk,
+                                    filter: selControl.get('scope').value
+                                }];
+                                break;
+                            }
                         }
                     }
                     if (!this.doSearch) {                     
-                        this.filterValLoading = false;
-                        this.filteredValueOptions[index] = selControl.get('scope').value;
+                        if (!this.scopeCache[index].length) {
+                            this.scopeCache[index] = selControl.get('scope').value;
+                        }
+                        // if we have scopeCache then just filter thru it.
+                        if (val !== '') {
+                            this.filteredValueOptions[index]  = this.scopeCache[index].filter(v => v.indexOf(val) !== -1);
+                        } else {
+                            this.filteredValueOptions[index] = this.scopeCache[index];
+                        }         
+                        this.filterValLoading = false;        
                         this.cdRef.markForCheck();
                     }
                 } else {
@@ -252,13 +269,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         this.cdRef.markForCheck();
                     }
                 }
-                console.log('hill - query', query);
                 if (this.doSearch) {
                 this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                     results => {
-                        console.log('hill - resukts', results);
                         this.filterValLoading = false;
                         if (results && results.length > 0 && this.filteredValueOptions[index]) {
+                            if (this.useDBFScope) {
+                                this.scopeCache[index] = results;
+                            }
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                         }
                         this.doSearch = false;
@@ -410,7 +428,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                     }
                     if (idx === -1) {
-                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
+                        selControl.get('filter').setValue('regexp(' + val ? val.replace(/\s/g, ".*") : ".*" + ')', { emitEvent: true });
                         selControl.get('display').setValue(val);
 
                     } else {
@@ -921,6 +939,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     addToScope(val: string, index: number) {
         if (!this.tagScope.includes(val)) {
             this.tagScope.push(val);
+            this.scopeModify = true;
             this.cdRef.markForCheck();
         }
     }
@@ -931,6 +950,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if (idx > -1) {
             // this.tplVariables.editTplVariables.tvars[index].scope.splice(idx, 1);
             this.tagScope.splice(idx, 1);
+            this.scopeModify = true;
             this.cdRef.markForCheck();
         }
     }
@@ -941,6 +961,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const idx = this.tagScope.indexOf(val);
         if (idx > -1) {
             this.tagScope[idx] = this.tagScope[idx].charAt(0) === '!' ? valStrip : '!' + valStrip;
+            this.scopeModify = true;
             this.cdRef.markForCheck();
         }
     }
@@ -951,6 +972,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.scopeIndex = -1;
         const selControl = this.getSelectedControl(index);
         selControl.get('scope').setValue(this.tagScope);
+        if (this.scopeModify) {
+            this.scopeCache[index] = [];
+            this.scopeModify = false;
+        }
         this.updateState(selControl, false);
     }
     scopeOpen(index: number) {
