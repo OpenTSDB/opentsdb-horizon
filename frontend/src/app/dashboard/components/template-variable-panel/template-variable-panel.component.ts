@@ -187,6 +187,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 debounceTime(200)
             ).subscribe(val => {
                 val = val ? val.trim() : '';
+                const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                // const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
                 const alias = '[' + selControl.get('alias').value + ']';
                 const tagk = selControl.get('tagk').value;
                 const metrics = [];
@@ -241,15 +243,20 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             }
                         }
                     }
-                    if (!this.doSearch) {                     
+                    if (!this.doSearch) {      
+                        // once the scope is populate or using just absolute values               
                         if (!this.scopeCache[index].length) {
                             this.scopeCache[index] = selControl.get('scope').value;
                         }
+                        if (this.filteredValueOptions[index].length > 0) {
+                            this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
+                        }
+                        this.filteredValueOptions[index][0] = regexStr;
                         // if we have scopeCache then just filter thru it.
                         if (val !== '') {
-                            this.filteredValueOptions[index]  = this.scopeCache[index].filter(v => v.indexOf(val) !== -1);
+                            this.filteredValueOptions[index]  = this.filteredValueOptions[index].concat(this.scopeCache[index].filter(v => v.indexOf(val) !== -1));
                         } else {
-                            this.filteredValueOptions[index] = this.scopeCache[index];
+                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.scopeCache[index]);
                         }         
                         this.filterValLoading = false;        
                         this.cdRef.markForCheck();
@@ -258,8 +265,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.useDBFScope = false;
                     this.doSearch = true;
                     query.tagsFilter = [];
-                    // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
-                    const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
+                }
+                if (this.doSearch) {
                     // assign regexpStr to first element right away
                     if (this.filteredValueOptions[index]) {
                         if (this.filteredValueOptions[index].length > 1) {
@@ -268,26 +275,24 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         this.filteredValueOptions[index][0] = regexStr;
                         this.cdRef.markForCheck();
                     }
-                }
-                if (this.doSearch) {
-                this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
-                    results => {
-                        this.filterValLoading = false;
-                        if (results && results.length > 0 && this.filteredValueOptions[index]) {
-                            if (this.useDBFScope) {
-                                this.scopeCache[index] = results;
+                    this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
+                        results => {
+                            this.filterValLoading = false;
+                            if (results && results.length > 0 && this.filteredValueOptions[index]) {
+                                if (this.useDBFScope) {
+                                    this.scopeCache[index] = results;
+                                }
+                                this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                             }
-                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
-                        }
-                        this.doSearch = false;
-                        this.cdRef.markForCheck();
-                    },
-                    err => {
-                        this.filterValLoading = false;
-                        this.filterValLoadingErr = true;
-                        this.doSearch = false;
-                        this.cdRef.markForCheck();
-                    });
+                            this.doSearch = false;
+                            this.cdRef.markForCheck();
+                        },
+                        err => {
+                            this.filterValLoading = false;
+                            this.filterValLoadingErr = true;
+                            this.doSearch = false;
+                            this.cdRef.markForCheck();
+                        });
                 }
             });
     }
