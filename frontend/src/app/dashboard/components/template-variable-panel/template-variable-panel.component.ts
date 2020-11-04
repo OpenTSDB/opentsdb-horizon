@@ -105,12 +105,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 if (this.trackingSub[this.scopeIndex]) {
                     this.trackingSub[this.scopeIndex].unsubscribe();
                 }
-                const tpl = this.mode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables;
-                const query: any = {
-                    tag: { key: tpl.tvars[this.scopeIndex].tagk, value: val },
-                    tagsFilter: []
-                };
-                query.namespaces = tpl.namespaces;
+                const query = this.buildTagValuesQuery(val, this.scopeIndex);
                 this.trackingSub[this.scopeIndex] = this.httpService.getTagValues(query).subscribe(results => {
                     this.filterValLoading = false;
                     this.tagValueSearch = this.tagValueSearch.concat(results);
@@ -442,7 +437,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         idx = this.filteredValueOptions[index].findIndex(item => item && item === val);
                     }
                     if (idx === -1) {
-                        selControl.get('filter').setValue('regexp(' + val ? val.replace(/\s/g, ".*") : ".*" + ')', { emitEvent: true });
+                        selControl.get('filter').setValue('regexp(' + val.replace(/\s/g, ".*") + ')', { emitEvent: true });
                         selControl.get('display').setValue(val);
 
                     } else {
