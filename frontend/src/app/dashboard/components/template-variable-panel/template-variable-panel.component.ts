@@ -162,6 +162,44 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.modeChange.emit({ view: false });
     }
 
+    buildTagValuesQuery(val: string, index: number): any {
+        const arrayControl = this.mode.view ? this.listForm.get('listVariables') as FormArray
+            : this.editForm.get('formTplVariables') as FormArray;
+        const selControl = arrayControl.at(index);
+        const alias = '[' + selControl.get('alias').value + ']';
+        const tagk = selControl.get('tagk').value;
+        const metrics = [];
+        // get tag values that matches metrics or namespace if metrics is empty
+        for (let i = 0; i < this.widgets.length; i++) {
+            const queries = this.widgets[i].queries;
+            for (let j = 0; j < queries.length; j++) {
+                const filters = queries[j].filters;
+                let aliasFound = false;
+                for (let k = 0; k < filters.length; k++) {
+                    if (filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
+                        aliasFound = true;
+                    }
+                }
+                if (aliasFound) {
+                    for (let k = 0; k < queries[j].metrics.length; k++) {
+                        if (!queries[j].metrics[k].expression) {
+                            metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+                        }
+                    }
+                }
+            }
+        }
+        const query: any = {
+            tag: { key: tagk, value: val }
+        };
+        if (metrics.length) {
+            query.metrics = metrics;
+        } else {
+            // tslint:disable-next-line: max-line-length
+            query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
+        }
+        return query;
+    }
     // for filteredValueOptions, we can use both in view or edit mode, since
     // they have same index and all
     // @mode: from input, view or edit
@@ -189,38 +227,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 val = val ? val.trim() : '';
                 const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
                 // const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
-                const alias = '[' + selControl.get('alias').value + ']';
                 const tagk = selControl.get('tagk').value;
-                const metrics = [];
-                // get tag values that matches metrics or namespace if metrics is empty
-                for (let i = 0; i < this.widgets.length; i++) {
-                    const queries = this.widgets[i].queries;
-                    for (let j = 0; j < queries.length; j++) {
-                        const filters = queries[j].filters;
-                        let aliasFound = false;
-                        for (let k = 0; k < filters.length; k++) {
-                            if (filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
-                                aliasFound = true;
-                            }
-                        }
-                        if (aliasFound) {
-                            for (let k = 0; k < queries[j].metrics.length; k++) {
-                                if (!queries[j].metrics[k].expression) {
-                                    metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
-                                }
-                            }
-                        }
-                    }
-                }
-                const query: any = {
-                    tag: { key: tagk, value: val }
-                };
-                if (metrics.length) {
-                    query.metrics = metrics;
-                } else {
-                    // tslint:disable-next-line: max-line-length
-                    query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
-                }
+                const query = this.buildTagValuesQuery(val, index);
                 const qid = 'v-' + name + index;
                 if (this.trackingSub[qid]) {
                     this.trackingSub[qid].unsubscribe();
@@ -414,7 +422,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = control.at(index);
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(()=> {
-            const val = selControl.get('display').value;
+            let val = selControl.get('display').value;
+            val = val ? val.trim() : '';
             // no check and let user enter whatever
             let idx = -1;
             if (val === '') {
