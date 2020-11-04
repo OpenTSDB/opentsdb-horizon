@@ -866,6 +866,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // apply when custom tag value is changed
     // should only trigger widgets that are affected by this change.
     applyTplVarValue(tvars: any[]) {
+        console.log('hill - applyTplVarValue', tvars);
         // update url params
         const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
         if (this.variablePanelMode.view) {
@@ -874,32 +875,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
             for (let j = 0; j < queries.length; j++) {
-                if (tvars.length === 1) {
-                    const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[0].alias + ']'));
-                    if (idx > -1) {
-                        this.handleQueryPayload({
-                            id: this.widgets[i].id,
-                            payload: this.widgets[i]
-                        });
-                        break;
-                    }
-                } else if (tvars.length > 1) {
-                    let matchIdx = 0;
+                if (tvars.length > 0) {
                     for (let k = 0; k < tvars.length; k++) {
-                        const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[k].alias + ']'));
+                        const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[k].alias +']'));
                         if (idx > -1) {
-                            matchIdx += 1;
+                            this.handleQueryPayload({
+                                id: this.widgets[i].id,
+                                payload: this.widgets[i]
+                            });
+                            break;
                         }
                     }
-                    if (matchIdx > 0) {
-                        this.handleQueryPayload({
-                            id: this.widgets[i].id,
-                            payload: this.widgets[i]
-                        });
-                        break;
-                    }
                 }
-
             }
         }
     }
