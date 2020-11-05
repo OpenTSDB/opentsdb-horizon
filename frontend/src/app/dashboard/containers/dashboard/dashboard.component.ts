@@ -877,12 +877,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
             for (let j = 0; j < queries.length; j++) {
                 if (tvars.length > 0) {
                     for (let k = 0; k < tvars.length; k++) {
-                        const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[k].alias +']'));
-                        if (idx > -1) {
+                        let runQuery = false;
+                        for (let a = 0; a < queries[j].filters.length; a++) {
+                            const filter = queries[j].filters[a];
+                            if (filter.customFilter) {
+                                filter.customFilter.forEach(f => {
+                                    const hasNot = f[0] === '!';
+                                    const alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                                    if (alias === tvars[k].alias) {
+                                        runQuery = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (runQuery) {
                             this.handleQueryPayload({
                                 id: this.widgets[i].id,
                                 payload: this.widgets[i]
                             });
+                            runQuery = false;
                             break;
                         }
                     }
@@ -1133,6 +1146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getQuery(message: any) {
+        console.log('hill - getQuery', message);
         let groupid = '';
         let query = null;
         // make sure we modify the copy for tsdb query
@@ -1192,6 +1206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // dispatch payload query by group
     handleQueryPayload(message: any) {
+        console.log('hill - handleQueryPayload', message);
         if (message.payload.queries.length) {
             const gquery: any = {
                 wid: message.id,
@@ -1199,6 +1214,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 dbid: this.dbid
             };
             const query = this.getQuery(message);
+            console.log('hill - the query', query);
             if ( query ) {
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
