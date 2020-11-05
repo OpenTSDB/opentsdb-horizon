@@ -6,12 +6,16 @@
         display: flex;
         flex: 1 1 auto;
 
-        .widget-menu-trigger {
+        .widget-menu-trigger,
+        .expand-trigger {
             visibility: hidden;
         }
 
         &:hover {
             .widget-menu-trigger {
+                visibility: visible;
+            }
+            .expand-trigger {
                 visibility: visible;
             }
         }
@@ -58,7 +62,8 @@
             padding: initial;
         }
 
-        .mat-icon.time-lock {
+        .mat-icon.time-lock,
+        .expand-trigger {
             cursor: pointer;
             font-size: 12px;
             width: 12px;

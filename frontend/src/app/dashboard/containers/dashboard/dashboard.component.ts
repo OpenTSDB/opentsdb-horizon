@@ -177,6 +177,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // other variables
     dbSettings: any;
     dbTime: any = {};
+    dbWdViewBackup: any = {};
     dbToT: any;
     dbPrevToT: any;
     isDBZoomed = false;
@@ -193,6 +194,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     variablePanelMode: any = { view : true };
     userNamespaces: any[] = [];
     viewEditMode = false;
+    editViewModeMeta: any = {};
     snapshot = false;
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
@@ -312,10 +314,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
 
                 case 'setDashboardEditMode':
+                    this.editViewModeMeta.id = '__EDIT__' + message.id;
                     // copy the widget data to editing widget
                     if (message.id) {
-                        this.wData['__EDIT__' + message.id] = this.wData[message.id];
+                        this.wData[this.editViewModeMeta.id] = this.wData[message.id];
                     }
+                    // tslint:disable:max-line-length
+                    this.dbWdViewBackup = this.utilService.deepClone({ time: this.dbTime, tot: this.dbToT, downsample: this.dbDownsample, isDBZoomed: this.isDBZoomed });
                     // when click on view/edit mode, update db setting state of the mode
                     // need to setTimeout for next tick to change the mode
                     setTimeout(() => {
@@ -367,6 +372,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'closeViewEditMode':
                     // set the tpl filter panel to view mode, if they are from edit mode
                     delete this.wData[message.id];
+                    this.resetWidgetToDashboardSettings();
                     this.store.dispatch(new UpdateMode(message.payload));
                     this.rerender = { 'reload': true };
                     break;
@@ -467,6 +473,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
+                    dbcontent.settings.time.start = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.start, this.dbTime.zone);
+                    dbcontent.settings.time.end = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.end, this.dbTime.zone);
                     const payload: any = {
                         'name': snapTitle,
                         'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
@@ -570,6 +578,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     this.interCom.responsePut({
                         action: 'ZoomDateRange',
+                        id: this.viewEditMode ? this.editViewModeMeta.id : '',
                         payload: { zoomingWid: message.id, overrideOnly: overrideOnly, date: { ...message.payload, zone: this.dbTime.zone } }
                     });
                     this.updateURLParams(this.dbTime);
@@ -777,7 +786,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     payload: t
                 });
             }
-            this.updateURLParams(this.dbTime);
+            if ( !timeZoneChanged && !this.viewEditMode ) {
+                this.updateURLParams(this.dbTime);
+            }
         }));
 
         this.subscription.add(this.dbSettings$.subscribe(settings => {
@@ -890,6 +901,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.updateEvents(result.wid, grawdata, time, error);
             }
         }));
+    }
+
+    resetWidgetToDashboardSettings() {
+        this.editViewModeMeta = {};
+        this.dbTime = this.dbWdViewBackup.time;
+        this.dbToT = this.dbWdViewBackup.tot;
+        this.dbDownsample = this.dbWdViewBackup.downsample;
+        this.isDBZoomed = this.dbWdViewBackup.isDBZoomed;
     }
 
     updateURLParams(p) {
@@ -1220,6 +1239,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
+        if ( this.viewEditMode || this.snapshot ) {
+            this.editViewModeMeta['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
+        }
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
             // override downsample to auto when the dashboard is zoomed
@@ -1355,6 +1377,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     refresh() {
         this.interCom.responsePut({
             action: 'reQueryData',
+            id: this.viewEditMode ? this.editViewModeMeta.id : '',
             payload: {}
         });
     }
@@ -1372,19 +1395,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.refresh();
                 break;
             case 'SetDBDownsample':
-                this.store.dispatch(new UpdateDownsample(message.payload));
-                this.applyDBDownsample(message.payload);
+                if ( this.viewEditMode ) {
+                    this.dbDownsample = {
+                        aggregators: message.payload.aggregators,
+                        value: message.payload.downsample,
+                        customUnit: message.payload.downsample === 'custom' ? message.payload.customDownsampleUnit : '',
+                        customValue: message.payload.downsample === 'custom' ? message.payload.customDownsampleValue : ''
+                    };
+                    this.refresh();
+                } else {
+                    this.store.dispatch(new UpdateDownsample(message.payload));
+                    this.applyDBDownsample(message.payload);
+                }
                 break;
             case 'SetToT':
-                this.isToTChanged = true;
-                this.store.dispatch(new UpdateToT(message.payload));
+                if ( this.viewEditMode ) {
+                    this.dbToT = message.payload;
+                    if ( (this.dbToT.value && this.dbToT.period) || (this.dbPrevToT.value && this.dbPrevToT.period && (this.dbToT.value || this.dbToT.period))) {
+                        this.refresh();
+                    }
+                    this.dbPrevToT = this.utilService.deepClone(this.dbToT);
+                } else {
+                    this.isToTChanged = true;
+                    this.store.dispatch(new UpdateToT(message.payload));
+                }
                 break;
         }
     }
 
     setDateRange(e: any) {
         this.isDBZoomed = false;
-        this.store.dispatch(new UpdateDashboardTime({ start: e.startTimeDisplay, end: e.endTimeDisplay }));
+        if ( this.viewEditMode ) {
+            this.dbTime = { ...this.dbTime, start: e.startTimeDisplay, end: e.endTimeDisplay } ;
+            this.refresh();
+        } else {
+            this.store.dispatch(new UpdateDashboardTime({ start: e.startTimeDisplay, end: e.endTimeDisplay }));
+        }
     }
 
     setAutoRefresh(refresh) {
@@ -1397,7 +1443,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.dbTime.start = this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone).unix().toString(), e);
             this.dbTime.end = this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone).unix().toString(), e);
         }
-        this.store.dispatch(new UpdateDashboardTimeZone(e));
+
+        if ( !this.viewEditMode ) {
+            this.store.dispatch(new UpdateDashboardTimeZone(e));
+        } else {
+            this.dbTime.zone = e;
+            this.interCom.responsePut({
+                action: 'TimezoneChanged',
+                id: this.editViewModeMeta.id,
+                payload: { zone: e }
+            });
+        }
     }
 
     setTitle(e: any) {
@@ -1407,6 +1463,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     saveSnapshot() {
         let content = this.store.selectSnapshot(DBState);
         content = this.dbService.getStorableFormatFromDBState(content);
+        content.settings.time.start = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.start, this.dbTime.zone);
+        content.settings.time.end = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.end, this.dbTime.zone);
         content.widgets = [this.newWidget];
         const payload: any = {
             'name': content.settings.meta.title,

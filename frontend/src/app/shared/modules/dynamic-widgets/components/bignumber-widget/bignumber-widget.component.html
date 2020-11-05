@@ -1,10 +1,10 @@
 <div class="widget-output-container" [style.height]="mode !== 'view' ? ( widgetHeight + 60 ) + 'px' : ''">
     <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
-        <div class="title-label" *ngIf="mode === 'edit'">
+        <div class="title-label" *ngIf="mode === 'edit' || mode === 'explore'">
             <span class="navbar-item">Widget name:</span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
                 showEditIcon="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
@@ -160,7 +160,7 @@
     </div>
     <div class="widget-actions">
         <!-- controls to save/cancel -->
-        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to Dashboard</button>
+        <button mat-raised-button color="primary" *ngIf="mode === 'edit'" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to Dashboard</button>
         <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
     </div>
 </div>
