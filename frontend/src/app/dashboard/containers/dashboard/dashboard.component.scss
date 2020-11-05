@@ -60,12 +60,12 @@
                     margin-left: 6px;
                 }
             }
-            
+
             &.save-dashboard-button {
                 padding: 0;
                 min-width: initial;
                 margin: auto 6px;
-    
+
                 .mat-icon {
                     margin: 0px;
                 }
@@ -78,6 +78,17 @@
         .mat-raised-button,
         .mat-flat-button {
             padding-left: 6px;
+        }
+
+        .widget-clipboard-paste-trigger.mat-flat-button {
+            margin-left: 4px;
+            min-width: initial;
+            padding: 0;
+
+            .mat-icon {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
     }
 

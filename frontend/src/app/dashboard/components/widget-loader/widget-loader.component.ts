@@ -376,4 +376,10 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
             }
         });
     }
+
+    /** WIDGET COPY */
+
+    widgetCopy() {
+        console.log('%cWIDGET COPY', 'color: white; font-weight: bold; background-color: teal; padding: 2px 4px;', this.widget);
+    }
 }
