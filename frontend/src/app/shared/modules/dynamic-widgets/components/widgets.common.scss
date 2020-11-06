@@ -70,7 +70,7 @@ $widgets-common-config: (
 
         .widget-output-container {
             flex: 1 1 100%; // no on edit
-            display: flex;  // no on edit 
+            display: flex;  // no on edit
             flex-direction: column;  // no on edit
 
             .widget-title {
@@ -87,7 +87,7 @@ $widgets-common-config: (
                         font-size: 12px;
                         font-weight: 300;
                     }
-                    
+
                     .mat-icon-button {
                         width: 24px;
                         height: 24px;
@@ -500,14 +500,14 @@ $widgets-common-config: (
                 align-items: center;
 
             }
-            
+
             .widget-output {
                 //top: 30px;
                 // padding: 8px 0px;
                 //display: block;
                 // position: relative;
                 // height: inherit;
-                
+
             }
         }
         .widget-controls-container {
@@ -548,6 +548,39 @@ $widgets-common-config: (
             }
         }
     }
+
+    // for resizeable stuffs
+    .widget-output.app-resizeable {
+        position: relative;
+
+        &::after {
+            // content is denali icon drag-handle
+            content: '\ebab';
+            font-family: 'denali-icons';
+            font-size: 12px;
+            display: none;
+            width: 24px;
+            //background-color: white;
+            color: light-gray;
+            //border: 1px solid lightgray;
+            padding: 2px 4px;
+            position: absolute;
+            left: calc(50% - 12px);
+            top: calc(100% - 7px);
+            align-items: center;
+            justify-content: center;
+            line-height: 8px;
+            border-radius: 4px;
+        }
+
+        &:hover {
+            //box-shadow: inset 0px -2px 1px -1px lightgray;
+
+            &::after {
+                display: inline-flex;
+            }
+        }
+    }
 }
 
 @mixin widgets-common-theme($theme-config) {
@@ -560,6 +593,8 @@ $widgets-common-config: (
     $is-dark-theme: map-get($theme-config, is-dark);
 
     $divider: map-get($foreground, divider);
+    $card: map-get($background, card);
+    $text:  map-get($foreground, text);
 
     // multigraph
     $mg-background: #E6EDED;
@@ -706,6 +741,23 @@ $widgets-common-config: (
             > div {
                 box-shadow: inset 0 0 3px 3px rgba(0, 191, 255, 0.3);
             }
+        }
+    }
+
+    .widget-output.app-resizeable {
+
+        &::after {
+            // content is denali icon drag-handle
+            content: '\ebab';
+
+            background-color: if($is-dark-theme, rgba(0, 191, 255, 0.3), $card);
+            color: $text;
+            border: 1px solid rgba($text, .3);
+
+        }
+
+        &:hover {
+            box-shadow: inset 0px -2px 1px -1px rgba($text, .3);
         }
     }
 }
