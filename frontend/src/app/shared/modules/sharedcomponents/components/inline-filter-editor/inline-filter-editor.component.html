@@ -79,7 +79,6 @@
                             <div class="option-cell label">regexp({{tagValueSearchControl.value.trim()}})</div>
                         </div>
                             <div class="option-item" *ngFor="let option of filteredTagValues"
-                                [ngClass]="{'added': filters[selectedTagIndex] && (filters[selectedTagIndex].filter.indexOf(option.name) >= 0 || (filters[selectedTagIndex].customFilter && filters[selectedTagIndex].customFilter.indexOf(option.name) >= 0))}"
                                 (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
                                 <div class="option-cell add-remove">
                                     <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) === -1">
