@@ -15,7 +15,7 @@
             </span>
         </span>
         
-        <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent" *ngIf="mode === 'edit'"></graph-type>
+        <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
         <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>

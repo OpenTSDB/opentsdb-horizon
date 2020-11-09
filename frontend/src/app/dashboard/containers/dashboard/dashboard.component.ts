@@ -324,7 +324,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // when click on view/edit mode, update db setting state of the mode
                     // need to setTimeout for next tick to change the mode
                     setTimeout(() => {
-                        this.store.dispatch(new UpdateMode('edit'));
+                        this.store.dispatch(new UpdateMode(message.payload));
                     });
                     break;
                 case 'removeWidget':
@@ -364,10 +364,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'changeWidgetType':
                     const [newConfig, needRefresh] = this.wdService.convertToNewType(message.payload.newType, message.payload.wConfig);
-                    if ( needRefresh ) {
-                        delete this.wData['__EDIT__' + message.id];
+                    console.log(message.payload);
+                    const wId = this.snapshot ? message.id : this.editViewModeMeta.id;
+                    if ( needRefresh && this.wData[wId] ) {
+                        delete this.wData[wId];
                     }
-                    this.mWidget = newConfig;
+                    if ( this.snapshot ) {
+                        this.newWidget = newConfig;
+                        this.setSnapshotMeta();
+                    } else {
+                        this.mWidget = newConfig;
+                    }
                     break;
                 case 'closeViewEditMode':
                     // set the tpl filter panel to view mode, if they are from edit mode
@@ -744,15 +751,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                 } else {
                     this.newWidget = sortWidgets[0];
-                    setTimeout( () => {
-                        this.interCom.responsePut({
-                            action: 'SnapshotMeta',
-                            payload: {
-                                        createdBy: dbstate.loadedDB.createdBy, sourceName: dbstate.loadedDB.sourceName,
-                                        sourceId: dbstate.loadedDB.sourceId, source: dbstate.loadedDB.sourceType,
-                                        createdTime: this.dateUtil.timestampToTime((dbstate.loadedDB.createdTime / 1000).toString(), this.dbTime.zone)}
-                        });
-                    });
+                    this.setSnapshotMeta();
                 }
             }
         }));
@@ -904,6 +903,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.updateEvents(result.wid, grawdata, time, error);
             }
         }));
+    }
+
+    setSnapshotMeta() {
+        setTimeout( () => {
+            const dbstate = this.store.selectSnapshot(DBState);
+            this.interCom.responsePut({
+                action: 'SnapshotMeta',
+                payload: {
+                            createdBy: dbstate.loadedDB.createdBy, sourceName: dbstate.loadedDB.sourceName,
+                            sourceId: dbstate.loadedDB.sourceId, source: dbstate.loadedDB.sourceType,
+                            createdTime: this.dateUtil.timestampToTime((dbstate.loadedDB.createdTime / 1000).toString(), this.dbTime.zone)}
+            });
+        });
     }
 
     resetWidgetToDashboardSettings() {

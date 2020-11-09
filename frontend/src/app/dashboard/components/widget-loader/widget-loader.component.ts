@@ -302,7 +302,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         this.interCom.requestSend(<IMessage> {
             action: 'setDashboardEditMode',
             id: this.widget.id,
-            payload: 'edit'
+            payload: mode
         });
 
         // if island open, close island
