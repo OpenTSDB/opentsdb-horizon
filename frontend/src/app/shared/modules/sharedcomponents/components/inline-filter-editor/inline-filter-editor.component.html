@@ -7,8 +7,8 @@
             <mat-button-toggle mat-flat-button value="basic">Simple</mat-button-toggle>
             <mat-button-toggle mat-flat-button value="advanced">Advanced</mat-button-toggle>
         </mat-button-toggle-group>
-        <div class="dashboard-filters">
-            <span>Dashboard Filters: </span>
+        <div class="dashboard-filters" *ngIf="showDashboardFilters">
+            <span>Available Dashboard Filters: </span>
             <ng-container *ngFor="let tvar of tplVariables.tvars">
                 <div class="filter-item" *ngIf="canAddDashboardFilter(tvar.tagk, '[' + tvar.alias + ']')" (click)="updateTagValueSelection(tvar.tagk, '[' + tvar.alias + ']', 'add')">
                     <mat-icon>add_circle_outline</mat-icon>
@@ -107,6 +107,7 @@
                         <mat-icon matPrefix fontSet="denali" fontIcon="d-search" *ngIf="!selectedTag"></mat-icon>
                         <input matInput [formControl]="searchControl" #searchInput
                             autocomplete="off" *ngIf="!selectedTag">
+                            <button class="search-clear-btn" mat-button *ngIf="!selectedTag && searchControl.value" matSuffix (click)="resetSearch()">clear</button>
                             <mat-chip-list #chipList *ngIf="selectedTag">
                                 <mat-chip (removed)="unsetTag()">{{selectedTag}} / </mat-chip>
                                 <input placeholder="Search"
@@ -117,6 +118,7 @@
                                        #tagValueSearchInput
                                        autocomplete="off">
                               </mat-chip-list>
+                              <button class="search-clear-btn" mat-button *ngIf="selectedTag" matSuffix (click)="resetTagValueSearch()">clear</button>
                         <!--<input
                             (keydown.enter)="addTagValueRegexp()" >-->
                     </mat-form-field>
@@ -126,6 +128,7 @@
                     <span *ngIf="searchControl.value || selectedTag">Search Results</span>
                     <span *ngIf="basicSearch || tagSearch || tagValueSearch"><mat-spinner color="primary" diameter="20"></mat-spinner></span>
                 </div>
+                <!-- AVAILABLE TAG KEYS -->
                 <div class="tag-key-search-results has-scroller" *ngIf="!selectedTag && !searchControl.value ">
                     <div class="is-scroller">
                         <div class="option-item tag-key-option" *ngFor="let option of tagOptions">
@@ -150,6 +153,13 @@
                                     <span [innerHTML]="tagkey | highlighttext: searchControl.value"></span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="link"> more.. </span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="info"> ( Showing top 5 ) </span>
+                                </div>
+                                <div class="option-item"
+                                    (click)="updateTagValueSelection(tagkey, 'regexp(' + ( bsTagValSearch ? bsTagValSearch : '.*' )  + ')', getTagValueIndex(tagkey, 'regexp(' + ( bsTagValSearch ? bsTagValSearch : '.*' ) + ')') === -1 ? 'add' : 'remove')">
+                                    <div class="option-cell add-remove">
+                                        <mat-icon>{{ getTagValueIndex(tagkey, 'regexp(' + ( bsTagValSearch ? bsTagValSearch : '.*' ) + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
+                                    </div>
+                                    <div class="option-cell label">regexp({{ bsTagValSearch ? bsTagValSearch : '.*' }})</div>
                                 </div>
                                 <div class="option-item" *ngFor="let option of searchResults.tagKeysAndValues[tagkey].values | slice:0:5"
                                     (click)="updateTagValueSelection(tagkey, option.name, (getTagValueIndex(tagkey, option.name) === -1 ? 'add' : 'remove'))">

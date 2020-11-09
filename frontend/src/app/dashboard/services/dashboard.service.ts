@@ -404,8 +404,9 @@ export class DashboardService {
   }
 
   updateTimeFromURL(dbstate) {
-    if (this.urlOverride.getTimeOverrides()) {
-      var urlTime = this.urlOverride.getTimeOverrides();
+    const paramTime = this.urlOverride.getURLParamTime();
+    if ( paramTime ) {
+      var urlTime = this.urlOverride.getTimeOverrides(paramTime.zone || dbstate.content.settings.time.zone);
       if (!dbstate.content.settings.time)
         dbstate.content.settings.time = {};
       var dbTime = dbstate.content.settings.time;
@@ -468,7 +469,6 @@ export class DashboardService {
   }
 
   getStorableFormatFromDBState(dbstate) {
-    console.log("dbstate", dbstate);
     const widgets = this.utils.deepClone(dbstate.Widgets.widgets);
     for (let i = 0; i < widgets.length; i++) {
       if ( widgets[i].gridPos ) {

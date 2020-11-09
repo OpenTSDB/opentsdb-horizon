@@ -118,18 +118,18 @@ export class ColorPickerComponent implements OnInit {
         {'name': 'oranges', 'label': 'Oranges'},
         {'name': 'purples', 'label': 'Purples'},
         {'name': 'reds', 'label': 'Reds'},
-        {'name': 'BuGn', 'label': 'BuGn'},
-        {'name': 'BuPu', 'label': 'BuPu'},
-        {'name': 'GnBu', 'label': 'GnBu'},
-        {'name': 'OrRd', 'label': 'OrRd'},
-        {'name': 'PuBuGn', 'label': 'PuBuGn'},
-        {'name': 'PuBu', 'label': 'PuBu'},
-        {'name': 'PuRd', 'label': 'PuRd'},
-        {'name': 'RdPu', 'label': 'RdPu'},
-        {'name': 'YlGnBu', 'label': 'YlGnBu'},
-        {'name': 'YlGn', 'label': 'YlGn'},
-        {'name': 'ylOrBr', 'label': 'YlOrBr'},
-        {'name': 'ylOrRd', 'label': 'YlOrRd'},
+        {'name': 'BuGn', 'label': 'BlueGreen'},
+        {'name': 'BuPu', 'label': 'BluePurple'},
+        {'name': 'GnBu', 'label': 'GreenBlue'},
+        {'name': 'OrRd', 'label': 'OrangeRed'},
+        {'name': 'PuBuGn', 'label': 'PurpleBlueGreen'},
+        {'name': 'PuBu', 'label': 'PurpleBlue'},
+        {'name': 'PuRd', 'label': 'PurpleRed'},
+        {'name': 'RdPu', 'label': 'RedPurple'},
+        {'name': 'YlGnBu', 'label': 'YellowGreenBlue'},
+        {'name': 'YlGn', 'label': 'YellowGreen'},
+        {'name': 'ylOrBr', 'label': 'YellowOrangeBrown'},
+        {'name': 'ylOrRd', 'label': 'YelllowOrangeRed'},
         {'name': 'cividis', 'label': 'Cividis'},
         {'name': 'viridis', 'label': 'Viridis'},
         {'name': 'inferno', 'label': 'Inferno'},
@@ -139,14 +139,14 @@ export class ColorPickerComponent implements OnInit {
         {'name': 'cool', 'label': 'Cool'},
         {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
         {'name': 'turbo', 'label': 'Turbo'},
-        {'name': 'BrBG', 'label': 'BrBG'},
-        {'name': 'PRGn', 'label': 'PRGn'},
-        {'name': 'PiYG', 'label': 'PiYG'},
-        {'name': 'PuOr', 'label': 'PuOr'},
-        {'name': 'RdBu', 'label': 'RdBu'},
-        {'name': 'RdGy', 'label': 'RdGy'},
-        {'name': 'RdYlBu', 'label': 'RdYlBu'},
-        {'name': 'RdYlGn', 'label': 'RdYlGn'},
+        {'name': 'BrBG', 'label': 'BrownGreen'},
+        {'name': 'PRGn', 'label': 'PurpleGreen'},
+        {'name': 'PiYG', 'label': 'PinkYellowGreen'},
+        {'name': 'PuOr', 'label': 'PurpleOrange'},
+        {'name': 'RdBu', 'label': 'RedBlue'},
+        {'name': 'RdGy', 'label': 'RedGray'},
+        {'name': 'RdYlBu', 'label': 'RedYellowBlue'},
+        {'name': 'RdYlGn', 'label': 'RedYellowGreen'},
         {'name': 'Spectral', 'label': 'Spectral'},
         {'name': 'sinebow', 'label': 'Sinebow'},
         {'name': 'rainbow', 'label': 'Rainbow'},
@@ -210,10 +210,12 @@ export class ColorPickerComponent implements OnInit {
         // reset the color if single to palette or palette to single
         const oldMode = this.mode;
         this.mode = mode;
+        /*
         if ( mode === 'palette' || oldMode === 'palette' ) {
-            this.color = '';
-            this.emitColor();
+            // this.color = '';
+            // this.emitColor();
         }
+        */
     }
 
     colorSelected(hexColor: string): void {

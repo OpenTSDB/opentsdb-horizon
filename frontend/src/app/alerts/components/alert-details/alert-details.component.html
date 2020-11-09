@@ -1060,6 +1060,7 @@
                                     <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
                                     <div class="opsgenie-autoclose-flag">
                                         <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
+                                        <mat-hint class="info-hint" *ngIf="data.notification.opsgenieAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
                             </div>

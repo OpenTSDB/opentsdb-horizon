@@ -153,7 +153,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 const app = urlPath.shift();
 
                 // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
-                if (app === 'd') {
+                if (app === 'd' || app === 'snap') {
                     // YAY! we are in dashboard land
                     const dbId = urlPath.shift();
                     const dbFullPath = '/' + urlPath.join('/');
@@ -203,7 +203,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.routedApp !== app) {
 
                     // previous routed app was dashboard
-                    if (this.routedApp === 'd') {
+                    if (this.routedApp === 'd' || this.routedApp === 'snap') {
                         // need to reset dashboard state
                         let stateSnapshot: any = this.store.snapshot();
                         if (stateSnapshot.Dashboard !== undefined) {

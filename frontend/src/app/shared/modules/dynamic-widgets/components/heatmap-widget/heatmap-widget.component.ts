@@ -126,6 +126,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   ) { }
 
   ngOnInit() {
+    this.visibleSections.queries = this.mode === 'edit' ? true : false;
     this.doRefreshData$ = new BehaviorSubject(false);
     this.doRefreshDataSub = this.doRefreshData$
         .pipe(
@@ -147,32 +148,38 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                 }
                 break;
               case 'reQueryData':
-                this.refreshData();
-                break;
-              case 'ZoomDateRange':
-                overrideTime = this.widget.settings.time.overrideTime;
-                if ( message.payload.date.isZoomed && overrideTime ) {
-                    const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
-                    const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
-                    if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
-                        this.options.isCustomZoomed = message.payload.date.isZoomed;
-                        this.widget.settings.time.zoomTime = message.payload.date;
-                        this.refreshData();
-                    }
-                // tslint:disable-next-line: max-line-length
-                } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
-                    this.options.isCustomZoomed = message.payload.date.isZoomed;
+                if ( !message.id || message.id === this.widget.id ) {
                     this.refreshData();
                 }
-                // unset the zoom time
-                if ( !message.payload.date.isZoomed ) {
-                    delete this.widget.settings.time.zoomTime;
+                break;
+              case 'ZoomDateRange':
+                if ( !message.id || message.id === this.widget.id ) {
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.refreshData();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        this.refreshData();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
                 }
                 break;
               case 'TimezoneChanged':
+                if ( !message.id || message.id === this.widget.id ) {
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };
-                  break;
+                }
+                break;
              case 'SnapshotMeta':
                   this.meta = message.payload;
                   break;
@@ -473,8 +480,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   setSize() {
        const nativeEl = (this.mode !== 'view') ?
           this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
         // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height / 2 
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
           : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
       // let newSize = outputSize;

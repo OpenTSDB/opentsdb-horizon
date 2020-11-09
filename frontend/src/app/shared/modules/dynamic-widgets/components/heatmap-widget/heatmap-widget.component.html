@@ -1,10 +1,10 @@
 <div class="widget-output-container" #widgetOutputContainer [style.height]="mode !== 'view' ? (widgetOutputElHeight) +'px' : 'inherit'">
     <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
-        <div class="title-label">
+        <div class="title-label" *ngIf="mode === 'edit' || mode === 'explore'">
             <span class="navbar-item">Widget name:</span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
                 showEditIcon="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
@@ -15,7 +15,7 @@
                 This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
             </span>
         </span>
-        <graph-type (change)="changeWidgetType($event)" selected="HeatmapWidgetComponent" *ngIf="mode === 'edit'"></graph-type>
+        <graph-type (change)="changeWidgetType($event)" selected="HeatmapWidgetComponent"></graph-type>
         <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
@@ -75,9 +75,9 @@
             </div>
         </div>
     </div>
-    <div class="widget-actions">
+    <div class="widget-actions" *ngIf="mode !== 'snap'">
         <!-- controls to save/cancel -->
-        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
+        <button mat-raised-button color="primary" *ngIf="mode === 'edit'" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
             Dashboard</button>
         <button mat-stroked-button color="primary" class="mat-elevation-z0"
             (click)="closeViewEditMode()">Cancel</button>

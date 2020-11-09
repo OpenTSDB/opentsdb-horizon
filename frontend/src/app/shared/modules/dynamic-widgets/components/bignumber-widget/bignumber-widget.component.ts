@@ -107,7 +107,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         ) { }
 
     ngOnInit() {
-
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.disableAnyRemainingGroupBys();
         this.setDefaultVisualization();
 
@@ -129,9 +129,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 if ( !overrideTime ) {
                     this.refreshData();
                 }
-            } else if ( message.action === 'reQueryData' ) {
+            } else if ( message.action === 'reQueryData' &&  ( !message.id || message.id === this.widget.id ) ) {
                 this.refreshData();
-            } else if ( message.action === 'ZoomDateRange') {
+            } else if ( message.action === 'ZoomDateRange' &&  ( !message.id || message.id === this.widget.id ) ) {
                 overrideTime = this.widget.settings.time.overrideTime;
                 if ( message.payload.date.isZoomed && overrideTime ) {
                     const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
@@ -237,9 +237,10 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                                                 : this.widgetOutputElement.nativeElement) : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const outputSize = nativeEl.getBoundingClientRect();
+        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
         this.widgetWidth = outputSize.width;
         // tslint:disable-next-line:max-line-length
-        this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height / 2 - 60 : outputSize.height;
+        this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height * heightMod - 60 : outputSize.height;
         if (this.data) {
             this.determineFontSizePercent(this.widgetWidth, this.widgetHeight);
         }
