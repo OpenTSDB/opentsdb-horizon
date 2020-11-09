@@ -473,8 +473,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
-                    dbcontent.settings.time.start = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.start, this.dbTime.zone);
-                    dbcontent.settings.time.end = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.end, this.dbTime.zone);
+                    dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange.start;
+                    dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange.end;
+                    dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
                         'name': snapTitle,
                         'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
@@ -767,7 +768,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.dbTime.zone = t.zone;
             } else {
                 this.isDBZoomed = false;
-                this.dbTime = {...t};
+                this.dbTime = {...t };
+                this.dbTime.start = isNaN(t.start) ? this.dbTime.start : this.dateUtil.timestampToTime(t.start, this.dbTime.zone);
+                this.dbTime.end = isNaN(t.start) ? this.dbTime.end : this.dateUtil.timestampToTime(t.end, this.dbTime.zone);
             }
 
             // do not intercom if widgets are still loading
@@ -1463,8 +1466,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     saveSnapshot() {
         let content = this.store.selectSnapshot(DBState);
         content = this.dbService.getStorableFormatFromDBState(content);
-        content.settings.time.start = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.start, this.dbTime.zone);
-        content.settings.time.end = this.dateUtil.timestampToTime(this.editViewModeMeta.queryDataRange.end, this.dbTime.zone);
+        content.settings.time.start = this.editViewModeMeta.queryDataRange.start;
+        content.settings.time.end = this.editViewModeMeta.queryDataRange.end;
+        content.settings.time.zone = this.dbTime.zone;
         content.widgets = [this.newWidget];
         const payload: any = {
             'name': content.settings.meta.title,

@@ -737,8 +737,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const newSize = nativeEl.getBoundingClientRect();
+        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
         // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * 0.6
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                             : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 70;
         // let newSize = outputSize;
         let nWidth, nHeight, padding;

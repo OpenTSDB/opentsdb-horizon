@@ -134,6 +134,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         gridLineColor: '#ccc',
     };
     queryData: any = {};
+    queryTime: any = {};
     chartData = { ts: [[0]] };
     size: any = {
         height: 180
@@ -1185,7 +1186,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 component_type: 'LinechartWidgetComponent'
             }
         };
-        const time = {
+        this.queryTime = {
             start: this.dateUtil.timeToMoment(this.startTime, 'local').valueOf(),
             end: this.dateUtil.timeToMoment(this.endTime, 'local').valueOf()
         };
@@ -1207,7 +1208,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const mid = this.thresholdSingleMetricControls.metricId.value;
         options.sources = mid ? [ mid] : [];
         if ( Object.keys(queries).length ) {
-            const query = this.queryService.buildQuery(settings, time, queries, options);
+            const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
             // this.cdRef.detectChanges();
             this.getYamasData({query: query});
         } else {
@@ -1626,8 +1627,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             version: this.dbConverterSrv.getDBCurrentVersion(),
             settings: {
                 time:  {
-                    start: this.startTime,
-                    end: this.endTime,
+                    start: this.queryTime.start / 1000,
+                    end: this.queryTime.end / 1000,
                     zone: 'local'
                 },
                 downsample: {
