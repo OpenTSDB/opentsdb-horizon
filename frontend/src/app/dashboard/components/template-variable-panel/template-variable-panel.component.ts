@@ -112,6 +112,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 });
             }
         });
+        // resolve scopeCache if defined for the first time.
+        console.log('hill - first load tplVariables', this.tplVariables);
+
     }
 
     // to set reset these variable, will be call from dashboard component.
@@ -160,7 +163,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const arrayControl = this.mode.view ? this.listForm.get('listVariables') as FormArray
             : this.editForm.get('formTplVariables') as FormArray;
         const selControl = arrayControl.at(index);
-        const alias = '[' + selControl.get('alias').value + ']';
+        const alias = selControl.get('alias').value;
         const tagk = selControl.get('tagk').value;
         const metrics = [];
         // get tag values that matches metrics or namespace if metrics is empty
@@ -170,8 +173,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 const filters = queries[j].filters;
                 let aliasFound = false;
                 for (let k = 0; k < filters.length; k++) {
-                    if (filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
-                        aliasFound = true;
+                    if (filters[k].tagk === tagk && filters[k].customFilter) {
+                        filters[k].customFilter.forEach(f => {
+                            const hasNot = f[0] === '!';
+                            const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                            if (alias === _alias) {
+                                aliasFound = true;
+                            }
+                        });
                     }
                 }
                 if (aliasFound) {
@@ -289,6 +298,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         this.filteredValueOptions[index][0] = regexStr;
                         this.cdRef.markForCheck();
                     }
+                    console.log('hill - query for resolve tag values scope', query);
                     this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                         results => {
                             this.filterValLoading = false;
