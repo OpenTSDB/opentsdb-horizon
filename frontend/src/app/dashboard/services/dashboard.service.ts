@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { URLOverrideService } from './urlOverride.service';
+import { HttpService } from '../../core/http/http.service';
 
 @Injectable()
 export class DashboardService {
@@ -72,7 +73,8 @@ export class DashboardService {
   constructor(
     private utils: UtilsService, 
     private dbConverterService: DashboardConverterService,
-    private urlOverride: URLOverrideService) { }
+    private urlOverride: URLOverrideService,
+    private httpService: HttpService) { }
 
 
   setWigetsConfig(conf) {
@@ -362,8 +364,14 @@ export class DashboardService {
             const tplIdx = tplVariables.findIndex(tpl => tpl.alias === alias);
             if (tplIdx > -1) {
               if (tplVariables[tplIdx].filter.trim() !== '') {
-                // qFilter.filter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
-                replaceFilter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
+                // now we want to check if this is an absolute value or regexp
+                // for regexp then we might need to to solve it
+                const _cfilter = tplVariables[tplIdx].filter;
+                if (_cfilter.match(/regexp\((.*)\)/) && tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+
+                } else {
+                  replaceFilter.push(hasNot ? '!' + _cfilter : _cfilter);
+                }
                 if (tplVariables[tplIdx].mode === 'auto') {
                   autoMode = true;
                 }
@@ -386,6 +394,85 @@ export class DashboardService {
     // clean out empty filter, since they might have db filter but not set value yet.
     query.filters = query.filters.filter(f => f.filter.length > 0);
     return query;    
+  }
+
+  // to resolve dasboard scope to scopeCache if not there.
+  // this normally happens when first time dashboard loads
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any) {
+    console.log('hill - resolveDBScope', tplVariables, widgets, panelMode);
+    const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
+    const metrics = [];
+    let query: any = {};
+    let doSearch = false;
+    for (let i = 0; i < tpl.tvars.length; i++) {
+      if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
+        if(!tplVariables.scopeCache[i]) {
+          tplVariables.scopeCache[i] = [];
+        }
+        if (!tplVariables.scopeCache[i].length) {
+          for (let j = 0; j < tpl.tvars[i].scope.length; j++) {
+            let v = tpl.tvars[i].scope[j];
+            if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+              doSearch = true;
+              query.tagsFilter = [{
+                tagk: tpl.tvars[i].tagk,
+                filter: tpl.tvars[i].scope
+              }];
+              break;
+            }
+          }
+        }
+        if (!doSearch) {
+          tplVariables.scopeCache[i] = tpl.tvars[i].scope;
+        }
+      }
+      if (doSearch) {
+        const tagk = tpl.tvars[i].tagk;
+        const alias = tpl.tvars[i].alias;
+        for (let i = 0; i < widgets.length; i++) {
+          const queries = widgets[i].queries;
+          for (let j = 0; j < queries.length; j++) {
+            const filters = queries[j].filters;
+            let aliasFound = false;
+            for (let k = 0; k < filters.length; k++) {
+              if (filters[k].tagk === tagk && filters[k].customFilter) {
+                filters[k].customFilter.forEach(f => {
+                  const hasNot = f[0] === '!';
+                  const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                  if (alias === _alias) {
+                    aliasFound = true;
+                  }
+                });
+              }
+            }
+            if (aliasFound) {
+              for (let k = 0; k < queries[j].metrics.length; k++) {
+                if (!queries[j].metrics[k].expression) {
+                  metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+                }
+              }
+            }
+          }
+        }
+        doSearch = false;
+        query.tag = { key: tagk, value: ''};
+        if (metrics.length) {
+          query.metrics = metrics;
+        } else {
+          query.namespaces = tpl.namespaces;
+        }
+        // run the queries
+        this.httpService.getTagValues(query).subscribe(
+          results => {
+            tplVariables.scopeCache[i] = results;
+          },
+          err => {
+            tplVariables.scopeCache[i] = [];
+          }
+        );
+        query = {};
+      }
+    }
   }
 
   addGridterInfo(widgets: any[]) {
