@@ -229,7 +229,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 // if they have scope defined then we use scope instead
                 if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {    
                     this.useDBFScope = true;
-                    if (!selControl.get('scopeCache').value.length) {
+                    if (!this.tplVariables.scopeCache[index]) {
+                        this.tplVariables.scopeCache[index] = [];
+                    }
+                    if (!this.tplVariables.scopeCache[index].length) {
                         for (let i = 0; i < selControl.get('scope').value.length; i++) {
                             let v = selControl.get('scope').value[i];
                             if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
@@ -243,11 +246,15 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         }
                     }
                     if (!this.doSearch) {      
-                        if (!selControl.get('scopeCache').value.length) {
-                            selControl.get('scopeCache').setValue(selControl.get('scope').value);
+                        if (!this.tplVariables.scopeCache[index].length) {
+                            //selControl.get('scopeCache').setValue(selControl.get('scope').value);
+                            // this.updateState(selControl, false);
+                            this.tplVariables.scopeCache[index] = selControl.get('scope').value;
                         }
                         if (this.filteredValueOptions[index] && this.filteredValueOptions[index].length > 0) {
                             this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
+                        } else {
+                            this.filteredValueOptions[index] = [];
                         }
                         this.filteredValueOptions[index][0] = regexStr;
                         // if we have scopeCache then just filter thru it.
@@ -256,14 +263,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             const va = res ? res[1] : val;
                             const matches = [];
                             const regx = new RegExp(va, 'gi');
-                            selControl.get('scopeCache').value.forEach(v => {
+                            this.tplVariables.scopeCache[index].forEach(v => {
                                 if (v.match(regx)) {
                                     matches.push(v);
                                 }
                             });
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(matches);
                         } else {
-                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(selControl.get('scopeCache').value);
+                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.tplVariables.scopeCache[index]);
                         }         
                         this.filterValLoading = false;        
                         this.cdRef.markForCheck();
@@ -287,7 +294,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             this.filterValLoading = false;
                             if (results && results.length > 0 && this.filteredValueOptions[index]) {
                                 if (this.useDBFScope) {
-                                    selControl.get('scopeCache').setValue(results);
+                                    //selControl.get('scopeCache').setValue(results);
+                                    this.tplVariables.scopeCache[index] = results;
                                 }
                                 this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
                             }
@@ -304,7 +312,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             });
     }
     initListFormGroup(checkRun: boolean = false) {
-        this.editForm.reset({ emitEvent: false});
+        // this.editForm.reset({ emitEvent: false});
         // when switching to edit mode, we use the edit form and value and requery of needed
         if (checkRun) {
             if (JSON.stringify(this.tplVariables.editTplVariables.tvars) !== JSON.stringify(this.tplVariables.viewTplVariables.tvars)) {
@@ -326,7 +334,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     mode: new FormControl((data.mode) ? data.mode : 'auto'),
                     display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
                     scope: new FormControl(data.scope ? data.scope : []),
-                    scopeCache: new FormControl(data.scopeCache ? data.scopeCache: []),
                     applied: data.applied,
                     isNew: data.isNew
                 };
@@ -337,7 +344,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     initEditFormGroup(checkRun: boolean = false) {
-        this.listForm.reset({ emitEvent: false});
+        // this.listForm.reset({ emitEvent: false});
         this.filteredValueOptions = [];
         this.editForm.controls['formTplVariables'] = this.fb.array([]);
         this.initializeTplVariables(this.tplVariables.editTplVariables.tvars);
@@ -398,7 +405,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             mode: new FormControl((data.mode) ? data.mode : 'auto'),
             display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
             scope: new FormControl(data.scope ? data.scope : []),
-            scopeCache: new FormControl(data.scopeCache ? data.scopeCache: []),
             applied: data.applied,
             isNew: data.isNew
         };
@@ -986,7 +992,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = this.getSelectedControl(index);
         selControl.get('scope').setValue(this.tagScope);
         if (this.scopeModify) {
-            selControl.get('scopeCache').setValue([]);
+            this.tplVariables.scopeCache[index] = [];
             this.scopeModify = false;
         }
         this.updateState(selControl, false);
