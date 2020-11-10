@@ -333,12 +333,12 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     handlerTagClick(tag, search= null) {
         const index = search ? search.indexOf(':') : -1 ;
-        const tagkSearch = index !== -1 ? search.substring(0, index ) : '';
+        const tagkSearch = index !== -1 ? search.substring(0, index ) : search;
         let tagValSearch = '';
 
-        if ( search && tag.search(new RegExp(search, 'i')) !== -1 ) {
+        if ( index === -1 && search && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
             tagValSearch = '';
-        } else if ( tagkSearch && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
+        } else if ( index !== -1 && tagkSearch && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
             tagValSearch = search.substring(index + 1);
         } else {
             tagValSearch = search;
