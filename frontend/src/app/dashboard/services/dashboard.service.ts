@@ -346,7 +346,9 @@ export class DashboardService {
   }
 
   // resolve with replace mode based on mode and default value 
-  resolveTplVarReplace(query: any, tplVariables: any[]) {
+  // @scopeCache is the cache for scope if they are using dashboard tag scope
+  resolveTplVarReplace(query: any, tplVariables: any[], scopeCache: any[]) {
+    console.log('hill - resolveTplVarReplace', query, tplVariables);
     for (let i = 0; i < query.filters.length; i++) {
       const qFilter = query.filters[i];
       let replaceFilter = [];
@@ -380,6 +382,7 @@ export class DashboardService {
         }
       }
     }
+    console.log('hill - final filer', query.filters);
     // clean out empty filter, since they might have db filter but not set value yet.
     query.filters = query.filters.filter(f => f.filter.length > 0);
     return query;    
@@ -488,13 +491,16 @@ export class DashboardService {
       delete settings.tplVariables.override;
     }
     // remove scopeCache to saves
-    if (settings.tplVariables.tvars && settings.tplVariables.tvars.length > 0) {
+    /*if (settings.tplVariables.tvars && settings.tplVariables.tvars.length > 0) {
       for (let i = 0; i < settings.tplVariables.tvars.length; i++) {
         let tvar = settings.tplVariables.tvars[i];
         if (tvar.scopeCache) {
           delete settings.tplVariables.tvars[i].scopeCache;
         }
       }
+    }*/
+    if (settings.tplVariables.scopeCache) {
+      delete settings.tplVariables.scopeCache;
     }
     const dashboard = {
       version: this.dbConverterService.getDBCurrentVersion(),

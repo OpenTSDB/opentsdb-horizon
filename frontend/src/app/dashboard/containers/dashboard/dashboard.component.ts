@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     rerender: any = { 'reload': false }; // -> make gridster re-render correctly
     wData: any = {};
     widgets: any[] = [];
-    tplVariables: any = { editTplVariables: {}, viewTplVariables: {}};
+    tplVariables: any = {};
     variablePanelMode: any = { view : true };
     userNamespaces: any[] = [];
     viewEditMode = false;
@@ -262,7 +262,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.variablePanelMode = { view: true };
             this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
-            this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
+            this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}, scopeCache: []};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
             this.isToTChanged = false;
             this.dbPrevToT = { period: '', value: 0 };
@@ -762,7 +762,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             this.tplVariables.viewTplVariables.tvars[idx].filter = tagOverrides[alias];
                         }
                     }
-                }
+                }               
                 this.tplVariables = { ...this.tplVariables };
             }
         }));
@@ -1142,7 +1142,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
         this.variablePanelMode = {...mode};
-
     }
 
     getQuery(message: any) {
@@ -1181,7 +1180,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (tplVars.length > 0) {
                         if (query.filters.findIndex(f => f.customFilter !== undefined) > -1) {
                             // query = this.dbService.resolveTplVarCombine(query, tplVars);
-                            query = this.dbService.resolveTplVarReplace(query, tplVars);
+                            query = this.dbService.resolveTplVarReplace(query, tplVars, this.tplVariables.scopeCache);
                         }
                     }
                     // override the multigraph groupby config
