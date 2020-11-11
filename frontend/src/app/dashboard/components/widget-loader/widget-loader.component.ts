@@ -381,5 +381,11 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     widgetCopy() {
         console.log('%cWIDGET COPY', 'color: white; font-weight: bold; background-color: teal; padding: 2px 4px;', this.widget);
+
+        this.interCom.requestSend(<IMessage> {
+            action: 'copyWidgetToClipboard',
+            id: this.widget.id,
+            payload: this.widget
+        });
     }
 }

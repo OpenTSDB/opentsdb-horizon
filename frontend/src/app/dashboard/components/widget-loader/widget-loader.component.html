@@ -37,7 +37,7 @@
                             </button>
                             <button mat-menu-item (click)="widgetCopy()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
                                 <mat-icon fontSet="denali" fontIcon="d-copy-file"></mat-icon>
-                                <span>Copy to Clipboard</span>
+                                <span>Copy Widget</span>
                             </button>
                             <button mat-menu-item (click)="createAlert()" *ngIf="userHasWriteAccessToNamespace && widget.settings.component_type !== 'PlaceholderWidgetComponent'
                                 && widget.settings.component_type !== 'MarkdownWidgetComponent'">

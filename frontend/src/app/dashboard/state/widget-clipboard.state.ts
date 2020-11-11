@@ -8,6 +8,7 @@ import { WidgetModel } from "./widgets.state";
 export interface WidgetCopyModel {
     dashboard: {
         id: any;
+        fullPath: any;
         path: any;
         name: any;
     };
@@ -31,6 +32,11 @@ export class WidgetClipboardError {
 
 export class WidgetClipboardLoad {
     public static type = '[Widgets Copy] Load';
+    constructor() { }
+}
+
+export class WidgetClipboardInitialize {
+    public static type = '[Widgets Copy] Initialize';
     constructor() { }
 }
 

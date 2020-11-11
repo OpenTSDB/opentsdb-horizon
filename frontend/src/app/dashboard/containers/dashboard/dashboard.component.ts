@@ -65,6 +65,7 @@ import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
+import { WidgetClipboardService } from '../../services/widget-clipboard.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -248,7 +249,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
-        private iiService: InfoIslandService
+        private iiService: InfoIslandService,
+        private widgetClipboardService: WidgetClipboardService
     ) { }
 
     ngOnInit() {
@@ -573,6 +575,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         payload: { zoomingWid: message.id, overrideOnly: overrideOnly, date: { ...message.payload, zone: this.dbTime.zone } }
                     });
                     this.updateURLParams(this.dbTime);
+                    break;
+                case 'copyWidgetToClipboard':
+                    const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
+                    this.widgetClipboardService.copyWidget({
+                        dashboard: {
+                            id: dbData.id,
+                            path: dbData.path,
+                            fullPath: dbData.fullPath,
+                            name: dbData.name
+                        },
+                        widget: { ...message.payload }
+                    });
                     break;
                 default:
                     break;

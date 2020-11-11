@@ -30,6 +30,7 @@
 @import './components/dboard-content/dboard-content.component';
 @import './components/widget-loader/widget-loader.component';
 @import './components/template-variable-panel/template-variable-panel.component';
+@import './components/widget-clipboard-menu/widget-clipboard-menu.component';
 
 // widget specific styles are in shared/modules/dynamic-widgets
 
@@ -52,6 +53,7 @@
     @include dboard-content-component-base();
     @include widget-loader-component-base();
     @include template-variable-panel-component-base();
+    @include widget-clipboard-menu-component-base();
 
 }
 
@@ -74,5 +76,5 @@
     @include dboard-content-component-theme($theme-config);
     @include widget-loader-component-theme($theme-config);
     @include template-variable-panel-component-theme($theme-config);
-
+    @include widget-clipboard-menu-component-theme($theme-config);
 }

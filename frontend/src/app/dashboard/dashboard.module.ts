@@ -14,6 +14,7 @@ import { InfoIslandModule } from '../shared/modules/info-island/info-island.modu
 // services
 import { DashboardService } from './services/dashboard.service';
 import { DashboardConverterService } from '../core/services/dashboard-converter.service';
+import { WidgetClipboardService } from './services/widget-clipboard.service';
 
 // store
 import { NgxsModule } from '@ngxs/store';
@@ -46,6 +47,7 @@ import { TemplateVariablePanelComponent } from './components/template-variable-p
 import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
+import { WidgetClipboardMenuComponent } from './components/widget-clipboard-menu/widget-clipboard-menu.component';
 
 @NgModule({
     imports: [
@@ -86,11 +88,13 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
         TemplateVariablePanelComponent,
-        DashboardToAlertDialogComponent
+        DashboardToAlertDialogComponent,
+        WidgetClipboardMenuComponent
     ],
     providers: [
         DashboardService,
-        DashboardConverterService
+        DashboardConverterService,
+        WidgetClipboardService
     ],
     entryComponents: [
         DashboardSettingsDialogComponent,

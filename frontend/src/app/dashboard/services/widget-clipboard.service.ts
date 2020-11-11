@@ -13,6 +13,7 @@ import { HttpService } from '../../core/http/http.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 
 import { DashboardService } from './dashboard.service';
+import { WidgetCopyModel } from '../state/widget-clipboard.state';
 
 
 
@@ -49,7 +50,7 @@ export class WidgetClipboardService {
     }
 
     createCopyStore() {
-
+        const folder
     }
 
     saveCopyStore() {
@@ -64,6 +65,28 @@ export class WidgetClipboardService {
             updatedBy
         };
         return updateValues;
+    }
+
+    copyWidget(data: WidgetCopyModel) {
+        if (!this.checkForClipboardResource()) {
+            // resource does not exist... create it
+            this.createClipboardResource(() => {
+                this.copyWidget(data);
+            });
+        } else {
+            this.logger.log('copyWidget', data);
+        }
+    }
+
+    // privates
+    private checkForClipboardResource() {
+        const user = this.store.selectSnapshot(DbfsState.getUser(null, true));
+        this.logger('checkForClipboardResource', user);
+        return true;
+    }
+
+    private createClipboardResource(cb: any) {
+
     }
 }
 
