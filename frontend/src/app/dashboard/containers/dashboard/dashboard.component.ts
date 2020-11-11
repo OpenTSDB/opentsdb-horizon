@@ -482,6 +482,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
+                    console.log("wdMetaData", this.wdMetaData);
                     dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.start : this.wdMetaData[message.id].queryDataRange.start;
                     dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.end : this.wdMetaData[message.id].queryDataRange.end;
                     dbcontent.settings.time.zone = this.dbTime.zone;
@@ -1259,7 +1260,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if ( this.viewEditMode || this.snapshot ) {
             this.editViewModeMeta['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
         } else {
-            this.wdMetaData['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
+            this.wdMetaData[message.id] = { queryDataRange: { start: dt.start / 1000, end: dt.end / 1000 } };
         }
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
