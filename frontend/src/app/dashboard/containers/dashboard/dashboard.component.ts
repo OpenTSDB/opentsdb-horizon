@@ -1259,7 +1259,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if ( this.viewEditMode || this.snapshot ) {
             this.editViewModeMeta['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
         } else {
-            this.wdMetaData['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
+            this.wdMetaData[message.id] = { queryDataRange: { start: dt.start / 1000, end: dt.end / 1000 } };
         }
         if (payload.queries.length) {
             const wType = payload.settings.component_type;
