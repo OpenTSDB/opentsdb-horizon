@@ -112,9 +112,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 });
             }
         });
-        // resolve scopeCache if defined for the first time.
-        console.log('hill - first load tplVariables', this.tplVariables);
-
     }
 
     // to set reset these variable, will be call from dashboard component.
@@ -298,7 +295,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         this.filteredValueOptions[index][0] = regexStr;
                         this.cdRef.markForCheck();
                     }
-                    console.log('hill - query for resolve tag values scope', query);
                     this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
                         results => {
                             this.filterValLoading = false;

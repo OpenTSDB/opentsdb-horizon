@@ -350,7 +350,6 @@ export class DashboardService {
   // resolve with replace mode based on mode and default value 
   // @scopeCache is the cache for scope if they are using dashboard tag scope
   resolveTplVarReplace(query: any, tplVariables: any[], scopeCache: any[]) {
-    console.log('hill - resolveTplVarReplace', query, tplVariables);
     for (let i = 0; i < query.filters.length; i++) {
       const qFilter = query.filters[i];
       let replaceFilter = [];
@@ -398,7 +397,6 @@ export class DashboardService {
         }
       }
     }
-    console.log('hill - final filer', query.filters);
     // clean out empty filter, since they might have db filter but not set value yet.
     query.filters = query.filters.filter(f => f.filter.length > 0);
     return query;    
@@ -407,7 +405,6 @@ export class DashboardService {
   // to resolve dasboard scope to scopeCache if not there.
   // this normally happens when first time dashboard loads
   resolveDBScope(tplVariables: any, widgets: any[], panelMode: any) {
-    console.log('hill - resolveDBScope', tplVariables, widgets, panelMode);
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
     const metrics = [];
     let query: any = {};

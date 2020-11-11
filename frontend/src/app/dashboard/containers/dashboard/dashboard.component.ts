@@ -868,7 +868,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // apply when custom tag value is changed
     // should only trigger widgets that are affected by this change.
     applyTplVarValue(tvars: any[]) {
-        console.log('hill - applyTplVarValue', tvars);
         // update url params
         const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
         if (this.variablePanelMode.view) {
@@ -1147,7 +1146,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getQuery(message: any) {
-        console.log('hill - getQuery', message, this.tplVariables);
         let groupid = '';
         let query = null;
         // make sure we modify the copy for tsdb query
@@ -1206,7 +1204,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // dispatch payload query by group
     handleQueryPayload(message: any) {
-        console.log('hill - handleQueryPayload', message);
         if (message.payload.queries.length) {
             const gquery: any = {
                 wid: message.id,
@@ -1214,7 +1211,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 dbid: this.dbid
             };
             const query = this.getQuery(message);
-            console.log('hill - the query', query);
             if ( query ) {
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
