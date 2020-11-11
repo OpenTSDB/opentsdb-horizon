@@ -43,6 +43,7 @@ import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-de
 import * as d3 from 'd3';
 import { ThemeService } from '../../../app-shell/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
+import { DashboardConverterService } from '../../../core/services/dashboard-converter.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
 import { environment } from "../../../../environments/environment";
@@ -133,6 +134,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         gridLineColor: '#ccc',
     };
     queryData: any = {};
+    queryTime: any = {};
     chartData = { ts: [[0]] };
     size: any = {
         height: 180
@@ -300,7 +302,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private router: Router,
         private location: LocationStrategy,
         private infoIslandService: InfoIslandService,
-        private hostElRef: ElementRef
+        private hostElRef: ElementRef,
+        private dbConverterSrv: DashboardConverterService
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -1183,7 +1186,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 component_type: 'LinechartWidgetComponent'
             }
         };
-        const time = {
+        this.queryTime = {
             start: this.dateUtil.timeToMoment(this.startTime, 'local').valueOf(),
             end: this.dateUtil.timeToMoment(this.endTime, 'local').valueOf()
         };
@@ -1205,7 +1208,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const mid = this.thresholdSingleMetricControls.metricId.value;
         options.sources = mid ? [ mid] : [];
         if ( Object.keys(queries).length ) {
-            const query = this.queryService.buildQuery(settings, time, queries, options);
+            const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
             // this.cdRef.detectChanges();
             this.getYamasData({query: query});
         } else {
@@ -1611,6 +1614,82 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         // emit to save the alert
         this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
             payload: { data: this.utils.deepClone([data])}} );
+    }
+
+    handlePoPPreviewEvents(message) {
+        if ( message.action === 'SaveSnapshot') {
+            this.saveSnapshot();
+        }
+    }
+
+    saveSnapshot() {
+        const dConfig: any = {
+            version: this.dbConverterSrv.getDBCurrentVersion(),
+            settings: {
+                time:  {
+                    start: this.queryTime.start / 1000,
+                    end: this.queryTime.end / 1000,
+                    zone: 'local'
+                },
+                downsample: {
+                    aggregators: [''],
+                    customUnit: '',
+                    customValue: '',
+                    value: 'auto'
+                },
+                meta : {
+                    title: this.data.name
+                }
+            },
+
+            widgets : [
+                {
+                    id: 'aaa',
+                    settings: {
+                        title: this.data.name || 'Untitled Alert',
+                        data_source: 'yamas',
+                        component_type: 'LinechartWidgetComponent',
+                        visual: {
+                            showEvents: false
+                        },
+                        axes: {
+                            y1 : {
+                                enabled: true
+                            },
+                            y2 : {}
+                        },
+                        legend: {
+                            display: false,
+                        },
+                        time: {
+                            downsample: {
+                                value: 'auto',
+                                aggregator: 'avg',
+                                customValue: '',
+                                customUnit: ''
+                            }
+                        }
+                    },
+                    queries: this.queries
+                }
+            ]
+        };
+
+        if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
+            dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
+        }
+        const payload: any = {
+            'name': this.data.name || 'Untitled Alert',
+            'sourceType': 'ALERT',
+            'sourceId': this.data.id !== '_new_' ? this.data.id : '',
+            'content': dConfig
+        };
+
+        this.httpService.saveSnapshot('_new_', payload).subscribe(
+            (res: any) => {
+                window.open('/snap/' + res.body.id , '_blank');
+            }
+        );
     }
 
     cancelEdit() {

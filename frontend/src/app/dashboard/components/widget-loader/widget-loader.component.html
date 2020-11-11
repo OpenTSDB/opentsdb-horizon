@@ -18,14 +18,19 @@
                     <span *ngIf="widget.settings.time && widget.settings.time.overrideTime" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
                         <mat-icon class="time-lock" fontSet="denali" fontIcon="d-time-lock"></mat-icon>
                     </span>
+                    <mat-icon class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')"></mat-icon>
                     <button mat-icon-button [matMenuTriggerFor]="widgetMenu" class="widget-menu-trigger">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
                     </button>
                     <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">
                         <ng-container *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
-                            <button mat-menu-item (click)="editWidget()">
+                            <button mat-menu-item (click)="loadWidget('edit')" *ngIf="hasWriteAccess">
                                 <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                <span>Edit View</span>
+                                <span>Edit & Explore</span>
+                            </button>
+                            <button mat-menu-item (click)="loadWidget('explore')" *ngIf="!hasWriteAccess">
+                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                <span>Explore</span>
                             </button>
                             <button mat-menu-item (click)="widgetClone()">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>

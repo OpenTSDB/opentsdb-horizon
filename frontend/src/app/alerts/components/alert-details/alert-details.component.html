@@ -19,6 +19,11 @@
                 <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                     <img src="/assets/spinner-26x26.gif" />
                 </div>
+                <div class="snapshot">
+                    <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
+                        <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+                    </button>
+                </div>
                 <div class="error" *ngIf="error" (click)="showError()">
                     <mat-icon>error</mat-icon>
                 </div>
@@ -34,7 +39,8 @@
                 [size]="size"
                 [options]="options"
                 [nQueryDataLoading]="nQueryDataLoading"
-                [thresholdConfig]="periodOverPeriodConfig">
+                [thresholdConfig]="periodOverPeriodConfig"
+                (outputEvents)="handlePoPPreviewEvents($event)">
             </alert-details-metric-period-over-period-preview>
         </div>
 
@@ -1054,6 +1060,7 @@
                                     <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
                                     <div class="opsgenie-autoclose-flag">
                                         <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
+                                        <mat-hint class="info-hint" *ngIf="data.notification.opsgenieAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
                             </div>

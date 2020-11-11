@@ -291,10 +291,10 @@
                                 </mat-icon>
                             </button>-->
                             <mat-icon style="cursor: move;" cdkDragHandle>reorder</mat-icon>
-                            <button mat-icon-button color="primary" (click)="cloneMetric(data.metric.id)">
+                            <button mat-icon-button color="primary" class="clone-metric" (click)="cloneMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" [disabled]="!canDeleteMetric(data.metric.id)"
+                            <button mat-icon-button color="primary" class="delete-metric" [disabled]="!canDeleteMetric(data.metric.id)"
                                 (click)="deleteMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                             </button>

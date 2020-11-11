@@ -499,8 +499,9 @@ export class DashboardService {
   }
 
   updateTimeFromURL(dbstate) {
-    if (this.urlOverride.getTimeOverrides()) {
-      var urlTime = this.urlOverride.getTimeOverrides();
+    const paramTime = this.urlOverride.getURLParamTime();
+    if ( paramTime ) {
+      var urlTime = this.urlOverride.getTimeOverrides(paramTime.zone || dbstate.content.settings.time.zone);
       if (!dbstate.content.settings.time)
         dbstate.content.settings.time = {};
       var dbTime = dbstate.content.settings.time;
@@ -565,21 +566,24 @@ export class DashboardService {
   getStorableFormatFromDBState(dbstate) {
     const widgets = this.utils.deepClone(dbstate.Widgets.widgets);
     for (let i = 0; i < widgets.length; i++) {
-      widgets[i].gridPos.x = widgets[i].gridPos.xMd;
-      widgets[i].gridPos.y = widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.xMd;
-      delete widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.wMd;
-      delete widgets[i].gridPos.hMd;
-      delete widgets[i].gridPos.xSm;
-      delete widgets[i].gridPos.ySm;
-      delete widgets[i].gridPos.wSm;
-      delete widgets[i].gridPos.hSm;
+      if ( widgets[i].gridPos ) {
+        widgets[i].gridPos.x = widgets[i].gridPos.xMd;
+        widgets[i].gridPos.y = widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.xMd;
+        delete widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.wMd;
+        delete widgets[i].gridPos.hMd;
+        delete widgets[i].gridPos.xSm;
+        delete widgets[i].gridPos.ySm;
+        delete widgets[i].gridPos.wSm;
+        delete widgets[i].gridPos.hSm;
+      }
       delete widgets[i].settings.time.zoomTime;
     }
     // will remove later, if no need to check this.
     const settings = this.utils.deepClone(dbstate.Settings);
-    if (settings.tplVariables.override) {
+    delete settings.mode;
+    if ( settings.tplVariables && settings.tplVariables.override ) {
       delete settings.tplVariables.override;
     }
     // remove scopeCache to saves

@@ -1,27 +1,33 @@
-<div class="widget-output-container" fxLayout="column">
-    <div class="widget-title" #widgetTitle *ngIf="editMode">
-        <div class="title-label">
+<div class="widget-output-container" [style.height]="mode !== 'view' ? ( widgetHeight + 60 ) + 'px' : ''">
+    <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
+        <div class="title-label" *ngIf="mode === 'edit' || mode === 'explore'">
             <span class="navbar-item">Widget name:</span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item"
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
                 showEditIcon="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
                 (updatedValue)="setTitle($event)">
             </inline-editable>
+            <span class="info" *ngIf="mode === 'snap'">
+                This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
+            </span>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="BignumberWidgetComponent"></graph-type>
+        <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
+            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+        </button>
     </div>
     <canvas #myCanvas width="0" height="0"></canvas>
-    <div class="widget-output" #widgetoutput>
+    <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" [style.height.px]="widgetHeight">
         <div class="widget-container">
             <div class="big-num-container"
                 [style.background]="backgroundColor"
                 [style.color]="textColor"
                 [style.font-size]="fontSizePercent + '%'"
-                [ngClass]= "{'edit-flex' : editMode}">
+                [ngClass]= "{'edit-flex' : mode !== 'view'}">
 
                 <div class="content-container">
                     <div class="metric-container">
@@ -99,7 +105,7 @@
             <div class="debug" *ngIf="debugData" (click)="showDebug()">
                 <mat-icon>info</mat-icon> {{ this.widget.id }}
             </div>
-            <div class="fully-qualified-metric" *ngIf="editMode">
+            <div class="fully-qualified-metric" *ngIf="mode !== 'view'">
                 <div class="metric-detail" *ngIf="selectedMetric">
                     <div class="metric-label">{{ selectedMetric.metric }}</div>
                     <div class="metric-tags">
@@ -114,7 +120,7 @@
     </div>
 </div>
 
-<div class="widget-controls-container" *ngIf="editMode">
+<div class="widget-controls-container" *ngIf="mode !== 'view'">
     <div class="widget-control-steps has-scroller">
         <div class="is-scroller">
             <div class="step-section query-section is-visible" #stepqueries>
@@ -152,9 +158,9 @@
             </div>
         </div>
     </div>
-    <div class="widget-actions">
+    <div class="widget-actions" *ngIf="mode !== 'snap'">
         <!-- controls to save/cancel -->
-        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to Dashboard</button>
+        <button mat-raised-button color="primary" *ngIf="mode === 'edit'" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to Dashboard</button>
         <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
     </div>
 </div>

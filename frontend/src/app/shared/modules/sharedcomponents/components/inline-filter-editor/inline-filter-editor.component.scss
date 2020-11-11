@@ -30,13 +30,13 @@
         }
 
         .option-group-item {
-            // cursor: pointer;
+            cursor: pointer;
             font-weight: 500;
             .info {
                 font-weight: 200;
                 font-size: 12px;
                 float: right;
-                margin-right: 5px;
+                margin-right: 10px;
             }
             .link {
                 font-size: 12px;
@@ -201,6 +201,11 @@
 
                 .tag-filter-hint {
                     font-size: 10px;
+                    display: flex;
+                    span {
+                        margin-right: auto;
+                        height: 18px;
+                    }
                 }
             }
         }
@@ -411,6 +416,12 @@
                     }
                     .mat-icon {
                         width: 20px;
+                    }
+                    .search-clear-btn {
+                        padding: 0 6px 0 6px;
+                        font-size: smaller;
+                        line-height: 20px;
+                        min-width: 40px;
                     }
                 }
 
@@ -646,6 +657,9 @@
         .tag-search-input-field {
             .mat-form-field-flex {
                 background-color: rgba($primary-default, 0.08);
+            }
+            .search-clear-btn {
+                background: if($is-dark, rgba($black, .4), #e8e8e8);
             }
         }
 

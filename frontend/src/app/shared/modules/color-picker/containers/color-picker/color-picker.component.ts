@@ -112,44 +112,6 @@ export class ColorPickerComponent implements OnInit {
     mode = 'palette';
 
     palettes: any = [
-        {'name': 'blues', 'label': 'Blues'},
-        {'name': 'greens', 'label': 'Greens'},
-        {'name': 'greys', 'label': 'Greys'},
-        {'name': 'oranges', 'label': 'Oranges'},
-        {'name': 'purples', 'label': 'Purples'},
-        {'name': 'reds', 'label': 'Reds'},
-        {'name': 'BuGn', 'label': 'BuGn'},
-        {'name': 'BuPu', 'label': 'BuPu'},
-        {'name': 'GnBu', 'label': 'GnBu'},
-        {'name': 'OrRd', 'label': 'OrRd'},
-        {'name': 'PuBuGn', 'label': 'PuBuGn'},
-        {'name': 'PuBu', 'label': 'PuBu'},
-        {'name': 'PuRd', 'label': 'PuRd'},
-        {'name': 'RdPu', 'label': 'RdPu'},
-        {'name': 'YlGnBu', 'label': 'YlGnBu'},
-        {'name': 'YlGn', 'label': 'YlGn'},
-        {'name': 'ylOrBr', 'label': 'YlOrBr'},
-        {'name': 'ylOrRd', 'label': 'YlOrRd'},
-        {'name': 'cividis', 'label': 'Cividis'},
-        {'name': 'viridis', 'label': 'Viridis'},
-        {'name': 'inferno', 'label': 'Inferno'},
-        {'name': 'magma', 'label': 'Magma'},
-        {'name': 'plasma', 'label': 'Plasma'},
-        {'name': 'warm', 'label': 'Warm'},
-        {'name': 'cool', 'label': 'Cool'},
-        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
-        {'name': 'turbo', 'label': 'Turbo'},
-        {'name': 'BrBG', 'label': 'BrBG'},
-        {'name': 'PRGn', 'label': 'PRGn'},
-        {'name': 'PiYG', 'label': 'PiYG'},
-        {'name': 'PuOr', 'label': 'PuOr'},
-        {'name': 'RdBu', 'label': 'RdBu'},
-        {'name': 'RdGy', 'label': 'RdGy'},
-        {'name': 'RdYlBu', 'label': 'RdYlBu'},
-        {'name': 'RdYlGn', 'label': 'RdYlGn'},
-        {'name': 'Spectral', 'label': 'Spectral'},
-        {'name': 'sinebow', 'label': 'Sinebow'},
-        {'name': 'rainbow', 'label': 'Rainbow'},
         {'name': 'Category10', 'label': 'Category10'},
         {'name': 'Accent', 'label': 'Accent'},
         {'name': 'Dark2', 'label': 'Dark2'},
@@ -157,7 +119,45 @@ export class ColorPickerComponent implements OnInit {
         {'name': 'Set1', 'label': 'Set1'},
         {'name': 'Set2', 'label': 'Set2'},
         {'name': 'Set3', 'label': 'Set3'},
-        {'name': 'Tableau10', 'label': 'Tableau10'}
+        {'name': 'Tableau10', 'label': 'Tableau10'},
+        {'name': 'sinebow', 'label': 'Sinebow'},
+        {'name': 'rainbow', 'label': 'Rainbow'},
+        {'name': 'Spectral', 'label': 'Spectral'},
+        {'name': 'RdYlGn', 'label': 'RedYellowGreen'},
+        {'name': 'RdYlBu', 'label': 'RedYellowBlue'},
+        {'name': 'RdGy', 'label': 'RedGray'},
+        {'name': 'RdBu', 'label': 'RedBlue'},
+        {'name': 'PuOr', 'label': 'PurpleOrange'},
+        {'name': 'PiYG', 'label': 'PinkYellowGreen'},
+        {'name': 'PRGn', 'label': 'PurpleGreen'},
+        {'name': 'BrBG', 'label': 'BrownGreen'},
+        {'name': 'turbo', 'label': 'Turbo'},
+        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
+        {'name': 'cool', 'label': 'Cool'},
+        {'name': 'warm', 'label': 'Warm'},
+        {'name': 'plasma', 'label': 'Plasma'},
+        {'name': 'magma', 'label': 'Magma'},
+        {'name': 'inferno', 'label': 'Inferno'},
+        {'name': 'viridis', 'label': 'Viridis'},
+        {'name': 'cividis', 'label': 'Cividis'},
+        {'name': 'ylOrRd', 'label': 'YelllowOrangeRed'},
+        {'name': 'ylOrBr', 'label': 'YellowOrangeBrown'},
+        {'name': 'YlGn', 'label': 'YellowGreen'},
+        {'name': 'YlGnBu', 'label': 'YellowGreenBlue'},
+        {'name': 'RdPu', 'label': 'RedPurple'},
+        {'name': 'PuRd', 'label': 'PurpleRed'},
+        {'name': 'PuBu', 'label': 'PurpleBlue'},
+        {'name': 'PuBuGn', 'label': 'PurpleBlueGreen'},
+        {'name': 'OrRd', 'label': 'OrangeRed'},
+        {'name': 'GnBu', 'label': 'GreenBlue'},
+        {'name': 'BuPu', 'label': 'BluePurple'},
+        {'name': 'BuGn', 'label': 'BlueGreen'},
+        {'name': 'reds', 'label': 'Reds'},
+        {'name': 'purples', 'label': 'Purples'},
+        {'name': 'oranges', 'label': 'Oranges'},
+        {'name': 'greys', 'label': 'Greys'},
+        {'name': 'greens', 'label': 'Greens'},
+        {'name': 'blues', 'label': 'Blues'}
     ];
 
     constructor(
@@ -210,10 +210,12 @@ export class ColorPickerComponent implements OnInit {
         // reset the color if single to palette or palette to single
         const oldMode = this.mode;
         this.mode = mode;
+        /*
         if ( mode === 'palette' || oldMode === 'palette' ) {
-            this.color = '';
-            this.emitColor();
+            // this.color = '';
+            // this.emitColor();
         }
+        */
     }
 
     colorSelected(hexColor: string): void {

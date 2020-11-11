@@ -322,6 +322,30 @@ export class HttpService {
         return this.http.delete(apiUrl, { withCredentials: true });
     }
 
+    getSnapshotById(id: string) {
+        const apiUrl = environment.configdb + '/snapshot/' + id;
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        return this.http.get(apiUrl, httpOptions);
+    }
+
+    saveSnapshot(id, data) {
+        const apiUrl = environment.configdb + '/snapshot';
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        if ( id === '_new_') {
+            return this.http.post(apiUrl, data, httpOptions);
+        } else {
+            return this.http.put(apiUrl, data, httpOptions);
+        }
+    }
+
     userNamespaces() {
         const apiUrl = environment.configdb + '/namespace/member';
         const httpOptions = {

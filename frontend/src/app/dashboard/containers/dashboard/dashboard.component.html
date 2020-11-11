@@ -1,6 +1,7 @@
 <div fxLayout="column" fxFlexFill ttBoundaryListener>
     <!-- need to figure out how to toggle on/off depending on whether there is template variables -->
-    <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true"
+    <!--<variable-template-bar *ngIf="!viewEditMode" [dbSettingsVariables]="variables" ></variable-template-bar> -->
+    <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true && !snapshot"
         [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
         [mode]="variablePanelMode"
         [widgets]="widgets"
@@ -8,12 +9,21 @@
         [tplVariables]="tplVariables"
         (modeChange)="changeVarPanelMode($event)">
     </template-variable-panel>
+    <!--<div class="widget-title" #widgetTitle *ngIf="snapshot">
+        <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
+            <span class="navbar-item">This snapshot created from the dashboard by user.syed on 12/12/2010 09:00 pm</span>
+        </span>
+        <button mat-flat-button class="snapshot-button" matTooltip="Snapshot" matTooltipPosition="below">
+            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+        </button>
+    </div>-->
     <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"
         [newWidget]="newWidget"
         [mWidget]="mWidget"
         (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
         [rerender]="rerender"
         [widgets]="widgets"
+        [hasWriteAccess]="doesUserHaveWriteAccess()"
         [dashboardMode]="dashboardMode$ | async">
     </app-dboard-content>
 </div>
@@ -27,7 +37,7 @@
         *ngIf="activeMediaQuery !== 'xs'">
     </inline-editable>
 
-    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="activeMediaQuery !== 'xs' && dbid !=='_new_'">
+    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="!snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
         <button mat-icon-button class="mat-elevation-z0"
             [ngClass]="{'dashboard-faved': isUserFavorited}"
             (click)="dashboardFavoriteAction(isUserFavorited)">
@@ -35,7 +45,8 @@
         </button>
     </span>
     <span class="flex-spacer"></span>
-    <span class="navbar-item nav-add-new-widget" *ngIf="activeMediaQuery !== 'xs' && !viewEditMode">
+
+    <span class="navbar-item nav-add-new-widget" *ngIf="!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
         <button mat-raised-button class="mat-elevation-z0"
             [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
             [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"
@@ -72,7 +83,11 @@
     <span class="navbar-item nav-timezone-toggle">
         <navbar-timezone-toggle [timezone]="dbTime.zone" (change)="setTimezone($event);"></navbar-timezone-toggle>
     </span>
-    <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && !viewEditMode">
-        <navbar-dashboard-actions-menu mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+
+    <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && (!viewEditMode || snapshot)">
+        <navbar-dashboard-actions-menu *ngIf="!viewEditMode" mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+        <button mat-flat-button class="save-dashboard-button" *ngIf="snapshot && doesUserHaveWriteAccess()" (click)="saveSnapshot()">
+            <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
+        </button>
     </span>
 </ng-template>
