@@ -195,6 +195,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     userNamespaces: any[] = [];
     viewEditMode = false;
     editViewModeMeta: any = {};
+    wdMetaData: any = {};
     snapshot = false;
     newWidget: any; // setup new widget based on type from top bar
     mWidget: any; // change the widget type
@@ -262,6 +263,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.widgets = [];
             this.wData = {};
             this.meta = {};
+            this.wdMetaData = {}
             this.isDbTagsLoaded = false;
             this.variablePanelMode = { view: true };
             this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
@@ -480,8 +482,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
-                    dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange.start;
-                    dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange.end;
+                    dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.start : this.wdMetaData[message.id].queryDataRange.start;
+                    dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.end : this.wdMetaData[message.id].queryDataRange.end;
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
                         'name': snapTitle,
@@ -1256,6 +1258,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if ( this.viewEditMode || this.snapshot ) {
             this.editViewModeMeta['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
+        } else {
+            this.wdMetaData['queryDataRange'] = { start: dt.start / 1000, end: dt.end / 1000 };
         }
         if (payload.queries.length) {
             const wType = payload.settings.component_type;

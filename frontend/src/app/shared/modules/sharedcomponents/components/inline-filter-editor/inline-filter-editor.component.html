@@ -149,7 +149,7 @@
                     <div class="is-scroller">
                         <div class="option-group tag-key-option" *ngFor="let tagkey of searchResults.tagKeys;">
                             <ng-container *ngIf="{ n: searchResults.tagKeysAndValues[tagkey].values.length } as tagkeyMeta">
-                                <div class="option-group-item" (click)="setTag(tagkey, searchControl.value)">
+                                <div class="option-group-item" (click)="setTag(tagkey, bsTagValSearch)">
                                     <span [innerHTML]="tagkey | highlighttext: searchControl.value"></span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="link"> more.. </span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="info"> ( Showing top 5 ) </span>
