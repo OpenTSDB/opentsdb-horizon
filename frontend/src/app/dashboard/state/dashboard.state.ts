@@ -407,7 +407,8 @@ export class DBState {
             status: '',
             path: '_new_',
             fullPath: '',
-            loadedDB: {}
+            loadedDB: {},
+            lastSnapshotId: ''
         });
 
         // reset some children states
