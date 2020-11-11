@@ -681,6 +681,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 if (this.widgets.length && this.oldWidgets.length === 0) {
                     this.oldWidgets = [...this.widgets];
                 }
+                // let resolve dashboard scope if they have it
+                this.dbService.resolveDBScope(this.tplVariables, this.widgets, this.variablePanelMode);
             }
         }));
 
@@ -1145,7 +1147,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getQuery(message: any) {
-        console.log('hill - getQuery', message);
+        console.log('hill - getQuery', message, this.tplVariables);
         let groupid = '';
         let query = null;
         // make sure we modify the copy for tsdb query
@@ -1179,7 +1181,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // here we need to resolve template variables
                     if (tplVars.length > 0) {
                         if (query.filters.findIndex(f => f.customFilter !== undefined) > -1) {
-                            // query = this.dbService.resolveTplVarCombine(query, tplVars);
                             query = this.dbService.resolveTplVarReplace(query, tplVars, this.tplVariables.scopeCache);
                         }
                     }
