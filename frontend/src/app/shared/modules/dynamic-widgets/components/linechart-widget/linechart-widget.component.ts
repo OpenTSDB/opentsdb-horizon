@@ -484,6 +484,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         // this.events = message.payload.events;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        const resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         }));

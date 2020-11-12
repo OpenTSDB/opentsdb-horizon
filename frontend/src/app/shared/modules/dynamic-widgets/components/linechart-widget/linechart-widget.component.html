@@ -20,7 +20,7 @@
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
     </div>
-    <div class="widget-output" #widgetoutput [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 70) +'px' : 'inherit'"
+    <div class="widget-output" #widgetoutput id="{{widget.id}}" [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 70) +'px' : 'inherit'"
         appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)"
         [ngClass]="{
             'multigraph-enabled': multigraphEnabled,
