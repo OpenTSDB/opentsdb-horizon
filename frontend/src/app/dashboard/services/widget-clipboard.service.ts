@@ -8,7 +8,7 @@ import { UtilsService } from '../../core/services/utils.service';
 
 // not quite sure yet if I need these
 import { Store } from '@ngxs/store';
-import { DbfsState, DbfsResourcesState } from '../../app-shell/state';
+import { DbfsState, DbfsResourcesState, DbfsLoadTopFolder } from '../../app-shell/state';
 import { HttpService } from '../../core/http/http.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 
@@ -21,6 +21,8 @@ import { WidgetCopyModel } from '../state/widget-clipboard.state';
 
 @Injectable()
 export class WidgetClipboardService {
+
+    private clipboardResourcePath: string;
 
     constructor(
         private utils: UtilsService,
@@ -50,7 +52,7 @@ export class WidgetClipboardService {
     }
 
     createCopyStore() {
-        const folder
+        // const folder
     }
 
     saveCopyStore() {
@@ -68,25 +70,64 @@ export class WidgetClipboardService {
     }
 
     copyWidget(data: WidgetCopyModel) {
-        if (!this.checkForClipboardResource()) {
+        if (!this.clipboardResource()) {
             // resource does not exist... create it
-            this.createClipboardResource(() => {
-                this.copyWidget(data);
-            });
+            this.createClipboardResource().subscribe(
+                res => {
+                    this.logger.success('CREATED CLIPBOARD ');
+                    const user = this.store.selectSnapshot(DbfsState.getUser());
+                    const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias));
+                    this.store.dispatch( new DbfsLoadTopFolder('user', user.alias, {}))
+                        .subscribe(
+                            () => {
+                                // try copying again
+                                setTimeout(() => {
+                                    this.copyWidget(data);
+                                });
+                            }
+                        );
+                },
+                err => { this.logger.error('CREATE CLIPBOARD RESOURCE', err); }
+            );
         } else {
             this.logger.log('copyWidget', data);
+            // copy actions
         }
     }
 
     // privates
-    private checkForClipboardResource() {
-        const user = this.store.selectSnapshot(DbfsState.getUser(null, true));
-        this.logger('checkForClipboardResource', user);
-        return true;
+    private clipboardResource() {
+        // get current logged in user
+        const user = this.store.selectSnapshot(DbfsState.getUser());
+        // get current user clipboard file
+        const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFile('/user/' + user.alias + '/_clipboard_'));
+
+        this.logger.log('checkForClipboardResource', {user, cbResource});
+        return cbResource;
     }
 
-    private createClipboardResource(cb: any) {
+    private createClipboardResource() {
+        //this.logger.log('createClipboardResource', {user, clipboardResource});
 
+        const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());
+        clipboardProto.settings.meta.title = '_clipboard_';
+        clipboardProto.settings.meta.description = 'Dashboard storage for widget clipboard';
+        clipboardProto.widgets = []; // reset widgets to empty
+        clipboardProto.version = this.dbConverterService.getDBCurrentVersion();
+
+        // get current logged in user
+        const user = this.store.selectSnapshot(DbfsState.getUser());
+
+        // user folder
+        const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias));
+
+        const payload: any = {
+            name: '_clipboard_',
+            parentId: userFolder.id,
+            content: clipboardProto
+        };
+
+        return this.http.saveDashboard('_new_', payload);
     }
 }
 

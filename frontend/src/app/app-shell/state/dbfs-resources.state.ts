@@ -433,7 +433,10 @@ export class DbfsResourcesState {
 
     public static getFile(path: string) {
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
-            const data = { ...state.files[path] };
+            let data: any = false;
+            if (state.files[path]) {
+                data = { ...state.files[path] };
+            }
             return data;
         });
     }
