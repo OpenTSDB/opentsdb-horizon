@@ -178,6 +178,13 @@ export class DboardContentComponent implements OnChanges {
         const width = event.item.itemComponent.gridster.cellWidth;
         const height = event.item.itemComponent.gridster.cellHeight;
         this.widgetsLayoutUpdate.emit(this.getWigetPosition(width, height, this.winSize));
+        // once the move of a widget end
+        if (event.action === 'drag') {
+          this.interCom.responsePut({
+            id: event.item.$element.id,
+            action: 'widgetDragDropEnd'
+          });
+        }
         // comment out for now to use ResizeSensor
         /* if (event.action === 'resize' && this.winSize === 'md') {
           // only deal with resize to care about new size
