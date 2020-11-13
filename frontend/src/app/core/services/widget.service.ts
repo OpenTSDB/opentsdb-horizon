@@ -127,6 +127,7 @@ export class WidgetService {
                 // big number doesn't have groupby
                 if ( type === 'BignumberWidgetComponent' ) {
                     delete queries[i].metrics[j].groupByTags;
+                    delete queries[i].metrics[j].joinTags;
                     delete queries[i].metrics[j].settings.visual.label;
                     delete queries[i].metrics[j].settings.visual.color;
                 }

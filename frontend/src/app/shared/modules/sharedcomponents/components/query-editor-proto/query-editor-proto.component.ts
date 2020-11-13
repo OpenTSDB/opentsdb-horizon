@@ -328,7 +328,37 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '4w'
                 }
             ]
-        }
+        },
+        {
+            label: 'Group By',
+            functions: [
+                {
+                    label: 'Avg',
+                    fxCall: 'GroupBy',
+                    val: 'avg'
+                },
+                {
+                    label: 'Min',
+                    fxCall: 'GroupBy',
+                    val: 'min'
+                },
+                {
+                    label: 'Max',
+                    fxCall: 'GroupBy',
+                    val: 'max'
+                },
+                {
+                    label: 'Sum',
+                    fxCall: 'GroupBy',
+                    val: 'sum'
+                },
+                {
+                    label: 'Count',
+                    fxCall: 'GroupBy',
+                    val: 'count'
+                }
+            ]
+        },
     ];
 
 
@@ -670,6 +700,23 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    setExpressionJoinTags(id, tags) {
+        const index = this.query.metrics.findIndex(item => item.id === id);
+        if (index !== -1) {
+            this.query.metrics[index].joinTags = tags;
+            this.queryChanges$.next(true);
+        }
+    }
+
+    removeExpressionGroupBy(id) {
+        const index = this.query.metrics.findIndex(item => item.id === id);
+        if (index !== -1) {
+            delete this.query.metrics[index].tagAggregator;
+            delete this.query.metrics[index].joinTags;
+            this.queryChanges$.next(true);
+        }
+    }
+
     updateVisual(message, data) {
         if ( message.action === 'ClosePanel') {
             this.metricVisualPanelTrigger.closeMenu();
@@ -796,7 +843,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expression = e.srcElement.value.trim();
         let index = this.query.metrics.findIndex(d => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
-            const expConfig = this.getExpressionConfig(expression);
+            const expConfig: any = this.getExpressionConfig(expression);
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
@@ -805,10 +852,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             } else {
                 expConfig.id = id;
                 expConfig.settings.visual.visible = this.query.metrics[index].settings.visual.visible;
+                if ( this.query.metrics[index].tagAggregator ) {
+                    expConfig.tagAggregator = this.query.metrics[index].tagAggregator;
+                    expConfig.groupByTags = this.query.metrics[index].groupByTags;
+                }
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }
-            this.query.metrics[index].groupByTags = this.getGroupByTags(expConfig.id);
+            this.query.metrics[index].joinTags = this.getGroupByTags(expConfig.id);
             this.queryChanges$.next(true);
             this.initMetricDataSource();
         } else if (!expression && index === -1) {
@@ -966,7 +1017,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             val: func.val
         };
 
-        this.query.metrics[metricIdx].functions.push(newFx);
+        if ( func.fxCall !== 'GroupBy' ) {
+            this.query.metrics[metricIdx].functions.push(newFx);
+        } else if ( !this.query.metrics[metricIdx].tagAggregator ) {
+            this.query.metrics[metricIdx].tagAggregator = func.val;
+            this.query.metrics[metricIdx].groupByTags = [];
+        }
+
         // tslint:disable-next-line:max-line-length
         // tslint:disable-next-line:no-shadowed-variable
         const trigger: MatMenuTrigger = <MatMenuTrigger>this.functionMenuTriggers.find((el, i) => i === this.currentFunctionMenuTriggerIdx);

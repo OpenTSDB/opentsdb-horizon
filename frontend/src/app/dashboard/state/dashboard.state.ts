@@ -67,6 +67,11 @@ export class LoadSnapshot {
     constructor(public id: string) {}
 }
 
+export class MigrateAndLoadSnapshot {
+    static readonly type = '[Dashboard] Migrate and Load Snapshot';
+    constructor(public id: string, public payload: any) {}
+}
+
 export class LoadSnapshotSuccess {
     static readonly type = '[Dashboard] Load Snapshot Success';
     constructor(public readonly payload: any) {}
@@ -303,11 +308,25 @@ export class DBState {
             map(res => {
                 const dashboard: any = res.body;
                 this.dbService.updateTimeFromURL(dashboard);
-                this.dbService.updateTplVariablesFromURL(dashboard);
                 ctx.dispatch(new LoadSnapshotSuccess(dashboard));
+                if (dashboard.content.version && dashboard.content.version === this.dbConverterService.currentVersion) {
+                    this.dbService.updateTplVariablesFromURL(dashboard);
+                    ctx.dispatch(new LoadSnapshotSuccess(dashboard));
+                } else {
+                    ctx.dispatch(new MigrateAndLoadDashboard(id, dashboard));
+                }
             }),
             catchError( error => ctx.dispatch(new LoadSnapshotFail(error)))
         );
+    }
+
+    @Action(MigrateAndLoadSnapshot)
+    migrateAndLoadSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadSnapshot) {
+            this.logger.action('State :: Migrate and Load Snapshot', { id, payload });
+            this.dbConverterService.convert(payload).subscribe((res) => {
+                this.dbService.updateTplVariablesFromURL(res);
+                ctx.dispatch(new LoadSnapshotSuccess(res));
+            });
     }
 
     @Action(LoadSnapshotSuccess)
