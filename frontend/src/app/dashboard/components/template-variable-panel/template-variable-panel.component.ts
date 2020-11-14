@@ -72,6 +72,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     doSearch = false;
     scopeModify = false;
 
+    scopeMenuNavSelection = 'tagscope';
+
     constructor(
         private fb: FormBuilder,
         private interCom: IntercomService,
@@ -233,7 +235,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 this.filterValLoading = true;
                 this.filterValLoadingErr = false;
                 // if they have scope defined then we use scope instead
-                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {    
+                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {
                     this.useDBFScope = true;
                     if (!this.tplVariables.scopeCache[index]) {
                         this.tplVariables.scopeCache[index] = [];
@@ -251,7 +253,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             }
                         }
                     }
-                    if (!this.doSearch) {      
+                    if (!this.doSearch) {
                         if (!this.tplVariables.scopeCache[index].length) {
                             //selControl.get('scopeCache').setValue(selControl.get('scope').value);
                             // this.updateState(selControl, false);
@@ -277,8 +279,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(matches);
                         } else {
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.tplVariables.scopeCache[index]);
-                        }         
-                        this.filterValLoading = false;        
+                        }
+                        this.filterValLoading = false;
                         this.cdRef.markForCheck();
                     }
                 } else {
@@ -1049,6 +1051,16 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const sourceElCoords = cdkEvent.source.element.nativeElement.getBoundingClientRect();
         // synchronize the width of the placeholder with the dragged element
         this.placeholderStyles = { width: (sourceElCoords.width - 6) + 'px', height: '49px', transform: 'translate3d(0px,0px,0px)' };
+    }
+
+    scopeMenuClosed($event: any) {
+        // reset nav selection when menu closed
+        this.scopeMenuNavSelection = 'tagscope';
+    }
+
+    scopeMenuNavChange($event: any) {
+        console.log('%cNAV CHANGE', 'border: 1px solid green; color: green; font-weight: bold; padding: 2px;', $event);
+        this.scopeMenuNavSelection = $event;
     }
 
     ngOnDestroy() {
