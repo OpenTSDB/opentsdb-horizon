@@ -715,23 +715,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    setExpressionJoinTags(id, tags) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
-        if (index !== -1) {
-            this.query.metrics[index].joinTags = tags;
-            this.queryChanges$.next(true);
-        }
-    }
-
-    removeExpressionGroupBy(id) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
-        if (index !== -1) {
-            delete this.query.metrics[index].tagAggregator;
-            delete this.query.metrics[index].joinTags;
-            this.queryChanges$.next(true);
-        }
-    }
-
     updateVisual(message, data) {
         if ( message.action === 'ClosePanel') {
             this.metricVisualPanelTrigger.closeMenu();
@@ -858,7 +841,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expression = e.srcElement.value.trim();
         let index = this.query.metrics.findIndex(d => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
-            const expConfig: any = this.getExpressionConfig(expression);
+            const expConfig = this.getExpressionConfig(expression);
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
@@ -867,14 +850,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             } else {
                 expConfig.id = id;
                 expConfig.settings.visual.visible = this.query.metrics[index].settings.visual.visible;
-                if ( this.query.metrics[index].tagAggregator ) {
-                    expConfig.tagAggregator = this.query.metrics[index].tagAggregator;
-                    expConfig.groupByTags = this.query.metrics[index].groupByTags;
-                }
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }
-            this.query.metrics[index].joinTags = this.getGroupByTags(expConfig.id);
+            this.query.metrics[index].groupByTags = this.getGroupByTags(expConfig.id);
             this.queryChanges$.next(true);
             this.initMetricDataSource();
         } else if (!expression && index === -1) {

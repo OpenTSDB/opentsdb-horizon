@@ -76,7 +76,6 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
     } else {
       this.inputVal = new FormControl(this.fx.val);
     }
-    console.log("this.groupby", this.fx, this.groupBy);
   }
 
   ngAfterViewInit() {
