@@ -91,6 +91,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
     formErrors: any = {};
     meta: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -211,7 +212,10 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         this.cdRef.detectChanges();
                         break;
                     case 'widgetDragDropEnd':
-                        const resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
                             this.newSize$.next(1);
                         });
                         break;
@@ -252,7 +256,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         ).subscribe(flag => {
             this.setSize();
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
             this.newSize$.next(dummyFlag);
         });
     }
