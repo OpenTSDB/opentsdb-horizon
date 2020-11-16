@@ -1058,8 +1058,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.scopeMenuNavSelection = 'tagscope';
     }
 
+    // this is just ready method once we extend to have more menu
     scopeMenuNavChange($event: any) {
-        console.log('%cNAV CHANGE', 'border: 1px solid green; color: green; font-weight: bold; padding: 2px;', $event);
+        // console.log('%cNAV CHANGE', 'border: 1px solid green; color: green; font-weight: bold; padding: 2px;', $event);
         this.scopeMenuNavSelection = $event;
     }
 
