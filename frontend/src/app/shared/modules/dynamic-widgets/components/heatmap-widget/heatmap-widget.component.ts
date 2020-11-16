@@ -113,6 +113,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
   formErrors: any = {};
   meta: any = {};
+  resizeSensor: any;
 
   constructor(
       private cdRef: ChangeDetectorRef,
@@ -225,6 +226,14 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                       this.widget.settings.useDBFilter = true;
                       this.cdRef.detectChanges();
                       break;
+                  case 'widgetDragDropEnd':
+                      if (this.resizeSensor) {
+                          this.resizeSensor.detach();
+                      }
+                      this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                          this.newSize$.next(1);
+                      });
+                      break;
               }
           }
       });
@@ -237,22 +246,14 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit() {
       ElementQueries.listen();
       ElementQueries.init();
-      const initSize = {
-          width: this.widgetOutputElement.nativeElement.clientWidth,
-          height: this.widgetOutputElement.nativeElement.clientHeight
-      };
-      this.newSize$ = new BehaviorSubject(initSize);
+      const dummyFlag = 1;
+      this.newSize$ = new BehaviorSubject(dummyFlag);
 
-      this.newSizeSub = this.newSize$.subscribe(size => {
+      this.newSizeSub = this.newSize$.subscribe(flag => {
         setTimeout(() => this.setSize(), 0);
-          // this.newSize = size;
       });
-      const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-           const newSize = {
-              width: this.widgetOutputElement.nativeElement.clientWidth,
-              height: this.widgetOutputElement.nativeElement.clientHeight
-          };
-          this.newSize$.next(newSize);
+      this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+          this.newSize$.next(dummyFlag);
       });
   }
 
