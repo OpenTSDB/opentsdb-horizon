@@ -96,7 +96,7 @@ export class DboardContentComponent implements OnChanges {
     }
 
     if (changes.dashboardMode) {
-      this.viewEditMode =  changes.dashboardMode.currentValue === 'edit' || changes.dashboardMode.currentValue === 'snap';
+      this.viewEditMode =  changes.dashboardMode.currentValue === 'edit' || changes.dashboardMode.currentValue === 'snap' || changes.dashboardMode.currentValue === 'explore';
       if (!this.viewEditMode && this.widgetViewContainer.viewContainerRef) {
         this.widgetViewContainer.viewContainerRef.clear();
       }

@@ -19,6 +19,8 @@ import { MatMenuTrigger } from '@angular/material';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IntercomService } from '../../../../../core/services/intercom.service';
+import { UtilsService } from '../../../../../core/services/utils.service';
+
 
 
 
@@ -68,6 +70,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     tagValueSearch = false;
     tagSearch = false;
     basicSearch = false;
+    bsTagValSearch = '';
+    showDashboardFilters = false;
 
     constructor(
         private elRef: ElementRef,
@@ -75,7 +79,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
         private interCom: IntercomService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private utils: UtilsService,
     ) {
         matIconRegistry.addSvgIcon('exclamation_point', domSanitizer.bypassSecurityTrustResourceUrl('assets/exclamation-point.svg'));
     }
@@ -187,6 +192,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                                                     const options = selectedKeys.map(item => ({ 'name': item })).concat(res);
                                                     this.tagSearch = false;
                                                     this.tagOptions = options;
+                                                    this.setDashboardFilters();
                                                     this.cdRef.detectChanges();
                                                 },
                                                 err => {
@@ -215,6 +221,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     metrics: []
                 };
                 query.search = value ? value : '';
+                const tagVal = query.search.split(":");
+                this.bsTagValSearch = tagVal[1] ? tagVal[1].trim() : tagVal[0].trim();
 
                 // filter by metrics
                 if (this.metrics) {
@@ -234,7 +242,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 this.cdRef.detectChanges();
                 this.searchSub = this.httpService.getTagKeysAndTagValuesByNamespace(query, this.options.metaSource)
                     .subscribe(res => {
-                        this.searchResults = { tagKeys: Object.keys(res.tagKeysAndValues), tagKeysAndValues: res.tagKeysAndValues };
+                        // tslint:disable:max-line-length
+                        this.searchResults = { tagKeys: Object.keys(res.tagKeysAndValues).sort(this.utils.sortAlphaNum), tagKeysAndValues: res.tagKeysAndValues };
                         this.basicSearch = false;
                         this.cdRef.detectChanges();
                     },
@@ -246,6 +255,15 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                             this.cdRef.detectChanges();
                     });
             });
+    }
+
+    resetSearch() {
+        this.searchControl.setValue(null, { emitEvent: false, onlySelf: true });
+    }
+
+    resetTagValueSearch() {
+        this.tagValueSearchControl.setValue(null, { emitEvent: false, onlySelf: true });
+        this.unsetTag();
     }
 
     setTagValueSearch() {
@@ -315,12 +333,12 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     handlerTagClick(tag, search= null) {
         const index = search ? search.indexOf(':') : -1 ;
-        const tagkSearch = index !== -1 ? search.substring(0, index ) : '';
+        const tagkSearch = index !== -1 ? search.substring(0, index ) : search;
         let tagValSearch = '';
 
-        if ( search && tag.search(new RegExp(search, 'i')) !== -1 ) {
+        if ( index === -1 && search && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
             tagValSearch = '';
-        } else if ( tagkSearch && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
+        } else if ( index !== -1 && tagkSearch && tag.search(new RegExp(tagkSearch, 'i')) !== -1 ) {
             tagValSearch = search.substring(index + 1);
         } else {
             tagValSearch = search;
@@ -357,6 +375,18 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
         if ( selected ) {
             this.handlerTagClick(tag);
         }
+    }
+
+    setDashboardFilters() {
+        let showFilter = false;
+        for ( let i = 0; i < this.tplVariables.tvars.length; i++ ) {
+            const tvar = this.tplVariables.tvars[i];
+            if ( this.canAddDashboardFilter(tvar.tagk, '[' + tvar.alias + ']') ) {
+                showFilter = true;
+                break;
+            }
+        }
+        this.showDashboardFilters = showFilter;
     }
 
     canAddDashboardFilter(tag, alias) {
@@ -457,6 +487,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
         if ( this.selectedTag && tag !== this.selectedTag ) {
             this.tagValueSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        } else if ( !this.selectedTag && this.searchType === 'basic') {
+            this.searchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
         }
         this.setTagKeys();
         this.queryChanges$.next(true);

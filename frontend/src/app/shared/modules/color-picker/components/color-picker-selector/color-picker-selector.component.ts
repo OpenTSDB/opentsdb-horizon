@@ -85,7 +85,7 @@ export class ColorPickerSelectorComponent
         if (!value || value.toLowerCase() === 'auto') {
             this._selectedColor = '#000000';
         } else {
-            this._selectedColor = value;
+            this._selectedColor = isValidColor(value) ? value : '#000000' ;
         }
     }
     // tslint:disable-next-line:no-inferrable-types

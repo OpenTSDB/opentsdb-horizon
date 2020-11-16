@@ -277,7 +277,7 @@ export class DatatranformerService {
                 // area/bar plotter draws the series from last to first
                 return  ( a.config.group.localeCompare(b.config.group) ||
                                     (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
-                                    ( a.config.group === 'line' && !schemeMeta['midScheme'][a.mid] ? a.config.label.localeCompare(b.config.label) :
+                                    ( a.config.group === 'line'  ? a.config.label.localeCompare(b.config.label) :
                                     // the order is reverse as the area/bar plotter draws series from last to first
                                     (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0));
             });

@@ -39,7 +39,7 @@
         </div>
         <div class="vis-conf-col" *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent'">
             <strong>{{ (type === 'LinechartWidgetComponent' && (!this.mode || this.mode === 'line') ? 'Line ' : 'Fill ') + 'color' }}</strong>
-            <color-picker (newColor)="setColor(data.metric.id, $event, $event.hex ? 'color' : 'scheme')" [pickerMode]="'embedded'" [color]="data.visual.color || data.visual.scheme" enablePalette='true' [enableAuto]="'true'"></color-picker>
+            <color-picker (newColor)="setColor(data.metric.id, $event, $event.hex ? 'color' : 'scheme')" [pickerMode]="'embedded'" [color]="data.visual.color || data.visual.scheme" [enablePalette]="type !== 'HeatmapWidgetComponent'" [enableAuto]="'true'"></color-picker>
         </div>
         <div class="vis-conf-col" *ngIf="type === 'HeatmapWidgetComponent'">
             <strong>Unit</strong>
