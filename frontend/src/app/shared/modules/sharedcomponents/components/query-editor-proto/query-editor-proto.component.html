@@ -208,37 +208,11 @@
                                 <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
                                 <span class="by-spacer">{{ data.type === 'expression' ? ' ON' : 'By' }}</span>
 
-                                <dropdown-metric-tags *ngIf="data.type === 'metric'" [namespace]="query.namespace" [metric]="data.metric.name"
-                                    [selected]="data.type === 'metric' ? data.metric.groupByTags : data.metric.joinTags"
-                                    [tags]="null"
-                                    (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
-                                </dropdown-metric-tags>
-                                <dropdown-metric-tags  *ngIf="data.type === 'expression'" [namespace]="query.namespace" [metric]="data.metric.name"
-                                    [selected]="data.metric.joinTags"
-                                    [tags]="getGroupByTags(data.metric.id)"
-                                    (change)="setExpressionJoinTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
-                                </dropdown-metric-tags>
-                            </div>
-                        </div>
-                        <div class="metric-row-data tag-aggregator" *ngIf="data.type === 'expression' && data.metric.tagAggregator">
-                            <div class="tag-aggregator-wrapper">
-                                <mat-icon class="aggregator-icon" fontSet="denali"
-                                    [fontIcon]="tagAggregatorIconMap[data.metric.tagAggregator]"
-                                    *ngIf="data.metric.tagAggregator"></mat-icon>
-                                <tag-aggregator [value]="data.metric.tagAggregator"
-                                    (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
-                                <span class="by-spacer">By</span>
-
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
                                     [selected]="data.metric.groupByTags"
-                                    [tags]="getGroupByTags(data.metric.id)"
+                                    [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
                                     (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
                                 </dropdown-metric-tags>
-                                <div class="mat-form-field-suffix">
-                                    <button mat-mini-fab matSuffix class="delete-function-button" (click)="removeExpressionGroupBy(data.metric.id)">
-                                        <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                         <!-- summarizer selector -->
@@ -265,7 +239,8 @@
                                     (fxDel)="functionDelete($event)"
                                     [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
                                     [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
-                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
+                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}"
+                                    [optionalData]=" fx.fxCall.indexOf('GroupBy') >= 0 ? {tags: getGroupByTags(data.metric.id)} : {}">
                                 </metric-function>
                             </div>
                         </div>
@@ -470,18 +445,15 @@
 <!-- FUNCTION MENU-->
 <mat-menu class="function-selection-cdk-menu" #functionSelectionMenu="matMenu">
     <ng-template matMenuContent let-metric="metric">
-        <div class="function-selection-wrapper" style="height: 200px;">
+        <div class="function-selection-wrapper" style="height: 230px;">
             <div class="function-categories">
                 <mat-nav-list>
-                    <ng-container *ngFor="let category of functionCategories; let i = index;">
-                        <a mat-list-item 
-                            *ngIf="metric.expression || !metric.expression && functionCategories[i].label !=='Group By'"
-                            [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"
-                            (mouseover)="$event.stopPropagation(); selectFunctionCategory($event, i)" (click)="$event.stopPropagation();">
-                            <span>{{ category.label }}</span>
-                            <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
-                        </a>
-                    </ng-container>
+                    <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"
+                        *ngFor="let category of functionCategories; let i = index;"
+                        (mouseover)="$event.stopPropagation(); selectFunctionCategory($event, i)" (click)="$event.stopPropagation();">
+                        <span>{{ category.label }}</span>
+                        <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
+                    </a>
                 </mat-nav-list>
             </div>
             <div class="function-category-items">

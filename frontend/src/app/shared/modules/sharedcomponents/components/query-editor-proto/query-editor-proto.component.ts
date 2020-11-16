@@ -334,27 +334,27 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             functions: [
                 {
                     label: 'Avg',
-                    fxCall: 'GroupBy',
+                    fxCall: 'GroupByAvg',
                     val: 'avg'
                 },
                 {
                     label: 'Min',
-                    fxCall: 'GroupBy',
+                    fxCall: 'GroupByMin',
                     val: 'min'
                 },
                 {
                     label: 'Max',
-                    fxCall: 'GroupBy',
+                    fxCall: 'GroupByMax',
                     val: 'max'
                 },
                 {
                     label: 'Sum',
-                    fxCall: 'GroupBy',
+                    fxCall: 'GroupBySum',
                     val: 'sum'
                 },
                 {
                     label: 'Count',
-                    fxCall: 'GroupBy',
+                    fxCall: 'GroupByCount',
                     val: 'count'
                 }
             ]
@@ -403,6 +403,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
             regexValidator: /^\d+[hdw]$/i
         },
+        'GroupByAvg' : {
+            groupByFx : true
+        },
+        'GroupByMin' : {
+            groupByFx : true
+        },
+        'GroupByMax' : {
+            groupByFx : true
+        },
+        'GroupBySum' : {
+            groupByFx : true
+        },
+        'GroupByCount' : {
+            groupByFx : true
+        }
     };
 
     // MAT-TABLE DEFAULT COLUMNS
@@ -1017,13 +1032,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             val: func.val
         };
 
-        if ( func.fxCall !== 'GroupBy' ) {
-            this.query.metrics[metricIdx].functions.push(newFx);
-        } else if ( !this.query.metrics[metricIdx].tagAggregator ) {
-            this.query.metrics[metricIdx].tagAggregator = func.val;
-            this.query.metrics[metricIdx].groupByTags = [];
-        }
-
+        this.query.metrics[metricIdx].functions.push(newFx);
         // tslint:disable-next-line:max-line-length
         // tslint:disable-next-line:no-shadowed-variable
         const trigger: MatMenuTrigger = <MatMenuTrigger>this.functionMenuTriggers.find((el, i) => i === this.currentFunctionMenuTriggerIdx);

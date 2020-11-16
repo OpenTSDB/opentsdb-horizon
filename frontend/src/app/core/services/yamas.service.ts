@@ -163,14 +163,8 @@ export class YamasService {
                             const timeshift = k === 0 ? '' : (k * totM) + totPeriod;
                             const q = this.getExpressionQuery(i, j, timeshift);
                             expNodes.push(q);
-                            const subGraph: any = [ q ];
-                            if ( this.queries[i].metrics[j].tagAggregator ) {
-                                const groupbyId = q.id + '_groupby';
-                                const groupByQuery = this.getQueryGroupBy(this.queries[i].metrics[j].tagAggregator, this.queries[i].metrics[j].groupByTags, [q.id], groupbyId);
-                                subGraph.push(groupByQuery);
-                            }
-
-                            this.getFunctionQueries(i, j, subGraph, subGraph[subGraph.length - 1].id);
+                            const subGraph = [ q ];
+                            this.getFunctionQueries(i, j, subGraph, q.id);
                             for (const node of subGraph) {
                                 this.transformedQuery.executionGraph.push(node);
                             }
@@ -461,6 +455,16 @@ export class YamasService {
                 // timeshift
                 case 'Timeshift':
                     break;
+                case 'GroupByAvg':
+                case 'GroupByMin':
+                case 'GroupByMax':
+                case 'GroupBySum':
+                case 'GroupByCount':
+                    const arr = funs[i].val.split(',');
+                    const tagAggregator = arr[0];
+                    const tags = arr.slice(1);
+                    subGraph.push(this.getQueryGroupBy(tagAggregator, tags, [ subGraph[subGraph.length - 1].id ], this.generateNodeId(idPrefix + '-fxgroupby', subGraph)));
+                    break;
             }
         }
     }
@@ -667,11 +671,11 @@ export class YamasService {
             // the source id will be replaced with the sourceid of function definition of the metric/expression later
             sources.push(sourceId);
         }
-        const oJoinTags = {};
-        const joinTags = config.joinTags || [];
-        for ( let i = 0; i < joinTags.length; i++ ) {
-            const tag = joinTags[i];
-            oJoinTags[tag] = tag;
+        const joinTags = {};
+        const groupByTags = config.groupByTags || [];
+        for ( let i = 0; i < groupByTags.length; i++ ) {
+            const tag = groupByTags[i];
+            joinTags[tag] = tag;
         }
         const econfig = {
             id: eid + (!timeshift ? '' : '-' + timeshift),
@@ -680,7 +684,7 @@ export class YamasService {
             join: {
                 type: 'Join',
                 joinType: config.joinType ? config.joinType : 'NATURAL_OUTER',
-                joins: oJoinTags
+                joins: joinTags
             },
             interpolatorConfigs: [{
                 dataType: 'numeric',

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardConverterService {
 
-  currentVersion = 11;
+  currentVersion = 10;
 
   constructor ( private utils: UtilsService,
     private httpService: HttpService ) { }
@@ -436,31 +436,6 @@ export class DashboardConverterService {
           customValue: '',
           value: 'auto'
         };
-      }
-      this.toDBVersion11(dashboard).subscribe(res => {
-        observer.next(res);
-        observer.complete();
-      })
-    });
-  }
-
-  // expression groupByTags to joinTags
-  toDBVersion11(dashboard: any): Observable<any> {
-    return new Observable((observer) => {
-      dashboard.content.version = 11;
-      const widgets = dashboard.content.widgets;
-      for (let i = 0; i < widgets.length; i++) {
-        const queries = widgets[i].queries;
-        for (let j = 0; j < queries.length; j++) {
-          const metrics = queries[j].metrics;
-          for (let k = 0; k < metrics.length; k++) {
-            if (metrics[k].expression !== undefined ) {
-              metrics[k].joinTags = metrics[k].groupByTags;
-              delete metrics[k].groupByTags;
-              delete metrics[k].tagAggregator;
-            }
-          }
-        }
       }
       observer.next(dashboard);
       observer.complete();
