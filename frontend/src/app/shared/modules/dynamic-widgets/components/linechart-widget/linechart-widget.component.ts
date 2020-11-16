@@ -172,7 +172,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsError = '';
     resizeSensor: any;
     currentGraphSize: any;
-    resizeObserver: any;
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
