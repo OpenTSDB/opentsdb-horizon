@@ -20,7 +20,7 @@
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
     </div>
-    <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="donut"
+    <div class="widget-output" #widgetoutput id="{{widget.id}}" appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="donut"
             [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 60) +'px' : 'inherit'">
         <div id="container" #container [ngClass]="{
             'display-legend-right': widget.settings.legend.display && widget.settings.legend.position=='right',
