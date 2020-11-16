@@ -59,6 +59,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     needRequery = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
     formErrors: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -160,6 +161,14 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         });
@@ -189,7 +198,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newSizeSub = this.newSize$.subscribe(size => {
             setTimeout(() => this.setSize(size), 0);
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
              const newSize = {
                 width: this.widgetOutputElement.nativeElement.clientWidth,
                 height: this.widgetOutputElement.nativeElement.clientHeight
