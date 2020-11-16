@@ -1,6 +1,6 @@
 import {
     Component, OnInit, HostBinding, Input, EventEmitter,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, AfterViewChecked, ViewChildren, QueryList, Output
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -24,8 +24,6 @@ import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
-//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -172,6 +170,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     formErrors: any = {};
     eventsError = '';
+    resizeSensor: any;
+    currentGraphSize: any;
+    resizeObserver: any;
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -485,7 +486,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.cdRef.detectChanges();
                         break;
                     case 'widgetDragDropEnd':
-                        const resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                        if(this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
                             this.newSize$.next(1);
                         });
                         break;
@@ -512,14 +516,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // true is just a dummy value to trigger
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
-        this.newSizeSub = this.newSize$.subscribe(flag => {
-            setTimeout(() => this.setSize(), 0);
+        this.newSizeSub = this.newSize$.subscribe(flag => {         
+            const _size = this.widgetOutputElement.nativeElement.getBoundingClientRect();
+            if (JSON.stringify(_size) !== JSON.stringify(this.currentGraphSize)) {
+                setTimeout(() => this.setSize(), 0);
+            }
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
             this.newSize$.next(dummyFlag);
         });
     }
-
     scrollToElement($element): void {
         setTimeout(() => {
             $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
@@ -885,8 +891,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // Canvas Width resize
         this.eventsWidth = nWidth - (this.axisEnabled(this.options.series).size * this.axisLabelsWidth);
 
+        this.currentGraphSize = this.widgetOutputElement.nativeElement.getBoundingClientRect();
+
         // after size it set, tell Angular to check changes
-        if (cdCheck) {
+       if (cdCheck) {
             this.cdRef.detectChanges();
         }
     }
