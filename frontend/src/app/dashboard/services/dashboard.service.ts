@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { URLOverrideService } from './urlOverride.service';
+import { HttpService } from '../../core/http/http.service';
 
 @Injectable()
 export class DashboardService {
@@ -72,7 +73,8 @@ export class DashboardService {
   constructor(
     private utils: UtilsService, 
     private dbConverterService: DashboardConverterService,
-    private urlOverride: URLOverrideService) { }
+    private urlOverride: URLOverrideService,
+    private httpService: HttpService) { }
 
 
   setWigetsConfig(conf) {
@@ -346,7 +348,8 @@ export class DashboardService {
   }
 
   // resolve with replace mode based on mode and default value 
-  resolveTplVarReplace(query: any, tplVariables: any[]) {
+  // @scopeCache is the cache for scope if they are using dashboard tag scope
+  resolveTplVarReplace(query: any, tplVariables: any[], scopeCache: any[]) {
     for (let i = 0; i < query.filters.length; i++) {
       const qFilter = query.filters[i];
       let replaceFilter = [];
@@ -360,8 +363,22 @@ export class DashboardService {
             const tplIdx = tplVariables.findIndex(tpl => tpl.alias === alias);
             if (tplIdx > -1) {
               if (tplVariables[tplIdx].filter.trim() !== '') {
-                // qFilter.filter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
-                replaceFilter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
+                // now we want to check if this is an absolute value or regexp
+                // for regexp then we might need to to solve it
+                const _cfilter = tplVariables[tplIdx].filter;
+                if (_cfilter.match(/regexp\((.*)\)/) && tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                  const res = _cfilter.match(/^regexp\((.*)\)$/);
+                  const val = res ? res[1] : _cfilter;
+                  const regx = new RegExp(val, 'gi');
+                  scopeCache[tplIdx].forEach(v => {
+                      if (v.match(regx)) {
+                          replaceFilter.push(hasNot ? '!' + v : v)
+                      }
+                  });
+
+                } else {
+                  replaceFilter.push(hasNot ? '!' + _cfilter : _cfilter);
+                }
                 if (tplVariables[tplIdx].mode === 'auto') {
                   autoMode = true;
                 }
@@ -383,6 +400,84 @@ export class DashboardService {
     // clean out empty filter, since they might have db filter but not set value yet.
     query.filters = query.filters.filter(f => f.filter.length > 0);
     return query;    
+  }
+
+  // to resolve dasboard scope to scopeCache if not there.
+  // this normally happens when first time dashboard loads
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any) {
+    const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
+    const metrics = [];
+    let query: any = {};
+    let doSearch = false;
+    for (let i = 0; i < tpl.tvars.length; i++) {
+      if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
+        if(!tplVariables.scopeCache[i]) {
+          tplVariables.scopeCache[i] = [];
+        }
+        if (!tplVariables.scopeCache[i].length) {
+          for (let j = 0; j < tpl.tvars[i].scope.length; j++) {
+            let v = tpl.tvars[i].scope[j];
+            if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+              doSearch = true;
+              query.tagsFilter = [{
+                tagk: tpl.tvars[i].tagk,
+                filter: tpl.tvars[i].scope
+              }];
+              break;
+            }
+          }
+        }
+        if (!doSearch) {
+          tplVariables.scopeCache[i] = tpl.tvars[i].scope;
+        }
+      }
+      if (doSearch) {
+        const tagk = tpl.tvars[i].tagk;
+        const alias = tpl.tvars[i].alias;
+        for (let i = 0; i < widgets.length; i++) {
+          const queries = widgets[i].queries;
+          for (let j = 0; j < queries.length; j++) {
+            const filters = queries[j].filters;
+            let aliasFound = false;
+            for (let k = 0; k < filters.length; k++) {
+              if (filters[k].tagk === tagk && filters[k].customFilter) {
+                filters[k].customFilter.forEach(f => {
+                  const hasNot = f[0] === '!';
+                  const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                  if (alias === _alias) {
+                    aliasFound = true;
+                  }
+                });
+              }
+            }
+            if (aliasFound) {
+              for (let k = 0; k < queries[j].metrics.length; k++) {
+                if (!queries[j].metrics[k].expression) {
+                  metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+                }
+              }
+            }
+          }
+        }
+        doSearch = false;
+        query.tag = { key: tagk, value: ''};
+        if (metrics.length) {
+          query.metrics = metrics;
+        } else {
+          query.namespaces = tpl.namespaces;
+        }
+        // run the queries
+        this.httpService.getTagValues(query).subscribe(
+          results => {
+            tplVariables.scopeCache[i] = results;
+          },
+          err => {
+            tplVariables.scopeCache[i] = [];
+          }
+        );
+        query = {};
+      }
+    }
   }
 
   addGridterInfo(widgets: any[]) {
@@ -490,6 +585,18 @@ export class DashboardService {
     delete settings.mode;
     if ( settings.tplVariables && settings.tplVariables.override ) {
       delete settings.tplVariables.override;
+    }
+    // remove scopeCache to saves
+    /*if (settings.tplVariables.tvars && settings.tplVariables.tvars.length > 0) {
+      for (let i = 0; i < settings.tplVariables.tvars.length; i++) {
+        let tvar = settings.tplVariables.tvars[i];
+        if (tvar.scopeCache) {
+          delete settings.tplVariables.tvars[i].scopeCache;
+        }
+      }
+    }*/
+    if (settings.tplVariables.scopeCache) {
+      delete settings.tplVariables.scopeCache;
     }
     const dashboard = {
       version: this.dbConverterService.getDBCurrentVersion(),
