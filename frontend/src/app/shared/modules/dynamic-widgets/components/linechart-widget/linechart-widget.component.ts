@@ -446,7 +446,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
                             setTimeout(() => {
-                                this.setSize(true);
+                                this.setSize();
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
@@ -488,7 +488,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         if(this.resizeSensor) {
                             this.resizeSensor.detach();
                         }
-                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
                             this.newSize$.next(1);
                         });
                         break;
@@ -740,7 +740,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     // by default it should not call change detection unless we set it
-    setSize(cdCheck: boolean = true) {
+    setSize() {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
         const nativeEl = ( this.mode !== 'view' ) ?
@@ -893,9 +893,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         this.currentGraphSize = this.widgetOutputElement.nativeElement.getBoundingClientRect();
 
         // after size it set, tell Angular to check changes
-       if (cdCheck) {
-            this.cdRef.detectChanges();
-        }
+        this.cdRef.detectChanges();
     }
 
     handleEditResize(e) {
