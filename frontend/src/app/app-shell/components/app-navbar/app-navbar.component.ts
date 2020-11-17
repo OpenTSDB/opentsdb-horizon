@@ -31,9 +31,7 @@ export class AppNavbarComponent implements OnInit {
     ngOnInit() { 
         this.router.events.subscribe((event) => {
             if ( event instanceof NavigationStart ) {
-                if ( event.url.indexOf('snap') === 1 ) {
-                    this.snapshot = true;
-                }
+                this.snapshot = event.url.indexOf('snap') === 1;
             }
           });
     }
