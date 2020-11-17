@@ -28,7 +28,6 @@ export class DboardContentComponent implements OnChanges {
   @Input() mWidget: any;
   @Input() rerender: any;
   @Input() dashboardMode: string;
-  @Input() hasWriteAccess = false;
 
   viewEditMode = false;
   winSize = 'md'; // flag to check if window size change to sm

@@ -108,7 +108,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         series: {},
         visibility: [],
         visibilityHash: {},
-        gridLineColor: '#ccc'
+        gridLineColor: '#ccc',
+        isIslandLegendOpen: false
     };
     data: any = { ts: [[0]] };
     size: any = { width: 120, height: 60};
@@ -196,6 +197,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     ngOnInit() {
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
+        this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'snap';
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
             .pipe(
@@ -276,7 +278,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.legendFocus = message.payload;
                     } else {
                         this.legendFocus = false;
-                        this.cdRef.markForCheck();
+                        // this.cdRef.markForCheck();
                     }
                     break;
                 case 'SnapshotMeta':
@@ -287,6 +289,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             if (message && (message.id === this.widget.id)) {
                 switch (message.action) {
                     case 'InfoIslandClosed':
+                        this.options.isIslandLegendOpen = false;
                         this.updatedShowEventStream(false);
                         break;
                     case 'tsLegendRequestWidgetSettings':
@@ -332,7 +335,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         } else {
                             tsOriginOverlayRef = this.elRef.nativeElement.closest('.widget-loader');
                         }
-                        this.iiService.updatePositionStrategy(tsOriginOverlayRef, 'connected');
+                        if ( this.mode === 'view' ) {
+                            this.iiService.updatePositionStrategy(tsOriginOverlayRef, 'connected');
+                        }
                         break;
                     case 'UpdateExpandedBucketIndex':
                         this._expandedBucketIndex.next(message.payload.index);
@@ -397,6 +402,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 } else {
                                     limitGraphs = this.utilService.deepClone(results);
                                 }
+                                let firstGraph = true;
                                 // we need to convert to dygraph for these multigraph
                                 for (const ykey in limitGraphs) {
                                     if (limitGraphs.hasOwnProperty(ykey)) {
@@ -404,6 +410,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                             if (limitGraphs[ykey].hasOwnProperty(xkey)) {
                                                 limitGraphs[ykey][xkey].ts = [[0]];
                                                 const options = this.utilService.deepClone(this.options);
+                                                options.isIslandLegendOpen = firstGraph && options.isIslandLegendOpen;
+                                                firstGraph = false;
                                                 // preserve previous series and visibility so we can remap in data transformer
                                                 if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
@@ -1552,10 +1560,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 // tslint:disable-next-line: max-line-length
                 const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+                const pos = this.elRef.nativeElement.getBoundingClientRect();
+                const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+                const height = pos.height * ( 1 - heightMod ) - ( this.mode === 'snap' ? 0 : 60 );
                 // tslint:disable-next-line: max-line-length
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
-                    width: widgetOptions.width + 35,
-                    height: widgetOptions.height + 70 });
+                    originId: this.widget.id,
+                    width: pos.width, positionStrategy: 'connected',
+                    height: height });
             }
         }
 
