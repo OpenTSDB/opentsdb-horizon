@@ -91,6 +91,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
     formErrors: any = {};
     meta: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -210,6 +211,14 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         });
@@ -239,23 +248,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         // Dimension will be picked up by parent node which is #container
         ElementQueries.listen();
         ElementQueries.init();
-        const initSize = {
-            width: this.widgetOutputElement.nativeElement.clientWidth,
-            height: this.widgetOutputElement.nativeElement.clientHeight
-        };
-        this.newSize$ = new BehaviorSubject(initSize);
+        const dummyFlag = 1;
+        this.newSize$ = new BehaviorSubject(dummyFlag);
 
         this.newSizeSub = this.newSize$.pipe(
             debounceTime(100)
-        ).subscribe(size => {
-            this.setSize(size);
+        ).subscribe(flag => {
+            this.setSize();
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () =>{
-             const newSize = {
-                width: this.widgetOutputElement.nativeElement.clientWidth,
-                height: this.widgetOutputElement.nativeElement.clientHeight
-            };
-            this.newSize$.next(newSize);
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+            this.newSize$.next(dummyFlag);
         });
     }
 
@@ -390,7 +392,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     }
 
     // for first time and call.
-    setSize(newSize) {
+    setSize() {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
         const nativeEl = (this.mode !== 'view') ?
