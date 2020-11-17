@@ -595,7 +595,7 @@ export class DashboardService {
         }
       }
     }*/
-    if (settings.tplVariables.scopeCache) {
+    if (settings.tplVariables && settings.tplVariables.scopeCache) {
       delete settings.tplVariables.scopeCache;
     }
     const dashboard = {
