@@ -365,8 +365,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.updateTplVariableForCloneDelete( cloneWidget, 'clone');
                     break;
                 case 'changeWidgetType':
+                    this.iiService.closeIsland();
                     const [newConfig, needRefresh] = this.wdService.convertToNewType(message.payload.newType, message.payload.wConfig);
-                    console.log(message.payload);
                     const wId = this.snapshot ? message.id : this.editViewModeMeta.id;
                     if ( needRefresh && this.wData[wId] ) {
                         delete this.wData[wId];
