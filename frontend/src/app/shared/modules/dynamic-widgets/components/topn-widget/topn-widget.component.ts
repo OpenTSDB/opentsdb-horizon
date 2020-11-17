@@ -165,8 +165,12 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         if (this.resizeSensor) {
                             this.resizeSensor.detach();
                         }
-                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
-                            this.newSize$.next(1);
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            const newSize = {
+                                width: this.widgetOutputElement.nativeElement.clientWidth,
+                                height: this.widgetOutputElement.nativeElement.clientHeight
+                            }
+                            this.newSize$.next(newSize);
                         });
                         break;
                 }
@@ -211,6 +215,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.options.format.unit = this.widget.settings.visual.unit;
     }
     setSize(newSize) {
+
         const editModifier = this.mode !== 'view' ? 0 : 23;
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
