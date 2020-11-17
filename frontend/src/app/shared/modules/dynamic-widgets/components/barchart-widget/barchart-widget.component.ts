@@ -215,7 +215,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         if (this.resizeSensor) {
                             this.resizeSensor.detach();
                         }
-                        this.resizeSensor = new ResizeSensor(document.getElementById(message.id), () => {
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
                             this.newSize$.next(1);
                         });
                         break;
