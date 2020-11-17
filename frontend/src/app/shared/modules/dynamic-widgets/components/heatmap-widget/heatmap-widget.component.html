@@ -20,7 +20,7 @@
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
     </div>
-    <div class="widget-output" #widgetoutput id="{{widget.id}}" appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="heatmap"
+    <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="heatmap"
                     [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 60) +'px' : 'inherit'">
         <div #dygraph class="graph-chart" dygraphsChart [chartType]="'heatmap'" [data]="data" [size]="size"
             [timeseriesLegend]="tsLegendOptions" (currentTickEvent)="timeseriesTickListener($event)"
