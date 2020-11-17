@@ -586,16 +586,8 @@ export class DashboardService {
     if ( settings.tplVariables && settings.tplVariables.override ) {
       delete settings.tplVariables.override;
     }
-    // remove scopeCache to saves
-    /*if (settings.tplVariables.tvars && settings.tplVariables.tvars.length > 0) {
-      for (let i = 0; i < settings.tplVariables.tvars.length; i++) {
-        let tvar = settings.tplVariables.tvars[i];
-        if (tvar.scopeCache) {
-          delete settings.tplVariables.tvars[i].scopeCache;
-        }
-      }
-    }*/
-    if (settings.tplVariables.scopeCache) {
+
+    if (settings.tplVariables && settings.tplVariables.scopeCache) {
       delete settings.tplVariables.scopeCache;
     }
     const dashboard = {
