@@ -313,6 +313,23 @@
             display: flex;
             align-items: center;
 
+            &.tag-key-control,
+            &.alias-control {
+                .mat-form-field .mat-form-field-infix {
+                    width: 100%;
+                    min-width: 100px;
+                    max-width: 120px;
+                }
+            }
+
+            &.values-control {
+                .mat-form-field .mat-form-field-infix {
+                    width: 100%;
+                    min-width: 120px;
+                    max-width: 150px;
+                }
+            }
+
 
             &.actions-control {
                 justify-content: center;
@@ -432,6 +449,148 @@
             }
         }
     }
+
+    // cdk items
+    .filter-scope-cdk-menu.mat-menu-panel {
+        max-width: initial; // reset this... can change to value later if needed
+        min-height: 200px; // change this to whatever min width you want
+        min-width: 400px;
+        display: flex;
+        overflow: hidden;
+
+        .mat-menu-content {
+            padding: 0;
+            display: flex;
+            flex: 1;
+
+            & > div {
+                display: flex;
+                flex-direction: row;
+                flex: 1;
+            }
+        }
+
+        /*.filter-scope-column-headers {
+            display: flex;
+
+            .header-column {
+                min-width: 150px;
+                padding: 2px 3px;
+                display: flex;
+                align-items: center;
+                font-size: 10px;
+                text-transform: uppercase;
+            }
+        }*/
+
+        .filter-tab-nav.mat-nav-list {
+            padding-top: 0;
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
+
+            .mat-list-item {
+                width: 32px;
+                height: 32px;
+
+                .mat-list-item-content {
+                    justify-content: center;
+                }
+            }
+        }
+
+        .filter-scope-columns {
+            flex: 1;
+            max-height: 100%;
+            max-width: 100%;
+
+            .header-column {
+                width: 100%;
+                padding: 2px 3px;
+                display: flex;
+                align-items: center;
+                font-size: 10px;
+                text-transform: uppercase;
+            }
+
+            .scope-column {
+                display: flex;
+                flex-direction: column;
+                min-width: 200px;
+            }
+
+            .list-filter,
+            .list-items .is-scroller {
+                padding: 4px;
+            }
+
+            .list-items {
+                flex: 1;
+            }
+
+            .list-item {
+                font-size: 10px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(12px);
+                    margin-right: 8px;
+                }
+
+                &.mat-chip {
+                    min-height: 16px;
+                    padding: 2px 4px;
+                    max-width: 100%;
+                    display: inline-flex;
+
+                    .scope-value {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        flex: 1;
+                    }
+
+                    .mat-icon {
+                        visibility: hidden;
+                    }
+
+                    .mat-icon:first-child {
+                        margin-right: 4px;
+                    }
+
+                    .mat-icon:last-child {
+                        margin-right: 0;
+                        margin-left: 4px;
+                    }
+
+                    &:hover .mat-icon {
+                        cursor: pointer;
+                        visibility: visible;
+                    }
+                }
+            }
+
+            .col-left {
+                .tag-search-input-field.mat-form-field {
+                    width: 100%;
+
+                    .mat-form-field-infix {
+                        min-width: 100px;
+                        width: 100%;
+                    }
+                }
+            }
+
+            .col-right {
+                .is-scroller {
+                    padding: 4px;
+                }
+            }
+        }
+    }
 }
 
 @mixin template-variable-panel-component-theme($theme-config) {
@@ -441,6 +600,7 @@
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
     $is-dark-theme: map-get($theme-config, is-dark);
     $dbfilter: map-get($theme-config, dashboard-filters);
 
@@ -458,6 +618,10 @@
 
     $primary-default: map-get($primary, default);
     $text: map-get($foreground, text);
+
+    $option-highlight-text: map-get($foreground, link);
+    $option-highlight-bg: rgba($option-highlight-text, 0.5);
+    $option-highlight-bg-hover: rgba($option-highlight-text, 0.65);
 
     .template-variable-panel-component {
         background-color: map-get($background, card);
@@ -652,6 +816,74 @@
         .mat-option:first-child {
             border-bottom: 1px solid $divider;
             background-color: rgba(map-get($primary, default), 0.08);
+        }
+    }
+
+    // cdk items
+    .filter-scope-cdk-menu.mat-menu-panel {
+        // .mat-menu-content {}
+
+        /*.filter-scope-column-headers {
+            background-color: $divider;
+
+            .header-column {
+                color: rgba($text, .6);
+            }
+        }*/
+
+        .filter-tab-nav.mat-nav-list {
+            background-color: rgba(map-get($primary, default), .1);
+
+            .mat-list-item.selected {
+                background-color: rgba(map-get($primary, default), .1);
+                box-shadow: inset 4px 0 0 -2px map-get($primary, default);
+                pointer-events: none;
+            }
+        }
+
+        .filter-scope-columns {
+
+            .header-column {
+                background-color: $divider;
+                color: rgba($text, .6);
+            }
+
+            .scope-column:not(:last-child) {
+                border-right: 1px solid $divider;
+            }
+
+            .mat-standard-chip {
+                background-color: rgba($option-highlight-text, 0.15);
+            }
+
+            .mat-standard-chip:hover {
+                background-color: #016eff;
+                color: $white;
+
+                .mat-icon {
+                    color: currentColor;
+                }
+            }
+
+            .mat-standard-chip {
+                &.exclude {
+                    background-color: #e8e8e8;
+                    color: rgba($black, .6);
+                }
+
+                &.exclude:hover {
+                    background-color: darken(#e8e8e8, 15%);
+                    color: $black;
+
+                    .mat-icon {
+                        color: $black;
+                    }
+                    .mat-icon.exclude {
+                        color: map-get($status, error);
+                    }
+                }
+            }
+
         }
     }
 
