@@ -180,10 +180,12 @@ export class DboardContentComponent implements OnChanges {
         this.widgetsLayoutUpdate.emit(this.getWigetPosition(width, height, this.winSize));
         // once the move of a widget end
         if (event.action === 'drag') {
-          this.interCom.responsePut({
-            id: event.item.$element.id,
-            action: 'widgetDragDropEnd'
-          });
+          for (let i = 0; i < this.widgets.length; i++) {
+            this.interCom.responsePut({
+              id: this.widgets[i].id,
+              action: 'widgetDragDropEnd'
+            });
+          }
         }
         // comment out for now to use ResizeSensor
         /* if (event.action === 'resize' && this.winSize === 'md') {
