@@ -70,9 +70,9 @@ export class WidgetClipboardService {
     }
 
     copyWidget(data: WidgetCopyModel) {
-        if (!this.clipboardResource()) {
+        if (!this.clipboardFolderResource()) {
             // resource does not exist... create it
-            this.createClipboardResource().subscribe(
+            /*this.createClipboardResource().subscribe(
                 res => {
                     this.logger.success('CREATED CLIPBOARD ');
                     const user = this.store.selectSnapshot(DbfsState.getUser());
@@ -88,25 +88,35 @@ export class WidgetClipboardService {
                         );
                 },
                 err => { this.logger.error('CREATE CLIPBOARD RESOURCE', err); }
-            );
+            );*/
         } else {
             this.logger.log('copyWidget', data);
             // copy actions
         }
     }
 
-    // privates
-    private clipboardResource() {
+    /** PRIVATES */
+
+    // find clipboard resource folder
+    private clipboardFolderResource() {
         // get current logged in user
         const user = this.store.selectSnapshot(DbfsState.getUser());
         // get current user clipboard file
-        const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFile('/user/' + user.alias + '/_clipboard_'));
+        //const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFile('/user/' + user.alias + '/_clipboard_'));
+        let cbResource = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias + '/_clipboard_'))
+        if (cbResource.notFound) {
+           return false;
+        }
 
-        this.logger.log('checkForClipboardResource', {user, cbResource});
+        this.logger.log('clipboardResource', {user, cbResource});
         return cbResource;
     }
 
-    private createClipboardResource() {
+    private createClipboardFolder() {
+
+    }
+
+    private createClipboardResource(title: string) {
         //this.logger.log('createClipboardResource', {user, clipboardResource});
 
         const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());

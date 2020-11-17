@@ -108,7 +108,10 @@ export class DbfsUtilsService {
             icon: 'd-dashboard-tile',
             parentPath: details.parentPath
         };
-        if (file.parentPath === '/namespace/yamas' && file.name === '_notifications_') {
+        if (
+            (file.parentPath === '/namespace/yamas' && file.name === '_notifications_') ||
+            (file.ownerType === 'user' && file.name === '_clipboard_')
+        ) {
             file.hidden = true;
         }
         file[details.type] = details.typeKey;
@@ -116,6 +119,8 @@ export class DbfsUtilsService {
         if (locked) {
             file.locked = true;
         }
+
+        console.log('details', details);
         return file;
     }
 
