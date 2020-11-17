@@ -181,11 +181,10 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         if (this.resizeSensor) {
                             this.resizeSensor.detach();
                         }
-                        const elem = document.getElementById(message.id);
-                        this.resizeSensor = new ResizeSensor(elem, () => {
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
                             const newSize = {
-                                width: elem.clientWidth,
-                                height: elem.clientHeight
+                                width: this.widgetOutputElement.nativeElement.clientWidth,
+                                height: this.widgetOutputElement.nativeElement.clientHeight
                             };
                             this.newSize$.next(newSize);
                         });
@@ -249,6 +248,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : newSize.height + 60;
 
+            
         this.size = { ...newSize, legendWidth: legendWidth };
         this.cdRef.detectChanges();
     }
