@@ -3,6 +3,7 @@ import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { URLOverrideService } from './urlOverride.service';
 import { HttpService } from '../../core/http/http.service';
+import { Observable, forkJoin, of } from 'rxjs';
 
 @Injectable()
 export class DashboardService {
@@ -404,7 +405,8 @@ export class DashboardService {
 
   // to resolve dasboard scope to scopeCache if not there.
   // this normally happens when first time dashboard loads
-  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any) {
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
+    const obs: any[] = [];
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
     const metrics = [];
     let query: any = {};
@@ -428,8 +430,11 @@ export class DashboardService {
           }
         }
         if (!doSearch) {
-          tplVariables.scopeCache[i] = tpl.tvars[i].scope;
+          obs.push(of(tpl.tvars[i].scope));
         }
+      } else {
+        // no scope or empty, put into obs to protect index
+        obs.push(of([]));
       }
       if (doSearch) {
         const tagk = tpl.tvars[i].tagk;
@@ -466,18 +471,13 @@ export class DashboardService {
         } else {
           query.namespaces = tpl.namespaces;
         }
-        // run the queries
-        this.httpService.getTagValues(query).subscribe(
-          results => {
-            tplVariables.scopeCache[i] = results;
-          },
-          err => {
-            tplVariables.scopeCache[i] = [];
-          }
-        );
+        const cloneQuery = JSON.parse(JSON.stringify(query));
+        obs.push(this.httpService.getTagValues(cloneQuery));
         query = {};
       }
-    }
+    } 
+    // return this.
+    return forkJoin(obs);
   }
 
   addGridterInfo(widgets: any[]) {
