@@ -15,7 +15,7 @@
                                 </div>
                             </ng-container>
                         </ng-container>
-                        <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name && suppressConfig.query.metric.groupByTags">
+                        <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name">
                             <span class="label">
                                 <mat-icon fontSet="denali" 
                                 [fontIcon]="!chartInvisibleMetrics.includes('m1') ? 'd-check-square' : 'd-minus-square'"></mat-icon>

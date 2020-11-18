@@ -35,7 +35,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
           metric: this.fb.group({ 
               name: this.config ? this.config.query.metric.name : '',
               tagAggregator: this.config ? this.config.query.metric.tagAggregator : 'sum',
-              groupByTags: this.config ? this.config.query.metric.groupByTags : ''
+              groupByTags: this.config ? this.config.query.metric.groupByTags : []
           }),
       }),
       comparisonOperator: this.config.comparisonOperator || 'missing',
@@ -59,9 +59,6 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     this.resetFormErrors();
     const formval = this.suppressForm.getRawValue();
     if ( formval.query.metric.name ) {
-      if ( !formval.query.metric.groupByTags ) {
-          this.suppressForm.get('query').get('metric').get('groupByTags').setErrors({ 'required': true });
-      }
       if ( formval.comparisonOperator !== 'missing' && formval.threshold === null ) {
           this.suppressForm.get('threshold').setErrors({ 'required': true });
       }

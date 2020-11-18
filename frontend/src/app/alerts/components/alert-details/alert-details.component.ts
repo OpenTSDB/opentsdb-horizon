@@ -289,7 +289,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             metric : {
                 name : '',
                 tagAggregator: '',
-                groupByTags: '',
+                groupByTags: [],
                 settings : { 
                     visual : { visible : true} 
                 }
@@ -821,7 +821,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         let sQuery = null;
         if ( this.data.queries && this.data.queries.raw.length && this.data.queries.raw[this.data.queries.raw.length -1].id === 'sq' )  {
             sQuery = this.data.queries.raw.pop();
-            sQuery.metrics[0].groupByTags = sQuery.metrics[0].groupByTags[0]; // array to single value
+            sQuery.metrics[0].groupByTags = sQuery.metrics[0].groupByTags; // array to single value
             this.suppressConfig.query.namespace = sQuery.namespace;
             this.suppressConfig.settings = { visual: { visible: true }};
             this.suppressConfig.query.metric = sQuery.metrics[0];
@@ -1273,9 +1273,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     getSuppressQuery() {
         const metric = this.utils.deepClone(this.suppressConfig.query.metric);
         metric.id = 'm1';
-        metric.groupByTags = metric.groupByTags ? [metric.groupByTags] : [];
+        metric.groupByTags = metric.groupByTags ? metric.groupByTags : [];
+        metric.settings = { visual : { visible : true} };
         const sQuery = { id: 'sq' , namespace: this.suppressConfig.query.namespace, settings: { visual: {visible: true}}, metrics: [ metric ], filters: []};
-        return metric.name && metric.groupByTags.length ? sQuery : null;
+        return metric.name  ? sQuery : null;
     }
 
     addSuppressQuery(queries) {
@@ -1823,11 +1824,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             changed = true;
         }
         this.suppressConfig.disabled = !this.canSuppressAlert;
-        if ( !this.tags.includes(this.suppressConfig.query.metric.groupByTags || !this.canSuppressAlert ) ) {
-            this.suppressConfig.query.metric.groupByTags = '';
-            this.suppressConfig.query.metric.name = '';
-            changed = true;
-        }
+        // if ( !this.tags.includes(this.suppressConfig.query.metric.groupByTags || !this.canSuppressAlert ) ) {
+        this.suppressConfig.query.metric.groupByTags = [];
+        this.suppressConfig.query.metric.name = '';
+            // changed = true;
+        // }
         if ( changed ) {
             this.suppressConfig = {...this.suppressConfig};
         }

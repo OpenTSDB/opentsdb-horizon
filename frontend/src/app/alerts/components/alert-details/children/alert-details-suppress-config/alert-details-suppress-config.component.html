@@ -27,11 +27,8 @@
         <div class="sentence-item" style="flex-direction:column">
             <dropdown-metric-tags
                 [tags]="tags"
-                [selected]="[suppressForm.get('query').get('metric').get('groupByTags').value]"
-                [all]="false"
-                [multiple]="false"
-                (change)="updateSuppressConfig('groupByTags', $event[0])"></dropdown-metric-tags>
-                <mat-error *ngIf="suppressForm.get('query').get('metric').get('groupByTags').errors && suppressForm.get('query').get('metric').get('groupByTags').errors.required">Please select the tag</mat-error>
+                [selected]="suppressForm.get('query').get('metric').get('groupByTags').value"
+                (change)="updateSuppressConfig('groupByTags', $event)"></dropdown-metric-tags>
         </div>
         <div class="sentence-item">
             <span>is</span>
