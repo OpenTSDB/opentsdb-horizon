@@ -741,22 +741,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
-                // sort widget by grid row, then assign
-                const sortWidgets = this.utilService.deepClone(widgets);
-                if ( !this.snapshot ) {
-                    sortWidgets.sort((a,b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                    this.widgets = this.utilService.deepClone(sortWidgets);
+                this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
+                    this.tplVariables.scopeCache = scopes;
+                    // sort widget by grid row, then assign
+                    const sortWidgets = this.utilService.deepClone(widgets);
+                    if (!this.snapshot) {
+                        sortWidgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+                        this.widgets = this.utilService.deepClone(sortWidgets);
 
-                    // set oldWidgets when widgets is not empty and oldWidgets is empty
-                    if (this.widgets.length && this.oldWidgets.length === 0) {
-                        this.oldWidgets = [...this.widgets];
+                        // set oldWidgets when widgets is not empty and oldWidgets is empty
+                        if (this.widgets.length && this.oldWidgets.length === 0) {
+                            this.oldWidgets = [...this.widgets];
+                        }
+                    } else {
+                        this.newWidget = sortWidgets[0];
+                        this.setSnapshotMeta();
                     }
-                } else {
-                    this.newWidget = sortWidgets[0];
-                    this.setSnapshotMeta();
-                }
-                // let resolve dashboard scope if they have it
-                this.dbService.resolveDBScope(this.tplVariables, this.widgets, this.variablePanelMode);
+                }));
             }
         }));
 
