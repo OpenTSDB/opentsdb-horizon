@@ -286,6 +286,7 @@ export class DatatranformerService {
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
+        const newVisibilityHash = {};
         let cIndex = 0;
         const autoColors = this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
@@ -302,7 +303,7 @@ export class DatatranformerService {
             } else {
                 options.visibility.push(true);
             }
-            options.visibilityHash[dseries[i].hash] = options.visibility[i];
+            newVisibilityHash[dseries[i].hash] = options.visibility[i];
             options.series[label] = dseries[i].config;
             options.series[label].color = dseries[i].config.color ? dseries[i].config.color :
                                             ( colors[mid] ? colors[mid].shift() : autoColors[cIndex++ % nAutoColors] );
@@ -330,6 +331,7 @@ export class DatatranformerService {
                 }
             }
         }
+        options.visibilityHash = newVisibilityHash;
         // console.debug(widget.id, "time taken for finding min, max(ms)", new Date().getTime() - intermediateTime );
 
         if (isStacked) {

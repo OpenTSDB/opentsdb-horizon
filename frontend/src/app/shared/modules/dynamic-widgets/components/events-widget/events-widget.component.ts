@@ -23,7 +23,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     ) { }
 
     /** Inputs */
-    @Input() editMode: boolean;
+    @Input() mode = 'view'; // view/edit
     @Input() widget: any; // includes query
 
     /** Local Variables */
@@ -109,7 +109,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         this.interCom.requestSend({
             id: this.widget.id,
             action: 'getEventData',
-            payload: {eventQueries: this.widget.eventQueries, limit: this.editMode ? this.previewEventsCount : this.eventsCount}
+            payload: {eventQueries: this.widget.eventQueries, limit: this.mode === 'edit' ? this.previewEventsCount : this.eventsCount}
         });
     }
 

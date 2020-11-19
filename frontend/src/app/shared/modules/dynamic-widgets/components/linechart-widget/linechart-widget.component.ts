@@ -109,7 +109,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         visibility: [],
         visibilityHash: {},
         gridLineColor: '#ccc',
-        isIslandLegendOpen: false
+        isIslandLegendOpen: false,
+        initZoom: null
     };
     data: any = { ts: [[0]] };
     size: any = { width: 120, height: 60};
@@ -198,6 +199,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     ngOnInit() {
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'snap';
+        this.widget.settings.chartOptions = this.widget.settings.chartOptions || {};
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
             .pipe(
@@ -205,6 +207,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             )
             .subscribe(trigger => {
                 if (trigger) {
+                    this.resetYZoom();
                     this.refreshData();
                 }
             });
@@ -230,11 +233,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     this.options.isCustomZoomed = false;
                     overrideTime = this.widget.settings.time.overrideTime;
                     if ( !overrideTime ) {
+                        this.resetYZoom();
                         this.refreshData();
                     }
                     break;
                 case 'reQueryData':
                     if ( !message.id || message.id === this.widget.id ) {
+                        this.resetYZoom();
                         this.refreshData();
                     }
                     break;
@@ -254,11 +259,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
                                 this.options.isCustomZoomed = message.payload.date.isZoomed;
                                 this.widget.settings.time.zoomTime = message.payload.date;
+                                this.resetYZoom();
                                 this.refreshData();
                             }
                         // tslint:disable-next-line: max-line-length
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.resetYZoom();
                             this.refreshData();
                         }
                         // unset the zoom time
@@ -434,6 +441,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             } else {
                                 let graphs: any = {};
                                 this.data.ts = this.dataTransformer.yamasToDygraph(this.widget, this.options, this.data.ts, rawdata);
+                                if ( this.widget.settings.legend.display ) {
+                                    this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
+                                }
                                 this.data = { ...this.data };
                                 graphs['y'] = {};
                                 graphs['y']['x'] = this.data;
@@ -461,7 +471,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
                             });
-
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
@@ -513,6 +522,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         // Timing issue? trying to move to afterViewInit
         this.setOptions();
+        if ( this.mode === 'snap' ) {
+            const chartOptions = this.widget.settings.chartOptions;
+            // override selections
+            this.options.visibilityHash = chartOptions && chartOptions.visbilityHash ? chartOptions.visbilityHash : {};
+            this.options.initZoom = {y: {}, y2: {}};
+            // tslint:disable-next-line: max-line-length
+            this.options.initZoom.y = chartOptions.axes && chartOptions.axes.y ? {...this.options.axes.y, valueRange: chartOptions.axes.y} : null;
+            // tslint:disable-next-line: max-line-length
+            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? {...this.options.axes.y2, valueRange: chartOptions.axes.y} : null;
+        }
     }
 
     ngAfterViewInit() {
@@ -1200,7 +1219,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 payload: { options: this.options}
             });
         }
-        // console.log("options", this.options.visibility)
     }
 
     // timeSeriesLegend series toggle
@@ -1242,16 +1260,33 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     handleZoom(zConfig) {
-        if ( zConfig.isZoomed  ) {
+        if ( zConfig.isZoomed && zConfig.axis === 'x' ) {
             zConfig.start = Math.floor(zConfig.start) <= zConfig.actualStart ? -1 : Math.floor(zConfig.start);
             zConfig.end = Math.ceil(zConfig.end) >= zConfig.actualEnd ? -1 : Math.floor(zConfig.end);
         }
         // zoom.start===-1 or zoom.end=== -1, the start or end times will be calculated from the datepicker start or end time
-        this.interCom.requestSend({
-            id: this.widget.id,
-            action: 'SetZoomDateRange',
-            payload: zConfig
-        });
+        if ( zConfig.axis === 'x' ) {
+            this.interCom.requestSend({
+                id: this.widget.id,
+                action: 'SetZoomDateRange',
+                payload: zConfig
+            });
+            this.resetYZoom();
+        } else if ( zConfig.axis === 'y' && zConfig.y ) {
+            this.widget.settings.chartOptions.axes = { y: zConfig.y , y2: zConfig.y2 };
+        } else {
+            this.resetYZoom();
+        }
+    }
+
+    resetYZoom(redraw= true) {
+        if ( this.widget.settings.chartOptions.axes ) {
+            delete this.widget.settings.chartOptions.axes;
+            this.options.initZoom = null;
+            this.options.axes.y.valueRange = [null, null];
+            this.options.axes.y2.valueRange = [null, null];
+            this.setAxesOption();
+        }
     }
 
     bucketClickedAtIndex(index) {
@@ -1446,6 +1481,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // apply config from editing
     applyConfig() {
         this.closeViewEditMode();
+        delete this.widget.settings.chartOptions;
         const cloneWidget = JSON.parse(JSON.stringify(this.widget));
         cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
         this.interCom.requestSend({
