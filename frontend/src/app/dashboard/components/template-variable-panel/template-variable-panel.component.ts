@@ -64,6 +64,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagValueViewFocusTimeout: any;
 
     tagValueScopeSub: Subscription;
+    rebuildScopeSub: Subscription;
     tagValueSearchInputControl: FormControl = new FormControl('');
     scopeIndex = -1;
     tagValueSearch: string[] = [];
@@ -1002,8 +1003,24 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if (this.scopeModify) {
             this.tplVariables.scopeCache[index] = [];
             this.scopeModify = false;
+            // rebuild scopeCache for this item
+            const query = this.buildTagValuesQuery('', index);
+            query.tagsFilter = [{
+                tagk: selControl.get('tagk').value,
+                filter: selControl.get('scope').value
+            }];
+            this.rebuildScopeSub = this.httpService.getTagValues(query).subscribe(
+                results => {
+                    this.tplVariables.scopeCache[index] = results;
+                },
+                err => {
+                    this.tplVariables.scopeCache[index] = [];
+                });
+            // update query
+            this.updateState(selControl);
+        } else {
+            this.updateState(selControl, false);
         }
-        this.updateState(selControl, false);
     }
     scopeOpen(index: number) {
         this.scopeIndex = index;
@@ -1072,6 +1089,9 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         if (this.tagValueScopeSub) {
             this.tagValueScopeSub.unsubscribe();
+        }
+        if (this.rebuildScopeSub) {
+            this.rebuildScopeSub.unsubscribe();
         }
     }
     get listVariables(): FormArray {

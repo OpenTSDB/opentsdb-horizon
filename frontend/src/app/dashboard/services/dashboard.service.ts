@@ -3,6 +3,7 @@ import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { URLOverrideService } from './urlOverride.service';
 import { HttpService } from '../../core/http/http.service';
+import { Observable, forkJoin, of } from 'rxjs';
 
 @Injectable()
 export class DashboardService {
@@ -366,27 +367,53 @@ export class DashboardService {
                 // now we want to check if this is an absolute value or regexp
                 // for regexp then we might need to to solve it
                 const _cfilter = tplVariables[tplIdx].filter;
-                if (_cfilter.match(/regexp\((.*)\)/) && tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
                   const res = _cfilter.match(/^regexp\((.*)\)$/);
                   const val = res ? res[1] : _cfilter;
                   const regx = new RegExp(val, 'gi');
+                  const matches = [];
                   scopeCache[tplIdx].forEach(v => {
-                      if (v.match(regx)) {
-                          replaceFilter.push(hasNot ? '!' + v : v)
-                      }
+                    if (v.match(regx)) {
+                      matches.push(v);
+                    }
                   });
-
+                  if (matches.length > 0) {
+                    matches.forEach(m => { replaceFilter.push(hasNot ? '!' + m : m)});
+                  } else {
+                    // there is no match of any values of the scope
+                    // TODO: how to deal with this for error message or let it go
+                    // just to make query return no values
+                    replaceFilter.push('__NO_SCOPE_MATCHED__');
+                  }
                 } else {
                   replaceFilter.push(hasNot ? '!' + _cfilter : _cfilter);
                 }
-                if (tplVariables[tplIdx].mode === 'auto') {
-                  autoMode = true;
+              } else {
+                // filter is empty but scope is defined, appply it
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                  for (let k = 0; k < tplVariables[tplIdx].scope.length; k++) {
+                    const scopeHasNot = tplVariables[tplIdx].scope[k][0] === '!';
+                    const scope = tplVariables[tplIdx].scope[k].substring(scopeHasNot ? 1 : 0, tplVariables[tplIdx].scope[k].length);
+                    if (hasNot) {
+                      if (scopeHasNot) {
+                        replaceFilter.push(scope);
+                      } else {
+                        replaceFilter.push('!' + scope);
+                      }
+                    } else {
+                      replaceFilter.push(tplVariables[tplIdx].scope[k]);
+                    }
+                  }
                 }
+              }
+              if (tplVariables[tplIdx].mode === 'auto') {
+                autoMode = true;
               }
             }
           }
         }
       }
+
       if (replaceFilter.length > 0) {
         if (autoMode) {
           // do replace
@@ -404,7 +431,8 @@ export class DashboardService {
 
   // to resolve dasboard scope to scopeCache if not there.
   // this normally happens when first time dashboard loads
-  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any) {
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
+    const obs: any[] = [];
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
     const metrics = [];
     let query: any = {};
@@ -428,8 +456,11 @@ export class DashboardService {
           }
         }
         if (!doSearch) {
-          tplVariables.scopeCache[i] = tpl.tvars[i].scope;
+          obs.push(of(tpl.tvars[i].scope));
         }
+      } else {
+        // no scope or empty, put into obs to protect index
+        obs.push(of([]));
       }
       if (doSearch) {
         const tagk = tpl.tvars[i].tagk;
@@ -466,18 +497,13 @@ export class DashboardService {
         } else {
           query.namespaces = tpl.namespaces;
         }
-        // run the queries
-        this.httpService.getTagValues(query).subscribe(
-          results => {
-            tplVariables.scopeCache[i] = results;
-          },
-          err => {
-            tplVariables.scopeCache[i] = [];
-          }
-        );
+        const cloneQuery = JSON.parse(JSON.stringify(query));
+        obs.push(this.httpService.getTagValues(cloneQuery));
         query = {};
       }
-    }
+    } 
+    // return this.
+    return forkJoin(obs);
   }
 
   addGridterInfo(widgets: any[]) {
