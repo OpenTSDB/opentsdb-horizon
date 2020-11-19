@@ -1,6 +1,6 @@
 <div class="main-container">
     <div class="widget-output-container" fxLayout="column">
-        <div class="widget-title" *ngIf="editMode" fxLayout="row" fxFlex="1 1 30px">
+        <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 30px">
             <span class="flex-spacer"></span>
             <span>
                 <button mat-button color="primary" class="close-edit-view-btn" (click)="closeViewEditMode()">
@@ -9,7 +9,7 @@
             </span>
         </div>
       
-        <div class="widget-output notCentered" #widgetoutput [style.background]="widget.settings.visual.backgroundColor" [ngClass]="{'monospace': widget.settings.visual.font === 'monospace', 'top-margin': editMode }">
+        <div class="widget-output notCentered" #widgetoutput [style.background]="widget.settings.visual.backgroundColor" [ngClass]="{'monospace': widget.settings.visual.font === 'monospace', 'top-margin': mode === 'edit' }">
             <div class="widget-container">
               <span class="markdown-body" id="markdown-override" [style.color]="widget.settings.visual.textColor" >
                 <markdown [data]="widget.settings.visual.text"></markdown>
@@ -18,7 +18,7 @@
         </div>
       </div>
       
-      <div class="widget-controls-container" *ngIf="editMode">
+      <div class="widget-controls-container" *ngIf="mode === 'edit'">
         <!-- tabs with config content -->
         <mat-tab-group class="widget-configs" selectedIndex="0" color="primary" [@.disabled]="'true'">
             <mat-tab label="Editor">
@@ -39,7 +39,7 @@
     </div>    
 </div>
 
-<div class="widget-actions" *ngIf="editMode">
+<div class="widget-actions" *ngIf="mode === 'edit'">
     <!-- controls to save/cancel -->
     <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()">Apply to Dashboard</button>
     <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>

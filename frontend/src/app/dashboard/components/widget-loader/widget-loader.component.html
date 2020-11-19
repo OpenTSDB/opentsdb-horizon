@@ -16,7 +16,7 @@
                         <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
                     </button>-->
                     <mat-icon *ngIf="widget.settings.time && widget.settings.time.overrideTime" class="time-lock" fontSet="denali" fontIcon="d-time-lock" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}"></mat-icon>
-                    <mat-icon class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')" matTooltip="Explore"></mat-icon>
+                    <mat-icon *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'" class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')" matTooltip="Explore"></mat-icon>
                     <button mat-icon-button [matMenuTriggerFor]="widgetMenu" class="widget-menu-trigger">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
                     </button>

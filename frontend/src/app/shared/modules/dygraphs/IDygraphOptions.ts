@@ -80,5 +80,6 @@ export interface IDygraphOptions {
     xRangePad?: number;
     clickCallback?: any;
     isIslandLegendOpen?: boolean;
+    initZoom?: any;
 }
 
