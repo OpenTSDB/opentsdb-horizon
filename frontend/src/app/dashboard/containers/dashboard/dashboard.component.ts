@@ -480,6 +480,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if ( dbState.Settings.tplVariables ) {
                         dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
                     }
+                    delete message.payload.widget.settings.time.overrideTime;
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
                     dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.start : this.wdMetaData[message.id].queryDataRange.start;
@@ -1485,6 +1486,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         content.settings.time.start = this.editViewModeMeta.queryDataRange.start;
         content.settings.time.end = this.editViewModeMeta.queryDataRange.end;
         content.settings.time.zone = this.dbTime.zone;
+        delete this.newWidget.settings.time.overrideTime;
         content.widgets = [this.newWidget];
         const payload: any = {
             'name': content.settings.meta.title,
