@@ -367,21 +367,26 @@ export class DashboardService {
                 // now we want to check if this is an absolute value or regexp
                 // for regexp then we might need to to solve it
                 const _cfilter = tplVariables[tplIdx].filter;
-                if (_cfilter.match(/regexp\((.*)\)/) && tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
                   const res = _cfilter.match(/^regexp\((.*)\)$/);
                   const val = res ? res[1] : _cfilter;
                   const regx = new RegExp(val, 'gi');
+                  const matches = [];
                   scopeCache[tplIdx].forEach(v => {
-                      if (v.match(regx)) {
-                          replaceFilter.push(hasNot ? '!' + v : v)
-                      }
+                    if (v.match(regx)) {
+                      matches.push(v);
+                    }
                   });
-
+                  if (matches.length > 0) {
+                    matches.forEach(m => { replaceFilter.push(hasNot ? '!' + m : m)});
+                  } else {
+                    // there is no match of any values of the scope
+                    // TODO: how to deal with this for error message or let it go
+                    // just to make query return no values
+                    replaceFilter.push('__NO_SCOPE_MATCHED__');
+                  }
                 } else {
                   replaceFilter.push(hasNot ? '!' + _cfilter : _cfilter);
-                }
-                if (tplVariables[tplIdx].mode === 'auto') {
-                  autoMode = true;
                 }
               } else {
                 // filter is empty but scope is defined, appply it
@@ -401,10 +406,14 @@ export class DashboardService {
                   }
                 }
               }
+              if (tplVariables[tplIdx].mode === 'auto') {
+                autoMode = true;
+              }
             }
           }
         }
       }
+
       if (replaceFilter.length > 0) {
         if (autoMode) {
           // do replace
