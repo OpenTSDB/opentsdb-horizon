@@ -507,9 +507,12 @@ export class DashboardService {
         obs.push(this.httpService.getTagValues(cloneQuery));
         query = {};
       }
-    } 
-    // return this.
-    return forkJoin(obs);
+    }
+    if (obs.length > 0) {
+      return forkJoin(obs);
+    } else {
+      return of([]);
+    }
   }
 
   addGridterInfo(widgets: any[]) {
