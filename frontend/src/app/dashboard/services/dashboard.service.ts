@@ -372,7 +372,6 @@ export class DashboardService {
                   const val = res ? res[1] : _cfilter;
                   const regx = new RegExp(val, 'gi');
                   const matches = [];
-                  const notmatches = [];
                   scopeCache[tplIdx].forEach(v => {
                     if (v.match(regx)) {
                       matches.push(v);
