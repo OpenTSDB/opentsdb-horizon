@@ -378,7 +378,13 @@ export class DashboardService {
                     }
                   });
                   if (matches.length > 0) {
-                    matches.forEach(m => { replaceFilter.push(hasNot ? '!' + m : m)});
+                    if (hasNot) {
+                      // we need to combine with scope for not
+                      matches.forEach(m => { replaceFilter.push('!' + m)});
+                      tplVariables[tplIdx].scope.forEach(s => { replaceFilter.push(s)})
+                    } else {
+                      matches.forEach(m => { replaceFilter.push(m)});
+                    }
                   } else {
                     // there is no match of any values of the scope
                     // TODO: how to deal with this for error message or let it go
