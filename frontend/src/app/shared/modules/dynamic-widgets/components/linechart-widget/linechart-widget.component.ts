@@ -441,7 +441,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             } else {
                                 let graphs: any = {};
                                 this.data.ts = this.dataTransformer.yamasToDygraph(this.widget, this.options, this.data.ts, rawdata);
-                                this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
+                                if ( this.widget.settings.legend.display ) {
+                                    this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
+                                }
                                 this.data = { ...this.data };
                                 graphs['y'] = {};
                                 graphs['y']['x'] = this.data;
