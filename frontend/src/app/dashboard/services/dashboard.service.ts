@@ -383,6 +383,23 @@ export class DashboardService {
                 if (tplVariables[tplIdx].mode === 'auto') {
                   autoMode = true;
                 }
+              } else {
+                // filter is empty but scope is defined, appply it
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                  for (let k = 0; k < tplVariables[tplIdx].scope.length; k++) {
+                    const scopeHasNot = tplVariables[tplIdx].scope[k][0] === '!';
+                    const scope = tplVariables[tplIdx].scope[k].substring(scopeHasNot ? 1 : 0, tplVariables[tplIdx].scope[k].length);
+                    if (hasNot) {
+                      if (scopeHasNot) {
+                        replaceFilter.push(scope);
+                      } else {
+                        replaceFilter.push('!' + scope);
+                      }
+                    } else {
+                      replaceFilter.push(tplVariables[tplIdx].scope[k]);
+                    }
+                  }
+                }
               }
             }
           }
