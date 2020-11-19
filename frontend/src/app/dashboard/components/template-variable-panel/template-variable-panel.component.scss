@@ -436,6 +436,13 @@
                     }
                 }
             }
+
+            &.values-control {
+                .mat-form-field {
+                    width: 155px;
+                    max-width: 155px;
+                }
+            }
         }
 
         .filter-values-list {
@@ -504,6 +511,20 @@
             flex: 1;
             max-height: 100%;
             max-width: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .filter-scope-type {
+                padding: 2px 4px;
+                text-transform: uppercase;
+                font-size: 10px;
+                font-weight: bold;
+            }
+
+            .scope-columns-wrap {
+                display: flex;
+                flex: 1;
+            }
 
             .header-column {
                 width: 100%;
@@ -513,6 +534,7 @@
                 font-size: 10px;
                 text-transform: uppercase;
             }
+
 
             .scope-column {
                 display: flex;
@@ -842,6 +864,11 @@
         }
 
         .filter-scope-columns {
+
+            .filter-scope-type {
+                background-color: rgba(map-get($primary, default), .3);
+                color: rgba($text, .6);
+            }
 
             .header-column {
                 background-color: $divider;
