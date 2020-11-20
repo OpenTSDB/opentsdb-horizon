@@ -488,10 +488,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
                         'name': snapTitle,
-                        'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
-                        'sourceId': this.dbid !== '_new_' ? this.dbid : '',
                         'content': dbcontent
                     };
+                    if ( this.dbid !== '_new_') {
+                        payload.sourceType = this.snapshot ? 'SNAPSHOT' : 'DASHBOARD';
+                        payload.sourceId = this.dbid;
+                    }
                     this.store.dispatch(new SaveSnapshot('_new_', payload));
                     break;
                 case 'dashboardSaveRequest':

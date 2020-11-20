@@ -597,7 +597,7 @@ export class DatatranformerService {
         const autoColors =  this.util.getColors();
         // assing colors based on series label
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
@@ -697,7 +697,7 @@ export class DatatranformerService {
 
         // assing colors based on series label
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;

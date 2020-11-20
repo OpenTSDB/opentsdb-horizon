@@ -1680,10 +1680,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         const payload: any = {
             'name': this.data.name || 'Untitled Alert',
-            'sourceType': 'ALERT',
-            'sourceId': this.data.id !== '_new_' ? this.data.id : '',
             'content': dConfig
         };
+
+        if ( this.data.id !== '_new_' ) {
+            payload.sourceType = 'ALERT';
+            payload.sourceId = this.data.id;
+        }
 
         this.httpService.saveSnapshot('_new_', payload).subscribe(
             (res: any) => {
