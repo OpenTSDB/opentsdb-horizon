@@ -17,6 +17,8 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
  // tslint:disable:max-line-length
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
+import { ResizableDirective } from '../directives/resizable.directive';
+
 
  // widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
@@ -130,7 +132,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         AliasDisplayPipe,
         HighlightTextPipe,
         SafePipe,
-        Nl2BrPipe
+        Nl2BrPipe,
+        ResizableDirective
     ],
     exports: [
         ThemePickerComponent,
@@ -173,7 +176,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         HexToColorNamePipe,
         DateToRelativePipe,
         AliasDisplayPipe,
-        HighlightTextPipe
+        HighlightTextPipe,
+        ResizableDirective
     ],
     entryComponents: [
         InlineFilterEditorComponent,
