@@ -33,6 +33,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     @Input() metric: any;
     @Input() selected: any[] = ['all'];
     @Input() tags: any = null;
+    @Input() excludeTags: any = [];
     @Input() all = true;
     @Input() multiple = true;
     @Input() enableGroupBy: boolean;
@@ -90,9 +91,11 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
                 return;
             }
             this.httpService.getNamespaceTagKeys(query).subscribe(res => {
+                res = res.filter( ( d ) => !this.excludeTags.includes( d.name ) );
                 this.tagOptions = res;
                 this.filteredTagOptions = this.tagOptions;
                 this.triggerMenu();
+                console.log(this.tagOptions, this.excludeTags, "dropdwonmetric tags");
             },
             err => {
                 this.tagOptions = [];

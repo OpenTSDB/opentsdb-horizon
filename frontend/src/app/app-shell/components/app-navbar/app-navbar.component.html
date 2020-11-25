@@ -1,5 +1,5 @@
 <!-- Navbar Theme -->
-<mat-toolbar fxFlex="1 1 100%" [ngClass]="{'snapshot': snapshot}">
+<mat-toolbar fxFlex="1 1 100%" [ngClass]="{'snapshot': snapshot, 'explore': cdkService.navbarClass === 'explore'}">
     <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
         <!-- Hamburger menu -->
         <div class="navbar-item navbar-icon-item" *ngIf="mediaQuery === 'xs'">

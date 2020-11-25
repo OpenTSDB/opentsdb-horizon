@@ -27,16 +27,17 @@
     </app-dboard-content>
 </div>
 <ng-template #dashboardNavbarTmpl>
-    <inline-editable class="navbar-item"
+    <inline-editable class="navbar-item" 
         [fieldValue]="dbSettings.meta.title"
         [minLength]="3"
         [maxLength]="50"
         (updatedValue)="setTitle($event)"
         style="margin-left: 5px;"
-        *ngIf="activeMediaQuery !== 'xs'">
+        *ngIf="(dashboardMode$ | async) !== 'explore' && activeMediaQuery !== 'xs'">
     </inline-editable>
+    <span class="navbar-item nav-title-readonly" *ngIf="(dashboardMode$ | async) === 'explore'">Explore: {{ editViewModeMeta.title }}</span>
 
-    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="!snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
+    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
         <button mat-icon-button class="mat-elevation-z0"
             [ngClass]="{'dashboard-faved': isUserFavorited}"
             (click)="dashboardFavoriteAction(isUserFavorited)">
@@ -45,7 +46,7 @@
     </span>
     <span class="flex-spacer"></span>
 
-    <span class="navbar-item nav-add-new-widget" *ngIf="!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
+    <span class="navbar-item nav-add-new-widget" *ngIf="viewEditMode !== true &&!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
         <button mat-raised-button class="mat-elevation-z0"
             [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
             [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"

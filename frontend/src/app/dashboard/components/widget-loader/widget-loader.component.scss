@@ -7,15 +7,15 @@
         flex: 1 1 auto;
 
         .widget-menu-trigger,
+        .snapshot-icon,
         .expand-trigger {
             visibility: hidden;
         }
 
         &:hover {
-            .widget-menu-trigger {
-                visibility: visible;
-            }
-            .expand-trigger {
+            .widget-menu-trigger,
+            .expand-trigger,
+            .snapshot-icon {
                 visibility: visible;
             }
         }
@@ -63,6 +63,7 @@
         }
 
         .mat-icon.time-lock,
+        .snapshot-icon,
         .expand-trigger {
             cursor: pointer;
             margin: 0px 6px;
