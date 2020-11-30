@@ -526,10 +526,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     break;
                 case 'updateTemplateVariables':
-                    this.store.dispatch(new UpdateVariables(message.payload));
+                    this.store.dispatch(new UpdateVariables(message.payload));                   
                     break;
                 case 'ApplyTplVarValue':
                     this.applyTplVarValue(message.payload);
+                    // this is pass down to markdown widget to resolve only in view mode
+                    if (this.variablePanelMode.view) {
+                        this.interCom.responsePut({
+                            action: 'TplVariables',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplScope: this.tplVariables.scope
+                            }
+                        });
+                    }                   
                     break;
                 case 'UpdateTplAlias':
                     this.updateTplAlias(message.payload);
@@ -547,7 +557,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // custom tag to select.
                     this.interCom.responsePut({
                         action: 'TplVariables',
-                        payload: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables
+                        payload: { 
+                            tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                            tplScope: this.tplVariables.scope
+                        }
                     });
                     break;
                 case 'UpdateTagKeysByNamespaces':
@@ -1245,6 +1258,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.tagKeysByNamespaces.length === 0) {
                 this.getTagkeysByNamespaces(this.tplVariables.editTplVariables.namespaces);
             }
+        } else {
+            // also passdown for who need it
+            this.interCom.responsePut({
+                action: 'TplVariables',
+                payload: { 
+                    tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                    tplScope: this.tplVariables.scope
+                }
+            });          
         }
         this.variablePanelMode = {...mode};
     }
