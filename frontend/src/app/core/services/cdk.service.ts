@@ -13,8 +13,15 @@ export class CdkService {
         return this.navbarPortalHostSubject.asObservable();
     }
 
+    navbarClass = '';
+
     setNavbarPortal(portal: TemplatePortal<any>) {
         this.navbarPortalHostSubject.next(portal);
+        this.navbarClass = '';
+    }
+
+    setNavbarClass(className) {
+        this.navbarClass = className;
     }
 
     // constructor

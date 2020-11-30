@@ -317,6 +317,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                 case 'setDashboardEditMode':
                     this.editViewModeMeta.id = '__EDIT__' + message.id;
+                    const wdIdx = this.widgets.findIndex(w => w.id === message.id);
+                    this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
                     // copy the widget data to editing widget
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
@@ -488,10 +490,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
                         'name': snapTitle,
-                        'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
-                        'sourceId': this.dbid !== '_new_' ? this.dbid : '',
                         'content': dbcontent
                     };
+                    if ( this.dbid !== '_new_') {
+                        payload.sourceType = this.snapshot ? 'SNAPSHOT' : 'DASHBOARD';
+                        payload.sourceId = this.dbid;
+                    }
                     this.store.dispatch(new SaveSnapshot('_new_', payload));
                     break;
                 case 'dashboardSaveRequest':
@@ -765,6 +769,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // initial from state mode is undefine.
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
             this.viewEditMode = !mode || mode === 'dashboard' ? false : true;
+            this.cdkService.setNavbarClass( mode === 'explore' ? 'explore' : '');
         }));
 
         this.subscription.add(this.dbTime$.subscribe(t => {

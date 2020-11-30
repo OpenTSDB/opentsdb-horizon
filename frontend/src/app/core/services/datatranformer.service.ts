@@ -595,19 +595,15 @@ export class DatatranformerService {
 
         let cIndex = 0;
         const autoColors =  this.util.getColors();
-        // assing colors based on series label
+        // assing colors based on value
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  a.value - b.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
         }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.labels.push(dseries[i].label);
@@ -695,19 +691,15 @@ export class DatatranformerService {
         const autoColors =  this.util.getColors();
         let cIndex = 0;
 
-        // assing colors based on series label
+        // assing colors based on value desc
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  b.value - a.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
         }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.data.push( { label: dseries[i].label, value: dseries[i].value,
