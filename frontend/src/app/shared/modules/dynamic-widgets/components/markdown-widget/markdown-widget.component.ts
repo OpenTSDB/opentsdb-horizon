@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding, Input, OnDestroy } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, BehaviorSubject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,16 +19,20 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   isDataRefreshRequired = false;
 
-  displayText$: Observable<string>;
+  displayText$: BehaviorSubject<string>;
   tplVariables: any = {};
+  tplScopes = [];
   private subscription: Subscription = new Subscription();
 
   ngOnInit() {
 
+    this.displayText$ = new BehaviorSubject('');
     this.subscription.add(this.interCom.responseGet().subscribe(message => {
       if (message.action === 'TplVariables') {
-        this.tplVariables = message.payload;
+        this.tplVariables = message.payload.tplVariables;
+        this.tplScopes = message.payload.scope;
         this.setDefaults();
+
       }
     }));
     this.interCom.requestSend({
@@ -53,12 +57,12 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   }
 
   setDefaults() {
-    console.log('hill - tplVariables', this.tplVariables);
+    console.log('hill - tplVariables default called', this.tplVariables, this.tplScopes);
     if (!this.widget.settings.visual.text) {
       this.widget.settings.visual.text = '';
-      this.displayText$ = of('');
+      this.displayText$.next('');
     } else {
-      this.displayText$ = this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text);
+      this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text));
     }
 
     if (!this.widget.settings.visual.backgroundColor) {
@@ -76,6 +80,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   textChanged(txt: string) {
     this.widget.settings.visual.text = txt;
+    this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text));
   }
 
   updateConfig(message) {
@@ -109,18 +114,19 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
-  resolveTplMacro(tplVariables: any, text: string): Observable<string> {
+  resolveTplMacro(tplVariables: any, text: string): string {
+    console.log('hill - this is call relveo');
     if (tplVariables.tvars.length) {
       const arr = {};
       tplVariables.tvars.forEach(v => {
         arr['{{'+v.alias+'}}'] = v.filter;
       });
       const reg = new RegExp(Object.keys(arr).join('|'),"g");
-      return of(text.replace(reg, (matched) => {
-        return arr[matched];
-      }));
+      return text.replace(reg, (matched) => {
+        return arr[matched] !== '' ? arr[matched] : matched;
+      });
     } else {
-      return of(text);
+      return text;
     }
   }
 }
