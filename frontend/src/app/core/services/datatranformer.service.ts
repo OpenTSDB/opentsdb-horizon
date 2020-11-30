@@ -286,6 +286,7 @@ export class DatatranformerService {
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
+        const newVisibilityHash = {};
         let cIndex = 0;
         const autoColors = this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
@@ -302,7 +303,7 @@ export class DatatranformerService {
             } else {
                 options.visibility.push(true);
             }
-            options.visibilityHash[dseries[i].hash] = options.visibility[i];
+            newVisibilityHash[dseries[i].hash] = options.visibility[i];
             options.series[label] = dseries[i].config;
             options.series[label].color = dseries[i].config.color ? dseries[i].config.color :
                                             ( colors[mid] ? colors[mid].shift() : autoColors[cIndex++ % nAutoColors] );
@@ -330,6 +331,7 @@ export class DatatranformerService {
                 }
             }
         }
+        options.visibilityHash = newVisibilityHash;
         // console.debug(widget.id, "time taken for finding min, max(ms)", new Date().getTime() - intermediateTime );
 
         if (isStacked) {
@@ -593,19 +595,15 @@ export class DatatranformerService {
 
         let cIndex = 0;
         const autoColors =  this.util.getColors();
-        // assing colors based on series label
+        // assing colors based on value
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  a.value - b.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
         }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.labels.push(dseries[i].label);
@@ -693,19 +691,15 @@ export class DatatranformerService {
         const autoColors =  this.util.getColors();
         let cIndex = 0;
 
-        // assing colors based on series label
+        // assing colors based on value desc
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  b.value - a.value;
         });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
         }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.data.push( { label: dseries[i].label, value: dseries[i].value,

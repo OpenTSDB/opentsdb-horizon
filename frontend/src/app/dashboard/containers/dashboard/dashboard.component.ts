@@ -191,7 +191,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     rerender: any = { 'reload': false }; // -> make gridster re-render correctly
     wData: any = {};
     widgets: any[] = [];
-    tplVariables: any = { editTplVariables: {}, viewTplVariables: {}};
+    tplVariables: any = {};
     variablePanelMode: any = { view : true };
     userNamespaces: any[] = [];
     viewEditMode = false;
@@ -270,7 +270,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.variablePanelMode = { view: true };
             this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
-            this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}};
+            this.tplVariables = { editTplVariables: { tvars: []}, viewTplVariables: { tvars: []}, scopeCache: []};
             if (this.tplVariablePanel) { this.tplVariablePanel.reset(); }
             this.isToTChanged = false;
             this.dbPrevToT = { period: '', value: 0 };
@@ -319,6 +319,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                 case 'setDashboardEditMode':
                     this.editViewModeMeta.id = '__EDIT__' + message.id;
+                    const wdIdx = this.widgets.findIndex(w => w.id === message.id);
+                    this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
                     // copy the widget data to editing widget
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
@@ -367,8 +369,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.updateTplVariableForCloneDelete( cloneWidget, 'clone');
                     break;
                 case 'changeWidgetType':
+                    this.iiService.closeIsland();
                     const [newConfig, needRefresh] = this.wdService.convertToNewType(message.payload.newType, message.payload.wConfig);
-                    console.log(message.payload);
                     const wId = this.snapshot ? message.id : this.editViewModeMeta.id;
                     if ( needRefresh && this.wData[wId] ) {
                         delete this.wData[wId];
@@ -482,6 +484,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if ( dbState.Settings.tplVariables ) {
                         dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
                     }
+                    delete message.payload.widget.settings.time.overrideTime;
                     dbState.Widgets.widgets = [message.payload.widget];
                     const dbcontent = this.dbService.getStorableFormatFromDBState(dbState);
                     dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.start : this.wdMetaData[message.id].queryDataRange.start;
@@ -489,10 +492,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
                         'name': snapTitle,
-                        'sourceType': this.snapshot ? 'SNAPSHOT' : 'DASHBOARD',
-                        'sourceId': this.dbid !== '_new_' ? this.dbid : '',
                         'content': dbcontent
                     };
+                    if ( this.dbid !== '_new_') {
+                        payload.sourceType = this.snapshot ? 'SNAPSHOT' : 'DASHBOARD';
+                        payload.sourceId = this.dbid;
+                    }
                     this.store.dispatch(new SaveSnapshot('_new_', payload));
                     break;
                 case 'dashboardSaveRequest':
@@ -755,26 +760,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
-                // sort widget by grid row, then assign
-                const sortWidgets = this.utilService.deepClone(widgets);
-                if ( !this.snapshot ) {
-                    sortWidgets.sort((a,b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                    this.widgets = this.utilService.deepClone(sortWidgets);
+                this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
+                    this.tplVariables.scopeCache = scopes;
+                    // sort widget by grid row, then assign
+                    const sortWidgets = this.utilService.deepClone(widgets);
+                    if (!this.snapshot) {
+                        sortWidgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+                        this.widgets = this.utilService.deepClone(sortWidgets);
 
-                    // set oldWidgets when widgets is not empty and oldWidgets is empty
-                    if (this.widgets.length && this.oldWidgets.length === 0) {
-                        this.oldWidgets = [...this.widgets];
+                        // set oldWidgets when widgets is not empty and oldWidgets is empty
+                        if (this.widgets.length && this.oldWidgets.length === 0) {
+                            this.oldWidgets = [...this.widgets];
+                        }
+                    } else {
+                        this.newWidget = sortWidgets[0];
+                        this.setSnapshotMeta();
                     }
-                } else {
-                    this.newWidget = sortWidgets[0];
-                    this.setSnapshotMeta();
-                }
+                }));
             }
         }));
 
         // initial from state mode is undefine.
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
             this.viewEditMode = !mode || mode === 'dashboard' ? false : true;
+            this.cdkService.setNavbarClass( mode === 'explore' ? 'explore' : '');
         }));
 
         this.subscription.add(this.dbTime$.subscribe(t => {
@@ -854,7 +863,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             this.tplVariables.viewTplVariables.tvars[idx].filter = tagOverrides[alias];
                         }
                     }
-                }
+                }               
                 this.tplVariables = { ...this.tplVariables };
             }
         }));
@@ -987,32 +996,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
             for (let j = 0; j < queries.length; j++) {
-                if (tvars.length === 1) {
-                    const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[0].alias + ']'));
-                    if (idx > -1) {
-                        this.handleQueryPayload({
-                            id: this.widgets[i].id,
-                            payload: this.widgets[i]
-                        });
-                        break;
-                    }
-                } else if (tvars.length > 1) {
-                    let matchIdx = 0;
+                if (tvars.length > 0) {
                     for (let k = 0; k < tvars.length; k++) {
-                        const idx = queries[j].filters.findIndex(f => f.customFilter && f.customFilter.includes('[' + tvars[k].alias + ']'));
-                        if (idx > -1) {
-                            matchIdx += 1;
+                        let runQuery = false;
+                        for (let a = 0; a < queries[j].filters.length; a++) {
+                            const filter = queries[j].filters[a];
+                            if (filter.customFilter) {
+                                filter.customFilter.forEach(f => {
+                                    const hasNot = f[0] === '!';
+                                    const alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                                    if (alias === tvars[k].alias) {
+                                        runQuery = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (runQuery) {
+                            this.handleQueryPayload({
+                                id: this.widgets[i].id,
+                                payload: this.widgets[i]
+                            });
+                            runQuery = false;
+                            break;
                         }
                     }
-                    if (matchIdx > 0) {
-                        this.handleQueryPayload({
-                            id: this.widgets[i].id,
-                            payload: this.widgets[i]
-                        });
-                        break;
-                    }
                 }
-
             }
         }
     }
@@ -1255,7 +1263,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
         this.variablePanelMode = {...mode};
-
     }
 
     getQuery(message: any) {
@@ -1297,8 +1304,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // here we need to resolve template variables
                     if (tplVars.length > 0) {
                         if (query.filters.findIndex(f => f.customFilter !== undefined) > -1) {
-                            // query = this.dbService.resolveTplVarCombine(query, tplVars);
-                            query = this.dbService.resolveTplVarReplace(query, tplVars);
+                            query = this.dbService.resolveTplVarReplace(query, tplVars, this.tplVariables.scopeCache);
                         }
                     }
                     // override the multigraph groupby config
@@ -1499,6 +1505,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         content.settings.time.start = this.editViewModeMeta.queryDataRange.start;
         content.settings.time.end = this.editViewModeMeta.queryDataRange.end;
         content.settings.time.zone = this.dbTime.zone;
+        delete this.newWidget.settings.time.overrideTime;
         content.widgets = [this.newWidget];
         const payload: any = {
             'name': content.settings.meta.title,

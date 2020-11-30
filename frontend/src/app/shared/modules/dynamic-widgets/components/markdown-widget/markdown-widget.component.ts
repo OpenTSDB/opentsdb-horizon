@@ -14,7 +14,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   constructor( private interCom: IntercomService) {  }
   /** Inputs */
-  @Input() editMode: boolean;
+  @Input() mode = 'view'; // view/edit
   @Input() widget: any;
 
   isDataRefreshRequired = false;

@@ -8,7 +8,6 @@ import { MaterialModule } from '../material/material.module';
 import { DygraphsModule } from '../dygraphs/dygraphs.module';
 import { D3Module } from '../d3/d3.module';
 import { ChartjsModule } from '../chartjs/chartjs.module';
-import { ResizableDirective } from '../dynamic-widgets/directives/resizable.directive';
 
 import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
 import { RouterModule} from '@angular/router';
@@ -96,8 +95,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         MarkdownWidgetVisualAppearanceComponent,
         TopnWidgetComponent,
         HeatmapWidgetComponent,
-        EventsWidgetComponent,
-        ResizableDirective
+        EventsWidgetComponent
     ],
     entryComponents: [
         PlaceholderWidgetComponent,

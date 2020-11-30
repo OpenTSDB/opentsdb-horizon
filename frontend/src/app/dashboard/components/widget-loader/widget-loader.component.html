@@ -15,22 +15,17 @@
                     <!--<button mat-icon-button (click)="openIsland();">
                         <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
                     </button>-->
-                    <span *ngIf="widget.settings.time && widget.settings.time.overrideTime" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
-                        <mat-icon class="time-lock" fontSet="denali" fontIcon="d-time-lock"></mat-icon>
-                    </span>
-                    <mat-icon class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')"></mat-icon>
+                    <mat-icon *ngIf="widget.settings.time && widget.settings.time.overrideTime" class="time-lock" fontSet="denali" fontIcon="d-time-lock" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}"></mat-icon>
+                    <mat-icon *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'" class="snapshot-icon" fontSet="denali" fontIcon="d-camera" (click)="saveSnapshot()" matTooltip="Snapshot"></mat-icon>
+                    <mat-icon *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'" class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')" matTooltip="Explore"></mat-icon>
                     <button mat-icon-button [matMenuTriggerFor]="widgetMenu" class="widget-menu-trigger">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
                     </button>
                     <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">
                         <ng-container *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
-                            <button mat-menu-item (click)="loadWidget('edit')" *ngIf="hasWriteAccess">
+                            <button mat-menu-item (click)="loadWidget('edit')">
                                 <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                <span>Edit & Explore</span>
-                            </button>
-                            <button mat-menu-item (click)="loadWidget('explore')" *ngIf="!hasWriteAccess">
-                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                                <span>Explore</span>
+                                <span>Edit view</span>
                             </button>
                             <button mat-menu-item (click)="widgetClone()">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>

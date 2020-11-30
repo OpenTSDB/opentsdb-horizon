@@ -74,7 +74,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     @Input() widget: any;
-    @Input() hasWriteAccess = false;
     @Output() editComponent = new EventEmitter<any>();
 
     @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;
@@ -317,6 +316,13 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
     }
 
+    saveSnapshot() {
+        this.interCom.requestSend(<IMessage> {
+            action: 'SaveSnapshot',
+            id: this.widget.id,
+            payload: { widget: this.utils.deepClone(this.widget) }
+        });
+    }
     createAlert() {
         this.interCom.requestSend(<IMessage> {
             action: 'createAlertFromWidget',

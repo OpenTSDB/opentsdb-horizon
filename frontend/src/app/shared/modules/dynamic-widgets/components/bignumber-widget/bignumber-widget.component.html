@@ -1,10 +1,10 @@
 <div class="widget-output-container" [style.height]="mode !== 'view' ? ( widgetHeight + 60 ) + 'px' : ''">
     <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
-        <div class="title-label" *ngIf="mode === 'edit' || mode === 'explore'">
-            <span class="navbar-item">Widget name:</span>
+        <div class="title-label" *ngIf="mode === 'edit'">
+            <span class="navbar-item">Widget name: </span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
                 showEditIcon="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
