@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding, Input, OnDestroy } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,35 +12,53 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   @HostBinding('class.widget-panel-content') private _hostClass = true;
   @HostBinding('class.markdown-widget') private _componentClass = true;
 
-  constructor( private interCom: IntercomService) {  }
+  constructor(private interCom: IntercomService) { }
   /** Inputs */
   @Input() mode = 'view'; // view/edit
   @Input() widget: any;
 
   isDataRefreshRequired = false;
-  private listenSub: Subscription;
+
+  displayText$: Observable<string>;
+  tplVariables: any = {};
+  private subscription: Subscription = new Subscription();
 
   ngOnInit() {
-    this.setDefaults();
 
-    this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
+    this.subscription.add(this.interCom.responseGet().subscribe(message => {
+      if (message.action === 'TplVariables') {
+        this.tplVariables = message.payload;
+        this.setDefaults();
+      }
+    }));
+    this.interCom.requestSend({
+      action: 'GetTplVariables'
+    });
+
+    this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
       if (message && (message.id === this.widget.id)) {
         switch (message.action) {
           case 'getUpdatedWidgetConfig': // called when switching to presentation view
-                this.widget = message.payload.widget;
+            this.widget = message.payload.widget;
             break;
         }
       }
-    });
+    }));
   }
 
   ngOnDestroy() {
-    this.listenSub.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   setDefaults() {
+    console.log('hill - tplVariables', this.tplVariables);
     if (!this.widget.settings.visual.text) {
       this.widget.settings.visual.text = '';
+      this.displayText$ = of('');
+    } else {
+      this.displayText$ = this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text);
     }
 
     if (!this.widget.settings.visual.backgroundColor) {
@@ -61,33 +79,48 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   }
 
   updateConfig(message) {
-    switch ( message.action ) {
+    switch (message.action) {
       case 'SetVisualization':
         this.setVisualization(message.payload.data);
         break;
     }
-}
+  }
 
-setVisualization( vconfigs ) {
-  this.widget.settings.visual = { ...vconfigs};
-}
+  setVisualization(vconfigs) {
+    this.widget.settings.visual = { ...vconfigs };
+  }
 
   applyConfig() {
     const cloneWidget = { ...this.widget };
     cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
     this.interCom.requestSend({
-        action: 'updateWidgetConfig',
-        id: cloneWidget.id,
-        payload: { widget: cloneWidget, isDataRefreshRequired: this.isDataRefreshRequired }
+      action: 'updateWidgetConfig',
+      id: cloneWidget.id,
+      payload: { widget: cloneWidget, isDataRefreshRequired: this.isDataRefreshRequired }
     });
     this.closeViewEditMode();
   }
 
   closeViewEditMode() {
     this.interCom.requestSend({
-        action: 'closeViewEditMode',
-        id: this.widget.id,
-        payload: 'dashboard'
+      action: 'closeViewEditMode',
+      id: this.widget.id,
+      payload: 'dashboard'
     });
+  }
+
+  resolveTplMacro(tplVariables: any, text: string): Observable<string> {
+    if (tplVariables.tvars.length) {
+      const arr = {};
+      tplVariables.tvars.forEach(v => {
+        arr['{{'+v.alias+'}}'] = v.filter;
+      });
+      const reg = new RegExp(Object.keys(arr).join('|'),"g");
+      return of(text.replace(reg, (matched) => {
+        return arr[matched];
+      }));
+    } else {
+      return of(text);
+    }
   }
 }
