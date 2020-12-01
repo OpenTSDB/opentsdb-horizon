@@ -1,0 +1,19 @@
+@mixin navbar-clipboard-menu-component-base() {
+    .navbar-clipboard-menu {
+
+    }
+}
+
+@mixin navbar-clipboard-menu-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .navbar-clipboard-menu {
+
+    }
+}
