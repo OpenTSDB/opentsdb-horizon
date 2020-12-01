@@ -70,6 +70,10 @@ export class MetricVisualPanelComponent implements OnInit {
     this.setMetricVisual(id, 'stacked', stacked);
   }
 
+  setMissingData(id, isConnected) {
+    this.setMetricVisual(id, 'connectMissingData', isConnected);
+  }
+
   setStackOrderBy(id, orderBy) {
     this.setMetricVisual(id, 'stackOrderBy', orderBy);
   }
