@@ -251,7 +251,8 @@ export class DatatranformerService {
                             group: vConfig.type ? vConfig.type : 'line',
                             order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
                             stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
-                            stackOrder: vConfig.stackOrder || 'asc'
+                            stackOrder: vConfig.stackOrder || 'asc',
+                            connectMissingData: vConfig.connectMissingData === 'true' ? true : false
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
@@ -286,7 +287,7 @@ export class DatatranformerService {
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
-        const newVisibilityHash = {};
+        let newVisibilityHash: any = {};
         let cIndex = 0;
         const autoColors = this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
@@ -320,7 +321,7 @@ export class DatatranformerService {
                 const ms = secs * 1000;
                 const tsIndex = tsObj[ms];
                 if ( tsIndex !== undefined ) {
-                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : NaN;
+                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : ( dseries[i].config.connectMissingData ? null : NaN );
                 }
                 if ( isStacked && !isNaN(data[k]) && ( (type === 'area' && dseries[i].config.isStacked) || type === 'bar') ) {
                     if ( data[k] > 0) {

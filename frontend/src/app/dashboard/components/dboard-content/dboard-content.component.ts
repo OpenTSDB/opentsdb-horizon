@@ -114,6 +114,7 @@ export class DboardContentComponent implements OnChanges {
     if ( !override && this.dashboardMode !== 'snap' ) {
       this.interCom.requestSend(<IMessage> {
         action: 'setDashboardEditMode',
+        id: widget.id,
         payload: 'edit'
       });
       widget.settings = { ...widget.settings, ...this.widgetService.getWidgetDefaultSettings(widget.settings.component_type)};
