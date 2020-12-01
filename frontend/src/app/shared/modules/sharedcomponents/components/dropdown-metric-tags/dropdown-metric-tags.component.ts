@@ -95,7 +95,6 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
                 this.tagOptions = res;
                 this.filteredTagOptions = this.tagOptions;
                 this.triggerMenu();
-                console.log(this.tagOptions, this.excludeTags, "dropdwonmetric tags");
             },
             err => {
                 this.tagOptions = [];

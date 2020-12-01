@@ -275,6 +275,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 // intercom to container to update state
                this.interCom.requestSend(<IMessage> {
                     action: 'setDashboardEditMode',
+                    id: widget.id,
                     payload: 'edit'
                 });
             });

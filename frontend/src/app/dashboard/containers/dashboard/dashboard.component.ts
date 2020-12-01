@@ -356,7 +356,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.widgets.push(cloneWidget);
                     // update the state with new widgets
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
-                    this.store.dispatch(new UpdateWidgets(this.widgets));
+                    this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
                     const gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
                     const cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
@@ -441,7 +441,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                                     message.payload.widget.settings.title = message.payload.widget.queries[0].metrics[0].name;
                                 }
                             }
-                            this.store.dispatch(new UpdateWidgets(this.widgets));
+                            this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                         } else {
                             // editing an existing widget
                             this.store.dispatch(new UpdateWidget({
@@ -453,7 +453,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     // update widgets and tplVariables
                     if (applyTpl) {
-                        const sub = this.store.dispatch(new UpdateWidgets(this.widgets)).subscribe(res => {
+                        const sub = this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets))).subscribe(res => {
                             const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
                             this.applyTplToNewWidget(message.payload.widget, tplVars);
                         });
@@ -1051,7 +1051,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }));
             }
         } else {
-            this.store.dispatch(new UpdateWidgets(this.widgets));
+            this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
         }
     }
     // this will do the insert or update the name/alias if the widget is eligible.
