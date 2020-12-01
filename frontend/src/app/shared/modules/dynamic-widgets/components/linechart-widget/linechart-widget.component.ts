@@ -464,7 +464,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
                             setTimeout(() => {
-                                // this.setSize();
+                                if ( this.mode === 'view' ) {
+                                    this.setSize();
+                                }
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
