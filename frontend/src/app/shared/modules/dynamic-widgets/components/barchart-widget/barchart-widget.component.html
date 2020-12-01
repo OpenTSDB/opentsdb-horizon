@@ -44,8 +44,7 @@
                     <span class="step-section-label-text"
                         (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
                         <span>1. Queries </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')"
-                            [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
                 <div class="step-section-content" *ngIf="visibleSections.queries">
