@@ -31,6 +31,7 @@ import { DbfsService } from './services/dbfs.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
 import { NotificationService } from './services/notification.service';
+import { ClipboardService } from './services/clipboard.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
@@ -40,6 +41,9 @@ import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.d
 import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
 import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
+
+import { ClipboardDrawerComponent } from './components/clipboard-drawer/clipboard-drawer.component';
+import { NavbarClipboardMenuComponent } from './components/navbar-clipboard-menu/navbar-clipboard-menu.component';
 
 import {
     DbfsComponent,
@@ -80,7 +84,8 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
             NavigatorState,
             DbfsState,
             DbfsPanelsState,
-            DbfsResourcesState
+            DbfsResourcesState,
+            // TODO: add clipboard state
         ]),
         RouterModule
     ],
@@ -100,7 +105,9 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         NotificationEditorComponent,
         AdminPanelComponent,
         NotificationListComponent,
-        NotificationPanelComponent
+        NotificationPanelComponent,
+        ClipboardDrawerComponent,
+        NavbarClipboardMenuComponent
     ],
     providers: [
         AppShellService,
@@ -108,10 +115,12 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         DbfsService,
         DbfsUtilsService,
         NotificationService,
+        ClipboardService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [
-        AppShellComponent
+        AppShellComponent,
+        NavbarClipboardMenuComponent
     ]
 })
 export class AppShellModule { }
