@@ -318,7 +318,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'setDashboardEditMode':
                     this.editViewModeMeta.id = '__EDIT__' + message.id;
                     const wdIdx = this.widgets.findIndex(w => w.id === message.id);
-                    this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
+                    if ( this.widgets[wdIdx] ) {
+                        this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
+                    }
                     // copy the widget data to editing widget
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
@@ -489,7 +491,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.end : this.wdMetaData[message.id].queryDataRange.end;
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
-                        'name': snapTitle,
+                        'name': encodeURIComponent(snapTitle),
                         'content': dbcontent
                     };
                     if ( this.dbid !== '_new_') {
@@ -1098,7 +1100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }));
                         }
                     } else {
-                        this.store.dispatch(new UpdateWidgets(this.widgets));
+                        this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     }
                 }
             }
@@ -1494,7 +1496,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         delete this.newWidget.settings.time.overrideTime;
         content.widgets = [this.newWidget];
         const payload: any = {
-            'name': content.settings.meta.title,
+            'name': encodeURIComponent(content.settings.meta.title),
             'content': content
         };
 

@@ -1628,6 +1628,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     saveSnapshot() {
+        const queries = this.utils.deepClone(this.queries);
+        for ( let i = 0; i < queries.length; i++ ) {
+            for ( let j = 0; j < queries[i].metrics.length; j++ ) {
+                // tslint:disable-next-line:max-line-length
+                queries[i].metrics[j].settings.visual.visible =  !this.thresholdSingleMetricControls.metricId.value || queries[i].metrics[j].id === this.thresholdSingleMetricControls.metricId.value;
+            }
+        }
         const dConfig: any = {
             version: this.dbConverterSrv.getDBCurrentVersion(),
             settings: {
@@ -1675,7 +1682,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             }
                         }
                     },
-                    queries: this.queries
+                    queries: queries
                 }
             ]
         };
@@ -1684,11 +1691,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
         const payload: any = {
-            'name': this.data.name || 'Untitled Alert',
+            'name': encodeURIComponent(this.data.name) || 'Untitled Alert',
             'content': dConfig
         };
 
-        if ( this.data.id !== '_new_' ) {
+        if ( this.data.id ) {
             payload.sourceType = 'ALERT';
             payload.sourceId = this.data.id;
         }
