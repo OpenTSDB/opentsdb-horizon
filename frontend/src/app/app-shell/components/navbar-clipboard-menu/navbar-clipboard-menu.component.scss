@@ -1,6 +1,16 @@
 @mixin navbar-clipboard-menu-component-base() {
     .navbar-clipboard-menu {
+        margin-left: -5px;
 
+        .mat-flat-button {
+            min-width: initial;
+            padding: 0 6px 0 5px;
+            line-height: 24px;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
     }
 }
 
