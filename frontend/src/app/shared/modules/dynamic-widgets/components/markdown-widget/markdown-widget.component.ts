@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding, Input, OnDestroy } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
-import { Observable, Subscription, of, BehaviorSubject } from 'rxjs';
+import { Subscription, BehaviorSubject, of } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,22 +21,28 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   displayText$: BehaviorSubject<string>;
   tplVariables: any = {};
-  tplScopes = [];
+  tplMarcos: any = {};
+  tplValues = [];
   private subscription: Subscription = new Subscription();
 
   ngOnInit() {
 
     this.displayText$ = new BehaviorSubject('');
     this.subscription.add(this.interCom.responseGet().subscribe(message => {
-      if (message.action === 'TplVariables') {
+      if (message.action === 'viewTplVariablesValues') {
+        console.log('hill - message', message);
         this.tplVariables = message.payload.tplVariables;
-        this.tplScopes = message.payload.scope;
-        this.setDefaults();
-
+        this.tplValues = message.payload.tplValues;
+        if (this.tplVariables.tvars.length > 0) {
+          this.tplVariables.tvars.forEach(tvar => {
+            this.tplMarcos['{{'+tvar.alias+'}}'] = tvar.filter;
+          });
+        } 
+        this.setDefaults();       
       }
     }));
     this.interCom.requestSend({
-      action: 'GetTplVariables'
+      action: 'GetResolveViewTplVariables'
     });
 
     this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
@@ -57,12 +63,11 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   }
 
   setDefaults() {
-    console.log('hill - tplVariables default called', this.tplVariables, this.tplScopes);
     if (!this.widget.settings.visual.text) {
       this.widget.settings.visual.text = '';
       this.displayText$.next('');
     } else {
-      this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text));
+      this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.tplMarcos, this.widget.settings.visual.text));
     }
 
     if (!this.widget.settings.visual.backgroundColor) {
@@ -80,7 +85,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   textChanged(txt: string) {
     this.widget.settings.visual.text = txt;
-    this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.widget.settings.visual.text));
+    this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.tplMarcos, this.widget.settings.visual.text));
   }
 
   updateConfig(message) {
@@ -114,19 +119,33 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
-  resolveTplMacro(tplVariables: any, text: string): string {
-    console.log('hill - this is call relveo');
-    if (tplVariables.tvars.length) {
-      const arr = {};
-      tplVariables.tvars.forEach(v => {
-        arr['{{'+v.alias+'}}'] = v.filter;
-      });
-      const reg = new RegExp(Object.keys(arr).join('|'),"g");
-      return text.replace(reg, (matched) => {
-        return arr[matched] !== '' ? arr[matched] : matched;
+  resolveTplMacro(tplMacros: any, tplValues: any[], text: string): string {
+    const _cloneTplMacros = JSON.parse(JSON.stringify(tplMacros));
+    if (this.checkExistMarco) {
+      for (let i = 0; i < Object.keys(_cloneTplMacros).length; i++) {
+        const key = Object.keys(_cloneTplMacros)[i];
+        _cloneTplMacros[key] = tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';
+      }
+      const regx = new RegExp(Object.keys(_cloneTplMacros).join('|'),'gi');
+      return text.replace(regx, (matched) => {
+        if(_cloneTplMacros[matched] !== '') {
+          return _cloneTplMacros[matched];
+        } else {
+          return matched;
+        }
       });
     } else {
       return text;
     }
+
+  }
+
+  // check if text contains tag filter marcos
+  checkExistMarco(text: string): boolean {
+    if (Object.keys(this.tplMarcos).length > 0) {
+      const regx = new RegExp(Object.keys(this.tplMarcos).join('|'),'gi');
+      return regx.test(text);
+    }
+    return false;
   }
 }
