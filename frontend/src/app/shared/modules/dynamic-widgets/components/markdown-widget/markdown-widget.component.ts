@@ -67,7 +67,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
       this.widget.settings.visual.text = '';
       this.displayText$.next('');
     } else {
-      this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.tplMarcos, this.widget.settings.visual.text));
+      this.displayText$.next(this.resolveTplMacro(this.tplMarcos, this.tplValues, this.widget.settings.visual.text));
     }
 
     if (!this.widget.settings.visual.backgroundColor) {
@@ -85,7 +85,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
 
   textChanged(txt: string) {
     this.widget.settings.visual.text = txt;
-    this.displayText$.next(this.resolveTplMacro(this.tplVariables, this.tplMarcos, this.widget.settings.visual.text));
+    this.displayText$.next(this.resolveTplMacro(this.tplMarcos, this.tplValues, this.widget.settings.visual.text));
   }
 
   updateConfig(message) {
@@ -120,16 +120,15 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   }
 
   resolveTplMacro(tplMacros: any, tplValues: any[], text: string): string {
-    const _cloneTplMacros = JSON.parse(JSON.stringify(tplMacros));
     if (this.checkExistMarco) {
-      for (let i = 0; i < Object.keys(_cloneTplMacros).length; i++) {
-        const key = Object.keys(_cloneTplMacros)[i];
-        _cloneTplMacros[key] = tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';
+      for (let i = 0; i < Object.keys(tplMacros).length; i++) {
+        const key = Object.keys(tplMacros)[i];
+        tplMacros[key] = tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';
       }
-      const regx = new RegExp(Object.keys(_cloneTplMacros).join('|'),'gi');
+      const regx = new RegExp(Object.keys(tplMacros).join('|'),'gi');
       return text.replace(regx, (matched) => {
-        if(_cloneTplMacros[matched] !== '') {
-          return _cloneTplMacros[matched];
+        if(tplMacros[matched] !== '') {
+          return tplMacros[matched];
         } else {
           return matched;
         }
