@@ -19,7 +19,7 @@
                 <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                     <img src="/assets/spinner-26x26.gif" />
                 </div>
-                <div class="snapshot">
+                <div class="snapshot" *ngIf="data.type === 'simple'">
                     <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
                         <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
                     </button>

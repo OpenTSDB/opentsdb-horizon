@@ -1600,7 +1600,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
                 const pos = this.elRef.nativeElement.getBoundingClientRect();
                 const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-                const height = pos.height * ( 1 - heightMod ) - ( this.mode === 'snap' ? 0 : 60 );
+                const height = pos.height * ( 1 - heightMod ) - 5;
                 // tslint:disable-next-line: max-line-length
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
                     originId: this.widget.id,

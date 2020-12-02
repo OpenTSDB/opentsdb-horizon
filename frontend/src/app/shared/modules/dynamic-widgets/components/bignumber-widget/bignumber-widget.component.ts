@@ -239,7 +239,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                                                 : this.widgetOutputElement.nativeElement) : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const outputSize = nativeEl.getBoundingClientRect();
-        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        const heightMod = 0.55;
         this.widgetWidth = outputSize.width;
         // tslint:disable-next-line:max-line-length
         this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height * heightMod - 60 : outputSize.height;
