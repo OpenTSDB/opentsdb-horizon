@@ -40,6 +40,7 @@
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -60,7 +61,7 @@
                     margin-left: 6px;
                 }
             }
-            
+            &.explore-close-button,
             &.save-dashboard-button {
                 padding: 0;
                 min-width: initial;
@@ -68,6 +69,11 @@
     
                 .mat-icon {
                     margin: 0px;
+                }
+            }
+            &.explore-close-button {
+                .mat-icon {
+                    font-size: 1.8em;
                 }
             }
         }
@@ -245,6 +251,7 @@
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {

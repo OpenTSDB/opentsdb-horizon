@@ -217,7 +217,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     setSize(newSize) {
 
         const editModifier = this.mode !== 'view' ? 0 : 23;
-        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        const heightMod = 0.55;
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : newSize.height + 60;
         this.size = { width: newSize.width, height: newSize.height - editModifier };
