@@ -318,7 +318,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'setDashboardEditMode':
                     this.editViewModeMeta.id = '__EDIT__' + message.id;
                     const wdIdx = this.widgets.findIndex(w => w.id === message.id);
-                    this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
+                    if ( this.widgets[wdIdx] ) {
+                        this.editViewModeMeta.title = this.widgets[wdIdx].settings.title;
+                    }
                     // copy the widget data to editing widget
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
@@ -354,7 +356,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.widgets.push(cloneWidget);
                     // update the state with new widgets
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
-                    this.store.dispatch(new UpdateWidgets(this.widgets));
+                    this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
                     const gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
                     const cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
@@ -382,10 +384,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'closeViewEditMode':
                     // set the tpl filter panel to view mode, if they are from edit mode
-                    delete this.wData[message.id];
-                    this.resetWidgetToDashboardSettings();
-                    this.store.dispatch(new UpdateMode(message.payload));
-                    this.rerender = { 'reload': true };
+                    this.closeViewEditMode();
                     break;
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
@@ -439,7 +438,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                                     message.payload.widget.settings.title = message.payload.widget.queries[0].metrics[0].name;
                                 }
                             }
-                            this.store.dispatch(new UpdateWidgets(this.widgets));
+                            this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                         } else {
                             // editing an existing widget
                             this.store.dispatch(new UpdateWidget({
@@ -451,7 +450,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     // update widgets and tplVariables
                     if (applyTpl) {
-                        const sub = this.store.dispatch(new UpdateWidgets(this.widgets)).subscribe(res => {
+                        const sub = this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets))).subscribe(res => {
                             const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
                             this.applyTplToNewWidget(message.payload.widget, tplVars);
                         });
@@ -489,7 +488,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.end : this.wdMetaData[message.id].queryDataRange.end;
                     dbcontent.settings.time.zone = this.dbTime.zone;
                     const payload: any = {
-                        'name': snapTitle,
+                        'name': encodeURIComponent(snapTitle),
                         'content': dbcontent
                     };
                     if ( this.dbid !== '_new_') {
@@ -1070,7 +1069,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }));
             }
         } else {
-            this.store.dispatch(new UpdateWidgets(this.widgets));
+            this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
         }
     }
     // this will do the insert or update the name/alias if the widget is eligible.
@@ -1119,7 +1118,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }));
                         }
                     } else {
-                        this.store.dispatch(new UpdateWidgets(this.widgets));
+                        this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     }
                 }
             }
@@ -1524,12 +1523,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
         delete this.newWidget.settings.time.overrideTime;
         content.widgets = [this.newWidget];
         const payload: any = {
-            'name': content.settings.meta.title,
+            'name': encodeURIComponent(content.settings.meta.title),
             'content': content
         };
 
         payload.id = this.dbid;
         this.store.dispatch(new SaveSnapshot(this.dbid, payload));
+    }
+
+    closeViewEditMode() {
+        delete this.wData[this.editViewModeMeta.id];
+        this.resetWidgetToDashboardSettings();
+        this.store.dispatch(new UpdateMode('dashboard'));
+        this.rerender = { 'reload': true };
     }
 
     receiveDashboardAction(event: any) {

@@ -398,7 +398,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         const nativeEl = (this.mode !== 'view') ?
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
-        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        const heightMod = 0.55;
         // tslint:disable-next-line:max-line-length
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
                                                                 : nativeEl.getBoundingClientRect().height + 60;

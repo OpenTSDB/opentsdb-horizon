@@ -44,8 +44,7 @@
                     <span class="step-section-label-text"
                         (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
                         <span>1. Queries </span>
-                        <mat-icon fontSet="denali" (click)="toggleConfigSection('queries')"
-                            [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
                 <div class="step-section-content" *ngIf="visibleSections.queries">
@@ -99,11 +98,10 @@
             </div>
         </div>
     </div>
-    <div class="widget-actions" *ngIf="mode !== 'snap'">
+    <div class="widget-actions" *ngIf="mode === 'edit'">
         <!-- controls to save/cancel -->
-        <button mat-raised-button color="primary" *ngIf="mode === 'edit'" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
+        <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
             Dashboard</button>
-        <button mat-stroked-button color="primary" class="mat-elevation-z0"
-            (click)="closeViewEditMode()">Cancel</button>
+        <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
     </div>
 </div>

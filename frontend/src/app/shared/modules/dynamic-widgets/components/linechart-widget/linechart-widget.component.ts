@@ -464,7 +464,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
                             setTimeout(() => {
-                                this.setSize();
+                                if ( this.mode === 'view' ) {
+                                    this.setSize();
+                                }
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
@@ -1481,7 +1483,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // apply config from editing
     applyConfig() {
         this.closeViewEditMode();
-        delete this.widget.settings.chartOptions;
+        this.widget.settings.chartOptions = {};
         const cloneWidget = JSON.parse(JSON.stringify(this.widget));
         cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
         this.interCom.requestSend({
@@ -1598,7 +1600,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
                 const pos = this.elRef.nativeElement.getBoundingClientRect();
                 const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-                const height = pos.height * ( 1 - heightMod ) - ( this.mode === 'snap' ? 0 : 60 );
+                const height = pos.height * ( 1 - heightMod ) - 5;
                 // tslint:disable-next-line: max-line-length
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
                     originId: this.widget.id,
