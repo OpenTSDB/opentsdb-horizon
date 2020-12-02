@@ -386,10 +386,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'closeViewEditMode':
                     // set the tpl filter panel to view mode, if they are from edit mode
-                    delete this.wData[message.id];
-                    this.resetWidgetToDashboardSettings();
-                    this.store.dispatch(new UpdateMode(message.payload));
-                    this.rerender = { 'reload': true };
+                    this.closeViewEditMode();
                     break;
                 case 'createAlertFromWidget':
                     this.createAlertFromWidget(message);
@@ -1516,6 +1513,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         payload.id = this.dbid;
         this.store.dispatch(new SaveSnapshot(this.dbid, payload));
+    }
+
+    closeViewEditMode() {
+        delete this.wData[this.editViewModeMeta.id];
+        this.resetWidgetToDashboardSettings();
+        this.store.dispatch(new UpdateMode('dashboard'));
+        this.rerender = { 'reload': true };
     }
 
     receiveDashboardAction(event: any) {

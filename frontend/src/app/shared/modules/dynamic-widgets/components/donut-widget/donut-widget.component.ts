@@ -243,7 +243,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             newSize.width = newSize.width - legendWidth;
         }
 
-        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        const heightMod = 0.55;
         // tslint:disable-next-line:max-line-length
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : newSize.height + 60;

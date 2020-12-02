@@ -500,7 +500,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
               titleSize = this.widgetTitle.nativeElement.getBoundingClientRect();
           }
           padding = 8; // 8px top and bottom
-          nHeight = newSize.height - heightOffset;
+          nHeight = newSize.height - heightOffset - 5;
           nWidth = newSize.width - widthOffset  - (padding * 2) - 30;
       } else {
           padding = 10; // 10px on the top

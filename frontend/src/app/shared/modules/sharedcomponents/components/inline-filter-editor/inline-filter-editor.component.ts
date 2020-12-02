@@ -379,7 +379,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     setDashboardFilters() {
         let showFilter = false;
-        for ( let i = 0; i < this.tplVariables.tvars.length; i++ ) {
+        for ( let i = 0; this.tplVariables.tvars && i < this.tplVariables.tvars.length; i++ ) {
             const tvar = this.tplVariables.tvars[i];
             if ( this.canAddDashboardFilter(tvar.tagk, '[' + tvar.alias + ']') ) {
                 showFilter = true;
