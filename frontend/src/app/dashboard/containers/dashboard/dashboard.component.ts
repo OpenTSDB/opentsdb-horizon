@@ -531,15 +531,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'ApplyTplVarValue':
                     this.applyTplVarValue(message.payload);
                     // this is pass down to markdown widget to resolve only in view mode
-                    if (this.variablePanelMode.view) {
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
                         this.interCom.responsePut({
-                            action: 'TplVariables',
+                            action: 'viewTplVariablesValues',
                             payload: {
                                 tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
-                                tplScope: this.tplVariables.scope
+                                tplValues: results
                             }
                         });
-                    }                   
+                    });                  
                     break;
                 case 'UpdateTplAlias':
                     this.updateTplAlias(message.payload);
@@ -559,8 +559,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         action: 'TplVariables',
                         payload: { 
                             tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
-                            tplScope: this.tplVariables.scope
                         }
+                    });
+                    break;
+                case 'GetResolveViewTplVariables':
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.interCom.responsePut({
+                            action: 'viewTplVariablesValues',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplValues: results
+                            }
+                        });
                     });
                     break;
                 case 'UpdateTagKeysByNamespaces':
