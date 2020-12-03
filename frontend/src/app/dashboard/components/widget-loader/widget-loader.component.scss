@@ -62,9 +62,10 @@
             padding: initial;
         }
 
-        .mat-icon.time-lock,
-        .snapshot-icon,
-        .expand-trigger {
+        .mat-icon.time-lock
+        //.snapshot-icon,
+        //.expand-trigger
+        {
             cursor: pointer;
             margin: 0px 6px;
             font-size: 12px;
@@ -88,6 +89,13 @@
                 font-size: 18px;
                 line-height: 24px;
             }
+
+           &.expand-trigger,
+           &.snapshot-icon {
+               .mat-icon {
+                   font-size: 12px;
+               }
+           }
         }
 
         &.inverse-menu-color {
