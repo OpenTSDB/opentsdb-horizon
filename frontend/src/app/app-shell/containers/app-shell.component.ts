@@ -101,6 +101,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     private routedApp: any = '';
 
+    clipboardAvailable = false;
+
     constructor(
         private interCom: IntercomService,
         private logger: LoggerService,
@@ -151,6 +153,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 urlPath.shift();
                 // second item in arrant should be which horizon app we are in. extract it
                 const app = urlPath.shift();
+
+                // should clipboard be available
+                this.clipboardAvailable = (app === 'd' || app === 'a');
 
                 // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
                 if (app === 'd' || app === 'snap') {

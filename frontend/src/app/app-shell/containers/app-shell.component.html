@@ -162,6 +162,10 @@
                             </button>
                         </div>
                     </div>
+                    <!-- clipboard drawer -->
+                    <ng-container *ngIf="clipboardAvailable">
+                        <clipboard-drawer></clipboard-drawer>
+                    </ng-container>
                     <!-- THE ENTIRE APP CONTENT FLOWS THROUGH HERE -->
                     <router-outlet></router-outlet>
                 </mat-drawer-content>

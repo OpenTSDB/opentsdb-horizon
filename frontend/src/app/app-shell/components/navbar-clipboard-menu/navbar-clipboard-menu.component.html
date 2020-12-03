@@ -2,6 +2,7 @@
     TODO: add functionality-->
 <button mat-flat-button class="clipboard-drawer-trigger"
     matTooltip="toggle for widget clipboard"
+    (click)="toggleDrawerState($event)"
     #clippboardDrawerTrigger>
     <mat-icon>content_paste</mat-icon>
 </button>

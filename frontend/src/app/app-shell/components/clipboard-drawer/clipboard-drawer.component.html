@@ -1,3 +1,16 @@
-<p>
-  clipboard-drawer works!
-</p>
+<div class="clipboard-drawer-wrap">
+    <div class="clipboard-selector">
+        state: {{getToggleDrawer}}<br />
+        clipboard items: {{cbItems.selectedOptions.selected.length}}/{{cbItems.options.length}}<br />
+        <a mat-button color="primary" (click)="close()">Close</a>
+    </div>
+    <div class="clipboard-content has-scroller">
+        <div class="clipboard-content-scroller is-scroller">
+            <mat-selection-list #cbItems>
+                <mat-list-option *ngFor="let item of arrayOne(25); let i = index;">
+                  item {{i}}
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+    </div>
+</div>

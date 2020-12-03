@@ -1,6 +1,8 @@
 @mixin navbar-clipboard-menu-component-base() {
     .navbar-clipboard-menu {
-        margin-left: -5px;
+        &.navbar-item {
+            margin-left: -5px;
+        }
 
         .mat-flat-button {
             min-width: initial;

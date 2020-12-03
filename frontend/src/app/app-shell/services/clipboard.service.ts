@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { HttpService } from '../../core/http/http.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { LoggerService } from '../../core/services/logger.service';
@@ -10,13 +10,17 @@ import { DashboardService } from '../../dashboard/services/dashboard.service';
 
 import { DbfsState, DbfsResourcesState } from '../state';
 
-
 @Injectable({
     providedIn: 'root'
 })
 export class ClipboardService {
 
     private clipboardResourcePath: string;
+
+    /* STREAMS */
+    // $drawerState: BehaviorSubject<string> = new BehaviorSubject('closed');
+    private _drawerState: Subject<string> = new Subject(); // tooltip data
+    $drawerState: Observable<string>;
 
     constructor(
         private utils: UtilsService,
@@ -25,7 +29,20 @@ export class ClipboardService {
         private store: Store,
         private http: HttpService,
         private logger: LoggerService
-    ) { }
+    ) {
+        this.$drawerState = this._drawerState.asObservable();
+        this.setDrawerState('closed');
+    }
+
+    drawerStateListen(): Observable<string> {
+        return this._drawerState.asObservable();
+    }
+
+    setDrawerState(val: string) {
+        this.logger.api('setDrawerState', val);
+        // this.$drawerState.next(val);
+        this._drawerState.next(val);
+    }
 
     handleError(error: HttpErrorResponse) {
 

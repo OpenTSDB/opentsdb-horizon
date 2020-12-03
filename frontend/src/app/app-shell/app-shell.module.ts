@@ -115,7 +115,6 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         DbfsService,
         DbfsUtilsService,
         NotificationService,
-        ClipboardService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [

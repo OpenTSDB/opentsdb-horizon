@@ -20,6 +20,7 @@
 
 @import './components/global-notification-banner/global-notification-banner.component';
 
+@import './components/clipboard-drawer/clipboard-drawer.component';
 @import './components/navbar-clipboard-menu/navbar-clipboard-menu.component';
 
 
@@ -50,6 +51,7 @@ $navbar-config: (
     @include settings-panel-component-base();
     @include admin-panel-component-base();
     @include global-notification-component-base();
+    @include clipboard-drawer-component-base();
     @include navbar-clipboard-menu-component-base();
 }
 
@@ -69,5 +71,6 @@ $navbar-config: (
     @include settings-panel-component-theme($theme-config);
     @include admin-panel-component-theme($theme-config);
     @include global-notification-component-theme($theme-config);
+    @include clipboard-drawer-component-theme($theme-config);
     @include navbar-clipboard-menu-component-theme($theme-config);
 }

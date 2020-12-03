@@ -47,7 +47,6 @@ import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
 import { AppShellModule } from '../app-shell/app-shell.module';
-import { ClipboardService } from '../app-shell/services/clipboard.service';
 
 @NgModule({
     imports: [
@@ -93,8 +92,7 @@ import { ClipboardService } from '../app-shell/services/clipboard.service';
     ],
     providers: [
         DashboardService,
-        DashboardConverterService,
-        ClipboardService
+        DashboardConverterService
     ],
     entryComponents: [
         DashboardSettingsDialogComponent,

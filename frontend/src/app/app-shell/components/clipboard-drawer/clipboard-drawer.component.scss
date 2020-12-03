@@ -1,0 +1,41 @@
+@mixin clipboard-drawer-component-base() {
+    .clipboard-drawer {
+        @include mat-elevation(3);
+        overflow: hidden;
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        bottom: 0;
+        right: 0;
+
+        .clipboard-drawer-wrap {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        .clipboard-content {
+            flex: 1;
+        }
+    }
+}
+
+@mixin clipboard-drawer-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $bg: map-get($background, card);
+
+    .clipboard-drawer {
+        background: $bg;
+    }
+}
