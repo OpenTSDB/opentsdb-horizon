@@ -364,6 +364,8 @@ export class UtilsService {
               for ( let i = cn; i < n; i++) {
                 colors.push( schemeColors[i % cn] );
               }
+          } else if ( cn > n ) {
+              colors = colors.slice(0, n);
           }
         } else {
             const interpolate = d3[`interpolate${name}`];

@@ -90,7 +90,7 @@
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
         </button>
     </span>
-    <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore'" (click)="closeViewEditMode()">
+    <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
     </span>
 </ng-template>
