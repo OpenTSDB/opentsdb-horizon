@@ -268,7 +268,7 @@
                         (menuClosed)="toggleVisualRow(i - 1, false)">
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="data.visual.color && data.visual.color !== 'auto'"></span>{{ data.visual.scheme ? 'palatte: ' + data.visual.scheme : ((!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName) }}</span>
+                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="(data.visual.color && data.visual.color !== 'auto') || data.visual.scheme"></span>{{ data.visual.scheme ? 'palette: ' + data.visual.scheme : ((!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName) }}</span>
                         <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
                             {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                             background</span>
