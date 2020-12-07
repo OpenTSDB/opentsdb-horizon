@@ -47,6 +47,7 @@ interface IQueryEditorOptions {
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
     enableAlias?: boolean;
+    excludeMetricGroupByTags?: string[];
 }
 
 @Component({
