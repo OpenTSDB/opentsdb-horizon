@@ -1530,6 +1530,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     closeViewEditMode() {
+        this.iiService.closeIsland();
         delete this.wData[this.editViewModeMeta.id];
         this.resetWidgetToDashboardSettings();
         this.store.dispatch(new UpdateMode('dashboard'));
