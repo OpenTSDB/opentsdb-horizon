@@ -15,6 +15,7 @@ import { UtilsService } from '../../core/services/utils.service';
 export interface DBStateModel {
     id: string;
     version: number;
+    createdBy: string;
     loading: boolean;
     loaded: boolean;
     status: string;
@@ -22,6 +23,7 @@ export interface DBStateModel {
     path: string;
     fullPath: string;
     loadedDB: any;
+    lastSnapshotId: string;
 }
 
 /* action */
@@ -60,6 +62,36 @@ export class SaveDashboardFail {
     constructor(public readonly error: any) { }
 }
 
+export class LoadSnapshot {
+    static readonly type = '[Dashboard] Load Snapshot';
+    constructor(public id: string) {}
+}
+
+export class LoadSnapshotSuccess {
+    static readonly type = '[Dashboard] Load Snapshot Success';
+    constructor(public readonly payload: any) {}
+}
+
+export class LoadSnapshotFail {
+    static readonly type = '[Dashboard] Load Snapshot Fail';
+    constructor(public readonly error: any) { }
+}
+
+export class SaveSnapshot {
+    static readonly type = '[Dashboard] Save Snapshot';
+    constructor(public id: string, public payload: any) {}
+}
+
+export class SaveSnapshotSuccess {
+    static readonly type = '[Dashboard] Save Snapshot Success';
+    constructor(public readonly payload: any) {}
+}
+
+export class SaveSnapshotFail {
+    static readonly type = '[Dashboard] Save Snapshot Fail';
+    constructor(public readonly error: any) { }
+}
+
 export class SetDashboardStatus {
   static readonly type = '[Dashboard] Set Dashboard Status';
   constructor(public status: string, public resetError: boolean = false) {}
@@ -92,13 +124,15 @@ export class ResetDBtoDefault {
     defaults: {
         id: '',
         version: 0,
+        createdBy: '',
         loading: false,
         loaded: false,
         error: {},
         status: '',
         path: '_new_',
         fullPath: '',
-        loadedDB: {}
+        loadedDB: {},
+        lastSnapshotId: ''
     },
     children: [ UserSettingsState, DBSettingsState, WidgetsState, ClientSizeState, WidgetsRawdataState ]
 })
@@ -132,6 +166,14 @@ export class DBState {
 
     @Selector() static getDashboardFullPath(state: DBStateModel) {
       return state.fullPath;
+    }
+
+    @Selector() static getCreator(state: DBStateModel) {
+        return state.createdBy;
+    }
+
+    @Selector() static getSnapshotId(state: DBStateModel) {
+        return state.lastSnapshotId;
     }
 
     @Selector()
@@ -208,6 +250,7 @@ export class DBState {
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
+            createdBy: payload.createdBy,
             loaded: true,
             loading: false,
             path: '/' + payload.id + payload.fullPath,
@@ -250,6 +293,69 @@ export class DBState {
     saveDashboardFail(ctx: StateContext<DBStateModel>, { error }: LoadDashboardFail) {
         const state = ctx.getState();
         ctx.patchState({...state, status: 'save-failed', error: error });
+    }
+
+    @Action(LoadSnapshot)
+    loadSnapshot(ctx: StateContext<DBStateModel>, { id }: LoadSnapshot) {
+        this.logger.action('State :: Load Snapshot', { id });
+        ctx.patchState({ loading: true});
+        return this.httpService.getSnapshotById(id).pipe(
+            map(res => {
+                const dashboard: any = res.body;
+                this.dbService.updateTimeFromURL(dashboard);
+                this.dbService.updateTplVariablesFromURL(dashboard);
+                ctx.dispatch(new LoadSnapshotSuccess(dashboard));
+            }),
+            catchError( error => ctx.dispatch(new LoadSnapshotFail(error)))
+        );
+    }
+
+    @Action(LoadSnapshotSuccess)
+    loadSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadSnapshotSuccess) {
+        this.logger.success('State :: Load Snapshot [SUCCESS]', { payload });
+        ctx.patchState({
+            id: payload.id,
+            version: payload.content.version,
+            createdBy: payload.createdBy,
+            loaded: true,
+            loading: false,
+            path: payload.path,
+            fullPath: '/' + payload.name,
+            loadedDB: payload
+        });
+    }
+
+    @Action(LoadSnapshotFail)
+    loadSnapshotFail(ctx: StateContext<DBStateModel>, { error }: LoadSnapshotFail) {
+        ctx.dispatch({ loading: false, loaded: false, error: error, loadedDB: {} });
+    }
+
+    @Action(SaveSnapshot)
+    saveSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveSnapshot) {
+            ctx.patchState({ status: 'save-progress', error: {} });
+            this.logger.action('State :: Save Snapshot', { id, payload });
+            return this.httpService.saveSnapshot(id, payload).pipe(
+                map( (res: any) => {
+                    ctx.dispatch(new SaveSnapshotSuccess(res.body));
+                }),
+                catchError( error => ctx.dispatch(new SaveSnapshotFail(error)))
+            );
+    }
+
+    @Action(SaveSnapshotSuccess)
+    saveSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveSnapshotSuccess) {
+        const state = ctx.getState();
+        this.logger.success('State :: Save Snapshot [SUCCESS]', payload);
+        ctx.patchState({...state,
+            lastSnapshotId: payload.id,
+            status: 'save-snapshot-success'
+        });
+    }
+
+    @Action(SaveSnapshotFail)
+    saveSnapshotFail(ctx: StateContext<DBStateModel>, { error }: SaveSnapshotFail) {
+        const state = ctx.getState();
+        ctx.patchState({...state, status: 'save-snapshot-failed', error: error });
     }
 
     @Action(DeleteDashboard)
@@ -301,7 +407,8 @@ export class DBState {
             status: '',
             path: '_new_',
             fullPath: '',
-            loadedDB: {}
+            loadedDB: {},
+            lastSnapshotId: ''
         });
 
         // reset some children states

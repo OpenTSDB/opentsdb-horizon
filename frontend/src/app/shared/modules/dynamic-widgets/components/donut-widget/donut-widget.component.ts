@@ -1,5 +1,7 @@
-import { Component, OnInit, HostBinding, ChangeDetectorRef,
-    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+    Component, OnInit, HostBinding, ChangeDetectorRef,
+    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit
+} from '@angular/core';
 
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -7,10 +9,10 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { debounceTime} from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { environment } from '../../../../../../environments/environment';
 
 
@@ -25,8 +27,8 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.donutchart-widget') private _componentClass = true;
 
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild('container') private container: ElementRef;
@@ -41,7 +43,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
 
-    options: any  = {
+    options: any = {
         type: 'doughnut',
         legend: {
             display: true,
@@ -54,16 +56,20 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     size: any = { width: 0, height: 0, legendWidth: 0 };
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
+    widgetOutputElHeight = 60;
+    isEditContainerResized = false;
     legendWidth = 0;
     nQueryDataLoading = 0;
     error: any;
-    errorDialog: MatDialogRef < ErrorDialogComponent > | null;
+    errorDialog: MatDialogRef<ErrorDialogComponent> | null;
     debugData: any; // debug data from the data source.
-    debugDialog: MatDialogRef < DebugDialogComponent > | null;
+    debugDialog: MatDialogRef<DebugDialogComponent> | null;
     storeQuery: any;
     needRequery = false;
-    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false, 'legend': false };
+    visibleSections: any = { 'queries': true, 'time': false, 'visuals': false, 'legend': false };
     formErrors: any = {};
+    meta: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -71,10 +77,12 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         public dialog: MatDialog,
         private util: UtilsService,
         private cdRef: ChangeDetectorRef,
+        private elRef: ElementRef,
         private dateUtil: DateUtilsService
     ) { }
 
     ngOnInit() {
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
             .pipe(
@@ -87,7 +95,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         this.type$ = new BehaviorSubject(this.widget.settings.visual.type || 'doughnut');
-        this.typeSub = this.type$.subscribe( type => {
+        this.typeSub = this.type$.subscribe(type => {
             this.widget.settings.visual.type = type;
             this.options.type = type === 'doughnut' ? 'doughnut' : 'pie';
         });
@@ -95,46 +103,53 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
             let overrideTime;
-            switch ( message.action ) {
+            switch (message.action) {
                 case 'TimeChanged':
                     overrideTime = this.widget.settings.time.overrideTime;
-                    if ( !overrideTime ) {
+                    if (!overrideTime) {
                         this.refreshData();
                     }
                     break;
                 case 'reQueryData':
-                    this.refreshData();
-                    break;
-                case 'ZoomDateRange':
-                    overrideTime = this.widget.settings.time.overrideTime;
-                    if ( message.payload.date.isZoomed && overrideTime ) {
-                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
-                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
-                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
-                            this.options.isCustomZoomed = message.payload.date.isZoomed;
-                            this.widget.settings.time.zoomTime = message.payload.date;
-                            this.refreshData();
-                        }
-                    // tslint:disable-next-line: max-line-length
-                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
-                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                    if (!message.id || message.id === this.widget.id) {
                         this.refreshData();
                     }
-                    // unset the zoom time
-                    if ( !message.payload.date.isZoomed ) {
-                        delete this.widget.settings.time.zoomTime;
+                    break;
+                case 'ZoomDateRange':
+                    if (!message.id || message.id === this.widget.id) {
+                        overrideTime = this.widget.settings.time.overrideTime;
+                        if (message.payload.date.isZoomed && overrideTime) {
+                            const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                            const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                            if (oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end) {
+                                this.options.isCustomZoomed = message.payload.date.isZoomed;
+                                this.widget.settings.time.zoomTime = message.payload.date;
+                                this.refreshData();
+                            }
+                            // tslint:disable-next-line: max-line-length
+                        } else if ((message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed)) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.refreshData();
+                        }
+                        // unset the zoom time
+                        if (!message.payload.date.isZoomed) {
+                            delete this.widget.settings.time.zoomTime;
+                        }
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
             if (message && (message.id === this.widget.id)) {
                 switch (message.action) {
                     case 'updatedWidgetGroup':
                         this.nQueryDataLoading--;
-                        if ( !this.isDataLoaded ) {
+                        if (!this.isDataLoaded) {
                             this.isDataLoaded = true;
                             this.options.data = [];
                         }
-                        if ( message.payload.error ) {
+                        if (message.payload.error) {
                             this.error = message.payload.error;
                         } else {
                             this.error = null;
@@ -142,7 +157,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                             environment.debugLevel.toUpperCase() == 'DEBUG' ||
                             environment.debugLevel.toUpperCase() == 'INFO') {
-                                this.debugData = message.payload.rawdata.log; // debug log
+                            this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.options = this.dataTransformer.yamasToD3Donut(this.options, this.widget, message.payload.rawdata);
                         this.cdRef.detectChanges();
@@ -162,6 +177,18 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            const newSize = {
+                                width: this.widgetOutputElement.nativeElement.clientWidth,
+                                height: this.widgetOutputElement.nativeElement.clientHeight
+                            };
+                            this.newSize$.next(newSize);
+                        });
+                        break;
                 }
             }
         });
@@ -174,7 +201,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
         setTimeout(() => {
-            this.refreshData(this.editMode ? false : true);
+            this.refreshData(this.mode !== 'view' ? false : true);
             this.setOptions();
         });
     }
@@ -192,10 +219,10 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newSize$ = new BehaviorSubject(initSize);
 
         this.newSizeSub = this.newSize$.subscribe(size => {
-            this.setSize(size);
+            setTimeout(() => this.setSize(size), 0);
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () =>{
-             const newSize = {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+            const newSize = {
                 width: this.widgetOutputElement.nativeElement.clientWidth,
                 height: this.widgetOutputElement.nativeElement.clientHeight
             };
@@ -211,13 +238,23 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         const maxRadius = Math.min(newSize.width, newSize.height);
         let legendWidth = newSize.width - maxRadius;
         // min legend width=100 if total width > 200
-        if ( legendWidth < 100 && newSize.width > 200 ) {
+        if (legendWidth < 100 && newSize.width > 200) {
             legendWidth = 100;
             newSize.width = newSize.width - legendWidth;
         }
 
-        this.size = {...newSize, legendWidth: legendWidth};
+        const heightMod = 0.55;
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
+            : newSize.height + 60;
+
+            
+        this.size = { ...newSize, legendWidth: legendWidth };
         this.cdRef.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     requestData() {
@@ -244,12 +281,12 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     updateConfig(message) {
-        switch ( message.action ) {
+        switch (message.action) {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
             case 'SetTimeError':
-                if ( message.payload.error ) {
+                if (message.payload.error) {
                     this.formErrors.time = true;
                 } else {
                     delete this.formErrors.time;
@@ -264,11 +301,11 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'SetLegend':
                 this.widget.settings.legend = message.payload.data;
                 this.setLegendOption();
-                this.options = {...this.options};
+                this.options = { ...this.options };
                 break;
             case 'ChangeVisualization':
                 this.type$.next(message.payload.type);
-                this.options = {...this.options};
+                this.options = { ...this.options };
                 break;
             case 'SetVisualization':
                 this.setVisualization(message.payload.gIndex, message.payload.data);
@@ -282,7 +319,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'UpdateQuery':
                 this.util.updateQuery(this.widget, message.payload);
                 this.widget.queries = [...this.widget.queries];
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -299,7 +336,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'DeleteQueryMetric':
                 this.util.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.widget.queries = this.util.deepClone(this.widget.queries);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -310,28 +347,28 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'CloneQuery':
                 this.util.cloneQuery(this.widget, message.id);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQuery':
                 this.util.deleteQuery(this.widget, message.id);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.needRequery = true;
                 break;
             case 'UpdateQueryOrder':
                 this.widget.queries = this.util.deepClone(message.payload.queries);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'UpdateQueryMetricOrder':
-                const qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                const qindex = this.widget.queries.findIndex(q => q.id === message.id);
                 this.widget.queries[qindex] = message.payload.query;
                 this.widget.queries = this.util.deepClone(this.widget.queries);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -345,23 +382,23 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'ToggleInfectiousNan':
                 this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
         }
     }
 
-    updateQuery( payload ) {
+    updateQuery(payload) {
         const query = payload.query;
-        const qindex = query.id ? this.widget.queries.findIndex(q => q.id === query.id ) : -1;
-        if ( qindex !== -1 ) {
+        const qindex = query.id ? this.widget.queries.findIndex(q => q.id === query.id) : -1;
+        if (qindex !== -1) {
             this.widget.queries[qindex] = query;
         }
     }
 
-    setVisualization( qIndex, mconfigs ) {
-        mconfigs.forEach( (config, i) => {
+    setVisualization(qIndex, mconfigs) {
+        mconfigs.forEach((config, i) => {
             // tslint:disable-next-line:max-line-length
             this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
         });
@@ -373,7 +410,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     setLegendOption() {
-        this.options.legend = {...this.widget.settings.legend};
+        this.options.legend = { ...this.widget.settings.legend };
         this.options.legendDiv = this.chartLegend.nativeElement;
     }
 
@@ -383,7 +420,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     refreshData(reload = true) {
         this.isDataLoaded = false;
-        if ( reload ) {
+        if (reload) {
             this.requestData();
         } else {
             this.requestCachedData();
@@ -396,18 +433,18 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     scrollToElement($element): void {
         setTimeout(() => {
-            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+            $element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         });
     }
 
     changeWidgetType(type) {
         const wConfig = this.util.deepClone(this.widget);
         wConfig.id = wConfig.id.replace('__EDIT__', '');
-         this.interCom.requestSend({
-             action: 'changeWidgetType',
-             id: wConfig.id,
-             payload: { wConfig: wConfig, newType: type }
-         });
+        this.interCom.requestSend({
+            action: 'changeWidgetType',
+            id: wConfig.id,
+            payload: { wConfig: wConfig, newType: type }
+        });
     }
 
     showError() {
@@ -434,9 +471,9 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.minHeight = '200px';
         dialogConf.backdropClass = 'error-dialog-backdrop'; // re-use for now
         dialogConf.panelClass = 'error-dialog-panel';
-         dialogConf.data = {
-          log: this.debugData,
-          query: this.storeQuery
+        dialogConf.data = {
+            log: this.debugData,
+            query: this.storeQuery
         };
 
         // re-use?
@@ -464,10 +501,20 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     ngOnDestroy() {
+        this.newSizeSub.unsubscribe();
         this.listenSub.unsubscribe();
         this.typeSub.unsubscribe();
-        this.newSizeSub.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 }

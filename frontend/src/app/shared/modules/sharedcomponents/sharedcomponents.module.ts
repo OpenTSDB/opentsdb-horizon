@@ -17,6 +17,8 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
  // tslint:disable:max-line-length
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
+import { ResizableDirective } from '../directives/resizable.directive';
+
 
  // widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
@@ -66,6 +68,9 @@ import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
 import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
 import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
+import { HighlightTextPipe } from './pipes/highlighttext.pipe';
+import { SafePipe } from './pipes/safe.pipe';
+import {  Nl2BrPipe } from './pipes/nl2br.pipe';
 
 @NgModule({
     imports: [
@@ -124,7 +129,11 @@ import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
         HexToColorNamePipe,
         DateToRelativePipe,
         DropdownJoinTypeComponent,
-        AliasDisplayPipe
+        AliasDisplayPipe,
+        HighlightTextPipe,
+        SafePipe,
+        Nl2BrPipe,
+        ResizableDirective
     ],
     exports: [
         ThemePickerComponent,
@@ -166,7 +175,9 @@ import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
         MetricVisualPanelComponent,
         HexToColorNamePipe,
         DateToRelativePipe,
-        AliasDisplayPipe
+        AliasDisplayPipe,
+        HighlightTextPipe,
+        ResizableDirective
     ],
     entryComponents: [
         InlineFilterEditorComponent,

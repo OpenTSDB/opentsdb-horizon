@@ -211,6 +211,7 @@
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
                                     [selected]="data.metric.groupByTags"
                                     [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
+                                    [excludeTags]=" options.excludeMetricGroupByTags && data.type !== 'expression'  ? options.excludeMetricGroupByTags : []"
                                     (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
                                 </dropdown-metric-tags>
                             </div>
@@ -267,7 +268,7 @@
                         (menuClosed)="toggleVisualRow(i - 1, false)">
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="data.visual.color && data.visual.color !== 'auto'"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
+                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="(data.visual.color && data.visual.color !== 'auto') || data.visual.scheme"></span>{{ data.visual.scheme ? 'palette: ' + data.visual.scheme : ((!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName) }}</span>
                         <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
                             {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                             background</span>
@@ -291,10 +292,10 @@
                                 </mat-icon>
                             </button>-->
                             <mat-icon style="cursor: move;" cdkDragHandle>reorder</mat-icon>
-                            <button mat-icon-button color="primary" (click)="cloneMetric(data.metric.id)">
+                            <button mat-icon-button color="primary" class="clone-metric" (click)="cloneMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" [disabled]="!canDeleteMetric(data.metric.id)"
+                            <button mat-icon-button color="primary" class="delete-metric" [disabled]="!canDeleteMetric(data.metric.id)"
                                 (click)="deleteMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                             </button>

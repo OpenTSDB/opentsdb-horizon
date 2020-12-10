@@ -105,7 +105,7 @@ export class YamasService {
                             subGraph.push(groupByQuery);
 
                             let lastId = '';
-                            this.getFunctionQueries(i, j, subGraph);
+                            this.getFunctionQueries(i, j, subGraph, q.id);
                             for (const node of subGraph) {
                                 lastId = node.id;
                                 this.transformedQuery.executionGraph.push(node);
@@ -164,7 +164,7 @@ export class YamasService {
                             const q = this.getExpressionQuery(i, j, timeshift);
                             expNodes.push(q);
                             const subGraph = [ q ];
-                            this.getFunctionQueries(i, j, subGraph);
+                            this.getFunctionQueries(i, j, subGraph, q.id);
                             for (const node of subGraph) {
                                 this.transformedQuery.executionGraph.push(node);
                             }
@@ -369,7 +369,7 @@ export class YamasService {
             'baselinePeriod': periodOverPeriodConfig.period + 's',
             'baselineNumPeriods': parseInt(periodOverPeriodConfig.lookbacks, 10),
             'baselineAggregator': 'avg',
-            'excludeMax': parseInt(periodOverPeriodConfig.highestOutlierToRemove, 10),
+            'excludeMax': parseInt(periodOverPeriodConfig.highestOutliersToRemove, 10),
             'excludeMin': parseInt(periodOverPeriodConfig.lowestOutliersToRemove, 10),
             'upperThresholdBad': parseInt(periodOverPeriodConfig.badUpperThreshold, 10),
             'upperThresholdWarn': parseInt(periodOverPeriodConfig.warnUpperThreshold, 10),
@@ -408,7 +408,7 @@ export class YamasService {
      * @param index The metric index.
      * @param subGraph The sub graph.
      */
-    getFunctionQueries(qindex, index, subGraph) {
+    getFunctionQueries(qindex, index, subGraph, idPrefix ) {
         const funs = this.queries[qindex].metrics[index].functions || [];
         let nFnRollup = 0;
         for ( let i = 0; i < funs.length; i++ ) {
@@ -423,12 +423,12 @@ export class YamasService {
                 case 'CntrRate':
                 case 'CounterDiff':   // old
                 case 'CounterValueDiff':
-                    this.handleRateFunction(parseInt(qindex, 10) + 1, index + 1, subGraph, funs, i);
+                    this.handleRateFunction(idPrefix, subGraph, funs, i);
                     break;
                 // Smoothing
                 case 'EWMA':
                 case 'Median':
-                    this.handleSmoothingFunction(parseInt(qindex, 10) + 1, index + 1, subGraph, funs, i);
+                    this.handleSmoothingFunction(idPrefix, subGraph, funs, i);
                     break;
                 case 'Rollup':
                     // tslint:disable-next-line:prefer-const
@@ -459,10 +459,10 @@ export class YamasService {
         }
     }
 
-    handleRateFunction(qindex, index, subGraph, funs, i) {
+    handleRateFunction(idPrefix, subGraph, funs, i) {
         const rates = funs[i].val.split(',');
         let func = {
-            'id': this.generateNodeId('q' + qindex + '_m' + index + '-rate', subGraph),
+            'id': this.generateNodeId(idPrefix + '-rate', subGraph),
             'type': 'rate',
             'interval': rates[0],
             'dataInterval': rates.length > 1 ? rates[1] : null,
@@ -531,10 +531,10 @@ export class YamasService {
         }
     }
 
-    handleSmoothingFunction(qindex, index, subGraph, funs, i) {
+    handleSmoothingFunction(idPrefix, subGraph, funs, i) {
         const interval_pattern = RegExp(/^\d+[a-zA-Z]$/);
         const func = {
-            'id': this.generateNodeId('q' + qindex + '_m' + index + '-smooth', subGraph),
+            'id': this.generateNodeId(idPrefix + '-smooth', subGraph),
             'type': 'MovingAverage', // TODO - other types when we have em
             'interval': null,
             'samples': null,

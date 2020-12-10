@@ -1,20 +1,27 @@
-<div class="widget-output-container" #widgetOutputContainer fxLayout="column">
-    <div class="widget-title" #widgetTitle *ngIf="editMode">
-        <div class="title-label">
-            <span class="navbar-item">Widget name:</span>
+<div class="widget-output-container" #widgetOutputContainer [style.height]="mode !== 'view' ? (widgetOutputElHeight) +'px' : 'inherit'">
+    <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
+        <div class="title-label" *ngIf="mode === 'edit'">
+            <span class="navbar-item">Widget name: </span>
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
-            <inline-editable class="navbar-item"
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
                 showEditIcon="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
                 (updatedValue)="setTitle($event)">
             </inline-editable>
+            <span class="info" *ngIf="mode === 'snap'">
+                This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
+            </span>
         </span>
         <graph-type (change)="changeWidgetType($event)" selected="HeatmapWidgetComponent"></graph-type>
+        <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
+            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+        </button>
     </div>
-    <div class="widget-output" #widgetoutput ttMouseListener ttType="heatmap">
+    <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="heatmap"
+                    [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 60) +'px' : 'inherit'">
         <div #dygraph class="graph-chart" dygraphsChart [chartType]="'heatmap'" [data]="data" [size]="size"
             [timeseriesLegend]="tsLegendOptions" (currentTickEvent)="timeseriesTickListener($event)"
             [options]="options">
@@ -35,7 +42,7 @@
 
 </div>
 <!-- NOTE: This needs to move to other component -->
-<div class="widget-controls-container" *ngIf="editMode">
+<div class="widget-controls-container" *ngIf="mode !== 'view'">
     <div class="widget-control-steps has-scroller">
         <div class="is-scroller">
             <div class="step-section query-section is-visible" #stepqueries>
@@ -68,7 +75,7 @@
             </div>
         </div>
     </div>
-    <div class="widget-actions">
+    <div class="widget-actions" *ngIf="mode === 'edit'">
         <!-- controls to save/cancel -->
         <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
             Dashboard</button>

@@ -1,18 +1,27 @@
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
-        <div class="preview-wrapper" #graphOutput
-            [ngClass]="{'is-visible': data && data.type === 'event' || (data.type === 'simple' && data.threshold && data.threshold.subType !== 'periodOverPeriod')}">
-            <div class="graph-wrapper" ttMouseListener ttType="linechart">
-                <div #graphOutput class="graph-output">
-                    <div #dygraph class="chart" dygraphsChart [chartType]="'line'" [data]="chartData"
-                        [size]="{'width': size.width - 50, 'height': size.height - 10}" [options]="options"
-                        [timeseriesLegend]="tsLegendOptions" (currentTickEvent)="timeseriesTickListener($event)"
+        <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
+            <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
+                <div class="graph-output">
+                    <div #dygraph class="chart"
+                        dygraphsChart
+                        [chartType]="'line'"
+                        [data]="chartData"
+                        [size]="{'width': size.width - 50, 'height': size.height - 10}"
+                        [options]="options"
+                        [timeseriesLegend]="tsLegendOptions"
+                        (currentTickEvent)="timeseriesTickListener($event)"
                         (zoomed)="handleZoom($event)">
                     </div>
-                    <div class="dygraph-legend" #graphLegend></div>
+                    <!--<div class="dygraph-legend" #graphLegend></div>-->
                 </div>
                 <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                     <img src="/assets/spinner-26x26.gif" />
+                </div>
+                <div class="snapshot" *ngIf="data.type === 'simple'">
+                    <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
+                        <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+                    </button>
                 </div>
                 <div class="error" *ngIf="error" (click)="showError()">
                     <mat-icon>error</mat-icon>
@@ -21,11 +30,14 @@
             <event-list *ngIf="data && data.type === 'event'" [events]="events" [timezone]="'local'"
                 [startTime]="startTime" [endTime]="endTime" style="overflow: scroll" [loading]="loadingEvents()">
             </event-list>
-        </div>
 
-        <div *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
-            <alert-details-metric-period-over-period-preview [chartData]="chartData" [size]="size" [options]="options"
-                [nQueryDataLoading]="nQueryDataLoading" [thresholdConfig]="periodOverPeriodConfig">
+            <alert-details-metric-period-over-period-preview *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'"
+                [chartData]="chartData"
+                [size]="{'width': size.width, 'height': size.height - 50}"
+                [options]="options"
+                [nQueryDataLoading]="nQueryDataLoading"
+                [thresholdConfig]="periodOverPeriodConfig"
+                (outputEvents)="handlePoPPreviewEvents($event)">
             </alert-details-metric-period-over-period-preview>
         </div>
 
@@ -83,8 +95,10 @@
                                         toggleQuery: false,
                                         cloneQuery: data.type === 'simple',
                                         deleteQuery: data.type === 'simple',
+                                        excludeMetricGroupByTags: excludeMetricGroupByTags,
                                         enableExplicitTagMatch: data.type === 'simple'}"
                                     (queryOutput)="updateQuery($event);"></query-editor-proto>
+                                <div cdkDragHandle class="metric-query-drag-handle"></div>
                             </div>
                         </div>
                         <div class="query-metric-row" *ngIf="queries.length && queries[0].metrics.length">
@@ -1227,6 +1241,7 @@
                                     <div class="form-label vertical-center"><strong>OpsGenie AutoClose</strong></div>
                                     <div class="opsgenie-autoclose-flag">
                                         <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
+                                        <mat-hint class="info-hint" *ngIf="data.notification.opsgenieAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
                             </div>

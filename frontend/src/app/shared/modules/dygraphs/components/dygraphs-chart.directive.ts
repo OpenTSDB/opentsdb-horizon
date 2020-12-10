@@ -153,8 +153,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 } else {
                     ttData.valueFormatted = self.uConverter.convert(pv.yval, format.unit, dunit, { unit: format.unit, precision: precision });
                 }
-
-                ttData.metric = (tags.metric !== label) ? label : tags.metric;
+                const tempLabel = (tags.metric !== label) ? label : tags.metric;
+                ttData.metric = tempLabel.indexOf(tags.metric) > -1 ? tags.metric : tempLabel;
+                // ttData.metric = (tags.metric !== label) ? label : tags.metric;
                 ttData.tags = [];
 
                 for (const k in tags) {
@@ -425,9 +426,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
                     this.options.showLabelsOnHighlight = false;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
+                        const n = self.data.ts.length;
                         // we only handle xzoom
-                        if (!yRanges) {
-                            self.zoomed.emit({ start: minDate / 1000, end: maxDate / 1000, isZoomed: true });
+                        if (!yRanges && n > 0 ) {
+                            const actualStart = new Date(self.data.ts[0][0]).getTime() / 1000;
+                            const actualEnd = new Date(self.data.ts[n - 1][0]).getTime() / 1000;
+                            // tslint:disable-next-line:max-line-length
+                            self.zoomed.emit({ axis: 'x', start: minDate / 1000, end: maxDate / 1000, isZoomed: true, actualStart: actualStart, actualEnd: actualEnd });
+                        } else if ( yRanges ) {
+                            self.zoomed.emit( { axis: 'y', y: yRanges[0], y2: yRanges[1] });
                         }
                     };
                     this.options.drawCallback = drawCallback;
@@ -436,9 +443,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     this.options.interactionModel = DygraphInteraction.defaultModel;
                     this.options.interactionModel.dblclick = function (e, g, context) {
                         if (g.user_attrs_.isCustomZoomed) {
-                            self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            self.zoomed.emit({ axis: 'x', start: null, end: null, isZoomed: false });
                         } else if (self._g.isZoomed()) { // zooming out (double click)
-                            // self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            self.zoomed.emit( { axis: 'y', y: null, y2: null });
                             g.axes_.forEach((axis, i) => {
                                 const axisKey = i === 0 ? 'y' : 'y2';
                                 if (axis.valueRange) {
@@ -594,6 +601,22 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.options.height = this.size.height;
                 this._g = new Dygraph(this.element.nativeElement, this.data.ts, this.options);
                 window.removeEventListener('mouseout', this._g.mouseOutHandler_, false);
+                setTimeout(() => {
+                    if ( this.data.ts && this.data.ts.length && this.options.isIslandLegendOpen ) {
+                            clickCallback.call(this._g, {}, this._g.rawData_[0][0], []);
+                    }
+                });
+
+                if ( this.options.initZoom ) {
+                    const opts: any = { axes: {} };
+                    if ( this.options.initZoom.y ) {
+                        opts.axes.y = this.options.initZoom.y;
+                    }
+                    if ( this.options.initZoom.y2 ) {
+                        opts.axes.y2 = this.options.initZoom.y2;
+                    }
+                    this._g.updateOptions(opts);
+                }
             } else if (this._g && ( changes.eventBuckets || changes.showEvents ) ) {
                 this._g.updateOptions(this.options);
             }

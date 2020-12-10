@@ -96,12 +96,11 @@
         // preview area - graph and legend
         .preview-wrapper {
             padding: 0px;
-            height: 180px;
             display: none;
             flex-direction: row;
-            max-height: 100%;
-            max-width: 100%;
-            flex: 1 1 180px;
+            min-height: 160px;
+            height: 180px;
+            flex: none;
 
             .graph-wrapper,
             .legend-wrapper {
@@ -110,7 +109,7 @@
             }
 
             &.is-visible {
-                display: flex;
+                display: inline-flex;
             }
 
             .graph-wrapper {
@@ -123,6 +122,23 @@
                     .chart {
                         display: flex;
                         flex: 1;
+                    }
+                }
+
+                .snapshot {
+                    width: 24px;
+                    height: 24px;
+                    display: inline-flex;
+                    .mat-flat-button {
+                        line-height: 24px;
+                        font-size: 12px;
+                        padding: 0;
+                        min-width: 24px;
+                        margin: auto 6px;
+            
+                        .mat-icon {
+                            margin: 0px;
+                        }
                     }
                 }
 
@@ -217,13 +233,12 @@
 
         // configuration area - config controls
         .controls-wrapper {
-            padding: 0;
-            flex: 1 1 100%;
-            overflow: hidden;
             display: flex;
+            flex: 1 1 100%;
+            padding: 0;
             flex-direction: column;
-            max-height: 100%;
-            max-width: 100%;
+            // background: lightblue;
+            overflow: hidden;
 
             .alert-control-steps {
                 padding: 8px 0 0;
@@ -236,6 +251,18 @@
             @-moz-document url-prefix() {
                 .alert-control-steps {
                     overlay: auto;
+                }
+            }
+
+            .query-metric-row {
+                position: relative;
+
+                .cdk-drag-handle.metric-query-drag-handle {
+                    width: 20px;
+                    height: 20px;
+                    position: absolute;
+                    right: 97px;
+                    top: 10px;
                 }
             }
 
@@ -280,6 +307,38 @@
 
                 &.is-visible {
                     display: block;
+                }
+            }
+
+            // General toolbar items
+            .toolbar-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .mat-icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                strong {
+                    padding-left: 20px;
+                }
+            }
+
+            .toolbar-action-icons,
+            .action-icons {
+                float: right;
+
+                .mat-icon-button {
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                }
+
+                .mat-icon {
+                    font-size: 16px;
                 }
             }
 
@@ -628,6 +687,30 @@
             font-family: Monaco, monospace;
             // font-family: Helvetica Neue, Helvetica;
         }
+
+        .app-resizeable {
+            position: relative;
+    
+            &::after {
+                // content is denali icon drag-handle
+                content: '\ebab';
+                font-family: 'denali-icons';
+                font-size: 12px;
+                display: inline-flex;
+                width: 24px;
+                //background-color: white;
+                color: light-gray;
+                //border: 1px solid lightgray;
+                padding: 2px 4px;
+                position: absolute;
+                left: calc(50% - 12px);
+                top: calc(100% - 7px);
+                align-items: center;
+                justify-content: center;
+                line-height: 8px;
+                border-radius: 4px;
+            }
+        }
     }
 }
 
@@ -800,6 +883,21 @@
             background: $dygraph-tooltip-bg;
             border: 1px solid $dygraph-tooltip-border;
 
+        }
+
+        .app-resizeable {
+
+            &::after {
+                // content is denali icon drag-handle
+                content: '\ebab';
+    
+                background-color: if($is-dark, rgba(0, 191, 255, 0.3), $card);
+                color: $text-color;
+                border: 1px solid rgba($text-color, .3);
+    
+            }
+    
+            box-shadow: inset 0px -2px 1px -1px rgba($text-color, .3);
         }
     }
 }

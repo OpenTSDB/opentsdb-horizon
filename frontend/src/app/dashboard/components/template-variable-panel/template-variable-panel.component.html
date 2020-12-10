@@ -19,7 +19,7 @@
                             <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
                                 <img src="/assets/spinner-26x26.gif" />
                             </div>
-                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                            <mat-option disabled *ngIf="!useDBFScope && !filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
                                 No matches found
                             </mat-option>
                         </mat-autocomplete>
@@ -71,7 +71,7 @@
                                 </info-tooltip>
                             </th>
                             <th>Tag Key <sup>*</sup></th>
-                            <th>Filter Name <sup>*</sup></th>
+                            <th>Alias Name <sup>*</sup></th>
                             <th>Default value (optional)</th>
                             <th style="white-space: nowrap;">
                                 <span>Applied</span>
@@ -136,7 +136,7 @@
                             <!-- default value -->
                             <td>
                                 <div class="settings-control values-control">
-                                    <mat-form-field appearance="fill" color="primary" floatLabel="never" style="width: 300px;">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
                                         <input matInput placeholder="Enter default value" formControlName="display"
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
                                             <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
@@ -147,11 +147,14 @@
                                             <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
                                                 <img src="/assets/spinner-26x26.gif" />
                                             </div>
-                                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                            <mat-option disabled *ngIf="!useDBFScope && !filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
                                                 No matches found
                                             </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
+                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i, alias: tpl.get('alias').value}">
+                                        [...more]
+                                    </span>
                                 </div>
                             </td>
                             <!-- counts -->
@@ -220,5 +223,79 @@
             </div>
         </div>
     </div>
+    <!-- mat-menu for scope editing-->
+    <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu" (closed)="scopeMenuClosed($event)">
+        <ng-template matMenuContent let-index="index" let-alias="alias">
+
+        <mat-nav-list #scopeTabNav class="filter-tab-nav"(click)="$event.stopPropagation()">
+            <mat-list-item (click)="scopeMenuNavChange('tagscope')" [ngClass]="{selected: scopeMenuNavSelection === 'tagscope'}">
+                <mat-icon fontSet="denali" fontIcon="d-tag-filter"></mat-icon>
+            </mat-list-item>
+            <!--
+            <mat-list-item (click)="scopeMenuNavChange('otherscope')" [ngClass]="{selected: scopeMenuNavSelection === 'otherscope'}">
+                <mat-icon fontSet="denali" fontIcon="d-filter-funnel"></mat-icon>
+            </mat-list-item>
+            -->
+        </mat-nav-list>
+        <!-- tagscope -->
+        <div class="filter-scope-columns"
+            fxLayout="column"
+            fxLayoutAlign="stretch stretch"
+            (click)="$event.stopPropagation()"
+            (keydown.tab)="$event.stopPropagation()">
+            <div class="filter-scope-type">
+                <span>Tag Scopes</span>
+            </div>
+            <div class="scope-columns-wrap">
+                <div class="scope-column col-left " fxFlex="1 1 100%">
+                    <div class="header-column">
+                        <span>Available tag values</span>
+                    </div>
+                    <div class="list-filter">
+                        <!-- input field for filtering -->
+                        <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
+                            floatLabel="never">
+                            <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" autocomplete="off">
+                        </mat-form-field>
+                    </div>
+                    <div class="list-items has-scroller">
+                        <div class="is-scroller">
+                            <!-- loop of filtered items-->
+                            <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)" title="{{item}}">
+                                <mat-icon fontSet="denali" fontIcon="d-add-circle" color="primary"></mat-icon>
+                                <span>{{item}}</span>
+                            </div>
+                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                <img src="/assets/spinner-26x26.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scope-column col-right" fxFlex="1 1 100%">
+                    <div class="header-column">
+                        <span>Scoped values for "<b>{{alias}}</b>"</span>
+                    </div>
+                    <div class="list-items has-scroller">
+                        <div class="is-scroller">
+                            <!-- loop of items -->
+                            <!--<div *ngFor="let val of tagScope" class="list-item" (click)="removeFromScope(val, index)">
+                                <mat-icon fontSet="denali" fontIcon="d-minus-circle" color="primary"></mat-icon>
+                                <span>{{val}}</span>
+                            </div>-->
+                            <mat-chip *ngFor="let val of tagScope" class="list-item" color="primary" removable="false" [ngClass]="{ 'exclude': val[0] === '!'}" title="{{val}}">
+                                <mat-icon fontSet="denali" [fontIcon]="val[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
+                                    class="exclude"
+                                    (click)="toggleExcludeFromScope(val, index);"
+                                    [matTooltip]="val[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
+                                <span class="scope-value">{{ val[0] === '!' ? val.substr(1) : val }}</span>
+                                <mat-icon (click)="removeFromScope(val, index);">clear</mat-icon>
+                            </mat-chip>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </ng-template>
+    </mat-menu>
 </ng-template>
 <input type=text #focusEl class="hidden-focus">

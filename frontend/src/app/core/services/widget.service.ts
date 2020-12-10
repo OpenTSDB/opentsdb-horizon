@@ -56,7 +56,8 @@ export class WidgetService {
                         display: false,
                         position: 'bottom',
                         columns: []
-                    }
+                    },
+                    chartOptions: {}
                 };
                 break;
             case 'DonutWidgetComponent':

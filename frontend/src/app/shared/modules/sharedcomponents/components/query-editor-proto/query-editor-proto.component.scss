@@ -571,6 +571,7 @@
                     margin-bottom: 0;
                 }
             }
+
             tr.metric-query-item:hover .metric-row-data.action {
                 visibility: visible;
             }
@@ -753,17 +754,22 @@
         .metric-query-item.row-disabled {
 
             & {
-                .mat-cell:not(:first-child) {
-                    pointer-events: none;
-                    opacity: 0.5;
+
+                //.mat-cell.cdk-column-metric-index.mat-column-metric-index,
+                .mat-cell.cdk-column-modifiers.mat-column-modifiers,
+                .metric-row-data.tag-aggregator,
+                .mat-cell.cdk-column-name.mat-column-name{
+                    position: relative;
+                    filter: grayscale(100%);
+                    opacity: .85;
                 }
             }
 
             & + .metric-query-item-visual {
-                pointer-events: none;
+                filter: grayscale(100%);
 
                 .mat-cell {
-                    opacity: 0.7;
+                    opacity: 0.85;
                 }
             }
         }
@@ -771,9 +777,43 @@
         // query disabled
         .namespace-wrapper.query-disabled {
             & + .metric-wrapper {
-                filter: grayscale(100%);
-                opacity: .85;
-                pointer-events: none;
+                //filter: grayscale(100%);
+                //opacity: .85;
+                //pointer-events: none;
+
+                .common-tags,
+                .metric-action-buttons // add metric/expression buttons
+                {
+                    filter: grayscale(100%);
+                    opacity: .85;
+                    pointer-events: none;
+                }
+
+                .mat-cell.cdk-column-metric-index.mat-column-metric-index,
+                .mat-cell.cdk-column-modifiers.mat-column-modifiers,
+                .mat-cell.cdk-column-name.mat-column-name{
+                    position: relative;
+                    filter: grayscale(100%);
+                    opacity: .85;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        display: block;
+
+                    }
+                }
+
+                .metric-row-data.action {
+                    .cdk-drag-handle,
+                    .clone-metric {
+                        display: none;
+                    }
+                }
             }
         }
     }
@@ -782,7 +822,8 @@
 
     .tag-filters-menu-wrapper.mat-menu-panel {
         max-width: 100%;
-        width: calc(100vw - 122px);
+        width: calc(100vw - 118px);
+
         .mat-menu-content:not(:empty) {
             padding: 0px;
         }
@@ -1579,6 +1620,7 @@
             }
         }
     }
+
 
     // CDK DRAG ITEM IS PLACED AT BODY LEVEL
     .cdk-drag.cdk-drag-preview {

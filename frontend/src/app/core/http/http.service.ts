@@ -210,6 +210,18 @@ export class HttpService {
                         );
     }
 
+    getTagKeysAndTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+          });
+        const apiUrl =  environment.metaApi + '/search/timeseries'; 
+        const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
+        return this.http.post(apiUrl, query, { headers, withCredentials: true })
+                            .pipe(
+                                map((res: any) => res && res.results[0] ? res.results[0] : {'tagKeysAndValues': {}})
+                            );
+    }
+
     // results should filter the lists from already selected filters
     getTagValues(queryObj: any): Observable<string[]> {
         const headers = new HttpHeaders({
@@ -219,7 +231,12 @@ export class HttpService {
         const namespaces = queryObj.namespaces || [];
         for (let i = 0, len = namespaces.length; i < len; i++) {
             if (!newQueryParams[namespaces[i]]) {
-                newQueryParams[namespaces[i]] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespaces[i], metrics: [] };
+                newQueryParams[namespaces[i]] = { 
+                    tagkey: queryObj.tag.key, 
+                    search: queryObj.tag.value, 
+                    namespace: namespaces[i], 
+                    metrics: [], 
+                    tags: queryObj.tagsFilter };
             }
         }
 
@@ -229,7 +246,12 @@ export class HttpService {
             const namespace = res[1];
             const metric = res[2] + '.' + res[3];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespace, metrics: [] };
+                newQueryParams[namespace] = { 
+                    tagkey: queryObj.tag.key, 
+                    search: queryObj.tag.value, 
+                    namespace: namespace, 
+                    metrics: [],
+                    tags: queryObj.tagsFilter };
             }
             newQueryParams[namespace].metrics.push(metric);
         }
@@ -298,6 +320,30 @@ export class HttpService {
         /* This API call is an invalid endpoint */
         const apiUrl = environment.configdb + '/object/' + id;
         return this.http.delete(apiUrl, { withCredentials: true });
+    }
+
+    getSnapshotById(id: string) {
+        const apiUrl = environment.configdb + '/snapshot/' + id;
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        return this.http.get(apiUrl, httpOptions);
+    }
+
+    saveSnapshot(id, data) {
+        const apiUrl = environment.configdb + '/snapshot';
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        if ( id === '_new_') {
+            return this.http.post(apiUrl, data, httpOptions);
+        } else {
+            return this.http.put(apiUrl, data, httpOptions);
+        }
     }
 
     userNamespaces() {

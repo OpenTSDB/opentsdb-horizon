@@ -42,6 +42,47 @@ $logo-height: map-get($navbar-config, 'logo-height');
             .mat-toolbar {
                 background: $navbar-bg;
                 color: $navbar-text;
+
+                .mat-icon-button {
+                    .mat-icon {
+                        color: map-get($foreground, navbar-icons)
+                    }
+                }
+                &.snapshot {
+                    background: #135588;
+                }
+                &.explore {
+                    background: lightsteelblue;
+                }
+
+                .navbar-item {
+                    .menu-trigger-underline {
+                        box-shadow: inset 0 -3px 0 map-get($accent, default);
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+
+                    .menu-trigger-highlight {
+                        background-color: rgba(map-get($accent, default), .1);
+                    }
+                }
+
+                .navbar-sliding-toggle {
+                    .sliding-toggle-group {
+                        background-color: darken(map-get($background, navbar), 4%);
+
+                        .mat-tab-link {
+                            &,
+                            &.mat-tab-label-active {
+                                color: map-get($foreground, navbar-text);
+                            }
+                        }
+
+                        .mat-ink-bar {
+                            background-color: rgba(map-get($foreground, navbar-text), .25);
+                        }
+                    }
+                }
             }
         }
     }

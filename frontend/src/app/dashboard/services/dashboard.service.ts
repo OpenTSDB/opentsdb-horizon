@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { URLOverrideService } from './urlOverride.service';
+import { HttpService } from '../../core/http/http.service';
+import { Observable, forkJoin, of } from 'rxjs';
 
 @Injectable()
 export class DashboardService {
@@ -72,7 +74,8 @@ export class DashboardService {
   constructor(
     private utils: UtilsService, 
     private dbConverterService: DashboardConverterService,
-    private urlOverride: URLOverrideService) { }
+    private urlOverride: URLOverrideService,
+    private httpService: HttpService) { }
 
 
   setWigetsConfig(conf) {
@@ -346,7 +349,8 @@ export class DashboardService {
   }
 
   // resolve with replace mode based on mode and default value 
-  resolveTplVarReplace(query: any, tplVariables: any[]) {
+  // @scopeCache is the cache for scope if they are using dashboard tag scope
+  resolveTplVarReplace(query: any, tplVariables: any[], scopeCache: any[]) {
     for (let i = 0; i < query.filters.length; i++) {
       const qFilter = query.filters[i];
       let replaceFilter = [];
@@ -360,16 +364,62 @@ export class DashboardService {
             const tplIdx = tplVariables.findIndex(tpl => tpl.alias === alias);
             if (tplIdx > -1) {
               if (tplVariables[tplIdx].filter.trim() !== '') {
-                // qFilter.filter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
-                replaceFilter.push(hasNot ? '!' + tplVariables[tplIdx].filter : tplVariables[tplIdx].filter);
-                if (tplVariables[tplIdx].mode === 'auto') {
-                  autoMode = true;
+                // now we want to check if this is an absolute value or regexp
+                // for regexp then we might need to to solve it
+                const _cfilter = tplVariables[tplIdx].filter;
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                  const res = _cfilter.match(/^regexp\((.*)\)$/);
+                  const val = res ? res[1] : _cfilter;
+                  const regx = new RegExp(val, 'gi');
+                  const matches = [];
+                  scopeCache[tplIdx].forEach(v => {
+                    if (v.match(regx)) {
+                      matches.push(v);
+                    }
+                  });
+                  if (matches.length > 0) {
+                    if (hasNot) {
+                      // we need to combine with scope for not
+                      matches.forEach(m => { replaceFilter.push('!' + m)});
+                      tplVariables[tplIdx].scope.forEach(s => { replaceFilter.push(s)})
+                    } else {
+                      matches.forEach(m => { replaceFilter.push(m)});
+                    }
+                  } else {
+                    // there is no match of any values of the scope
+                    // TODO: how to deal with this for error message or let it go
+                    // just to make query return no values
+                    replaceFilter.push('__NO_SCOPE_MATCHED__');
+                  }
+                } else {
+                  replaceFilter.push(hasNot ? '!' + _cfilter : _cfilter);
                 }
+              } else {
+                // filter is empty but scope is defined, appply it
+                if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
+                  for (let k = 0; k < tplVariables[tplIdx].scope.length; k++) {
+                    const scopeHasNot = tplVariables[tplIdx].scope[k][0] === '!';
+                    const scope = tplVariables[tplIdx].scope[k].substring(scopeHasNot ? 1 : 0, tplVariables[tplIdx].scope[k].length);
+                    if (hasNot) {
+                      if (scopeHasNot) {
+                        replaceFilter.push(scope);
+                      } else {
+                        replaceFilter.push('!' + scope);
+                      }
+                    } else {
+                      replaceFilter.push(tplVariables[tplIdx].scope[k]);
+                    }
+                  }
+                }
+              }
+              if (tplVariables[tplIdx].mode === 'auto') {
+                autoMode = true;
               }
             }
           }
         }
       }
+
       if (replaceFilter.length > 0) {
         if (autoMode) {
           // do replace
@@ -383,6 +433,86 @@ export class DashboardService {
     // clean out empty filter, since they might have db filter but not set value yet.
     query.filters = query.filters.filter(f => f.filter.length > 0);
     return query;    
+  }
+
+  // to resolve dasboard scope to scopeCache if not there.
+  // this normally happens when first time dashboard loads
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
+    const obs: any[] = [];
+    const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
+    const metrics = [];
+    let query: any = {};
+    let doSearch = false;
+    for (let i = 0; i < tpl.tvars.length; i++) {
+      if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
+        if(!tplVariables.scopeCache[i]) {
+          tplVariables.scopeCache[i] = [];
+        }
+        if (!tplVariables.scopeCache[i].length) {
+          for (let j = 0; j < tpl.tvars[i].scope.length; j++) {
+            let v = tpl.tvars[i].scope[j];
+            if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+              doSearch = true;
+              query.tagsFilter = [{
+                tagk: tpl.tvars[i].tagk,
+                filter: tpl.tvars[i].scope
+              }];
+              break;
+            }
+          }
+        }
+        if (!doSearch) {
+          obs.push(of(tpl.tvars[i].scope));
+        }
+      } else {
+        // no scope or empty, put into obs to protect index
+        obs.push(of([]));
+      }
+      if (doSearch) {
+        const tagk = tpl.tvars[i].tagk;
+        const alias = tpl.tvars[i].alias;
+        for (let i = 0; i < widgets.length; i++) {
+          const queries = widgets[i].queries;
+          for (let j = 0; j < queries.length; j++) {
+            const filters = queries[j].filters;
+            let aliasFound = false;
+            for (let k = 0; k < filters.length; k++) {
+              if (filters[k].tagk === tagk && filters[k].customFilter) {
+                filters[k].customFilter.forEach(f => {
+                  const hasNot = f[0] === '!';
+                  const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                  if (alias === _alias) {
+                    aliasFound = true;
+                  }
+                });
+              }
+            }
+            if (aliasFound) {
+              for (let k = 0; k < queries[j].metrics.length; k++) {
+                if (!queries[j].metrics[k].expression) {
+                  metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+                }
+              }
+            }
+          }
+        }
+        doSearch = false;
+        query.tag = { key: tagk, value: ''};
+        if (metrics.length) {
+          query.metrics = metrics;
+        } else {
+          query.namespaces = tpl.namespaces;
+        }
+        const cloneQuery = JSON.parse(JSON.stringify(query));
+        obs.push(this.httpService.getTagValues(cloneQuery));
+        query = {};
+      }
+    }
+    if (obs.length > 0) {
+      return forkJoin(obs);
+    } else {
+      return of([]);
+    }
   }
 
   addGridterInfo(widgets: any[]) {
@@ -404,8 +534,9 @@ export class DashboardService {
   }
 
   updateTimeFromURL(dbstate) {
-    if (this.urlOverride.getTimeOverrides()) {
-      var urlTime = this.urlOverride.getTimeOverrides();
+    const paramTime = this.urlOverride.getURLParamTime();
+    if ( paramTime ) {
+      var urlTime = this.urlOverride.getTimeOverrides(paramTime.zone || dbstate.content.settings.time.zone);
       if (!dbstate.content.settings.time)
         dbstate.content.settings.time = {};
       var dbTime = dbstate.content.settings.time;
@@ -470,22 +601,29 @@ export class DashboardService {
   getStorableFormatFromDBState(dbstate) {
     const widgets = this.utils.deepClone(dbstate.Widgets.widgets);
     for (let i = 0; i < widgets.length; i++) {
-      widgets[i].gridPos.x = widgets[i].gridPos.xMd;
-      widgets[i].gridPos.y = widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.xMd;
-      delete widgets[i].gridPos.yMd;
-      delete widgets[i].gridPos.wMd;
-      delete widgets[i].gridPos.hMd;
-      delete widgets[i].gridPos.xSm;
-      delete widgets[i].gridPos.ySm;
-      delete widgets[i].gridPos.wSm;
-      delete widgets[i].gridPos.hSm;
+      if ( widgets[i].gridPos ) {
+        widgets[i].gridPos.x = widgets[i].gridPos.xMd;
+        widgets[i].gridPos.y = widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.xMd;
+        delete widgets[i].gridPos.yMd;
+        delete widgets[i].gridPos.wMd;
+        delete widgets[i].gridPos.hMd;
+        delete widgets[i].gridPos.xSm;
+        delete widgets[i].gridPos.ySm;
+        delete widgets[i].gridPos.wSm;
+        delete widgets[i].gridPos.hSm;
+      }
       delete widgets[i].settings.time.zoomTime;
     }
     // will remove later, if no need to check this.
     const settings = this.utils.deepClone(dbstate.Settings);
-    if (settings.tplVariables.override) {
+    delete settings.mode;
+    if ( settings.tplVariables && settings.tplVariables.override ) {
       delete settings.tplVariables.override;
+    }
+
+    if (settings.tplVariables && settings.tplVariables.scopeCache) {
+      delete settings.tplVariables.scopeCache;
     }
     const dashboard = {
       version: this.dbConverterService.getDBCurrentVersion(),

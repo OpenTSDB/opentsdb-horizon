@@ -16,18 +16,18 @@ export class URLOverrideService {
     private subscription: Subscription = new Subscription();
     private overrides: any = {};
 
-    getTimeOverrides() {
+    getTimeOverrides(tz = 'utc') {
         if (this.overrides['time']) {
-            const tz = this.overrides['time']['zone'] ? this.overrides['time']['zone'] : 'local';
+            const otz = this.overrides['time']['zone'] ? this.overrides['time']['zone'] : 'utc';
             if ( this.overrides['time']['start'] ) {
                 const t = this.overrides['time']['start'];
-                const m = this.dateUtil.timeToMoment(t, tz);
+                const m = this.dateUtil.timeToMoment(t, otz);
                 // tslint:disable:max-line-length
                 this.overrides['time']['start'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
             }
             if ( this.overrides['time']['end'] ) {
                 const t = this.overrides['time']['end'];
-                const m = this.dateUtil.timeToMoment(t, tz);
+                const m = this.dateUtil.timeToMoment(t, otz);
                 this.overrides['time']['end'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
             }
             return this.overrides['time'];
@@ -47,6 +47,10 @@ export class URLOverrideService {
             url['queryParams'] = {};
         }
         this.updateLocationURL(url);
+    }
+
+    getURLParamTime() {
+        return this.overrides['time'] || null;
     }
 
     applyURLParamsToDB(p) {
@@ -166,14 +170,16 @@ export class URLOverrideService {
         let tags: any = {};
         if (params.start) {
             // tslint:disable:max-line-length
-            url['queryParams']['__start'] = params.start.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.start) ? params.start : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.start, params.zone).unix().toString(), params.zone, 'YYYYMMDDTHHmmss');
+            url['queryParams']['__start'] = params.start.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.start) ? params.start : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.start, params.zone).unix().toString(), 'UTC', 'YYYYMMDDTHHmmss');
         }
         if (params.end) {
-            url['queryParams']['__end'] = params.end.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.end) ? params.end : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.end, params.zone).unix().toString(), params.zone, 'YYYYMMDDTHHmmss');
+            url['queryParams']['__end'] = params.end.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.end) ? params.end : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.end, params.zone).unix().toString(), 'UTC', 'YYYYMMDDTHHmmss');
         }
+        /*
         if (params.zone) {
-            url['queryParams']['__tz'] = params.zone;
+            url['queryParams']['__tz'] = 'UTC';
         }
+        */
         if (params.tags) {
             for (let i in params.tags) {
                 const tk = params.tags[i].alias;

@@ -698,7 +698,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     // tslint:disable-next-line:max-line-length
                     if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
-                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.color ||  newConfig.type ) ) {
+                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.scheme || newConfig.color ||  newConfig.type ) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                         // set existing bar axis
                         // tslint:disable-next-line:max-line-length
@@ -911,14 +911,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // first cross-query
         for (let i = 0; i < result.length; i++) {
             if (result[i].includes('.')) {
-                const regex = new RegExp( result[i] + '(?!})', 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }
         // then shorthand
         for (let i = 0; i < result.length; i++) {
             if (!result[i].includes('.')) {
-                const regex = new RegExp( result[i] +  '(?!})' , 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }

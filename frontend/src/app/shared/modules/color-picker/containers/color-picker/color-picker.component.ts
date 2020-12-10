@@ -51,6 +51,7 @@ export class ColorPickerComponent implements OnInit {
 
     /* Inputs */
     @Input() enableAuto: boolean; // allow auto to be selected - outputs {hex: 'auto', color: 'auto'}
+    @Input() enablePalette = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
     @Input() get pickerMode(): string {
@@ -73,7 +74,7 @@ export class ColorPickerComponent implements OnInit {
         if (this.isRgbValid(value)) {
             this._color = this.rgbToHex(value);
         } else {
-            this._color = coerceHexaColor(value) || 'Auto';
+            this._color = coerceHexaColor(value) || ( this.enablePalette && value ? value : 'Auto' );
         }
 
         // if on embedded view, do not attempt to switch between default and custom
@@ -108,6 +109,56 @@ export class ColorPickerComponent implements OnInit {
     // tslint:disable:no-inferrable-types
     selectingCustomColor: boolean = false;
     _colorPickerSelectorHeight: number = 136;
+    mode = 'palette';
+
+    palettes: any = [
+        {'name': 'Category10', 'label': 'Category10'},
+        {'name': 'Accent', 'label': 'Accent'},
+        {'name': 'Dark2', 'label': 'Dark2'},
+        {'name': 'Paired', 'label': 'Paired'},
+        {'name': 'Set1', 'label': 'Set1'},
+        {'name': 'Set2', 'label': 'Set2'},
+        {'name': 'Set3', 'label': 'Set3'},
+        {'name': 'Tableau10', 'label': 'Tableau10'},
+        {'name': 'sinebow', 'label': 'Sinebow'},
+        {'name': 'rainbow', 'label': 'Rainbow'},
+        {'name': 'Spectral', 'label': 'Spectral'},
+        {'name': 'RdYlGn', 'label': 'RedYellowGreen'},
+        {'name': 'RdYlBu', 'label': 'RedYellowBlue'},
+        {'name': 'RdGy', 'label': 'RedGray'},
+        {'name': 'RdBu', 'label': 'RedBlue'},
+        {'name': 'PuOr', 'label': 'PurpleOrange'},
+        {'name': 'PiYG', 'label': 'PinkYellowGreen'},
+        {'name': 'PRGn', 'label': 'PurpleGreen'},
+        {'name': 'BrBG', 'label': 'BrownGreen'},
+        {'name': 'turbo', 'label': 'Turbo'},
+        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
+        {'name': 'cool', 'label': 'Cool'},
+        {'name': 'warm', 'label': 'Warm'},
+        {'name': 'plasma', 'label': 'Plasma'},
+        {'name': 'magma', 'label': 'Magma'},
+        {'name': 'inferno', 'label': 'Inferno'},
+        {'name': 'viridis', 'label': 'Viridis'},
+        {'name': 'cividis', 'label': 'Cividis'},
+        {'name': 'ylOrRd', 'label': 'YelllowOrangeRed'},
+        {'name': 'ylOrBr', 'label': 'YellowOrangeBrown'},
+        {'name': 'YlGn', 'label': 'YellowGreen'},
+        {'name': 'YlGnBu', 'label': 'YellowGreenBlue'},
+        {'name': 'RdPu', 'label': 'RedPurple'},
+        {'name': 'PuRd', 'label': 'PurpleRed'},
+        {'name': 'PuBu', 'label': 'PurpleBlue'},
+        {'name': 'PuBuGn', 'label': 'PurpleBlueGreen'},
+        {'name': 'OrRd', 'label': 'OrangeRed'},
+        {'name': 'GnBu', 'label': 'GreenBlue'},
+        {'name': 'BuPu', 'label': 'BluePurple'},
+        {'name': 'BuGn', 'label': 'BlueGreen'},
+        {'name': 'reds', 'label': 'Reds'},
+        {'name': 'purples', 'label': 'Purples'},
+        {'name': 'oranges', 'label': 'Oranges'},
+        {'name': 'greys', 'label': 'Greys'},
+        {'name': 'greens', 'label': 'Greens'},
+        {'name': 'blues', 'label': 'Blues'}
+    ];
 
     constructor(
         private elementRef: ElementRef,
@@ -145,17 +196,26 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.selectingCustomColor = false;
-        } else if (this.colorToName(this.color) === this.color) {
-            this.selectingCustomColor = true;
+        const index =  this.palettes.findIndex( d => d.name === this.color );
+        if ( this.enablePalette && index !== -1 ) {
+            this.mode = 'palette';
+        } else if (this.colorToName(this.color) || this.color && this.color.toLowerCase() === 'auto') {
+            this.mode = 'default';
         } else {
-            this.selectingCustomColor = false;
+            this.mode = 'custom';
         }
     }
 
-    toggleSelector() {
-        this.selectingCustomColor = !this.selectingCustomColor;
+    toggleSelector(mode) {
+        // reset the color if single to palette or palette to single
+        const oldMode = this.mode;
+        this.mode = mode;
+        /*
+        if ( mode === 'palette' || oldMode === 'palette' ) {
+            // this.color = '';
+            // this.emitColor();
+        }
+        */
     }
 
     colorSelected(hexColor: string): void {
@@ -168,6 +228,11 @@ export class ColorPickerComponent implements OnInit {
         }
     }
 
+    colorSchemeSelected(scheme) {
+        this.color = scheme;
+        this.newColor.emit( {'scheme': scheme} );
+    }
+
     emitColor() {
         if (this.color.toLowerCase() === 'auto') {
             this.newColor.emit( { hex: 'auto', rgb: 'auto'});
@@ -177,7 +242,7 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorToName(hexColor: string): string {
-        let colorName = hexColor;
+        let colorName = '';
         // tslint:disable-next-line:prefer-const
         for (let color of this.DefaultColors) {
             if (color.value === hexColor) {

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewChild } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 
 import { CdkService } from '../../../core/services/cdk.service';
 
@@ -21,12 +21,20 @@ export class AppNavbarComponent implements OnInit {
 
     @Output() sidenavToggle: EventEmitter<any> = new EventEmitter();
 
+    snapshot = false;
+
     constructor(
         private router: Router,
         public cdkService: CdkService
     ) { }
 
-    ngOnInit() { }
+    ngOnInit() { 
+        this.router.events.subscribe((event) => {
+            if ( event instanceof NavigationStart ) {
+                this.snapshot = event.url.indexOf('snap') === 1;
+            }
+          });
+    }
 
     toggleSidenav() {
         this.sidenavToggle.emit(true);

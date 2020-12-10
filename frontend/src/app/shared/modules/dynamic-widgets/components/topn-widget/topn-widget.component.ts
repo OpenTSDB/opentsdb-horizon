@@ -22,8 +22,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.topnchart-widget') private _componentClass = true;
 
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild('container') private container: ElementRef;
@@ -44,10 +44,13 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     size: any = { width: 0, height: 0 };
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
+    widgetOutputElHeight = 60;
+    isEditContainerResized = false;
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
     legendWidth = 0;
     nQueryDataLoading = 0;
+    meta: any = {};
     error: any;
     errorDialog: MatDialogRef < ErrorDialogComponent > | null;
     debugData: any; // debug data from the data source.
@@ -56,6 +59,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     needRequery = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
     formErrors: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -63,10 +67,12 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         public dialog: MatDialog,
         private util: UtilsService,
         private cdRef: ChangeDetectorRef,
+        private elRef: ElementRef,
         private dateUtil: DateUtilsService
     ) { }
 
     ngOnInit() {
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
             .pipe(
@@ -89,27 +95,34 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                     break;
                 case 'reQueryData':
-                    this.refreshData();
-                    break;
-                case 'ZoomDateRange':
-                    overrideTime = this.widget.settings.time.overrideTime;
-                    if ( message.payload.date.isZoomed && overrideTime ) {
-                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
-                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
-                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
-                            this.options.isCustomZoomed = message.payload.date.isZoomed;
-                            this.widget.settings.time.zoomTime = message.payload.date;
-                            this.refreshData();
-                        }
-                    // tslint:disable-next-line: max-line-length
-                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
-                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                    if ( !message.id || message.id === this.widget.id ) {
                         this.refreshData();
                     }
-                    // unset the zoom time
-                    if ( !message.payload.date.isZoomed ) {
-                        delete this.widget.settings.time.zoomTime;
+                    break;
+                case 'ZoomDateRange':
+                    if ( !message.id || message.id === this.widget.id ) {
+                        overrideTime = this.widget.settings.time.overrideTime;
+                        if ( message.payload.date.isZoomed && overrideTime ) {
+                            const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                            const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                            if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                                this.options.isCustomZoomed = message.payload.date.isZoomed;
+                                this.widget.settings.time.zoomTime = message.payload.date;
+                                this.refreshData();
+                            }
+                        // tslint:disable-next-line: max-line-length
+                        } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.refreshData();
+                        }
+                        // unset the zoom time
+                        if ( !message.payload.date.isZoomed ) {
+                            delete this.widget.settings.time.zoomTime;
+                        }
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
             if (message && (message.id === this.widget.id)) {
@@ -148,6 +161,18 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            const newSize = {
+                                width: this.widgetOutputElement.nativeElement.clientWidth,
+                                height: this.widgetOutputElement.nativeElement.clientHeight
+                            }
+                            this.newSize$.next(newSize);
+                        });
+                        break;
                 }
             }
         });
@@ -159,7 +184,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
     }
 
     ngAfterViewInit() {
@@ -175,9 +200,9 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newSize$ = new BehaviorSubject(initSize);
 
         this.newSizeSub = this.newSize$.subscribe(size => {
-            this.setSize(size);
+            setTimeout(() => this.setSize(size), 0);
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
              const newSize = {
                 width: this.widgetOutputElement.nativeElement.clientWidth,
                 height: this.widgetOutputElement.nativeElement.clientHeight
@@ -190,9 +215,17 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.options.format.unit = this.widget.settings.visual.unit;
     }
     setSize(newSize) {
-        const editModifier = this.editMode ? 0 : 23;
+
+        const editModifier = this.mode !== 'view' ? 0 : 23;
+        const heightMod = 0.55;
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
+                                                                : newSize.height + 60;
         this.size = { width: newSize.width, height: newSize.height - editModifier };
         this.cdRef.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     setTitle(title) {
@@ -469,9 +502,19 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     ngOnDestroy() {
-        this.listenSub.unsubscribe();
         this.newSizeSub.unsubscribe();
+        this.listenSub.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 }

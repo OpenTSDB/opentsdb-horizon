@@ -24,8 +24,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     @HostBinding('class.bignumber-widget') private _componentClass = true;
 
     /** Inputs */
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
 
     Object = Object;
@@ -84,11 +84,15 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
+    resizeSensor: any;
+    isEditContainerResized = false;
+    widgetContainerElHeight = 60;
 
     doRefreshData$: BehaviorSubject<boolean>;
     doRefreshDataSub: Subscription;
     visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
     formErrors: any = {};
+    meta: any = {};
 
     @ViewChild('myCanvas') myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
@@ -99,11 +103,12 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         public util: UtilsService,
         public UN: UnitConverterService,
         private cdRef: ChangeDetectorRef,
+        private elRef: ElementRef,
         private dateUtil: DateUtilsService
         ) { }
 
     ngOnInit() {
-
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.disableAnyRemainingGroupBys();
         this.setDefaultVisualization();
 
@@ -125,9 +130,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 if ( !overrideTime ) {
                     this.refreshData();
                 }
-            } else if ( message.action === 'reQueryData' ) {
+            } else if ( message.action === 'reQueryData' &&  ( !message.id || message.id === this.widget.id ) ) {
                 this.refreshData();
-            } else if ( message.action === 'ZoomDateRange') {
+            } else if ( message.action === 'ZoomDateRange' &&  ( !message.id || message.id === this.widget.id ) ) {
                 overrideTime = this.widget.settings.time.overrideTime;
                 if ( message.payload.date.isZoomed && overrideTime ) {
                     const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
@@ -146,6 +151,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 if ( !message.payload.date.isZoomed ) {
                     delete this.widget.settings.time.zoomTime;
                 }
+            } else if ( message.action === 'SnapshotMeta' ) {
+                    this.meta = message.payload;
             }
             if (message && (message.id === this.widget.id)) { // 2. Get and set the metric
                 switch (message.action) {
@@ -186,12 +193,20 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         });
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
     }
   ngAfterViewInit() {
     this.setSize();
@@ -201,25 +216,18 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         // Dimension will be picked up by parent node which is #container
         ElementQueries.listen();
         ElementQueries.init();
-        let initSize = {
-            width: this.widgetOutputElement.nativeElement.clientWidth,
-            height: this.widgetOutputElement.nativeElement.clientHeight
-        };
-        this.newSize$ = new BehaviorSubject(initSize);
+        const dummyFlag = 1;
+        this.newSize$ = new BehaviorSubject(1);
 
         this.newSizeSub = this.newSize$.pipe(
-            debounceTime(100)
+            debounceTime(0)
         ).subscribe(size => {
             this.setSize();
         });
 
         // tslint:disable-next-line:no-unused-expression
-        new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-             const newSize = {
-                width: this.widgetOutputElement.nativeElement.clientWidth,
-                height: this.widgetOutputElement.nativeElement.clientHeight
-            };
-            this.newSize$.next(newSize);
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+            this.newSize$.next(dummyFlag);
         });
     }
     // for first time and call.
@@ -227,15 +235,22 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
         // tslint:disable-next-line:max-line-length
-        const nativeEl = (this.editMode) ? this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const nativeEl = (this.mode !== 'view') ? ( !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement
+                                                : this.widgetOutputElement.nativeElement) : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const outputSize = nativeEl.getBoundingClientRect();
+        const heightMod = 0.55;
         this.widgetWidth = outputSize.width;
-        this.widgetHeight = outputSize.height;
-
+        // tslint:disable-next-line:max-line-length
+        this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height * heightMod - 60 : outputSize.height;
         if (this.data) {
             this.determineFontSizePercent(this.widgetWidth, this.widgetHeight);
         }
+        this.cdRef.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     getVisibleMetricId() {
@@ -392,7 +407,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     determineFontSizePercent(width: number, height: number) {
 
-        if (this.editMode) {
+        if (this.mode !== 'view') {
             this.fontSizePercent = 100;
             return;
         }
@@ -651,6 +666,16 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     setDefaultVisualization() {
         this.widget.settings.visual.prefix = this.widget.settings.visual.prefix || '';
         this.widget.settings.visual.unit = this.widget.settings.visual.unit || '';
@@ -728,10 +753,10 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     ngOnDestroy() {
+        this.newSizeSub.unsubscribe();
         if (this.listenSub) {
             this.listenSub.unsubscribe();
         }
-        this.newSizeSub.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 

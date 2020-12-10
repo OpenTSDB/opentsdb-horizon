@@ -1,6 +1,6 @@
 import {
     Component, OnInit, HostBinding, Input, EventEmitter,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, AfterViewChecked, ViewChildren, QueryList, Output
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -24,8 +24,6 @@ import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
-//import { UniversalDataTooltipService } from '../../../universal-data-tooltip/services/universal-data-tooltip.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -38,15 +36,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.linechart-widget') private _componentClass = true;
 
-    private _editMode: boolean = false;
-    @Input()
-    get editMode(): boolean {
-        return this._editMode;
-    }
-    set editMode(value: boolean) {
-        this._editMode = value;
-    }
     @Input() widget: WidgetModel;
+    @Input() mode = 'view'; // view/explore/edit
     @Output() widgetOut = new EventEmitter<any>();
 
     @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
@@ -117,10 +108,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         series: {},
         visibility: [],
         visibilityHash: {},
-        gridLineColor: '#ccc'
+        gridLineColor: '#ccc',
+        isIslandLegendOpen: false,
+        initZoom: null
     };
     data: any = { ts: [[0]] };
     size: any = { width: 120, height: 60};
+    widgetOutputElHeight = 60;
+    isEditContainerResized = false;
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
     legendWidth;
@@ -139,6 +134,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     timer = null;
     preventSingleClick: boolean;
     clickTimer: any;
+    meta: any = {};
 
     // MULTIGRAPH
     // TODO: These multigraph values need to be retrieved from widget settings
@@ -176,6 +172,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     formErrors: any = {};
     eventsError = '';
+    resizeSensor: any;
+    currentGraphSize: any;
 
     // behaviors that get passed to island legend
     private _buckets: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -199,6 +197,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     ) { }
 
     ngOnInit() {
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
+        this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'snap';
+        this.widget.settings.chartOptions = this.widget.settings.chartOptions || {};
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
             .pipe(
@@ -206,6 +207,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             )
             .subscribe(trigger => {
                 if (trigger) {
+                    this.resetYZoom();
                     this.refreshData();
                 }
             });
@@ -231,35 +233,45 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     this.options.isCustomZoomed = false;
                     overrideTime = this.widget.settings.time.overrideTime;
                     if ( !overrideTime ) {
+                        this.resetYZoom();
                         this.refreshData();
                     }
                     break;
                 case 'reQueryData':
-                    this.refreshData();
-                    break;
-                case 'TimezoneChanged':
-                    this.setTimezone(message.payload.zone);
-                    this.options = { ...this.options };
-                    this.cdRef.markForCheck();
-                    break;
-                case 'ZoomDateRange':
-                    overrideTime = this.widget.settings.time.overrideTime;
-                    if ( message.payload.date.isZoomed && overrideTime ) {
-                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
-                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
-                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
-                            this.options.isCustomZoomed = message.payload.date.isZoomed;
-                            this.widget.settings.time.zoomTime = message.payload.date;
-                            this.refreshData();
-                        }
-                    // tslint:disable-next-line: max-line-length
-                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
-                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                    if ( !message.id || message.id === this.widget.id ) {
+                        this.resetYZoom();
                         this.refreshData();
                     }
-                    // unset the zoom time
-                    if ( !message.payload.date.isZoomed ) {
-                        delete this.widget.settings.time.zoomTime;
+                    break;
+                case 'TimezoneChanged':
+                    if ( !message.id || message.id === this.widget.id ) {
+                        this.setTimezone(message.payload.zone);
+                        this.options = { ...this.options };
+                        this.cdRef.markForCheck();
+                    }
+                    break;
+                case 'ZoomDateRange':
+                    if ( !message.id || message.id === this.widget.id ) {
+                        overrideTime = this.widget.settings.time.overrideTime;
+                        if ( message.payload.date.isZoomed && overrideTime ) {
+                            const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                            const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                            if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                                this.options.isCustomZoomed = message.payload.date.isZoomed;
+                                this.widget.settings.time.zoomTime = message.payload.date;
+                                this.resetYZoom();
+                                this.refreshData();
+                            }
+                        // tslint:disable-next-line: max-line-length
+                        } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.resetYZoom();
+                            this.refreshData();
+                        }
+                        // unset the zoom time
+                        if ( !message.payload.date.isZoomed ) {
+                            delete this.widget.settings.time.zoomTime;
+                        }
                     }
                     break;
                 case 'tsLegendOptionsChange':
@@ -273,14 +285,18 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.legendFocus = message.payload;
                     } else {
                         this.legendFocus = false;
-                        this.cdRef.markForCheck();
+                        // this.cdRef.markForCheck();
                     }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
                     break;
             }
 
             if (message && (message.id === this.widget.id)) {
                 switch (message.action) {
                     case 'InfoIslandClosed':
+                        this.options.isIslandLegendOpen = false;
                         this.updatedShowEventStream(false);
                         break;
                     case 'tsLegendRequestWidgetSettings':
@@ -326,7 +342,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         } else {
                             tsOriginOverlayRef = this.elRef.nativeElement.closest('.widget-loader');
                         }
-                        this.iiService.updatePositionStrategy(tsOriginOverlayRef, 'connected');
+                        if ( this.mode === 'view' ) {
+                            this.iiService.updatePositionStrategy(tsOriginOverlayRef, 'connected');
+                        }
                         break;
                     case 'UpdateExpandedBucketIndex':
                         this._expandedBucketIndex.next(message.payload.index);
@@ -391,6 +409,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 } else {
                                     limitGraphs = this.utilService.deepClone(results);
                                 }
+                                let firstGraph = true;
                                 // we need to convert to dygraph for these multigraph
                                 for (const ykey in limitGraphs) {
                                     if (limitGraphs.hasOwnProperty(ykey)) {
@@ -398,6 +417,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                             if (limitGraphs[ykey].hasOwnProperty(xkey)) {
                                                 limitGraphs[ykey][xkey].ts = [[0]];
                                                 const options = this.utilService.deepClone(this.options);
+                                                options.isIslandLegendOpen = firstGraph && options.isIslandLegendOpen;
+                                                firstGraph = false;
                                                 // preserve previous series and visibility so we can remap in data transformer
                                                 if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
@@ -420,6 +441,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             } else {
                                 let graphs: any = {};
                                 this.data.ts = this.dataTransformer.yamasToDygraph(this.widget, this.options, this.data.ts, rawdata);
+                                if ( this.widget.settings.legend.display ) {
+                                    this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
+                                }
                                 this.data = { ...this.data };
                                 graphs['y'] = {};
                                 graphs['y']['x'] = this.data;
@@ -440,14 +464,15 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
                             setTimeout(() => {
-                                this.setSize(true);
+                                if ( this.mode !== 'edit'  ) {
+                                    this.setSize();
+                                }
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
                             });
-
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
@@ -478,6 +503,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         // this.events = message.payload.events;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if(this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         }));
@@ -487,10 +520,20 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
 
         // Timing issue? trying to move to afterViewInit
         this.setOptions();
+        if ( this.mode === 'snap' || this.mode === 'explore' ) {
+            const chartOptions = this.widget.settings.chartOptions;
+            // override selections
+            this.options.visibilityHash = chartOptions && chartOptions.visbilityHash ? chartOptions.visbilityHash : {};
+            this.options.initZoom = {y: {}, y2: {}};
+            // tslint:disable-next-line: max-line-length
+            this.options.initZoom.y = chartOptions.axes && chartOptions.axes.y ? {...this.options.axes.y, valueRange: chartOptions.axes.y} : null;
+            // tslint:disable-next-line: max-line-length
+            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? {...this.options.axes.y2, valueRange: chartOptions.axes.y} : null;
+        }
     }
 
     ngAfterViewInit() {
@@ -501,14 +544,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // true is just a dummy value to trigger
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
-        this.newSizeSub = this.newSize$.subscribe(flag => {
-            this.setSize();
+        this.newSizeSub = this.newSize$.subscribe(flag => {         
+            const _size = this.widgetOutputElement.nativeElement.getBoundingClientRect();
+            if (JSON.stringify(_size) !== JSON.stringify(this.currentGraphSize)) {
+                setTimeout(() => this.setSize(), 0);
+            }
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
             this.newSize$.next(dummyFlag);
         });
     }
-
     scrollToElement($element): void {
         setTimeout(() => {
             $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
@@ -724,13 +769,17 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     // by default it should not call change detection unless we set it
-    setSize(cdCheck: boolean = true) {
+    setSize() {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
-        const nativeEl = (this.editMode) ?
-            this.widgetOutputElement.nativeElement.parentElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const nativeEl = ( this.mode !== 'view' ) ?
+            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const newSize = nativeEl.getBoundingClientRect();
+        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
+                                                            : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 70;
         // let newSize = outputSize;
         let nWidth, nHeight, padding;
 
@@ -758,13 +807,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             heightOffset = heightOffset <= 80 ? 80 : heightOffset;
         }
 
-        if (this.editMode) {
+        if ( this.mode !== 'view' ) {
             let titleSize = { width: 0, height: 0 };
             if (this.widgetTitle) {
                 titleSize = this.widgetTitle.nativeElement.getBoundingClientRect();
             }
             padding = 15; // 8px top and bottom
-            nHeight = newSize.height - heightOffset - titleSize.height - (padding * 2);
+            nHeight = newSize.height - heightOffset;
 
             if (this.widget.settings.visual.showEvents) {  // give room for events
                 nHeight = nHeight - 45;
@@ -865,14 +914,19 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.legendHeight = !heightOffset ? nHeight + 'px' : heightOffset + 'px';
 
             this.size = { width: nWidth, height: nHeight };
+            // this.size = { width: nWidth, height: nHeight > 250 ? nHeight : 250 }; on edit
         }
         // Canvas Width resize
         this.eventsWidth = nWidth - (this.axisEnabled(this.options.series).size * this.axisLabelsWidth);
 
+        this.currentGraphSize = this.widgetOutputElement.nativeElement.getBoundingClientRect();
+
         // after size it set, tell Angular to check changes
-        if (cdCheck) {
-            this.cdRef.detectChanges();
-        }
+        this.cdRef.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     axisEnabled(series) {
@@ -1167,7 +1221,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 payload: { options: this.options}
             });
         }
-        // console.log("options", this.options.visibility)
     }
 
     // timeSeriesLegend series toggle
@@ -1206,23 +1259,37 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const options = (multigraph) ? this.graphData[multigraph.y][multigraph.x].options : this.options;
         options.visibility[index] = visibility;
         options.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
+        this.resetYZoom();
     }
 
     handleZoom(zConfig) {
-        // console.log('ZOOM ZOOM', zConfig);
-        const n = this.data.ts.length;
-        if ( zConfig.isZoomed && n > 0 ) {
-            const startTime = new Date(this.data.ts[0][0]).getTime() / 1000;
-            const endTime = new Date(this.data.ts[n - 1][0]).getTime() / 1000;
-            zConfig.start = Math.floor(zConfig.start) <= startTime ? -1 : Math.floor(zConfig.start);
-            zConfig.end = Math.ceil(zConfig.end) >= endTime ? -1 : Math.floor(zConfig.end);
+        if ( zConfig.isZoomed && zConfig.axis === 'x' ) {
+            zConfig.start = Math.floor(zConfig.start) <= zConfig.actualStart ? -1 : Math.floor(zConfig.start);
+            zConfig.end = Math.ceil(zConfig.end) >= zConfig.actualEnd ? -1 : Math.floor(zConfig.end);
         }
         // zoom.start===-1 or zoom.end=== -1, the start or end times will be calculated from the datepicker start or end time
-        this.interCom.requestSend({
-            id: this.widget.id,
-            action: 'SetZoomDateRange',
-            payload: zConfig
-        });
+        if ( zConfig.axis === 'x' ) {
+            this.interCom.requestSend({
+                id: this.widget.id,
+                action: 'SetZoomDateRange',
+                payload: zConfig
+            });
+            this.resetYZoom();
+        } else if ( zConfig.axis === 'y' && zConfig.y ) {
+            this.widget.settings.chartOptions.axes = { y: zConfig.y , y2: zConfig.y2 };
+        } else {
+            this.resetYZoom();
+        }
+    }
+    
+    resetYZoom(redraw= true) {
+        if ( this.widget.settings.chartOptions.axes ) {
+            delete this.widget.settings.chartOptions.axes;
+            this.options.initZoom = null;
+            this.options.axes.y.valueRange = [null, null];
+            this.options.axes.y2.valueRange = [null, null];
+            this.setAxesOption();
+        }
     }
 
     bucketClickedAtIndex(index) {
@@ -1417,12 +1484,23 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // apply config from editing
     applyConfig() {
         this.closeViewEditMode();
+        this.widget.settings.chartOptions = {};
         const cloneWidget = JSON.parse(JSON.stringify(this.widget));
         cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
         this.interCom.requestSend({
             action: 'updateWidgetConfig',
             id: cloneWidget.id,
             payload: { widget: cloneWidget, needRequery: this.needRequery }
+        });
+    }
+
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
         });
     }
 
@@ -1506,7 +1584,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
-            if ( !this.editMode ) {
+            if ( this.mode === 'view' ) {
                 this.interCom.requestSend({
                     id: this.widget.id,
                     action: 'InfoIslandOpen',
@@ -1521,7 +1599,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 // tslint:disable-next-line: max-line-length
                 const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
-                this.iiService.openIsland(this.widgetOutputElement.nativeElement, componentOrTemplateRef, widgetOptions);
+                const pos = this.elRef.nativeElement.getBoundingClientRect();
+                const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+                const height = pos.height * ( 1 - heightMod ) - 5;
+                // tslint:disable-next-line: max-line-length
+                this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
+                    originId: this.widget.id,
+                    width: pos.width, positionStrategy: 'connected',
+                    height: height });
             }
         }
 
@@ -1594,8 +1679,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     /* ON DESTROY */
     ngOnDestroy() {
-        this.subscription.unsubscribe();
         this.newSizeSub.unsubscribe();
+        this.subscription.unsubscribe();
         this.doRefreshDataSub.unsubscribe();
     }
 

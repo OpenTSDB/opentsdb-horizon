@@ -93,14 +93,14 @@ export class DboardContentComponent implements OnChanges {
     if (changes.rerender && changes.rerender.currentValue.reload) {
        this.gridster.reload();
     }
-    if (changes.dashboardMode && changes.dashboardMode.currentValue === 'edit') {
-      this.viewEditMode = true;
-    } else if ( changes.dashboardMode && changes.dashboardMode.currentValue !== 'edit') {
-      this.viewEditMode = false;
-      if (this.widgetViewContainer.viewContainerRef) {
+
+    if (changes.dashboardMode) {
+      this.viewEditMode =  changes.dashboardMode.currentValue === 'edit' || changes.dashboardMode.currentValue === 'snap' || changes.dashboardMode.currentValue === 'explore';
+      if (!this.viewEditMode && this.widgetViewContainer.viewContainerRef) {
         this.widgetViewContainer.viewContainerRef.clear();
       }
     }
+
     // check if the new editing widget is needed
     if ( changes.newWidget && changes.newWidget.currentValue ) {
       this.newComponent(changes.newWidget.currentValue);
@@ -111,31 +111,38 @@ export class DboardContentComponent implements OnChanges {
   }
 
   newComponent(widget: any, override= false) {
-    if ( !override ) {
+    if ( !override && this.dashboardMode !== 'snap' ) {
       this.interCom.requestSend(<IMessage> {
         action: 'setDashboardEditMode',
+        id: widget.id,
         payload: 'edit'
       });
       widget.settings = { ...widget.settings, ...this.widgetService.getWidgetDefaultSettings(widget.settings.component_type)};
     }
     const component: Type<any> = this.widgetService.getComponentToLoad(widget.settings.component_type);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
-    this.editComponent( { 'compFactory': componentFactory, widget: widget });
+    this.editComponent( { 'compFactory': componentFactory, widget: widget, mode : this.dashboardMode });
   }
 
   // to load selected component factory to edit
   editComponent(comp: any) {
+    this.loadComponent(comp);
+  }
+
+  loadComponent(comp: any) {
+    const mode = !comp.mode ? 'edit' : comp.mode;
     // get the view container
     const viewContainerRef = this.widgetViewContainer.viewContainerRef;
     viewContainerRef.clear();
     // create component using existing widget factory
     const component = viewContainerRef.createComponent(comp.compFactory);
     // we posfix __EDIT__ to original widget id
-    const editWidget = JSON.parse(JSON.stringify(comp.widget));
-    editWidget.id = '__EDIT__' + comp.widget.id;
+    // do not clone if it is from snapshot
+    const editWidget = mode !== 'snap' ? JSON.parse(JSON.stringify(comp.widget)) : comp.widget;
+    editWidget.id = mode !== 'snap' ? '__EDIT__' + comp.widget.id : comp.widget.id;
     // assign @input widget
     (<WidgetComponentModel>component.instance).widget = editWidget;
-    (<WidgetComponentModel>component.instance).editMode =  true; // let it know it is in edit mode so it shows the config controls
+    (<WidgetComponentModel>component.instance).mode =  mode;
   }
 
   // change ratio when breakpoint hits
@@ -171,6 +178,15 @@ export class DboardContentComponent implements OnChanges {
         const width = event.item.itemComponent.gridster.cellWidth;
         const height = event.item.itemComponent.gridster.cellHeight;
         this.widgetsLayoutUpdate.emit(this.getWigetPosition(width, height, this.winSize));
+        // once the move of a widget end
+        if (event.action === 'drag') {
+          for (let i = 0; i < this.widgets.length; i++) {
+            this.interCom.responsePut({
+              id: this.widgets[i].id,
+              action: 'widgetDragDropEnd'
+            });
+          }
+        }
         // comment out for now to use ResizeSensor
         /* if (event.action === 'resize' && this.winSize === 'md') {
           // only deal with resize to care about new size

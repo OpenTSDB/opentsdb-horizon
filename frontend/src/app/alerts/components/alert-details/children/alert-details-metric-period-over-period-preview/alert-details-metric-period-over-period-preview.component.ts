@@ -1,5 +1,6 @@
 // tslint:disable:max-line-length
-import { Component, OnInit, Input, HostBinding, OnChanges, SimpleChanges, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, OnChanges, SimpleChanges, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy,
+          Output, EventEmitter  } from '@angular/core';
 import * as deepEqual from 'fast-deep-equal';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
@@ -58,6 +59,8 @@ export class AlertDetailsMetricPeriodOverPeriodPreviewComponent implements OnIni
   get thresholdConfig(): any {
     return this._thresholdConfig;
   }
+
+  @Output() outputEvents = new EventEmitter();
 
   _chartData: any = {};
   _thresholdConfig: any = {};
@@ -462,6 +465,10 @@ export class AlertDetailsMetricPeriodOverPeriodPreviewComponent implements OnIni
     this.observedOptions.visibility[index] = visibility;
     this.observedOptions.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
     this.observedOptions = {... this.observedOptions};
+  }
+
+  saveSnapshot() {
+    this.outputEvents.emit({ action: 'SaveSnapshot'});
   }
 
   ngOnDestroy() {

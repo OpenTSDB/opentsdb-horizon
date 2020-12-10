@@ -60,8 +60,8 @@ $widgets-common-config: (
         }
 
         .widget-controls-container {
-            flex: 1 1 100%;
-            display: flex;
+            // flex: 1 1 100%;
+            // display: flex;
             flex-direction: column;
             align-items: stretch;
             justify-content: flex-start;
@@ -69,9 +69,9 @@ $widgets-common-config: (
         }
 
         .widget-output-container {
-            flex: 1 1 100%;
-            display: flex;
-            flex-direction: column;
+            flex: 1 1 100%; // no on edit
+            display: flex;  // no on edit
+            flex-direction: column;  // no on edit
 
             .widget-title {
                 @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
@@ -83,6 +83,11 @@ $widgets-common-config: (
                 }
 
                 .title-content {
+                    .info {
+                        font-size: 12px;
+                        font-weight: 300;
+                    }
+
                     .mat-icon-button {
                         width: 24px;
                         height: 24px;
@@ -463,7 +468,12 @@ $widgets-common-config: (
 
         .widget-output-container {
             padding: 10px $edit-view-padding;
-            max-height: $widget-output-height ;
+            height: 250px;// $widget-output-height ;
+            flex: none;
+            display: block;
+            // min-height: 250px;
+            // max-height: 250px;
+            // flex: 1 1 100%;
             // background: #f2f4f5;
 
             .widget-title {
@@ -472,18 +482,95 @@ $widgets-common-config: (
                 margin-right: -10px;
                 margin-bottom: 10px;
                 padding: 7px 14px;
+                max-height: 40px;
             }
 
             .widget-output {
-                height: 250px;
-                max-height: 250px;
+                // height: 250px;
+                max-height: 100%;
                 min-height: 250px;
+                /*
+                // height: 250px;
+                max-height: 100%;
+                min-height: 250px;
+                */
                 border-radius: $output-radius;
-                display: flex;
+                display: block;
                 justify-content: stretch;
                 align-items: center;
 
             }
+
+            .widget-output {
+                //top: 30px;
+                // padding: 8px 0px;
+                //display: block;
+                // position: relative;
+                // height: inherit;
+
+            }
+        }
+        .widget-controls-container {
+            display: flex;
+            padding: 0;
+            // background: lightblue;
+            overflow: hidden;
+            // flex: 1 1 auto;
+            min-height: 200px;
+            // max-height: 100%;
+            flex-grow: 1;
+        }
+        /*
+        &.viewmode {
+            .widget-output-container {
+                max-height: 100%;
+                flex: 1;
+            }
+            .widget-title {
+                max-height: 40px;
+            }
+            .widget-output {
+                max-height: 100%;
+            }
+        }
+        */
+        .mat-flat-button {
+            &.snapshot-button {
+                padding: 0px 6px;
+                min-width: initial;
+                margin: auto 6px;
+                line-height: 24px;
+                border: 1px solid lightgray;
+
+                .mat-icon {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+    // for resizeable stuffs
+    .widget-output.app-resizeable {
+        position: relative;
+
+        &::after {
+            // content is denali icon drag-handle
+            content: '\ebab';
+            font-family: 'denali-icons';
+            font-size: 12px;
+            display: inline-flex;
+            width: 24px;
+            //background-color: white;
+            color: light-gray;
+            //border: 1px solid lightgray;
+            padding: 2px 4px;
+            position: absolute;
+            left: calc(50% - 12px);
+            top: calc(100% - 7px);
+            align-items: center;
+            justify-content: center;
+            line-height: 8px;
+            border-radius: 4px;
         }
     }
 }
@@ -498,6 +585,8 @@ $widgets-common-config: (
     $is-dark-theme: map-get($theme-config, is-dark);
 
     $divider: map-get($foreground, divider);
+    $card: map-get($background, card);
+    $text:  map-get($foreground, text);
 
     // multigraph
     $mg-background: #E6EDED;
@@ -645,5 +734,20 @@ $widgets-common-config: (
                 box-shadow: inset 0 0 3px 3px rgba(0, 191, 255, 0.3);
             }
         }
+    }
+
+    .widget-output.app-resizeable {
+
+        &::after {
+            // content is denali icon drag-handle
+            content: '\ebab';
+
+            background-color: if($is-dark-theme, rgba(0, 191, 255, 0.3), $card);
+            color: $text;
+            border: 1px solid rgba($text, .3);
+
+        }
+
+        box-shadow: inset 0px -2px 1px -1px rgba($text, .3);
     }
 }
