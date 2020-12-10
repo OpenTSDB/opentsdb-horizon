@@ -120,7 +120,7 @@ export class DbfsUtilsService {
             file.locked = true;
         }
 
-        console.log('details', details);
+        //console.log('details', details);
         return file;
     }
 

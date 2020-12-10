@@ -8,7 +8,8 @@ import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { DashboardService } from '../../dashboard/services/dashboard.service';
 
-import { DbfsState, DbfsResourcesState } from '../state';
+import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../state';
+import { DbfsService } from './dbfs.service';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,6 @@ export class ClipboardService {
     private clipboardResourcePath: string;
 
     /* STREAMS */
-    // $drawerState: BehaviorSubject<string> = new BehaviorSubject('closed');
     private _drawerState: Subject<string> = new Subject(); // tooltip data
     $drawerState: Observable<string>;
 
@@ -28,6 +28,7 @@ export class ClipboardService {
         private dbConverterService: DashboardConverterService,
         private store: Store,
         private http: HttpService,
+        private dbfs: DbfsService,
         private logger: LoggerService
     ) {
         this.$drawerState = this._drawerState.asObservable();
@@ -106,15 +107,15 @@ export class ClipboardService {
         }
     }
 
-    /** PRIVATES */
-
     // find clipboard resource folder
-    private clipboardFolderResource() {
+    clipboardFolderResource() {
+        console.log('******************************');
+        this.logger.api('clipboardFolderResource');
+        console.log('******************************');
         // get current logged in user
         const user = this.store.selectSnapshot(DbfsState.getUser());
         // get current user clipboard file
-        //const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFile('/user/' + user.alias + '/_clipboard_'));
-        let cbResource = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias + '/_clipboard_'))
+        const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/' + user.alias + '/_clipboard_'));
         if (cbResource.notFound) {
            return false;
         }
@@ -123,31 +124,49 @@ export class ClipboardService {
         return cbResource;
     }
 
-    private createClipboardFolder() {
-
-    }
-
-    private createClipboardResource(title: string) {
-        //this.logger.log('createClipboardResource', {user, clipboardResource});
+    createClipboardResource(title: string) {
+        this.logger.api('createClipboardResource', {title});
 
         const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());
-        clipboardProto.settings.meta.title = '_clipboard_';
+        clipboardProto.settings.meta.title = 'Default clipboard';
         clipboardProto.settings.meta.description = 'Dashboard storage for widget clipboard';
         clipboardProto.widgets = []; // reset widgets to empty
         clipboardProto.version = this.dbConverterService.getDBCurrentVersion();
 
-        // get current logged in user
-        const user = this.store.selectSnapshot(DbfsState.getUser());
-
-        // user folder
-        const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias));
+        // clipboardFolder
+        const cbFolder = this.clipboardFolderResource();
 
         const payload: any = {
-            name: '_clipboard_',
-            parentId: userFolder.id,
+            name: title,
+            parentId: cbFolder.id,
             content: clipboardProto
         };
 
-        return this.http.saveDashboard('_new_', payload);
+        this.logger.log('CB PAYLOAD', payload);
+        return this.saveClipboard('_new_', payload);
+    }
+
+    saveClipboard(id: any, payload: any) {
+        this.logger.api('saveClipboard', {id, payload});
+        return this.http.saveDashboard(id, payload);
+    }
+
+    loadClipboard(id: any) {
+        this.logger.api('loadClipboard', {id});
+        return this.http.getDashboardById(id);
+    }
+
+    sortClipboards(items: any[]): any[] {
+        this.logger.api('sortClipboards', {items});
+        const defaultIdx = items.findIndex(item => item.name === 'Default clipboard');
+        const defaultClipboard = items.splice(defaultIdx, 1);
+
+        items.sort((a: any, b: any) => {
+            return this.utils.sortAlphaNum(a.name, b.name);
+        });
+
+        items.unshift(defaultClipboard[0]);
+
+        return items;
     }
 }

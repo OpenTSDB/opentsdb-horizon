@@ -18,7 +18,38 @@
             width: 300px;
         }
 
+        .clipboard-header {
+            display: flex;
+
+            .clipboard-header-close-control {
+
+            }
+
+            .clipboard-header-label {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                flex: 1;
+                padding: 0 4px;
+            }
+        }
+
         .clipboard-content {
+            flex: 1;
+            display: flex;
+        }
+
+        .clipboard-item-list {
+            flex: 1;
+            padding-top: 0;
+
+            .clipboard-item-list-viewport {
+                min-height: 100%;
+            }
+        }
+
+        .clipboard-content-scroller {
+            display: flex;
             flex: 1;
         }
     }

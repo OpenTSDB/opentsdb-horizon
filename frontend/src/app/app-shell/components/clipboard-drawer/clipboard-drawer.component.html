@@ -1,16 +1,93 @@
 <div class="clipboard-drawer-wrap">
-    <div class="clipboard-selector">
-        state: {{getToggleDrawer}}<br />
-        clipboard items: {{cbItems.selectedOptions.selected.length}}/{{cbItems.options.length}}<br />
-        <a mat-button color="primary" (click)="close()">Close</a>
-    </div>
-    <div class="clipboard-content has-scroller">
-        <div class="clipboard-content-scroller is-scroller">
-            <mat-selection-list #cbItems>
-                <mat-list-option *ngFor="let item of arrayOne(25); let i = index;">
-                  item {{i}}
-                </mat-list-option>
-            </mat-selection-list>
+    <div class="clipboard-header">
+        <div class="clipboard-header-close-control">
+            <button mat-icon-button color="primary" (click)="close()">
+                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+            </button>
+        </div>
+        <div class="clipboard-header-label">
+            <span>Clipboard</span>
         </div>
     </div>
+    <div class="clipboard-selector">
+        <mat-form-field>
+            <mat-label>Selected clipboard</mat-label>
+            <mat-select [value]="activeIndex">
+                <mat-option *ngFor="let cb of clipboardList; let idx = index" [value]="idx">
+                    {{cb.resource.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!--<div class="clipboard-selector">
+        state: {{getToggleDrawer}}<br />
+        clipboard items: {{cbItems.selectedOptions.selected.length}}/{{cbItems.options.length}}<br />
+    </div>-->
+    <div class="clipboard-content">
+        <div class="clipboard-content-scroller has-scroller">
+            <div class="clipboard-item-list is-scroller">
+
+
+
+
+
+                <mat-accordion>
+                    <mat-expansion-panel class="clipboard-item" *ngIf="clipboardItems.length === 0" expanded="true"
+                        hideToggle="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                No clipboard items
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="clipboard-item-detail">
+                            Please add items to this clipboard
+                        </div>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel class="clipboard-item" *ngFor="let data of clipboardItems; let i = index;">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{data.settings.title}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="clipboard-item-detail">
+                            <div class="item-detail item-label">
+                                <strong>Widget type:</strong> <span>{{data.settings.component_type}}</span>
+                            </div>
+                            <div class="item-detail item-label">
+                                <strong>Dashboard origin:</strong> <span>{{data.settings.clipboardMeta.dashboard.name}}</span>
+                            </div>
+                            <div class="item-detail copy-date">
+                                <strong>Copied on:</strong> <span>{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
+                            </div>
+
+                        </div>
+
+                        <mat-action-row>
+                            <button mat-button color="primary" (click)="pasteToDashboard(data, i)">Paste to dashboard</button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+
+            </div>
+            <!--<cdk-virtual-scroll-viewport itemSize="36" class="clipboard-item-list-viewport">
+                <mat-list-item *ngIf="clipboardItems.length === 0" class="no-item-message">
+                    <span class="mat-caption no-item-message">Please add items to this clipboard.</span>
+                </mat-list-item>
+                <mat-list-item *cdkVirtualFor="let data of clipboardItems; let i = index;">
+                    <div class="clipboard-item">
+                        <mat-icon class="clipboard-item-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
+                        <span class="clipboard-item-detail">
+                            <span class="clipboard-item-label">{{data.settings.title}}</span>
+                            <span class="clipboard-item-origin">Originated from:
+                                {{data.settings.clipboardMeta.dashboard.name}}</span>
+                            <span class="favorite-date">{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
+                        </span>
+                    </div>
+                </mat-list-item>
+            </cdk-virtual-scroll-viewport>-->
+        </div>
+    </div>
+
 </div>

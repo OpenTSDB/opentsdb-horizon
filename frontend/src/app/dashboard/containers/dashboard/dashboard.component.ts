@@ -66,6 +66,7 @@ import { TemplateVariablePanelComponent } from '../../components/template-variab
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { ClipboardService } from '../../../app-shell/services/clipboard.service';
+import { ClipboardAddItem, ClipboardAddItemSuccess } from '../../../app-shell/state/clipboard.state';
 
 @Component({
     selector: 'app-dashboard',
@@ -601,7 +602,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'copyWidgetToClipboard':
                     const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
-                    this.widgetClipboardService.copyWidget({
+                    const widgetCopy: any = {...message.payload};
+                    widgetCopy.settings.clipboardMeta = {
+                        dashboard: {
+                            id: dbData.id,
+                            path: dbData.path,
+                            fullPath: dbData.fullPath,
+                            name: dbData.name
+                        },
+                        copyDate: Date.now(),
+                        referencePath: dbData.path + '@' + widgetCopy.id
+                    };
+
+                    this.store.dispatch(new ClipboardAddItem(widgetCopy));
+                    /*this.widgetClipboardService.copyWidget({
                         dashboard: {
                             id: dbData.id,
                             path: dbData.path,
@@ -609,7 +623,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             name: dbData.name
                         },
                         widget: { ...message.payload }
-                    });
+                    });*/
                     break;
                 default:
                     break;

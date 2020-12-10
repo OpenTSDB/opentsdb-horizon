@@ -61,6 +61,7 @@ import {
     NotificationEditorComponent
 } from './components/admin-panel';
 import { DashboardService } from '../dashboard/services/dashboard.service';
+import { UniversalClipboardState } from './state/clipboard.state';
 
 @NgModule({
     imports: [
@@ -86,6 +87,7 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
             DbfsPanelsState,
             DbfsResourcesState,
             // TODO: add clipboard state
+            UniversalClipboardState
         ]),
         RouterModule
     ],
