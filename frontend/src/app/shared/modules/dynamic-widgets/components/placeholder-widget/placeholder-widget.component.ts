@@ -16,7 +16,7 @@ export class PlaceholderWidgetComponent  {
     @Output() loadNewWidget = new EventEmitter<any>();
 
     // Available Widget Types
-    availableWidgetTypes: Array<object> = [
+    availableWidgetTypes: any[] = [
         {
             label: 'Bar Graph',
             type: 'BarchartWidgetComponent',

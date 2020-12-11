@@ -8,7 +8,6 @@ import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../state';
 import { ClipboardLoad, ClipboardResourceInitialize, UniversalClipboardState } from '../../state/clipboard.state';
 
-
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'clipboard-drawer',
@@ -47,28 +46,97 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
     @Select(UniversalClipboardState.getClipboardResourceLoaded) cbResourcesLoaded$: Observable<boolean>
     cbResourcesLoaded: boolean = false;
+
     // list of available clipboards
     @Select(UniversalClipboardState.getClipboards) clipboardList$: Observable<any[]>;
     clipboardList: any[] = [];
+
     // items on the currently active clipboard
     @Select(UniversalClipboardState.getClipboardItems) clipboardItems$: Observable<any[]>;
     clipboardItems: any[] = [];
 
+    // index of the currently selected clipboard
     @Select(UniversalClipboardState.getActiveClipboardSelectedIndex) activeIndex$: Observable<any>;
     activeIndex: any = false;
+
+
+    itemDetailOpened: any = ''; // widget id of the item that has detail opened
+
+    // Available Widget Types
+    widgetTypes: Array<object> = [
+        {
+            label: 'Bar Graph',
+            type: 'BarchartWidgetComponent',
+            iconClass: 'widget-icon-bar-graph'
+        }, /*
+        {
+            label: 'Area Graph',
+            type: 'WidgetAreaGraphComponent',
+            iconClass: 'widget-icon-area-graph'
+        }, */
+        {
+            label: 'Line Chart',
+            type: 'LinechartWidgetComponent',
+            iconClass: 'widget-icon-line-chart'
+        },
+        {
+            label: 'Heatmap',
+            type: 'HeatmapWidgetComponent',
+            iconClass: 'widget-icon-heatmap'
+        },
+        {
+            label: 'Big Number',
+            type: 'BignumberWidgetComponent',
+            iconClass: 'widget-icon-big-number'
+        },
+        {
+            label: 'Donut Chart',
+            type: 'DonutWidgetComponent',
+            iconClass: 'widget-icon-donut-chart'
+        },
+        {
+            label: 'Top N',
+            type: 'TopnWidgetComponent',
+            iconClass: 'widget-icon-topn-chart'
+        },
+        {
+            label: 'Notes',
+            type: 'MarkdownWidgetComponent',
+            iconClass: 'widget-icon-notes'
+        },
+        {
+            label: 'Events',
+            type: 'EventsWidgetComponent',
+            iconClass: 'widget-icon-events'
+        }
+        /*,
+        {
+            label: 'Statuses',
+            type: 'WidgetStatusComponent',
+            iconClass: 'widget-icon-statuses'
+        }*/
+    ];
+
+    widgetTypesMap: any = {};
+
+
 
     constructor(
         private store: Store,
         private http: HttpService,
         private cbService: ClipboardService,
         private logger: LoggerService
-    ) { }
+    ) {
+        this.widgetTypes.forEach((item: any, i: any) => {
+            this.widgetTypesMap[item.type] = i;
+        });
+    }
 
     ngOnInit() {
         this.logger.ng('CLIPBOARD DRAWER onInit');
 
         this.subscription.add(this.resourcesLoaded$.subscribe(loaded => {
-            this.logger.ng('resourcesLoaded', {loaded});
+            this.logger.ng('resourcesLoaded', { loaded });
             if (loaded === true) {
                 // DBFS resources loaded... need to initialize clipboard
                 this.store.dispatch(new ClipboardResourceInitialize());
@@ -76,7 +144,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.cbResourcesLoaded$.subscribe(loaded => {
-            this.logger.ng('cbResourcesLoaded', {loaded});
+            this.logger.ng('cbResourcesLoaded', { loaded });
 
             if (loaded === true) {
                 this.cbResourcesLoaded = loaded;
@@ -85,22 +153,26 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.clipboardList$.subscribe(clipboards => {
-            this.logger.ng('clipboardList', {clipboards});
+            this.logger.ng('clipboardList', { clipboards });
             this.clipboardList = clipboards;
         }));
 
         this.subscription.add(this.clipboardItems$.subscribe(items => {
-            this.logger.ng('clipboardItems', {items});
+            this.logger.ng('clipboardItems', { items });
             this.clipboardItems = items;
         }));
 
         this.subscription.add(this.activeIndex$.subscribe(index => {
-            this.logger.ng('activeIndex', {index});
+            this.logger.ng('activeIndex', { index });
+            if (this.activeIndex !== index) {
+                // reset some things
+                this.itemDetailOpened = '';
+            }
             this.activeIndex = index;
         }));
 
         this.subscription.add(this.cbService.$drawerState.subscribe(val => {
-            this.logger.log('DRAWER $drawerState:change', {val});
+            this.logger.log('DRAWER $drawerState:change', { val });
             this.drawerState = val;
         }));
     }
@@ -125,7 +197,21 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     pasteToDashboard(data: any, index: any) {
-        this.logger.log('pasteToDashboard', {data, index});
+        this.logger.log('pasteToDashboard', { data, index });
+    }
+
+    openDetail(id: any) {
+        this.itemDetailOpened = id;
+    }
+
+    closeDetail(id: any) {
+        if (this.itemDetailOpened === id) {
+            this.itemDetailOpened = '';
+        }
+    }
+
+    toggleDetail(id: any) {
+        this.itemDetailOpened = (this.itemDetailOpened !== id) ? id : '';
     }
 
     // JUST FOR DEV

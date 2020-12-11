@@ -31,7 +31,7 @@
 
 
 
-                <mat-accordion>
+                <mat-accordion multi="true">
                     <mat-expansion-panel class="clipboard-item" *ngIf="clipboardItems.length === 0" expanded="true"
                         hideToggle="true">
                         <mat-expansion-panel-header>
@@ -44,15 +44,19 @@
                         </div>
                     </mat-expansion-panel>
 
-                    <mat-expansion-panel class="clipboard-item" *ngFor="let data of clipboardItems; let i = index;">
-                        <mat-expansion-panel-header>
+                    <mat-expansion-panel class="clipboard-item"
+                        *ngFor="let data of clipboardItems; let i = index;"
+
+                        (click)="toggleDetail(data.id)">
+                        <mat-expansion-panel-header collapsedHeight="25" expandedHeight="25">
                             <mat-panel-title>
-                                {{data.settings.title}}
+                                <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
+                                <span>{{data.settings.title}}</span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                        <div class="clipboard-item-detail">
+                        <div class="clipboard-item-detail" (click)="$event.stopPropagation()">
                             <div class="item-detail item-label">
-                                <strong>Widget type:</strong> <span>{{data.settings.component_type}}</span>
+                                <strong>Widget type:</strong> <span>{{widgetTypes[widgetTypesMap[data.settings.component_type]].label}}</span>
                             </div>
                             <div class="item-detail item-label">
                                 <strong>Dashboard origin:</strong> <span>{{data.settings.clipboardMeta.dashboard.name}}</span>
@@ -63,7 +67,7 @@
 
                         </div>
 
-                        <mat-action-row>
+                        <mat-action-row (click)="$event.stopPropagation()">
                             <button mat-button color="primary" (click)="pasteToDashboard(data, i)">Paste to dashboard</button>
                         </mat-action-row>
                     </mat-expansion-panel>

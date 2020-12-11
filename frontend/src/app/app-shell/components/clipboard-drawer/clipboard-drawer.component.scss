@@ -52,6 +52,98 @@
             display: flex;
             flex: 1;
         }
+
+        .clipboard-item {
+            .mat-expansion-panel-header {
+                .mat-content {
+                    font-size: 10px;
+                }
+
+                .widget-type-icon {
+                    margin-right: 4px;
+                }
+            }
+
+            .mat-expansion-panel-content {
+                .mat-expansion-panel-body {
+                    padding: 0 12px 6px;
+                    font-size: 10px;
+                }
+
+                .mat-action-row {
+                    justify-content: flex-start;
+                    font-size: 10px;
+                    padding: 4px 2px;
+
+                    .mat-button {
+                        font-size: 10px;
+                        min-width: 32px;
+                        line-height: 18px;
+                        padding: 0 4px;
+                    }
+                }
+            }
+        }
+
+
+        $widgetSize: 25px;
+        .widget-type-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            &::after {
+                content: '';
+                display: block;
+                overflow: hidden;
+                width: $widgetSize;
+                height: $widgetSize;
+                background-repeat: no-repeat;
+                background-size: ($widgetSize * 4); // four columns of icons * 50px = 200px
+                background-image: url(/assets/widget-icon-sprite.png);
+            }
+
+            &.widget-icon-bar-graph::after {
+                background-position: (-($widgetSize)) 0px;
+            }
+
+            &.widget-icon-area-graph::after {
+                background-position: 0px 0px;
+            }
+
+            &.widget-icon-line-chart::after {
+                background-position: (-($widgetSize * 2)) (-($widgetSize))
+            }
+
+            &.widget-icon-heatmap::after {
+                background-position: (-($widgetSize)) (-($widgetSize))
+            }
+
+            &.widget-icon-topn-chart::after {
+                background-position: (-($widgetSize * 3)) (-($widgetSize))
+            }
+
+            &.widget-icon-big-number::after {
+                background-position: (-($widgetSize * 2)) 0px;
+            }
+
+            &.widget-icon-donut-chart::after {
+                background-position: 0px (-($widgetSize));
+            }
+
+            &.widget-icon-statuses::after {
+                background-position: (-($widgetSize * 3)) 0px;
+            }
+
+            &.widget-icon-notes::after {
+                background-position: 0px (-($widgetSize * 2));
+            }
+
+            &.widget-icon-events::after {
+                background-position: (-($widgetSize)) (-($widgetSize * 2));
+            }
+        }
     }
 }
 
