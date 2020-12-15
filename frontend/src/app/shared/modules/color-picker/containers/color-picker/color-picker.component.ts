@@ -74,7 +74,7 @@ export class ColorPickerComponent implements OnInit {
         if (this.isRgbValid(value)) {
             this._color = this.rgbToHex(value);
         } else {
-            this._color = coerceHexaColor(value) || ( this.enablePalette && value ? value : 'Auto' );
+            this._color = coerceHexaColor(value) || ( this.enablePalette  ? ( value || 'Auto' ) : '#000000' );
         }
 
         // if on embedded view, do not attempt to switch between default and custom
@@ -112,6 +112,7 @@ export class ColorPickerComponent implements OnInit {
     mode = 'palette';
 
     palettes: any = [
+        {'name': 'Auto', 'label': 'Auto'},
         {'name': 'Category10', 'label': 'Category10'},
         {'name': 'Accent', 'label': 'Accent'},
         {'name': 'Dark2', 'label': 'Dark2'},
@@ -199,10 +200,8 @@ export class ColorPickerComponent implements OnInit {
         const index =  this.palettes.findIndex( d => d.name === this.color );
         if ( this.enablePalette && index !== -1 ) {
             this.mode = 'palette';
-        } else if (this.colorToName(this.color) || this.color && this.color.toLowerCase() === 'auto') {
-            this.mode = 'default';
         } else {
-            this.mode = 'custom';
+            this.mode = 'default';
         }
     }
 

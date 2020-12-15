@@ -47,7 +47,7 @@
     <div *ngIf="isOpen" class="color-picker-component-control card" [ngClass]="{'mat-elevation-z4' : pickerMode != embedded}">
 
         <!-- Default Color Selector -->
-        <div *ngIf="mode === 'default'">
+        <!--<div *ngIf="mode === 'default'">
 
             <div *ngIf="enableAuto" class="auto-color" [ngClass]="{'isSelected' : 'Auto'==color}">
                 <button mat-raised-button class="auto-color-button" (click)="colorSelected('auto')" matTooltip="System chooses color" matTooltipPosition="below"> Auto </button>
@@ -62,10 +62,10 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!-- Custom Color Selector -->
-        <div *ngIf="mode === 'custom'">
+        <div *ngIf="mode === 'default'">
             <color-picker-selector [selectedColor]="color" [pickerMode]="pickerMode" (changeSelectedColor)="colorSelected($event)"
                 (clickedCancel)="backdropClick()" [height]="colorPickerSelectorHeight">
             </color-picker-selector>
@@ -86,7 +86,7 @@
         <div class="toggle">
             <mat-button-toggle-group class="mat-button-toggle-group-horizontal" (change)="toggleSelector($event.value)" [value]="mode">
                 <mat-button-toggle mat-flat-button value="default">Default</mat-button-toggle>
-                <mat-button-toggle mat-flat-button value="custom">Custom</mat-button-toggle>
+                <!--<mat-button-toggle mat-flat-button value="custom">Custom</mat-button-toggle>-->
                 <mat-button-toggle mat-flat-button value="palette" *ngIf="enablePalette">Palette</mat-button-toggle>
             </mat-button-toggle-group>
         </div>

@@ -499,7 +499,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
                             const cy = Dygraph.pageY(event) - graphPos.y;
 
-
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
                                 const ts = g.toDataXCoord(cx2);
@@ -603,7 +602,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 window.removeEventListener('mouseout', this._g.mouseOutHandler_, false);
                 setTimeout(() => {
                     if ( this.data.ts && this.data.ts.length && this.options.isIslandLegendOpen ) {
-                            clickCallback.call(this._g, {}, this._g.rawData_[0][0], []);
+                        const ts = this._g.rawData_[0][0];
+                            if ( this.chartType === 'line') {
+                                clickCallback.call(this._g, {}, ts, []);
+                            } else if ( ts ) {
+                                this.currentTickEvent.emit({
+                                    action: 'openLegend',
+                                    tickData: { options: this.options, x: ts, bucket: 1, data: this._g.user_attrs_.series[1] && this._g.user_attrs_.series[1][ts]  }
+                                });
+                            }
                     }
                 });
 

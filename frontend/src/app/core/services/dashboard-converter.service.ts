@@ -437,6 +437,45 @@ export class DashboardConverterService {
           value: 'auto'
         };
       }
+      // this.toDBVersion11(dashboard).subscribe(res => {
+        observer.next(dashboard);
+        observer.complete();
+      // });
+    });
+  }
+
+  toDBVersion11(dashboard: any): Observable<any> {
+    return new Observable((observer) => {
+      dashboard.content.version = 11;
+      const widgets = dashboard.content.widgets;
+      for (let i = 0; i < widgets.length; i++) {
+        if ( ['TopnWidgetComponent', 'HeatmapWidgetComponent'].includes(widgets[i].settings.component_type ) 
+              &&  ( !widgets[i].settings.visual.color || widgets[i].settings.visual.color === 'auto' ) ) {
+          switch( widgets[i].settings.component_type ) {
+            case 'HeatmapWidgetComponent':
+              widgets[i].settings.visual.color = '#3F00FF';
+            break;
+            case 'TopnWidgetComponent':
+              widgets[i].settings.visual.color = '#dff0ff';
+              break;
+            case 'BignumberWidgetComponent':
+              break;
+          }
+        } else if ( widgets[i].settings.component_type === 'BignumberWidgetComponent' ) {
+          widgets[i].settings.visual.backgroundColor = widgets[i].settings.visual.backgroundColor || '#0B5ED2';
+          widgets[i].settings.visual.color = widgets[i].settings.visual.color || '#FFFFFF';
+        } else {
+          const queries = widgets[i].queries;
+          for (let j = 0; j < queries.length; j++) {
+            const metrics = queries[j].metrics;
+            for (let k = 0; k < metrics.length; k++) {
+              if ( metrics[k].settings.visual.color === 'auto' ) {
+                metrics[k].settings.visual.color = '';
+              }
+            }
+          }
+        }
+      }
       observer.next(dashboard);
       observer.complete();
     });
