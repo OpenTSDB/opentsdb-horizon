@@ -667,8 +667,6 @@ export class DatatranformerService {
             }
         }
 
-        console.log("colors", colors, dseries);
-
         const autoColors =  this.util.getColors();
         let cIndex = 0;
 
