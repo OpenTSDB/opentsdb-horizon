@@ -32,6 +32,7 @@
 
 
                 <mat-accordion multi="true">
+                    <!-- if no items -->
                     <mat-expansion-panel class="clipboard-item" *ngIf="clipboardItems.length === 0" expanded="true"
                         hideToggle="true">
                         <mat-expansion-panel-header>
@@ -43,12 +44,12 @@
                             Please add items to this clipboard
                         </div>
                     </mat-expansion-panel>
-
+                    <!-- has items -->
                     <mat-expansion-panel class="clipboard-item"
                         *ngFor="let data of clipboardItems; let i = index;"
-
                         (click)="toggleDetail(data.id)">
-                        <mat-expansion-panel-header collapsedHeight="25" expandedHeight="25">
+                        <mat-expansion-panel-header
+                        expandedHeight="32px" collapsedHeight="32px">
                             <mat-panel-title>
                                 <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
                                 <span>{{data.settings.title}}</span>
@@ -64,7 +65,6 @@
                             <div class="item-detail copy-date">
                                 <strong>Copied on:</strong> <span>{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
                             </div>
-
                         </div>
 
                         <mat-action-row (click)="$event.stopPropagation()">
