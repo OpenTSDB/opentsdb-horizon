@@ -410,6 +410,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.width = (outputSize.width - 30);
             this.height = (outputSize.height - 3);
         }
+        this.options = {...this.options};
         this.detectChanges();
     }
 
