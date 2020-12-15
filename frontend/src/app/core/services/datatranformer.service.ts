@@ -564,7 +564,7 @@ export class DatatranformerService {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                colors[mid] = this.util.getColorsHSV( vConfig.color, n );
+                colors[mid] = n === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color, n );
             }
             for ( let j = 0;  j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
@@ -650,7 +650,7 @@ export class DatatranformerService {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                colors[mid] = this.util.getColorsHSV( vConfig.color, n );
+                colors[mid] =  n === 1 ? [ vConfig.color ] : this.util.getColorsHSV( vConfig.color, n );
             }
 
             for ( let j = 0; j < n; j++ ) {
@@ -666,6 +666,8 @@ export class DatatranformerService {
                 dseries.push({ mid: mid, label: label, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
             }
         }
+
+        console.log("colors", colors, dseries);
 
         const autoColors =  this.util.getColors();
         let cIndex = 0;
