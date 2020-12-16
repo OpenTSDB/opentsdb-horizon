@@ -20,6 +20,7 @@ interface IMetricQueriesConfigOptions {
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
+    enableAlias?: boolean;
     // toggleMetric?: boolean;  // future use
 }
 
