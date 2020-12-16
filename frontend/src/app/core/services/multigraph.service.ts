@@ -27,6 +27,7 @@ export class MultigraphService {
     for (let i = 0; i < rawdata.results.length; i++) {
       const [source, mid] = rawdata.results[i].source.split(':');
       const qids = this.REGDSID.exec(mid);
+      console.log('hill - qids in multigraphs', qids);
       const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
       const mIndex = this.utils.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2]);
       const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
@@ -168,6 +169,7 @@ export class MultigraphService {
     return sortedResults;
     */
    // return no sort
+   console.log('hill - multigraph results', results);
    return results;
   }
 
@@ -230,5 +232,25 @@ export class MultigraphService {
       }
     }
     return ret;
+  }
+  // this will update multigrap config based on groupby tags of a query
+  updateMultigraphConf(groupByTags: string[], multigraph: any) {
+    if (groupByTags.length) {
+      // make sure to keep item that key are in groupTags
+      multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || groupByTags.includes(item.key));
+      for (let i = 0; i < groupByTags.length; i++) {
+        if (multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
+          continue;
+        }
+        const item = {
+          key: groupByTags[i],
+          displayAs: 'g',
+          sortAs: 'asc'
+        };
+        multigraph.chart.push(item);
+      }
+    } else {
+      multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group');
+    }
   }
 }
