@@ -110,22 +110,6 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
                 document.body.focus();
             }
         });
-
-        // click outside the edit zone
-        // saving listener to variable, so we can remove it
-        // (yes renderer2.listen returns function that removes event)
-
-        /*this.showEditableEventListener = this.renderer.listen('document', 'click', (event) => {
-            this.logger.log('SHOW EDITABLE', event);
-            if (!this.container.nativeElement.contains(event.target)) {
-                this.resetFormField();
-                // remove document.keydown listener
-                this.documentKeydownEventListener();
-                // remove document.click listener
-                this.showEditableEventListener();
-            }
-        });*/
-
     }
 
     save() {
@@ -140,8 +124,6 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
         }
         // remove document.keydown listener
         this.documentKeydownEventListener();
-        // remove document.click listener
-        // this.showEditableEventListener();
     }
 
     resetFormField() {
@@ -153,8 +135,5 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
         if (this.documentKeydownEventListener) {
             this.documentKeydownEventListener();
         }
-        /*if (this.showEditableEventListener) {
-            this.showEditableEventListener();
-        }*/
     }
 }

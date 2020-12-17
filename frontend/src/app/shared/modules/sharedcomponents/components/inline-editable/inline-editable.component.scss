@@ -96,7 +96,7 @@
                 grid-area: 1/2;
                 align-self: initial;
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 flex-direction: column;
 
                 // NOTE: input needs size="1"
@@ -165,6 +165,7 @@
                 .mat-input-element {
                     height: 0;
                     visibility: hidden;
+                    display: none;
                 }
                 .mat-form-field-infix::after {
                     height: initial;
@@ -177,6 +178,7 @@
                 .mat-input-element {
                     height: initial;
                     visibility: initial;
+                    display: block;
                 }
                 .mat-form-field-suffix {
                     display: flex;
