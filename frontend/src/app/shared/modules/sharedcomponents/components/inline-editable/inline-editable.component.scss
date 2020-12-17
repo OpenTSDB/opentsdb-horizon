@@ -8,6 +8,185 @@
         .mat-form-field-wrapper {
             padding-bottom: 1.35em;
         }
+
+        /* Following style is to get
+           the input to smartly grow
+           using a css-grid and
+           data-attributes.
+
+           It IS dependant on
+           one-line js on input
+
+           inspired by:
+           https://codepen.io/shshaw/pen/c72208b279d750f1ab46b6a45bbd04d7
+           */
+
+        .mat-form-field {
+            width: auto;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+
+            .mat-form-field-suffix {
+                .mat-mini-fab,
+                .mat-icon-button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .mat-button-wrapper {
+                        padding: 0;
+                        display: flex;
+                    }
+                }
+
+                .mat-mini-fab{
+                    width: 20px !important;
+                    height: 20px !important;
+                    line-height: 20px !important;
+
+
+                }
+
+                .mat-icon-button{
+                    width: 18px !important;
+                    height: 18px !important;
+                    line-height: 18px !important;
+                }
+
+                .mat-icon {
+                    width: 16px !important;
+                    height: 16px !important;
+                    line-height: 16px !important;
+                    font-size: 16px !important;
+                }
+            }
+
+            // grid wrapper
+            .mat-form-field-flex {
+                width: auto;
+                display: inline-grid;
+                align-items: center;
+            }
+
+            // grid column assignment
+            .mat-form-field-prefix {
+                grid-column: 1;
+            }
+
+            .mat-form-field-infix {
+                padding: 0;
+                min-height: 18px;
+
+                &,
+                &::after {
+                    grid-column: 2;
+                }
+            }
+
+            .mat-form-field-suffix {
+                grid-column: 3;
+                padding: 0 4px 0 0;
+            }
+
+            // input and pseudo element sizing
+            // infix needs auto to smartly resize
+            // from pseudo element
+            .mat-form-field-infix {
+                width: auto;
+                grid-area: 1/2;
+                align-self: initial;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+
+                // NOTE: input needs size="1"
+                .mat-input-element {
+                    width: 100%;
+                    padding: 0 4px;
+                }
+
+                &::after {
+                    // make it have same font/padding as input
+                    // this causes it to take up the same space
+                    font-family: inherit;
+                    padding: 0 4px;
+                    grid-area: 1/2;
+                    // disable height
+                    height: 0;
+                    // width dependant on content
+                    width: auto;
+                    resize: none;
+                    overflow: hidden;
+                    // but we want a min-width so input still accessible
+                    min-width: 2em;
+                    // content
+                    content: attr(data-value);
+                    white-space: pre-wrap;
+                    // we don't want it to show
+                    // but we want it to still push
+                    // in the DOM
+                    // so visibility:hidden is important
+                    visibility: hidden;
+                }
+            }
+
+            // adjustments
+            .mat-form-field-wrapper {
+                padding-bottom: 4px;
+                display: flex;
+                align-items: center;
+            }
+
+            .mat-form-field-flex {
+                padding-top:4px;
+            }
+
+            .mat-form-field-infix {
+                border-top-width: 0;
+            }
+
+            .mat-form-field-underline {
+                top: 100%;
+                background-color: transparent;
+            }
+
+            .mat-form-field-suffix {
+                display: none;
+                background-color: transparent;
+            }
+
+            &.readonly-mode:hover {
+                .mat-form-field-suffix {
+                    display: flex;
+                }
+            }
+
+            &.readonly-mode {
+                .mat-input-element {
+                    height: 0;
+                    visibility: hidden;
+                }
+                .mat-form-field-infix::after {
+                    height: initial;
+                    visibility: initial;
+                }
+
+            }
+
+            &.editing-mode {
+                .mat-input-element {
+                    height: initial;
+                    visibility: initial;
+                }
+                .mat-form-field-suffix {
+                    display: flex;
+                }
+                .mat-form-field-infix::after {
+                    height: 0;
+                    visibility: hidden;
+                }
+            }
+        }
     }
 }
 
@@ -20,4 +199,64 @@
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
+
+    $primary-default: map-get($primary, default);
+
+    $text: map-get($foreground, text);
+    $link: map-get($foreground, link);
+
+    $status: map-get($theme-config, status);
+
+    %inline-editable {
+        .mat-form-field-underline {
+            background-color: transparent;
+        }
+
+        .mat-form-field {
+
+            .save-button.mat-mini-fab {
+                background-color: darken(map-get($status, success), 10%);
+            }
+
+            .edit-button {
+                color: $link;
+            }
+
+            &.readonly-mode {
+                .mat-form-field-underline {
+                    background-color: transparent;
+                }
+
+                &:hover {
+                    background-color: rgba($primary-default, 0.08);
+
+                    .mat-form-field-underline {
+                        background-color: $link;
+                        color: $link;
+                    }
+                }
+            }
+
+            &.editing-mode {
+                background-color: rgba($primary-default, 0.08);
+
+                .mat-form-field-underline {
+                    background-color: $link;
+                    color: $link;
+                }
+            }
+
+            &.mat-focused {
+                .mat-form-field-ripple {
+                    background-color: $link;
+                    color: $link;
+                }
+            }
+        }
+    }
+
+    .inline-editable, .mat-toolbar .inline-editable {
+        @extend %inline-editable;
+    }
+
 }
