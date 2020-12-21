@@ -33,6 +33,7 @@ export class YamasService {
     // function in the list.
     metricSubGraphs: any = new Map();
     topnPrefix = 'topn-';
+    ratioPrefix = 'ratio-';
     egadsSlidingWindowPrefix = 'egads-sliding-window-';
 
     constructor( private utils: UtilsService ) { }
@@ -430,6 +431,10 @@ export class YamasService {
                 case 'Median':
                     this.handleSmoothingFunction(idPrefix, subGraph, funs, i);
                     break;
+                case 'Ratio':
+                case 'Percentage':
+                    this.handleRatioFunction(idPrefix, subGraph, funs, i);
+                    break;
                 case 'Rollup':
                     // tslint:disable-next-line:prefer-const
                     let [ aggregator, ds ] = funs[i].val.split(',').map(d => d.trim());
@@ -570,6 +575,38 @@ export class YamasService {
                 func.samples = funs[i].val;
                 func.exponential = false;
                 func.median = true;
+                break;
+        }
+        subGraph.push(func);
+    }
+
+    handleRatioFunction(idPrefix, subGraph, funs, i) {
+        const func = {
+            'id': this.generateNodeId(idPrefix, subGraph),
+            'type': 'ratio',
+            'asPercent': null,
+            'dataSource': subGraph[0].id,
+            'as': subGraph[0].id,
+            'interpolatorConfigs': [
+                {
+                'fillPolicy': 'nan',
+                'realFillPolicy': 'PREFER_NEXT',
+                'dataType': 'net.opentsdb.data.types.numeric.NumericType'
+                }
+            ],
+            'sources': [ subGraph[subGraph.length - 1].id ]
+        };
+
+        const parts = funs[i].val ? funs[i].val.split(',') : null;
+        if (parts && parts[0]) {
+            func.as = parts[0];
+        }
+        switch ( funs[i].fxCall ) {
+            case 'Ratio':
+                func.asPercent = false;
+                break;
+            case 'Percentage':
+                func.asPercent = true;
                 break;
         }
         subGraph.push(func);
