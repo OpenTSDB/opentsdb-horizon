@@ -94,7 +94,6 @@ export class DashboardService {
           widget.settings.visual.color = '#dff0ff';
           break;
         case 'BignumberWidgetComponent':
-          break;
         case 'LinechartWidgetComponent':
         case 'BarchartWidgetComponent':
         case 'DonutWidgetComponent':

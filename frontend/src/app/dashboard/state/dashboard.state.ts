@@ -203,7 +203,6 @@ export class DBState {
                     this.urlOverrideService.activeDashboardId = id;
                     // update grister info for UI only
                     this.dbService.addGridterInfo(dashboard.content.widgets);
-                    dashboard.content.version  = 10;
                     this.dbService.updateTimeFromURL(dashboard);
                     if (dashboard.content.version && dashboard.content.version === this.dbConverterService.currentVersion) {
                         this.dbService.updateTplVariablesFromURL(dashboard);

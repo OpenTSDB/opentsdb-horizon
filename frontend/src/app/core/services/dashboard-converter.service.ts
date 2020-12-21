@@ -458,8 +458,6 @@ export class DashboardConverterService {
             case 'TopnWidgetComponent':
               widgets[i].settings.visual.color = '#dff0ff';
               break;
-            case 'BignumberWidgetComponent':
-              break;
           }
         } else if ( widgets[i].settings.component_type === 'BignumberWidgetComponent' ) {
           widgets[i].settings.visual.backgroundColor = widgets[i].settings.visual.backgroundColor || '#0B5ED2';

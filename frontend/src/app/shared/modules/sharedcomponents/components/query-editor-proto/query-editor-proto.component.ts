@@ -15,7 +15,6 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
-import { WidgetService } from '../../../../../core/services/widget.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
@@ -393,7 +392,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
-        private wdSrvc: WidgetService,
         private fb: FormBuilder,
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
