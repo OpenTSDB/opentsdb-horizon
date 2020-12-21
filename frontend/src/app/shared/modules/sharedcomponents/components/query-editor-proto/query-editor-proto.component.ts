@@ -933,7 +933,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
-                    color: 'auto',
+                    color: '',
                     label: ''
                 }
             },

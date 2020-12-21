@@ -83,7 +83,7 @@
         </div>
 
         <!-- Toggle Default and Custom Color -->
-        <div class="toggle">
+        <div class="toggle" *ngIf="enablePalette">
             <mat-button-toggle-group class="mat-button-toggle-group-horizontal" (change)="toggleSelector($event.value)" [value]="mode">
                 <mat-button-toggle mat-flat-button value="default">Default</mat-button-toggle>
                 <!--<mat-button-toggle mat-flat-button value="custom">Custom</mat-button-toggle>-->

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardConverterService {
 
-  currentVersion = 10;
+  currentVersion = 11;
 
   constructor ( private utils: UtilsService,
     private httpService: HttpService ) { }
@@ -437,10 +437,10 @@ export class DashboardConverterService {
           value: 'auto'
         };
       }
-      // this.toDBVersion11(dashboard).subscribe(res => {
+      this.toDBVersion11(dashboard).subscribe(res => {
         observer.next(dashboard);
         observer.complete();
-      // });
+      });
     });
   }
 

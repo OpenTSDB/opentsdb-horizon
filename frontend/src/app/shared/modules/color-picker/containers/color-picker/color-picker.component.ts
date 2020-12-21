@@ -50,7 +50,6 @@ export class ColorPickerComponent implements OnInit {
     @ViewChild('contentForOtherModes') contentForOtherModes: ElementRef;
 
     /* Inputs */
-    @Input() enableAuto: boolean; // allow auto to be selected - outputs {hex: 'auto', color: 'auto'}
     @Input() enablePalette = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
@@ -74,7 +73,7 @@ export class ColorPickerComponent implements OnInit {
         if (this.isRgbValid(value)) {
             this._color = this.rgbToHex(value);
         } else {
-            this._color = coerceHexaColor(value) || ( this.enablePalette  ? ( value || 'Auto' ) : '#000000' );
+            this._color = coerceHexaColor(value) || ( this.enablePalette  ? ( value || 'auto' ) : '#000000' );
         }
 
         // if on embedded view, do not attempt to switch between default and custom
@@ -112,7 +111,7 @@ export class ColorPickerComponent implements OnInit {
     mode = 'palette';
 
     palettes: any = [
-        {'name': 'Auto', 'label': 'Auto'},
+        {'name': 'auto', 'label': 'Auto'},
         {'name': 'Category10', 'label': 'Category10'},
         {'name': 'Accent', 'label': 'Accent'},
         {'name': 'Dark2', 'label': 'Dark2'},
@@ -169,10 +168,6 @@ export class ColorPickerComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-
-        if (this.enableAuto === undefined) {
-            this.enableAuto = false;
-        }
 
         if (!this._color) {
             this._color = '#000000';

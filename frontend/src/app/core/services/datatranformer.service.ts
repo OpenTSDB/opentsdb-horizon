@@ -136,7 +136,7 @@ export class DatatranformerService {
             } else {
                 dict[mid]['values'] = {}; // queryResults.data;
                 const n = queryResultsObj[i].data.length;
-                if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+                if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                     nAutoColors += n;
                 }
                 totalSeries += n;
@@ -221,7 +221,7 @@ export class DatatranformerService {
 
                 if ( vConfig.color && vConfig.color !== 'auto' ) {
                     colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT] ).reverse();
-                } else if ( vConfig.scheme ) {
+                } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;
                 }
@@ -558,9 +558,9 @@ export class DatatranformerService {
                 continue;
             }
             const n = results[i].data.length;
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                 nAutoColors += n;
-            } else if ( vConfig.scheme ) {
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
@@ -644,9 +644,9 @@ export class DatatranformerService {
             }
 
             const n = results[i].data.length;
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                 nAutoColors += n;
-            } else if ( vConfig.scheme ) {
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
