@@ -1,36 +1,59 @@
 <div class="clipboard-drawer-wrap">
-    <div class="clipboard-header">
-        <div class="clipboard-header-close-control">
-            <button mat-icon-button color="primary" (click)="close()">
-                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
-            </button>
-        </div>
-        <div class="clipboard-header-label">
-            <span>Clipboard</span>
-        </div>
+    <mat-toolbar class="clipboard-header">
+        <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+            <div class="nav-item icon-nav clipboard-collapse-control" style="min-width: 36px;"
+                (click)="close()">
+                <button mat-icon-button>
+                    <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
+                </button>
+            </div>
+            <div class="nav-item flex-spacer clipboard-selector">
+                <ng-container>
+                    <ng-container *ngTemplateOutlet="clipboardSelectorControl"></ng-container>
+                </ng-container>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <ng-container *ngIf="creatingNewClipboard">
+        <ng-container *ngTemplateOutlet="createClipboardPanel"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="!creatingNewClipboard">
+        <ng-container *ngTemplateOutlet="clipboardItemList"></ng-container>
+    </ng-container>
+</div>
+<!-- clipboard selector -->
+<ng-template #clipboardSelectorControl>
+    <mat-form-field>
+        <mat-label>Selected clipboard</mat-label>
+
+        <mat-select [value]="activeIndex" (selectionChange)="clipboardSelectionChange($event)">
+            <!--<mat-option value="_new_">Create new clipboard</mat-option>
+            <mat-divider></mat-divider>-->
+            <mat-option *ngFor="let cb of clipboardList; let idx = index" [value]="idx">
+                {{cb.resource.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-icon-button color="primary" (click)="toggleCreateClipboard()" matTooltip="Create new clipboard">
+        <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
+    </button>
+</ng-template>
+
+<!-- clipboard item list-->
+<ng-template #clipboardItemList>
+    <div class="clipboard-content-batch-controls">
+        batch-controls here
+        <!-- IDEAS for controls
+            expand/collapse all
+            select/deselect all
+            delete
+            add to dashboard
+            create dashboard from clipboard
+        -->
     </div>
-    <div class="clipboard-selector">
-        <mat-form-field>
-            <mat-label>Selected clipboard</mat-label>
-            <mat-select [value]="activeIndex">
-                <mat-option *ngFor="let cb of clipboardList; let idx = index" [value]="idx">
-                    {{cb.resource.name}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
-    <!--<div class="clipboard-selector">
-        state: {{getToggleDrawer}}<br />
-        clipboard items: {{cbItems.selectedOptions.selected.length}}/{{cbItems.options.length}}<br />
-    </div>-->
     <div class="clipboard-content">
         <div class="clipboard-content-scroller has-scroller">
             <div class="clipboard-item-list is-scroller">
-
-
-
-
-
                 <mat-accordion multi="true">
                     <!-- if no items -->
                     <mat-expansion-panel class="clipboard-item" *ngIf="clipboardItems.length === 0" expanded="true"
@@ -71,27 +94,34 @@
                             <button mat-button color="primary" (click)="pasteToDashboard(data, i)">Paste to dashboard</button>
                         </mat-action-row>
                     </mat-expansion-panel>
-
                 </mat-accordion>
-
             </div>
-            <!--<cdk-virtual-scroll-viewport itemSize="36" class="clipboard-item-list-viewport">
-                <mat-list-item *ngIf="clipboardItems.length === 0" class="no-item-message">
-                    <span class="mat-caption no-item-message">Please add items to this clipboard.</span>
-                </mat-list-item>
-                <mat-list-item *cdkVirtualFor="let data of clipboardItems; let i = index;">
-                    <div class="clipboard-item">
-                        <mat-icon class="clipboard-item-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
-                        <span class="clipboard-item-detail">
-                            <span class="clipboard-item-label">{{data.settings.title}}</span>
-                            <span class="clipboard-item-origin">Originated from:
-                                {{data.settings.clipboardMeta.dashboard.name}}</span>
-                            <span class="favorite-date">{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
-                        </span>
-                    </div>
-                </mat-list-item>
-            </cdk-virtual-scroll-viewport>-->
         </div>
     </div>
+</ng-template>
 
-</div>
+<!-- creating clipboard -->
+<ng-template #createClipboardPanel>
+    <div>
+        <div>Create a new clipboard</div>
+        <div>
+            <mat-form-field appearance="legacy">
+                <mat-label>Enter clipboard name</mat-label>
+                <input matInput [formControl]="FC_clipboardName">
+                <mat-error *ngIf="FC_clipboardName.invalid && (FC_clipboardName.dirty || FC_clipboardName.touched)">
+                    <span *ngIf="FC_clipboardName.errors.required">
+                        A clipboard name is required.
+                    </span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-flat-button color="primary" (click)="createClipboard()" >
+                <span>Create Clipboard</span>
+            </button>
+            <button mat-stroked-button color="secondary" (click)="cancelCreateClipboard()">
+                <span>Cancel</span>
+            </button>
+        </div>
+    </div>
+</ng-template>

@@ -6,7 +6,8 @@ import { LoggerService } from '../../../core/services/logger.service';
 import { HttpService } from '../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../state';
-import { ClipboardLoad, ClipboardResourceInitialize, UniversalClipboardState } from '../../state/clipboard.state';
+import { ClipboardCreate, ClipboardLoad, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -119,6 +120,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     widgetTypesMap: any = {};
 
+    creatingNewClipboard: boolean = false;
+    FC_clipboardName: FormControl = new FormControl('', [Validators.required]);
+
+
+    expandAll: boolean = false;
 
 
     constructor(
@@ -167,6 +173,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             if (this.activeIndex !== index) {
                 // reset some things
                 this.itemDetailOpened = '';
+                this.creatingNewClipboard = false;
             }
             this.activeIndex = index;
         }));
@@ -212,6 +219,45 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     toggleDetail(id: any) {
         this.itemDetailOpened = (this.itemDetailOpened !== id) ? id : '';
+    }
+
+    // clipboard selection change
+    clipboardSelectionChange(e: any) {
+        this.logger.event('CLIPBOARD SELECTION CHANGE', e);
+
+        if (e.value === '_new_') {
+            // if "_new_" clipboard
+            this.toggleCreateClipboard();
+        } else {
+            // else was an option selected
+            // set new active index
+            this.store.dispatch(new SetClipboardActive(e.value));
+        }
+    }
+
+    // creating new clipboard
+    toggleCreateClipboard() {
+        if (!this.creatingNewClipboard) {
+            this.FC_clipboardName.setValue('');
+            this.creatingNewClipboard = true;
+        } else {
+            this.creatingNewClipboard = false;
+        }
+    }
+
+    createClipboard() {
+        let valid = this.FC_clipboardName.valid;
+        if (this.FC_clipboardName.valid) {
+            // CALL API
+            this.store.dispatch(new ClipboardCreate(this.FC_clipboardName.value));
+        } else {
+            // form is not valid
+            // do something??
+        }
+    }
+
+    cancelCreateClipboard() {
+        this.creatingNewClipboard = false;
     }
 
     // JUST FOR DEV

@@ -1,4 +1,8 @@
 @mixin clipboard-drawer-component-base() {
+
+    $navbar-height: map-get($navbar-config, 'navbar-height');
+    $logo-height: map-get($navbar-config, 'logo-height');
+
     .clipboard-drawer {
         @include mat-elevation(3);
         overflow: hidden;
@@ -18,19 +22,73 @@
             width: 300px;
         }
 
-        .clipboard-header {
-            display: flex;
+        .clipboard-header.mat-toolbar {
+            @include mat-elevation(0);
+            @include unselectable;
+            background: transparent;
 
-            .clipboard-header-close-control {
-
-            }
-
-            .clipboard-header-label {
+            .nav-item {
                 display: flex;
                 align-items: center;
-                justify-content: flex-start;
-                flex: 1;
-                padding: 0 4px;
+                justify-content: center;
+            }
+
+            .mat-toolbar-row {
+                padding: 0;
+            }
+
+            &.mat-toolbar-multiple-rows,
+            &.mat-toolbar-single-row {
+                min-height: $navbar-height !important;
+                height: $navbar-height;
+            }
+
+            .clipboard-selector {
+                padding: 0 10px;
+                font-size: 12px;
+
+                .mat-form-field {
+                    width: 100%;
+                }
+
+                .mat-form-field .mat-form-field-wrapper {
+                    padding-bottom: 0;
+                }
+
+                .mat-form-field-underline {
+                    top: 100%;
+                }
+            }
+        }
+
+        .mat-icon {
+            height: 12px;
+            width: 12px;
+            font-size: 100%;
+        }
+
+        .mat-icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+
+            .mat-button-wrapper {
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mat-icon {
+                line-height: 1;
+                width: 24px;
+                height: 24px;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
 
@@ -160,7 +218,62 @@
 
     $bg: map-get($background, card);
 
+    /* navbar config */
+    $sn-light: map-get($navbar-config, sn-light);
+    $sn-dark: map-get($navbar-config, sn-dark);
+    $sn-light-text: map-get($navbar-config, sn-light-text);
+    $sn-dark-text: map-get($navbar-config, sn-dark-text);
+    $sn-seperator: map-get($navbar-config, sn-seperator);
+    $sn-active: map-get($navbar-config, sn-active);
+
+    $text-color: map-get($background, navbar);
+    $navbar-text-color: map-get($foreground, navbar-text);
+
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+    $menu-background: map-get($background, card);
+    $menu-background-hover: find-color-invert($menu-background);
+
+    $link: map-get($foreground, link);
+    $link-inverse: find-color-invert($link);
+
+    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
+    $icon-color: $item-text;
+
     .clipboard-drawer {
         background: $bg;
+
+        .clipboard-header.mat-toolbar {
+            // background: rgba($text-color, .5);
+            border-bottom: 1px solid rgba($divider,.07);
+            color: if($is-dark-theme, $navbar-text, $text-color);
+
+            .nav-item.icon-nav {
+                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+            }
+
+            .nav-item.icon-nav:not(:last-child) {
+                border-right: 1px solid rgba($divider,.07);
+            }
+
+            .nav-item:hover {
+                background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
+                cursor: pointer;
+            }
+
+            .nav-item.icon-nav.is-active {
+                background: transparent;
+                color: if($is-dark-theme, $navbar-text, $text-color);
+            }
+
+            &.is-master-panel {
+                .header-label {
+                    color: rgba($text-color,.85);
+                }
+            }
+        }
     }
 }

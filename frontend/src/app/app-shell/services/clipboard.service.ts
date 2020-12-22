@@ -128,8 +128,8 @@ export class ClipboardService {
         this.logger.api('createClipboardResource', {title});
 
         const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());
-        clipboardProto.settings.meta.title = 'Default clipboard';
-        clipboardProto.settings.meta.description = 'Dashboard storage for widget clipboard';
+        clipboardProto.settings.meta.title = title || 'Default clipboard';
+        clipboardProto.settings.meta.description = 'storage for widget clipboard';
         clipboardProto.widgets = []; // reset widgets to empty
         clipboardProto.version = this.dbConverterService.getDBCurrentVersion();
 

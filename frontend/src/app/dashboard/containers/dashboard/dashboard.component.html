@@ -54,15 +54,6 @@
             <mat-icon fontSet="denali" fontIcon="d-add"></mat-icon>
             <span>Add Widget</span>
         </button>
-        <!-- paste from widget clipboard
-             TODO: add functionality-->
-        <button mat-flat-button class="widget-clipboard-paste-trigger"
-            [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
-            [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"
-            matTooltip="Paste from widget clipboard"
-            #availableWidgetsMenuTrigger>
-            <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
-        </button>
         <mat-menu #dashboardAvailableWidgetsMenu="matMenu" [xPosition]="menuXAlignValue" [overlapTrigger]="false" class="nav-bar-dropmenu dashboard-available-widgets-menu" xPosition="before">
             <ng-template matMenuContent>
                 <div class="available-widget-output">
