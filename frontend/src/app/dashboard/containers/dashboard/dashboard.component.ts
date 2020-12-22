@@ -528,10 +528,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     break;
                 case 'updateTemplateVariables':
-                    this.store.dispatch(new UpdateVariables(message.payload));
+                    this.store.dispatch(new UpdateVariables(message.payload));                   
                     break;
                 case 'ApplyTplVarValue':
                     this.applyTplVarValue(message.payload);
+                    // this is pass down to markdown widget to resolve only in view mode
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.interCom.responsePut({
+                            action: 'viewTplVariablesValues',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplValues: results
+                            }
+                        });
+                    });                  
                     break;
                 case 'UpdateTplAlias':
                     this.updateTplAlias(message.payload);
@@ -549,7 +559,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // custom tag to select.
                     this.interCom.responsePut({
                         action: 'TplVariables',
-                        payload: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables
+                        payload: { 
+                            tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                        }
+                    });
+                    break;
+                case 'GetResolveViewTplVariables':
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.interCom.responsePut({
+                            action: 'viewTplVariablesValues',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplValues: results
+                            }
+                        });
                     });
                     break;
                 case 'UpdateTagKeysByNamespaces':
@@ -776,17 +799,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
                     this.tplVariables.scopeCache = scopes;
                     // sort widget by grid row, then assign
-                    const sortWidgets = this.utilService.deepClone(widgets);
+                    this.widgets = this.utilService.deepClone(widgets);
                     if (!this.snapshot) {
-                        sortWidgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                        this.widgets = this.utilService.deepClone(sortWidgets);
-
+                        this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
                         // set oldWidgets when widgets is not empty and oldWidgets is empty
                         if (this.widgets.length && this.oldWidgets.length === 0) {
                             this.oldWidgets = [...this.widgets];
                         }
                     } else {
-                        this.newWidget = sortWidgets[0];
+                        this.newWidget = this.widgets[0];
                         this.setSnapshotMeta();
                     }
                 }));
@@ -1274,6 +1295,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.tagKeysByNamespaces.length === 0) {
                 this.getTagkeysByNamespaces(this.tplVariables.editTplVariables.namespaces);
             }
+        } else {
+            // also passdown for who need it
+            this.interCom.responsePut({
+                action: 'TplVariables',
+                payload: { 
+                    tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                    tplScope: this.tplVariables.scope
+                }
+            });          
         }
         this.variablePanelMode = {...mode};
     }

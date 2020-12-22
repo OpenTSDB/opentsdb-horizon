@@ -16,22 +16,17 @@
 
     .app-navbar {
         // title
-        inline-editable {
+        .inline-editable {
             padding-left: 15px;
+            /* MAY NOT NEED THIS
             input {
                 // padding-left: 0px;
                 &.mat-input-element {
                     &.mat-form-field-autofill-control {
-                        padding-left: 0px;
+                        //padding-left: 0px;
                     }
                 }
-            }
-            .mat-form-field-flex {
-                .mat-form-field-infix {
-                    width: 400px;
-                    padding-left: 0px;
-                }
-            }
+            }*/
         }
     }
 
@@ -311,5 +306,25 @@
                 }
             }
         }
+    }
+
+
+    %inline-editable-app-navbar-override {
+        .mat-form-field {
+            &.readonly-mode {
+                &:hover {
+                    background-color: rgba($white, 0.25) !important;
+                }
+            }
+
+            &.editing-mode {
+                background-color: rgba($white, 0.25) !important;
+            }
+        }
+    }
+
+    .app-navbar .inline-editable,
+    .app-navbar .mat-toolbar .inline-editable {
+        @extend %inline-editable-app-navbar-override;
     }
 }
