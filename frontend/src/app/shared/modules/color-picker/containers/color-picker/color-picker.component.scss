@@ -221,6 +221,13 @@ $available-palettes:
                     background-position-x: 0;
                 }
 
+
+                &.palette-auto {
+                    img {
+                        background-position-y: 0;
+                    }
+                }
+
                 @each $palette in $available-palettes {
                     $palette-index: index($available-palettes, $palette);
                     $palette-index: $palette-index - 1;
