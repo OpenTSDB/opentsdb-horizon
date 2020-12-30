@@ -269,7 +269,11 @@
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
                         <!--<span>color: {{data | json}}</span>-->
-                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="data.visual.color || data.visual.scheme"></span>{{  data.visual.color  ? (data.visual.color | hexToColorName) : 'palette: ' +  ( data.visual.scheme || 'auto' )   }}</span>
+                        <ng-container *ngIf="data.visual.color && isArray(data.visual.color)">
+                            <span *ngFor="let color of data.visual.color "><span [style.background]="color" class="color-chip" ></span>{{ color  }}</span>
+                        </ng-container>
+                        <span *ngIf="data.visual.color && !isArray(data.visual.color)"><span [style.background]="data.visual.color" class="color-chip" ></span>{{ data.visual.color  }}</span>
+                        <span *ngIf="!data.visual.color"><span class="color-chip"></span>{{  'palette: ' +  ( data.visual.scheme || 'auto' )   }}</span>
                         <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
                             {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                             background</span>

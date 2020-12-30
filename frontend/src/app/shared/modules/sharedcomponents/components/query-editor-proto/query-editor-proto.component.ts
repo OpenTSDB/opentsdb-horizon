@@ -465,6 +465,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         return  index;
     }
 
+    isArray(d : any ) {
+        return Array.isArray(d);
+    }
+
     // helper function to format the table datasource into a structure
     // that allows the table to work more or less like it did before
     initMetricDataSource() {

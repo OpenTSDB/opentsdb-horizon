@@ -51,6 +51,7 @@ export class ColorPickerComponent implements OnInit {
 
     /* Inputs */
     @Input() enablePalette = false;
+    @Input() enableMultiSelection = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
     @Input() get pickerMode(): string {
@@ -62,25 +63,8 @@ export class ColorPickerComponent implements OnInit {
     _pickerMode: string;
 
     // Color to display
-    @Input() get color(): string {
-        return this._color;
-    }
-    set color(value: string) {
-        if (this._color !== value) {
-            this.changeDetectorRef.markForCheck();
-        }
+    @Input() color: any;
 
-        if (this.isRgbValid(value)) {
-            this._color = this.rgbToHex(value);
-        } else {
-            this._color = coerceHexaColor(value) || ( this.enablePalette  ? ( value || 'auto' ) : '#000000' );
-        }
-
-        // if on embedded view, do not attempt to switch between default and custom
-        if (this.pickerMode !== 'embedded') {
-            this.determineIfCustomColor();
-        }
-    }
     private _color: string;
 
     // Should panel be open - use with dropDownNoButton mode
@@ -104,6 +88,8 @@ export class ColorPickerComponent implements OnInit {
     embedded = 'embedded';
     dropDownNoButton = 'dropDownNoButton';
     dropDown = 'dropDown';
+    selectedIndex = 0;
+    colors = [];
 
     // tslint:disable:no-inferrable-types
     selectingCustomColor: boolean = false;
@@ -169,9 +155,8 @@ export class ColorPickerComponent implements OnInit {
 
     ngOnInit() {
 
-        if (!this._color) {
-            this._color = '#000000';
-        }
+        this.color =  this.color || ( this.enablePalette ? 'auto'  : '#000000' );
+        this.colors = Array.isArray(this.color) ? this.color : [this.color];
 
         if (!this.pickerMode) {
             this.pickerMode = this.dropDown;
@@ -192,7 +177,7 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        const index =  this.palettes.findIndex( d => d.name === this.color );
+        const index =  this.palettes.findIndex( d => d.name === this.colors[0] );
         if ( this.enablePalette && index !== -1 ) {
             this.mode = 'palette';
         } else {
@@ -213,7 +198,9 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorSelected(hexColor: string): void {
-        this.color = hexColor;
+        this.colors[this.selectedIndex] = hexColor;
+        // this.color = [...this.color];
+        // this.colors[this.selectedIndex] = hexColor;
         this.emitColor();
 
         // if on custom color and we hit a default color, do not switch to default view
@@ -223,17 +210,24 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorSchemeSelected(scheme) {
-        this.color = scheme;
+        this.colors[0] = scheme;
         this.newColor.emit( {'scheme': scheme} );
     }
 
     emitColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.newColor.emit( { hex: 'auto', rgb: 'auto'});
-        } else {
-            this.newColor.emit(this.hexToColor(this.color));
-        }
+        this.newColor.emit( this.enableMultiSelection && this.colors[1] ? this.colors : this.colors[0]);
     }
+
+    setColorIndex(index) {
+        // this.colors[index] = this.colors[index] || null;
+        this.selectedIndex = index;
+    }
+
+    unsetColorByIndex(index) {
+        delete this.colors[index];
+        this.emitColor();
+    }
+
 
     colorToName(hexColor: string): string {
         let colorName = '';
@@ -258,13 +252,13 @@ export class ColorPickerComponent implements OnInit {
     // Open/close color picker panel
     toggle() {
         // if closed, determine if custom color
-        if (!this._isOpen) {
-            this.determineIfCustomColor();
-        }
+        // if (!this._isOpen) {
+            // this.determineIfCustomColor();
+        // }
         this._isOpen = !this._isOpen;
-        if (!this._isOpen && this._color !== this.emptyColor) {
-            this.colorPickerService.addColor(this._color);
-        }
+        // if (!this._isOpen && this._color !== this.emptyColor) {
+            // this.colorPickerService.addColor(this._color);
+        // }
     }
 
     // Update selected color, close the panel and notify the user

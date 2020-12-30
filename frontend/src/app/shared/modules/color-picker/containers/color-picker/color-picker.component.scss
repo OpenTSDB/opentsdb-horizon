@@ -277,6 +277,36 @@ $available-palettes:
             padding: 0px;
         }
 
+        .multi-color {
+            padding: 0px 15px;
+            .title {
+                padding-bottom: 10px;
+                font-size: 10px;
+            }
+        }
+
+        .btn-single-color {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #aaa;
+            min-width: 25px;
+            padding: 0px;
+            margin-right: 4px;
+            box-sizing: initial;
+            &.selected {
+                border: 2px solid #448aff;
+            }
+            .mat-icon {
+                margin: 0px;
+                top: -6px;
+                right: -4px;
+                width: 10px;
+                height: 10px;
+                font-size: 12px;
+                position: absolute;
+            }
+        }
+
         .auto-color-button {
             width: 136px;
             line-height: 20px;
