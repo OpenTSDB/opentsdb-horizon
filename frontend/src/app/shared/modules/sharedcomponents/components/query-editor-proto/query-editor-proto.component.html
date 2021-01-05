@@ -240,12 +240,13 @@
                                     (fxDel)="functionDelete($event)"
                                     [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
                                     [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
-                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
+                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}"
+                                    [optionalData]=" fx.fxCall.indexOf('GroupBy') >= 0 ? {tags: getGroupByTags(data.metric.id)} : {}">
                                 </metric-function>
                             </div>
                         </div>
                         <!-- custom function icon [ ALWAYS LAST ] -->
-                        <div class="metric-row-data add-function" *ngIf="data.type === 'metric'"
+                        <div class="metric-row-data add-function"
                             [matMenuTriggerFor]="functionSelectionMenu" [matMenuTriggerData]="{metric: data.metric}"
                             (click)="functionMenuOpened($event, i)" (menuClosed)="functionMenuClosed($event)">
                             <button mat-flat-button>
@@ -445,7 +446,7 @@
 <!-- FUNCTION MENU-->
 <mat-menu class="function-selection-cdk-menu" #functionSelectionMenu="matMenu">
     <ng-template matMenuContent let-metric="metric">
-        <div class="function-selection-wrapper" style="height: 200px;">
+        <div class="function-selection-wrapper" style="height: 230px;">
             <div class="function-categories">
                 <mat-nav-list>
                     <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"

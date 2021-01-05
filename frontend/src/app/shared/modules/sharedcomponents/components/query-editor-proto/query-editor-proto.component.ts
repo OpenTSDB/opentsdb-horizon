@@ -330,6 +330,36 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             ]
         },
         {
+            label: 'Group By',
+            functions: [
+                {
+                    label: 'Avg',
+                    fxCall: 'GroupByAvg',
+                    val: 'avg'
+                },
+                {
+                    label: 'Min',
+                    fxCall: 'GroupByMin',
+                    val: 'min'
+                },
+                {
+                    label: 'Max',
+                    fxCall: 'GroupByMax',
+                    val: 'max'
+                },
+                {
+                    label: 'Sum',
+                    fxCall: 'GroupBySum',
+                    val: 'sum'
+                },
+                {
+                    label: 'Count',
+                    fxCall: 'GroupByCount',
+                    val: 'count'
+                }
+            ]
+        },
+        {
             label: 'Ratio',
             functions: [
                 {
@@ -388,6 +418,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
             regexValidator: /^\d+[hdw]$/i
         },
+        'GroupByAvg' : {
+            groupByFx : true
+        },
+        'GroupByMin' : {
+            groupByFx : true
+        },
+        'GroupByMax' : {
+            groupByFx : true
+        },
+        'GroupBySum' : {
+            groupByFx : true
+        },
+        'GroupByCount' : {
+            groupByFx : true
+        }
     };
 
     // MAT-TABLE DEFAULT COLUMNS

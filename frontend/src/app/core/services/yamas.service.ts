@@ -460,6 +460,16 @@ export class YamasService {
                 // timeshift
                 case 'Timeshift':
                     break;
+                case 'GroupByAvg':
+                case 'GroupByMin':
+                case 'GroupByMax':
+                case 'GroupBySum':
+                case 'GroupByCount':
+                    const arr = funs[i].val.split(',');
+                    const tagAggregator = arr[0];
+                    const tags = arr.slice(1);
+                    subGraph.push(this.getQueryGroupBy(tagAggregator, tags, [ subGraph[subGraph.length - 1].id ], this.generateNodeId(idPrefix + '-fxgroupby', subGraph)));
+                    break;
             }
         }
     }
