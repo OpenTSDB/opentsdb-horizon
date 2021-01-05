@@ -1,34 +1,32 @@
-<span class="editable-click">
-  <div #container>
-    <div *ngIf="fieldValue" [hidden]="isEditView" (click)="showEditable()">
-        <span>{{fieldValue === placeholder ? '&nbsp;&nbsp;&nbsp;&nbsp;' : fieldValue}}</span>
-        <button mat-icon-button color="primary" *ngIf="showEditIcon">
+<div class="editable-click" style="display: flex; align-items: center;">
+  <div #container style="display: flex; align-items: center;">
+    <mat-form-field appearance="standard" floatLabel="never" appearance="legacy"
+        [ngClass]="{'readonly-mode': !isEditView, 'editing-mode': isEditView}">
+        <input matInput [value]="fieldValue" [formControl]="fieldFormControl"
+            (keyup.enter)="save()"
+            size="1" oninput="this.parentNode.dataset.value = this.value" autocomplete="off">
+        <button mat-icon-button matSuffix class="edit-button" (click)="showEditable()" *ngIf="!isEditView" matTooltip="Click to edit">
             <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
         </button>
-    </div>
-
-    <form class="example-form" *ngIf="isEditView">
-        <mat-form-field class="example-full-width">
-          <input matInput [value]="fieldValue" [formControl]="fieldFormControl" (keyup.enter)="save()" (blur)="save()">
-
-          <!-- Errors -->
-          <mat-error *ngIf="fieldFormControl.hasError('required')">
+        <button mat-mini-fab matSuffix class="save-button" (click)="save()" *ngIf="isEditView" matTooltip="Click to finish editing">
+            <mat-icon fontSet="denali" fontIcon="d-check-circle-solid"></mat-icon>
+        </button>
+        <mat-error *ngIf="fieldFormControl.hasError('required')">
             Field is <strong>required</strong>.
-          </mat-error>
+        </mat-error>
 
-          <mat-error *ngIf="fieldFormControl.hasError('maxlength') && !fieldFormControl.hasError('whitespace')">
+        <mat-error *ngIf="fieldFormControl.hasError('maxlength') && !fieldFormControl.hasError('whitespace')">
             Max length is {{maxLength}}.
-          </mat-error>
+        </mat-error>
 
-          <mat-error *ngIf="fieldFormControl.hasError('minlength') && !fieldFormControl.hasError('whitespace')">
+        <mat-error *ngIf="fieldFormControl.hasError('minlength') && !fieldFormControl.hasError('whitespace')">
             Min length is {{minLength}}.
-          </mat-error>
+        </mat-error>
 
-          <mat-error *ngIf="fieldFormControl.hasError('whitespace') && !fieldFormControl.hasError('required')">
+        <mat-error *ngIf="fieldFormControl.hasError('whitespace') && !fieldFormControl.hasError('required')">
             Please enter valid data.
-          </mat-error>
+        </mat-error>
+    </mat-form-field>
 
-        </mat-form-field>
-      </form>
   </div>
-</span>
+</div>

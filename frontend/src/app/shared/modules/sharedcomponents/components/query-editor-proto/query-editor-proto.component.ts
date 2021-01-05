@@ -302,9 +302,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     fxCall: 'Rollup',
                     val: 'sum,auto'
                 }
-                ]
-            },
-            {
+            ]
+        },
+        {
             label: 'Timeshift',
             functions: [
                 {
@@ -326,6 +326,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     label: 'Month Before',
                     fxCall: 'Timeshift',
                     val: '4w'
+                }
+            ]
+        },
+        {
+            label: 'Ratio',
+            functions: [
+                {
+                    label: 'Ratio',
+                    fxCall: 'Ratio',
+                    val: null
+                },
+                {
+                    label: 'Percentage',
+                    fxCall: 'Percentage',
+                    val: null
                 }
             ]
         }
