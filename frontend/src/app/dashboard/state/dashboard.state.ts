@@ -313,7 +313,7 @@ export class DBState {
                     this.dbService.updateTplVariablesFromURL(dashboard);
                     ctx.dispatch(new LoadSnapshotSuccess(dashboard));
                 } else {
-                    ctx.dispatch(new MigrateAndLoadDashboard(id, dashboard));
+                    ctx.dispatch(new MigrateAndLoadSnapshot(id, dashboard));
                 }
             }),
             catchError( error => ctx.dispatch(new LoadSnapshotFail(error)))
