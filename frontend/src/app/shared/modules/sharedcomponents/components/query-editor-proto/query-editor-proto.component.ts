@@ -459,11 +459,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private interCom: IntercomService,
         private logger: LoggerService
     ) {
+        /*
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
             'function_icon',
             domSanitizer.bypassSecurityTrustResourceUrl('assets/function-icon.svg')
-        );
+        ); */
 
     }
 
@@ -522,6 +523,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     hasValidFilter(query: any): Number {
         const index =  query.filters.findIndex(f => f.filter.length || (f.customFilter && f.customFilter.length));
         return  index;
+    }
+
+    isArray(d : any ) {
+        return Array.isArray(d);
     }
 
     // helper function to format the table datasource into a structure
@@ -619,7 +624,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     settings: {
                         visual: {
                             visible: this.options.enableMultiMetricSelection,
-                            color: 'auto',
+                            color: '',
                             label: ''
                         }
                     },
@@ -990,7 +995,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
-                    color: 'auto',
+                    color: '',
                     label: ''
                 }
             },
