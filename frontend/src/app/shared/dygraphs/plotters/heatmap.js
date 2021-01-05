@@ -22,8 +22,12 @@ var heatmapPlotter = function (e) {
     const minN = config.bucketValues.length ? config.bucketValues[0] : 0;
     const maxN = config.bucketValues.length ? config.bucketValues[config.bucketValues.length - 1] : 1;
     // colors = d3.scaleSequential(d3.interpolate(...config.color)).domain([ minN, maxN]);
+    const domain = [ minN, maxN ];
+    if ( color.length > 2 ) {
+      domain.splice(1, 0, maxN / 2 );
+    }
     colors = d3.scaleLinear()
-              .domain([ minN, maxN])
+              .domain(domain)
               .range(config.color);
     singleColor = false;
   } else {

@@ -215,16 +215,23 @@ export class ColorPickerComponent implements OnInit {
     }
 
     emitColor() {
-        this.newColor.emit( this.enableMultiSelection && this.colors[1] ? this.colors : this.colors[0]);
+        const colors = this.colors.filter(d => d);
+        this.newColor.emit( this.enableMultiSelection && colors.length > 1 ? colors : colors[0]);
     }
 
     setColorIndex(index) {
-        // this.colors[index] = this.colors[index] || null;
+        this.colors[index] = this.colors[index] || null;
         this.selectedIndex = index;
     }
 
+    addColor() {
+        this.colors.push(null);
+        this.selectedIndex = this.colors.length - 1;
+    }
     unsetColorByIndex(index) {
-        delete this.colors[index];
+        // delete this.colors[index];
+        this.colors.splice(index, 1);
+        this.colors = [...this.colors];
         this.emitColor();
     }
 

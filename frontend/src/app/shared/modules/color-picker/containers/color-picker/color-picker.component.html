@@ -71,9 +71,11 @@
             </color-picker-selector>
             <div class="multi-color" *ngIf="enableMultiSelection">
                 <div class="title">Selected Colors</div>
-                <button class="btn-single-color" [ngClass]="{'selected': selectedIndex === 0}" mat-flat-button [style.backgroundColor]="colors[0]" (click)="setColorIndex(0)"></button>
-                <button class="btn-single-color" [ngClass]="{'selected': selectedIndex === 1}" mat-flat-button [style.backgroundColor]="colors[1]" (click)="setColorIndex(1)">
-                    <mat-icon fontSet="denali" fontIcon="d-close-circle-solid" (click)="unsetColorByIndex(1);$event.stopPropagation();"></mat-icon>
+                <button class="btn-single-color" *ngFor="let color of colors; let index=index" [ngClass]="{'selected': selectedIndex === index}" mat-flat-button [style.backgroundColor]="colors[index]" (click)="setColorIndex(index)">
+                    <mat-icon *ngIf="colors.length > 1" class="delete" fontSet="denali" fontIcon="d-close-circle-solid" (click)="unsetColorByIndex(index);$event.stopPropagation();"></mat-icon>
+                </button>
+                <button class="btn-single-color" mat-flat-button  (click)="addColor()" *ngIf="colors.length <= 2">
+                    <mat-icon fontSet="denali" fontIcon="d-add"></mat-icon>
                 </button>
             </div>
         </div>
@@ -93,7 +95,7 @@
         <!-- Toggle Default and Custom Color -->
         <div class="toggle" *ngIf="enablePalette">
             <mat-button-toggle-group class="mat-button-toggle-group-horizontal" (change)="toggleSelector($event.value)" [value]="mode">
-                <mat-button-toggle mat-flat-button value="default">Default</mat-button-toggle>
+                <mat-button-toggle mat-flat-button value="default">RGB</mat-button-toggle>
                 <!--<mat-button-toggle mat-flat-button value="custom">Custom</mat-button-toggle>-->
                 <mat-button-toggle mat-flat-button value="palette" *ngIf="enablePalette">Palette</mat-button-toggle>
             </mat-button-toggle-group>
