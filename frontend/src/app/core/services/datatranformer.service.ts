@@ -75,7 +75,7 @@ export class DatatranformerService {
     let isStacked = false;
     // for time over time, turn bar or area to line type
     let hasToT = false;
-    const midExToTNSeries = {}; 
+    const midExToTNSeries = {};
     const groups = {};
     const stackedYAxes = [];
     let yMax = 0, y2Max = 0;
@@ -83,7 +83,7 @@ export class DatatranformerService {
     const mTimeConfigs = {};
     let totalSeries = 0;
     let nAutoColors = 0;
-    const schemeMeta = { 'colors': {}, 'midScheme': {}, 'schemeN': {}};
+    const schemeMeta = {};
     for ( let i = 0;  i < result.results.length; i++ ) {
         // no data then skip it.
         if (result.results[i].data.length === 0) {
@@ -136,10 +136,8 @@ export class DatatranformerService {
             } else {
                 dict[mid]['values'] = {}; // queryResults.data;
                 const n = queryResultsObj[i].data.length;
-                if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' || (vConfig.color && vConfig.color !== 'auto'  && n > 1) ) {
+                if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
                     nAutoColors += n;
-                } else if ( vConfig.scheme ) {
-                    schemeMeta['schemeN'][vConfig.scheme] = schemeMeta['schemeN'][vConfig.scheme] ? schemeMeta['schemeN'][vConfig.scheme] + n : n;
                 }
                 totalSeries += n;
                 midExToTNSeries[midExToT] += n;
@@ -221,13 +219,11 @@ export class DatatranformerService {
                 vConfig.type = hasToT ? 'line' : vConfig.type;
                 const n = queryResults[i].data.length;
 
-                if ( vConfig.color && vConfig.color !== 'auto' && n === 1 ) {
-                    colors[mid] = [vConfig.color];
+                if ( vConfig.color && vConfig.color !== 'auto' ) {
+                    colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT] ).reverse();
                 } else if ( vConfig.scheme ) {
-                    if ( !schemeMeta['colors'][vConfig.scheme] ) {
-                        schemeMeta['colors'][vConfig.scheme] = this.util.getColorsFromScheme(vConfig.scheme, schemeMeta['schemeN'][vConfig.scheme]);
-                    }
-                    schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
+                    colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
+                    schemeMeta[mid] = true;
                 }
                 for ( let j = 0; j < n; j ++ ) {
                     const data = queryResults[i].data[j].NumericType;
@@ -240,7 +236,7 @@ export class DatatranformerService {
                         const config: any = {
                             strokeWidth: vConfig.lineWeight ? parseFloat(vConfig.lineWeight) : 1,
                             strokePattern: this.getStrokePattern(vConfig.lineType),
-                            color: vConfig.color && vConfig.color !== 'auto' && n === 1 ? vConfig.color : '',
+                            // color: vConfig.color && vConfig.color !== 'auto' && n === 1 ? vConfig.color : '',
                             fillGraph: vConfig.type === 'area' ? true : false,
                             isStacked: vConfig.type === 'area' && vConfig.stacked !== 'false' ? true : false,
                             axis: !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2',
@@ -251,7 +247,8 @@ export class DatatranformerService {
                             group: vConfig.type ? vConfig.type : 'line',
                             order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
                             stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
-                            stackOrder: vConfig.stackOrder || 'asc'
+                            stackOrder: vConfig.stackOrder || 'asc',
+                            connectMissingData: vConfig.connectMissingData === 'true' ? true : false
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
@@ -286,26 +283,22 @@ export class DatatranformerService {
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
+        let newVisibilityHash: any = {};
         let cIndex = 0;
         const autoColors = this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
             const label = options.labels.length.toString();
             const mid = dseries[i].mid;
+            const midExToT = dseries[i].mid.split('-')[0];
             options.labels.push(label);
-            if ( schemeMeta['midScheme'][mid] && !colors[mid]) {
-                colors[mid] = schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].splice(0, schemeMeta['midScheme'][mid]['n']);
-                colors[mid] = (dseries[i].config.group !== 'line' && dseries[i].config.stackOrder === 'asc') ? colors[mid].reverse() : colors[mid];
-            }
-            // check visibility hash for existing data
             if ( options.visibilityHash[dseries[i].hash] !== undefined ) {
                 options.visibility.push(options.visibilityHash[dseries[i].hash]);
             } else {
                 options.visibility.push(true);
             }
-            options.visibilityHash[dseries[i].hash] = options.visibility[i];
+            newVisibilityHash[dseries[i].hash] = options.visibility[i];
             options.series[label] = dseries[i].config;
-            options.series[label].color = dseries[i].config.color ? dseries[i].config.color :
-                                            ( colors[mid] ? colors[mid].shift() : autoColors[cIndex++ % nAutoColors] );
+            options.series[label].color = colors[midExToT] ? colors[midExToT].pop() : autoColors[cIndex++ % nAutoColors];
             options.series[label].hash = dseries[i].hash;
             const seriesIndex = options.labels.indexOf(label);
             const axis = dseries[i].config.axis;
@@ -319,7 +312,7 @@ export class DatatranformerService {
                 const ms = secs * 1000;
                 const tsIndex = tsObj[ms];
                 if ( tsIndex !== undefined ) {
-                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : NaN;
+                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : ( dseries[i].config.connectMissingData ? null : NaN );
                 }
                 if ( isStacked && !isNaN(data[k]) && ( (type === 'area' && dseries[i].config.isStacked) || type === 'bar') ) {
                     if ( data[k] > 0) {
@@ -330,6 +323,7 @@ export class DatatranformerService {
                 }
             }
         }
+        options.visibilityHash = newVisibilityHash;
         // console.debug(widget.id, "time taken for finding min, max(ms)", new Date().getTime() - intermediateTime );
 
         if (isStacked) {
@@ -548,6 +542,7 @@ export class DatatranformerService {
         const results = queryData.results ? queryData.results : [];
         const dseries = [];
         const schemeMeta = { 'colors': {}, 'midScheme': {}, 'schemeN': {}};
+        const colors = {};
         for ( let i = 0;  i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -563,14 +558,13 @@ export class DatatranformerService {
                 continue;
             }
             const n = results[i].data.length;
-            let color = '';
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' || (vConfig.color && vConfig.color !== 'auto'  && n > 1) ) {
+            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
                 nAutoColors += n;
             } else if ( vConfig.scheme ) {
-                schemeMeta['schemeN'][vConfig.scheme] = schemeMeta['schemeN'][vConfig.scheme] ? schemeMeta['schemeN'][vConfig.scheme] + n : n;
+                colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                color = vConfig.color;
+                colors[mid] = n === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color, n );
             }
             for ( let j = 0;  j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
@@ -582,35 +576,22 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                dseries.push({  mid: mid, order: qIndex + '-' + mIndex, label: label, value: aggData[aggrIndex], color: color, tooltipData: { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags } });
+                dseries.push({  mid: mid, order: qIndex + '-' + mIndex, label: label, value: aggData[aggrIndex], tooltipData: { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags } });
             }
-        }
-        const schemes = Object.keys(schemeMeta['schemeN']);
-        for ( let i = 0; i < schemes.length; i++ ) {
-            const n = schemeMeta['schemeN'][schemes[i]];
-            schemeMeta['colors'][schemes[i]] = this.util.getColorsFromScheme(schemes[i], n);
         }
 
         let cIndex = 0;
         const autoColors =  this.util.getColors();
-        // assing colors based on series label
+        // assing colors based on value
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  a.value - b.value;
         });
-        for ( let i = 0; i < dseries.length; i++ ) {
-            const mid = dseries[i].mid;
-            dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
-        }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.labels.push(dseries[i].label);
             datasets[0].data.push(dseries[i].value);
-            datasets[0].backgroundColor.push(dseries[i].color ? dseries[i].color : schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift());
+            datasets[0].backgroundColor.push( colors[mid] ? (schemeMeta['midScheme'][mid] ? colors[mid].shift() : colors[mid].pop()) : autoColors[ cIndex++ % nAutoColors ]);
             datasets[0].tooltipData.push(dseries[i].tooltipData);
         }
         return [...datasets];
@@ -646,6 +627,7 @@ export class DatatranformerService {
         const dseries = [];
         let nAutoColors = 0;
         const schemeMeta = { 'colors': {}, 'midScheme': {}, 'schemeN': {}};
+        const colors = {};
         for ( let i = 0; i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -662,15 +644,15 @@ export class DatatranformerService {
             }
 
             const n = results[i].data.length;
-            let color = '';
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' || (vConfig.color && vConfig.color !== 'auto'  && n > 1) ) {
+            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
                 nAutoColors += n;
             } else if ( vConfig.scheme ) {
-                schemeMeta['schemeN'][vConfig.scheme] = schemeMeta['schemeN'][vConfig.scheme] ? schemeMeta['schemeN'][vConfig.scheme] + n : n;
+                colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                color = vConfig.color;
+                colors[mid] =  n === 1 ? [ vConfig.color ] : this.util.getColorsHSV( vConfig.color, n );
             }
+
             for ( let j = 0; j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;
@@ -681,35 +663,22 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                dseries.push({ mid: mid, label: label, color: color, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
+                dseries.push({ mid: mid, label: label, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
             }
         }
 
-        const schemes = Object.keys(schemeMeta['schemeN']);
-        for ( let i = 0; i < schemes.length; i++ ) {
-            const n = schemeMeta['schemeN'][schemes[i]];
-            schemeMeta['colors'][schemes[i]] = this.util.getColorsFromScheme(schemes[i], n);
-        }
         const autoColors =  this.util.getColors();
         let cIndex = 0;
 
-        // assing colors based on series label
+        // assing colors based on value desc
         dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.label.localeCompare(b.label);
+            return  b.value - a.value;
         });
-        for ( let i = 0; i < dseries.length; i++ ) {
-            const mid = dseries[i].mid;
-            dseries[i].color = dseries[i].color ? dseries[i].color : ( schemeMeta['midScheme'][mid] ? '' : autoColors[ cIndex++ % nAutoColors ] );
-        }
 
-        // display based on value
-        dseries.sort((a: any, b: any) => {
-            return  (a.order.localeCompare(b.order, 'en', { numeric: true, sensitivity: 'base' })) || a.value - b.value;
-        });
         for ( let i = 0; i < dseries.length; i++ ) {
             const mid = dseries[i].mid;
             options.data.push( { label: dseries[i].label, value: dseries[i].value,
-                                    color: dseries[i].color ? dseries[i].color : schemeMeta['colors'][schemeMeta['midScheme'][mid]['scheme']].shift(),
+                                    color: colors[mid] ? (schemeMeta['midScheme'][mid] ? colors[mid].shift() : colors[mid].pop()) : autoColors[ cIndex++ % nAutoColors ],
                                     tooltipData: dseries[i].tooltipData } );
         }
 

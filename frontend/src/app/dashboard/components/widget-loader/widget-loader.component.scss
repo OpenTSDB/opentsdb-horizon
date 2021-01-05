@@ -7,15 +7,15 @@
         flex: 1 1 auto;
 
         .widget-menu-trigger,
+        .snapshot-icon,
         .expand-trigger {
             visibility: hidden;
         }
 
         &:hover {
-            .widget-menu-trigger {
-                visibility: visible;
-            }
-            .expand-trigger {
+            .widget-menu-trigger,
+            .expand-trigger,
+            .snapshot-icon {
                 visibility: visible;
             }
         }
@@ -62,9 +62,12 @@
             padding: initial;
         }
 
-        .mat-icon.time-lock,
-        .expand-trigger {
+        .mat-icon.time-lock
+        //.snapshot-icon,
+        //.expand-trigger
+        {
             cursor: pointer;
+            margin: 0px 6px;
             font-size: 12px;
             width: 12px;
             height: 12px;
@@ -86,6 +89,13 @@
                 font-size: 18px;
                 line-height: 24px;
             }
+
+           &.expand-trigger,
+           &.snapshot-icon {
+               .mat-icon {
+                   font-size: 12px;
+               }
+           }
         }
 
         &.inverse-menu-color {

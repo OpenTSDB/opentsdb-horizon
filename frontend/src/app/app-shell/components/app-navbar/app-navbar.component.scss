@@ -127,7 +127,14 @@
                     color: map-get($foreground, navbar-icons)
                 }
             }
+            &.snapshot {
+                background: #135588;
+            }
+            &.explore {
+                background: lightsteelblue;
+            }
         }
+
 
         .navbar-item {
             .menu-trigger-underline {

@@ -54,6 +54,7 @@ export interface WidgetModel {
         };
         thresholds?: ThresholdConfig[];
         multigraph?: any;
+        chartOptions?: any;
     };
     gridPos: {
         x: number;

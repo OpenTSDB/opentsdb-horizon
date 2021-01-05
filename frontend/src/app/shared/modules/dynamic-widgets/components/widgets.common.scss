@@ -88,14 +88,14 @@ $widgets-common-config: (
                         font-weight: 300;
                     }
 
-                    .mat-icon-button {
+                    :not(.inline-editable) .mat-icon-button {
                         width: 24px;
                         height: 24px;
                         line-height: 24px;
-                    }
 
-                    .mat-icon-button .mat-icon {
-                        @include sizeDenaliIcon(14px);
+                        .mat-icon {
+                            @include sizeDenaliIcon(14px);
+                        }
                     }
                 }
 
@@ -558,7 +558,7 @@ $widgets-common-config: (
             content: '\ebab';
             font-family: 'denali-icons';
             font-size: 12px;
-            display: none;
+            display: inline-flex;
             width: 24px;
             //background-color: white;
             color: light-gray;
@@ -571,14 +571,6 @@ $widgets-common-config: (
             justify-content: center;
             line-height: 8px;
             border-radius: 4px;
-        }
-
-        &:hover {
-            //box-shadow: inset 0px -2px 1px -1px lightgray;
-
-            &::after {
-                display: inline-flex;
-            }
         }
     }
 }
@@ -756,8 +748,6 @@ $widgets-common-config: (
 
         }
 
-        &:hover {
-            box-shadow: inset 0px -2px 1px -1px rgba($text, .3);
-        }
+        box-shadow: inset 0px -2px 1px -1px rgba($text, .3);
     }
 }

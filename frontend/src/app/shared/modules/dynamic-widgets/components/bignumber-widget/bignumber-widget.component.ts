@@ -84,6 +84,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
+    resizeSensor: any;
     isEditContainerResized = false;
     widgetContainerElHeight = 60;
 
@@ -192,6 +193,14 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         });
@@ -207,11 +216,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         // Dimension will be picked up by parent node which is #container
         ElementQueries.listen();
         ElementQueries.init();
-        let initSize = {
-            width: this.widgetOutputElement.nativeElement.clientWidth,
-            height: this.widgetOutputElement.nativeElement.clientHeight
-        };
-        this.newSize$ = new BehaviorSubject(initSize);
+        const dummyFlag = 1;
+        this.newSize$ = new BehaviorSubject(1);
 
         this.newSizeSub = this.newSize$.pipe(
             debounceTime(0)
@@ -220,12 +226,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         });
 
         // tslint:disable-next-line:no-unused-expression
-        new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-             const newSize = {
-                width: this.widgetOutputElement.nativeElement.clientWidth,
-                height: this.widgetOutputElement.nativeElement.clientHeight
-            };
-            this.newSize$.next(newSize);
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+            this.newSize$.next(dummyFlag);
         });
     }
     // for first time and call.
@@ -237,7 +239,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                                                 : this.widgetOutputElement.nativeElement) : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const outputSize = nativeEl.getBoundingClientRect();
-        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        const heightMod = 0.55;
         this.widgetWidth = outputSize.width;
         // tslint:disable-next-line:max-line-length
         this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height * heightMod - 60 : outputSize.height;

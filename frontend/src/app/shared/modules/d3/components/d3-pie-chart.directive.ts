@@ -102,11 +102,13 @@ export class D3PieChartDirective implements OnInit, OnChanges {
             .sort(null)
             .value(function (d: any) { return d.value; });
 
-        var arcs = donut.selectAll("arc")
+        var arcs = donut.selectAll('arc')
             .data(pie(dataset))
             .enter()
-            .append("g")
-            .attr("class", "arc");
+            .append('g')
+            .attr('class', 'arc')
+            .attr('stroke', 'white')
+            .style('stroke-width', '1px');
 
         //draw arc paths
         let path = arcs.append("path")
@@ -128,20 +130,23 @@ export class D3PieChartDirective implements OnInit, OnChanges {
 
         let labels;
         if (this.options.legend.showPercentages) {
-            labels = arcs.append("text")
-                .attr("transform", function (d) {
+            labels = arcs.append('text')
+                .attr('transform', function (d) {
                     const diff = d.endAngle - d.startAngle;
                     const rotate = diff > 0.4 ? '' : 'rotate(' + angle(d) + ')';
-                    return "translate(" + arc.centroid(d) + ")" + rotate;
+                    return 'translate(' + arc.centroid(d) + ')' + rotate;
                 })
-                .attr("dy", ".30em")
-                .style("text-anchor", "middle")
-                .style("font-size", "0.9em")
+                .attr('dy', '.30em')
+                .style('text-anchor', 'middle')
+                .style('font-size', '0.9em')
+                .attr('stroke', 'black')
+                .attr('stroke-width', '0.7px')
+                .style('font-weight', '100')
                 .style('opacity', (d) => (d.endAngle - d.startAngle) * chartSize > 25 && d.data.enabled ? 1 : 0)
-                .text(d => d3.format(".1%")(d.value / total))
-                .on("mouseover", mouseover)
-                .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave);
+                .text(d => d3.format('.1%')(d.value / total))
+                .on('mouseover', mouseover)
+                .on('mousemove', mousemove)
+                .on('mouseleave', mouseleave);
         }
         const legendClickHandler = function (s: any, index) {
             const rect: any = d3.select(this.parentNode.childNodes[index]);

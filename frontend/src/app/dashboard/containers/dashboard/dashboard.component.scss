@@ -16,22 +16,17 @@
 
     .app-navbar {
         // title
-        inline-editable {
+        .inline-editable {
             padding-left: 15px;
+            /* MAY NOT NEED THIS
             input {
                 // padding-left: 0px;
                 &.mat-input-element {
                     &.mat-form-field-autofill-control {
-                        padding-left: 0px;
+                        //padding-left: 0px;
                     }
                 }
-            }
-            .mat-form-field-flex {
-                .mat-form-field-infix {
-                    width: 400px;
-                    padding-left: 0px;
-                }
-            }
+            }*/
         }
     }
 
@@ -40,6 +35,7 @@
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -60,14 +56,19 @@
                     margin-left: 6px;
                 }
             }
-            
+            &.explore-close-button,
             &.save-dashboard-button {
                 padding: 0;
                 min-width: initial;
                 margin: auto 6px;
-    
+
                 .mat-icon {
                     margin: 0px;
+                }
+            }
+            &.explore-close-button {
+                .mat-icon {
+                    font-size: 1.8em;
                 }
             }
         }
@@ -240,10 +241,12 @@
     $status: map-get($theme-config, status);
     $close-button-background: map-get($accent, A400);
     $close-button-text: map-get($foreground, navbar-text);
+    $navbar-background: map-get($background, navbar);
 
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -254,6 +257,9 @@
                 background-color: lighten(map-get($background, navbar), 8%);
             }
         }
+    }
+    .nav-title-readonly {
+        color: $navbar-background;
     }
 
     // cdk items
@@ -288,5 +294,25 @@
                 }
             }
         }
+    }
+
+
+    %inline-editable-app-navbar-override {
+        .mat-form-field {
+            &.readonly-mode {
+                &:hover {
+                    background-color: rgba($white, 0.25) !important;
+                }
+            }
+
+            &.editing-mode {
+                background-color: rgba($white, 0.25) !important;
+            }
+        }
+    }
+
+    .app-navbar .inline-editable,
+    .app-navbar .mat-toolbar .inline-editable {
+        @extend %inline-editable-app-navbar-override;
     }
 }

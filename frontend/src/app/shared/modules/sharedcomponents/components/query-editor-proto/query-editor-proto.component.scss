@@ -762,29 +762,10 @@
                     position: relative;
                     filter: grayscale(100%);
                     opacity: .85;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        display: block;
-
-                    }
-                }
-
-                .metric-row-data.action {
-                    .cdk-drag-handle,
-                    .clone-metric {
-                        display: none;
-                    }
                 }
             }
 
             & + .metric-query-item-visual {
-                pointer-events: none;
                 filter: grayscale(100%);
 
                 .mat-cell {

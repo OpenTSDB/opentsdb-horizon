@@ -265,6 +265,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         'modifiers'
     ];
 
+    excludeMetricGroupByTags = ['_aggregate', '_alert_id', '_alert_name', '_threshold_name'];
+
     events: any = [];
     startTime;
     endTime;
@@ -329,7 +331,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.cdRef.markForCheck();
         }));
 
-        this.options.labelsDiv = this.dygraphLegend.nativeElement;
+        // this.options.labelsDiv = this.dygraphLegend.nativeElement;
         this.subscription.add(this.doEventQuery$
             .pipe(
                 skip(1),
@@ -402,10 +404,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     ngAfterContentInit() {
         ElementQueries.listen();
         ElementQueries.init();
-        const resizeSensor = new ResizeSensor(this.elRef.nativeElement, (size) => {
+        if ( this.graphOutput && this.data.id > 0 && window.innerHeight ) {
+            this.graphOutput.nativeElement.style.height = window.innerHeight * 0.4 + 'px';
+        }
+        const resizeSensor = new ResizeSensor(this.graphOutput.nativeElement, (size) => {
              const newSize = {
                 width: size.width * ( this.data.type === 'event' ? 0.65 : 1 ) - 5,
-                height: 160
+                height: size.height
             };
             this.size = newSize;
         });
@@ -1154,7 +1159,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     handleZoom(zConfig) {
         const n = this.chartData.ts.length;
         this.options.isCustomZoomed = zConfig.isZoomed;
-        if ( zConfig.isZoomed && n > 0 ) {
+        if ( zConfig.isZoomed && n > 0 && zConfig.axis === 'x' ) {
             if ( this.prevDateRange === null ) {
                 this.prevDateRange = { startTime: this.startTime, endTime: this.endTime };
             }
@@ -1162,7 +1167,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             const endTime = new Date(this.chartData.ts[n - 1][0]).getTime() / 1000;
             this.startTime = Math.floor(zConfig.start) <= startTime ? this.startTime : this.dateUtil.timestampToTime(zConfig.start, 'local');
             this.endTime = Math.ceil(zConfig.end) >= endTime ? this.endTime : this.dateUtil.timestampToTime(zConfig.end, 'local');
-        } else if ( !zConfig.isZoomed) {
+        } else if ( !zConfig.isZoomed && zConfig.axis === 'x' ) {
             this.startTime = this.prevDateRange.startTime;
             this.endTime = this.prevDateRange.endTime;
             this.prevDateRange = null;
@@ -1623,6 +1628,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     saveSnapshot() {
+        const queries = this.utils.deepClone(this.queries);
+        for ( let i = 0; i < queries.length; i++ ) {
+            for ( let j = 0; j < queries[i].metrics.length; j++ ) {
+                // tslint:disable-next-line:max-line-length
+                queries[i].metrics[j].settings.visual.visible =  !this.thresholdSingleMetricControls.metricId.value || queries[i].metrics[j].id === this.thresholdSingleMetricControls.metricId.value;
+            }
+        }
         const dConfig: any = {
             version: this.dbConverterSrv.getDBCurrentVersion(),
             settings: {
@@ -1670,7 +1682,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             }
                         }
                     },
-                    queries: this.queries
+                    queries: queries
                 }
             ]
         };
@@ -1679,11 +1691,14 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
         const payload: any = {
-            'name': this.data.name || 'Untitled Alert',
-            'sourceType': 'ALERT',
-            'sourceId': this.data.id !== '_new_' ? this.data.id : '',
+            'name': encodeURIComponent(this.data.name) || 'Untitled Alert',
             'content': dConfig
         };
+
+        if ( this.data.id ) {
+            payload.sourceType = 'ALERT';
+            payload.sourceId = this.data.id;
+        }
 
         this.httpService.saveSnapshot('_new_', payload).subscribe(
             (res: any) => {

@@ -1,8 +1,8 @@
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
-        <div class="preview-wrapper" #graphOutput  [ngClass]="{'is-visible': data && data.type === 'event' || (data.type === 'simple' && data.threshold && data.threshold.subType !== 'periodOverPeriod')}">
-            <div class="graph-wrapper" ttMouseListener ttType="linechart">
-                <div #graphOutput class="graph-output">
+        <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
+            <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
+                <div class="graph-output">
                     <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
@@ -13,13 +13,13 @@
                         (currentTickEvent)="timeseriesTickListener($event)"
                         (zoomed)="handleZoom($event)">
                     </div>
-                    <div class="dygraph-legend" #graphLegend></div>
+                    <!--<div class="dygraph-legend" #graphLegend></div>-->
                 </div>
                 <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
                 <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                     <img src="/assets/spinner-26x26.gif" />
                 </div>
-                <div class="snapshot">
+                <div class="snapshot" *ngIf="data.type === 'simple'">
                     <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
                         <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
                     </button>
@@ -31,12 +31,10 @@
             <event-list *ngIf="data && data.type === 'event'"
                 [events]="events" [timezone]="'local'" [startTime]="startTime" [endTime]="endTime" style="overflow: scroll" [loading]="loadingEvents()">
             </event-list>
-        </div>
 
-        <div *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
-            <alert-details-metric-period-over-period-preview
+            <alert-details-metric-period-over-period-preview *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'"
                 [chartData]="chartData"
-                [size]="size"
+                [size]="{'width': size.width, 'height': size.height - 50}"
                 [options]="options"
                 [nQueryDataLoading]="nQueryDataLoading"
                 [thresholdConfig]="periodOverPeriodConfig"
@@ -49,7 +47,7 @@
         -->
     <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
-                <div class="toolbar-item alert-name-detail">
+                <div class="toolbar-item alert-name-detail flex-spacer">
                     <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable  *ngIf="!readOnly" class="navbar-item"
@@ -74,7 +72,7 @@
                         </span>
                     </div>
                 </div>
-                <span class="flex-spacer"></span>
+
                 <!--<div class="toolbar-item" *ngIf="hasWriteAccess">
                      <button mat-button color="primary" (click)="viewMode = 'view'">view mode</button>
                 </div>-->
@@ -99,6 +97,7 @@
                                         toggleQuery: false,
                                         cloneQuery: data.type === 'simple',
                                         deleteQuery: data.type === 'simple',
+                                        excludeMetricGroupByTags: excludeMetricGroupByTags,
                                         enableExplicitTagMatch: data.type === 'simple'}"
                                     (queryOutput)="updateQuery($event);"></query-editor-proto>
                                 <div cdkDragHandle class="metric-query-drag-handle"></div>

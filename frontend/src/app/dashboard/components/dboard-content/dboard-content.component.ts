@@ -28,7 +28,6 @@ export class DboardContentComponent implements OnChanges {
   @Input() mWidget: any;
   @Input() rerender: any;
   @Input() dashboardMode: string;
-  @Input() hasWriteAccess = false;
 
   viewEditMode = false;
   winSize = 'md'; // flag to check if window size change to sm
@@ -115,6 +114,7 @@ export class DboardContentComponent implements OnChanges {
     if ( !override && this.dashboardMode !== 'snap' ) {
       this.interCom.requestSend(<IMessage> {
         action: 'setDashboardEditMode',
+        id: widget.id,
         payload: 'edit'
       });
       widget.settings = { ...widget.settings, ...this.widgetService.getWidgetDefaultSettings(widget.settings.component_type)};
@@ -178,6 +178,15 @@ export class DboardContentComponent implements OnChanges {
         const width = event.item.itemComponent.gridster.cellWidth;
         const height = event.item.itemComponent.gridster.cellHeight;
         this.widgetsLayoutUpdate.emit(this.getWigetPosition(width, height, this.winSize));
+        // once the move of a widget end
+        if (event.action === 'drag') {
+          for (let i = 0; i < this.widgets.length; i++) {
+            this.interCom.responsePut({
+              id: this.widgets[i].id,
+              action: 'widgetDragDropEnd'
+            });
+          }
+        }
         // comment out for now to use ResizeSensor
         /* if (event.action === 'resize' && this.winSize === 'md') {
           // only deal with resize to care about new size
