@@ -1009,7 +1009,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     triggerQueryChanges() {
-        console.log('hill - trigger this query', this.query);
         this.requestChanges('QueryChange', { 'query': this.query });
     }
 
