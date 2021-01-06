@@ -1,4 +1,4 @@
-<ng-template [ngIf]="!options.noVal" [ngIfElse]="noValueView">
+<ng-template [ngIf]="!options.groupByFx && !options.noVal" [ngIfElse]="!options.groupByFx && noValueView">
   <mat-form-field appearance="standard" floatLabel="never" [ngClass]="{'readonly-mode': !isEdit}" >
     <div matPrefix>{{fx.fxCall}}</div>
     <input matInput [formControl]="inputVal" (keyup.enter)="saveInput()" (click)="editInput()" [readonly]="!isEdit"
@@ -10,6 +10,21 @@
     </button>
     <mat-hint *ngIf="inputVal.errors">{{getErrorMessage()}}</mat-hint>
   </mat-form-field>
+</ng-template>
+<ng-template [ngIf]="options.groupByFx">
+  <div class="mat-form-field mat-primary readonly-mode group-by-fx">
+    <mat-icon class="aggregator-icon" fontSet="denali" [fontIcon]="tagAggregatorIconMap[groupBy.aggregator]" *ngIf="groupBy.aggregator"></mat-icon>
+    <tag-aggregator [value]="groupBy.aggregator" (change)="setGroupBy('aggregator', $event)"></tag-aggregator>
+    <span class="by-spacer">By</span>
+    <dropdown-metric-tags    [selected]="groupBy.tags"    [tags]="optionalData.tags"
+      (change)="setGroupBy('tags', $event)" [enableGroupBy]="options.enableGroupBy">
+    </dropdown-metric-tags>
+    <div class="mat-form-field-suffix">
+      <button mat-mini-fab matSuffix class="delete-function-button" (click)="delFx(fx.id)">
+          <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+      </button>
+    </div>
+  </div>
 </ng-template>
 <ng-template #noValueView>
   <div class="mat-form-field mat-primary readonly-mode mat-form-field-type-mat-input mat-form-field-appearance-standard mat-form-field-can-float mat-form-field-should-float">
@@ -25,3 +40,9 @@
     </div>
   </div>
 </ng-template>
+
+<!--
+  <div class="tag-aggregator-wrapper">
+                                
+                            </div>
+-->

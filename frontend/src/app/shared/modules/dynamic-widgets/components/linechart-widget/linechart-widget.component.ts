@@ -463,9 +463,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.refreshLegendSource();
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
+                            // also need to update view in edit mode
                             setTimeout(() => {
-                                // multigraph also need to change view in edit mode, comment this condition out.
-                                // if ( this.mode === 'view' ) {
+                                // if ( this.mode !== 'edit'  ) {
                                     this.setSize();
                                 // }
                                 if (!this.multigraphEnabled) {
@@ -525,7 +525,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         // Timing issue? trying to move to afterViewInit
         this.setOptions();
-        if ( this.mode === 'snap' ) {
+        if ( this.mode === 'snap' || this.mode === 'explore' ) {
             const chartOptions = this.widget.settings.chartOptions;
             // override selections
             this.options.visibilityHash = chartOptions && chartOptions.visbilityHash ? chartOptions.visbilityHash : {};
@@ -1260,6 +1260,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const options = (multigraph) ? this.graphData[multigraph.y][multigraph.x].options : this.options;
         options.visibility[index] = visibility;
         options.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
+        this.resetYZoom();
     }
 
     handleZoom(zConfig) {
@@ -1281,7 +1282,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.resetYZoom();
         }
     }
-
+    
     resetYZoom(redraw= true) {
         if ( this.widget.settings.chartOptions.axes ) {
             delete this.widget.settings.chartOptions.axes;

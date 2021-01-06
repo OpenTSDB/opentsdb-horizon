@@ -300,9 +300,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     fxCall: 'Rollup',
                     val: 'sum,auto'
                 }
-                ]
-            },
-            {
+            ]
+        },
+        {
             label: 'Timeshift',
             functions: [
                 {
@@ -324,6 +324,51 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     label: 'Month Before',
                     fxCall: 'Timeshift',
                     val: '4w'
+                }
+            ]
+        },
+        {
+            label: 'Group By',
+            functions: [
+                {
+                    label: 'Avg',
+                    fxCall: 'GroupByAvg',
+                    val: 'avg'
+                },
+                {
+                    label: 'Min',
+                    fxCall: 'GroupByMin',
+                    val: 'min'
+                },
+                {
+                    label: 'Max',
+                    fxCall: 'GroupByMax',
+                    val: 'max'
+                },
+                {
+                    label: 'Sum',
+                    fxCall: 'GroupBySum',
+                    val: 'sum'
+                },
+                {
+                    label: 'Count',
+                    fxCall: 'GroupByCount',
+                    val: 'count'
+                }
+            ]
+        },
+        {
+            label: 'Ratio',
+            functions: [
+                {
+                    label: 'Ratio',
+                    fxCall: 'Ratio',
+                    val: null
+                },
+                {
+                    label: 'Percentage',
+                    fxCall: 'Percentage',
+                    val: null
                 }
             ]
         }
@@ -371,6 +416,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
             regexValidator: /^\d+[hdw]$/i
         },
+        'GroupByAvg' : {
+            groupByFx : true
+        },
+        'GroupByMin' : {
+            groupByFx : true
+        },
+        'GroupByMax' : {
+            groupByFx : true
+        },
+        'GroupBySum' : {
+            groupByFx : true
+        },
+        'GroupByCount' : {
+            groupByFx : true
+        }
     };
 
     // MAT-TABLE DEFAULT COLUMNS
@@ -398,11 +458,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private logger: LoggerService,
         private multiService: MultigraphService
     ) {
+        /*
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
             'function_icon',
             domSanitizer.bypassSecurityTrustResourceUrl('assets/function-icon.svg')
-        );
+        ); */
 
     }
 
@@ -461,6 +522,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     hasValidFilter(query: any): Number {
         const index =  query.filters.findIndex(f => f.filter.length || (f.customFilter && f.customFilter.length));
         return  index;
+    }
+
+    isArray(d : any ) {
+        return Array.isArray(d);
     }
 
     // helper function to format the table datasource into a structure
@@ -558,7 +623,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     settings: {
                         visual: {
                             visible: this.options.enableMultiMetricSelection,
-                            color: 'auto',
+                            color: '',
                             label: ''
                         }
                     },
@@ -701,7 +766,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     // tslint:disable-next-line:max-line-length
                     if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
-                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.color ||  newConfig.type ) ) {
+                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.scheme || newConfig.color ||  newConfig.type ) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                         // set existing bar axis
                         // tslint:disable-next-line:max-line-length
@@ -933,7 +998,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
-                    color: 'auto',
+                    color: '',
                     label: ''
                 }
             },

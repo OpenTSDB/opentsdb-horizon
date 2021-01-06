@@ -135,7 +135,7 @@
                         padding: 0;
                         min-width: 24px;
                         margin: auto 6px;
-            
+
                         .mat-icon {
                             margin: 0px;
                         }
@@ -185,12 +185,13 @@
 
             .alert-name-detail {
                 flex-direction: column;
+                align-items: flex-start;
 
                 .namespace {
                     font-weight: 200;
                     font-size: 12px;
                     opacity: .4;
-                    margin-bottom: 5px;
+                    //margin-bottom: 5px;
                 }
 
                 .alert-name {
@@ -208,7 +209,12 @@
                         }
                     }
                     .mat-form-field-infix {
-                        width: 500px;
+                        // width: 500px;
+                    }
+
+                    .inline-editable {
+                        display: block;
+                        margin-left: -4px;
                     }
                 }
 
@@ -224,7 +230,7 @@
                 }
 
                 .alert-history-link {
-                    padding-top: 8px;
+                    //padding-top: 8px;
                     font-size: 12px;
 
                 }
@@ -690,7 +696,7 @@
 
         .app-resizeable {
             position: relative;
-    
+
             &::after {
                 // content is denali icon drag-handle
                 content: '\ebab';
@@ -890,13 +896,13 @@
             &::after {
                 // content is denali icon drag-handle
                 content: '\ebab';
-    
+
                 background-color: if($is-dark, rgba(0, 191, 255, 0.3), $card);
                 color: $text-color;
                 border: 1px solid rgba($text-color, .3);
-    
+
             }
-    
+
             box-shadow: inset 0px -2px 1px -1px rgba($text-color, .3);
         }
     }

@@ -12,7 +12,7 @@
         <div class="widget-output notCentered" #widgetoutput [style.background]="widget.settings.visual.backgroundColor" [ngClass]="{'monospace': widget.settings.visual.font === 'monospace', 'top-margin': mode === 'edit' }">
             <div class="widget-container">
               <span class="markdown-body" id="markdown-override" [style.color]="widget.settings.visual.textColor" >
-                <markdown [data]="widget.settings.visual.text"></markdown>
+                <markdown [data]="displayText$ | async"></markdown>
               </span>
             </div>
         </div>

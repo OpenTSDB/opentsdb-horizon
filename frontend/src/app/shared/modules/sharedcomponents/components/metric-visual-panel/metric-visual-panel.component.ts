@@ -30,6 +30,11 @@ export class MetricVisualPanelComponent implements OnInit {
   setQueryVisual(id, key, value) {
     const visual = {};
     visual[key] = value;
+    if ( key === 'color' || key === 'scheme') {
+      // unset other option
+      const key2 = key === 'color' ? 'scheme' : 'color';
+      visual[key2] = '';
+    }
     this.visualOutput.emit( { action: 'UpdateQueryVisual', payload: { qid : this.query.id, mid: id, visual: visual } });
   }
 
@@ -57,8 +62,8 @@ export class MetricVisualPanelComponent implements OnInit {
   }
 
   setColor(id, color, key = 'color') {
-    this.color = key === 'scheme' ? color.scheme : color.hex;
-    this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color.hex);
+    this.color = key === 'scheme' ? color.scheme : color;
+    this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color);
   }
 
   setAxis(id, axis) {
@@ -95,7 +100,8 @@ export class MetricVisualPanelComponent implements OnInit {
   }
 
   setQueryVisualColor(qid, e) {
-    this.setQueryVisual(qid, 'color', this.color ? this.color : this.data.visual.color);
+    const key = this.data.visual.color ? 'color' : 'scheme';
+    this.setQueryVisual(qid, key, this.color ? this.color : this.data.visual[key]);
   }
 
   setQueryVisualAxis(qid, e) {

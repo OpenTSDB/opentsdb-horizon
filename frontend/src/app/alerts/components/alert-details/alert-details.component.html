@@ -3,7 +3,7 @@
         <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
             <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
                 <div class="graph-output">
-                    <div #dygraph class="chart" 
+                    <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
                         [data]="chartData"
@@ -47,7 +47,7 @@
         -->
     <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
-                <div class="toolbar-item alert-name-detail">
+                <div class="toolbar-item alert-name-detail flex-spacer">
                     <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable  *ngIf="!readOnly" class="navbar-item"
@@ -72,7 +72,7 @@
                         </span>
                     </div>
                 </div>
-                <span class="flex-spacer"></span>
+
                 <!--<div class="toolbar-item" *ngIf="hasWriteAccess">
                      <button mat-button color="primary" (click)="viewMode = 'view'">view mode</button>
                 </div>-->

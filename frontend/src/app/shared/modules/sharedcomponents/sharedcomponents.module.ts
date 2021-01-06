@@ -68,7 +68,7 @@ import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
 import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
 import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
-import { HighlightTextPipe } from './pipes/highlighttext.pipe';
+import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import {  Nl2BrPipe } from './pipes/nl2br.pipe';
 
@@ -130,7 +130,7 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         DateToRelativePipe,
         DropdownJoinTypeComponent,
         AliasDisplayPipe,
-        HighlightTextPipe,
+        HighlightStripTextPipe,
         SafePipe,
         Nl2BrPipe,
         ResizableDirective
@@ -176,7 +176,7 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         HexToColorNamePipe,
         DateToRelativePipe,
         AliasDisplayPipe,
-        HighlightTextPipe,
+        HighlightStripTextPipe,
         ResizableDirective
     ],
     entryComponents: [

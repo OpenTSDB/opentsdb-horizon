@@ -15,10 +15,30 @@
                     <!--<button mat-icon-button (click)="openIsland();">
                         <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
                     </button>-->
-                    <mat-icon *ngIf="widget.settings.time && widget.settings.time.overrideTime" class="time-lock" fontSet="denali" fontIcon="d-time-lock" matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}"></mat-icon>
-                    <mat-icon *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'" class="snapshot-icon" fontSet="denali" fontIcon="d-camera" (click)="saveSnapshot()" matTooltip="Snapshot"></mat-icon>
-                    <mat-icon *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'" class="expand-trigger" fontSet="denali" fontIcon="d-expand-fullscreen" (click)="loadWidget('explore')" matTooltip="Explore"></mat-icon>
-                    <button mat-icon-button [matMenuTriggerFor]="widgetMenu" class="widget-menu-trigger">
+                    <!-- overide time button -->
+                    <button mat-icon-button class="time-lock"
+                        *ngIf="widget.settings.time && widget.settings.time.overrideTime"
+                        matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
+                        <mat-icon fontSet="denali" fontIcon="d-time-lock"></mat-icon>
+                    </button>
+                    <!-- snapshot button -->
+                    <button mat-icon-button class="snapshot-icon"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
+                        (click)="saveSnapshot()"
+                        matTooltip="Snapshot">
+                        <mat-icon fontSet="denali" fontIcon="d-camera" ></mat-icon>
+                    </button>
+                    <!-- explore more button -->
+                    <button mat-icon-button class="expand-trigger"
+                        matTooltip="Explore"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
+                        (click)="loadWidget('explore')">
+                        <mat-icon fontSet="denali" fontIcon="d-expand-fullscreen" ></mat-icon>
+                    </button>
+                    <!-- 3-dot menu button-->
+                    <button mat-icon-button class="widget-menu-trigger"
+                        [matMenuTriggerFor]="widgetMenu"
+                        matTooltip="More options">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
                     </button>
                     <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">

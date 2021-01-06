@@ -27,17 +27,18 @@
     </app-dboard-content>
 </div>
 <ng-template #dashboardNavbarTmpl>
-    <inline-editable class="navbar-item" 
+    <inline-editable class="navbar-item"
         [fieldValue]="dbSettings.meta.title"
         [minLength]="3"
         [maxLength]="50"
         (updatedValue)="setTitle($event)"
-        style="margin-left: 5px;"
+        style="margin-left: 5px; margin-right: 0;"
         *ngIf="(dashboardMode$ | async) !== 'explore' && activeMediaQuery !== 'xs'">
     </inline-editable>
     <span class="navbar-item nav-title-readonly" *ngIf="(dashboardMode$ | async) === 'explore'">Explore: {{ editViewModeMeta.title }}</span>
 
-    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
+    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" style="margin-left: 0;"
+        *ngIf="viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
         <button mat-icon-button class="mat-elevation-z0"
             [ngClass]="{'dashboard-faved': isUserFavorited}"
             (click)="dashboardFavoriteAction(isUserFavorited)">
@@ -90,7 +91,7 @@
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
         </button>
     </span>
-    <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore'" (click)="closeViewEditMode()">
+    <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
     </span>
 </ng-template>

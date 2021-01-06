@@ -87,13 +87,17 @@ export class DashboardService {
     widget.id = this.utils.generateId(6, this.utils.getIDs(widgets));
     widget.settings.component_type = type;
     switch ( type ) {
-        case 'LinechartWidgetComponent':
         case 'HeatmapWidgetComponent':
+          widget.settings.visual.color = '#3F00FF';
+          break;
+        case 'TopnWidgetComponent':
+          widget.settings.visual.color = '#dff0ff';
+          break;
+        case 'BignumberWidgetComponent':
+        case 'LinechartWidgetComponent':
         case 'BarchartWidgetComponent':
         case 'DonutWidgetComponent':
-        case 'TopnWidgetComponent':
         case 'DeveloperWidgetComponent':
-        case 'BignumberWidgetComponent':
         case 'MarkdownWidgetComponent':
         case 'EventsWidgetComponent':
             break;
@@ -506,6 +510,87 @@ export class DashboardService {
         const cloneQuery = JSON.parse(JSON.stringify(query));
         obs.push(this.httpService.getTagValues(cloneQuery));
         query = {};
+      }
+    }
+    if (obs.length > 0) {
+      return forkJoin(obs);
+    } else {
+      return of([]);
+    }
+  }
+
+  // for db filter view mode with regexp
+  buildViewTagValuesQuery(tplVariables: any, widgets: any[], val: string, index: number): any {
+    const tpl = tplVariables.viewTplVariables.tvars[index];
+    const alias = tpl.alias;
+    const tagk = tpl.tagk;
+    const metrics = [];
+    // get tag values that matches metrics or namespace if metrics is empty
+    for (let i = 0; i < widgets.length; i++) {
+      const queries = widgets[i].queries;
+      for (let j = 0; j < queries.length; j++) {
+        const filters = queries[j].filters;
+        let aliasFound = false;
+        for (let k = 0; k < filters.length; k++) {
+          if (filters[k].tagk === tagk && filters[k].customFilter) {
+            filters[k].customFilter.forEach(f => {
+              const hasNot = f[0] === '!';
+              const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+              if (alias === _alias) {
+                aliasFound = true;
+              }
+            });
+          }
+        }
+        if (aliasFound) {
+          for (let k = 0; k < queries[j].metrics.length; k++) {
+            if (!queries[j].metrics[k].expression) {
+              metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+            }
+          }
+        }
+      }
+    }
+    const query: any = {
+      tag: { key: tagk, value: val }
+    };
+    if (metrics.length) {
+      query.metrics = metrics;
+    } else {
+      // tslint:disable-next-line: max-line-length
+      query.namespaces = tplVariables.namespaces;
+    }
+    return query;
+  } 
+  // to build and array of array of resolve tpl filter value for subtitute
+  // and only for tpl filter, mainly for regexp
+  resolveTplViewValues(tplVariables: any, widgets: any[]) : Observable<any> {
+    const obs: any[] = [];
+    const tpl = tplVariables.viewTplVariables; // we only resolve for view not edit mode
+    const scopeMatched = [];
+    for (let i = 0; i < tpl.tvars.length; i++) {
+      if (tpl.tvars[i].filter.trim() !== '') {
+        const filter = tpl.tvars[i].filter;
+        const res = filter.match(/^regexp\((.*)\)$/);
+        if (res) {
+          const regx = new RegExp(res[1], "gi");
+          if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
+            // use scope to resolve
+            for (let j = 0; j < tplVariables.scopeCache[i].length; j++) {
+              if (tplVariables.scopeCache[i][j].match(regx)) {
+                scopeMatched.push(tplVariables.scopeCache[i][j])
+              }
+            }
+            obs.push(of(scopeMatched));
+          } else {
+            const query = this.buildViewTagValuesQuery(tplVariables, widgets, res[1], i);
+            obs.push(this.httpService.getTagValues(query));
+          }
+        } else {
+          obs.push(of([filter]));
+        }
+      } else {
+        obs.push(of([]));
       }
     }
     if (obs.length > 0) {

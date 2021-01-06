@@ -86,8 +86,8 @@
                                     <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">
                                         remove_circle_outline</mat-icon>
                                 </div>
-                                <div class="option-cell label"
-                                    [innerHTML]="[option.name] | formatAutoManualFilter: tplVariables.tvars">
+                                <div class="option-cell label" [matTooltip]="option.name.length > TAGVALUELEN ? option.name : ''"
+                                    [innerHTML]="option.name | highlightstriptext: tagValueSearchControl.value:0:TAGVALUELEN">
                                 </div>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                         <div class="option-group tag-key-option" *ngFor="let tagkey of searchResults.tagKeys;">
                             <ng-container *ngIf="{ n: searchResults.tagKeysAndValues[tagkey].values.length } as tagkeyMeta">
                                 <div class="option-group-item" (click)="setTag(tagkey, bsTagValSearch)">
-                                    <span [innerHTML]="tagkey | highlighttext: searchControl.value"></span>
+                                    <span [innerHTML]="tagkey | highlightstriptext: searchControl.value"></span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="link"> more.. </span>
                                     <span *ngIf="tagkeyMeta.n > 5" class="info"> ( Showing top 5 ) </span>
                                 </div>
@@ -169,9 +169,8 @@
                                         <mat-icon *ngIf="getTagValueIndex(tagkey, option.name) !== -1">
                                             remove_circle_outline</mat-icon>
                                     </div>
-                                    <div class="option-cell label"
-                                        [innerHTML]="option.name | highlighttext: searchControl.value">
-                                    </div>
+                                    <div class="option-cell label" [matTooltip]="option.name.length > TAGVALUELEN ? option.name : ''"
+                                        [innerHTML]="option.name | highlightstriptext: searchControl.value:0:TAGVALUELEN"></div>
                                 </div>
                             </ng-container>
                         </div>
@@ -200,8 +199,8 @@
                                 <mat-icon *ngIf="getTagValueIndex(selectedTag, option.name) !== -1">
                                     remove_circle_outline</mat-icon>
                             </div>
-                            <div class="option-cell label"
-                                [innerHTML]=" option.name | highlighttext: tagValueSearchControl.value ">
+                            <div class="option-cell label" [matTooltip]="option.name.length > TAGVALUELEN ? option.name : ''"
+                                [innerHTML]=" option.name | highlightstriptext: tagValueSearchControl.value:0:TAGVALUELEN ">
                             </div>
                         </div>
                     </div>

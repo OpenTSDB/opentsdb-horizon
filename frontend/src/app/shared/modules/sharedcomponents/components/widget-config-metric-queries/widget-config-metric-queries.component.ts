@@ -80,7 +80,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
         this.subscription.add(this.interCom.responseGet().subscribe(message => {
             if (message.action === 'TplVariables') {
-                this.tplVariables = message.payload;
+                this.tplVariables = message.payload.tplVariables;
             }
         }));
         this.interCom.requestSend({
