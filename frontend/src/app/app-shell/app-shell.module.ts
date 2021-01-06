@@ -23,6 +23,7 @@ import {
   MarkdownModule,
   MarkedOptions
 } from 'ngx-markdown';
+import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
 
 // services
 import { AppShellService } from './services/app-shell.service';
@@ -31,7 +32,7 @@ import { DbfsService } from './services/dbfs.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
 import { NotificationService } from './services/notification.service';
-import { ClipboardService } from './services/clipboard.service';
+import { ClipboardService } from '../shared/modules/universal-clipboard/services/clipboard.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
@@ -41,9 +42,6 @@ import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.d
 import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
 import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
-
-import { ClipboardDrawerComponent } from './components/clipboard-drawer/clipboard-drawer.component';
-import { NavbarClipboardMenuComponent } from './components/navbar-clipboard-menu/navbar-clipboard-menu.component';
 
 import {
     DbfsComponent,
@@ -61,7 +59,6 @@ import {
     NotificationEditorComponent
 } from './components/admin-panel';
 import { DashboardService } from '../dashboard/services/dashboard.service';
-import { UniversalClipboardState } from './state/clipboard.state';
 
 @NgModule({
     imports: [
@@ -85,10 +82,9 @@ import { UniversalClipboardState } from './state/clipboard.state';
             NavigatorState,
             DbfsState,
             DbfsPanelsState,
-            DbfsResourcesState,
-            // TODO: add clipboard state
-            UniversalClipboardState
+            DbfsResourcesState
         ]),
+        UniversalClipboardModule,
         RouterModule
     ],
     declarations: [
@@ -107,9 +103,7 @@ import { UniversalClipboardState } from './state/clipboard.state';
         NotificationEditorComponent,
         AdminPanelComponent,
         NotificationListComponent,
-        NotificationPanelComponent,
-        ClipboardDrawerComponent,
-        NavbarClipboardMenuComponent
+        NotificationPanelComponent
     ],
     providers: [
         AppShellService,
@@ -120,8 +114,7 @@ import { UniversalClipboardState } from './state/clipboard.state';
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [
-        AppShellComponent,
-        NavbarClipboardMenuComponent
+        AppShellComponent
     ]
 })
 export class AppShellModule { }

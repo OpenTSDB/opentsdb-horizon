@@ -65,8 +65,8 @@ import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
-import { ClipboardService } from '../../../app-shell/services/clipboard.service';
-import { ClipboardAddItem, ClipboardAddItemSuccess } from '../../../app-shell/state/clipboard.state';
+import { ClipboardService } from '../../../shared/modules/universal-clipboard/services/clipboard.service';
+import { ClipboardAddItem, ClipboardAddItemSuccess } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
 
 @Component({
     selector: 'app-dashboard',
@@ -528,7 +528,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     break;
                 case 'updateTemplateVariables':
-                    this.store.dispatch(new UpdateVariables(message.payload));                   
+                    this.store.dispatch(new UpdateVariables(message.payload));
                     break;
                 case 'ApplyTplVarValue':
                     this.applyTplVarValue(message.payload);
@@ -541,7 +541,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                                 tplValues: results
                             }
                         });
-                    });                  
+                    });
                     break;
                 case 'UpdateTplAlias':
                     this.updateTplAlias(message.payload);
@@ -559,7 +559,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // custom tag to select.
                     this.interCom.responsePut({
                         action: 'TplVariables',
-                        payload: { 
+                        payload: {
                             tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
                         }
                     });
@@ -1299,11 +1299,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             // also passdown for who need it
             this.interCom.responsePut({
                 action: 'TplVariables',
-                payload: { 
+                payload: {
                     tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
                     tplScope: this.tplVariables.scope
                 }
-            });          
+            });
         }
         this.variablePanelMode = {...mode};
     }

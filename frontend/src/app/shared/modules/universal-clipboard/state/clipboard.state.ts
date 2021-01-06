@@ -1,19 +1,19 @@
 import { Action, actionMatcher, Selector, State, StateContext, Store } from '@ngxs/store';
 import { catchError, map, subscribeOn } from 'rxjs/operators';
-import { WidgetModel } from '../../dashboard/state';
+import { WidgetModel } from '../../../../dashboard/state';
 import {
     DbfsCreateFolder,
     DbfsCreateFolderSuccess,
     DbfsResourcesState, DbfsState,
     DbfsFileModel,
     DbfsFolderModel
-} from '.';
-import { LoggerService } from '../../core/services/logger.service';
-import { UtilsService } from '../../core/services/utils.service';
+} from '../../../../app-shell/state';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { UtilsService } from '../../../../core/services/utils.service';
 import { ClipboardService } from '../services/clipboard.service';
-import { DbfsService } from '../services/dbfs.service';
-import { DbfsLoadSubfolder } from './dbfs-resources.state';
-import { HttpService } from '../../core/http/http.service';
+import { DbfsService } from '../../../../app-shell/services/dbfs.service';
+import { DbfsLoadSubfolder } from '../../../../app-shell/state/dbfs-resources.state';
+import { HttpService } from '../../../../core/http/http.service';
 
 // MODEL INTERFACES
 

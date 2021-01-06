@@ -41,15 +41,43 @@
 
 <!-- clipboard item list-->
 <ng-template #clipboardItemList>
-    <div class="clipboard-content-batch-controls">
-        batch-controls here
-        <!-- IDEAS for controls
+    <div class="clipboard-content-batch-controls" *ngIf="clipboardItems.length > 0">
+        <!-- BATCH CONTROLS
             expand/collapse all
             select/deselect all
             delete
             add to dashboard
             create dashboard from clipboard
         -->
+        <div class="buttons">
+            <!-- add widget(s) to dashboard -->
+            <button mat-icon-button color="primary"
+                matTooltip="Add selected widget(s) to dashboard"
+                (click)="batchPasteToDashboard()">
+                <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
+            </button>
+            <!-- create dashboard from clipboard -->
+            <button mat-icon-button color="primary"
+                matTooltip="Create new dashboard from clipboard"
+                (click)="createDashboardFromClipboard()">
+                <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
+            </button>
+            <!-- delete widget(s) from clipboard -->
+            <button mat-icon-button color="primary"
+                matTooltip="Delete widget(s) from clipboard"
+                [matMenuTriggerFor]="confirmDeleteClipboardItemsMenu">
+                <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+            </button>
+        </div>
+        <div class="expansion">
+            <button mat-button color="primary" (click)="toggleSelectAll()">
+                <span>{{selectAll ? 'Deselect' : 'Select'}} All</span>
+            </button>
+            <span class="flex-spacer"></span>
+            <button mat-button color="primary" (click)="toggleExpandAll()">
+                <span>{{expandAll ? 'Collapse' : 'Expand'}} All</span>
+            </button>
+        </div>
     </div>
     <div class="clipboard-content">
         <div class="clipboard-content-scroller has-scroller">
@@ -70,10 +98,15 @@
                     <!-- has items -->
                     <mat-expansion-panel class="clipboard-item"
                         *ngFor="let data of clipboardItems; let i = index;"
-                        (click)="toggleDetail(data.id)">
+                        (closed)="toggleExpandItem(false)"
+                        (opened)="toggleExpandItem(true)">
                         <mat-expansion-panel-header
                         expandedHeight="32px" collapsedHeight="32px">
                             <mat-panel-title>
+                                <span (click)="$event.stopPropagation()">
+                                    <mat-checkbox [checked]="selectedItems[data.id]"
+                                        (change)="toggleSelectItem($event, data)"></mat-checkbox>
+                                </span>
                                 <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
                                 <span>{{data.settings.title}}</span>
                             </mat-panel-title>
@@ -91,7 +124,16 @@
                         </div>
 
                         <mat-action-row (click)="$event.stopPropagation()">
-                            <button mat-button color="primary" (click)="pasteToDashboard(data, i)">Paste to dashboard</button>
+                            <button mat-button color="primary"
+                                (click)="pasteToDashboard(data, i)">
+                                <span>Add to dashboard</span>
+                            </button>
+                            <span class="flex-spacer"></span>
+                            <button mat-icon-button color="secondary"
+                                [matMenuTriggerFor]="confirmDeleteClipboardItemMenu"
+                                [matMenuTriggerData]="{itemIndex: i}">
+                                <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                            </button>
                         </mat-action-row>
                     </mat-expansion-panel>
                 </mat-accordion>
@@ -125,3 +167,20 @@
         </div>
     </div>
 </ng-template>
+
+<!-- confirmation menu to delete a clipboard item -->
+<mat-menu #confirmDeleteClipboardItemMenu="matMenu" overlapTrigger="true">
+    <ng-template matMenuContent let-itemIndex="itemIndex">
+        <button mat-menu-item>Yes, please delete item {{itemIndex}}</button>
+        <button mat-menu-item>No, please cancel</button>
+    </ng-template>
+</mat-menu>
+
+<!-- confirmation menu to delete a clipboard items (bulk action) -->
+<mat-menu #confirmDeleteClipboardItemsMenu="matMenu">
+    <ng-template matMenuContent>
+        <button mat-menu-item>Yes, please delete items</button>
+        <button mat-menu-item>No, please cancel</button>
+    </ng-template>
+</mat-menu>
+

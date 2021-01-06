@@ -1,13 +1,14 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
-import { LoggerService } from '../../../core/services/logger.service';
-import { HttpService } from '../../../core/http/http.service';
+import { LoggerService } from '../../../../../core/services/logger.service';
+import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
-import { DbfsResourcesState } from '../../state';
+import { DbfsResourcesState } from '../../../../../app-shell/state';
 import { ClipboardCreate, ClipboardLoad, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
+import { MatAccordion, MatExpansionPanel } from '@angular/material';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -40,6 +41,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     get getDrawerState() {
         return this.drawerState;
     }
+
+    @ViewChild(MatAccordion, {read: MatAccordion}) accordion: MatAccordion;
+    @ViewChildren(MatExpansionPanel, { read: MatExpansionPanel }) accordionItems: QueryList<MatExpansionPanel>;
 
     private subscription = new Subscription();
 
@@ -123,9 +127,12 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     creatingNewClipboard: boolean = false;
     FC_clipboardName: FormControl = new FormControl('', [Validators.required]);
 
-
     expandAll: boolean = false;
 
+    selectAll: boolean = false;
+    selectAllIndeterminate: boolean = false; // ??? may not use... not sure yet
+
+    selectedItems: any = {};
 
     constructor(
         private store: Store,
@@ -141,6 +148,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.logger.ng('CLIPBOARD DRAWER onInit');
 
+        // check to see if DBFS resources are loaded
         this.subscription.add(this.resourcesLoaded$.subscribe(loaded => {
             this.logger.ng('resourcesLoaded', { loaded });
             if (loaded === true) {
@@ -149,6 +157,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             }
         }));
 
+        // Clipboard DBFS resource has been loaded... then load the dashboard
         this.subscription.add(this.cbResourcesLoaded$.subscribe(loaded => {
             this.logger.ng('cbResourcesLoaded', { loaded });
 
@@ -163,17 +172,27 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             this.clipboardList = clipboards;
         }));
 
+        // clipboard items === clipboard dashboard widgets
         this.subscription.add(this.clipboardItems$.subscribe(items => {
             this.logger.ng('clipboardItems', { items });
+
+            for (let i = 0; i < items.length; i++) {
+                let item: any = items[i];
+                if (!this.selectedItems[item.id]) {
+                    this.selectedItems[item.id] = false;
+                }
+            }
             this.clipboardItems = items;
         }));
 
+        // active index === index of currently selected clipboard
         this.subscription.add(this.activeIndex$.subscribe(index => {
             this.logger.ng('activeIndex', { index });
             if (this.activeIndex !== index) {
                 // reset some things
                 this.itemDetailOpened = '';
                 this.creatingNewClipboard = false;
+                this.selectedItems = {};
             }
             this.activeIndex = index;
         }));
@@ -201,6 +220,94 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     close(): void {
         // this.drawerState = 'closed';
         this.cbService.setDrawerState('closed');
+    }
+
+    toggleSelectItem(event: any, item: any) {
+        this.logger.log('TOGGLE SELECT ITEM', event);
+        this.selectedItems[item.id] = event.checked;
+        if (!event.checked) {
+            this.selectAll = false;
+        } else {
+            //if (!this.selectAll) {
+                let count = 0;
+                let keys = Object.keys(this.selectedItems);
+                let checked = keys.filter(item => {
+                    return this.selectedItems[item] === true;
+                });
+
+                if (checked.length === this.clipboardItems.length) {
+                    this.selectAll = true;
+                } else {
+                    this.selectAll = false;
+                }
+            //}
+        }
+    }
+
+    toggleSelectAll() {
+        this.logger.log('toggleSelectAll');
+        let keys = Object.keys(this.selectedItems);
+        // check the select all flag
+        if (this.selectAll) {
+            // everything was selected, so deselect
+            for(let i = 0; i < keys.length; i++) {
+                this.selectedItems[keys[i]] = false;
+            }
+            this.selectAll = false;
+        } else {
+            // select everything
+            for(let i = 0; i < keys.length; i++) {
+                this.selectedItems[keys[i]] = true;
+            }
+            this.selectAll = true;
+        }
+    }
+
+    toggleExpandItem(expanded: boolean) {
+        if (!expanded) {
+            // accordion item (closed) event
+            this.expandAll = false;
+        } else {
+            // accordion item (opened) event
+            if (!this.expandAll) {
+                // need to check if all are open or not
+                this.logger.ng('TOGGLE EXPAND ITEM', this.accordion);
+                let count = 0;
+                this.accordionItems.forEach((item: MatExpansionPanel) => {
+                    if (item.expanded) {
+                        count++;
+                    }
+                });
+                this.logger.ng('COUNTING ITEMS EXPANDED', {count, items: this.clipboardItems.length});
+                if (count === this.clipboardItems.length) {
+                    this.expandAll = true;
+                }
+            }
+        }
+    }
+
+    toggleExpandAll() {
+        this.logger.log('toggleExpandAll');
+        if (this.expandAll) {
+            // everything is expanded already, so collapse
+            this.expandAll = false;
+            this.accordion.closeAll();
+        } else {
+            // expand everything
+            this.expandAll = true;
+            this.accordion.openAll();
+        }
+    }
+
+    createDashboardFromClipboard() {
+        this.logger.log('createDashboardFromClipboard', { clipboardIndex: this.activeIndex});
+    }
+
+    batchPasteToDashboard() {
+        this.logger.log('batchPasteToDashboard', {indices: this.selectedItems});
+
+        // get selected indices from selectedItems
+
     }
 
     pasteToDashboard(data: any, index: any) {
@@ -258,6 +365,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     cancelCreateClipboard() {
         this.creatingNewClipboard = false;
+    }
+
+    private resetVariables() {
+        this.creatingNewClipboard = false;
+        this.itemDetailOpened = '';
     }
 
     // JUST FOR DEV

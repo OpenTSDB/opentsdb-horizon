@@ -92,6 +92,13 @@
             }
         }
 
+        .clipboard-content-batch-controls {
+            .buttons,
+            .expansion {
+                display: flex;
+            }
+        }
+
         .clipboard-content {
             flex: 1;
             display: flex;

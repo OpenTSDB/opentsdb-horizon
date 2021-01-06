@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { LoggerService } from '../../../core/services/logger.service';
+import { LoggerService } from '../../../../../core/services/logger.service';
 import { ClipboardService } from '../../services/clipboard.service';
 
 @Component({

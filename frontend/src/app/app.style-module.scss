@@ -16,6 +16,7 @@
 @import 'dashboard/dashboard.style-module';
 @import 'alerts/alerts.style-module';
 
+@import 'shared/modules/universal-clipboard/universal-clipboard.style-module.scss';
 @import 'shared/modules/dynamic-widgets/dynamic-widgets.style-module';
 @import 'shared/modules/sharedcomponents/sharedcomponents.style-module';
 @import 'shared/modules/date-time-picker/date-time-picker.style-module';
@@ -31,6 +32,7 @@
     @include landing-page-module-core();
     @include dashboard-module-core();
     @include alerts-module-core();
+    @include universal-clipboard-module-core();
     @include dynamic-widgets-module-core();
     @include sharedcomponents-module-core();
     @include date-time-picker-module-core();
@@ -58,6 +60,7 @@
     @include landing-page-module-theme($theme-config);
     @include dashboard-module-theme($theme-config);
     @include alerts-module-theme($theme-config);
+    @include universal-clipboard-module-theme($theme-config);
     @include dynamic-widgets-module-theme($theme-config);
     @include sharedcomponents-module-theme($theme-config);
     @include date-time-picker-module-theme($theme-config);

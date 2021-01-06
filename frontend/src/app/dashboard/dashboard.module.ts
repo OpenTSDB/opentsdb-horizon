@@ -10,6 +10,7 @@ import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/share
 import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-widgets.module';
 
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
+import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
 
 // services
 import { DashboardService } from './services/dashboard.service';
@@ -69,6 +70,7 @@ import { AppShellModule } from '../app-shell/app-shell.module';
         ]),
         DynamicWidgetsModule,
         UniversalDataTooltipDirectivesModule,
+        UniversalClipboardModule,
         AppShellModule
     ],
     declarations: [

@@ -2,14 +2,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
-import { HttpService } from '../../core/http/http.service';
-import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
-import { LoggerService } from '../../core/services/logger.service';
-import { UtilsService } from '../../core/services/utils.service';
-import { DashboardService } from '../../dashboard/services/dashboard.service';
+import { HttpService } from '../../../../core/http/http.service';
+import { DashboardConverterService } from '../../../../core/services/dashboard-converter.service';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { UtilsService } from '../../../../core/services/utils.service';
+import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
-import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../state';
-import { DbfsService } from './dbfs.service';
+import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../../../../app-shell/state';
+import { DbfsService } from '../../../../app-shell/services/dbfs.service';
 
 @Injectable({
     providedIn: 'root'
