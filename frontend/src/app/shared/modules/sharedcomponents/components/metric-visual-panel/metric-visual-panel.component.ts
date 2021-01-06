@@ -62,8 +62,8 @@ export class MetricVisualPanelComponent implements OnInit {
   }
 
   setColor(id, color, key = 'color') {
-    this.color = key === 'scheme' ? color.scheme : color.hex;
-    this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color.hex);
+    this.color = key === 'scheme' ? color.scheme : color;
+    this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color);
   }
 
   setAxis(id, axis) {

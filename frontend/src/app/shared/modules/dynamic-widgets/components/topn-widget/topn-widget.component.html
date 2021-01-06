@@ -22,13 +22,12 @@
     </div>
     <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="topn"
                 [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 60) +'px' : 'inherit'">
-        <div id="container" #container>
-            <div class="chart" [style.height]="size.height + 'px'"
+        <div id="container" #container [style.height]="size.height + 'px'">
+            <div class="chart" 
                 D3BarChart
                 [options]="options"
                 [size]="size"
                 ></div>
-        </div>
         <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
         <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
             <img src="/assets/spinner-26x26.gif" />
@@ -40,6 +39,7 @@
             <mat-icon>info</mat-icon> {{ this.widget.id }}
         </div>
         <div class="tooltip"></div>
+        </div>
     </div>
 </div>
 <!-- NOTE: This needs to move to other component -->

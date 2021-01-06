@@ -99,6 +99,11 @@
                     display: none;
                 }
             }
+
+            &.group-by-fx {
+                display: flex;
+                align-items: center;
+            }
         }
 
         /* Following style is to get
@@ -242,6 +247,10 @@
                 .mat-mini-fab {
                     background-color: if($is-dark, $white, $black)
                 }
+            }
+
+            &.group-by-fx {
+                    border: 1px solid rgba(0, 0, 0, 0.04);
             }
         }
     }

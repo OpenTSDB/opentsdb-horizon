@@ -26,10 +26,19 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
   @Input() errorMessage: string;  // OPTIONAL
   @Input() regexValidator: RegExp; // OPTIONAL
   @Input() options: any = {};
+  @Input() optionalData: any = {};
   @Output() fxOut = new EventEmitter;
   @Output() fxDel = new EventEmitter;
   inputVal: FormControl;
   isEdit: boolean = false;
+  groupBy: any = { aggregator: '', tags: []};
+  tagAggregatorIconMap: any = {
+    'sum': 'd-value-sum',
+    'min': 'd-value-minimum',
+    'max': 'd-value-maximum',
+    'avg': 'd-value-average',
+    'count': 'd-value-all'
+};
 
   // this is to ensure that the input does not have any covered values.
   // makes width expand depending on length of label and value
@@ -60,7 +69,13 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
     if (!this.errorMessage) {
       this.errorMessage = 'Error';
     }
-    this.inputVal = new FormControl(this.fx.val);
+    if ( this.options.groupByFx ) {
+      const arr = this.fx.val.split(',');
+      this.groupBy.aggregator = arr[0];
+      this.groupBy.tags = arr.slice(1);
+    } else {
+      this.inputVal = new FormControl(this.fx.val);
+    }
   }
 
   ngAfterViewInit() {
@@ -69,8 +84,10 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
       // set the initial data-value
       // needs to live on the .mat-form-field-infix
       // aka, the wrapper around the actual input field
-      const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
-      formFieldInfix.dataset.value = this.fx.val;
+      const formFieldInfix: HTMLElement = this.formFieldEl ? this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix') : null;
+      if ( formFieldInfix ) {
+        formFieldInfix.dataset.value = this.fx.val;
+      }
   }
 
   saveInput() {
@@ -79,6 +96,13 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
       this.fx.val = this.inputVal.value;
       this.fxOut.emit({metricId: this.metricId, fx: this.fx});
     }
+  }
+
+  setGroupBy(type, e) {
+    this.groupBy[type] = e;
+    const arr = [this.groupBy.aggregator].concat(this.groupBy.tags);
+    this.fx.val = arr.join(',');
+    this.fxOut.emit({metricId: this.metricId, fx: this.fx});
   }
 
   editInput() {

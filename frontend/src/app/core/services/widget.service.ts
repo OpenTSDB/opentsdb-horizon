@@ -165,6 +165,11 @@ export class WidgetService {
             visual.unit = oVisualConf.unit;
         }
 
+        if ( ['HeatmapWidgetComponent', 'TopnWidgetComponent', ].includes(type) ) {
+            visual.color = type === 'HeatmapWidgetComponent' ? '#3F00FF' : '#dff0ff';
+        }
+
+
         // bignumber and topn widgets have visual conditions
         if ( oVisualConf.conditions && ['BignumberWidgetComponent', 'TopnWidgetComponent'].includes(type)) {
             visual.conditions = oVisualConf.conditions;

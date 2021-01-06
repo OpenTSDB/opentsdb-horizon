@@ -1,4 +1,5 @@
 $available-palettes:
+    'auto',
     'blues',
     'greens',
     'greys',
@@ -231,6 +232,20 @@ $available-palettes:
                         }
                     }
                 }
+
+                &.palette-auto {
+                    span {
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        display: flex;
+                        align-items: center;
+                        padding: 0 4px;
+                        background: rgba($white, .8);
+                        color: black;
+                    }
+                }
+
                 &.palette-cividis,
                 &.palette-viridis,
                 &.palette-inferno,
@@ -275,6 +290,48 @@ $available-palettes:
             margin: 1px;
             min-width: 18px;
             padding: 0px;
+        }
+
+        .multi-color {
+            padding: 0px 15px;
+            .title {
+                padding-bottom: 10px;
+                font-size: 10px;
+            }
+        }
+
+        .btn-single-color {
+            width: 26px;
+            height: 26px;
+            border: 1px solid #aaa;
+            min-width: 26px;
+            padding: 0px;
+            margin-right: 4px;
+            box-sizing: initial;
+            &.selected {
+                border: 2px solid #448aff;
+            }
+
+            .mat-icon {
+                padding: 3px;
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                margin: 0px;
+            }
+            .mat-icon.delete {
+                margin: 0px;
+                padding: 0px;
+                top: -6px;
+                right: -4px;
+                width: 10px;
+                height: 10px;
+                font-size: 12px;
+                position: absolute;
+            }
         }
 
         .auto-color-button {
