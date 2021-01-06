@@ -12,30 +12,35 @@ import {
 import { Location, DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 
 import {
     MatDrawer
 } from '@angular/material';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
-
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
+
 import {
     AppShellState,
-    DbfsState,
     NavigatorState,
     SetSideNavOpen,
     SSGetUserProfile,
+} from '../state';
+
+import {
+    DbfsState,
     DbfsLoadResources,
     DbfsInitialized,
     DbfsResourcesState,
     DbfsLoadUserRecents
-} from '../state';
+} from '../../shared/modules/dashboard-filesystem/state';
+
 import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
-import { filter, map, take } from 'rxjs/operators';
+
+import { filter, map } from 'rxjs/operators';
 import { LoggerService } from '../../core/services/logger.service';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';

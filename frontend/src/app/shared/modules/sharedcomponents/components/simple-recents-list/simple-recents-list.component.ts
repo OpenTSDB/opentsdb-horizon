@@ -7,7 +7,7 @@ import {
 
 import { Observable, Subscription } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
-import { DbfsResourcesState } from '../../../../../app-shell/state';
+import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { MatTableDataSource } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { LoggerService } from '../../../../../core/services/logger.service';

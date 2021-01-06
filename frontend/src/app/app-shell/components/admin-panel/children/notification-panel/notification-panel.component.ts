@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { LoggerService } from '../../../../../core/services/logger.service';
 import { HttpService } from '../../../../../core/http/http.service';
-import { DbfsResourcesState, DbfsLoadTopFolder } from '../../../../state';
+import { DbfsResourcesState, DbfsLoadTopFolder } from '../../../../../shared/modules/dashboard-filesystem/state';
 
 import { NotificationService } from '../../../../services/notification.service';
 import { UtilsService } from '../../../../../core/services/utils.service';

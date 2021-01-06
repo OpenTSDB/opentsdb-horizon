@@ -11,20 +11,20 @@ import {
 
 import { Observable, Subscription, of } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../../../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
 import {
     DbfsResourcesState,
     DbfsLoadResources
-} from '../../../../state';
+} from '../../state';
 
 import {
     Select,
     Store
 } from '@ngxs/store';
 import { LoggerService } from '../../../../../core/services/logger.service';
-import { DbfsUtilsService } from '../../../../services/dbfs-utils.service';
-import { DbfsService } from '../../../../services/dbfs.service';
+import { DbfsUtilsService } from '../../services/dbfs-utils.service';
+import { DbfsService } from '../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
 import { UtilsService } from '../../../../../core/services/utils.service';
 

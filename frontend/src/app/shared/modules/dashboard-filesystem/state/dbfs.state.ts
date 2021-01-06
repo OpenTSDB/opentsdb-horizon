@@ -1,11 +1,11 @@
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
-import { UtilsService } from '../../core/services/utils.service';
-import { LoggerService } from '../../core/services/logger.service';
+import { UtilsService } from '../../../../core/services/utils.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 import { DbfsPanelsState } from './dbfs-panels.state';
 import { DbfsResourcesState } from './dbfs-resources.state';
 import { DbfsResourcesModel } from './dbfs-resources.interfaces';
-import { DBState } from '../../dashboard/state';
+import { DBState } from '../../../../dashboard/state';
 
 /** Interface model */
 

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material';
 
 import {
@@ -11,10 +11,9 @@ import {
 } from '@ngxs/store';
 
 import {
-    DbfsResourcesState
-} from '../../../app-shell/state/dbfs-resources.state';
+    DbfsState
+} from '../../../shared/modules/dashboard-filesystem/state';
 import { LoggerService } from '../../../core/services/logger.service';
-import { DbfsState } from '../../../app-shell/state';
 
 // import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 

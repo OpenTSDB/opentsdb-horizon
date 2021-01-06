@@ -44,7 +44,7 @@ import {
     SetNamespace,
     SaveSnoozes
 } from '../state/alerts.state';
-import { DbfsResourcesState } from '../../app-shell/state/dbfs-resources.state';
+import { DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
 import { SnoozeState, GetSnoozeDetailsById } from '../state/snooze.state';
 

@@ -15,7 +15,7 @@ import { map, startWith, debounceTime } from 'rxjs/operators';
 
 import { Select, Store } from '@ngxs/store';
 
-import { DbfsState, DbfsResourcesState, DbfsLoadResources } from '../../../app-shell/state';
+import { DbfsState, DbfsResourcesState, DbfsLoadResources } from '../../../shared/modules/dashboard-filesystem/state';
 import { UtilsService } from '../../../core/services/utils.service';
 
 

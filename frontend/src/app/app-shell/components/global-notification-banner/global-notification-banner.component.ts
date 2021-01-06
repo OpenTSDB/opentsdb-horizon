@@ -10,13 +10,13 @@ import {
 
 import {
     DbfsState
-} from '../../state/dbfs.state';
+} from '../../../shared/modules/dashboard-filesystem/state/dbfs.state';
 
 import {
     DbfsResourcesState,
     DbfsLoadSubfolder,
     DbfsLoadTopFolder,
-} from '../../state/dbfs-resources.state';
+} from '../../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 
 import { Subscription, Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';

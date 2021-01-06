@@ -8,8 +8,8 @@ import { LoggerService } from '../../../../core/services/logger.service';
 import { UtilsService } from '../../../../core/services/utils.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
-import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../../../../app-shell/state';
-import { DbfsService } from '../../../../app-shell/services/dbfs.service';
+import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../../dashboard-filesystem/state';
+import { DbfsService } from '../../dashboard-filesystem/services/dbfs.service';
 
 @Injectable({
     providedIn: 'root'

@@ -3,7 +3,7 @@ import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { DashboardService } from '../../dashboard/services/dashboard.service';
 import { Store } from '@ngxs/store';
-import { DbfsState, DbfsResourcesState } from '../state';
+import { DbfsState, DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state';
 import { HttpService } from '../../core/http/http.service';
 import { LoggerService } from '../../core/services/logger.service';
 

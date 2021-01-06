@@ -4,7 +4,7 @@ import { Store } from '@ngxs/store';
 import { SetAuth } from '../../shared/state/auth.state';
 import { Observable , of} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { DbfsState } from '../../app-shell/state/dbfs.state';
+import { DbfsState } from '../../shared/modules/dashboard-filesystem/state/dbfs.state';
 
 @Injectable()
 export class AuthService {

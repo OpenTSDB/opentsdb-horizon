@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 import {
     DbfsPanelFolderModel,
@@ -15,9 +15,11 @@ import {
     DbfsUserModel
 } from '../state/dbfs-resources.interfaces';
 
-import { UtilsService } from '../../core/services/utils.service';
+import { UtilsService } from '../../../../core/services/utils.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DbfsUtilsService {
 
     constructor(

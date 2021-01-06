@@ -13,7 +13,7 @@ import { forkJoin } from 'rxjs';
 
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
-import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../app-shell/state';
+import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
 import { map } from 'rxjs/operators';
 
 

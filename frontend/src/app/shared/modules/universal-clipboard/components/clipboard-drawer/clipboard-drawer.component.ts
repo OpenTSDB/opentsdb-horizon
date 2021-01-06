@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { LoggerService } from '../../../../../core/services/logger.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
-import { DbfsResourcesState } from '../../../../../app-shell/state';
+import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { ClipboardCreate, ClipboardLoad, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel } from '@angular/material';

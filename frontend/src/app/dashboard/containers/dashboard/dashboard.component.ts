@@ -43,6 +43,9 @@ import {
 import {
     AppShellState,
     NavigatorState,
+
+} from '../../../app-shell/state';
+import {
     DbfsState,
     DbfsLoadTopFolder,
     DbfsLoadSubfolder,
@@ -50,7 +53,7 @@ import {
     DbfsResourcesState,
     DbfsRemoveUserFav,
     DbfsAddUserFav
-} from '../../../app-shell/state';
+} from '../../../shared/modules/dashboard-filesystem/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
@@ -58,7 +61,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angul
 
 import { LoggerService } from '../../../core/services/logger.service';
 import { HttpService } from '../../../core/http/http.service';
-import { DbfsUtilsService } from '../../../app-shell/services/dbfs-utils.service';
+import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
 import { URLOverrideService } from '../../services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';

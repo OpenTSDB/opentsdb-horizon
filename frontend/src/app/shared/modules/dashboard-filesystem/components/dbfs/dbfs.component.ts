@@ -17,9 +17,9 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import { Observable, Subscription } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 
 import {
     Select,
@@ -60,9 +60,9 @@ import {
     //DbfsAddUserFavorite,
     //DbfsRemoveUserFavorite
 } from '../../state/dbfs-resources.state';
-import { LoggerService } from '../../../core/services/logger.service';
+import { LoggerService } from '../../../../../core/services/logger.service';
 import { MatMenuTrigger } from '@angular/material';
-import { DBState, LoadDashboard } from '../../../dashboard/state';
+import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';

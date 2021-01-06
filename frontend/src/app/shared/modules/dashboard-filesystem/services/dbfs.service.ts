@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
+import { catchError} from 'rxjs/operators';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DbfsService {
 
     constructor(
