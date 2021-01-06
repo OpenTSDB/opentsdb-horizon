@@ -192,7 +192,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     startWith(''),
                     distinctUntilChanged(),
                     pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {
+                ).subscribe(([prev, changes]: [any, any]) => {                    
                     if (!deepEqual(prev, changes)) {
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
@@ -213,7 +213,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     addChartItem(data: any) {
-        this.needRequery = true;
+        // this.needRequery = true;
         const chartItem = this.fb.group(data);
         const control = <FormArray>this.FC_chart;
         control.push(chartItem);
