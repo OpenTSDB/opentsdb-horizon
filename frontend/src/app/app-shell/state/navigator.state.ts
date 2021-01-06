@@ -5,10 +5,6 @@ import {
     StateContext
 } from '@ngxs/store';
 
-import {
-    DbfsState
-} from '../../shared/modules/dashboard-filesystem/state/dbfs.state';
-
 import { MediaObserver } from '@angular/flex-layout';
 import { LoggerService } from '../../core/services/logger.service';
 
