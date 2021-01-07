@@ -1682,7 +1682,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const namespaces = this.getNamespaceNames();
         // user has only 1 ns with write access
         if (namespaces.length === 1) {
-            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
+            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0], tplVariables: this.tplVariables.viewTplVariables});
             this.dataShare.setMessage('WidgetToAlert');
             this.router.navigate(['a', namespaces[0], '_new_']);
         } else if (namespaces.length > 1) {
