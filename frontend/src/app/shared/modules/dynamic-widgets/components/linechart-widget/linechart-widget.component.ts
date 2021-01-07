@@ -463,10 +463,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.refreshLegendSource();
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
+                            // also need to update view in edit mode
                             setTimeout(() => {
-                                if ( this.mode !== 'edit'  ) {
+                                // if ( this.mode !== 'edit'  ) {
                                     this.setSize();
-                                }
+                                // }
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
