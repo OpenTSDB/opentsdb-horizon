@@ -25,8 +25,8 @@
                     <mat-button-toggle mat-button color="primary" value="background">Background</mat-button-toggle>
                 </mat-button-toggle-group>
                 <span *ngIf="type !== 'BignumberWidgetComponent'" class="mat-body-strong">Fill color</span>
-                <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
-                <color-picker *ngIf="type === 'BignumberWidgetComponent' && colorToggleVal === 'background'" (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor" [enableAuto]="'true'"></color-picker>
+                <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color"></color-picker>
+                <color-picker *ngIf="type === 'BignumberWidgetComponent' && colorToggleVal === 'background'" (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor"></color-picker>
             </div>
             <div class="column" *ngIf="type === 'TopnWidgetComponent'" style="display: flex; flex-direction: column;">
                 <span class="mat-body-strong">Unit</span>
@@ -39,7 +39,7 @@
         </div>
         <div class="vis-conf-col" *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent'">
             <strong>{{ (type === 'LinechartWidgetComponent' && (!this.mode || this.mode === 'line') ? 'Line ' : 'Fill ') + 'color' }}</strong>
-            <color-picker (newColor)="setColor(data.metric.id, $event, $event.hex ? 'color' : 'scheme')" [pickerMode]="'embedded'" [color]="data.visual.color || data.visual.scheme" [enablePalette]="type !== 'HeatmapWidgetComponent'" [enableAuto]="'true'"></color-picker>
+            <color-picker (newColor)="setColor(data.metric.id, $event, $event.scheme ? 'scheme' : 'color')" [pickerMode]="'embedded'" [color]="data.visual.color || data.visual.scheme" [enableMultiSelection]="type === 'HeatmapWidgetComponent'" [enablePalette]="type !== 'HeatmapWidgetComponent'"></color-picker>
         </div>
         <div class="vis-conf-col" *ngIf="type === 'HeatmapWidgetComponent'">
             <strong>Unit</strong>

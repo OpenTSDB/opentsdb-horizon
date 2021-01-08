@@ -7,6 +7,7 @@ import { DatatranformerService } from '../../../../../core/services/datatranform
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
+import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
@@ -18,6 +19,8 @@ import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { environment } from '../../../../../../environments/environment';
+import { ComponentPortal } from '@angular/cdk/portal';
+
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -82,6 +85,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       series: {},
       gridLineColor: '#ccc',
       plotter: heatmapPlotter,
+      isIslandLegendOpen: false,
       pointSize: 0,
       heatmap: {
           buckets: 30,
@@ -122,12 +126,14 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private dataTransformer: DatatranformerService,
       private util: UtilsService,
       private elRef: ElementRef,
+      private iiService: InfoIslandService,
       private unit: UnitConverterService,
       private dateUtil: DateUtilsService
   ) { }
 
   ngOnInit() {
     this.visibleSections.queries = this.mode === 'edit' ? true : false;
+    // this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'view';
     this.doRefreshData$ = new BehaviorSubject(false);
     this.doRefreshDataSub = this.doRefreshData$
         .pipe(
@@ -541,10 +547,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   timeseriesTickListener(event: any) {
     // console.log('TIMESERIES TICK LISTENER', { widget: this.widget, event});
 
-    if (this.mode !== 'view' === true) {
-        return;
-    }
-
     const widgetOptions = this.options;
 
     if (event.action === 'openLegend') {
@@ -565,12 +567,32 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             }
         };
 
-        // this goes to widgetLoader
-        this.interCom.requestSend({
-            id: this.widget.id,
-            action: 'InfoIslandOpen',
-            payload: payload
-        });
+        if ( this.mode === 'view' ) {
+            // this goes to widgetLoader
+            this.interCom.requestSend({
+                id: this.widget.id,
+                action: 'InfoIslandOpen',
+                payload: payload
+            });
+        } else {
+            const dataToInject = {
+                widget: this.widget,
+                originId: this.widget.id,
+                data: payload.data
+            };
+            // tslint:disable-next-line: max-line-length
+            const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
+            const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+            const pos = this.elRef.nativeElement.getBoundingClientRect();
+            const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+            const height = pos.height * ( 1 - heightMod ) - 5;
+            // tslint:disable-next-line: max-line-length
+            this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
+                originId: this.widget.id,
+                width: pos.width,
+                // positionStrategy: 'connected',
+                height: height });
+        }
     }
 
     if (event.action === 'tickDataChange') {

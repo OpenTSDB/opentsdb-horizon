@@ -12,7 +12,8 @@
                 <!--- Note that these columns can be defined in any order.
                         The actual rendered columns are set as a property on the row definition" -->
 
-                <!-- REMOVE -->
+                <!-- REMOVE for now not allow user to add tags to multigraph-->
+                <!--
                 <ng-container matColumnDef="remove">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element; let rowIndex = index">
@@ -27,7 +28,7 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                
+            -->
                 <!-- label -->
                 <ng-container matColumnDef="label">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
@@ -101,8 +102,8 @@
                 <!-- we DRAG the whole row -->
                 <mat-row class="multigraph-data-row" *matRowDef="let row; columns: chartDisplayColumns;" cdkDrag [cdkDragData]="row"></mat-row>
             </mat-table>
+<!-- disbable not allow to add tag from multigraph for now
             <div class="add-tag-control">
-                <!-- Input to add a tag -->
                 <mat-form-field appearance="fill">
                     <input matInput placeholder="Add tag key" 
                         [formControl]="tagKeyControlInput"
@@ -119,6 +120,7 @@
                     <mat-option *ngFor="let option of widgetTagOptions()" [value]="option">{{option}}</mat-option>
                 </mat-autocomplete>
             </div>
+        -->
         </div>
     </div>
     <div class="config-control inline-controls" [ngStyle]="{ 'pointer-events': isDataLoaded ? 'initial' : 'none', 'opacity': isDataLoaded ? 1 : .5}">

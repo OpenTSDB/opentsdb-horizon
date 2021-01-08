@@ -372,13 +372,14 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             const range: any = yScale.invertExtent(bucket);
 
             ttData.timestamp = x;
+            // tslint:disable:max-line-length
             ttData.timestampFormatted = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
 
             const percentage = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision });
             ttData.affectedSeries = percentage + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
             ttData.bucketRange = [range[0], range[1]];
-
-            ttData.color = options.heatmap.color; // base color of heatmap
+            // tslint:disable:max-line-length
+            ttData.color = !Array.isArray(options.heatmap.color) ? options.heatmap.color : options.heatmap.colorValueMap[tooltipData.length];
             ttData.percentage = percentage; // use this to calculate opacity of heatmap color;
 
             ttData.bucketValues = [];
@@ -499,7 +500,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
                             const cy = Dygraph.pageY(event) - graphPos.y;
 
-
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
                                 const ts = g.toDataXCoord(cx2);
@@ -574,8 +574,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                         tickData: { options: self.options, x: ts, bucket: bucket, data: hasData },
                                     });
                                 }
-
-                                ctx.fillStyle = !hasData ? '#dddddd' : g.user_attrs_.heatmap.color;
+                                // tslint:disable:max-line-length
+                                ctx.fillStyle = Array.isArray(g.user_attrs_.heatmap.color) || !hasData ? '#dddddd' : g.user_attrs_.heatmap.color;
                                 ctx.fillRect(x, y, width, height);
                                 ctx.strokeStyle = 'red';
                                 ctx.strokeWidth = 1;
@@ -603,7 +603,15 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 window.removeEventListener('mouseout', this._g.mouseOutHandler_, false);
                 setTimeout(() => {
                     if ( this.data.ts && this.data.ts.length && this.options.isIslandLegendOpen ) {
-                            clickCallback.call(this._g, {}, this._g.rawData_[0][0], []);
+                        const ts = this._g.rawData_[0][0];
+                            if ( this.chartType === 'line') {
+                                clickCallback.call(this._g, {}, ts, []);
+                            } else if ( ts ) {
+                                this.currentTickEvent.emit({
+                                    action: 'openLegend',
+                                    tickData: { options: this.options, x: ts, bucket: 1, data: this._g.user_attrs_.series[1] && this._g.user_attrs_.series[1][ts]  }
+                                });
+                            }
                     }
                 });
 

@@ -203,6 +203,31 @@
                 }
             }
 
+
+                            
+            .preset-color {
+                padding: 0px 15px;
+                margin-bottom: 6px;
+                .title {
+                    padding-bottom: 4px;
+                    font-size: 10px;
+                }
+                .colors {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .btn-preset-color {
+                        width: 15px;
+                        height: 15px;
+                        border: 1px solid lightgray;
+                        border-radius: 5px;
+                        min-width: 15px;
+                        padding: 0px;
+                        margin: 1px;
+                        box-sizing: initial;
+                    }
+                }
+            }
+            
             .button-options {
                 text-align: right;
                 height: 32px;

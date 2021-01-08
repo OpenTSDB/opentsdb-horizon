@@ -199,13 +199,17 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         };
         this.newSize$ = new BehaviorSubject(initSize);
 
-        this.newSizeSub = this.newSize$.subscribe(size => {
-            setTimeout(() => this.setSize(size), 0);
+        this.newSizeSub = this.newSize$.pipe(
+            debounceTime(100)
+        ).subscribe(size => {
+            this.setSize(size);
         });
-        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+        const nativeEl = (this.mode !== 'view') ?
+            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        this.resizeSensor = new ResizeSensor(nativeEl, () => {
              const newSize = {
-                width: this.widgetOutputElement.nativeElement.clientWidth,
-                height: this.widgetOutputElement.nativeElement.clientHeight
+                width: nativeEl.clientWidth,
+                height: nativeEl.clientHeight
             };
             this.newSize$.next(newSize);
         });
@@ -216,11 +220,14 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     setSize(newSize) {
 
-        const editModifier = this.mode !== 'view' ? 0 : 23;
+        const editModifier = this.mode !== 'view' ? 0 : 20;
         const heightMod = 0.55;
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : newSize.height + 60;
-        this.size = { width: newSize.width, height: newSize.height - editModifier };
+        const nativeEl = (this.mode !== 'view') ?
+            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const outputSize = nativeEl.getBoundingClientRect();
+        this.size = { width: outputSize.width, height: outputSize.height - editModifier };
         this.cdRef.detectChanges();
     }
 

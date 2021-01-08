@@ -87,13 +87,17 @@ export class DashboardService {
     widget.id = this.utils.generateId(6, this.utils.getIDs(widgets));
     widget.settings.component_type = type;
     switch ( type ) {
-        case 'LinechartWidgetComponent':
         case 'HeatmapWidgetComponent':
+          widget.settings.visual.color = '#3F00FF';
+          break;
+        case 'TopnWidgetComponent':
+          widget.settings.visual.color = '#dff0ff';
+          break;
+        case 'BignumberWidgetComponent':
+        case 'LinechartWidgetComponent':
         case 'BarchartWidgetComponent':
         case 'DonutWidgetComponent':
-        case 'TopnWidgetComponent':
         case 'DeveloperWidgetComponent':
-        case 'BignumberWidgetComponent':
         case 'MarkdownWidgetComponent':
         case 'EventsWidgetComponent':
             break;

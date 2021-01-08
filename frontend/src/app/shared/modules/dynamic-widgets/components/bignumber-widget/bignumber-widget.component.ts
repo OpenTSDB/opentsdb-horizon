@@ -688,6 +688,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         this.widget.settings.visual.precision = this.widget.settings.visual.precision || 2;
         this.widget.settings.visual.backgroundColor = this.widget.settings.visual.backgroundColor || '#0B5ED2';
         this.widget.settings.visual.textColor = this.widget.settings.visual.textColor || '#FFFFFF';
+        this.widget.settings.visual.color = this.widget.settings.visual.color || '#FFFFFF';
         this.widget.settings.visual.sparkLineEnabled = this.widget.settings.visual.sparkLineEnabled || false;
         this.widget.settings.visual.changedIndicatorEnabled = this.widget.settings.visual.changedIndicatorEnabled || false;
 

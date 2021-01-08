@@ -50,8 +50,8 @@ export class ColorPickerComponent implements OnInit {
     @ViewChild('contentForOtherModes') contentForOtherModes: ElementRef;
 
     /* Inputs */
-    @Input() enableAuto: boolean; // allow auto to be selected - outputs {hex: 'auto', color: 'auto'}
     @Input() enablePalette = false;
+    @Input() enableMultiSelection = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
     @Input() get pickerMode(): string {
@@ -63,25 +63,8 @@ export class ColorPickerComponent implements OnInit {
     _pickerMode: string;
 
     // Color to display
-    @Input() get color(): string {
-        return this._color;
-    }
-    set color(value: string) {
-        if (this._color !== value) {
-            this.changeDetectorRef.markForCheck();
-        }
+    @Input() color: any;
 
-        if (this.isRgbValid(value)) {
-            this._color = this.rgbToHex(value);
-        } else {
-            this._color = coerceHexaColor(value) || ( this.enablePalette && value ? value : 'Auto' );
-        }
-
-        // if on embedded view, do not attempt to switch between default and custom
-        if (this.pickerMode !== 'embedded') {
-            this.determineIfCustomColor();
-        }
-    }
     private _color: string;
 
     // Should panel be open - use with dropDownNoButton mode
@@ -105,6 +88,8 @@ export class ColorPickerComponent implements OnInit {
     embedded = 'embedded';
     dropDownNoButton = 'dropDownNoButton';
     dropDown = 'dropDown';
+    selectedIndex = 0;
+    colors = [];
 
     // tslint:disable:no-inferrable-types
     selectingCustomColor: boolean = false;
@@ -112,6 +97,7 @@ export class ColorPickerComponent implements OnInit {
     mode = 'palette';
 
     palettes: any = [
+        {'name': 'auto', 'label': 'Auto'},
         {'name': 'Category10', 'label': 'Category10'},
         {'name': 'Accent', 'label': 'Accent'},
         {'name': 'Dark2', 'label': 'Dark2'},
@@ -169,13 +155,8 @@ export class ColorPickerComponent implements OnInit {
 
     ngOnInit() {
 
-        if (this.enableAuto === undefined) {
-            this.enableAuto = false;
-        }
-
-        if (!this._color) {
-            this._color = '#000000';
-        }
+        this.color =  this.color || ( this.enablePalette ? 'auto'  : '#000000' );
+        this.colors = Array.isArray(this.color) ? this.color : [this.color];
 
         if (!this.pickerMode) {
             this.pickerMode = this.dropDown;
@@ -196,13 +177,11 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        const index =  this.palettes.findIndex( d => d.name === this.color );
+        const index =  this.palettes.findIndex( d => d.name === this.colors[0] );
         if ( this.enablePalette && index !== -1 ) {
             this.mode = 'palette';
-        } else if (this.colorToName(this.color) || this.color && this.color.toLowerCase() === 'auto') {
-            this.mode = 'default';
         } else {
-            this.mode = 'custom';
+            this.mode = 'default';
         }
     }
 
@@ -219,7 +198,9 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorSelected(hexColor: string): void {
-        this.color = hexColor;
+        this.colors[this.selectedIndex] = hexColor;
+        // this.color = [...this.color];
+        // this.colors[this.selectedIndex] = hexColor;
         this.emitColor();
 
         // if on custom color and we hit a default color, do not switch to default view
@@ -229,17 +210,31 @@ export class ColorPickerComponent implements OnInit {
     }
 
     colorSchemeSelected(scheme) {
-        this.color = scheme;
+        this.colors[0] = scheme;
         this.newColor.emit( {'scheme': scheme} );
     }
 
     emitColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.newColor.emit( { hex: 'auto', rgb: 'auto'});
-        } else {
-            this.newColor.emit(this.hexToColor(this.color));
-        }
+        const colors = this.colors.filter(d => d);
+        this.newColor.emit( this.enableMultiSelection && colors.length > 1 ? colors : colors[0]);
     }
+
+    setColorIndex(index) {
+        this.colors[index] = this.colors[index] || null;
+        this.selectedIndex = index;
+    }
+
+    addColor() {
+        this.colors.push(null);
+        this.selectedIndex = this.colors.length - 1;
+    }
+    unsetColorByIndex(index) {
+        // delete this.colors[index];
+        this.colors.splice(index, 1);
+        this.colors = [...this.colors];
+        this.emitColor();
+    }
+
 
     colorToName(hexColor: string): string {
         let colorName = '';
@@ -264,13 +259,13 @@ export class ColorPickerComponent implements OnInit {
     // Open/close color picker panel
     toggle() {
         // if closed, determine if custom color
-        if (!this._isOpen) {
-            this.determineIfCustomColor();
-        }
+        // if (!this._isOpen) {
+            // this.determineIfCustomColor();
+        // }
         this._isOpen = !this._isOpen;
-        if (!this._isOpen && this._color !== this.emptyColor) {
-            this.colorPickerService.addColor(this._color);
-        }
+        // if (!this._isOpen && this._color !== this.emptyColor) {
+            // this.colorPickerService.addColor(this._color);
+        // }
     }
 
     // Update selected color, close the panel and notify the user

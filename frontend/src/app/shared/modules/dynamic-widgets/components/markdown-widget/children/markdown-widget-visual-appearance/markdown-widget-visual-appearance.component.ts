@@ -30,12 +30,12 @@ export class MarkdownWidgetVisualAppearanceComponent implements OnInit {
   }
 
   backgroundColorChanged(color: any) {
-    this.widget.settings.visual['backgroundColor'] = color['hex'];
+    this.widget.settings.visual['backgroundColor'] = color;
     this.widgetChange.emit( {'action': 'SetVisualization', payload: { gIndex: 0, data: this.widget.settings.visual }});
   }
 
   textColorChanged(color: any) {
-    this.widget.settings.visual['textColor'] = color['hex'];
+    this.widget.settings.visual['textColor'] = color;
     this.widgetChange.emit( {'action': 'SetVisualization', payload: { gIndex: 0, data: this.widget.settings.visual }});
   }
 
