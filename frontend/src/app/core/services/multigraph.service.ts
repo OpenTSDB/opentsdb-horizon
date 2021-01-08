@@ -223,22 +223,25 @@ export class MultigraphService {
   }
   // this will update multigrap config based on groupby tags of a query
   updateMultigraphConf(groupByTags: string[], multigraph: any) {
-    if (groupByTags.length) {
-      // make sure to keep item that key are in groupTags
-      multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || groupByTags.includes(item.key));
-      for (let i = 0; i < groupByTags.length; i++) {
-        if (multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
-          continue;
+    // once they not set multigtraph yet, then multigraph can be undefined.
+    if (multigraph) {
+      if (groupByTags.length) {
+        // make sure to keep item that key are in groupTags
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || groupByTags.includes(item.key));
+        for (let i = 0; i < groupByTags.length; i++) {
+          if (multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
+            continue;
+          }
+          const item = {
+            key: groupByTags[i],
+            displayAs: 'g',
+            sortAs: 'asc'
+          };
+          multigraph.chart.push(item);
         }
-        const item = {
-          key: groupByTags[i],
-          displayAs: 'g',
-          sortAs: 'asc'
-        };
-        multigraph.chart.push(item);
+      } else {
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group');
       }
-    } else {
-      multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group');
     }
   }
 }
