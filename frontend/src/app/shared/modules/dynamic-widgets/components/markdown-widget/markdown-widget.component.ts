@@ -30,7 +30,6 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
     this.displayText$ = new BehaviorSubject('');
     this.subscription.add(this.interCom.responseGet().subscribe(message => {
       if (message.action === 'viewTplVariablesValues') {
-        console.log('hill - message', message);
         this.tplVariables = message.payload.tplVariables;
         this.tplValues = message.payload.tplValues;
         if (this.tplVariables.tvars.length > 0) {

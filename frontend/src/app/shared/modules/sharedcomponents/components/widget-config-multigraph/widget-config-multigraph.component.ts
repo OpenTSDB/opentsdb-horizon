@@ -123,7 +123,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             }
         }
         const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-        this,this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
+        this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
         this.createForm(this.multigraph);
     }
 
