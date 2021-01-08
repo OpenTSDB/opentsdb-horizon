@@ -12,6 +12,10 @@
         bottom: 0;
         right: 0;
 
+        .selection-checkbox {
+            margin-right: 8px;
+        }
+
         .clipboard-drawer-wrap {
             position: absolute;
             left: 0;
@@ -93,9 +97,14 @@
         }
 
         .clipboard-content-batch-controls {
-            .buttons,
-            .expansion {
-                display: flex;
+            padding: 6px;
+            display: flex;
+
+            .flex-spacer {
+                display: inline-flex;
+                justify-content: center;
+                opacity: .6;
+                font-size: 10px;
             }
         }
 
@@ -120,7 +129,7 @@
 
         .clipboard-item {
             .mat-expansion-panel-header {
-                padding: 0 12px 6px;
+                padding: 0 6px;
 
                 .mat-content {
                     font-size: 10px;
@@ -149,6 +158,18 @@
                         padding: 0 4px;
                     }
                 }
+            }
+
+            .mat-expansion-panel-header-title {
+                margin-right: 0;
+
+                .item-select-control,
+                .widget-type-icon,
+                .widget-title {
+                    display: inline-flex;
+                    align-items: center;
+                }
+
             }
         }
 
@@ -212,6 +233,39 @@
             }
         }
     }
+
+    // CDK items
+    .confirmation-menu.mat-menu-panel {
+
+        .mat-menu-content,
+        .confirmation-card.mat-card  {
+            padding: 0;
+        }
+
+        .confirmation-card.mat-card {
+            .mat-card-content {
+                padding: 16px;
+                margin: 0;
+            }
+
+            .mat-card-actions {
+                padding: 0;
+                margin: 0;
+                display: flex;
+
+                .mat-button {
+                    flex: 1;
+                    border-radius: 0;
+                    margin: 0;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 6px;
+                }
+            }
+        }
+    }
 }
 
 @mixin clipboard-drawer-component-theme($theme-config) {
@@ -221,9 +275,13 @@
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
     $is-dark-theme: map-get($theme-config, is-dark);
 
     $bg: map-get($background, card);
+
+    $success-color: map-get($status, success);
+    $cancel-color: map-get($status, error);
 
     /* navbar config */
     $sn-light: map-get($navbar-config, sn-light);
@@ -279,6 +337,38 @@
             &.is-master-panel {
                 .header-label {
                     color: rgba($text-color,.85);
+                }
+            }
+        }
+
+        .clipboard-item-list {
+            border-top: 1px solid $divider;
+        }
+    }
+
+    // CDK items
+    .confirmation-menu.mat-menu-panel {
+
+        .confirmation-card.mat-card {
+            box-shadow: none;
+
+            .mat-card-actions {
+                border-top: 1px solid $divider;
+
+                .mat-button:not(:last-child) {
+                    border-right: 1px solid $divider;
+                }
+
+                .mat-button.confirm-button {
+                    .mat-icon {
+                        color: $success-color;
+                    }
+                }
+
+                .mat-button.cancel-button {
+                    .mat-icon {
+                        color: $cancel-color;
+                    }
                 }
             }
         }

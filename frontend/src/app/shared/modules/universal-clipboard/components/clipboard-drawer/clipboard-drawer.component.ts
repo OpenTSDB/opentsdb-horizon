@@ -8,7 +8,7 @@ import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { ClipboardCreate, ClipboardLoad, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
-import { MatAccordion, MatExpansionPanel } from '@angular/material';
+import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -44,6 +44,15 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     @ViewChild(MatAccordion, {read: MatAccordion}) accordion: MatAccordion;
     @ViewChildren(MatExpansionPanel, { read: MatExpansionPanel }) accordionItems: QueryList<MatExpansionPanel>;
+
+    @ViewChild('clipboardMoreMenuTrigger', {read: MatMenuTrigger}) clipboardMoreMenuTrigger: MatMenuTrigger;
+    @ViewChild('removeClipboardMenuTrigger', {read: MatMenuTrigger}) removeClipboardMenuTrigger: MatMenuTrigger;
+    //@ViewChild('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) clipboardItemMoreMenuTrigger: MatMenuTrigger;
+    //@ViewChild('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) removeClipboardItemMenuTrigger: MatMenuTrigger;
+
+    @ViewChildren('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) cbItemMoreTriggers: QueryList<MatMenuTrigger>;
+    @ViewChildren('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) cbItemRemoveTriggers: QueryList<MatMenuTrigger>;
+
 
     private subscription = new Subscription();
 
@@ -130,7 +139,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     expandAll: boolean = false;
 
     selectAll: boolean = false;
-    selectAllIndeterminate: boolean = false; // ??? may not use... not sure yet
+    selectAllIndeterminate: boolean = false;
+    batchControlsDisabled: boolean = true;
+    selectedCount: number = 0;
 
     selectedItems: any = {};
 
@@ -190,9 +201,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             this.logger.ng('activeIndex', { index });
             if (this.activeIndex !== index) {
                 // reset some things
-                this.itemDetailOpened = '';
-                this.creatingNewClipboard = false;
-                this.selectedItems = {};
+                this.resetVariables();
             }
             this.activeIndex = index;
         }));
@@ -203,130 +212,26 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         }));
     }
 
-    // toggle
+     /**
+     * DRAWER ACTIONS
+     */
+
     toggle(): void {
-        // this.drawerState = this.drawerState === 'closed' ? 'opened' : 'closed';
         const state = this.drawerState === 'closed' ? 'opened' : 'closed';
         this.cbService.setDrawerState(state);
     }
 
-    // opens drawer
     open(): void {
-        // this.drawerState = 'opened';
         this.cbService.setDrawerState('opened');
     }
 
-    // closes drawer
     close(): void {
-        // this.drawerState = 'closed';
         this.cbService.setDrawerState('closed');
     }
 
-    toggleSelectItem(event: any, item: any) {
-        this.logger.log('TOGGLE SELECT ITEM', event);
-        this.selectedItems[item.id] = event.checked;
-        if (!event.checked) {
-            this.selectAll = false;
-        } else {
-            //if (!this.selectAll) {
-                let count = 0;
-                let keys = Object.keys(this.selectedItems);
-                let checked = keys.filter(item => {
-                    return this.selectedItems[item] === true;
-                });
-
-                if (checked.length === this.clipboardItems.length) {
-                    this.selectAll = true;
-                } else {
-                    this.selectAll = false;
-                }
-            //}
-        }
-    }
-
-    toggleSelectAll() {
-        this.logger.log('toggleSelectAll');
-        let keys = Object.keys(this.selectedItems);
-        // check the select all flag
-        if (this.selectAll) {
-            // everything was selected, so deselect
-            for(let i = 0; i < keys.length; i++) {
-                this.selectedItems[keys[i]] = false;
-            }
-            this.selectAll = false;
-        } else {
-            // select everything
-            for(let i = 0; i < keys.length; i++) {
-                this.selectedItems[keys[i]] = true;
-            }
-            this.selectAll = true;
-        }
-    }
-
-    toggleExpandItem(expanded: boolean) {
-        if (!expanded) {
-            // accordion item (closed) event
-            this.expandAll = false;
-        } else {
-            // accordion item (opened) event
-            if (!this.expandAll) {
-                // need to check if all are open or not
-                this.logger.ng('TOGGLE EXPAND ITEM', this.accordion);
-                let count = 0;
-                this.accordionItems.forEach((item: MatExpansionPanel) => {
-                    if (item.expanded) {
-                        count++;
-                    }
-                });
-                this.logger.ng('COUNTING ITEMS EXPANDED', {count, items: this.clipboardItems.length});
-                if (count === this.clipboardItems.length) {
-                    this.expandAll = true;
-                }
-            }
-        }
-    }
-
-    toggleExpandAll() {
-        this.logger.log('toggleExpandAll');
-        if (this.expandAll) {
-            // everything is expanded already, so collapse
-            this.expandAll = false;
-            this.accordion.closeAll();
-        } else {
-            // expand everything
-            this.expandAll = true;
-            this.accordion.openAll();
-        }
-    }
-
-    createDashboardFromClipboard() {
-        this.logger.log('createDashboardFromClipboard', { clipboardIndex: this.activeIndex});
-    }
-
-    batchPasteToDashboard() {
-        this.logger.log('batchPasteToDashboard', {indices: this.selectedItems});
-
-        // get selected indices from selectedItems
-
-    }
-
-    pasteToDashboard(data: any, index: any) {
-        this.logger.log('pasteToDashboard', { data, index });
-    }
-
-    openDetail(id: any) {
-        this.itemDetailOpened = id;
-    }
-
-    closeDetail(id: any) {
-        if (this.itemDetailOpened === id) {
-            this.itemDetailOpened = '';
-        }
-    }
-
-    toggleDetail(id: any) {
-        this.itemDetailOpened = (this.itemDetailOpened !== id) ? id : '';
-    }
+    /**
+     * CLIPBOARD ACTIONS/EVENTS
+     */
 
     // clipboard selection change
     clipboardSelectionChange(e: any) {
@@ -339,6 +244,15 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             // else was an option selected
             // set new active index
             this.store.dispatch(new SetClipboardActive(e.value));
+        }
+    }
+
+    // clipboard more menu toggle
+    toggleClipboardMoreMenu() {
+        if (!this.clipboardMoreMenuTrigger.menuOpen) {
+            this.clipboardMoreMenuTrigger.openMenu();
+        } else {
+            this.clipboardMoreMenuTrigger.closeMenu();
         }
     }
 
@@ -367,9 +281,233 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         this.creatingNewClipboard = false;
     }
 
+    toggleRemoveClipboardConfirm() {
+        if (!this.removeClipboardMenuTrigger.menuOpen) {
+            this.removeClipboardMenuTrigger.openMenu();
+        } else {
+            this.removeClipboardMenuTrigger.closeMenu();
+        }
+    }
+
+     /**
+     * BATCH - CLIPBOARD LIST ACTIONS
+     */
+
+    toggleSelectAll() {
+
+        let keys = Object.keys(this.selectedItems);
+        // check the select all flag
+        if (this.selectAll) {
+            // everything was selected, so deselect
+            for(let i = 0; i < keys.length; i++) {
+                this.selectedItems[keys[i]] = false;
+            }
+            this.selectAll = false;
+            this.selectAllIndeterminate = false;
+            this.batchControlsDisabled = true;
+            this.selectedCount = 0;
+        } else {
+            // select everything
+            for(let i = 0; i < keys.length; i++) {
+                this.selectedItems[keys[i]] = true;
+            }
+            this.selectAll = true;
+            this.selectAllIndeterminate = false;
+            this.batchControlsDisabled = false;
+            this.selectedCount = keys.length;
+        }
+
+        this.logger.log('toggleSelectAll', {selectAll: this.selectAll});
+    }
+
+    toggleExpandAll() {
+        this.logger.log('toggleExpandAll');
+        if (this.expandAll) {
+            // everything is expanded already, so collapse
+            this.expandAll = false;
+            this.accordion.closeAll();
+        } else {
+            // expand everything
+            this.expandAll = true;
+            this.accordion.openAll();
+        }
+    }
+
+    createDashboardFromClipboard() {
+        this.logger.log('createDashboardFromClipboard', { clipboardIndex: this.activeIndex});
+    }
+
+    batchPasteToDashboard() {
+        this.logger.log('batchPasteToDashboard', {indices: this.selectedItems});
+
+        // get selected items
+        let items = this.getSelectedItems();
+
+        // add to dashboard somehow
+
+    }
+
+    batchRemoveClipboardItems() {
+        this.logger.log('batchRemoveClipboardItems', {indices: this.selectedItems});
+
+        // get selected items
+        let items = this.getSelectedItems();
+
+        // call upon the state to remove
+    }
+
+     /**
+     * CLIPBOARD ITEM ACTIONS
+     */
+
+    toggleSelectItem(event: any, item: any) {
+        this.logger.log('TOGGLE SELECT ITEM', event);
+        this.selectedItems[item.id] = event.checked;
+
+        let checked = this.getSelectedIds();
+
+        if (checked.length === 0) {
+            this.selectAll = false;
+            this.selectAllIndeterminate = false;
+        } else {
+
+            if (checked.length === this.clipboardItems.length) {
+                this.selectAll = true;
+                this.selectAllIndeterminate = false;
+            } else {
+                this.selectAll = false;
+                this.selectAllIndeterminate = true;
+            }
+        }
+
+        this.selectedCount = checked.length;
+
+        this.batchControlsDisabled = !((!this.selectAll && this.selectAllIndeterminate) || this.selectAll);
+
+        this.logger.log('TOGGLE SELECT ITEM', {checked: event.checked, selectAll: this.selectAll, indeterminate: this.selectAllIndeterminate});
+
+    }
+
+    toggleExpandItem(expanded: boolean) {
+        if (!expanded) {
+            // accordion item (closed) event
+            this.expandAll = false;
+        } else {
+            // accordion item (opened) event
+            if (!this.expandAll) {
+                // need to check if all are open or not
+                this.logger.ng('TOGGLE EXPAND ITEM', this.accordion);
+                let count = 0;
+                this.accordionItems.forEach((item: MatExpansionPanel) => {
+                    if (item.expanded) {
+                        count++;
+                    }
+                });
+                this.logger.ng('COUNTING ITEMS EXPANDED', {count, items: this.clipboardItems.length});
+                if (count === this.clipboardItems.length) {
+                    this.expandAll = true;
+                }
+            }
+        }
+    }
+
+    toggleClipboardItemMoreMenu(dataMenuId: any) {
+
+        const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findCbItemMoreTrigger(dataMenuId);
+
+        if (mTrigger) {
+            if (!mTrigger.menuOpen) {
+                mTrigger.openMenu();
+            } else {
+                mTrigger.closeMenu();
+            }
+        } else {
+            this.logger.error('clipboardItemMoreMenu', 'CANT FIND TRIGGER');
+        }
+
+        this.logger.log('toggleClipboardItemMoreMenu', {
+            dataMenuId,
+            mTrigger
+        });
+
+    }
+
+    toggleRemoveClipboardItemConfirm(dataMenuId: any) {
+
+        const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findCbItemRemoveTrigger(dataMenuId);
+
+        if (mTrigger) {
+            if (!mTrigger.menuOpen) {
+                mTrigger.openMenu();
+            } else {
+                mTrigger.closeMenu();
+            }
+        } else {
+            this.logger.error('clipboardItemRemoveMenu', 'CANT FIND TRIGGER');
+        }
+
+        this.logger.log('toggleRemoveClipboardItemConfirm', {
+            dataMenuId,
+            mTrigger
+        });
+
+    }
+
+    pasteToDashboard(data: any, index: any) {
+        this.logger.log('pasteToDashboard', { data, index });
+    }
+
+    removeClipboardItem(data: any, index: any) {
+        this.logger.log('removeClipboardItem', {data, index});
+    }
+
+     /**
+     * PRIVATES
+     */
+
     private resetVariables() {
         this.creatingNewClipboard = false;
         this.itemDetailOpened = '';
+        this.selectedCount = 0;
+        this.selectedItems = {};
+        this.batchControlsDisabled = true;
+    }
+
+    // utility to find clipboard item more menu trigger
+    private findCbItemMoreTrigger(id: any): MatMenuTrigger {
+        const trigger = this.cbItemMoreTriggers.find(item => {
+            // console.log('... ITEM ...', item);
+            return item.menuData.item.id === id;
+        });
+        return  trigger || null;
+    }
+
+    // utility to find clipboard trash menu trigger
+    private findCbItemRemoveTrigger(id: any): MatMenuTrigger {
+        const trigger = this.cbItemRemoveTriggers.find(item => {
+            console.log('... [r]ITEM ...', item);
+            return item.menuData.item.id === id;
+        });
+        return  trigger || null;
+    }
+
+    private getSelectedIds(): any[] {
+        let keys = Object.keys(this.selectedItems);
+        let selected = keys.filter(item => {
+            return this.selectedItems[item] === true;
+        });
+
+        return selected;
+    }
+
+    private getSelectedItems(): any[] {
+        let ids = this.getSelectedIds();
+
+        let items = this.clipboardItems.filter((item: any) => {
+            return ids.includes(item.id);
+        });
+
+        return items;
     }
 
     // JUST FOR DEV
