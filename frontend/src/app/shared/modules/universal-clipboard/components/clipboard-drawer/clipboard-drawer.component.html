@@ -121,13 +121,13 @@
                                     <mat-icon fontSet="denali" fontIcon="d-add-circle"></mat-icon>
                                 </button>-->
                                 <span (click)="$event.stopPropagation()" class="item-select-control selection-checkbox">
-                                    <mat-checkbox [checked]="selectedItems[data.id]"
+                                    <mat-checkbox [checked]="selectedItems[data.settings.clipboardMeta.cbId]"
                                         (change)="toggleSelectItem($event, data)"></mat-checkbox>
                                 </span>
                                 <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
                                 <span class="widget-title">{{data.settings.title}}</span>
                                 <span class="flex-spacer"></span>
-                                <button mat-icon-button matTooltip="More actions" (click)="$event.stopPropagation(); toggleClipboardItemMoreMenu(data.id)">
+                                <button mat-icon-button matTooltip="More actions" (click)="$event.stopPropagation(); toggleClipboardItemMoreMenu(data.settings.clipboardMeta.cbId)">
                                     <mat-icon fontSet="denali" fontIcon="d-more-vertical"></mat-icon>
                                     <span #clipboardItemMoreMenuTrigger
                                         [matMenuTriggerFor]="moreClipboardItemActionsMenu"
@@ -171,9 +171,9 @@
 
 <!-- creating clipboard -->
 <ng-template #createClipboardPanel>
-    <div>
+    <div class="create-clipboard-form">
         <div>Create a new clipboard</div>
-        <div>
+        <div class="input-control">
             <mat-form-field appearance="legacy">
                 <mat-label>Enter clipboard name</mat-label>
                 <input matInput [formControl]="FC_clipboardName">
@@ -184,7 +184,7 @@
                 </mat-error>
             </mat-form-field>
         </div>
-        <div>
+        <div class="actions">
             <button mat-flat-button color="primary" (click)="createClipboard()" >
                 <span>Create Clipboard</span>
             </button>
@@ -248,7 +248,7 @@
             <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
             <span>Add to dashboard</span>
         </button>
-        <button mat-menu-item (click)="toggleRemoveClipboardItemConfirm(data.id)">
+        <button mat-menu-item (click)="toggleRemoveClipboardItemConfirm(data.settings.clipboardMeta.cbId)">
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             <span>Remove from clipboard</span>
         </button>
@@ -257,7 +257,7 @@
 
 <!-- confirmation menu to delete a clipboard item -->
 <mat-menu #confirmDeleteClipboardItemMenu="matMenu" overlapTrigger="true" class="confirmation-menu">
-    <ng-template matMenuContent let-data="item" let-itemIndex="itemIndex">
+    <ng-template matMenuContent let-item="item" let-itemIndex="itemIndex">
         <mat-card class="confirmation-card">
             <mat-card-content>
                 <p>
@@ -265,7 +265,7 @@
                 </p>
             </mat-card-content>
             <mat-card-actions>
-                <button mat-button class="confirm-button">
+                <button mat-button class="confirm-button" (click)="removeClipboardItem(item, itemIndex)">
                     <mat-icon fontSet="denali" fontIcon="d-check"></mat-icon>
                     <span>Confirm</span>
                 </button>
@@ -281,10 +281,27 @@
 </mat-menu>
 
 <!-- confirmation menu to delete a clipboard items (bulk action) -->
-<mat-menu #confirmDeleteClipboardItemsMenu="matMenu" overlapTrigger="true">
+<mat-menu #confirmDeleteClipboardItemsMenu="matMenu" overlapTrigger="true" class="confirmation-menu">
     <ng-template matMenuContent>
-        <button mat-menu-item>Yes, please delete items</button>
-        <button mat-menu-item>No, please cancel</button>
+        <mat-card class="confirmation-card">
+            <mat-card-content>
+                <p>
+                    Confirm removal of <strong>{{selectedCount}} {{selectedCount > 1 ? 'items' : 'item'}}</strong>
+                </p>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button class="confirm-button" (click)="batchRemoveClipboardItems()">
+                    <mat-icon fontSet="denali" fontIcon="d-check"></mat-icon>
+                    <span>Confirm</span>
+                </button>
+                <button mat-button class="cancel-button">
+                    <mat-icon fontSet="denali" fontIcon="d-decline"></mat-icon>
+                    <span>Cancel</span>
+                </button>
+            </mat-card-actions>
+        </mat-card>
+        <!--<button mat-menu-item (click)="batchRemoveClipboardItems()">Yes, please delete items</button>
+        <button mat-menu-item>No, please cancel</button>-->
     </ng-template>
 </mat-menu>
 

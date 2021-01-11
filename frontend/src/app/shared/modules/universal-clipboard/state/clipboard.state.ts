@@ -141,19 +141,17 @@ export class ClipboardAddItemSuccess {
     ) { }
 }
 
-export class ClipboardRemoveItem {
-    public static type = '[Clipboard] Remove Item';
+export class ClipboardRemoveItems {
+    public static type = '[Clipboard] Remove Items';
     constructor(
-        public readonly item: any,
-        public readonly index: any
+        public readonly items: any[] // should be array of widget ids
     ) { }
 }
 
-export class ClipboardRemoveItemSuccess {
-    public static type = '[Clipboard] Remove Item SUCCESS';
+export class ClipboardRemoveItemsSuccess {
+    public static type = '[Clipboard] Remove Items SUCCESS';
     constructor(
-        public readonly response: any,
-        public readonly index: any
+        public readonly response: any
     ) { }
 }
 
@@ -251,9 +249,6 @@ export class UniversalClipboardState {
         // cb resource check
         const cbResource = this.service.clipboardFolderResource();
 
-        // TODO: Revisit this path and optimize it
-        // doesn't seem as efficient in creating the first folder and clipboard
-
         if (!cbResource) {
 
             // get current logged in user
@@ -274,10 +269,10 @@ export class UniversalClipboardState {
             this.store.dispatch(new DbfsCreateFolder(folderPayload, {})).pipe(
                 map((res: any) => {
                     // folder created, now lets create default clipboard
-                    this.logger.log('attempt to create default clipboard');
+                    //this.logger.log('attempt to create default clipboard');
                     this.service.createClipboardResource('Default clipboard').pipe(
                         map((payload: any) => {
-                            this.logger.log('default clipboard created! yay!');
+                            //this.logger.log('default clipboard created! yay!');
                             // resource created successfully... tell DBFS to update folder
                             this.store.dispatch(new DbfsLoadSubfolder(folderPath, {})).pipe(
                                 map(() => {
@@ -293,19 +288,19 @@ export class UniversalClipboardState {
             ).subscribe();
         } else {
             // folder exists...:D
-            this.logger.log('YAY! folder exists -> lets load it', { yay: 'true', cbResource });
+            //this.logger.log('YAY! folder exists -> lets load it', { yay: 'true', cbResource });
             // load the clipboard resource folder
             this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
                 map(() => {
-                    this.logger.log('folder loaded -> check for default clipboard');
+                    //this.logger.log('folder loaded -> check for default clipboard');
                     // check for default clipboard
                     const defaultCheck = this.store.selectSnapshot(DbfsResourcesState.getFile(cbResource.fullPath + '/default-clipboard'));
                     if (!defaultCheck) {
-                        this.logger.log('uh oh... default didn\'t get created for some reason -> TRY AGAIN');
+                        //this.logger.log('uh oh... default didn\'t get created for some reason -> TRY AGAIN');
                         // hmmm... for some reason it didn't get created, or maybe it was deleted
                         this.service.createClipboardResource('Default clipboard').pipe(
                             map((payload: any) => {
-                                this.logger.log('default clipboard created! yay!');
+                                //this.logger.log('default clipboard created! yay!');
                                 // resource created successfully... tell DBFS to update folder
                                 this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
                                     map(() => {
@@ -317,7 +312,7 @@ export class UniversalClipboardState {
                             catchError(error => ctx.dispatch(new ClipboardError(error, 'clipboardResourceInitialization :: Create default clipboard resource [2]')))
                         ).subscribe();
                     } else {
-                        this.logger.log('Says the default clipboard exists... lets call it success', defaultCheck);
+                        //this.logger.log('Says the default clipboard exists... lets call it success', defaultCheck);
                         ctx.dispatch(new ClipboardResourceInitializeSuccess());
                     }
                 }),
@@ -333,10 +328,10 @@ export class UniversalClipboardState {
         // get resource
         const resource: DbfsFolderModel = this.service.clipboardFolderResource();
         const files: any[] = resource.files;
-        console.log('----> RESOURCE', resource, files);
+        //console.log('----> RESOURCE', resource, files);
         // sort & parse files
         let clipboardsList = this.service.sortClipboards(files);
-        console.log('---> CLIPBOARDS', clipboardsList);
+        //console.log('---> CLIPBOARDS', clipboardsList);
 
         // check if there is an active one already
         const curActiveIndex = this.store.selectSnapshot(UniversalClipboardState.getActiveClipboardSelectedIndex);
@@ -348,7 +343,7 @@ export class UniversalClipboardState {
             } else {
                 isActive = item.name === 'Default clipboard';
             }
-            console.log('---> ITEM', item);
+            //console.log('---> ITEM', item);
             return {
                 resource: item,
                 active: isActive
@@ -394,6 +389,12 @@ export class UniversalClipboardState {
         this.logger.action('State :: Load Clipboard SUCCESS');
 
         const state = ctx.getState();
+
+        for (let i = 0; i < response.content.widgets.length; i++) {
+            if (!response.content.widgets[i].settings.clipboardMeta.cbId) {
+                response.content.widgets[i].settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(response.content.widgets[i].id);
+            }
+        }
 
         ctx.setState({
             ...state,
@@ -461,6 +462,9 @@ export class UniversalClipboardState {
 
         let clipboard: any = this.utils.deepClone(state.clipboard);
 
+        // add a specific clipboard identifier
+        item.settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(item.id);
+
         clipboard.content.widgets.unshift(item);
 
         const activeId = clipboard.id;
@@ -498,14 +502,43 @@ export class UniversalClipboardState {
     }
 
     // remove clipboard item from active clipboard
-    @Action(ClipboardRemoveItem)
-    clipboardRemoveItem(ctx: StateContext<ClipboardResourceModel>, { item, index }: ClipboardRemoveItem) {
-        this.logger.action('State :: Remove clipboard item');
+    @Action(ClipboardRemoveItems)
+    clipboardRemoveItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardRemoveItems) {
+        this.logger.action('State :: Remove clipboard items');
+
+
+        const state = ctx.getState();
+
+        const dashboard: any = this.utils.deepClone(state.clipboard);
+
+        let widgets = [...dashboard.content.widgets];
+
+        widgets = widgets.filter((item: any) => {
+            return !items.includes(item.settings.clipboardMeta.cbId);
+        });
+
+        dashboard.content.widgets = widgets;
+
+        // now need to save dashboard
+
+        this.http.saveDashboard(dashboard.id, dashboard)
+            .subscribe(
+                (res: any) => {
+                    console.log('*** RES ***', res);
+                    ctx.dispatch(new ClipboardRemoveItemsSuccess(dashboard));
+                },
+                error => { ctx.dispatch(new ClipboardError(error, 'Remove Clipboard Items Failed')); }
+            )
     }
 
-    @Action(ClipboardRemoveItemSuccess)
-    clipboardRemoveItemSuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardRemoveItemSuccess) {
-        this.logger.action('State :: Remove clipboard item SUCCESS');
+    @Action(ClipboardRemoveItemsSuccess)
+    clipboardRemoveItemSuccess(ctx: StateContext<ClipboardResourceModel>, { response }: ClipboardRemoveItemsSuccess) {
+        this.logger.action('State :: Remove clipboard item SUCCESS', response);
+        var state = ctx.getState();
+
+        ctx.setState({...state,
+           clipboard: response
+        });
     }
 
     // activate clipboard

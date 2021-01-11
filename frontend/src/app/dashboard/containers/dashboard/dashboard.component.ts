@@ -306,6 +306,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // ready to handle request from children of DashboardModule
         // let widgets;
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+
+            let gridsterContainerEl: any;
+            let cloneWidgetEndPos: any;
+            let containerPos: any;
+
             switch (message.action) {
                 case 'getWidgetCachedData':
                     const widgetCachedData = this.wData[message.id];
@@ -364,15 +369,58 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
                     this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
-                    const gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
-                    const cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
-                    const containerPos = gridsterContainerEl.getBoundingClientRect();
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
+                    containerPos = gridsterContainerEl.getBoundingClientRect();
                     if (cloneWidgetEndPos > containerPos.height) {
                         setTimeout(() => {
                             gridsterContainerEl.scrollTop = cloneWidgetEndPos - containerPos.height;
                         }, 100);
                     }
                     this.updateTplVariableForCloneDelete( cloneWidget, 'clone');
+                    break;
+                // This comes from the clipboard drawer
+                case 'pasteClipboardWidgets':
+                    this.logger.ng('PASTE CLIPBOARD WIDGETS', message)
+                    // widgets = this.widgets;
+                    const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
+                    console.log('clipboardWidgets', clipboardWidgets, this.widgets);
+                    let batchGridPosOffset: any = 0;
+                    for(let i = 0; i < clipboardWidgets.length; i++) {
+                        delete clipboardWidgets[i].settings.clipboardMeta;
+                        clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
+                        //clipboardWidgets[i].gridPos.yMd = clipboardWidgets[i].gridPos.yMd + clipboardWidgets[i].gridPos.h;
+                        clipboardWidgets[i].gridPos.y = 0;
+                        clipboardWidgets[i].gridPos.ySm = 0;
+                        clipboardWidgets[i].gridPos.yMd = 0;
+
+                        for (let j = 0; j < this.widgets.length; j++) {
+                            if (this.widgets[j].gridPos.yMd >= clipboardWidgets[i].gridPos.yMd) {
+                                this.widgets[j].gridPos.yMd += clipboardWidgets[i].gridPos.h;
+                            }
+                        }
+
+                        this.widgets.push(clipboardWidgets[i]);
+
+                        batchGridPosOffset = batchGridPosOffset + (clipboardWidgets[i].gridPos.y + clipboardWidgets[i].gridPos.h)
+                    }
+
+                    // update the state with new widgets
+                    // const copyWidgets = this.utilService.deepClone(this.widgets);
+                    this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
+                    this.rerender = { 'reload': true };
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    cloneWidgetEndPos = batchGridPosOffset * this.gridsterUnitSize.height;
+                    containerPos = gridsterContainerEl.getBoundingClientRect();
+                    if (cloneWidgetEndPos > containerPos.height) {
+                        setTimeout(() => {
+                            gridsterContainerEl.scrollTop = cloneWidgetEndPos - containerPos.height;
+                        }, 100);
+                    }
+
+                    for(let i = 0; i < clipboardWidgets.length; i++) {
+                        this.updateTplVariableForCloneDelete( clipboardWidgets[i], 'clone');
+                    }
                     break;
                 case 'changeWidgetType':
                     this.iiService.closeIsland();

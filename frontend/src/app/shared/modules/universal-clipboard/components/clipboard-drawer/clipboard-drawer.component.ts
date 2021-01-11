@@ -6,9 +6,10 @@ import { LoggerService } from '../../../../../core/services/logger.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { ClipboardCreate, ClipboardLoad, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
+import { ClipboardCreate, ClipboardLoad, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
+import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -149,6 +150,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         private store: Store,
         private http: HttpService,
         private cbService: ClipboardService,
+        private interCom: IntercomService,
         private logger: LoggerService
     ) {
         this.widgetTypes.forEach((item: any, i: any) => {
@@ -189,8 +191,8 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
             for (let i = 0; i < items.length; i++) {
                 let item: any = items[i];
-                if (!this.selectedItems[item.id]) {
-                    this.selectedItems[item.id] = false;
+                if (!this.selectedItems[item.settings.clipboardMeta.cbId]) {
+                    this.selectedItems[item.settings.clipboardMeta.cbId] = false;
                 }
             }
             this.clipboardItems = items;
@@ -274,6 +276,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         } else {
             // form is not valid
             // do something??
+
         }
     }
 
@@ -335,6 +338,8 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     createDashboardFromClipboard() {
         this.logger.log('createDashboardFromClipboard', { clipboardIndex: this.activeIndex});
+        // create a dashboard from the current clipboard
+        // TODO!!!
     }
 
     batchPasteToDashboard() {
@@ -344,6 +349,12 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         let items = this.getSelectedItems();
 
         // add to dashboard somehow
+        // TODO!!!
+        this.interCom.requestSend(<IMessage> {
+            action: 'pasteClipboardWidgets',
+            id: 'clipboardWidgetsPaste',
+            payload: items
+        });
 
     }
 
@@ -351,9 +362,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         this.logger.log('batchRemoveClipboardItems', {indices: this.selectedItems});
 
         // get selected items
-        let items = this.getSelectedItems();
+        let items = this.getSelectedIds();
 
         // call upon the state to remove
+        this.store.dispatch(new ClipboardRemoveItems(items));
     }
 
      /**
@@ -362,7 +374,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     toggleSelectItem(event: any, item: any) {
         this.logger.log('TOGGLE SELECT ITEM', event);
-        this.selectedItems[item.id] = event.checked;
+        this.selectedItems[item.settings.clipboardMeta.cbId] = event.checked;
 
         let checked = this.getSelectedIds();
 
@@ -455,10 +467,19 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     pasteToDashboard(data: any, index: any) {
         this.logger.log('pasteToDashboard', { data, index });
+        // Add item to dashboard
+        // TODO!!!
+        this.interCom.requestSend(<IMessage> {
+            action: 'pasteClipboardWidgets',
+            id: 'clipboardWidgetsPaste',
+            payload: [data]
+        });
     }
 
     removeClipboardItem(data: any, index: any) {
         this.logger.log('removeClipboardItem', {data, index});
+        // remove item from clipboard
+        this.store.dispatch(new ClipboardRemoveItems([data.settings.clipboardMeta.cbId]));
     }
 
      /**
@@ -476,8 +497,8 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     // utility to find clipboard item more menu trigger
     private findCbItemMoreTrigger(id: any): MatMenuTrigger {
         const trigger = this.cbItemMoreTriggers.find(item => {
-            // console.log('... ITEM ...', item);
-            return item.menuData.item.id === id;
+            console.log('... ITEM ...', item);
+            return item.menuData.item.settings.clipboardMeta.cbId === id;
         });
         return  trigger || null;
     }
@@ -486,7 +507,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     private findCbItemRemoveTrigger(id: any): MatMenuTrigger {
         const trigger = this.cbItemRemoveTriggers.find(item => {
             console.log('... [r]ITEM ...', item);
-            return item.menuData.item.id === id;
+            return item.menuData.item.settings.clipboardMeta.cbId === id;
         });
         return  trigger || null;
     }
@@ -497,6 +518,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             return this.selectedItems[item] === true;
         });
 
+        console.log('GET SELECTED IDS', selected);
         return selected;
     }
 
@@ -504,8 +526,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         let ids = this.getSelectedIds();
 
         let items = this.clipboardItems.filter((item: any) => {
-            return ids.includes(item.id);
+            return ids.includes(item.settings.clipboardMeta.cbId);
         });
+
+        console.log('GET SELECTED ITEMS', ids, items);
 
         return items;
     }

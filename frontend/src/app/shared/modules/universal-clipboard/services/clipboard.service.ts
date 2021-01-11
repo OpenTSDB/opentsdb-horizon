@@ -169,4 +169,9 @@ export class ClipboardService {
 
         return items;
     }
+
+    generateUniqueClipboardItemId(widgetId: any) {
+        const cbId = this.utils.generateId(6);
+        return widgetId + ':' + cbId;
+    }
 }
