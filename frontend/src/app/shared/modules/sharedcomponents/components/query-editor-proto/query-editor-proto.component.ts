@@ -16,15 +16,12 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
 import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragHandle} from '@angular/cdk/drag-drop';
-
-
+import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 
 import {
@@ -47,6 +44,7 @@ interface IQueryEditorOptions {
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
     enableAlias?: boolean;
+    excludeMetricGroupByTags?: string[];
 }
 
 @Component({
@@ -457,7 +455,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService
+        private logger: LoggerService,
+        private multiService: MultigraphService
     ) {
         /*
         // add function (f(x)) icon to registry... url has to be trusted
@@ -731,6 +730,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const index = this.query.metrics.findIndex(item => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].groupByTags = tags;
+            // this is in edit widget mode, if they make change to groupby
+            // we need also update the the multigraph conf
+            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+            this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
             this.queryChanges$.next(true);
         }
     }

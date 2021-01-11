@@ -23,9 +23,13 @@ export class MultigraphService {
     const results = {};
     const regex = /\{\{([\w-.:\/]+)\}\}/ig;
     const aliasMap = {};
+    let hasToT = false;
     // we need to handle the case that query or metric is disable
     for (let i = 0; i < rawdata.results.length; i++) {
       const [source, mid] = rawdata.results[i].source.split(':');
+      const midExToT = mid.split('-')[0];
+      const tot = mid.split('-')[1];
+      hasToT = tot ? true : false;
       const qids = this.REGDSID.exec(mid);
       const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
       const mIndex = this.utils.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2]);
@@ -54,9 +58,12 @@ export class MultigraphService {
                 }
               }
             }
-            const tags = { metric_group: mConfig.id + '~' + dataSrc.data[j].metric + alias, ...dataSrc.data[j].tags};
+            // if it hasToT and expression, the metric in data return has ToT info, exclude it
+            let tempMetric = !mConfig.expression ? dataSrc.data[j].metric : hasToT ? midExToT : mid;
+            const tags = { metric_group: mConfig.id + '~' + tempMetric + alias, ...dataSrc.data[j].tags };
             let x = xTemp;
             let y = yTemp;
+            // resolve multigraph with values
             const tagKeys = Object.keys(tags);
             for (let k = 0; k < tagKeys.length; k++) {
               const key = tagKeys[k];
@@ -74,7 +81,6 @@ export class MultigraphService {
                 }
               }
             }
-            // console.log("series" + j , "x="+x, "y="+y );
             if (!lookupData[y]) {
               lookupData[y] = {};
             }
@@ -94,8 +100,8 @@ export class MultigraphService {
             }
             lookupData[y][x].results[srcIndex].data.push(dataSrc.data[j]);
           }
-          }
         }
+      }
     }
     // turn array to string and slice them
     let aliasObj = {};
@@ -125,7 +131,7 @@ export class MultigraphService {
     }
     for (const tag in multiConf.y) {
       if (multiConf.y.hasOwnProperty(tag)) {
-        multiConf.y[tag].values.sort(this.utils.sortAliasforMultigraph(multiConf.y[tag].sortAs));        
+        multiConf.y[tag].values.sort(this.utils.sortAliasforMultigraph(multiConf.y[tag].sortAs));
         yAll.push(multiConf.y[tag].values);
       }
     }
@@ -137,38 +143,22 @@ export class MultigraphService {
       yCombine = this.combineKeys(yCombine, yAll[i]);
     }
     for (let i = 0; i < yCombine.length; i++) {
-        for (let j = 0; j < xCombine.length; j++) {
-            if ((multiConf.layout === 'grid' || lookupData[yCombine[i]]) && !results[yCombine[i]]) { 
-                results[yCombine[i]] = {};
-            }
-            if (!results[yCombine[i]][xCombine[j]] && multiConf.layout === 'grid') {
-                results[yCombine[i]][xCombine[j]] = {};
-            }
-            if (lookupData[yCombine[i]] && lookupData[yCombine[i]][xCombine[j]]) {
-                results[yCombine[i]][xCombine[j]] = lookupData[yCombine[i]][xCombine[j]];
-            }
+      for (let j = 0; j < xCombine.length; j++) {
+        if ((multiConf.layout === 'grid' || lookupData[yCombine[i]]) && !results[yCombine[i]]) {
+          results[yCombine[i]] = {};
         }
+        if (!results[yCombine[i]][xCombine[j]] && multiConf.layout === 'grid') {
+          results[yCombine[i]][xCombine[j]] = {};
+        }
+        if (lookupData[yCombine[i]] && lookupData[yCombine[i]][xCombine[j]]) {
+          results[yCombine[i]][xCombine[j]] = lookupData[yCombine[i]][xCombine[j]];
+        }
+      }
     }
-    if ( !Object.keys(lookupData).length ) {
-      results['y'] = {'x': rawdata };
+    if (!Object.keys(lookupData).length) {
+      results['y'] = { 'x': rawdata };
     }
-    // we need to sort the results first before apply limit or anything on it
-   
-   /*  const sortedResults = {};
-    Object.keys(results)
-      .sort(this.utils.sortAlphaNum)
-      .forEach((k1) => {
-        sortedResults[k1] = {};
-        Object.keys(results[k1])
-          .sort(this.utils.sortAlphaNum)
-          .forEach((k2) => {
-            sortedResults[k1][k2] = results[k1][k2]
-          })
-      });
-    return sortedResults;
-    */
-   // return no sort
-   return results;
+    return results;
   }
 
   // build multigraph config
@@ -205,8 +195,8 @@ export class MultigraphService {
   // combine keys
   combineKeys(a: string[], b: string[]): string[] {
     const ret = [];
-    if ( !a.length ) { return b; }
-    if ( !b.length ) { return a; }
+    if (!a.length) { return b; }
+    if (!b.length) { return a; }
     for (let i = 0; i < a.length; i++) {
       for (let j = 0; j < b.length; j++) {
         ret.push(a[i] + '/' + b[j]);
@@ -230,5 +220,28 @@ export class MultigraphService {
       }
     }
     return ret;
+  }
+  // this will update multigrap config based on groupby tags of a query
+  updateMultigraphConf(groupByTags: string[], multigraph: any) {
+    // once they not set multigtraph yet, then multigraph can be undefined.
+    if (multigraph) {
+      if (groupByTags.length) {
+        // make sure to keep item that key are in groupTags
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || groupByTags.includes(item.key));
+        for (let i = 0; i < groupByTags.length; i++) {
+          if (multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
+            continue;
+          }
+          const item = {
+            key: groupByTags[i],
+            displayAs: 'g',
+            sortAs: 'asc'
+          };
+          multigraph.chart.push(item);
+        }
+      } else {
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group');
+      }
+    }
   }
 }

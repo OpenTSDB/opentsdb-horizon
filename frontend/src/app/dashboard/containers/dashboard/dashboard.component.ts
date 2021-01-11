@@ -1366,6 +1366,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const payload = this.utilService.deepClone(message.payload);
         // tslint:disable-next-line:max-line-length
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
+        // TODO: add toggle to enable or display multigraph.
         const groupby = payload.settings.multigraph ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
@@ -1761,7 +1762,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const namespaces = this.getNamespaceNames();
         // user has only 1 ns with write access
         if (namespaces.length === 1) {
-            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
+            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0], tplVariables: this.tplVariables.viewTplVariables});
             this.dataShare.setMessage('WidgetToAlert');
             this.router.navigate(['a', namespaces[0], '_new_']);
         } else if (namespaces.length > 1) {

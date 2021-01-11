@@ -20,6 +20,7 @@ interface IMetricQueriesConfigOptions {
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
+    enableAlias?: boolean;
     // toggleMetric?: boolean;  // future use
 }
 
@@ -60,7 +61,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     showNewQueryEditor = false;
     newQueryId = '';
     editQueryId = '';
-    selectAllToggle: String = 'none'; // none/all/some
+    selectAllToggle: string = 'none'; // none/all/some
     tplVariables: any = {};
     hasCustomFilter = false;
     hasExpression = false;
