@@ -385,8 +385,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.stateLoaded.snooze = true;
             this.snoozes = JSON.parse(JSON.stringify(snoozes));
             this.snoozes = this.snoozes.map((d: any) => {
-                if (d.filter && d.filter.filters && d.filter.filters.length) {
-                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter.filters);
+                if ( d.filter && Object.keys(d.filter).length ) {
+                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter);
                 } else {
                     d.rawFilters = [];
                 }
