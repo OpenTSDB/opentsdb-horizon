@@ -415,6 +415,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "max,15m"
                 }
             ]
+        },
+        {
+            label: 'Time Difference',
+            functions: [
+                {
+                    label: 'Delta in Minutes',
+                    fxCall: 'TimeDiff',
+                    val: 'MINUTES'
+                },
+                {
+                    label: 'Delta in Seconds',
+                    fxCall: 'TimeDiff',
+                    val: 'SECONDS'
+                }
+            ]
         }
     ];
 
@@ -477,7 +492,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'SlidingWindow' : {
             errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
-            regexValidator: /^\max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        },
+        'TimeDiff' : {
+            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
+            regexValidator: /^SECONDS|MINUTES|HOURS$/
         }
     };
 
