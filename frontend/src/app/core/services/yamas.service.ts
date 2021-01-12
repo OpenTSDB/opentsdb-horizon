@@ -34,6 +34,7 @@ export class YamasService {
     metricSubGraphs: any = new Map();
     topnPrefix = 'topn-';
     ratioPrefix = 'ratio-';
+    slidingWindowPrefix = 'sliding-';
     egadsSlidingWindowPrefix = 'egads-sliding-window-';
 
     constructor( private utils: UtilsService ) { }
@@ -435,6 +436,9 @@ export class YamasService {
                 case 'Percentage':
                     this.handleRatioFunction(idPrefix, subGraph, funs, i);
                     break;
+                case 'SlidingWindow':
+                    this.handleSlidingWindowFunction(idPrefix, subGraph, funs, i);
+                    break;
                 case 'Rollup':
                     // tslint:disable-next-line:prefer-const
                     let [ aggregator, ds ] = funs[i].val.split(',').map(d => d.trim());
@@ -619,6 +623,18 @@ export class YamasService {
                 func.asPercent = true;
                 break;
         }
+        subGraph.push(func);
+    }
+
+    handleSlidingWindowFunction(idPrefix, subGraph, funs, i) {
+        const parts = funs[i].val.split(',');
+        const func = {
+            'id': this.generateNodeId(this.slidingWindowPrefix + idPrefix, subGraph),
+            'type': 'SlidingWindow',
+            'aggregator': parts[0],
+            'windowSize': parts[1],
+            'sources': [ subGraph[subGraph.length - 1].id ]
+        };
         subGraph.push(func);
     }
 
