@@ -405,6 +405,9 @@
             (click)="editExpression(-1)" [disabled]="query.metrics.length === 0">
             <span>Add expression</span>
         </button>
+        <button *ngIf="type === 'LinechartWidgetComponent' && query.metrics.length > 1" mat-button color="primary" class="add-expression-button" #artifactsMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="artifactsMenu">
+            <span>Add Artifacts</span>
+        </button>
     </div>
 </div>
 <!-- METRIC MENU -->
@@ -426,6 +429,35 @@
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             <span>Delete</span>
         </button>
+    </ng-template>
+</mat-menu>
+<!-- ARTIFACTS MENU -->
+<mat-menu class="metric-action-cdk-menu" #artifactsMenu="matMenu" hasBackdrop="true">
+    <ng-template matMenuContent let-metric="metric">
+        <!-- conditional button -->
+        <button mat-menu-item [matMenuTriggerFor]="metricsMenu">
+            <span>Percentage</span>
+        </button>
+    </ng-template>
+</mat-menu>
+<!-- PERCENTAGE GRAPH -  METRICS MENU -->
+<mat-menu class="metrics-list-cdk-menu" yPosition="above" #metricsMenu="matMenu">
+    <ng-template matMenuContent>
+        <div class="metric-list has-scroller" *ngIf="query.metrics.length" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+            <div class="is-scroller">
+                <mat-selection-list #metrics [(ngModel)]="pctSelectedMetrics">
+                    <ng-container *ngFor="let metric of query.metrics; let index = index">
+                        <mat-list-option checkboxPosition="before" *ngIf="!metric.expression" [value]="'m' + (index + 1)" selected="true">
+                                {{ metric.name }}
+                        </mat-list-option>
+                    </ng-container>
+                </mat-selection-list>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button mat-button color="primary" (click)="createPercentageMetrics()">Create</button>
+            <button mat-button  color="primary" (click)="closeMetricDialog()">Cancel</button>
+        </div>
     </ng-template>
 </mat-menu>
 <!-- TAG FILTER MENU -->
