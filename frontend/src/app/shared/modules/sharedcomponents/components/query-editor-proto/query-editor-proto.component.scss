@@ -907,6 +907,21 @@
         }
     }
 
+    .metrics-list-cdk-menu.mat-menu-panel {
+        width: 400px;
+        height: 300px;
+        .mat-menu-content {
+            padding-bottom: 0px;
+        }
+        .metric-list {
+            height: 255px;
+        }
+        .action-buttons {
+            text-align: end;
+        }
+
+    }
+
     // CDK DRAG ITEM IS PLACED AT BODY LEVEL
     .cdk-drag.cdk-drag-preview {
 
