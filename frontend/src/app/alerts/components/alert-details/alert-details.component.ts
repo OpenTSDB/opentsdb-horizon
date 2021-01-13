@@ -928,6 +928,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     validateSingleMetricThresholds(group) {
+        const slidingWindowCntrl = this.thresholdSingleMetricControls['slidingWindow'];
         const badStateCntrl = this.thresholdSingleMetricControls['badThreshold'];
         const warningStateCntrl = this.thresholdSingleMetricControls['warnThreshold'];
         const recoveryStateCntrl = this.thresholdSingleMetricControls['recoveryThreshold'];
@@ -947,6 +948,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value === null ) {
             this.thresholdSingleMetricControls['reportingInterval'].setErrors({ 'required': true });
+        }
+
+        slidingWindowCntrl.setErrors(null);
+        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && reportingIntervalCntrl.value <= slidingWindowCntrl.value ) {
+            slidingWindowCntrl.setErrors({ 'invalid': true });
         }
 
         // validate the warning value
@@ -1546,10 +1552,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if ( this.alertForm.valid ) {
             // clear system message bar
-            this.interCom.requestSend({
-                action: 'clearSystemMessage',
-                payload: {}
-            });
+            this.clearSystemMessage();
 
             if ( !this.data.id && this.data.name === 'Untitled Alert' ) {
                 this.openAlertNameDialog();
@@ -1568,6 +1571,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             });
         }
 
+    }
+
+    clearSystemMessage() {
+        this.interCom.requestSend({
+            action: 'clearSystemMessage',
+            payload: {}
+        });
     }
 
     saveAlert() {

@@ -56,6 +56,11 @@ export class AlertState {
         return state.data;
     }
 
+    @Selector()
+    static getError(state: AlertStateModel) {
+        return state.error;
+    }
+
     @Action(GetAlertDetailsById)
     getAlertDetailsById(ctx: StateContext<AlertStateModel>, { id: id }: GetAlertDetailsById) {
         this.logger.action('Alert::getAlertDetailsById', {id});

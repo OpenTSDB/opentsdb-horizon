@@ -123,6 +123,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     allNamespacesDS = new MatTableDataSource([]);
 
     @Select(AlertState.getAlertDetails) alertDetail$: Observable<any>;
+    @Select(AlertState.getError) alertDetailError$: Observable<any>;
     @Select(SnoozeState.getSnoozeDetails) snoozeDetail$: Observable<any>;
 
     // this gets dynamically selected depending on the tab filter.
@@ -513,13 +514,26 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.error$.subscribe(error => {
-            // console.log('ERROR', error);
+
             if (Object.keys(error).length > 0) {
                 this.error = error;
             } else {
                 this.error = false;
             }
             // maybe intercom error for messaging bar?
+        }));
+
+        this.subscription.add(this.alertDetailError$.subscribe(error => {
+            if (error && ( error.error || error.message) ) {
+                // set system message bar
+                this.interCom.requestSend({
+                    action: 'systemMessage',
+                    payload: {
+                        type: 'error',
+                        message: error.error || error.message
+                    }
+                });
+            }
         }));
 
         this.subscription.add(this.saveError$.subscribe(error => {
@@ -558,6 +572,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             // this.logger.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
+            this.clearSystemMessage();
 
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
@@ -615,7 +630,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alertDetail$.pipe(skip(1)).subscribe(data => {
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let parts;
-
+            const namespace = data.namespace ? data.namespace : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
             // url path has 2 parts, (i.e. /a/1234/view)
             if (
                 routeSnapshot.length === 2 &&
@@ -623,11 +638,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 (['view', 'edit', 'clone'].includes(routeSnapshot[1].path.toLowerCase()))
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace( namespace, null);
 
                 // url path has 1 parts, (i.e. /a/1234)
             } else if (
@@ -635,14 +649,18 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.utils.checkIfNumeric(routeSnapshot[0].path)
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, 'view'];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, 'view'] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace(namespace, null);
+            } else if ( !data.id ) {
+                this.location.go('/a/' + namespace);
+                this.setNamespace(namespace, null);
             }
 
-            this.store.dispatch(new CheckWriteAccess(data));
+            if ( data.id ) {
+                this.store.dispatch(new CheckWriteAccess(data));
+            }
 
         }));
 
@@ -702,11 +720,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         return filteredSnoozes;
     }
 
-    setNavbarPortal() {
+    clearSystemMessage() {
         this.interCom.requestSend({
             action: 'clearSystemMessage',
             payload: {}
         });
+    }
+    setNavbarPortal() {
+        this.clearSystemMessage();
         this.cdkService.setNavbarPortal(this.alertspageNavbarPortal);
     }
 
@@ -872,6 +893,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
         this.openEditMode(data);
         this.location.go('a/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     createAlertFromWidget(payload) {
@@ -1020,6 +1042,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             const nowInMillis = Date.now();
             data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
+        if ( data.id && !data.enabled && this.list === 'alerts') {
+            this.interCom.requestSend({
+                action: 'systemMessage',
+                payload: {
+                    type: 'warning',
+                    message: 'This alert is disabled'
+                }
+            });
+        }
         this.configurationEditData = data;
         this.detailsView = true;
     }
@@ -1051,6 +1082,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.detailsView = true;
         this.switchType('snooze');
         this.location.go('a/snooze/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     editSnooze(element: any) {
