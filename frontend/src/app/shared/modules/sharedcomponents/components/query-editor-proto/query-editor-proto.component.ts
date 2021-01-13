@@ -328,6 +328,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 }
             ]
         },
+        /*
         {
             label: 'Group By',
             functions: [
@@ -358,6 +359,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 }
             ]
         },
+        */
         {
             label: 'Ratio',
             functions: [
