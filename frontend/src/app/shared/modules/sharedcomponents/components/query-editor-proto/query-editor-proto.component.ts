@@ -86,6 +86,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
     @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
 
+    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger }) artifactsMenuTrigger: MatMenuTrigger;
     @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
 
@@ -327,6 +328,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 }
             ]
         },
+        /*
         {
             label: 'Group By',
             functions: [
@@ -357,6 +359,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 }
             ]
         },
+        */
         {
             label: 'Ratio',
             functions: [
@@ -447,6 +450,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     metricTableDataSource = new MatTableDataSource<any>([]);
 
     visualPanelId = -1;
+
+    pctSelectedMetrics; 
+
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -722,7 +728,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (index !== -1) {
             this.query.metrics[index].joinType = value;
             this.queryChanges$.next(true);
-            console.log("join type id=", id, this.query.metrics[index].joinType )
         }
     }
 
@@ -1228,6 +1233,34 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.tagFilterMenuTrigger.closeMenu();
     }
 
+    createPercentageMetrics() {
+        const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+        expConfig.settings.visual.label = 'Total';
+        expConfig.settings.visual.visible = false;
+        this.query.metrics.push(expConfig);
+
+        const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
+        const aliases = this.getMetricAliases();
+        for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+            const mid = aliases[this.pctSelectedMetrics[i]];
+            const index = this.query.metrics.findIndex( d =>  d.id === mid );
+            // set the actual metric visible=false and groupby=everything
+            this.query.metrics[index].settings.visual.visible = false;
+            this.query.metrics[index].groupByTags = [];
+
+            const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+            expConfig.settings.visual.type = 'area';
+            expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+            this.query.metrics.push(expConfig);
+        }
+        this.queryChanges$.next(true);
+        this.initMetricDataSource();
+        this.closeMetricDialog();
+    }
+
+    closeMetricDialog() {
+        this.artifactsMenuTrigger.closeMenu();
+    }
 
 
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show
