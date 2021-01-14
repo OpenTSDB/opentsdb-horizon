@@ -951,7 +951,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
 
         slidingWindowCntrl.setErrors(null);
-        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && reportingIntervalCntrl.value <= slidingWindowCntrl.value ) {
+        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && slidingWindowCntrl.value <= reportingIntervalCntrl.value ) {
             slidingWindowCntrl.setErrors({ 'invalid': true });
         }
 
