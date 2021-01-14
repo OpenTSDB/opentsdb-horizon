@@ -729,7 +729,7 @@ export class YamasService {
                 realFillPolicy: 'NONE'
             }],
             infectiousNan: this.queries[qindex].settings.infectiousNan ? true : false,
-            substituteMissing: true,
+            substituteMissing: this.queries[qindex].settings.infectiousNan ? false : true,
             variableInterpolators: {},
             sources: sources
         };
