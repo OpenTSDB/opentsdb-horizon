@@ -1234,27 +1234,30 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     createPercentageMetrics() {
-        const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
-        expConfig.settings.visual.label = 'Total';
-        expConfig.settings.visual.visible = false;
-        this.query.metrics.push(expConfig);
-
-        const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
-        const aliases = this.getMetricAliases();
-        for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
-            const mid = aliases[this.pctSelectedMetrics[i]];
-            const index = this.query.metrics.findIndex( d =>  d.id === mid );
-            // set the actual metric visible=false and groupby=everything
-            this.query.metrics[index].settings.visual.visible = false;
-            this.query.metrics[index].groupByTags = [];
-
-            const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
-            expConfig.settings.visual.type = 'area';
-            expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+        if ( this.pctSelectedMetrics.length > 1 ) {
+            const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+            expConfig.settings.visual.label = 'Total';
+            expConfig.settings.visual.visible = false;
             this.query.metrics.push(expConfig);
+
+            const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
+            const aliases = this.getMetricAliases();
+            for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+                const mid = aliases[this.pctSelectedMetrics[i]];
+                const index = this.query.metrics.findIndex( d =>  d.id === mid );
+                // set the actual metric visible=false and groupby=everything
+                this.query.metrics[index].settings.visual.visible = false;
+                this.query.metrics[index].groupByTags = [];
+
+                const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+                expConfig.settings.visual.type = 'area';
+                expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+                this.query.metrics.push(expConfig);
+            }
+            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' } );
+            this.queryChanges$.next(true);
+            this.initMetricDataSource();
         }
-        this.queryChanges$.next(true);
-        this.initMetricDataSource();
         this.closeMetricDialog();
     }
 
