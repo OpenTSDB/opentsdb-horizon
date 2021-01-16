@@ -15,6 +15,8 @@ import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 
+import domtoimage from 'dom-to-image-more';
+
 @Component({
     selector: 'app-widget-loader',
     templateUrl: './widget-loader.component.html',
@@ -89,6 +91,10 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     userHasWriteAccessToNamespace = false;
 
     private subscription: Subscription = new Subscription();
+
+    // this is a toggle switched by intercom when
+    // dashboard batch operations are turned on
+    batchSelector: boolean = true; // TODO: put this back to default false when done
 
     constructor(
         private widgetService: WidgetService,
@@ -389,10 +395,33 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     widgetCopy() {
         console.log('%cWIDGET COPY', 'color: white; font-weight: bold; background-color: teal; padding: 2px 4px;', this.widget);
 
-        this.interCom.requestSend(<IMessage> {
+        console.log('*** DATA ***', this._component.instance);
+
+        let componentEl: any = this._component.instance.elRef.nativeElement;
+        componentEl.style.backgroundColor = '#ffffff';
+        domtoimage.toJpeg(componentEl)
+            .then((dataUrl: any) => {
+                console.log('DATA URL', dataUrl);
+                delete componentEl.style.backgroundColor;
+                this.interCom.requestSend(<IMessage> {
+                    action: 'copyWidgetToClipboard',
+                    id: this.widget.id,
+                    payload: {
+                        widget: this.widget,
+                        preview: dataUrl
+                    }
+                });
+            });
+
+        /*this.interCom.requestSend(<IMessage> {
             action: 'copyWidgetToClipboard',
             id: this.widget.id,
             payload: this.widget
-        });
+        });*/
+    }
+
+    toggleSelectItem($event) {
+        console.log('Toggle Select Item', this);
+        // need to emit something up to dashboard to keep track of what is selected and what is not
     }
 }

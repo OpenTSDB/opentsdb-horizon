@@ -91,6 +91,11 @@
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
         </button>
     </span>
+    <span class="navbar-item nav-batch-edit-toggle">
+        <button mat-flat-button class="toggle-dashboard-batch-button">
+            <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
+        </button>
+    </span>
     <navbar-clipboard-menu class="navbar-item nav"></navbar-clipboard-menu>
     <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>

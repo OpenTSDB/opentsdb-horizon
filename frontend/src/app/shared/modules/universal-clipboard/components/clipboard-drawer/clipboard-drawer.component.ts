@@ -74,6 +74,8 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     @Select(UniversalClipboardState.getActiveClipboardSelectedIndex) activeIndex$: Observable<any>;
     activeIndex: any = false;
 
+    // clipboard actions
+    @Select(UniversalClipboardState.getClipboardActions) actions$: Observable<any>;
 
     itemDetailOpened: any = ''; // widget id of the item that has detail opened
 
@@ -163,7 +165,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
         // check to see if DBFS resources are loaded
         this.subscription.add(this.resourcesLoaded$.subscribe(loaded => {
-            this.logger.ng('resourcesLoaded', { loaded });
             if (loaded === true) {
                 // DBFS resources loaded... need to initialize clipboard
                 this.store.dispatch(new ClipboardResourceInitialize());
@@ -172,23 +173,19 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
         // Clipboard DBFS resource has been loaded... then load the dashboard
         this.subscription.add(this.cbResourcesLoaded$.subscribe(loaded => {
-            this.logger.ng('cbResourcesLoaded', { loaded });
-
             if (loaded === true) {
                 this.cbResourcesLoaded = loaded;
                 this.store.dispatch(new ClipboardLoad());
             }
         }));
 
+        // list of available clipboards
         this.subscription.add(this.clipboardList$.subscribe(clipboards => {
-            this.logger.ng('clipboardList', { clipboards });
             this.clipboardList = clipboards;
         }));
 
         // clipboard items === clipboard dashboard widgets
         this.subscription.add(this.clipboardItems$.subscribe(items => {
-            this.logger.ng('clipboardItems', { items });
-
             for (let i = 0; i < items.length; i++) {
                 let item: any = items[i];
                 if (!this.selectedItems[item.settings.clipboardMeta.cbId]) {
@@ -200,7 +197,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
         // active index === index of currently selected clipboard
         this.subscription.add(this.activeIndex$.subscribe(index => {
-            this.logger.ng('activeIndex', { index });
             if (this.activeIndex !== index) {
                 // reset some things
                 this.resetVariables();
@@ -208,9 +204,20 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             this.activeIndex = index;
         }));
 
+        // drawer open or closed
         this.subscription.add(this.cbService.$drawerState.subscribe(val => {
-            this.logger.log('DRAWER $drawerState:change', { val });
             this.drawerState = val;
+        }));
+
+        // any follow up action sent by state
+        this.subscription.add(this.actions$.subscribe(val => {
+            switch(val.method) {
+                case "showNewClipboard":
+                    this.creatingNewClipboard = false;
+                    break;
+                default:
+                    break;
+            }
         }));
     }
 
@@ -237,8 +244,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     // clipboard selection change
     clipboardSelectionChange(e: any) {
-        this.logger.event('CLIPBOARD SELECTION CHANGE', e);
-
         if (e.value === '_new_') {
             // if "_new_" clipboard
             this.toggleCreateClipboard();
@@ -272,11 +277,12 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         let valid = this.FC_clipboardName.valid;
         if (this.FC_clipboardName.valid) {
             // CALL API
+            // TODO: CHECK FOR DUPLICATE NAME
             this.store.dispatch(new ClipboardCreate(this.FC_clipboardName.value));
         } else {
             // form is not valid
             // do something??
-
+            // show error??
         }
     }
 
@@ -348,14 +354,15 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         // get selected items
         let items = this.getSelectedItems();
 
-        // add to dashboard somehow
-        // TODO!!!
+        // use intercom to send items to dashboard
         this.interCom.requestSend(<IMessage> {
             action: 'pasteClipboardWidgets',
             id: 'clipboardWidgetsPaste',
             payload: items
         });
 
+        // reset batch selection
+        this.resetBatch();
     }
 
     batchRemoveClipboardItems() {
@@ -365,7 +372,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         let items = this.getSelectedIds();
 
         // call upon the state to remove
-        this.store.dispatch(new ClipboardRemoveItems(items));
+        this.store.dispatch(new ClipboardRemoveItems(items)).subscribe(() => {
+            this.resetBatch();
+        });
     }
 
      /**
@@ -373,7 +382,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
      */
 
     toggleSelectItem(event: any, item: any) {
-        this.logger.log('TOGGLE SELECT ITEM', event);
+        //this.logger.log('TOGGLE SELECT ITEM', event);
         this.selectedItems[item.settings.clipboardMeta.cbId] = event.checked;
 
         let checked = this.getSelectedIds();
@@ -396,8 +405,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
         this.batchControlsDisabled = !((!this.selectAll && this.selectAllIndeterminate) || this.selectAll);
 
-        this.logger.log('TOGGLE SELECT ITEM', {checked: event.checked, selectAll: this.selectAll, indeterminate: this.selectAllIndeterminate});
-
+        //this.logger.log('TOGGLE SELECT ITEM', {checked: event.checked, selectAll: this.selectAll, indeterminate: this.selectAllIndeterminate});
     }
 
     toggleExpandItem(expanded: boolean) {
@@ -408,14 +416,13 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             // accordion item (opened) event
             if (!this.expandAll) {
                 // need to check if all are open or not
-                this.logger.ng('TOGGLE EXPAND ITEM', this.accordion);
                 let count = 0;
                 this.accordionItems.forEach((item: MatExpansionPanel) => {
                     if (item.expanded) {
                         count++;
                     }
                 });
-                this.logger.ng('COUNTING ITEMS EXPANDED', {count, items: this.clipboardItems.length});
+
                 if (count === this.clipboardItems.length) {
                     this.expandAll = true;
                 }
@@ -424,7 +431,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     toggleClipboardItemMoreMenu(dataMenuId: any) {
-
+        // find the specific trigger so we know where to originate menu
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findCbItemMoreTrigger(dataMenuId);
 
         if (mTrigger) {
@@ -436,16 +443,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         } else {
             this.logger.error('clipboardItemMoreMenu', 'CANT FIND TRIGGER');
         }
-
-        this.logger.log('toggleClipboardItemMoreMenu', {
-            dataMenuId,
-            mTrigger
-        });
-
     }
 
     toggleRemoveClipboardItemConfirm(dataMenuId: any) {
-
+        // find the specific trigger so we know where to originate confirmation menu
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findCbItemRemoveTrigger(dataMenuId);
 
         if (mTrigger) {
@@ -458,17 +459,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             this.logger.error('clipboardItemRemoveMenu', 'CANT FIND TRIGGER');
         }
 
-        this.logger.log('toggleRemoveClipboardItemConfirm', {
-            dataMenuId,
-            mTrigger
-        });
-
     }
 
     pasteToDashboard(data: any, index: any) {
         this.logger.log('pasteToDashboard', { data, index });
-        // Add item to dashboard
-        // TODO!!!
+        // user intercom to send widget to dashboard
         this.interCom.requestSend(<IMessage> {
             action: 'pasteClipboardWidgets',
             id: 'clipboardWidgetsPaste',
@@ -494,10 +489,22 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         this.batchControlsDisabled = true;
     }
 
+    private resetBatch() {
+        let keys = Object.keys(this.selectedItems);
+
+        // everything was selected, so deselect
+        for(let i = 0; i < keys.length; i++) {
+            this.selectedItems[keys[i]] = false;
+        }
+        this.selectAll = false;
+        this.selectAllIndeterminate = false;
+        this.batchControlsDisabled = true;
+        this.selectedCount = 0;
+    }
+
     // utility to find clipboard item more menu trigger
     private findCbItemMoreTrigger(id: any): MatMenuTrigger {
         const trigger = this.cbItemMoreTriggers.find(item => {
-            console.log('... ITEM ...', item);
             return item.menuData.item.settings.clipboardMeta.cbId === id;
         });
         return  trigger || null;
@@ -506,31 +513,27 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     // utility to find clipboard trash menu trigger
     private findCbItemRemoveTrigger(id: any): MatMenuTrigger {
         const trigger = this.cbItemRemoveTriggers.find(item => {
-            console.log('... [r]ITEM ...', item);
             return item.menuData.item.settings.clipboardMeta.cbId === id;
         });
         return  trigger || null;
     }
 
+    // get the selected clipboard meta id(s) (stored in widget.settings.clipboardMeta)
     private getSelectedIds(): any[] {
         let keys = Object.keys(this.selectedItems);
         let selected = keys.filter(item => {
             return this.selectedItems[item] === true;
         });
-
-        console.log('GET SELECTED IDS', selected);
         return selected;
     }
 
+    // get the selected item(s) and return array of widgets selected
     private getSelectedItems(): any[] {
         let ids = this.getSelectedIds();
 
         let items = this.clipboardItems.filter((item: any) => {
             return ids.includes(item.settings.clipboardMeta.cbId);
         });
-
-        console.log('GET SELECTED ITEMS', ids, items);
-
         return items;
     }
 

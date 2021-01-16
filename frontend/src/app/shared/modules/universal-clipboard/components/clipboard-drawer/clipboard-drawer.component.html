@@ -139,15 +139,19 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div class="clipboard-item-detail" (click)="$event.stopPropagation()">
-                            <div class="item-detail item-label">
+                            <div class="preview">
+                                <img src="{{data.settings.clipboardMeta.preview}}" />
+                            </div>
+                            <!--<div class="item-detail item-label">
                                 <strong>Widget type:</strong> <span>{{widgetTypes[widgetTypesMap[data.settings.component_type]].label}}</span>
-                            </div>
+                            </div>-->
                             <div class="item-detail item-label">
-                                <strong>Dashboard origin:</strong> <span>{{data.settings.clipboardMeta.dashboard.name}}</span>
+                                <strong>Dashboard origin:&nbsp;</strong> <a href="/d{{data.settings.clipboardMeta.path}}" target="_new">{{data.settings.clipboardMeta.dashboard.name}}</a>
                             </div>
+                            <!--
                             <div class="item-detail copy-date">
                                 <strong>Copied on:</strong> <span>{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
-                            </div>
+                            </div>-->
                         </div>
 
                         <mat-action-row (click)="$event.stopPropagation()">
@@ -172,7 +176,7 @@
 <!-- creating clipboard -->
 <ng-template #createClipboardPanel>
     <div class="create-clipboard-form">
-        <div>Create a new clipboard</div>
+        <div class="title">Create a new clipboard</div>
         <div class="input-control">
             <mat-form-field appearance="legacy">
                 <mat-label>Enter clipboard name</mat-label>

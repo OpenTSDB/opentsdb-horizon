@@ -36,6 +36,7 @@
     .nav-dashboard-actions,
     .nav-refresh-icon,
     .nav-explore-close,
+    .nav-batch-edit-toggle,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -71,6 +72,34 @@
                 .mat-icon {
                     font-size: 1.8em;
                 }
+            }
+        }
+    }
+
+    .nav-batch-edit-toggle {
+        position: relative;
+
+        .mat-raised-button,
+        .mat-flat-button {
+            .mat-icon {
+                &:first-child {
+                    margin-right: 0;
+                }
+
+                &:last-child {
+                    margin-left: 0;
+                }
+            }
+        }
+
+        .toggle-dashboard-batch-button {
+            min-width: initial;
+            padding: 0;
+            margin-right: 6px;
+
+            .mat-icon {
+                padding: 0;
+                margin: 0;
             }
         }
     }

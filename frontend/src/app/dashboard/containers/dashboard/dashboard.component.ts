@@ -676,7 +676,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'copyWidgetToClipboard':
                     const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
-                    const widgetCopy: any = {...message.payload};
+                    const widgetCopy: any = {...message.payload.widget};
                     widgetCopy.settings.clipboardMeta = {
                         dashboard: {
                             id: dbData.id,
@@ -685,7 +685,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             name: dbData.name
                         },
                         copyDate: Date.now(),
-                        referencePath: dbData.path + '@' + widgetCopy.id
+                        referencePath: dbData.path + '@' + widgetCopy.id,
+                        preview: message.payload.preview
                     };
 
                     this.store.dispatch(new ClipboardAddItem(widgetCopy));

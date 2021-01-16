@@ -423,7 +423,28 @@ export class UniversalClipboardState {
             map(() => {
                 this.logger.log('telling DBFS to reload the clipboard resource');
                 // should be good
-                ctx.dispatch(new ClipboardResourceInitializeSuccess());
+                ctx.dispatch(
+                    new ClipboardResourceInitializeSuccess()
+                ).subscribe(() => {
+                    // get new clipboard index
+                    let state = ctx.getState();
+                    let list = state.clipboardsList;
+                    let index = list.findIndex(item => {
+                        return item.resource.id === response.id;
+                    });
+
+                    this.logger.log('CLIPBOARD CREATED...INITIALIZING', {
+                        response,
+                        list,
+                        index
+                    });
+                    if (index > -1) {
+                        // make it active
+                        ctx.dispatch(new SetClipboardActive(index));
+                    } else {
+                        throw new Error('Can not find index for new clipboard');
+                    }
+                });
             }),
             catchError(error => ctx.dispatch(new ClipboardError(error, 'clipboardCreateSuccess :: error in clipboard creation')))
         ).subscribe();

@@ -8,7 +8,7 @@
         overflow: hidden;
         position: absolute;
         z-index: 10;
-        top: 0;
+        top: $navbar-height;
         bottom: 0;
         right: 0;
 
@@ -127,6 +127,34 @@
             flex: 1;
         }
 
+        .create-clipboard-form {
+            padding: 16px;
+
+            .title {
+                margin-bottom: 16px;
+            }
+
+            .actions {
+                margin-top: 20px;
+
+                .mat-flat-button,
+                .mat-stroked-button {
+                    &:not(:first-child) {
+                        margin-left: 6px;
+                    }
+                }
+            }
+
+            .input-control .mat-form-field {
+                width: 100%;
+
+                .mat-form-field-subscript-wrapper {
+                    top: 100%;
+                }
+
+            }
+        }
+
         .clipboard-item {
             .mat-expansion-panel-header {
                 padding: 0 6px;
@@ -142,8 +170,23 @@
 
             .mat-expansion-panel-content {
                 .mat-expansion-panel-body {
-                    padding: 0 12px 6px;
+                    // padding: 0 12px 6px;
+                    padding: 0;
                     font-size: 10px;
+
+                    .preview {
+                        img {
+                            width: 100%;
+                        }
+                    }
+
+                    .item-detail {
+                        padding: 0 12px;
+
+                        &:last-child {
+                            padding-bottom: 6px;
+                        }
+                    }
                 }
 
                 .mat-action-row {

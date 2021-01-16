@@ -4,6 +4,11 @@
         <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
             <mat-toolbar>
                 <mat-toolbar-row>
+                    <span class="batch-selector"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && batchSelector">
+                        <mat-checkbox [checked]="widget.settings.batchSelect"
+                            (change)="toggleSelectItem($event)"></mat-checkbox>
+                    </span>
                     <span class="panel-title"
                         matTooltip="{{widget.settings.title}}"
                         [matTooltipClass]="{'cdk-widget-title-tooltip':true}"
