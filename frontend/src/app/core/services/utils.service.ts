@@ -957,9 +957,10 @@ export class UtilsService {
     }
   }
 
-  getFiltersTsdbToLocal(filters) {
+  getFiltersTsdbToLocal(filter) {
     const filterTypes = ['TagValueLiteralOr', 'TagValueRegex'];
     let newFilters = [];
+    const filters = filter.filters || [ filter ];
     for (let i = 0; i < filters.length; i++ ) {
         const filter = filters[i];
         const ftype = filter.type;

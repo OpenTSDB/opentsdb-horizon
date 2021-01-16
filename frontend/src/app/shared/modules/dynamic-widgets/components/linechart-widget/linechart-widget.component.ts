@@ -649,6 +649,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.legendDataSource.sort = this.sort;
                 this.setSize();
                 break;
+            case 'ChangeAxisLabel': 
+                const payload = message.payload;
+                this.widget.settings.axes[payload.axis].label = payload.label;
+                break;
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);
                 this.widget.queries = [...this.widget.queries];

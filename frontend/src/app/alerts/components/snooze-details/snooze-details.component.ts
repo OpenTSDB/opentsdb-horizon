@@ -163,7 +163,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
         this.dateType = data.id !== '_new_' ? 'custom' : 'preset';
         // tslint:disable-next-line:max-line-length
-        const filters = data.filter && data.filter.filters && data.filter.filters.length ? this.utils.getFiltersTsdbToLocal(data.filter.filters) : [];
+        const filters = data.filter && Object.keys(data.filter).length ? this.utils.getFiltersTsdbToLocal(data.filter) : [];
         this.setQuery({ namespace: this.data.namespace, filters: filters} );
     }
 
