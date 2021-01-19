@@ -105,6 +105,11 @@ export class DeleteWidget {
     constructor(public readonly wid: string) {}
 }
 
+export class DeleteWidgets {
+    public static type = '[Widget] Delete Widgets';
+    constructor(public readonly wids: string[]) {}
+}
+
 @State<WidgetsModel>({
     name: 'Widgets',
     defaults: {
@@ -177,6 +182,19 @@ export class WidgetsState {
             state.widgets.splice(index, 1);
             ctx.patchState({ widgets: state.widgets });
         }
+    }
+
+    @Action(DeleteWidgets)
+    deleteWidgets(ctx: StateContext<WidgetsModel>, { wids }: DeleteWidgets) {
+        const curState = ctx.getState();
+        const state = this.utils.deepClone(curState);
+
+        let widgets = state.widgets.filter((item: any) => {
+            return !wids.includes(item.id);
+        });
+
+        ctx.patchState({ widgets: widgets });
+
     }
 
 }

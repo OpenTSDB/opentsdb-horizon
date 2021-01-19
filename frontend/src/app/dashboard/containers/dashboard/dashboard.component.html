@@ -1,14 +1,32 @@
 <div fxLayout="column" fxFlexFill ttBoundaryListener>
     <!-- need to figure out how to toggle on/off depending on whether there is template variables -->
     <!--<variable-template-bar *ngIf="!viewEditMode" [dbSettingsVariables]="variables" ></variable-template-bar> -->
-    <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true && !snapshot"
-        [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
-        [mode]="variablePanelMode"
-        [widgets]="widgets"
-        [tagKeysByNamespaces] = "tagKeysByNamespaces"
-        [tplVariables]="tplVariables"
-        (modeChange)="changeVarPanelMode($event)">
-    </template-variable-panel>
+    <div class="controls-bar" style="display: flex;">
+        <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true && !snapshot"
+            [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
+            [mode]="variablePanelMode"
+            [widgets]="widgets"
+            [tagKeysByNamespaces] = "tagKeysByNamespaces"
+            [tplVariables]="tplVariables"
+            (modeChange)="changeVarPanelMode($event)">
+        </template-variable-panel>
+        <div class="batch-controls" *ngIf="variablePanelMode.view && batchToggle">
+            <button mat-button (click)="batchToggleSelectAll()">
+                <mat-icon>
+                    {{batchSelectAllIndeterminate ? 'indeterminate_check_box' : batchSelectAll ? 'check_box' : 'check_box_outline_blank'}}
+                </mat-icon>
+                <span>{{batchSelectAll ? 'Deselect all' : 'Select all'}}</span>
+            </button>
+            <button mat-button (click)="batchCopyToClipboard()" [disabled]="batchSelectedCount === 0">
+                <mat-icon>content_copy</mat-icon>
+                <span>Copy selected to Clipboard</span>
+            </button>
+            <button mat-button (click)="openBatchDeleteDialog()" [disabled]="batchSelectedCount === 0">
+                <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                <span>Remove selected widgets</span>
+            </button>
+        </div>
+    </div>
     <!--<div class="widget-title" #widgetTitle *ngIf="snapshot">
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
             <span class="navbar-item">This snapshot created from the dashboard by user.syed on 12/12/2010 09:00 pm</span>
@@ -23,6 +41,8 @@
         (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
         [rerender]="rerender"
         [widgets]="widgets"
+        [batchControlsToggle]="batchToggle"
+        [batchSelectedItems]="batchSelectedItems"
         [dashboardMode]="dashboardMode$ | async">
     </app-dboard-content>
 </div>
@@ -92,7 +112,7 @@
         </button>
     </span>
     <span class="navbar-item nav-batch-edit-toggle">
-        <button mat-flat-button class="toggle-dashboard-batch-button">
+        <button mat-flat-button class="toggle-dashboard-batch-button" (click)="toggleBatchControls()">
             <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
         </button>
     </span>

@@ -18,7 +18,7 @@ import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, Dele
 
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
-    DeleteWidget, WidgetModel } from '../../state/widgets.state';
+    DeleteWidget, WidgetModel, DeleteWidgets } from '../../state/widgets.state';
 import {
     WidgetsRawdataState,
     GetQueryDataByGroup,
@@ -70,6 +70,7 @@ import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { ClipboardService } from '../../../shared/modules/universal-clipboard/services/clipboard.service';
 import { ClipboardAddItem, ClipboardAddItemSuccess } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
+import { WidgetDeleteDialogComponent } from '../../components/widget-delete-dialog/widget-delete-dialog.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -235,6 +236,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     checkUserFavorited$: Observable<boolean> | null;
     checkUserFavoritedSub: Subscription;
 
+    // dashboard batch controls
+    batchToggle: boolean = false;
+    batchSelectAllIndeterminate: boolean = false;
+    batchSelectAll: boolean = false;
+    batchSelectedItems: any = {};
+    batchSelectedCount: number = 0;
+    batchWidgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
+
     constructor(
         private store: Store,
         private activatedRoute: ActivatedRoute,
@@ -291,6 +300,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             } else {
                 this.store.dispatch(new LoadSnapshot(url[0].path));
             }
+
+            // clear batch stuff
+            this.batchToggle = false;
+            this.batchSelectAllIndeterminate = false;
+            this.batchSelectAll = false;
+            this.batchSelectedItems = {};
+
             // clear info island if any
             this.iiService.closeIsland();
             // remove system messages - TODO: when adding more apps, put this in app-shell and listen for router change.
@@ -700,6 +716,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         widget: { ...message.payload }
                     });*/
                     break;
+                case 'batchItemUpdated':
+                    this.batchSelectedItems[message.id] = message.payload.selected;
+                    this.checkBatchSelectAll();
+                    this.logger.log('DB BATCH ITEM UPDATE', this.batchSelectedItems);
+                    break;
                 default:
                     break;
             }
@@ -857,6 +878,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         // set oldWidgets when widgets is not empty and oldWidgets is empty
                         if (this.widgets.length && this.oldWidgets.length === 0) {
                             this.oldWidgets = [...this.widgets];
+                        }
+                        // batch
+                        for (let i = 0; i < this.widgets.length; i++) {
+                            let item: any = this.widgets[i];
+                            if (!this.batchSelectedItems[item.id]) {
+                                this.batchSelectedItems[item.id] = false;
+                            }
                         }
                     } else {
                         this.newWidget = this.widgets[0];
@@ -1346,6 +1374,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (!mode.view) {
             if (this.tagKeysByNamespaces.length === 0) {
                 this.getTagkeysByNamespaces(this.tplVariables.editTplVariables.namespaces);
+            }
+            if (this.batchToggle) {
+                this.toggleBatchControls();
             }
         } else {
             // also passdown for who need it
@@ -1839,6 +1870,139 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }, {})
             );
         }
+    }
+
+    toggleBatchControls() {
+        this.batchToggle = !this.batchToggle ? true : false;
+        if (!this.batchToggle) {
+            let keys = Object.keys(this.batchSelectedItems);
+            let selectedItems = {};
+            this.batchSelectAll = false;
+            this.batchSelectAllIndeterminate = false;
+
+            // deselect everything on batch close
+            for(let i = 0; i < keys.length; i++) {
+                selectedItems[keys[i]] = false;
+            }
+
+            this.batchSelectedItems = selectedItems;
+            this.batchSelectedCount = 0;
+        }
+
+        this.logger.log('toggleBatchControls', {batchToggle: this.batchToggle, variablePanelMode: this.variablePanelMode});
+    }
+
+    batchCopyToClipboard() {
+        // this might not be best way if there are a lot of widgets to be copied
+        // but trying for now to get functionality working
+        // could get slow if there are a lot and we are creating images of every one
+        // TODO: optimize
+
+        let ids: any[] = this.getBatchSelectedIds();
+        // this is broadcast to all the widgets to respond
+        this.interCom.requestSend({
+            action: 'batchCopyWidget',
+            payload: ids
+        });
+    }
+
+    openBatchDeleteDialog() {
+        const dialogConf: MatDialogConfig = new MatDialogConfig();
+        dialogConf.backdropClass = 'widget-delete-dialog-backdrop';
+        dialogConf.hasBackdrop = true;
+        dialogConf.panelClass = 'widget-delete-dialog-panel';
+
+        dialogConf.autoFocus = true;
+        dialogConf.data = {
+            batch: true,
+            selectedCount: this.batchSelectedCount
+        };
+        this.batchWidgetDeleteDialog = this.dialog.open(WidgetDeleteDialogComponent, dialogConf);
+        this.batchWidgetDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
+            // console.log('delete widget confirm', dialog_out);
+            if ( dialog_out && dialog_out.delete  ) {
+                this.batchRemoveWidgets();
+            }
+        });
+    }
+
+    batchRemoveWidgets() {
+        let ids: string[] = this.getBatchSelectedIds();
+        this.logger.log('BATCH REMOVE ITEMS', ids);
+        this.store.dispatch(new DeleteWidgets(ids)).subscribe(() => {
+
+            let keys = Object.keys(this.batchSelectedItems);
+            let selectedItems = {};
+            this.batchSelectAll = false;
+            this.batchSelectAllIndeterminate = false;
+            for(let i = 0; i < keys.length; i++) {
+                if (!ids.includes(keys[i])) {
+                    selectedItems[keys[i]] = false;
+                }
+            }
+            this.batchSelectedCount = 0;
+            this.batchSelectedItems = selectedItems
+        });
+    }
+
+    batchToggleSelectAll() {
+        this.logger.log('batchToggleSelectAll')
+
+        let keys = Object.keys(this.batchSelectedItems);
+        let selectedItems = {};
+
+        if (this.batchSelectAll) {
+            this.batchSelectAll = false;
+            this.batchSelectAllIndeterminate = false;
+        } else {
+            this.batchSelectAll = true;
+            this.batchSelectAllIndeterminate = false;
+        }
+
+        // select everything
+        for(let i = 0; i < keys.length; i++) {
+            selectedItems[keys[i]] = this.batchSelectAll;
+        }
+
+        this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
+        this.batchSelectedItems = selectedItems
+
+    }
+
+    // get the selected clipboard meta id(s) (stored in widget.settings.clipboardMeta)
+    private getBatchSelectedIds(): any[] {
+        let keys = Object.keys(this.batchSelectedItems);
+        let selected = keys.filter(item => {
+            return this.batchSelectedItems[item] === true;
+        });
+        return selected;
+    }
+
+    // get the selected item(s) and return array of widgets selected
+    private getBatchSelectedItems(): any[] {
+        let ids = this.getBatchSelectedIds();
+
+        let items = this.widgets.filter((item: any) => {
+            return ids.includes(item.id);
+        });
+        return items;
+    }
+
+    private checkBatchSelectAll() {
+        let ids = this.getBatchSelectedIds();
+        if (ids.length === 0) {
+            this.batchSelectAll = false;
+            this.batchSelectAllIndeterminate = false;
+        } else {
+            if (ids.length === this.widgets.length) {
+                this.batchSelectAll = true;
+                this.batchSelectAllIndeterminate = false;
+            } else {
+                this.batchSelectAll = false;
+                this.batchSelectAllIndeterminate = true;
+            }
+        }
+        this.batchSelectedCount = ids.length;
     }
 
     ngOnDestroy() {

@@ -29,6 +29,9 @@ export class DboardContentComponent implements OnChanges {
   @Input() rerender: any;
   @Input() dashboardMode: string;
 
+  @Input() batchControlsToggle: boolean = false;
+  @Input() batchSelectedItems: any = {};
+
   viewEditMode = false;
   winSize = 'md'; // flag to check if window size change to sm
   gridsterOptions: IGridsterOptions = {

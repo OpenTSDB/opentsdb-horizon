@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 
 import domtoimage from 'dom-to-image-more';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -92,9 +93,11 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     private subscription: Subscription = new Subscription();
 
-    // this is a toggle switched by intercom when
+    // this is a toggle switched by dashboard when
     // dashboard batch operations are turned on
-    batchSelector: boolean = true; // TODO: put this back to default false when done
+    @Input() batchSelector: boolean = false;
+
+    @Input() batchSelected: boolean = false;
 
     constructor(
         private widgetService: WidgetService,
@@ -104,7 +107,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
         private utils: UtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private logger: LoggerService
     ) { }
 
     ngOnInit() {
@@ -116,10 +120,40 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+            this.logger.log('[requestListen] Widget Loader', message);
             if (message.action) {
                 switch (message.action) {
                     case 'WriteAccessToNamespace':
                         this.userHasWriteAccessToNamespace = message.payload.userHasWriteAccessToNamespace;
+                        break;
+                    case 'batchCopyWidget':
+                        if (message.payload.includes(this.widget.id)) {
+                            this.widgetCopy();
+                        }
+                        break;
+                    /*case 'batchDeselectAll':
+                        this.batchSelected = false;
+                        this.interCom.requestSend({
+                            action: 'batchItemUpdated',
+                            id: this.widget.id,
+                            payload: {
+                                selected: this.batchSelected
+                            }
+                        });
+                        break;
+                    case 'batchSelectAll':
+                        this.batchSelected = true;
+                        this.interCom.requestSend({
+                            action: 'batchItemUpdated',
+                            id: this.widget.id,
+                            payload: {
+                                selected: this.batchSelected
+                            }
+                        });
+                        break;
+                    case 'batchControlsToggle':
+                        this.batchSelector = message.payload;
+                        break;*/
                 }
             }
 
@@ -412,16 +446,18 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                     }
                 });
             });
-
-        /*this.interCom.requestSend(<IMessage> {
-            action: 'copyWidgetToClipboard',
-            id: this.widget.id,
-            payload: this.widget
-        });*/
     }
 
-    toggleSelectItem($event) {
-        console.log('Toggle Select Item', this);
+    toggleSelectItem(event: any) {
+        console.log('Toggle Select Item', event);
         // need to emit something up to dashboard to keep track of what is selected and what is not
+        this.batchSelected = event.checked;
+        this.interCom.requestSend({
+            action: 'batchItemUpdated',
+            id: this.widget.id,
+            payload: {
+                selected: this.batchSelected
+            }
+        });
     }
 }
