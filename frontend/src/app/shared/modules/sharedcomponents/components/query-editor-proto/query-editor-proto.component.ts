@@ -374,6 +374,65 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: null
                 }
             ]
+        },
+        {
+            label: 'Sliding Window',
+            functions: [
+                {
+                    label: 'Sliding Sum 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,5m"
+                },
+                {
+                    label: 'Sliding Sum 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,15m"
+                },{
+                    label: 'Sliding Count 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,5m"
+                },
+                {
+                    label: 'Sliding Count 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,15m"
+                },
+                {
+                    label: 'Sliding Min 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,5m"
+                },
+                {
+                    label: 'Sliding Min 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,15m"
+                },
+                {
+                    label: 'Sliding Max 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,5m"
+                },
+                {
+                    label: 'Sliding Max 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,15m"
+                }
+            ]
+        },
+        {
+            label: 'Time Difference',
+            functions: [
+                {
+                    label: 'Delta in Minutes',
+                    fxCall: 'TimeDiff',
+                    val: 'MINUTES'
+                },
+                {
+                    label: 'Delta in Seconds',
+                    fxCall: 'TimeDiff',
+                    val: 'SECONDS'
+                }
+            ]
         }
     ];
 
@@ -433,6 +492,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'GroupByCount' : {
             groupByFx : true
+        },
+        'SlidingWindow' : {
+            errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        },
+        'TimeDiff' : {
+            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
+            regexValidator: /^SECONDS|MINUTES|HOURS$/
         }
     };
 
