@@ -126,14 +126,14 @@ export class ClipboardLoadSuccess {
 }
 
 /** CLIPBOARD ITEM(S) */
-export class ClipboardAddItem {
+export class ClipboardAddItems {
     public static type = '[Clipboard] Add Item';
     constructor(
-        public readonly item: any
+        public readonly items: any[]
     ) { }
 }
 
-export class ClipboardAddItemSuccess {
+export class ClipboardAddItemsSuccess {
     public static type = '[Clipboard] Add Item SUCCESS';
     constructor(
         public readonly response: any,
@@ -475,34 +475,39 @@ export class UniversalClipboardState {
     /** CLIPBOARD ITEMS (aka widgets) */
 
     // add Clipboard Item - Will add to the active clipboard widgets
-    @Action(ClipboardAddItem)
-    clipboardAddItem(ctx: StateContext<ClipboardResourceModel>, { item }: ClipboardAddItem) {
+    @Action(ClipboardAddItems)
+    clipboardAddItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardAddItems) {
         this.logger.action('State :: Add clipboard item');
 
         const state = ctx.getState();
 
         let clipboard: any = this.utils.deepClone(state.clipboard);
 
-        // add a specific clipboard identifier
-        item.settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(item.id);
+        for(let i = 0; i < items.length; i++) {
+            // add a specific clipboard identifier
+            items[i].settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(items[i].id);
+        }
 
-        clipboard.content.widgets.unshift(item);
+        const mergedWidgets = items.concat(clipboard.content.widgets);
+        clipboard.content.widgets = mergedWidgets;
+
+        //clipboard.content.widgets.unshift(item);
 
         const activeId = clipboard.id;
 
         this.service.saveClipboard(activeId, clipboard)
             .subscribe(
                 (res: any) => {
-                    ctx.dispatch(new ClipboardAddItemSuccess(res, {}));
+                    ctx.dispatch(new ClipboardAddItemsSuccess(res, {}));
                 },
                 error => { ctx.dispatch(new ClipboardError(error, 'Save Clipboard Failed')); }
             )
 
     }
 
-    @Action(ClipboardAddItemSuccess)
-    clipboardAddItemSuccess(ctx: StateContext<ClipboardResourceModel>, { response, args }: ClipboardAddItemSuccess) {
-        this.logger.success('State :: Add clipboard item SUCCESS');
+    @Action(ClipboardAddItemsSuccess)
+    clipboardAddItemsSuccess(ctx: StateContext<ClipboardResourceModel>, { response, args }: ClipboardAddItemsSuccess) {
+        this.logger.success('State :: Add clipboard items SUCCESS', {response, args});
         const state = ctx.getState();
 
         ctx.setState({

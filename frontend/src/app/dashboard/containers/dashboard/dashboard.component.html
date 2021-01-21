@@ -11,19 +11,24 @@
             (modeChange)="changeVarPanelMode($event)">
         </template-variable-panel>
         <div class="batch-controls" *ngIf="variablePanelMode.view && batchToggle">
-            <button mat-button (click)="batchToggleSelectAll()">
+            <button mat-icon-button
+                (click)="batchToggleSelectAll()"
+                [matTooltip]="batchSelectAll ? 'Deselect all' : 'Select all'">
                 <mat-icon>
                     {{batchSelectAllIndeterminate ? 'indeterminate_check_box' : batchSelectAll ? 'check_box' : 'check_box_outline_blank'}}
                 </mat-icon>
-                <span>{{batchSelectAll ? 'Deselect all' : 'Select all'}}</span>
             </button>
-            <button mat-button (click)="batchCopyToClipboard()" [disabled]="batchSelectedCount === 0">
+            <button mat-icon-button
+                (click)="batchCopyToClipboard()"
+                [disabled]="batchSelectedCount === 0"
+                matTooltip="Copy selected widgets to Clipboard">
                 <mat-icon>content_copy</mat-icon>
-                <span>Copy selected to Clipboard</span>
             </button>
-            <button mat-button (click)="openBatchDeleteDialog()" [disabled]="batchSelectedCount === 0">
+            <button mat-icon-button
+                (click)="openBatchDeleteDialog()"
+                [disabled]="batchSelectedCount === 0"
+                matTooltip="Remove selected widgets">
                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
-                <span>Remove selected widgets</span>
             </button>
         </div>
     </div>

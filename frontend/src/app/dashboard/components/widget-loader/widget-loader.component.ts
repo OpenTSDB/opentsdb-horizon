@@ -120,7 +120,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-            this.logger.log('[requestListen] Widget Loader', message);
+            //this.logger.log('[requestListen] Widget Loader', message);
             if (message.action) {
                 switch (message.action) {
                     case 'WriteAccessToNamespace':
@@ -131,29 +131,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                             this.widgetCopy();
                         }
                         break;
-                    /*case 'batchDeselectAll':
-                        this.batchSelected = false;
-                        this.interCom.requestSend({
-                            action: 'batchItemUpdated',
-                            id: this.widget.id,
-                            payload: {
-                                selected: this.batchSelected
-                            }
-                        });
-                        break;
-                    case 'batchSelectAll':
-                        this.batchSelected = true;
-                        this.interCom.requestSend({
-                            action: 'batchItemUpdated',
-                            id: this.widget.id,
-                            payload: {
-                                selected: this.batchSelected
-                            }
-                        });
-                        break;
-                    case 'batchControlsToggle':
-                        this.batchSelector = message.payload;
-                        break;*/
                 }
             }
 
@@ -398,6 +375,15 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     widgetExportImage() {
         // console.log('EXPORT IMAGE CLICKED');
+        let componentEl: any = this._component.instance.elRef.nativeElement;
+        componentEl.style.backgroundColor = '#ffffff';
+        domtoimage.toJpeg(componentEl)
+            .then((dataUrl: any) => {
+                var link = document.createElement('a');
+                link.download = (this.widget.settins.title.toLowercase().replace(' ','-')) + '.jpeg';
+                link.href = dataUrl;
+                link.click();
+            });
     }
 
     widgetRemove() {
@@ -427,16 +413,18 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     /** WIDGET COPY */
 
     widgetCopy() {
-        console.log('%cWIDGET COPY', 'color: white; font-weight: bold; background-color: teal; padding: 2px 4px;', this.widget);
-
-        console.log('*** DATA ***', this._component.instance);
-
+        // get the dom element
         let componentEl: any = this._component.instance.elRef.nativeElement;
+
+        // adding white to background so it is easier to see graph when capturing image
         componentEl.style.backgroundColor = '#ffffff';
+
         domtoimage.toJpeg(componentEl)
             .then((dataUrl: any) => {
-                console.log('DATA URL', dataUrl);
+                // remove the background style
                 delete componentEl.style.backgroundColor;
+
+                // send the package through intercom so dashboard finish the request
                 this.interCom.requestSend(<IMessage> {
                     action: 'copyWidgetToClipboard',
                     id: this.widget.id,
@@ -449,8 +437,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     toggleSelectItem(event: any) {
-        console.log('Toggle Select Item', event);
-        // need to emit something up to dashboard to keep track of what is selected and what is not
+        // need to emit something up to dashboard
+        // in order to keep track of what is selected
         this.batchSelected = event.checked;
         this.interCom.requestSend({
             action: 'batchItemUpdated',

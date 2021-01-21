@@ -22,15 +22,17 @@ export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription.add(this.cbService.$drawerState.subscribe(val => {
-            this.logger.log('MENU : $drawerState:change', {val});
             this.drawerState = val;
         }));
     }
 
     toggleDrawerState(event) {
-        this.logger.event('TOGGLE DRAWER EVENT', event);
         const state = this.drawerState === 'closed' ? 'opened' : 'closed';
         this.cbService.setDrawerState(state);
+    }
+
+    getDrawerState() {
+        return this.drawerState;
     }
 
     ngOnDestroy() {

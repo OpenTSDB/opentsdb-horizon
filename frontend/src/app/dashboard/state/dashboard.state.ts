@@ -29,7 +29,10 @@ export interface DBStateModel {
 /* action */
 export class LoadDashboard {
     static readonly type = '[Dashboard] Load Dashboard';
-    constructor(public id: string) {}
+    constructor(
+        public id: string,
+        public clipboardItems?: any[]
+    ) {}
 }
 
 export class MigrateAndLoadDashboard {
@@ -193,7 +196,7 @@ export class DBState {
     }
 
     @Action(LoadDashboard)
-    loadDashboard(ctx: StateContext<DBStateModel>, { id }: LoadDashboard) {
+    loadDashboard(ctx: StateContext<DBStateModel>, { id, clipboardItems }: LoadDashboard) {
         this.logger.action('State :: Load Dashboard', { id });
         // id is the path
         if ( id !== '_new_' ) {
@@ -227,6 +230,9 @@ export class DBState {
                 path: '',
                 fullPath: ''
             };
+            if (clipboardItems) {
+                payload.content.widgets = clipboardItems;
+            }
             ctx.dispatch(new LoadDashboardSuccess(payload));
         }
     }

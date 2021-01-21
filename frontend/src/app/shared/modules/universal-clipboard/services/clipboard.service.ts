@@ -63,14 +63,6 @@ export class ClipboardService {
         );
     }
 
-    createCopyStore() {
-        // const folder
-    }
-
-    saveCopyStore() {
-
-    }
-
     getNewUpdateValues(): any {
         const updatedTime = Date.now();
         const updatedBy = this.store.selectSnapshot(DbfsState.getUser());
@@ -79,32 +71,6 @@ export class ClipboardService {
             updatedBy
         };
         return updateValues;
-    }
-
-    copyWidget(data: any) {
-        if (!this.clipboardFolderResource()) {
-            // resource does not exist... create it
-            /*this.createClipboardResource().subscribe(
-                res => {
-                    this.logger.success('CREATED CLIPBOARD ');
-                    const user = this.store.selectSnapshot(DbfsState.getUser());
-                    const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder('/user/' + user.alias));
-                    this.store.dispatch( new DbfsLoadTopFolder('user', user.alias, {}))
-                        .subscribe(
-                            () => {
-                                // try copying again
-                                setTimeout(() => {
-                                    this.copyWidget(data);
-                                });
-                            }
-                        );
-                },
-                err => { this.logger.error('CREATE CLIPBOARD RESOURCE', err); }
-            );*/
-        } else {
-            this.logger.log('copyWidget', data);
-            // copy actions
-        }
     }
 
     // find clipboard resource folder

@@ -1,4 +1,7 @@
-import { Component, OnInit, OnDestroy, HostBinding, ViewChild, TemplateRef, ChangeDetectorRef, ElementRef, HostListener } from '@angular/core';
+import {
+    Component, OnInit, OnDestroy, HostBinding, ViewChild,
+    TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
+} from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -69,8 +72,12 @@ import { TemplateVariablePanelComponent } from '../../components/template-variab
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { ClipboardService } from '../../../shared/modules/universal-clipboard/services/clipboard.service';
-import { ClipboardAddItem, ClipboardAddItemSuccess } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
+import { ClipboardAddItems } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
 import { WidgetDeleteDialogComponent } from '../../components/widget-delete-dialog/widget-delete-dialog.component';
+import { DboardContentComponent } from '../../components/dboard-content/dboard-content.component';
+
+import domtoimage from 'dom-to-image-more';
+import { NavbarClipboardMenuComponent } from '../../../shared/modules/universal-clipboard/components';
 
 @Component({
     selector: 'app-dashboard',
@@ -116,6 +123,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // portal templates
     @ViewChild('dashboardNavbarTmpl') dashboardNavbarTmpl: TemplateRef<any>;
+
+    @ViewChild(DboardContentComponent, {read: DboardContentComponent}) dbContent: DboardContentComponent;
+
+    @ViewChild(NavbarClipboardMenuComponent, {read: NavbarClipboardMenuComponent}) clipboardMenu: NavbarClipboardMenuComponent;
 
     // portal placeholders
     dashboardNavbarPortal: TemplatePortal;
@@ -244,6 +255,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     batchSelectedCount: number = 0;
     batchWidgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
 
+    newFromClipboard: boolean = false;
+    newFromClipboardItems: any[] = [];
+
     constructor(
         private store: Store,
         private activatedRoute: ActivatedRoute,
@@ -293,7 +307,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.newWidget = null;
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
-                this.store.dispatch(new LoadDashboard(this.dbid));
+                // CHECK if New from clipboard
+                if (this.newFromClipboard) {
+                    this.store.dispatch(new LoadDashboard(this.dbid, this.newFromClipboardItems));
+                } else {
+                    this.store.dispatch(new LoadDashboard(this.dbid));
+                }
             } else if ( !this.snapshot ) {
                 this.store.dispatch(new LoadDashboard(url[0].path));
                 // favorite subscription
@@ -306,6 +325,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.batchSelectAllIndeterminate = false;
             this.batchSelectAll = false;
             this.batchSelectedItems = {};
+            this.newFromClipboard = false;
+            this.newFromClipboardItems = [];
 
             // clear info island if any
             this.iiService.closeIsland();
@@ -410,9 +431,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         clipboardWidgets[i].gridPos.ySm = 0;
                         clipboardWidgets[i].gridPos.yMd = 0;
 
-                        for (let j = 0; j < this.widgets.length; j++) {
-                            if (this.widgets[j].gridPos.yMd >= clipboardWidgets[i].gridPos.yMd) {
-                                this.widgets[j].gridPos.yMd += clipboardWidgets[i].gridPos.h;
+                        if (this.widgets.length > 0) {
+                            for (let j = 0; j < this.widgets.length; j++) {
+                                if (this.widgets[j].gridPos.yMd >= clipboardWidgets[i].gridPos.yMd) {
+                                    this.widgets[j].gridPos.yMd += clipboardWidgets[i].gridPos.h;
+                                }
                             }
                         }
 
@@ -437,6 +460,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         this.updateTplVariableForCloneDelete( clipboardWidgets[i], 'clone');
                     }
+
                     break;
                 case 'changeWidgetType':
                     this.iiService.closeIsland();
@@ -705,21 +729,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         preview: message.payload.preview
                     };
 
-                    this.store.dispatch(new ClipboardAddItem(widgetCopy));
-                    /*this.widgetClipboardService.copyWidget({
-                        dashboard: {
-                            id: dbData.id,
-                            path: dbData.path,
-                            fullPath: dbData.fullPath,
-                            name: dbData.name
-                        },
-                        widget: { ...message.payload }
-                    });*/
+                    this.store.dispatch(new ClipboardAddItems([widgetCopy]));
                     break;
                 case 'batchItemUpdated':
                     this.batchSelectedItems[message.id] = message.payload.selected;
                     this.checkBatchSelectAll();
-                    this.logger.log('DB BATCH ITEM UPDATE', this.batchSelectedItems);
+                    break;
+                case 'newFromClipboard':
+                    this.newFromClipboard = true;
+                    this.newFromClipboardItems = JSON.parse(JSON.stringify(message.payload));
+                    this.router.navigate(['d', '_new_']);
                     break;
                 default:
                     break;
@@ -1893,17 +1912,61 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     batchCopyToClipboard() {
-        // this might not be best way if there are a lot of widgets to be copied
-        // but trying for now to get functionality working
-        // could get slow if there are a lot and we are creating images of every one
-        // TODO: optimize
+        const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
 
-        let ids: any[] = this.getBatchSelectedIds();
-        // this is broadcast to all the widgets to respond
-        this.interCom.requestSend({
-            action: 'batchCopyWidget',
-            payload: ids
-        });
+        let widgets: any[] = this.getBatchSelectedItems();
+
+        let widgetLoaders = this.dbContent.widgetLoaders;
+
+        let promises: any[] = [];
+
+        // we have to get the widgetLoaders so we can locate the visualization element to take a snapshot image
+        for(let i = 0; i < widgets.length; i++) {
+            let loader = widgetLoaders.find((item: any) => {
+                return item.widget.id === widgets[i].id
+            });
+
+            const widgetCopy: any = {...widgets[i]};
+
+            widgetCopy.settings.clipboardMeta = {
+                dashboard: {
+                    id: dbData.id,
+                    path: dbData.path,
+                    fullPath: dbData.fullPath,
+                    name: dbData.name
+                },
+                copyDate: Date.now(),
+                referencePath: dbData.path + '@' + widgetCopy.id
+            };
+
+            // create preview
+            let componentEl: any = loader._component.instance.elRef.nativeElement;
+            componentEl.style.backgroundColor = '#ffffff';
+            let p = domtoimage.toJpeg(componentEl)
+                        .then((dataUrl: any) => {
+                            delete componentEl.style.backgroundColor;
+                            widgetCopy.settings.clipboardMeta.preview = dataUrl;
+                            return widgetCopy;
+                        });
+            // because preview generation is a promise,
+            // we push to array to wait for all promises to resolve with Promise.all
+            promises.push(p);
+
+        }
+
+        // allow all promises to resolve before anything else can be done
+        Promise.all(promises)
+           .then((results) => {
+               this.logger.log('PROMISE COMPLETE', results);
+               this.store.dispatch(new ClipboardAddItems(results));
+               if (this.clipboardMenu.getDrawerState() === 'closed') {
+                   this.clipboardMenu.toggleDrawerState({});
+               }
+           })
+           .catch((e) => {
+               // Handle errors here
+           });
+
     }
 
     openBatchDeleteDialog() {

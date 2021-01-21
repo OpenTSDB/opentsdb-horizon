@@ -10,6 +10,7 @@ import { ClipboardCreate, ClipboardLoad, ClipboardRemoveItems, ClipboardResource
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
+import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -53,7 +54,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     @ViewChildren('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) cbItemMoreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) cbItemRemoveTriggers: QueryList<MatMenuTrigger>;
-
 
     private subscription = new Subscription();
 
@@ -152,6 +152,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         private store: Store,
         private http: HttpService,
         private cbService: ClipboardService,
+        private dbService: DashboardService,
         private interCom: IntercomService,
         private logger: LoggerService
     ) {
@@ -161,7 +162,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.logger.ng('CLIPBOARD DRAWER onInit');
 
         // check to see if DBFS resources are loaded
         this.subscription.add(this.resourcesLoaded$.subscribe(loaded => {
@@ -303,7 +303,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
      */
 
     toggleSelectAll() {
-
         let keys = Object.keys(this.selectedItems);
         // check the select all flag
         if (this.selectAll) {
@@ -325,12 +324,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             this.batchControlsDisabled = false;
             this.selectedCount = keys.length;
         }
-
-        this.logger.log('toggleSelectAll', {selectAll: this.selectAll});
     }
 
     toggleExpandAll() {
-        this.logger.log('toggleExpandAll');
         if (this.expandAll) {
             // everything is expanded already, so collapse
             this.expandAll = false;
@@ -343,14 +339,14 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     createDashboardFromClipboard() {
-        this.logger.log('createDashboardFromClipboard', { clipboardIndex: this.activeIndex});
-        // create a dashboard from the current clipboard
-        // TODO!!!
+        // tell dashboard we want to create a new one based on clipboard widgets
+        this.interCom.requestSend({
+            action: 'newFromClipboard',
+            payload: this.clipboardItems
+        });
     }
 
     batchPasteToDashboard() {
-        this.logger.log('batchPasteToDashboard', {indices: this.selectedItems});
-
         // get selected items
         let items = this.getSelectedItems();
 
@@ -366,8 +362,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     batchRemoveClipboardItems() {
-        this.logger.log('batchRemoveClipboardItems', {indices: this.selectedItems});
-
         // get selected items
         let items = this.getSelectedIds();
 
@@ -382,7 +376,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
      */
 
     toggleSelectItem(event: any, item: any) {
-        //this.logger.log('TOGGLE SELECT ITEM', event);
         this.selectedItems[item.settings.clipboardMeta.cbId] = event.checked;
 
         let checked = this.getSelectedIds();
@@ -404,8 +397,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         this.selectedCount = checked.length;
 
         this.batchControlsDisabled = !((!this.selectAll && this.selectAllIndeterminate) || this.selectAll);
-
-        //this.logger.log('TOGGLE SELECT ITEM', {checked: event.checked, selectAll: this.selectAll, indeterminate: this.selectAllIndeterminate});
     }
 
     toggleExpandItem(expanded: boolean) {
@@ -462,7 +453,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     pasteToDashboard(data: any, index: any) {
-        this.logger.log('pasteToDashboard', { data, index });
         // user intercom to send widget to dashboard
         this.interCom.requestSend(<IMessage> {
             action: 'pasteClipboardWidgets',
@@ -472,7 +462,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     removeClipboardItem(data: any, index: any) {
-        this.logger.log('removeClipboardItem', {data, index});
         // remove item from clipboard
         this.store.dispatch(new ClipboardRemoveItems([data.settings.clipboardMeta.cbId]));
     }
@@ -535,11 +524,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             return ids.includes(item.settings.clipboardMeta.cbId);
         });
         return items;
-    }
-
-    // JUST FOR DEV
-    arrayOne(n: number): any[] {
-        return Array(n);
     }
 
     // ON DESTROY
