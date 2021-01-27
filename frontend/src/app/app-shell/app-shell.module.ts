@@ -28,8 +28,6 @@ import {
 import { AppShellService } from './services/app-shell.service';
 import { DbfsUtilsService } from './services/dbfs-utils.service';
 import { DbfsService } from './services/dbfs.service';
-import { LocalStorageService } from './services/local-storage.service';
-import { ThemeService } from './services/theme.service';
 import { NotificationService } from './services/notification.service';
 
 // components
