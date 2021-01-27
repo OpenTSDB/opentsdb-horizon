@@ -435,6 +435,12 @@ export class YamasService {
                 case 'Percentage':
                     this.handleRatioFunction(idPrefix, subGraph, funs, i);
                     break;
+                case 'SlidingWindow':
+                    this.handleSlidingWindowFunction(idPrefix, subGraph, funs, i);
+                    break;
+                case 'TimeDiff':
+                    this.handleTimeDiffFunction(idPrefix, subGraph, funs, i);
+                    break;
                 case 'Rollup':
                     // tslint:disable-next-line:prefer-const
                     let [ aggregator, ds ] = funs[i].val.split(',').map(d => d.trim());
@@ -619,6 +625,28 @@ export class YamasService {
                 func.asPercent = true;
                 break;
         }
+        subGraph.push(func);
+    }
+
+    handleSlidingWindowFunction(idPrefix, subGraph, funs, i) {
+        const parts = funs[i].val.split(',');
+        const func = {
+            'id': this.generateNodeId(idPrefix + '_sliding', subGraph),
+            'type': 'SlidingWindow',
+            'aggregator': parts[0],
+            'windowSize': parts[1],
+            'sources': [ subGraph[subGraph.length - 1].id ]
+        };
+        subGraph.push(func);
+    }
+
+    handleTimeDiffFunction(idPrefix, subGraph, funs, i) {
+        const func = {
+            'id': this.generateNodeId(idPrefix + '_timediff', subGraph),
+            'type': 'TimeDifference',
+            'resolution': funs[i].val,
+            'sources': [ subGraph[subGraph.length - 1].id ]
+        };
         subGraph.push(func);
     }
 
