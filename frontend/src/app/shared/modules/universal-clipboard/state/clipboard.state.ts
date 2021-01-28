@@ -197,6 +197,9 @@ export class SetClipboardActiveSuccess {
     }
 })
 export class UniversalClipboardState {
+
+    timeoutTries: number = 0;
+
     constructor(
         private store:      Store,
         private utils:      UtilsService,
@@ -479,29 +482,61 @@ export class UniversalClipboardState {
     clipboardAddItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardAddItems) {
         this.logger.action('State :: Add clipboard item');
 
+        if (this.timeoutTries > 2) {
+            ctx.dispatch(new ClipboardError(new Error('Action Timed Out'), 'Clipboard Add Items'));
+            this.timeoutTries = 0;
+            // we can try loading clipboard...one last time
+            ctx.dispatch(new ClipboardLoad()).subscribe(
+                () => {
+                    ctx.dispatch(new ClipboardAddItems(items));
+                },
+                (error: any) => {
+                    ctx.dispatch(new ClipboardError(error, 'Clipboard Add Items [Clipboard Load] - FINAL TRY'));
+                },
+                () => {
+                    // its complete... maybe do something?
+                }
+            );
+            return;
+        }
+
         const state = ctx.getState();
 
         let clipboard: any = this.utils.deepClone(state.clipboard);
 
-        for(let i = 0; i < items.length; i++) {
-            // add a specific clipboard identifier
-            items[i].settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(items[i].id);
+        // check if clipboard or clipboard content is there?
+        if (!clipboard || !clipboard.content) {
+            this.timeoutTries++;
+            // maybe it hasn't loaded yet
+            // timeout a new request
+            setTimeout(() => {
+                ctx.dispatch(new ClipboardAddItems(items));
+            }, 500);
+
+        } else {
+            // reset timeout tries
+            this.timeoutTries = 0;
+
+            for(let i = 0; i < items.length; i++) {
+                // add a specific clipboard identifier
+                items[i].settings.clipboardMeta.cbId = this.service.generateUniqueClipboardItemId(items[i].id);
+            }
+
+            const mergedWidgets: any[] = items.concat(clipboard.content.widgets || []);
+            clipboard.content.widgets = mergedWidgets;
+
+            //clipboard.content.widgets.unshift(item);
+
+            const activeId = clipboard.id;
+
+            this.service.saveClipboard(activeId, clipboard)
+                .subscribe(
+                    (res: any) => {
+                        ctx.dispatch(new ClipboardAddItemsSuccess(res, {}));
+                    },
+                    error => { ctx.dispatch(new ClipboardError(error, 'Save Clipboard Failed')); }
+                );
         }
-
-        const mergedWidgets = items.concat(clipboard.content.widgets);
-        clipboard.content.widgets = mergedWidgets;
-
-        //clipboard.content.widgets.unshift(item);
-
-        const activeId = clipboard.id;
-
-        this.service.saveClipboard(activeId, clipboard)
-            .subscribe(
-                (res: any) => {
-                    ctx.dispatch(new ClipboardAddItemsSuccess(res, {}));
-                },
-                error => { ctx.dispatch(new ClipboardError(error, 'Save Clipboard Failed')); }
-            )
 
     }
 

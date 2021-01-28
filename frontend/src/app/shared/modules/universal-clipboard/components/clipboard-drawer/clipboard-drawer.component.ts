@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostBinding, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
@@ -22,7 +22,7 @@ import { DashboardService } from '../../../../../dashboard/services/dashboard.se
                 'width': '0'
             })),
             state('opened', style({
-                width: '300px'
+                width: '350px'
             })),
             transition('closed <=> opened', animate(300))
         ])
@@ -524,6 +524,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             return ids.includes(item.settings.clipboardMeta.cbId);
         });
         return items;
+    }
+
+    @HostListener('@toggleDrawer.done', ['$event']) doneDrawerHandler(event: any): void {
+        this.logger.log('TOGGLE DRAWER ANIMATION DONE', {drawerState: this.drawerState, event});
     }
 
     // ON DESTROY
