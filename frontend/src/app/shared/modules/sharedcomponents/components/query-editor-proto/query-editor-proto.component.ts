@@ -456,11 +456,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'ValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CounterValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CntrRate' : {
             errorMessage: null,
