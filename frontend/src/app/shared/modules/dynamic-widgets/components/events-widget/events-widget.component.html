@@ -1,7 +1,7 @@
 <div class="main-container" [ngClass]="{'flex': mode === 'edit' }">
     <div class="widget-output-container" fxLayout="column" >
         <div class="widget-title" *ngIf="mode !== 'edit'" fxLayout="row" fxFlex="1 1 30px">
-            <span fxFlex="1 1 100%">{{ resolveTitle(widget.settings.title) }}</span>
+            <span class="readonly" fxFlex="1 1 100%">{{ resolveTitle(widget.settings.title) }}</span>
         </div>
         <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 30px">
             <span fxFlex="1 1 100%">

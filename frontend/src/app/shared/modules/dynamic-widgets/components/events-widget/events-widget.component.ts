@@ -135,7 +135,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         if ( matches ) {
             for ( let i = 0, len = matches.length; i < len; i++ ) {
                 const key = matches[i].replace(/\{|\}/g,'');
-                title = title.replace(matches[i], v[key]? v[key] : '');
+                title = title.replace(matches[i], v[key] !== undefined ? v[key] : '');
             }
         }
         return title;
