@@ -22,7 +22,7 @@ import { DashboardService } from '../../../../../dashboard/services/dashboard.se
                 'width': '0'
             })),
             state('opened', style({
-                width: '350px'
+                width: '100%'
             })),
             transition('closed <=> opened', animate(300))
         ])
@@ -527,7 +527,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('@toggleDrawer.done', ['$event']) doneDrawerHandler(event: any): void {
-        this.logger.log('TOGGLE DRAWER ANIMATION DONE', {drawerState: this.drawerState, event});
+        this.interCom.requestSend({
+            action: 'ResizeAllWidgets'
+          });
     }
 
     // ON DESTROY

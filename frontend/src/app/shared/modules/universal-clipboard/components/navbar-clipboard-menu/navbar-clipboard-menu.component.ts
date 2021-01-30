@@ -11,6 +11,9 @@ import { ClipboardService } from '../../services/clipboard.service';
 export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.navbar-clipboard-menu') private _hostClass = true;
+    @HostBinding('class.is-open') get checkDrawerState() {
+        return this.drawerState === 'opened';
+    }
 
     private drawerState: string = 'closed';
     private subscription = new Subscription();

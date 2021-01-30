@@ -331,10 +331,9 @@ export class UniversalClipboardState {
         // get resource
         const resource: DbfsFolderModel = this.service.clipboardFolderResource();
         const files: any[] = resource.files;
-        //console.log('----> RESOURCE', resource, files);
+
         // sort & parse files
         let clipboardsList = this.service.sortClipboards(files);
-        //console.log('---> CLIPBOARDS', clipboardsList);
 
         // check if there is an active one already
         const curActiveIndex = this.store.selectSnapshot(UniversalClipboardState.getActiveClipboardSelectedIndex);
@@ -346,7 +345,7 @@ export class UniversalClipboardState {
             } else {
                 isActive = item.name === 'Default clipboard';
             }
-            //console.log('---> ITEM', item);
+
             return {
                 resource: item,
                 active: isActive
@@ -567,7 +566,6 @@ export class UniversalClipboardState {
     clipboardRemoveItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardRemoveItems) {
         this.logger.action('State :: Remove clipboard items');
 
-
         const state = ctx.getState();
 
         const dashboard: any = this.utils.deepClone(state.clipboard);
@@ -581,11 +579,9 @@ export class UniversalClipboardState {
         dashboard.content.widgets = widgets;
 
         // now need to save dashboard
-
         this.http.saveDashboard(dashboard.id, dashboard)
             .subscribe(
                 (res: any) => {
-                    console.log('*** RES ***', res);
                     ctx.dispatch(new ClipboardRemoveItemsSuccess(dashboard));
                 },
                 error => { ctx.dispatch(new ClipboardError(error, 'Remove Clipboard Items Failed')); }
@@ -616,11 +612,9 @@ export class UniversalClipboardState {
                 ...item,
                 active: (i === index)
             }
-            console.log('ITEM==>', updatedItem, i, index);
+
             clipboardsList[i] = updatedItem;
         });
-
-        console.log('CLIPBOARDS LIST', clipboardsList);
 
         try {
             ctx.setState({
@@ -638,17 +632,13 @@ export class UniversalClipboardState {
     @Action(SetClipboardActiveSuccess)
     setClipboardActiveSuccess(ctx: StateContext<ClipboardResourceModel>, {}: SetClipboardActiveSuccess) {
         this.logger.action('State :: Set clipboard active SUCCESS');
-        //setTimeout(() => {
-            ctx.dispatch(new ClipboardLoad());
-        //}, 300);
-
+        ctx.dispatch(new ClipboardLoad());
     }
 
     /** General Error Action */
     @Action(ClipboardError)
     clipboardError(ctx: StateContext<ClipboardResourceModel>, { error, label }: ClipboardError) {
         this.logger.error('State :: ' + label, error);
-        ctx.dispatch({ error });
     }
 
 

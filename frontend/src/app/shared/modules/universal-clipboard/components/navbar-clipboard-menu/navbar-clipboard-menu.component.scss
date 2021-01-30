@@ -1,8 +1,12 @@
 @mixin navbar-clipboard-menu-component-base() {
-    .navbar-clipboard-menu {
-        &.navbar-item {
-            margin-left: -5px;
+    .navbar-clipboard-menu.navbar-item {
+        height: 100%;
+        margin-right: -16px;
+
+        &:not(.is-open) {
+            padding: 0 8px 0 7px;
         }
+
 
         .mat-flat-button {
             min-width: initial;
@@ -11,7 +15,16 @@
         }
 
         .mat-icon {
-            @include sizeDenaliIcon(14px);
+            @include sizeDenaliIcon(18px);
+        }
+    }
+
+    .app-navbar {
+        .mat-toolbar.explore,
+        .mat-toolbar.snapshot {
+            .navbar-clipboard-menu.navbar-item {
+                display: none;
+            }
         }
     }
 }
@@ -25,7 +38,25 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
-    .navbar-clipboard-menu {
+    $text-color: map-get($background, navbar);
+    $navbar-text-color: map-get($foreground, navbar-text);
 
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+
+    .navbar-clipboard-menu {
+        &.is-open {
+            background: rgba($white, .2);
+            color: $navbar-text;
+
+            box-shadow: inset 0 -3px 0 -1px $navbar-text, inset 3px 0px 0 -1px $navbar-text, inset 0 1px 0 1px $navbar-text;
+
+            &:hover {
+                background: rgba($white, .28);
+            }
+        }
     }
 }

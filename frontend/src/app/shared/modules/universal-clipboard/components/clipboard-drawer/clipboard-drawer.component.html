@@ -1,12 +1,12 @@
 <div class="clipboard-drawer-wrap">
     <mat-toolbar class="clipboard-header">
         <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
-            <div class="nav-item icon-nav clipboard-collapse-control" style="min-width: 36px;"
+            <!--<div class="nav-item icon-nav clipboard-collapse-control" style="min-width: 36px;"
                 (click)="close()">
                 <button mat-icon-button>
                     <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
                 </button>
-            </div>
+            </div>-->
             <div class="nav-item flex-spacer clipboard-selector">
                 <ng-container>
                     <ng-container *ngTemplateOutlet="clipboardSelectorControl"></ng-container>
@@ -21,25 +21,37 @@
         <ng-container *ngTemplateOutlet="clipboardItemList"></ng-container>
     </ng-container>
 </div>
-<!-- clipboard selector -->
+
+<!-- clipboard selector & actions -->
 <ng-template #clipboardSelectorControl>
-    <mat-form-field>
+    <mat-form-field style="margin-right: 8px;">
         <mat-label>Selected clipboard</mat-label>
 
         <mat-select [value]="activeIndex" (selectionChange)="clipboardSelectionChange($event)">
-            <!--<mat-option value="_new_">Create new clipboard</mat-option>
-            <mat-divider></mat-divider>-->
             <mat-option *ngFor="let cb of clipboardList; let idx = index" [value]="idx">
                 {{cb.resource.name}}
             </mat-option>
         </mat-select>
     </mat-form-field>
+    <button mat-icon-button matTooltip="Create new clipboard" (click)="toggleCreateClipboard()">
+        <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="New dashboard from clipboard" (click)="createDashboardFromClipboard()">
+        <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Remove clipboard" (click)="toggleRemoveClipboardConfirm()" [disabled]="activeIndex === 0">
+        <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+        <span #removeClipboardMenuTrigger [matMenuTriggerFor]="confirmRemoveClipboardMenu"></span>
+    </button>
+
+
+    <!--
     <button mat-icon-button matTooltip="More clipboard actions" (click)="toggleClipboardMoreMenu()">
         <mat-icon fontSet="denali" fontIcon="d-more-vertical"></mat-icon>
         <span #clipboardMoreMenuTrigger [matMenuTriggerFor]="moreClipboardActionsMenu"></span>
         <span #removeClipboardMenuTrigger [matMenuTriggerFor]="confirmRemoveClipboardMenu"></span>
     </button>
-    <!--
+
     <button mat-icon-button color="primary" (click)="toggleCreateClipboard()" matTooltip="Create new clipboard">
         <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
     </button>-->
@@ -61,18 +73,18 @@
                 (change)="toggleSelectAll($event)"></mat-checkbox>
         </span>
 
+        <span class="flex-spacer" style="justify-content: flex-start;">
+            <span *ngIf="selectAll || selectAllIndeterminate">
+                {{selectedCount}}/{{clipboardItems.length}} selected
+            </span>
+        </span>
+
         <!-- expand all -->
         <button mat-icon-button color="primary"
             [matTooltip]="expandAll ? ' Collapse all' : 'Expand all'"
             (click)="toggleExpandAll()">
             <mat-icon fontSet="denali" [fontIcon]="expandAll ? 'd-collapse-vertical' : 'd-expand-vertical'"></mat-icon>
         </button>
-
-        <span class="flex-spacer">
-            <span>
-                {{selectedCount}}/{{clipboardItems.length}} selected
-            </span>
-        </span>
 
         <!-- add widget(s) to dashboard -->
         <button mat-icon-button color="primary"
@@ -84,7 +96,7 @@
 
         <!-- delete widget(s) from clipboard -->
         <button mat-icon-button color="primary"
-            matTooltip="Delete widget(s) from clipboard"
+            matTooltip="Remove widget(s) from clipboard"
             [matMenuTriggerFor]="confirmDeleteClipboardItemsMenu"
             [disabled]="batchControlsDisabled">
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
@@ -104,7 +116,9 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div class="clipboard-item-detail">
-                            Please add items to this clipboard
+                            <div class="item-detail item-label">
+                                <strong>Please add items to this clipboard</strong>
+                            </div>
                         </div>
                     </mat-expansion-panel>
                     <!-- has items -->
@@ -127,7 +141,10 @@
                                 <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
                                 <span class="widget-title">{{data.settings.title}}</span>
                                 <span class="flex-spacer"></span>
-                                <button mat-icon-button matTooltip="More actions" (click)="$event.stopPropagation(); toggleClipboardItemMoreMenu(data.settings.clipboardMeta.cbId)">
+                                <button class="clipboard-item-menu-trigger"
+                                    mat-icon-button
+                                    matTooltip="More actions"
+                                    (click)="$event.stopPropagation(); toggleClipboardItemMoreMenu(data.settings.clipboardMeta.cbId)">
                                     <mat-icon fontSet="denali" fontIcon="d-more-vertical"></mat-icon>
                                     <span #clipboardItemMoreMenuTrigger
                                         [matMenuTriggerFor]="moreClipboardItemActionsMenu"
@@ -200,7 +217,7 @@
 </ng-template>
 
 <!-- clipboard action menu -->
-<mat-menu #moreClipboardActionsMenu="matMenu" overlapTrigger="true">
+<mat-menu #moreClipboardActionsMenu="matMenu" overlapTrigger="true" class="clipboard-action-menu">
     <ng-template matMenuContent>
         <button mat-menu-item (click)="toggleCreateClipboard()">
             <mat-icon fontSet="denali" fontIcon="d-file-add"></mat-icon>
@@ -240,13 +257,11 @@
                 </button>
             </mat-card-actions>
         </mat-card>
-        <!--<button mat-menu-item>Yes, please remove clipboard</button>
-        <button mat-menu-item>No, please cancel</button>-->
     </ng-template>
 </mat-menu>
 
 <!-- clipboard item more menu -->
-<mat-menu #moreClipboardItemActionsMenu="matMenu" overlapTrigger="true">
+<mat-menu #moreClipboardItemActionsMenu="matMenu" overlapTrigger="true" class="clipboard-item-action-menu">
     <ng-template matMenuContent let-data="item" let-i="itemIndex">
         <button mat-menu-item (click)="pasteToDashboard(data, i)">
             <mat-icon fontSet="denali" fontIcon="d-dashboard-tile-add"></mat-icon>
@@ -265,7 +280,7 @@
         <mat-card class="confirmation-card">
             <mat-card-content>
                 <p>
-                    Confirm clipboard item {{itemIndex}} deletion?
+                    Confirm clipboard item "{{item.settings.title}}"" deletion?
                 </p>
             </mat-card-content>
             <mat-card-actions>
@@ -279,8 +294,6 @@
                 </button>
             </mat-card-actions>
         </mat-card>
-        <!--<button mat-menu-item>Yes, please delete item {{itemIndex}}</button>
-        <button mat-menu-item>No, please cancel</button>-->
     </ng-template>
 </mat-menu>
 
@@ -304,8 +317,6 @@
                 </button>
             </mat-card-actions>
         </mat-card>
-        <!--<button mat-menu-item (click)="batchRemoveClipboardItems()">Yes, please delete items</button>
-        <button mat-menu-item>No, please cancel</button>-->
     </ng-template>
 </mat-menu>
 

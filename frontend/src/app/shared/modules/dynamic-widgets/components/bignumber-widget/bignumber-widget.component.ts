@@ -153,6 +153,15 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                 }
             } else if ( message.action === 'SnapshotMeta' ) {
                     this.meta = message.payload;
+            } else if (message.action === 'ResizeAllWidgets') {
+
+                if(this.resizeSensor) {
+                    this.resizeSensor.detach();
+                }
+                this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                    this.newSize$.next(1);
+                });
+
             }
             if (message && (message.id === this.widget.id)) { // 2. Get and set the metric
                 switch (message.action) {

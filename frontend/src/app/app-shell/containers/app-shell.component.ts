@@ -356,6 +356,13 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         // console.log('DRAWER IS CLOSING');
     }
 
+    drawerOpenChange(event: any) {
+        this.logger.log('drawerOpenChange', event);
+        this.interCom.requestSend({
+            action: 'ResizeAllWidgets'
+        });
+    }
+
     /** EVENTS */
 
     navigationAction(event: any) {

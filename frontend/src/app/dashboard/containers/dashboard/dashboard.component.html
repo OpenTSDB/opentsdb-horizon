@@ -10,22 +10,26 @@
             [tplVariables]="tplVariables"
             (modeChange)="changeVarPanelMode($event)">
         </template-variable-panel>
-        <div class="batch-controls-wrap" fxLayout="row" fxLayoutLaign="stretch stretch">
+        <div class="batch-controls-wrap" fxLayout="row" fxLayoutLaign="stretch stretch" *ngIf="viewEditMode !== true && !snapshot && variablePanelMode.view">
             <div class="batch-controls" *ngIf="variablePanelMode.view && batchToggle">
                 <button mat-icon-button
+                    class="batch-select"
                     (click)="batchToggleSelectAll()"
-                    [matTooltip]="batchSelectAll ? 'Deselect all' : 'Select all'">
+                    [matTooltip]="batchSelectAll ? 'Deselect all' : 'Select all'"
+                    [ngClass]="{'is-checked': batchSelectAllIndeterminate || batchSelectAll}">
                     <mat-icon>
                         {{batchSelectAllIndeterminate ? 'indeterminate_check_box' : batchSelectAll ? 'check_box' : 'check_box_outline_blank'}}
                     </mat-icon>
                 </button>
                 <button mat-icon-button
+                class="batch-copy"
                     (click)="batchCopyToClipboard()"
                     [disabled]="batchSelectedCount === 0"
                     matTooltip="Copy selected widgets to Clipboard">
                     <mat-icon>content_copy</mat-icon>
                 </button>
                 <button mat-icon-button
+                    class="batch-trash"
                     (click)="openBatchDeleteDialog()"
                     [disabled]="batchSelectedCount === 0"
                     matTooltip="Remove selected widgets">
@@ -33,7 +37,9 @@
                 </button>
             </div>
             <div class="batch-toggle">
-                <button mat-icon-button class="toggle-dashboard-batch-button" (click)="toggleBatchControls()">
+                <button mat-icon-button class="toggle-dashboard-batch-button"
+                    [matTooltip]="(variablePanelMode.view && batchToggle)? 'Disable batch controls' : 'Enable batch controls'"
+                    (click)="toggleBatchControls()">
                     <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
                 </button>
             </div>
@@ -128,7 +134,7 @@
             <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
         </button>
     </span>-->
-    <navbar-clipboard-menu class="navbar-item nav"></navbar-clipboard-menu>
+    <navbar-clipboard-menu class="navbar-item" #clipboardMenu></navbar-clipboard-menu>
     <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
     </span>

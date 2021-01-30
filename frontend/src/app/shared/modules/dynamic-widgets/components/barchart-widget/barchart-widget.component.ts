@@ -173,6 +173,14 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 case 'SnapshotMeta':
                     this.meta = message.payload;
                     break;
+                case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
+                    break;
             }
             if (message && (message.id === this.widget.id)) {
                 switch (message.action) {
@@ -400,7 +408,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
         const heightMod = 0.55;
         // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 60;
         const outputSize = nativeEl.getBoundingClientRect();
         if (this.mode !== 'view') {

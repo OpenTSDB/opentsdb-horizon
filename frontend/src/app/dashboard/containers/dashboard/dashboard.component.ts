@@ -60,7 +60,7 @@ import {
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 
 import { LoggerService } from '../../../core/services/logger.service';
 import { HttpService } from '../../../core/http/http.service';
@@ -71,7 +71,6 @@ import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
-import { ClipboardService } from '../../../shared/modules/universal-clipboard/services/clipboard.service';
 import { ClipboardAddItems } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
 import { WidgetDeleteDialogComponent } from '../../components/widget-delete-dialog/widget-delete-dialog.component';
 import { DboardContentComponent } from '../../components/dboard-content/dboard-content.component';
@@ -279,8 +278,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
-        private iiService: InfoIslandService,
-        private widgetClipboardService: ClipboardService
+        private iiService: InfoIslandService
     ) { }
 
     ngOnInit() {
@@ -328,6 +326,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.newFromClipboard = false;
             this.newFromClipboardItems = [];
 
+            // reset clipboard
+            if (this.clipboardMenu.getDrawerState() === 'opened') {
+                this.clipboardMenu.toggleDrawerState({});
+            }
+
             // clear info island if any
             this.iiService.closeIsland();
             // remove system messages - TODO: when adding more apps, put this in app-shell and listen for router change.
@@ -335,6 +338,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 action: 'clearSystemMessage',
                 payload: {}
             });
+
+
         }));
         // setup navbar portal
         this.dashboardNavbarPortal = new TemplatePortal(this.dashboardNavbarTmpl, undefined, {});
@@ -349,6 +354,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             let containerPos: any;
 
             switch (message.action) {
+                case 'ResizeAllWidgets':
+                    this.dbContent.gridster.reload();
+                    break;
                 case 'getWidgetCachedData':
                     const widgetCachedData = this.wData[message.id];
                     let hasQueryError = false;
@@ -418,7 +426,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 // This comes from the clipboard drawer
                 case 'pasteClipboardWidgets':
-                    this.logger.ng('PASTE CLIPBOARD WIDGETS', message)
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     console.log('clipboardWidgets', clipboardWidgets, this.widgets);
@@ -917,6 +924,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
             this.viewEditMode = !mode || mode === 'dashboard' ? false : true;
             this.cdkService.setNavbarClass( mode === 'explore' ? 'explore' : '');
+
+            // close the clipboard
+            if (mode === 'explore') {
+                if (this.clipboardMenu.getDrawerState() === 'opened') {
+                    this.clipboardMenu.toggleDrawerState({});
+                }
+            }
         }));
 
         this.subscription.add(this.dbTime$.subscribe(t => {
@@ -1907,8 +1921,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.batchSelectedItems = selectedItems;
             this.batchSelectedCount = 0;
         }
-
-        this.logger.log('toggleBatchControls', {batchToggle: this.batchToggle, variablePanelMode: this.variablePanelMode});
     }
 
     batchCopyToClipboard() {
@@ -1957,14 +1969,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // allow all promises to resolve before anything else can be done
         Promise.all(promises)
            .then((results) => {
-               this.logger.log('PROMISE COMPLETE', results);
-               this.store.dispatch(new ClipboardAddItems(results));
-               if (this.clipboardMenu.getDrawerState() === 'closed') {
-                   this.clipboardMenu.toggleDrawerState({});
-               }
+                this.store.dispatch(new ClipboardAddItems(results));
+                if (this.clipboardMenu.getDrawerState() === 'closed') {
+                    this.clipboardMenu.toggleDrawerState({});
+                }
+                // deselect
+                let keys = Object.keys(this.batchSelectedItems);
+                let selectedItems = {};
+                this.batchSelectAll = false;
+                this.batchSelectAllIndeterminate = false;
+                for(let i = 0; i < keys.length; i++) {
+                    selectedItems[keys[i]] = false;
+                }
+                this.batchSelectedCount = 0;
+                this.batchSelectedItems = selectedItems
            })
            .catch((e) => {
-               // Handle errors here
+               // Handle errors here?
            });
 
     }
@@ -1991,7 +2012,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     batchRemoveWidgets() {
         let ids: string[] = this.getBatchSelectedIds();
-        this.logger.log('BATCH REMOVE ITEMS', ids);
+
         this.store.dispatch(new DeleteWidgets(ids)).subscribe(() => {
 
             let keys = Object.keys(this.batchSelectedItems);
@@ -2009,8 +2030,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     batchToggleSelectAll() {
-        this.logger.log('batchToggleSelectAll')
-
         let keys = Object.keys(this.batchSelectedItems);
         let selectedItems = {};
 

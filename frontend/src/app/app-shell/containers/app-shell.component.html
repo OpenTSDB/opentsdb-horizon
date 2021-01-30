@@ -33,6 +33,7 @@
             <mat-drawer-container class="app-navigator-outlet-container" fxFlex="1 1 100%" autosize>
                 <mat-drawer class="app-navigator-drawer"
                     (closedStart)="drawerClosedStart()"
+                    (openedChange)="drawerOpenChange($event)"
                     [mode]="drawerMode"
                     [autoFocus]="false"
                     #drawer>

@@ -1,8 +1,12 @@
-<!-- paste from widget clipboard
-    TODO: add functionality-->
 <button mat-flat-button class="clipboard-drawer-trigger"
-    matTooltip="toggle for widget clipboard"
-    (click)="toggleDrawerState($event)"
-    #clippboardDrawerTrigger>
+    *ngIf="!checkDrawerState"
+    matTooltip="Open widget clipboard"
+    (click)="toggleDrawerState($event)">
     <mat-icon>content_paste</mat-icon>
+</button>
+<button mat-icon-button
+    *ngIf="checkDrawerState"
+    matTooltip="Close widget clipboard"
+    (click)="toggleDrawerState($event)">
+    <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
 </button>

@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { HttpService } from '../../../../core/http/http.service';
 import { DashboardConverterService } from '../../../../core/services/dashboard-converter.service';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { UtilsService } from '../../../../core/services/utils.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
-import { DbfsState, DbfsResourcesState, DbfsCreateFolder } from '../../dashboard-filesystem/state';
+import { DbfsState, DbfsResourcesState} from '../../dashboard-filesystem/state';
 import { DbfsService } from '../../dashboard-filesystem/services/dbfs.service';
 
 @Injectable({
@@ -40,8 +40,6 @@ export class ClipboardService {
     }
 
     setDrawerState(val: string) {
-        this.logger.api('setDrawerState', val);
-        // this.$drawerState.next(val);
         this._drawerState.next(val);
     }
 
@@ -75,9 +73,6 @@ export class ClipboardService {
 
     // find clipboard resource folder
     clipboardFolderResource() {
-        console.log('******************************');
-        this.logger.api('clipboardFolderResource');
-        console.log('******************************');
         // get current logged in user
         const user = this.store.selectSnapshot(DbfsState.getUser());
         // get current user clipboard file
@@ -86,13 +81,10 @@ export class ClipboardService {
            return false;
         }
 
-        this.logger.log('clipboardResource', {user, cbResource});
         return cbResource;
     }
 
     createClipboardResource(title: string) {
-        this.logger.api('createClipboardResource', {title});
-
         const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());
         clipboardProto.settings.meta.title = title || 'Default clipboard';
         clipboardProto.settings.meta.description = 'storage for widget clipboard';
@@ -108,22 +100,18 @@ export class ClipboardService {
             content: clipboardProto
         };
 
-        this.logger.log('CB PAYLOAD', payload);
         return this.saveClipboard('_new_', payload);
     }
 
     saveClipboard(id: any, payload: any) {
-        this.logger.api('saveClipboard', {id, payload});
         return this.http.saveDashboard(id, payload);
     }
 
     loadClipboard(id: any) {
-        this.logger.api('loadClipboard', {id});
         return this.http.getDashboardById(id);
     }
 
     sortClipboards(items: any[]): any[] {
-        this.logger.api('sortClipboards', {items});
         const defaultIdx = items.findIndex(item => item.name === 'Default clipboard');
         const defaultClipboard = items.splice(defaultIdx, 1);
 

@@ -36,7 +36,6 @@
     .nav-dashboard-actions,
     .nav-refresh-icon,
     .nav-explore-close,
-    .nav-batch-edit-toggle,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -72,34 +71,6 @@
                 .mat-icon {
                     font-size: 1.8em;
                 }
-            }
-        }
-    }
-
-    .nav-batch-edit-toggle {
-        position: relative;
-
-        .mat-raised-button,
-        .mat-flat-button {
-            .mat-icon {
-                &:first-child {
-                    margin-right: 0;
-                }
-
-                &:last-child {
-                    margin-left: 0;
-                }
-            }
-        }
-
-        .toggle-dashboard-batch-button {
-            min-width: initial;
-            padding: 0;
-            margin-right: 6px;
-
-            .mat-icon {
-                padding: 0;
-                margin: 0;
             }
         }
     }
@@ -164,13 +135,26 @@
     .controls-bar {
         display: flex;
 
+        .batch-controls-wrap {
+            .mat-icon {
+                @include sizeDenaliIcon(18px);
+            }
+        }
+
         .batch-controls {
-            background: rgba($black, 0.08);
+            //background: rgba($black, 0.08);
             min-width: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 10px;
+            padding: 0 8px;
+        }
+
+        .batch-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -5px
         }
     }
 
@@ -324,6 +308,25 @@
             }
         }
     }*/
+
+    .controls-bar {
+
+        .batch-controls-wrap {
+            .batch-toggle {
+                background: rgba(map-get($primary, default), 0.08);
+            }
+
+            .batch-select,
+            .batch-copy,
+            .batch-trash {
+                color: map-get($foreground, link);
+            }
+
+            .batch-select.is-checked {
+                color: map-get($accent, default);
+            }
+        }
+    }
 
     .mat-flat-button {
         &.save-dashboard-button {

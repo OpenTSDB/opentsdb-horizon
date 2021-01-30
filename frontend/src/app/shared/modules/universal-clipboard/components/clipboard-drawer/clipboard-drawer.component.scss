@@ -7,12 +7,9 @@
         @include mat-elevation(3);
         overflow: hidden;
         position: relative;
-        /*position: absolute;
-        top: $navbar-height;
-        bottom: 0;
-        right: 0;*/
         z-index: 10;
         max-width: 300px;
+        width: 100%;
 
         .selection-checkbox {
             margin-right: 8px;
@@ -157,7 +154,19 @@
             }
         }
 
-        .clipboard-item {
+        .clipboard-item.mat-expansion-panel {
+            border-radius: 0;
+
+            &:first-of-type {
+                border-top-right-radius: 0;
+                border-top-left-radius: 0;
+            }
+
+            &:last-of-type {
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
             .mat-expansion-panel-header {
                 padding: 0 6px;
 
@@ -168,7 +177,26 @@
                 .widget-type-icon {
                     margin-right: 4px;
                 }
+
+                .clipboard-item-menu-trigger.mat-icon-button {
+                    opacity: 0;
+                    transition: opacity 200ms ease-in;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(12px);
+                        justify-content: center;
+                        margin-left: -2px;
+                    }
+                }
+
+                &:hover {
+                    .clipboard-item-menu-trigger.mat-icon-button {
+                        opacity: 1;
+                    }
+                }
             }
+
+
 
             .mat-expansion-panel-content {
                 .mat-expansion-panel-body {
@@ -285,6 +313,8 @@
         .mat-menu-content,
         .confirmation-card.mat-card  {
             padding: 0;
+            font-size: 12px;
+            font-weight: 300;
         }
 
         .confirmation-card.mat-card {
@@ -305,9 +335,27 @@
                 }
 
                 .mat-icon {
-                    @include sizeDenaliIcon(14px);
+                    @include sizeDenaliIcon(12px);
                     margin-right: 6px;
                 }
+            }
+        }
+    }
+
+    .clipboard-action-menu,
+    .clipboard-item-action-menu {
+        .mat-menu-content:not(:empty) {
+            padding: 8px;
+        }
+
+        .mat-menu-item {
+            font-size: 12px;
+            font-weight: 300;
+            height: 24px;
+            line-height: 24px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(12px);
             }
         }
     }
@@ -389,6 +437,14 @@
         .clipboard-item-list {
             border-top: 1px solid $divider;
         }
+
+        .clipboard-item.mat-expansion-panel {
+            .mat-expansion-panel-header {
+                .clipboard-item-menu-trigger {
+                    background: rgba(0, 0, 0, .1);
+                }
+            }
+        }
     }
 
     // CDK items
@@ -415,6 +471,26 @@
                         color: $cancel-color;
                     }
                 }
+            }
+        }
+    }
+
+    .clipboard-action-menu,
+    .clipboard-item-action-menu {
+        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+        border: 1px solid rgba($navbar-background, .15);
+
+        $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
+        .mat-menu-item {
+            color: rgba($menu-item-text,.85);
+
+
+            .mat-icon {
+                color: rgba($menu-item-text, .5);
+            }
+
+            &:hover {
+                background-color: if($is-dark-theme, rgba($menu-background-hover, .12), rgba($menu-background-hover, .08));
             }
         }
     }

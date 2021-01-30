@@ -291,6 +291,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 case 'SnapshotMeta':
                     this.meta = message.payload;
                     break;
+                case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
+                    break;
             }
 
             if (message && (message.id === this.widget.id)) {
@@ -545,7 +553,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // true is just a dummy value to trigger
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
-        this.newSizeSub = this.newSize$.subscribe(flag => {         
+        this.newSizeSub = this.newSize$.subscribe(flag => {
             const _size = this.widgetOutputElement.nativeElement.getBoundingClientRect();
             if (JSON.stringify(_size) !== JSON.stringify(this.currentGraphSize)) {
                 setTimeout(() => this.setSize(), 0);
@@ -649,7 +657,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.legendDataSource.sort = this.sort;
                 this.setSize();
                 break;
-            case 'ChangeAxisLabel': 
+            case 'ChangeAxisLabel':
                 const payload = message.payload;
                 this.widget.settings.axes[payload.axis].label = payload.label;
                 break;
@@ -1286,7 +1294,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.resetYZoom();
         }
     }
-    
+
     resetYZoom(redraw= true) {
         if ( this.widget.settings.chartOptions.axes ) {
             delete this.widget.settings.chartOptions.axes;
