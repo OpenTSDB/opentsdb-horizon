@@ -127,6 +127,28 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
             this.widget.eventQueries[0].namespace;
     }
 
+    setTitle(title) {
+        this.widget.settings.title = title;
+    }
+
+    resolveTitle(title) {
+        const v = {
+            eventCount: this.events.length,
+            namespace: this.widget.eventQueries[0].namespace,
+            eventQuery: this.widget.eventQueries[0].search
+        };
+        const regex = /\{\{([\w-.:\/]+)\}\}/ig
+        title = title.trim();
+        const matches = title.match(regex);
+        if ( matches ) {
+            for ( let i = 0, len = matches.length; i < len; i++ ) {
+                const key = matches[i].replace(/\{|\}/g,'');
+                title = title.replace(matches[i], v[key] !== undefined ? v[key] : '');
+            }
+        }
+        return title;
+    }
+
     applyConfig() {
         const cloneWidget = { ...this.widget };
         cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');

@@ -462,6 +462,8 @@ export class DashboardConverterService {
         } else if ( widgets[i].settings.component_type === 'BignumberWidgetComponent' ) {
           widgets[i].settings.visual.backgroundColor = widgets[i].settings.visual.backgroundColor || '#0B5ED2';
           widgets[i].settings.visual.color = widgets[i].settings.visual.color || '#FFFFFF';
+        } else if ( widgets[i].settings.component_type === 'EventsWidgetComponent' ) {
+          widgets[i].settings.title = '({{eventCount}}) {{namespace}}-{{eventQuery}}';
         } else {
           const queries = widgets[i].queries;
           for (let j = 0; j < queries.length; j++) {

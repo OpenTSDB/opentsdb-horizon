@@ -108,6 +108,11 @@ export class CheckWriteAccess {
     constructor(public payload: any) {}
 }
 
+export class ClearNamespace {
+    static readonly type = '[Alerts] Clears Namespace';
+    constructor() {}
+}
+
 /* state define */
 @State<AlertsStateModel>({
     name: 'Alerts',
@@ -401,5 +406,10 @@ export class AlertsState {
                 ctx.patchState({ error: error });
             }
         );
+    }
+
+    @Action(ClearNamespace)
+    clearNamespace(ctx: StateContext<AlertsStateModel>) {
+        ctx.patchState({ selectedNamespace: '' });
     }
 }

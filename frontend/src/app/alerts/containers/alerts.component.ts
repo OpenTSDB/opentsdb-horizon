@@ -42,7 +42,8 @@ import {
     ToggleAlerts,
     SaveAlerts,
     SetNamespace,
-    SaveSnoozes
+    SaveSnoozes,
+    ClearNamespace
 } from '../state/alerts.state';
 import { DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
@@ -63,6 +64,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
+import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
 import { DataShareService } from '../../core/services/data-share.service';
@@ -275,6 +277,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private interCom: IntercomService,
         private logger: LoggerService,
         private utils: UtilsService,
+        private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
         private infoIslandService: InfoIslandService
     ) {
@@ -341,6 +344,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.selectedNamespace$.subscribe(data => {
             this.selectedNamespace = data;
             if (this.selectedNamespace) {
+                this.localStorageService.setLocal('defaultNS', data);
                 // this.hasNamespaceWriteAccess = this.userNamespaces.find(d => d.name === this.selectedNamespace ) ? true : false;
                 this.stateLoaded.alerts = false;
                 this.stateLoaded.snooze = false;
@@ -573,7 +577,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             // this.logger.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
             this.clearSystemMessage();
-
+            
+            let defaultNS = this.getDefaultNamespace();
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
             } else if (url.length >= 1 && url[0].path === 'snooze') {
@@ -587,7 +592,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 } else {
                     this.detailsView = false;
                     // tslint:disable-next-line:max-line-length
-                    const ns = url[1] && url[1].path ? url[1].path : (this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                    const ns = url[1] && url[1].path ? url[1].path : defaultNS;
                     this.setNamespace(ns);
                     this.infoIslandService.closeIsland();
                 }
@@ -615,9 +620,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.infoIslandService.closeIsland();
                 this.setNavbarPortal();
 
-            } else if (this.userNamespaces.length || this.allNamespaces.length) {
+            } else if ( defaultNS ) {
                 // set a namespace... probably should update url?
-                this.setNamespace(this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                this.setNamespace(defaultNS);
 
                 if (this.detailsView) {
                     this.detailsView = false;
@@ -630,7 +635,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alertDetail$.pipe(skip(1)).subscribe(data => {
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let parts;
-            const namespace = data.namespace ? data.namespace : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
+            const namespace = data.namespace ? data.namespace : this.getDefaultNamespace();
             // url path has 2 parts, (i.e. /a/1234/view)
             if (
                 routeSnapshot.length === 2 &&
@@ -668,6 +673,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.store.dispatch(new CheckWriteAccess(data));
         }));
 
+    }
+
+    getDefaultNamespace() {
+        let defaultNS = this.localStorageService.getLocal('defaultNS');
+        defaultNS =  defaultNS && defaultNS !== null ? defaultNS : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
+        return defaultNS;
     }
 
     getFilteredAlerts(regexFilter: RegExp, alerts: AlertModel[]) {
@@ -1263,6 +1274,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngOnDestroy() {
+        this.store.dispatch(new ClearNamespace());
         this.subscription.unsubscribe();
         this.utils.setTabTitle();
     }
