@@ -5,7 +5,7 @@ import customTooltip from '../../../chart.js/tooltip/custom-tooltip';
 import * as thresholdPlugin from '../../../chartjs-threshold-plugin/src/index';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 Chart.defaults.global.defaultFontColor = '#000000';
 // Chart.defaults.global.defaultFontFamily = 'Monaco, monospace';

@@ -1,7 +1,7 @@
 import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { DbfsResourcesState, DbfsLoadTopFolder } from '../../../../../shared/modules/dashboard-filesystem/state';
 
@@ -51,7 +51,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
     constructor(
         private store: Store,
         private notificationService: NotificationService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private http: HttpService,
         private utils: UtilsService
     ) { }
@@ -66,7 +66,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     // actions that come from the list
     listAction(event: any) {
-        this.logger.log('LIST ACTION', event);
+        //this.console.log('LIST ACTION', event);
         console.log(this.notificationStore);
         switch (event.action) {
             /*
@@ -100,7 +100,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     // actions that come from the editor
     editorAction(event: any) {
-        this.logger.log('EDITOR ACTION', event);
+        //this.console.log('EDITOR ACTION', event);
         let index;
         switch (event.action) {
             case 'create notification':
@@ -145,19 +145,19 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
     }
 
     private updateNotification(data: any, index: any) {
-        // this.logger.log('updateNotification', {data, index});
+        // this.console.log('updateNotification', {data, index});
         // get new updatedTime and updatedBy values for the notification
         data.settings.notification = Object.assign(this.notificationService.getNewUpdateValues(), data.settings.notification);
         // replace widget in store
         this.notificationStore.content.widgets[index] = data;
-        this.logger.ng('notificationStore', this.notificationStore);
+        this.console.ng('notificationStore', this.notificationStore);
         // save store
         this.saveNotificationStore();
     }
 
     // toggles notification enabled
     private enableNotification(data: any, index: any, enabled: boolean) {
-        // this.logger.log('enableNotification', {data, index});
+        // this.console.log('enableNotification', {data, index});
         // if there is already an activeNotification, reset it
         if (this.activeNotification && data.id !== this.activeNotification.id && enabled) {
             const activeIndex = this.notificationStore.content.widgets.findIndex((el) => el.settings.notification.enabled);
@@ -175,23 +175,23 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
         data.settings.notification.enabled = enabled;
         // replace widget in store
         this.notificationStore.content.widgets[index] = data;
-        this.logger.ng('notificationStore', this.notificationStore);
+        this.console.ng('notificationStore', this.notificationStore);
         // save store
         this.saveNotificationStore();
     }
 
     private saveNotificationStore() {
-        // this.logger.action('SAVE NOTIFICATION STORE', this.notificationStore);
+        // this.console.action('SAVE NOTIFICATION STORE', this.notificationStore);
         // save notificationStore dashboard
         this.notificationService.saveNotificationStore(this.notificationStore)
             .subscribe(
                 res => {
-                    // this.logger.success('SAVE NOTIFICATION STORE', res);
+                    // this.console.success('SAVE NOTIFICATION STORE', res);
                 },
                 err => {
-                    this.logger.error('SAVE NOTIFICATION STORE', err);
+                    this.console.error('SAVE NOTIFICATION STORE', err);
                 },
-                // () => { this.logger.log('SAVE NOTIFICATION STORE [DONE]'); }
+                // () => { this.console.log('SAVE NOTIFICATION STORE [DONE]'); }
             );
     }
 
@@ -209,12 +209,12 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     /* Create the notification storage dashboard */
     private createNotificationFile() {
-        this.logger.action('CREATE NOTIFICATION FILE');
+        this.console.action('CREATE NOTIFICATION FILE');
 
         this.notificationService.createNotificationStore()
             .subscribe(
                 res => {
-                    // this.logger.success('SAVED NOTIFICATION FILE!!', res);
+                    // this.console.success('SAVED NOTIFICATION FILE!!', res);
                     const ymsFolder = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/yamas'));
                     this.store.dispatch(new DbfsLoadTopFolder('namespace', ymsFolder.namespace, {}))
                         .subscribe(
@@ -225,26 +225,26 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                             }
                         );
                 },
-                err => { this.logger.error('SAVE NOTIFICATION FILE', err); },
-                // () => { this.logger.log('SAVE NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('SAVE NOTIFICATION FILE', err); },
+                // () => { this.console.log('SAVE NOTIFICATION FILE COMPLETE'); }
             );
     }
 
     /* Loads the notification "dashboard" that has notification "widgets" */
     private loadNotificationFile() {
-        // this.logger.action('LOAD NOTIFICATION FILE');
+        // this.console.action('LOAD NOTIFICATION FILE');
         const files = this.store.selectSnapshot(DbfsResourcesState.getFileResources);
         const resource = files[this.rootPath + '/_notifications_'];
 
         this.http.getDashboardById(resource.id)
             .subscribe(
                 res => {
-                    // this.logger.success('LOAD NOTIFICATION FILE', res);
+                    // this.console.success('LOAD NOTIFICATION FILE', res);
                     this.notificationStore = res.body;
                     this.panelReady = true;
                 },
-                err => { this.logger.error('LOAD NOTIFICATION FILE', err); },
-                // () => { this.logger.log('LOAD NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('LOAD NOTIFICATION FILE', err); },
+                // () => { this.console.log('LOAD NOTIFICATION FILE COMPLETE'); }
             );
     }
 

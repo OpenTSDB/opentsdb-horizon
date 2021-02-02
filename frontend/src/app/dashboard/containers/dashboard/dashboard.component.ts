@@ -63,7 +63,7 @@ import { DashboardDeleteDialogComponent } from '../../components/dashboard-delet
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../core/services/console.service';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
@@ -273,7 +273,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private snackBar: MatSnackBar,
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private httpService: HttpService,
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
@@ -329,7 +329,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.newFromClipboardItems = [];
 
             // reset clipboard
-            if (this.clipboardMenu.getDrawerState() === 'opened') {
+            if (this.clipboardMenu && this.clipboardMenu.getDrawerState() === 'opened') {
                 this.clipboardMenu.toggleDrawerState({});
             }
 
@@ -430,7 +430,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'pasteClipboardWidgets':
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
-                    console.log('clipboardWidgets', clipboardWidgets, this.widgets);
                     let batchGridPosOffset: any = 0;
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         delete clipboardWidgets[i].settings.clipboardMeta;
@@ -819,7 +818,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             // we only need to check of path returned from configdb is not _new_,
             // the router url will point to previous path of clone dashboard
-            // this.logger.log('dbPathSub', { currentLocation: this.location.path(), newPath: '/d' + path, rawPath: path});
             if (path !== '_new_' && path !== undefined) {
                 let fullPath = this.location.path();
                 let urlParts = fullPath.split('?');
@@ -1054,6 +1052,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
+        // NOTE: we do nothing with this subscription... do we need it?
         this.subscription.add(this.auth$.subscribe(auth => {
             // console.log('auth$ calling', auth);
             if (auth === 'invalid') {
@@ -2018,7 +2017,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
         this.batchWidgetDeleteDialog = this.dialog.open(WidgetDeleteDialogComponent, dialogConf);
         this.batchWidgetDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('delete widget confirm', dialog_out);
             if ( dialog_out && dialog_out.delete  ) {
                 this.batchRemoveWidgets();
             }

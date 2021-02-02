@@ -6,7 +6,7 @@ import { IntercomService } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -67,13 +67,13 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     private tableListen;
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private interCom: IntercomService,
         private renderer: Renderer2,
         private utilsService: UtilsService,
         @Inject(ISLAND_DATA) private _islandData: any
     ) {
-        // this.logger.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
+        // this.console.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
         // Set initial incoming data (data from first click that opens island)
         this.currentWidgetId = _islandData.originId;
         if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.component_type) {
@@ -115,7 +115,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
         // set subscriptions
         this.subscription.add(this.interCom.requestListen().subscribe(message => {
-            // this.logger.intercom('[TSL] RequestListen', {message});
+            // this.console.intercom('[TSL] RequestListen', {message});
             switch (message.action) {
                 case 'tsLegendWidgetOptionsUpdate':
                     this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
@@ -150,7 +150,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                                 // check if previous series were all hidden, if so, then turn on
                                 this.checkExitVisbility();
                                 this.masterIndeterminate = false;
-                                // this.logger.error('DIFFERENT MULTIGRAPH GRAPH', message);
+                                // this.console.error('DIFFERENT MULTIGRAPH GRAPH', message);
                                 newOptionsNeeded = true;
                                 this.tableHighlightTag('', '');
                             }
@@ -567,7 +567,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     }
 
     timeseriesVisibilityBy(filter: string, data: any) {
-        // this.logger.ng('TIMESERIES VISIBILITY BY', {filter, data});
+        // this.console.ng('TIMESERIES VISIBILITY BY', {filter, data});
         let toHide: number[] = [];
         let toShow: number[] = [];
         if (filter === 'row' && data.srcIndex) {
@@ -578,7 +578,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
             toHide = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] !== data.value)).map((item: any) => item.srcIndex);
             toShow = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] === data.value)).map((item: any) => item.srcIndex);
         }
-        // this.logger.ng('FILTER TARGETS', {toHide, toShow});
+        // this.console.ng('FILTER TARGETS', {toHide, toShow});
         if (toHide.length > 0) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,

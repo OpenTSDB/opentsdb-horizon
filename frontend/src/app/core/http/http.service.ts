@@ -6,7 +6,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { MetaService } from '../services/meta.service';
 import { YamasService } from '../services/yamas.service';
 import { UtilsService } from '../services/utils.service';
-import { LoggerService } from '../services/logger.service';
+import { ConsoleService } from '../services/console.service';
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +27,7 @@ export class HttpService {
         private http: HttpClient,
         private metaService: MetaService,
         private utils: UtilsService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private yamasService: YamasService) { }
 
     getDashoard(id: string): Observable<any> {
@@ -214,7 +214,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
           });
-        const apiUrl =  environment.metaApi + '/search/timeseries'; 
+        const apiUrl =  environment.metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
                             .pipe(
@@ -231,11 +231,11 @@ export class HttpService {
         const namespaces = queryObj.namespaces || [];
         for (let i = 0, len = namespaces.length; i < len; i++) {
             if (!newQueryParams[namespaces[i]]) {
-                newQueryParams[namespaces[i]] = { 
-                    tagkey: queryObj.tag.key, 
-                    search: queryObj.tag.value, 
-                    namespace: namespaces[i], 
-                    metrics: [], 
+                newQueryParams[namespaces[i]] = {
+                    tagkey: queryObj.tag.key,
+                    search: queryObj.tag.value,
+                    namespace: namespaces[i],
+                    metrics: [],
                     tags: queryObj.tagsFilter };
             }
         }
@@ -246,10 +246,10 @@ export class HttpService {
             const namespace = res[1];
             const metric = res[2] + '.' + res[3];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { 
-                    tagkey: queryObj.tag.key, 
-                    search: queryObj.tag.value, 
-                    namespace: namespace, 
+                newQueryParams[namespace] = {
+                    tagkey: queryObj.tag.key,
+                    search: queryObj.tag.value,
+                    namespace: namespace,
                     metrics: [],
                     tags: queryObj.tagsFilter };
             }
@@ -427,7 +427,7 @@ export class HttpService {
     }
 
     saveAlert(namespace, payload: any): Observable<any> {
-        this.logger.api('saveAlert', {namespace, payload});
+        this.console.api('saveAlert', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -441,7 +441,7 @@ export class HttpService {
     }
 
     getAlertDetailsById(id: number): Observable<any> {
-        this.logger.api('getAlertDetailsById', {id});
+        this.console.api('getAlertDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -450,7 +450,7 @@ export class HttpService {
     }
 
     getAlerts(options): Observable<any> {
-        // this.logger.api('getAlerts', {options});
+        // this.console.api('getAlerts', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -489,7 +489,7 @@ export class HttpService {
     }
 
     deleteAlerts(namespace, payload): Observable<any> {
-        this.logger.api('deleteAlerts', {namespace, payload});
+        this.console.api('deleteAlerts', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -500,7 +500,7 @@ export class HttpService {
 
     /** snooze */
     saveSnooze(namespace, payload: any): Observable<any> {
-        this.logger.api('saveSnooze', {namespace, payload});
+        this.console.api('saveSnooze', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -514,7 +514,7 @@ export class HttpService {
     }
 
     getSnoozeDetailsById(id: number): Observable<any> {
-        this.logger.api('getSnoozeDetailsById', {id});
+        this.console.api('getSnoozeDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -523,7 +523,7 @@ export class HttpService {
     }
 
     getSnoozes(options): Observable<any> {
-        this.logger.api('getSnoozes', {options});
+        this.console.api('getSnoozes', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -532,7 +532,7 @@ export class HttpService {
     }
 
     deleteSnoozes(namespace, payload): Observable<any> {
-        this.logger.api('deleteSnoozes', {namespace, payload});
+        this.console.api('deleteSnoozes', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });

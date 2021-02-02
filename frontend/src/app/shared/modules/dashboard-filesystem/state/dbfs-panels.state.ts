@@ -1,6 +1,6 @@
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 /** INTERFACES */
 
@@ -114,7 +114,7 @@ export class DbfsChangePanelTab {
 export class DbfsPanelsState {
     constructor(
         private utils: UtilsService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) {}
 
     /** Selectors */
@@ -143,7 +143,7 @@ export class DbfsPanelsState {
 
     @Action(DbfsResetPanelAction)
     resetPanelAction(ctx: StateContext<DbfsPanelsModel>, { }: DbfsResetPanelAction) {
-        this.logger.action('State :: Reset Resource Action');
+        this.console.action('State :: Reset Resource Action');
         ctx.patchState({
             panelAction: {}
         });
@@ -151,12 +151,12 @@ export class DbfsPanelsState {
 
     @Action(DbfsPanelsError)
     panelsError(ctx: StateContext<DbfsPanelsModel>, {error}: DbfsPanelsError) {
-        this.logger.error('State :: Panels Error', error);
+        this.console.error('State :: Panels Error', error);
     }
 
     @Action(DbfsPanelsInitialize)
     panelsInitialize(ctx: StateContext<DbfsPanelsModel>, {}: DbfsPanelsInitialize) {
-        this.logger.success('State :: Panels Initialize');
+        this.console.success('State :: Panels Initialize');
         const state = ctx.getState();
 
         if (!state.initialized) {
@@ -242,7 +242,7 @@ export class DbfsPanelsState {
 
     @Action(DbfsAddPanel)
     addPanel(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsAddPanel) {
-        this.logger.action('State :: Add Panels', payload);
+        this.console.action('State :: Add Panels', payload);
         const state = ctx.getState();
         const curTab = state.panelTab + 'Tab';
 
@@ -274,7 +274,7 @@ export class DbfsPanelsState {
 
     @Action(DbfsUpdatePanels)
     updatePanels(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsUpdatePanels) {
-        this.logger.action('State :: Update Panels', payload);
+        this.console.action('State :: Update Panels', payload);
         const state = ctx.getState();
         const curTab = state.panelTab + 'Tab';
 
@@ -295,7 +295,7 @@ export class DbfsPanelsState {
 
     @Action(DbfsChangePanelTab)
     changePanelTab(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsChangePanelTab) {
-        this.logger.action('State :: Change Panel Tab', payload);
+        this.console.action('State :: Change Panel Tab', payload);
         const state = ctx.getState();
 
         const panelAction = payload.panelAction;

@@ -62,7 +62,7 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
@@ -275,7 +275,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private domSanitizer: DomSanitizer,
         private cdkService: CdkService,
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private utils: UtilsService,
         private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
@@ -358,9 +358,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.allNamespaces$.subscribe(data => {
             this.allNamespaces = data;
-            // this.logger.log('NAMESPACES', this.allNamespaces);
+            // this.console.log('NAMESPACES', this.allNamespaces);
             this.allNamespacesDS = new MatTableDataSource(this.allNamespaces);
-            // this.logger.log('NAMESPACES_DS', this.allNamespacesDS);
+            // this.console.log('NAMESPACES_DS', this.allNamespacesDS);
             this.allNamespacesDS.filterPredicate = (data: any, filter: string) => {
                 return data.name.toLowerCase().includes(filter.toLowerCase());
             };
@@ -469,7 +469,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.hasNamespaceWriteAccess = !readOnly;
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let modeCheck;
-            // this.logger.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
+            // this.console.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
 
             if (routeSnapshot.length > 1 && this.utils.checkIfNumeric(routeSnapshot[0].path) && routeSnapshot[1].path !== '_new_') {
 
@@ -574,10 +574,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // handle route for alerts
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
-            // this.logger.log('ROUTE CHANGE', { url });
+            // this.console.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
             this.clearSystemMessage();
-            
+
             let defaultNS = this.getDefaultNamespace();
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());

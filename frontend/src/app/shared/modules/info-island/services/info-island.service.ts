@@ -9,7 +9,7 @@ import {
 import { ComponentPortal, PortalInjector, Portal, TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef, OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 /** Island Wrapper */
 import { InfoIslandComponent } from '../containers/info-island.component';
@@ -46,7 +46,7 @@ export class InfoIslandService {
     constructor(
         private injector: Injector,
         private overlay: Overlay,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private interCom: IntercomService
     ) {}
 
@@ -174,7 +174,7 @@ export class InfoIslandService {
         this.overlayRef.updatePositionStrategy(positionStrategy);
         this.overlayRef.updatePosition();
 
-        // this.logger.ng('[iiService] updatePositionStrategy', this.islandComp._dragContainer);
+        // this.console.ng('[iiService] updatePositionStrategy', this.islandComp._dragContainer);
 
         // reset the drag container (resets the active transform, in case they had dragged before changing charts)
         this.islandComp._dragContainer.reset();

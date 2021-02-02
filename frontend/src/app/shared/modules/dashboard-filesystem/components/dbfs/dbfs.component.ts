@@ -60,7 +60,7 @@ import {
     //DbfsAddUserFavorite,
     //DbfsRemoveUserFavorite
 } from '../../state/dbfs-resources.state';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { MatMenuTrigger } from '@angular/material';
 import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
@@ -200,7 +200,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private fb: FormBuilder,
         @Inject('WINDOW') private window: any
     ) {
@@ -259,7 +259,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.namespacesData$.subscribe( namespaces => {
-            // this.logger.log('NAMESPACES', {namespaces});
             this.namespacesList = namespaces;
             this.namespacesDataSource = new MatTableDataSource(this.namespacesList);
             this.namespacesDataSource.filterPredicate = (data: any, filter: string) => {
@@ -269,13 +268,11 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.usersData$.subscribe( users => {
-            //this.logger.log('USERS', {users});
             this.usersList = users;
             this.usersDataSource = new MatTableDataSource(this.usersList);
         }));
 
         this.subscription.add(this.userFavorites$.subscribe( favorites => {
-            // console.log('FAVORITES', favorites);
             this.userFavorites = (favorites) ? favorites : [];
             this.userFavoritesDataSource = new MatTableDataSource(this.userFavorites);
             this.userFavoritesDataSource.filterPredicate = (data: any, filter: string) => {
@@ -284,7 +281,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.userRecents$.subscribe( recents => {
-            // console.log('RECENTS', recents);
             this.userRecents = (recents) ? recents : [];
             this.userRecentsDataSource = new MatTableDataSource(this.userRecents);
             this.userRecentsDataSource.filterPredicate = (data: any, filter: string) => {
@@ -293,7 +289,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.resourceAction$.subscribe( action => {
-            // this.logger.log('RESOURCE ACTION', action);
             switch (action.method) {
                 case 'gotoFolder':
                     this.gotoFolder(action.args);
@@ -311,7 +306,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.panelAction$.subscribe( action => {
 
-            // this.logger.log('PANEL ACTION', action);
             switch (action.method) {
                 case 'goNextPanel':
                     setTimeout(function() {
@@ -387,16 +381,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.curDashboardId$.subscribe(db => {
-            //console.log('CURRENT DASHBOARD ID', db);
             this.curDashboardId = (db) ? db : false;
         }));
-
-        // INTERCOM SUBSCRIPTION
-        // this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-        // intercom stuff
-        // }));
-
-
 
     }
 
@@ -416,7 +402,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     resetForms() {
-        //this.logger.log('RESET FORMS');
         this.foldersToRemove = [];
         this.bulkEdit = false;
         this.resetEdit();
@@ -455,18 +440,15 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     miniNavClosed(event: any) {
-        // this.logger.log('MINI NAV CLOSED', event);
         this.miniNavOpen = false;
     }
 
     miniNavCancel(event: any) {
-        // this.logger.log('MINI NAV CANCEL', event);
         const trigger: MatMenuTrigger = this.findMiniNavTrigger(event.id, event.type);
         trigger.closeMenu();
     }
 
     miniNavSelected(event: any) {
-        // this.logger.log('MINI NAV SELECTED', event);
         switch (event.action) {
             case 'miniNavMove':
                 this.store.dispatch(
@@ -482,7 +464,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     /* behaviors */
 
     closeDrawer() {
-        // this.logger.log('CLOSE DRAWER');
         const data: any = {
             closeNavigator: true
         };
@@ -493,39 +474,36 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     clickMoreMenu(id: number, type: string, event: any) {
-        // this.logger.log('CLICK MORE MENU', { id, type, event});
         event.stopPropagation();
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findMoreMenuTrigger(id, type);
-        // console.log('TRIGGERs', this.moreTriggers);
+
         if (mTrigger) {
             mTrigger.toggleMenu();
         } else {
-            this.logger.error('clickMoreMenu', 'CANT FIND TRIGGER');
+            this.console.error('clickMoreMenu', 'CANT FIND TRIGGER');
         }
     }
 
     clickMoveMenu(id: number, type: string, event: any) {
-        // this.logger.log('CLICK MOVE MENU', { id, type, event});
+
         event.stopPropagation();
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findMiniNavTrigger(id, type);
-        // console.log('TRIGGERs', this.miniNavTriggers);
+
         if (mTrigger) {
             mTrigger.toggleMenu();
             // close the more menu
             this.clickMoreMenu(id, type, event);
         } else {
-            this.logger.error('clickFolderMove', 'CANT FIND TRIGGER');
+            this.console.error('clickFolderMove', 'CANT FIND TRIGGER');
         }
     }
 
     applyNamespacesListFilter(filterValue: string) {
         this.namespacesDataSource.filter = filterValue.trim().toLowerCase();
-        // this.logger.log('APPLY NAMESPACES FILTER', {filterValue, dataSource: this.namespacesDataSource});
     }
 
     applyUsersListFilter(filterValue: string) {
         this.usersDataSource.filter = filterValue.trim().toLowerCase();
-        // this.logger.log('APPLY USERS FILTER', {filterValue, dataSource: this.usersDataSource});
     }
 
     applyUserFavoritesFilter(filterValue: string) {
@@ -546,7 +524,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     // DYNAMIC FOLDER BEHAVIOR
 
     loadAllNamespacesPanel() {
-        // this.logger.log('LOAD ALL NAMESPACES PANEL');
         if (!this.namespacesListLoaded) {
             this.store.dispatch(
                 new DbfsLoadNamespacesList({})
@@ -555,7 +532,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     loadAllUsersPanel() {
-        // this.logger.log('LOAD ALL USERS PANEL');
         if (!this.usersListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUsersList({})
@@ -564,7 +540,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     loadUserFavoritesPanel() {
-        this.logger.log('LOAD USER FAVORITES PANEL');
         if (!this.userFavoritesListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUserFavorites(null, {})
@@ -573,7 +548,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     loadUserRecentPanel() {
-        this.logger.log('LOAD USER RECENT PANEL');
         if (!this.userRecentListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUserRecents(null, null, {})
@@ -583,18 +557,15 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     // FOLDER BEHAVIORS
     editFolders() {
-        // this.logger.log('BULK EDIT FOLDERS');
         this.bulkEdit = true;
     }
 
     doneEditFolders() {
-        // this.logger.log('BULK EDIT DONE');
         this.bulkEdit = false;
         this.foldersToRemove = [];
     }
 
     createFolder() {
-        // this.logger.log('CREATE FOLDER');
         this.folderForm.reset({fc_FolderName: ''});
         this.edit = {
             mode: 'create',
@@ -604,12 +575,10 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     cancelCreateFolder() {
-        //this.logger.log('CANCEL CREATE FOLDER');
         this.resetEdit();
     }
 
     removeFolders() {
-        // this.logger.log('REMOVE FOLDERS');
         this.store.dispatch(
             new DbfsDeleteFolder(
                 this.foldersToRemove,
@@ -621,7 +590,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     folderCheckboxChange(folder: string, event: any) {
-        // this.logger.log('FOLDER CHECKBOX CHANGE', { folder, event });
         const idx = this.foldersToRemove.indexOf(folder);
         if (idx === -1) {
             // not found, so add it
@@ -630,11 +598,9 @@ export class DbfsComponent implements OnInit, OnDestroy {
             // remove
             this.foldersToRemove.splice(idx, 1);
         }
-        // console.log('FOLDERS TO REMOVE', this.foldersToRemove);
     }
 
     folderInputSave(panelIndex: number, folder?: any) {
-        //console.log('FOLDER INPUT SAVE', panelIndex, folder);
         if (this.folderForm.invalid) {
             return;
         }
@@ -676,25 +642,24 @@ export class DbfsComponent implements OnInit, OnDestroy {
     // FILE (Dashboard) BEHAVIORS
 
     createDashboard() {
-        // this.logger.log('CREATE DASHBOARD');
         this.router.navigate(['d', '_new_']);
         this.closeDrawer();
     }
 
+    /* TODO: these are for future needs?
     editDashboards() {
 
     }
 
     navigateToDashboard(path: string) {
         //this.logger.log('NAVIGATE TO DASHBOARD', { path });
-    }
+    }*/
 
 
 
     // MORE MENU BEHAVIORS
 
     favoriteMenuAction(action: string, data: any, event?: any) {
-        this.logger.log('FAVORITE MENU ACTION', {action, data, event});
         switch (action) {
             case 'removeFromFavorites':
                 this.store.dispatch(
@@ -712,7 +677,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     folderMenuAction(action: string, folder: any, event?: any) {
-        // this.logger.log('FOLDER MENU ACTION', {action, folder, event});
         switch (action) {
             case 'editName':
                 this.folderForm.reset({fc_FolderName: folder.name});
@@ -741,7 +705,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     fileMenuAction(action: string, file: any, event?: any) {
-        // this.logger.log('FOLDER MENU ACTION', {action, file, event});
         switch (action) {
             case 'openNewTab':
                 this.window.open('/d' + file.path, '_blank');
@@ -792,8 +755,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     // PANEL NAVIGATION BEHAVIORS
 
     navtoSpecificPanel(idx: number, fromIdx: number) {
-        // console.log('NAV TO SPECIFIC FOLDER [GO BACK X]');
-        // const idx = this.panels.indexOf(folder);
 
         this.currentPanelIndex = idx;
         const _panels = JSON.parse(JSON.stringify(this.panels));
@@ -811,7 +772,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     navtoMasterPanel() {
-        //this.logger.log('NAV TO MASTER PANEL');
+
         if (this.currentPanelIndex > 0) {
             this.navtoSpecificPanel(0, this.currentPanelIndex);
             this.resetDataSourceFilters();
@@ -877,7 +838,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     gotoFolder(path: string) {
         if (!this.bulkEdit) {
-            this.logger.log('GOTO FOLDER', { path });
             const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
 
             if (folder.fullPath === ':user-recent:' || folder.fullPath === ':user-favorites:') {

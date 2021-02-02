@@ -11,7 +11,7 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
@@ -98,7 +98,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private httpService: HttpService,
         private utilService: UtilsService,
         private multiService: MultigraphService,
-        private loggerService: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() { }
@@ -128,7 +128,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     createForm(multigraph: any) {
-       
+
         // setup the group
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
@@ -192,7 +192,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     startWith(''),
                     distinctUntilChanged(),
                     pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {                    
+                ).subscribe(([prev, changes]: [any, any]) => {
                     if (!deepEqual(prev, changes)) {
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',

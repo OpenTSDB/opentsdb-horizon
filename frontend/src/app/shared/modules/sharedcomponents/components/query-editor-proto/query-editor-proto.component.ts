@@ -31,7 +31,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -520,7 +520,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     visualPanelId = -1;
 
-    pctSelectedMetrics; 
+    pctSelectedMetrics;
 
     constructor(
         private elRef: ElementRef,
@@ -530,7 +530,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private multiService: MultigraphService
     ) {
         /*

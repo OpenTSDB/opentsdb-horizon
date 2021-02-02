@@ -4,7 +4,7 @@ import { Store } from '@ngxs/store';
 import { Observable, Subject, throwError } from 'rxjs';
 import { HttpService } from '../../../../core/http/http.service';
 import { DashboardConverterService } from '../../../../core/services/dashboard-converter.service';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 import { UtilsService } from '../../../../core/services/utils.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
@@ -29,7 +29,7 @@ export class ClipboardService {
         private store: Store,
         private http: HttpService,
         private dbfs: DbfsService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) {
         this.$drawerState = this._drawerState.asObservable();
         this.setDrawerState('closed');
@@ -47,7 +47,7 @@ export class ClipboardService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.logger.error('WidgetClipboardService :: An API error occurred', error.error.message);
+            this.console.error('WidgetClipboardService :: An API error occurred', error.error.message);
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong

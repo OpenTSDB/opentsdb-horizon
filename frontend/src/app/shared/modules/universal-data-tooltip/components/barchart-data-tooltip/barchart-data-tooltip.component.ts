@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -25,14 +25,14 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        logger: LoggerService,
+        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
             sanitizer,
-            logger
+            console
         );
         this.utils = _utils;
     }
@@ -41,7 +41,7 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         super.ngOnInit();
         super._addPositionListener();
         super._dataStreamSubscribe((data: any) => {
-            // this.logger.log('BAR CHART DATA CB', {data});
+            // this.console.log('BAR CHART DATA CB', {data});
             const contrast = this.utils.findContrastColor(data.color);
             data.colorContrast = contrast.hex;
             return data;

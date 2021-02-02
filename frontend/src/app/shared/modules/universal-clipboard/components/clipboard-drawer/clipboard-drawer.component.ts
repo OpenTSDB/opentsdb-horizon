@@ -2,7 +2,7 @@ import { Component, HostBinding, HostListener, OnDestroy, OnInit, QueryList, Vie
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
@@ -154,7 +154,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         private cbService: ClipboardService,
         private dbService: DashboardService,
         private interCom: IntercomService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) {
         this.widgetTypes.forEach((item: any, i: any) => {
             this.widgetTypesMap[item.type] = i;
@@ -432,7 +432,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
                 mTrigger.closeMenu();
             }
         } else {
-            this.logger.error('clipboardItemMoreMenu', 'CANT FIND TRIGGER');
+            this.console.error('clipboardItemMoreMenu', 'CANT FIND TRIGGER');
         }
     }
 
@@ -447,7 +447,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
                 mTrigger.closeMenu();
             }
         } else {
-            this.logger.error('clipboardItemRemoveMenu', 'CANT FIND TRIGGER');
+            this.console.error('clipboardItemRemoveMenu', 'CANT FIND TRIGGER');
         }
 
     }

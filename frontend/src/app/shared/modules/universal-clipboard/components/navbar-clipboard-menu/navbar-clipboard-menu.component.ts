@@ -1,6 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { LoggerService } from '../../../../../core/services/logger.service';
 import { ClipboardService } from '../../services/clipboard.service';
 
 @Component({
@@ -19,8 +18,7 @@ export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
     private subscription = new Subscription();
 
     constructor(
-        private cbService: ClipboardService,
-        private logger: LoggerService
+        private cbService: ClipboardService
     ) { }
 
     ngOnInit() {

@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 
 import domtoimage from 'dom-to-image-more';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../core/services/console.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -108,11 +108,10 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private hostElRef: ElementRef,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
-        console.log('%cWIDGET', 'color: white; background: red;', this.widget);
 
         setTimeout(() => {
             this.loadComponent();
@@ -120,7 +119,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-            //this.logger.log('[requestListen] Widget Loader', message);
             if (message.action) {
                 switch (message.action) {
                     case 'WriteAccessToNamespace':
@@ -135,7 +133,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
             }
 
             if (message.action && this.widget.id === message.id) {
-                // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
                 switch (message.action) {
                     case 'InfoIslandOpen':
                         const dataToInject = {
@@ -163,8 +160,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                             // OTHERWISE USE THE WIDGET HOST
                             overlayOriginRef = this.hostElRef.nativeElement;
                         }
-
-                        //console.log('OVERLAY ORIGIN REF', overlayOriginRef);
 
                         if (portalDef.type === 'component') {
                             // component based
@@ -266,7 +261,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     loadComponent() {
-        // console.log('component creating', this.widget.id, this.widget.settings.component_type);
         let componentName = '__notfound__';
         if (this.widget.settings.component_type) {
             componentName = this.widget.settings.component_type;
@@ -365,16 +359,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
     }
 
-    widgetShare() {
-        // ('SHARE WIDGET CLICKED');
-    }
-
-    widgetExportJSON() {
-        // console.log('EXPORT JSON CLICKED');
-    }
-
     widgetExportImage() {
-        // console.log('EXPORT IMAGE CLICKED');
         let componentEl: any = this._component.instance.elRef.nativeElement;
         componentEl.style.backgroundColor = '#ffffff';
         domtoimage.toJpeg(componentEl)
@@ -400,7 +385,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         dialogConf.data = {};
         this.widgetDeleteDialog = this.dialog.open(WidgetDeleteDialogComponent, dialogConf);
         this.widgetDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('delete widget confirm', dialog_out);
             if ( dialog_out && dialog_out.delete  ) {
                 this.interCom.requestSend(<IMessage> {
                     action: 'removeWidget',

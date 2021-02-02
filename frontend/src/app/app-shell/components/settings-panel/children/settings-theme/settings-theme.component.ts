@@ -1,7 +1,7 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { ThemeService } from '../../../../services/theme.service';
 import { take } from 'rxjs/operators';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -23,7 +23,7 @@ export class SettingsThemeComponent implements OnInit {
 
     constructor(
         private themeService: ThemeService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) {
         this.themeOptions = ThemeService.themeOptions;
         this.themeService.getActiveTheme().pipe(take(1)).subscribe( theme => {
@@ -32,7 +32,7 @@ export class SettingsThemeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.logger.log('SETTING THEMES', {
+        this.console.log('SETTING THEMES', {
             options: this.themeOptions,
             active: this.activeTheme
         });

@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -26,23 +26,23 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        logger: LoggerService,
+        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
             sanitizer,
-            logger
+            console
         );
         this.utils = _utils;
-        // this.logger.ng('DONUT CONSTRUCTOR');
+        // this.console.ng('DONUT CONSTRUCTOR');
     }
 
     ngOnInit() {
         super.ngOnInit();
         super._dataStreamSubscribe((data: any) => {
-            // this.logger.log('DONUT DATA CB', {data});
+            // this.console.log('DONUT DATA CB', {data});
             const contrast = this.utils.findContrastColor(data.color);
             data.colorContrast = contrast.hex;
             return data;

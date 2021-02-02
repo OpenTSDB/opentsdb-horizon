@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
 
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
     selector: 'app-notification-list',
@@ -19,7 +19,7 @@ export class NotificationListComponent implements OnInit {
     deleteConfirm: any = -1; // if confirming, it will be index of Notification, otherwise -1
 
     constructor(
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
@@ -38,7 +38,7 @@ export class NotificationListComponent implements OnInit {
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
         }
-        // this.logger.log('EDIT NOTIFICATION', { notification, index});
+        // this.console.log('EDIT NOTIFICATION', { notification, index});
         this.listActionOutput.emit({
             action: 'edit notification',
             payload: { notification, index }
@@ -49,7 +49,7 @@ export class NotificationListComponent implements OnInit {
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
         }
-        // this.logger.log('DISABLE NOTIFICATION', { notification, index});
+        // this.console.log('DISABLE NOTIFICATION', { notification, index});
         this.expandPanel(0);
         this.listActionOutput.emit({
             action: 'disable notification',
@@ -58,7 +58,7 @@ export class NotificationListComponent implements OnInit {
     }
 
     enableNotification(notification: any, index: any) {
-        // this.logger.log('ENABLE NOTIFICATION', { notification, index});
+        // this.console.log('ENABLE NOTIFICATION', { notification, index});
         // should check if there is active already
         // if there is active, should prompt user to confirm active switch to new notification
         this.expandPanel('active');
@@ -74,29 +74,29 @@ export class NotificationListComponent implements OnInit {
         }
         const notification = this.notifications[index];
         this.deleteConfirm = notification.id;
-       //  this.logger.log('showDeleteConfirm', {deleteConfirm: this.deleteConfirm, index, notification});
+       //  this.console.log('showDeleteConfirm', {deleteConfirm: this.deleteConfirm, index, notification});
     }
 
     cancelDeletion() {
         this.deleteConfirm = -1;
-        // this.logger.log('cancelDeletion');
+        // this.console.log('cancelDeletion');
     }
 
     deleteNotification(notification: any, index: any) {
 
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
-            // this.logger.log('DELETE [ACTIVE] NOTIFICATION', { notification, index});
+            // this.console.log('DELETE [ACTIVE] NOTIFICATION', { notification, index});
         }
 
         if (
             this.deleteConfirm === -1 ||
             (this.deleteConfirm !== -1 && this.deleteConfirm !== this.notifications[index].id)
          ) {
-            // this.logger.log('NEEDS DELETE CONFIRMATION', { notification, index});
+            // this.console.log('NEEDS DELETE CONFIRMATION', { notification, index});
             this.showDeleteConfirmation(index);
         } else {
-            // this.logger.log('DELETE NOTIFICATION', { notification, index});
+            // this.console.log('DELETE NOTIFICATION', { notification, index});
 
             this.deleteConfirm = -1;
             this.listActionOutput.emit({
@@ -108,7 +108,7 @@ export class NotificationListComponent implements OnInit {
     }
 
     createNotification() {
-        // this.logger.event('CLICK CREATE NOTIFICATION');
+        // this.console.event('CLICK CREATE NOTIFICATION');
         this.listActionOutput.emit({
             action: 'create notification'
         });

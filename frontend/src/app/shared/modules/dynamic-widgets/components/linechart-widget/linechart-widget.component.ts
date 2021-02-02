@@ -19,7 +19,7 @@ import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
@@ -189,7 +189,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private utilService: UtilsService,
         private elRef: ElementRef,
         private unit: UnitConverterService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
@@ -213,8 +213,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             });
 
         this.subscription.add(this.themeService.getThemeType().subscribe( themeType => {
-            this.logger.log('THEME TYPE', { themeType });
-
             this.options = {...this.options,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
@@ -485,7 +483,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
-                        // console.log("getUpdatedWidgetConfig", message);
                         this.widget = message.payload.widget;
                         this.setOptions();
                         this.refreshData(message.payload.needRefresh);
@@ -842,7 +839,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 nHeight = nHeight - 35;
             }
 
-            // nWidth = newSize.width - widthOffset  - (padding * 2);
             nWidth = newSize.width - widthOffset - paddingSides;
         }
 
@@ -1558,7 +1554,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
+        // this.console.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };

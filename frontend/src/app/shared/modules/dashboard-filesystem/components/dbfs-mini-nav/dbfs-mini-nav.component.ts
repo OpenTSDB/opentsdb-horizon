@@ -22,7 +22,7 @@ import {
     Select,
     Store
 } from '@ngxs/store';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { DbfsUtilsService } from '../../services/dbfs-utils.service';
 import { DbfsService } from '../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
@@ -82,7 +82,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     return true;
                 }
             }
-            // this.logger.log('MOVE ENABLED', {originDetails: this.originDetails, curPanel: this.panels[this.panelIndex]})
             return this.panels[this.panelIndex].moveEnabled;
         }
         return false;
@@ -104,7 +103,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private service: DbfsService
     ) { }
 
@@ -125,11 +124,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
     /* INIT MINI NAV */
     private miniNavInit() {
-        this.logger.log('MINI NAV INIT', {
-            mode: this.mode,
-            type: this.type,
-            path: this.path
-        });
+
         // setup origin details
         const pathDetails = this.dbfsUtils.detailsByFullPath(this.path);
         if (this.type === 'file') {
@@ -255,7 +250,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     navigatorAction(action: string, event?: any) {
-        // this.logger.log('[MINI NAV] NAVIGATOR ACTION', {action, event});
         switch (action) {
             case 'move':
                 // console.log('selected', this.originDetails, this.selected, this.panels[this.panelIndex]);
@@ -303,11 +297,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     folderAction(action: any, folder: any, event: any) {
-        // this.logger.log('[MINI NAV] FOLDER ACTION', {action, folder, event, panels: this.panels});
         event.stopPropagation();
         switch (action) {
             case 'gotoFolder':
-                // console.log('GOTO FOLDER', folder);
                 if (folder.loaded) {
                     this.addPanel(folder.fullPath);
                 } else {
@@ -323,17 +315,13 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     // can't select the folder, so just load it as a panel
                     // example is if they are viewing path '/namespace'
                     // OR if it is selected already, just act like a double click and load the panel
-                    // console.log('Can\'t select', folder.fullPath);
-                    // console.log('details', pathParts, folder, this.selected);
                     this.selected = false;
                     this.folderAction('gotoFolder', folder, event);
                 } else if (this.selected === folder.fullPath) {
-                    // console.log('already selected', folder.fullPath);
                     // its already selected, act like a double-click and load the panel
                     this.selected = '';
                     this.folderAction('gotoFolder', folder, event);
                 } else {
-                    // console.log('mark selected', folder.fullPath);
                     this.selected = folder.fullPath;
                 }
                 break;
@@ -343,7 +331,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     private addPanel(path) {
-        // this.logger.log('ADD PANEL', {path});
         this.panels.push(this.folders[path]);
         this.panelIndex = this.panels.length - 1;
 
@@ -352,11 +339,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.navPanel.goNext();
         }.bind(this), 200);
 
-        // console.log('this.panels', this.panels);
     }
 
     private loadSubFolderThenPanel(folder: any) {
-        this.logger.log('LOAD SUBFOLDER THEN PANEL', { folder });
 
         const details = this.dbfsUtils.detailsByFullPath(folder.fullPath);
         let topFolder: any = false;
@@ -371,7 +356,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         this.service.getFolderByPath(folder.path, topFolder).pipe(
             catchError(val => of(`error caught: ${val}`))
         ).subscribe((resource: any) => {
-            this.logger.success('MINI NAV LOAD SUBFOLDER', resource);
 
             const folderPanel = this.dbfsUtils.normalizePanelFolder(resource, true, true, (resource.fullPath === this.originDetails.fullPath));
             folderPanel.loaded = true;

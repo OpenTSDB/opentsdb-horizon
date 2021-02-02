@@ -1,6 +1,6 @@
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 import { DbfsPanelsState } from './dbfs-panels.state';
 import { DbfsResourcesState } from './dbfs-resources.state';
@@ -34,7 +34,7 @@ export class DbfsInitialized {
 export class DbfsState {
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private store: Store,
         private util: UtilsService
     ) { }

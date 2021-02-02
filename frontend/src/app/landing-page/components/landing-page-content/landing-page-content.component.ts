@@ -13,7 +13,7 @@ import {
 import {
     DbfsState
 } from '../../../shared/modules/dashboard-filesystem/state';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../core/services/console.service';
 
 // import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
@@ -113,13 +113,12 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
         private store: Store,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
         this.createSearchForm();
         this.subscription.add(this.route.queryParams.subscribe(params => {
-            // console.log("comes in router params....", params)
             if (params['db-delete']) {
                 this.snackBar.open('Dashboard has been deleted.', '', {
                     horizontalPosition: 'center',
@@ -131,7 +130,6 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.user$.subscribe(user => {
-            // this.logger.log('USER', user);
             this.user = user;
         }));
     }

@@ -1,7 +1,7 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 
 export interface EventsModel {
     eventQueries: any[];
@@ -123,7 +123,7 @@ export class SetEventsTimeZone {
 export class EventsState {
     constructor(
         private httpService: HttpService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     @Selector()
@@ -164,7 +164,7 @@ export class EventsState {
     @Action(GetEvents)
     getEvents(ctx: StateContext<EventsStateModel>, { time, eventQueries, wid, limit }: GetEvents) {
 
-        this.logger.action(GetEvents.type, { time, eventQueries, wid });
+        this.console.action(GetEvents.type, { time, eventQueries, wid });
         ctx.patchState({loading: true});
 
         return this.httpService.getEvents(wid, time, eventQueries, limit).pipe(
@@ -177,7 +177,7 @@ export class EventsState {
 
     @Action(GetEventsSuccess)
     getEventsSucess(ctx: StateContext<EventsStateModel>, { response, origParams }: GetEventsSuccess) {
-        this.logger.success(GetEventsSuccess.type, { response, origParams });
+        this.console.success(GetEventsSuccess.type, { response, origParams });
 
         const state = ctx.getState();
 
@@ -195,7 +195,7 @@ export class EventsState {
 
     @Action(GetEventsFailed)
     getEventsFailed(ctx: StateContext<EventsStateModel>, { response, wid }: GetEventsFailed) {
-        this.logger.error(GetEventsFailed.type, { response });
+        this.console.error(GetEventsFailed.type, { response });
         const state = ctx.getState();
         const events: any = { events: [], wid, error: response.error.error.message};
         ctx.setState({ ...state, loading: false, error: response.error.error.message, events});
@@ -237,7 +237,7 @@ export class EventsState {
 
     @Action(EventsGenericError)
     eventsGenericError(ctx: StateContext<EventsStateModel>, { error, label }: EventsGenericError) {
-        this.logger.error('State :: ' + label, error);
+        this.console.error('State :: ' + label, error);
         ctx.patchState({ error });
     }
 
