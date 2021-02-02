@@ -135,6 +135,14 @@
             }
         }
     }
+    .edit-view-container.is-active {
+        .widget-panel-content.markdown-widget {
+            .widget-output-container,
+            .widget-controls-container {
+                flex: 1 1 50%;
+            }
+        }
+    }    
 }
 
 @mixin markdown-widget-component-theme($theme-config) {
