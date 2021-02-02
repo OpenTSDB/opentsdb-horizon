@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { ConsoleService } from './console.service';
 
-describe('LoggerService', () => {
+describe('ConsoleService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ConsoleService]

@@ -2,7 +2,6 @@ import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDest
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { Subscription } from 'rxjs';
-// import { LoggerService } from '../../../../../core/services/logger.service';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -37,7 +36,6 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
 
     constructor(
         private util: UtilsService,
-        // private logger: LoggerService,
         private interCom: IntercomService,
         @Inject(ISLAND_DATA) private _data: any
     ) {
