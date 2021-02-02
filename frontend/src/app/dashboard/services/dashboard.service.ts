@@ -440,8 +440,11 @@ export class DashboardService {
   }
 
   // to resolve dasboard scope to scopeCache if not there.
-  // this normally happens when first time dashboard loads
-  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
+  // this only happens when first time dashboard loads
+  resolveDBScope(tplVariables: any, widgets: any[], panelMode: any, isDBScopeLoaded: boolean): Observable<any> {
+    if (isDBScopeLoaded) {
+      return of([]);
+    }
     const obs: any[] = [];
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
     const metrics = [];
@@ -576,7 +579,7 @@ export class DashboardService {
           const regx = new RegExp(res[1], "gi");
           if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
             // use scope to resolve
-            for (let j = 0; j < tplVariables.scopeCache[i].length; j++) {
+            for (let j = 0; j < tplVariables.scopeCache[i][j].length; j++) {
               if (tplVariables.scopeCache[i][j].match(regx)) {
                 scopeMatched.push(tplVariables.scopeCache[i][j])
               }
