@@ -308,7 +308,6 @@ export class DBState {
             map(res => {
                 const dashboard: any = res.body;
                 this.dbService.updateTimeFromURL(dashboard);
-                ctx.dispatch(new LoadSnapshotSuccess(dashboard));
                 if (dashboard.content.version && dashboard.content.version === this.dbConverterService.currentVersion) {
                     this.dbService.updateTplVariablesFromURL(dashboard);
                     ctx.dispatch(new LoadSnapshotSuccess(dashboard));
@@ -339,7 +338,7 @@ export class DBState {
             loaded: true,
             loading: false,
             path: payload.path,
-            fullPath: '/' + payload.name,
+            fullPath: '/' + payload.path.split('/')[2],
             loadedDB: payload
         });
     }
