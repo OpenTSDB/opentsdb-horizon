@@ -14,6 +14,7 @@ import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -252,7 +253,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
-        private iiService: InfoIslandService
+        private iiService: InfoIslandService,
+        private localStorageService: LocalStorageService
     ) { }
 
     ngOnInit() {
@@ -652,6 +654,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             if (db && db.fullPath) {
                 this.dbOwner = this.getOwnerFromPath(db.fullPath);
+                const namespace = this.getNamespaceFromPath(db.fullPath);
+                if ( namespace ) {
+                    this.localStorageService.setLocal('defaultNS', namespace);
+                }
             }
 
             const dbstate = this.store.selectSnapshot(DBState);
@@ -1571,6 +1577,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
         return '';
+    }
+
+    getNamespaceFromPath(fullPath) {
+        let namespace = '';
+        if ( fullPath && fullPath.indexOf('namespace') !== -1 ) {
+            const res = fullPath.split('/');
+            namespace = res[2];
+        }
+        return namespace;
     }
 
     setWriteSpaces() {

@@ -256,9 +256,9 @@ var utils = require("dygraphs/src/dygraph-utils");
   
       // If the point density is high enough, dropping segments on their way to
       // the canvas justifies the overhead of doing so.
-      if (points.length > 2 * g.width_ || Dygraph.FORCE_FAST_PROXY) {
-        ctx = DygraphCanvasRendererFastCanvasProxy_(ctx);
-      }
+      // if (points.length > 2 * g.width_ || Dygraph.FORCE_FAST_PROXY) {
+        // ctx = DygraphCanvasRendererFastCanvasProxy_(ctx);
+      // }
   
       // TODO(danvk): there are a lot of options at play in this loop.
       //     The logic would be much clearer if some (e.g. stackGraph and

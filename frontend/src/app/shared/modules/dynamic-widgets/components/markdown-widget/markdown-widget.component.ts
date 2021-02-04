@@ -119,7 +119,8 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   }
 
   resolveTplMacro(tplMacros: any, tplValues: any[], text: string): string {
-    if (this.checkExistMarco) {
+
+    if (this.checkExistMarco(text)) {
       for (let i = 0; i < Object.keys(tplMacros).length; i++) {
         const key = Object.keys(tplMacros)[i];
         tplMacros[key] = tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';

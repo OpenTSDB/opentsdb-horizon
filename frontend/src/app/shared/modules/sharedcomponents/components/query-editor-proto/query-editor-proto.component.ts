@@ -374,6 +374,65 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: null
                 }
             ]
+        },
+        {
+            label: 'Sliding Window',
+            functions: [
+                {
+                    label: 'Sliding Sum 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,5m"
+                },
+                {
+                    label: 'Sliding Sum 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,15m"
+                },{
+                    label: 'Sliding Count 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,5m"
+                },
+                {
+                    label: 'Sliding Count 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,15m"
+                },
+                {
+                    label: 'Sliding Min 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,5m"
+                },
+                {
+                    label: 'Sliding Min 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,15m"
+                },
+                {
+                    label: 'Sliding Max 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,5m"
+                },
+                {
+                    label: 'Sliding Max 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,15m"
+                }
+            ]
+        },
+        {
+            label: 'Time Difference',
+            functions: [
+                {
+                    label: 'Delta in Minutes',
+                    fxCall: 'TimeDiff',
+                    val: 'MINUTES'
+                },
+                {
+                    label: 'Delta in Seconds',
+                    fxCall: 'TimeDiff',
+                    val: 'SECONDS'
+                }
+            ]
         }
     ];
 
@@ -397,11 +456,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'ValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CounterValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CntrRate' : {
             errorMessage: null,
@@ -433,6 +494,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'GroupByCount' : {
             groupByFx : true
+        },
+        'SlidingWindow' : {
+            errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        },
+        'TimeDiff' : {
+            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
+            regexValidator: /^SECONDS|MINUTES|HOURS$/
         }
     };
 
@@ -1234,27 +1303,30 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     createPercentageMetrics() {
-        const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
-        expConfig.settings.visual.label = 'Total';
-        expConfig.settings.visual.visible = false;
-        this.query.metrics.push(expConfig);
-
-        const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
-        const aliases = this.getMetricAliases();
-        for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
-            const mid = aliases[this.pctSelectedMetrics[i]];
-            const index = this.query.metrics.findIndex( d =>  d.id === mid );
-            // set the actual metric visible=false and groupby=everything
-            this.query.metrics[index].settings.visual.visible = false;
-            this.query.metrics[index].groupByTags = [];
-
-            const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
-            expConfig.settings.visual.type = 'area';
-            expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+        if ( this.pctSelectedMetrics.length > 1 ) {
+            const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+            expConfig.settings.visual.label = 'Total';
+            expConfig.settings.visual.visible = false;
             this.query.metrics.push(expConfig);
+
+            const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
+            const aliases = this.getMetricAliases();
+            for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+                const mid = aliases[this.pctSelectedMetrics[i]];
+                const index = this.query.metrics.findIndex( d =>  d.id === mid );
+                // set the actual metric visible=false and groupby=everything
+                this.query.metrics[index].settings.visual.visible = false;
+                this.query.metrics[index].groupByTags = [];
+
+                const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+                expConfig.settings.visual.type = 'area';
+                expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+                this.query.metrics.push(expConfig);
+            }
+            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' } );
+            this.queryChanges$.next(true);
+            this.initMetricDataSource();
         }
-        this.queryChanges$.next(true);
-        this.initMetricDataSource();
         this.closeMetricDialog();
     }
 
