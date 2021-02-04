@@ -579,7 +579,7 @@ export class DashboardService {
           const regx = new RegExp(res[1], "gi");
           if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
             // use scope to resolve
-            for (let j = 0; j < tplVariables.scopeCache[i][j].length; j++) {
+            for (let j = 0; j < tplVariables.scopeCache[i].length; j++) {
               if (tplVariables.scopeCache[i][j].match(regx)) {
                 scopeMatched.push(tplVariables.scopeCache[i][j])
               }
