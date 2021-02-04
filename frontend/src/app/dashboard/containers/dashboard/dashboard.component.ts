@@ -777,26 +777,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
-                this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode, this.isDBScopeLoaded).subscribe(scopes => {
-                    if (!this.isDBScopeLoaded) {
+                if (!this.isDBScopeLoaded) {
+                    this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
                         this.tplVariables.scopeCache = scopes;
                         this.isDBScopeLoaded = true;
-                    }
-                    // sort widget by grid row, then assign
-                    this.widgets = this.utilService.deepClone(widgets);
-                    if (!this.snapshot) {
-                        this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                        // set oldWidgets when widgets is not empty and oldWidgets is empty
-                        if (this.widgets.length && this.oldWidgets.length === 0) {
-                            this.oldWidgets = [...this.widgets];
-                        }
-                    } else {
-                        this.newWidget = this.widgets[0];
-                        this.setSnapshotMeta();
-                    }
-                }));
+                        this.handleWidgetsLoad(widgets);
+                    }));
+                } else {
+                    this.handleWidgetsLoad(widgets);
+                }
             }
         }));
+
 
         // initial from state mode is undefine.
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
@@ -946,6 +938,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.updateEvents(result.wid, grawdata, time, error);
             }
         }));
+    }
+
+    // to handle widgets after loaded to dashboard itself
+    private handleWidgetsLoad(widgets: any) {
+        // sort widget by grid row, then assign
+        this.widgets = this.utilService.deepClone(widgets);
+        if (!this.snapshot) {
+            this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+            // set oldWidgets when widgets is not empty and oldWidgets is empty
+            if (this.widgets.length && this.oldWidgets.length === 0) {
+                this.oldWidgets = [...this.widgets];
+            }
+        } else {
+            this.newWidget = this.widgets[0];
+            this.setSnapshotMeta();
+        }
     }
 
     setSnapshotMeta() {
