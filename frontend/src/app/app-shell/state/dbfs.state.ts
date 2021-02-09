@@ -59,7 +59,7 @@ export class DbfsState {
     // utility selector to get a users profile
     // defaults to activeUser (Browser Session User)
     // fullDetail optional parameter, will expand out memberNamespace with more detail
-    static getUser(userid?: string, fullDetail?: boolean) {
+    static getUser(userid?: any, fullDetail?: boolean) {
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
 
             if (state.loaded === false) {

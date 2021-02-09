@@ -54,6 +54,16 @@
             }
         }
 
+        .dashboard-save-location {
+            .mini-nav-trigger {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 1px;
+            }
+        }
+
         .use-namespace {
             &.is-disabled {
                 opacity: .3;
@@ -90,6 +100,11 @@
         .mat-dialog-container {
             padding: 0;
         }
+    }
+
+    .dnav-cdk-mini-navigator.db-save-location-selector.mat-menu-panel {
+        margin-top: 0;
+        margin-left: 0;
     }
 
 
