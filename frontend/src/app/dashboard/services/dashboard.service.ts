@@ -440,7 +440,7 @@ export class DashboardService {
   }
 
   // to resolve dasboard scope to scopeCache if not there.
-  // this normally happens when first time dashboard loads
+  // this only happens when first time dashboard loads
   resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
     const obs: any[] = [];
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
