@@ -25,7 +25,6 @@ import {
     Select,
     Store
 } from '@ngxs/store';
-import { LoggerService } from '../../../../../core/services/logger.service';
 import { DbfsUtilsService } from '../../../../services/dbfs-utils.service';
 import { DbfsService } from '../../../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
@@ -121,7 +120,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
-        private logger: LoggerService,
         private service: DbfsService,
         private cdref: ChangeDetectorRef
     ) { }
@@ -129,7 +127,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.subscription.add(this.user$.subscribe( user => {
-            this.logger.log('USER', {user});
             this.user = user;
         }));
 
@@ -151,11 +148,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
     /* INIT MINI NAV */
     private miniNavInit() {
-        this.logger.log('MINI NAV INIT', {
-            mode: this.mode,
-            type: this.type,
-            path: this.path
-        });
 
         // setup origin details
         const pathDetails = this.dbfsUtils.detailsByFullPath(this.path);
@@ -281,13 +273,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         this.panelIndex = this.panels.length - 1;
 
         // After initial setup, we will no longer pull from the state resources cache, but will call API
-
-        this.logger.log('miniNavInit [DONE]', {
-            origin: this.originDetails,
-            folders: this.folders,
-            panels: this.panels,
-            panelIndex: this.panelIndex
-        })
     }
 
     getPanelContext(path: string) {
@@ -296,15 +281,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     navigatorAction(action: string, event?: any) {
-        this.logger.log('[MINI NAV] NAVIGATOR ACTION', {
-            action,
-            event,
-            origin: this.originDetails,
-            folders: this.folders,
-            selected: this.selected,
-            panels: this.panels,
-            panelIndex: this.panelIndex
-        });
         switch (action) {
             case 'move':
                 this.directorySelected.emit({
@@ -354,7 +330,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     this.panels.splice(this.panelIndex);
                     this.panelIndex = this.panels.length - 1;
                     this.selected = false;
-                    console.log('this.panels', this.panels, this.panelIndex, this.folders);
                     this.cdref.detectChanges();
                 });
                 break;
@@ -364,7 +339,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     folderAction(action: any, folder: any, event: any) {
-        // this.logger.log('[MINI NAV] FOLDER ACTION', {action, folder, event, panels: this.panels});
         event.stopPropagation();
         switch (action) {
             case 'gotoFolder':
@@ -406,8 +380,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.selected = false;
             this.navPanel.goNext();
         }.bind(this), 200);
-
-        console.log('[addPanel] this.panels', this.panels);
     }
 
     private loadSubFolderThenPanel(folder: any) {

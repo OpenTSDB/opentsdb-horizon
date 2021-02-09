@@ -12,13 +12,11 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatMenuTrigger } from '@angular/material
 
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
-import { map, startWith, debounceTime } from 'rxjs/operators';
 
 import { Select, Store } from '@ngxs/store';
 
 import { DbfsState, DbfsResourcesState, DbfsLoadResources, DbfsLoadSubfolder } from '../../../app-shell/state';
 import { UtilsService } from '../../../core/services/utils.service';
-import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -79,7 +77,6 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         private fb: FormBuilder,
         public dialogRef: MatDialogRef<DashboardSaveDialogComponent>,
         private utils: UtilsService,
-        private logger: LoggerService,
         @Inject(MAT_DIALOG_DATA) public dbData: any
     ) {}
 
@@ -103,23 +100,19 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         }));
 
         this.subscription.add(this.user$.subscribe( user => {
-            //this.logger.log('USER', {user});
             this.user = user;
         }));
 
         this.subscription.add(this.folders$.subscribe( folders => {
-            // console.log('FOLDERS', {folders});
             this.folders = folders;
         }));
 
         this.subscription.add(this.files$.subscribe( files => {
-            // console.log('FILES', {files});
             this.files = files;
         }));
 
         // NOTE: may not need this anymore
         this.subscription.add(this.namespacesData$.subscribe( namespaces => {
-            // console.log('NAMESPACES', {namespaces});
             namespaces.sort((a: any, b: any) => {
                 return this.utils.sortAlphaNum(a.name, b.name);
             });
@@ -234,7 +227,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         }
         const namespace = this.saveForm['controls']['namespace'].value.toLowerCase().trim();
         const errors: any = {};
-        // console.log(namespace, this.namespaceOptions.findIndex(d => namespace === d.name ));
+
         if ( namespace === '') {
             errors.required = true;
         }
@@ -242,7 +235,6 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
             errors.invalid = true;
         }
         this.saveForm['controls']['namespace'].setErrors(Object.keys(errors).length ? errors : null);
-        // console.log(this.namespace);
 
         return Object.keys(errors).length === 0 ? true : false;
     }
@@ -252,17 +244,14 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     /** MINI NAV EVENTS */
 
     miniNavClosed(event: any) {
-        // this.logger.log('MINI NAV CLOSED', event);
         this.miniNavOpen = false;
     }
 
     miniNavCancel(event: any) {
-        // this.logger.log('MINI NAV CANCEL', event);
         this.miniNavSelectTrigger.closeMenu();
     }
 
     miniNavSelected(event: any) {
-        // this.logger.log('MINI NAV SELECTED', event);
         if (event.action === 'miniNavSave') {
             this.miniNavSelectTrigger.closeMenu();
             this.selectedSaveFolder = event.payload;
