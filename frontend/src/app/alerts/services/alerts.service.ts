@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from '../../core/services/config.service';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { LoggerService } from '../../core/services/logger.service';
@@ -14,7 +14,8 @@ export class AlertsService {
     constructor(
         private logger: LoggerService,
         private http: HttpClient,
-        private utils: UtilsService
+        private utils: UtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     /**
@@ -47,7 +48,7 @@ export class AlertsService {
 
     getUserNamespaces() {
 
-        const apiUrl = environment.configdb + '/namespace/member';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/member';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -67,7 +68,7 @@ export class AlertsService {
     }
 
     getNamespaces(): Observable<any> {
-        const apiUrl = environment.configdb + '/namespace';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'

@@ -26,7 +26,8 @@ import {
 import { Observable, Subscription, Subject } from 'rxjs';
 import { delayWhen, filter, skip, distinctUntilChanged, debounce, debounceTime } from 'rxjs/operators';
 import { HttpService } from '../../core/http/http.service';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from "../../core/services/config.service";
+
 
 import { Select, Store } from '@ngxs/store';
 
@@ -243,7 +244,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // tslint:disable-next-line:no-inferrable-types
     namespaceDropMenuOpen: boolean = false;
     configLoaded$ = new Subject();
-    auraUrl = environment.auraUI + '/#/aura/newquery';
+    auraUrl = '';
 
     error: any = false;
 
@@ -279,7 +280,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private utils: UtilsService,
         private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
-        private infoIslandService: InfoIslandService
+        private infoIslandService: InfoIslandService,
+        private appConfig: AppConfigService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -297,6 +299,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     ngOnInit() {
 
+        this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
 

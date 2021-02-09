@@ -46,7 +46,7 @@ import { DataShareService } from '../../../core/services/data-share.service';
 import { DashboardConverterService } from '../../../core/services/dashboard-converter.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
-import { environment } from "../../../../environments/environment";
+import { AppConfigService } from "../../../core/services/config.service";
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
@@ -305,7 +305,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private location: LocationStrategy,
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
-        private dbConverterSrv: DashboardConverterService
+        private dbConverterSrv: DashboardConverterService,
+        private appConfig: AppConfigService
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -1900,7 +1901,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setAlertEvaluationLink() {
-        let url = environment.alert_history_url + this.data.id;
+        let url = this.appConfig.getConfig().alert_history_url + this.data.id;
         if (this.startTime && this.endTime) {
             const start =  Math.floor(this.dateUtil.timeToMoment(this.startTime, 'local').valueOf() / 1000);
             const end =  Math.floor(this.dateUtil.timeToMoment(this.endTime, 'local').valueOf() / 1000);

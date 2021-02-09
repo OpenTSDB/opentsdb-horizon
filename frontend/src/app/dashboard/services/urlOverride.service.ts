@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { Subscription, Observable } from 'rxjs';
 import { Router,  NavigationEnd } from '@angular/router';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from '../../core/services/config.service';
 import { UtilsService} from '../../core/services/utils.service';
 import { DateUtilsService } from '../../core/services/dateutils.service';
 
@@ -121,7 +121,8 @@ export class URLOverrideService {
         private location: Location,
         private router: Router,
         private utils: UtilsService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) {
         const url = this.getLocationURLandQueryParams();
         let otherParams = {};
@@ -129,23 +130,23 @@ export class URLOverrideService {
             const v = url['queryParams'][k];
             switch (k.toLowerCase()) {
                 case '__tsdb_host':
-                    environment.tsdb_host = decodeURIComponent(v);
-                    environment.tsdb_hosts = [decodeURIComponent(v)];
+                    this.appConfig.setConfig('tsdb_host', decodeURIComponent(v));
+                    this.appConfig.setConfig('tsdb_hosts', [decodeURIComponent(v)]);
                     break;
                 case '__config_host':
-                    environment.configdb = decodeURIComponent(v);
+                    this.appConfig.setConfig('configdb', decodeURIComponent(v));
                     break;
                 case '__meta_host':
-                    environment.metaApi = decodeURIComponent(v);
+                    this.appConfig.setConfig('metaApi', decodeURIComponent(v));
                     break;
                 case '__debug_level':
-                    environment.debugLevel = v;
+                    this.appConfig.setConfig('debugLevel', v);
                     break;
                     case '__tsdb_source':
-                    environment.tsdbSource = decodeURIComponent(v);
+                    this.appConfig.setConfig('tsdbSource', decodeURIComponent(v));
                     break;
                 case '__tsdb_cache':
-                    environment.tsdbCacheMode = v;
+                    this.appConfig.setConfig('tsdbCacheMode', v);
                     break;
                 default:
                     otherParams[k] = v;

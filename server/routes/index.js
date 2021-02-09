@@ -15,4 +15,12 @@ router.get("/heartbeatimg", function (req, res) {
   res.end(gifBuffer);
 });
 
+router.get("/config", function(req, res) {
+  try {
+    const config = require('../config/app_config.json');
+    res.status(200).json(config);
+  } catch (e) {
+    res.sendStatus(500);
+  }
+});
 module.exports = router;

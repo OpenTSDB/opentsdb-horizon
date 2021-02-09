@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler, Injectable } from '@angular/core';
+import { NgModule, ErrorHandler, Injectable, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -21,6 +21,7 @@ import { AdminModule } from './admin/admin.module';
 import { AdhocModule } from './adhoc/adhoc.module';
 import { UniversalDataTooltipModule } from './shared/modules/universal-data-tooltip/universal-data-tooltip.module';
 
+import { AppConfigService } from './core/services/config.service';
 import { AuthInterceptor } from './core/http/auth.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { AuthState } from './shared/state/auth.state';
@@ -38,6 +39,11 @@ export class CustomHammerConfig extends HammerGestureConfig {
     return mconf;
   }
 }
+const appInitializerFn = (appConfig: AppConfigService) => {
+  return () => {
+    return appConfig.loadAppConfig();
+  };
+};
 
 @NgModule({
   declarations: [
@@ -64,6 +70,12 @@ export class CustomHammerConfig extends HammerGestureConfig {
       useClass: CredentialsInterceptor,
       multi: true
     }*/
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFn,
+      multi: true,
+      deps: [AppConfigService]
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

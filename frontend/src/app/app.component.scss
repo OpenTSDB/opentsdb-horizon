@@ -10,6 +10,13 @@
         overflow: hidden;
     }
 
+    .message {
+        font-weight: 500;
+        font-size: 2em;
+        height: 30px;
+        text-align:center;
+        padding-top: 20%;
+    }
 }
 
 @mixin app-root-theme($theme-config) {

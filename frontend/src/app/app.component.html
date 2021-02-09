@@ -1,3 +1,4 @@
-<app-shell [fullUrlPath]="fullUrlPath">
+<app-shell *ngIf="configService.initialized" [fullUrlPath]="fullUrlPath">
     <router-outlet></router-outlet>
 </app-shell>
+<div class="message" *ngIf="configService.initialized === false"> Failed to load the config. Please contact the adminstrator.</div>

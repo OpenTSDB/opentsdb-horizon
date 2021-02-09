@@ -9,7 +9,7 @@ import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -104,7 +104,8 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
         public UN: UnitConverterService,
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
         ) { }
 
     ngOnInit() {
@@ -165,9 +166,9 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                         } else {
                             this.error = null;
                             if (message.payload && message.payload.rawdata) {
-                                if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                                    environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                                    environment.debugLevel.toUpperCase() == 'INFO') {
+                                if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                                    this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                                    this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                     this.debugData = message.payload.rawdata.log; // debug log
                                 }
                                 this.data = message.payload.rawdata.results || [];

@@ -20,7 +20,7 @@ import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoggerService } from '../../../../../core/services/logger.service';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -193,7 +193,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -451,9 +452,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             }
                             this.setMultigraphColumns(limitGraphs);
                             this.graphData = {...limitGraphs};
-                            if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                                environment.debugLevel.toUpperCase() === 'DEBUG' ||
-                                environment.debugLevel.toUpperCase() === 'INFO') {
+                            if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'DEBUG' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'INFO') {
                                     this.debugData = rawdata.log; // debug log
                             }
                             // console.log("graphData", this.graphData)
