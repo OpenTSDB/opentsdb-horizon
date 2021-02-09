@@ -102,7 +102,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     ) { }
 
     ngOnInit() {
-        console.log('%cWIDGET', 'color: white; background: red;', this.widget);
 
         setTimeout(() => {
             this.loadComponent();

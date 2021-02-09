@@ -214,6 +214,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     isDbTagsLoaded$ = new Subject();
     isDbTagsLoaded = false;
     isToTChanged = false;
+    isDBScopeLoaded = false;
     eWidgets: any = {}; // to whole eligible widgets with custom dashboard tags
     tagKeysByNamespaces = [];
 
@@ -267,6 +268,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.meta = {};
             this.wdMetaData = {}
             this.isDbTagsLoaded = false;
+            this.isDBScopeLoaded = false;
             this.variablePanelMode = { view: true };
             this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
@@ -569,7 +571,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             action: 'viewTplVariablesValues',
                             payload: {
                                 tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
-                                tplValues: results
+                                tplValues: results,
+                                scope: this.tplVariables
                             }
                         });
                     });
@@ -774,23 +777,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
-                this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
-                    this.tplVariables.scopeCache = scopes;
-                    // sort widget by grid row, then assign
-                    this.widgets = this.utilService.deepClone(widgets);
-                    if (!this.snapshot) {
-                        this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                        // set oldWidgets when widgets is not empty and oldWidgets is empty
-                        if (this.widgets.length && this.oldWidgets.length === 0) {
-                            this.oldWidgets = [...this.widgets];
-                        }
-                    } else {
-                        this.newWidget = this.widgets[0];
-                        this.setSnapshotMeta();
-                    }
-                }));
+                if (!this.isDBScopeLoaded) {
+                    this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
+                        this.tplVariables.scopeCache = scopes;
+                        this.isDBScopeLoaded = true;
+                        this.handleWidgetsLoad(widgets);
+                    }));
+                } else {
+                    this.handleWidgetsLoad(widgets);
+                }
             }
         }));
+
 
         // initial from state mode is undefine.
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
@@ -940,6 +938,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.updateEvents(result.wid, grawdata, time, error);
             }
         }));
+    }
+
+    // to handle widgets after loaded to dashboard itself
+    private handleWidgetsLoad(widgets: any) {
+        // sort widget by grid row, then assign
+        this.widgets = this.utilService.deepClone(widgets);
+        if (!this.snapshot) {
+            this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+            // set oldWidgets when widgets is not empty and oldWidgets is empty
+            if (this.widgets.length && this.oldWidgets.length === 0) {
+                this.oldWidgets = [...this.widgets];
+            }
+        } else {
+            this.newWidget = this.widgets[0];
+            this.setSnapshotMeta();
+        }
     }
 
     setSnapshotMeta() {
