@@ -270,13 +270,19 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         if (val !== '') {
                             const res = val.match(/^regexp\((.*)\)$/);
                             const va = res ? res[1] : val;
-                            const matches = [];
-                            const regx = new RegExp(va, 'gi');
-                            this.tplVariables.scopeCache[index].forEach(v => {
-                                if (v.match(regx)) {
-                                    matches.push(v);
-                                }
-                            });
+                            const matches = [];                      
+                            try {
+                                const regx = new RegExp(va, 'gi');
+                                this.tplVariables.scopeCache[index].forEach(v => {
+                                    if (v.match(regx)) {
+                                        matches.push(v);
+                                    }
+                                });
+                            } catch (e) {
+                                let err = (e as Error).message;
+                                console.info('Error: ', err);                               
+                            }
+
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(matches);
                         } else {
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.tplVariables.scopeCache[index]);
