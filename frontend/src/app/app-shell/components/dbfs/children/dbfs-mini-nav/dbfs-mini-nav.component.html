@@ -19,6 +19,7 @@
         </div>-->
     </mat-toolbar-row>
 </mat-toolbar>
+
 <navigator-panel #miniNavPanel>
     <ng-container *ngFor="let panel of panels; let i = index">
         <ng-container *navigatorPanelItem>
@@ -26,10 +27,12 @@
         </ng-container>
     </ng-container>
 </navigator-panel>
+
 <div class="mini-navigator-actions">
     <span class="flex-spacer"></span>
     <button mat-button *ngIf="moveEnabled" (click)="navigatorAction('move')">MOVE {{selected ? 'TO FOLDER' : 'HERE'}}</button>
     <button mat-button *ngIf="selectEnabled" (click)="navigatorAction('select')">SELECT {{selected.folder ? 'FOLDER' : 'HERE'}}</button>
+    <button mat-button *ngIf="saveEnabled" (click)="navigatorAction('save')">SAVE HERE</button>
     <button mat-button (click)="navigatorAction('cancel')">CANCEL</button>
 </div>
 

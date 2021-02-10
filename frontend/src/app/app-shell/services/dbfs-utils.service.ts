@@ -1,18 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { catchError, map, tap } from 'rxjs/operators';
-
-import { LoggerService } from '../../core/services/logger.service';
 
 import {
     DbfsPanelFolderModel,
     DbfsFileModel,
-    DbfsFolderModel,
-    DbfsNamespaceModel,
-    DbfsResourcesModel,
-    DbfsSyntheticFolderModel,
-    DbfsUserModel
+    DbfsFolderModel
 } from '../state/dbfs-resources.interfaces';
 
 import { UtilsService } from '../../core/services/utils.service';
@@ -21,7 +12,6 @@ import { UtilsService } from '../../core/services/utils.service';
 export class DbfsUtilsService {
 
     constructor(
-        private logger: LoggerService,
         private utils: UtilsService
     ) { }
 
@@ -121,7 +111,6 @@ export class DbfsUtilsService {
 
     normalizePanelFolder(rawFolder: any, moveEnabled: boolean = true, selectEnabled: boolean = true, noDisplay: boolean = false): DbfsPanelFolderModel {
 
-        // console.log('RAW FOLDER', rawFolder);
         const folder = this.normalizeFolder(rawFolder);
 
         const panelFolder: DbfsPanelFolderModel  = <DbfsPanelFolderModel>{...folder, moveEnabled, selectEnabled, selected: false};
