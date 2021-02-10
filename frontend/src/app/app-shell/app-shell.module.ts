@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+//import { BrowserModule } from '@angular/platform-browser';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -59,8 +59,8 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
 @NgModule({
     imports: [
         CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
+        //BrowserModule,
+        //BrowserAnimationsModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
@@ -109,7 +109,8 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [
-        AppShellComponent
+        AppShellComponent,
+        DbfsMiniNavComponent
     ]
 })
 export class AppShellModule { }
