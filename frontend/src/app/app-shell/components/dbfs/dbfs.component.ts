@@ -196,7 +196,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private interCom: IntercomService,
         private router: Router,
         private fb: FormBuilder,
-        private logger: LoggerService
+        private logger: LoggerService,
         @Inject('WINDOW') private window: any
     ) {
 
