@@ -19,7 +19,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
-import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
+import { IntercomService } from '../../../../../core/services/intercom.service';
 
 import {
     Select,
@@ -35,12 +35,10 @@ import {
     DbfsPanelsInitialize,
     DbfsAddPanel,
     DbfsUpdatePanels,
-    DbfsResetPanelAction,
     DbfsChangePanelTab
 } from '../../state/dbfs-panels.state';
 import {
     DbfsResourcesState,
-    DbfsLoadResources,
     DbfsLoadSubfolder,
     DbfsLoadUsersList,
     DbfsLoadNamespacesList,
@@ -54,18 +52,15 @@ import {
     DbfsLoadUserFavorites,
     DbfsLoadUserRecents,
     DbfsRemoveUserFav,
-    DbfsAddUserFav,
-    //DbfsLoadUserFavoritesList,
-    //DbfsLoadUserRecentList,
-    //DbfsAddUserFavorite,
-    //DbfsRemoveUserFavorite
+    DbfsAddUserFav
 } from '../../state/dbfs-resources.state';
-import { ConsoleService } from '../../../../../core/services/console.service';
+
 import { MatMenuTrigger } from '@angular/material';
 import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -215,10 +210,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         const self = this;
 
         this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
-            if (loaded === false) {
-                // should be triggered by app-shell/container
-                // this.store.dispatch(new DbfsLoadResources());
-            }
             if (loaded === true) {
                 this.store.dispatch(new DbfsPanelsInitialize());
             }
@@ -305,7 +296,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.panelAction$.subscribe( action => {
-
             switch (action.method) {
                 case 'goNextPanel':
                     setTimeout(function() {
@@ -334,7 +324,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
                     }.bind(this), 200);
                     break;
                 case 'changePanelTab':
-                    // console.log('CHANGE PANEL TAB', this);
                     this.resetDataSourceFilters();
                     switch (action.tab) {
                       case 'favorites':
@@ -485,7 +474,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     clickMoveMenu(id: number, type: string, event: any) {
-
         event.stopPropagation();
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findMiniNavTrigger(id, type);
 
@@ -646,16 +634,14 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.closeDrawer();
     }
 
-    /* TODO: these are for future needs?
+    /* NOTE: Do we need? maybe in future?
     editDashboards() {
 
     }
 
     navigateToDashboard(path: string) {
-        //this.logger.log('NAVIGATE TO DASHBOARD', { path });
+
     }*/
-
-
 
     // MORE MENU BEHAVIORS
 
@@ -755,7 +741,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     // PANEL NAVIGATION BEHAVIORS
 
     navtoSpecificPanel(idx: number, fromIdx: number) {
-
         this.currentPanelIndex = idx;
         const _panels = JSON.parse(JSON.stringify(this.panels));
         _panels.splice((idx + 1), (fromIdx - idx) - 1);
@@ -772,7 +757,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     navtoMasterPanel() {
-
         if (this.currentPanelIndex > 0) {
             this.navtoSpecificPanel(0, this.currentPanelIndex);
             this.resetDataSourceFilters();

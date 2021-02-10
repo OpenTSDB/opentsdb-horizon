@@ -8,6 +8,7 @@ import { GridsterModule } from 'angular2gridster';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
 import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-widgets.module';
+import { AppShellModule } from '../app-shell/app-shell.module';
 
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
 import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
@@ -47,7 +48,8 @@ import { TemplateVariablePanelComponent } from './components/template-variable-p
 import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
-import { AppShellModule } from '../app-shell/app-shell.module';
+
+import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module'
 
 @NgModule({
     imports: [
@@ -71,7 +73,8 @@ import { AppShellModule } from '../app-shell/app-shell.module';
         DynamicWidgetsModule,
         UniversalDataTooltipDirectivesModule,
         UniversalClipboardModule,
-        AppShellModule
+        //AppShellModule
+        DashboardFilesystemModule
     ],
     declarations: [
         DashboardComponent,

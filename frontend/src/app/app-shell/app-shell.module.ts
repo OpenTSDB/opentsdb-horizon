@@ -45,13 +45,12 @@ import {
     NotificationListComponent,
     NotificationEditorComponent
 } from './components/admin-panel';
+
 import { DashboardService } from '../dashboard/services/dashboard.service';
 
 @NgModule({
     imports: [
         CommonModule,
-        // BrowserModule,
-        // BrowserAnimationsModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,

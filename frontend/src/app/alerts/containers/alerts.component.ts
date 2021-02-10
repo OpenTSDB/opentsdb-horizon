@@ -558,13 +558,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.snoozeDetailsComp.data.error = error;
             }
 
-            if (error && error.message) {
+            if ( error && ( error.error || error.message ) ) {
                 // set system message bar
                 this.interCom.requestSend({
                     action: 'systemMessage',
                     payload: {
                         type: 'error',
-                        message: 'Saving Error: ' + error.message
+                        message: 'Saving Error: ' + ( error.error || error.message )
                     }
                 });
             }

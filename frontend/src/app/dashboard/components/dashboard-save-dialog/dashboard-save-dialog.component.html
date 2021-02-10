@@ -15,8 +15,17 @@
         </mat-form-field>
         <mat-error *ngIf="saveForm.hasError('duplicateDashboard')">A dashboard with that name already exists in {{(saveForm['controls']['namespace'].enabled) ? 'the selected namespace' : 'your personal folder'}}</mat-error>
     </div>
-    <div class="form-field-group save-control" *ngIf="formReady">
-        <label>Save to:</label>
+    <div class="form-field-group save-control" style="display: flex; flex-direction: column;">
+        <label class="mat-label">Save to:</label>
+        <!-- NEW HTML -->
+        <mat-form-field appearance="fill" color="primary" floatLabel="never" class="dashboard-save-location">
+            <input matInput placeHolder="Please select location to save" (focus)="saveLocationInputFocus()" formControlName="dbSaveLocation">
+            <button mat-icon-button matSuffix (click)="toggleMiniNav()">
+                <mat-icon fontSet="denali" fontIcon="d-folder-open"></mat-icon>
+            </button>
+            <span class="mini-nav-trigger" [matMenuTriggerFor]="dnavMiniNavigator" #miniNavSelectTrigger></span>
+        </mat-form-field>
+        <!-- OLD HTML
         <mat-radio-group (change)="dashboardSaveToChanged($event)">
             <mat-radio-button value="isNamespace" checked=true>
                 <div class="use-namespace" [ngClass]="{'is-disabled': saveForm['controls']['namespace'].disabled}">
@@ -28,7 +37,6 @@
                             (blur)="namespaceKeydown($event)"
                             [matAutocomplete]="namespaceAuto"
                             autocomplete="off">
-                        <!-- auto complete-->
                     </mat-form-field>
                     <mat-error *ngIf="saveForm['controls']['namespace'].errors && saveForm['controls']['namespace'].errors.required">Namespace is required, if not for
                         personal use</mat-error>
@@ -44,7 +52,7 @@
             <mat-radio-button value="isPersonal">
                 <span class="save-control">My personal folder</span>
             </mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group>-->
 
     </div>
 
@@ -53,3 +61,19 @@
   <button mat-flat-button color="primary" (click)="saveDashboardAction()" [disabled]="saveForm.invalid">Save</button>
   <button mat-stroked-button mat-dialog-close>Cancel</button>
 </mat-dialog-actions>
+
+<mat-menu class="dnav-cdk-mini-navigator db-save-location-selector"
+    yPosition="below"
+    (closed)="miniNavClosed($event)"
+    #dnavMiniNavigator="matMenu">
+    <ng-template matMenuContent>
+        <div mat-menu-item (click)="$event.stopPropagation();" [disableRipple]="true">
+            <dbfs-mini-nav mode="save"
+                type="folder"
+                path="/user/{{user.alias}}"
+                (navigationCancel)="miniNavCancel($event)"
+                (directorySelected)="miniNavSelected($event)"
+                #miniNav></dbfs-mini-nav>
+        </div>
+    </ng-template>
+</mat-menu>

@@ -373,14 +373,19 @@ export class DashboardService {
                 const _cfilter = tplVariables[tplIdx].filter;
                 if (tplVariables[tplIdx].scope && tplVariables[tplIdx].scope.length > 0) {
                   const res = _cfilter.match(/^regexp\((.*)\)$/);
-                  const val = res ? res[1] : _cfilter;
-                  const regx = new RegExp(val, 'gi');
+                  const val = res ? res[1] : _cfilter;        
                   const matches = [];
-                  scopeCache[tplIdx].forEach(v => {
-                    if (v.match(regx)) {
-                      matches.push(v);
-                    }
-                  });
+                  try {
+                    const regx = new RegExp(val, 'gi');
+                    scopeCache[tplIdx].forEach(v => {
+                      if (v.match(regx)) {
+                        matches.push(v);
+                      }
+                    });
+                  } catch (e) {
+                    let err = (e as Error).message;
+                    console.info('Error: ', err);
+                  }
                   if (matches.length > 0) {
                     if (hasNot) {
                       // we need to combine with scope for not
@@ -440,7 +445,7 @@ export class DashboardService {
   }
 
   // to resolve dasboard scope to scopeCache if not there.
-  // this normally happens when first time dashboard loads
+  // this only happens when first time dashboard loads
   resolveDBScope(tplVariables: any, widgets: any[], panelMode: any): Observable<any> {
     const obs: any[] = [];
     const tpl = panelMode.view ? tplVariables.viewTplVariables : tplVariables.editTplVariables;
@@ -564,7 +569,7 @@ export class DashboardService {
   } 
   // to build and array of array of resolve tpl filter value for subtitute
   // and only for tpl filter, mainly for regexp
-  resolveTplViewValues(tplVariables: any, widgets: any[]) : Observable<any> {
+  resolveTplViewValues(tplVariables: any, widgets: any[]): Observable<any> {
     const obs: any[] = [];
     const tpl = tplVariables.viewTplVariables; // we only resolve for view not edit mode
     const scopeMatched = [];
@@ -573,18 +578,23 @@ export class DashboardService {
         const filter = tpl.tvars[i].filter;
         const res = filter.match(/^regexp\((.*)\)$/);
         if (res) {
-          const regx = new RegExp(res[1], "gi");
-          if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
-            // use scope to resolve
-            for (let j = 0; j < tplVariables.scopeCache[i].length; j++) {
-              if (tplVariables.scopeCache[i][j].match(regx)) {
-                scopeMatched.push(tplVariables.scopeCache[i][j])
+          try {
+            const regx = new RegExp(res[1], "gi");
+            if (tpl.tvars[i].scope && tpl.tvars[i].scope.length > 0) {
+              // use scope to resolve
+              for (let j = 0; j < tplVariables.scopeCache[i].length; j++) {
+                if (tplVariables.scopeCache[i][j].match(regx)) {
+                  scopeMatched.push(tplVariables.scopeCache[i][j])
+                }
               }
+              obs.push(of(scopeMatched));
+            } else {
+              const query = this.buildViewTagValuesQuery(tplVariables, widgets, res[1], i);
+              obs.push(this.httpService.getTagValues(query));
             }
-            obs.push(of(scopeMatched));
-          } else {
-            const query = this.buildViewTagValuesQuery(tplVariables, widgets, res[1], i);
-            obs.push(this.httpService.getTagValues(query));
+          } catch (e) {
+            let err = (e as Error).message;
+            console.info('Error: ', err);
           }
         } else {
           obs.push(of([filter]));

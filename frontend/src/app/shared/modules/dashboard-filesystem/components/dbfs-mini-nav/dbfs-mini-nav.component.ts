@@ -6,7 +6,8 @@ import {
     OnInit,
     OnDestroy,
     Output,
-    ViewChild
+    ViewChild,
+    ChangeDetectorRef
 } from '@angular/core';
 
 import { Observable, Subscription, of } from 'rxjs';
@@ -15,7 +16,9 @@ import { NavigatorPanelComponent } from '../../../../../app-shell/components/nav
 
 import {
     DbfsResourcesState,
-    DbfsLoadResources
+    DbfsLoadResources,
+    DbfsState,
+    DbfsLoadSubfolderSuccess
 } from '../../state';
 
 import {
@@ -39,7 +42,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     @HostBinding('class.mini-navigator-component') private _hostClass = true;
 
     // tslint:disable-next-line:no-inferrable-types
-    @Input() mode: string = 'move'; // options: move, select
+    @Input() mode: string = 'move'; // options: move, select, save
     // tslint:disable-next-line:no-inferrable-types
     @Input() path: string = '';
     // tslint:disable-next-line:no-inferrable-types
@@ -59,6 +62,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     panelIndex: number = 0;
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
+
+    @Select(DbfsState.getUser()) user$: Observable<any>;
+    user: any = {};
 
     folders: any = {};
 
@@ -99,15 +105,33 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         return false;
     }
 
+    get saveEnabled(): boolean {
+        if (this.mode === 'save') {
+            if (!this.panels[this.panelIndex].selectEnabled) {
+                if (this.selected && this.folders[this.selected].selectEnabled) {
+                    return true;
+                }
+            }
+            return this.panels[this.panelIndex].selectEnabled;
+        }
+        return false;
+    }
+
     constructor(
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
         private console: ConsoleService,
-        private service: DbfsService
+        private service: DbfsService,
+        private cdref: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
+
+        this.subscription.add(this.user$.subscribe( user => {
+            this.user = user;
+        }));
+
         this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
             if (loaded === false) {
                 this.store.dispatch(new DbfsLoadResources());
@@ -116,6 +140,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 this.miniNavInit();
             }
         }));
+
+
     }
 
     ngOnDestroy() {
@@ -138,12 +164,15 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         const miniRootPanel = this.dbfsUtils.normalizePanelFolder(miniRoot, false, false);
         this.panels.push(miniRoot);
         this.folders[miniRootPanel.fullPath] = miniRootPanel; // cache it
+
         miniRootPanel.subfolders.forEach((item) => {
             const enabled = (item.split('/').length > 2);
             const folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(item));
             const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, enabled, enabled);
             this.folders[folderPanel.fullPath] = folderPanel;
         });
+
+        const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder(miniRoot.subfolders[0]));
 
         // take care of path panels
         // NOTE: we can use the cache (on first init) since they should have loaded them in order to initiate the mini nav
@@ -177,8 +206,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.panels.push(mbrNamespacesPanel);
 
             // since opening path is on the namespace side, we need to cache the top level user folder
-            const userFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder(miniRoot.subfolders[0]));
-            const userFolderPanel = this.dbfsUtils.normalizePanelFolder(userFolder, true, true, (userFolder.fullPath === this.originDetails.fullPath));
+            const userNoDisplay = (this.mode === 'save') ? false : (userFolder.fullPath === this.originDetails.fullPath);
+            const userFolderPanel = this.dbfsUtils.normalizePanelFolder(userFolder, true, true, userNoDisplay);
             userFolderPanel.loaded = true;
 
             this.folders[userFolderPanel.fullPath] = userFolderPanel;
@@ -195,7 +224,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
         // top folder for the opening path
         const topFolder = this.store.selectSnapshot(DbfsResourcesState.getFolder(pathPrefix));
-        const topFolderPanel = this.dbfsUtils.normalizePanelFolder(topFolder, true, true, (topFolder.fullPath === this.originDetails.fullPath));
+        const topFolderNoDisplay = (this.mode === 'save') ? false : (topFolder.fullPath === this.originDetails.fullPath);
+        const topFolderPanel = this.dbfsUtils.normalizePanelFolder(topFolder, true, true, topFolderNoDisplay);
         topFolderPanel.loaded = topFolder.loaded;
 
         this.panels.push(topFolderPanel);
@@ -205,7 +235,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             const item = topFolder.subfolders[i];
             if (item) {
                 const folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(item));
-                const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, true, true, (folder.fullPath === this.originDetails.fullPath));
+                const folderNoDisplay = (this.mode === 'save') ? false : (folder.fullPath === this.originDetails.fullPath);
+                const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, true, true, folderNoDisplay);
                 folderPanel.loaded = folder.loaded;
                 this.folders[folderPanel.fullPath] = folderPanel;
             }
@@ -221,7 +252,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 pathPrefix = pathPrefix + '/' + part;
                 // get folder
                 const folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(pathPrefix));
-                const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, true, true, (folder.fullPath === this.originDetails.fullPath));
+                const folderPartsNoDisplay = (this.mode === 'save') ? false : (folder.fullPath === this.originDetails.fullPath);
+                const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, true, true, folderPartsNoDisplay);
                 folderPanel.loaded = folder.loaded;
 
                 this.panels.push(folderPanel);
@@ -231,7 +263,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     const item = folder.subfolders[j];
                     if (item) {
                         const subfolder = this.store.selectSnapshot(DbfsResourcesState.getFolder(item));
-                        const subfolderPanel = this.dbfsUtils.normalizePanelFolder(subfolder, true, true, (subfolder.fullPath === this.originDetails.fullPath));
+                        const subfolderNoDisplay = (this.mode === 'save') ? false : (subfolder.fullPath === this.originDetails.fullPath);
+                        const subfolderPanel = this.dbfsUtils.normalizePanelFolder(subfolder, true, true, subfolderNoDisplay);
                         subfolderPanel.loaded = subfolder.loaded;
                         this.folders[subfolderPanel.fullPath] = subfolderPanel;
                     }
@@ -252,8 +285,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     navigatorAction(action: string, event?: any) {
         switch (action) {
             case 'move':
-                // console.log('selected', this.originDetails, this.selected, this.panels[this.panelIndex]);
-
                 this.directorySelected.emit({
                     action: 'miniNavMove',
                     id: this.originDetails.id,
@@ -276,6 +307,19 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     }
                 });
                 break;
+            case 'save':
+                let savePath: any;
+                if (!this.selected) {
+                    // nothing is selected, so assume it is current panel
+                    savePath = this.panels[this.panelIndex].fullPath;
+                } else {
+                    savePath = this.selected;
+                }
+                this.directorySelected.emit({
+                    action: 'miniNavSave',
+                    payload: this.folders[savePath]
+                });
+                break;
             case 'cancel':
                 this.navigationCancel.emit({
                     action: 'miniNavCancel',
@@ -284,12 +328,12 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 });
                 break;
             case 'goUpDirectory':
-                this.navPanel.goBack(function() {
+                this.navPanel.goBack(() => {
                     this.panels.splice(this.panelIndex);
                     this.panelIndex = this.panels.length - 1;
                     this.selected = false;
-                    // console.log('this.panels', this.panels);
-                }.bind(this));
+                    this.cdref.detectChanges();
+                });
                 break;
             default:
                 break;
@@ -310,7 +354,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 const pathParts = folder.fullPath.split('/');
                 if (
                     (this.mode === 'move' && (pathParts.length === 2 || !folder.moveEnabled)) ||
-                    (this.mode === 'select' && (pathParts.length === 2 || !folder.selectEnabled))
+                    ((this.mode === 'save' || this.mode === 'select') && (pathParts.length === 2 || !folder.selectEnabled))
                 ) {
                     // can't select the folder, so just load it as a panel
                     // example is if they are viewing path '/namespace'
@@ -338,7 +382,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.selected = false;
             this.navPanel.goNext();
         }.bind(this), 200);
-
     }
 
     private loadSubFolderThenPanel(folder: any) {
@@ -359,6 +402,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
             const folderPanel = this.dbfsUtils.normalizePanelFolder(resource, true, true, (resource.fullPath === this.originDetails.fullPath));
             folderPanel.loaded = true;
+
             // just to be sure the name carries over
             if (folderPanel.ownerType === 'namespace' && folderPanel.topFolder === true) {
                 const nsData = this.store.selectSnapshot(DbfsResourcesState.getNamespacesData);
@@ -385,6 +429,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
             this.folders[folderPanel.fullPath] = folderPanel;
             this.addPanel(folderPanel.fullPath);
+
+            // tell DBFS about this as well so the cache is in sync
+            this.store.dispatch(new DbfsLoadSubfolderSuccess(resource, {}));
         });
     }
 }

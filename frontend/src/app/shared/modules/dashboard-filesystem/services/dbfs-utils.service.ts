@@ -8,11 +8,7 @@ import { ConsoleService } from '../../../../core/services/console.service';
 import {
     DbfsPanelFolderModel,
     DbfsFileModel,
-    DbfsFolderModel,
-    DbfsNamespaceModel,
-    DbfsResourcesModel,
-    DbfsSyntheticFolderModel,
-    DbfsUserModel
+    DbfsFolderModel
 } from '../state/dbfs-resources.interfaces';
 
 import { UtilsService } from '../../../../core/services/utils.service';

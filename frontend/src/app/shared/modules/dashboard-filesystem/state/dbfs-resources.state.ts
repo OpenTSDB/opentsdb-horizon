@@ -308,6 +308,10 @@ export class DbfsResourcesState {
     ) { }
 
     /** Selectors */
+    @Selector() static getActiveUser(state: DbfsResourcesModel) {
+        return state.activeUser;
+    }
+
     @Selector() static getUsersData(state: DbfsResourcesModel) {
         return state.users;
     }
