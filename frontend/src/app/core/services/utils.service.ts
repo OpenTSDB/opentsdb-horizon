@@ -1086,4 +1086,8 @@ export class UtilsService {
         }
     }
 
+    regExpEscSpecialChars(value, replaceChars) {
+        const regex = new RegExp('[' + replaceChars.join('') + ']', 'g');
+        return value.replace(regex, '\\$&'); 
+    }
 }
