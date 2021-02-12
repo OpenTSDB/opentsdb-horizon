@@ -434,9 +434,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     let batchGridPosOffset: any = 0;
                     for(let i = 0; i < clipboardWidgets.length; i++) {
+                        // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
+                        // generate new widget id
                         clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
-                        //clipboardWidgets[i].gridPos.yMd = clipboardWidgets[i].gridPos.yMd + clipboardWidgets[i].gridPos.h;
+                        // need better way to position... just drop them at top for now
                         clipboardWidgets[i].gridPos.y = 0;
                         clipboardWidgets[i].gridPos.ySm = 0;
                         clipboardWidgets[i].gridPos.yMd = 0;
@@ -667,6 +669,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'GetResolveViewTplVariables':
                     this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.console.log('RESOLVED TPL VARIABLES', results);
                         this.interCom.responsePut({
                             action: 'viewTplVariablesValues',
                             payload: {
@@ -740,7 +743,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         preview: message.payload.preview
                     };
 
-                    this.store.dispatch(new ClipboardAddItems([widgetCopy]));
+                    let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
+                    this.console.log('RESOLVED WIDGETS', { resolvedWidgets });
+                    /*
+                    this.dbService.resolveTplViewValues(this.tplVariables, [widgetCopy]).subscribe(results => {
+                        this.console.log('RESOLVED TPL VARIABLES', {
+                            results: results,
+                            scope: this.tplVariables
+                        });
+
+                    });*/
+
+                    this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
                     break;
                 case 'batchItemUpdated':
                     this.batchSelectedItems[message.id] = message.payload.selected;
@@ -2012,7 +2026,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // allow all promises to resolve before anything else can be done
         Promise.all(promises)
            .then((results) => {
-                this.store.dispatch(new ClipboardAddItems(results));
+                // resolve dashboard template variables
+                const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
+                this.console.log('RESOLVED WIDGETS', { resolvedWidgets });
+
+                // copy them to clipboard
+                this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+
+                // cleanup and resets
                 if (this.clipboardMenu.getDrawerState() === 'closed') {
                     this.clipboardMenu.toggleDrawerState({});
                 }
@@ -2127,6 +2148,51 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
         this.batchSelectedCount = ids.length;
+    }
+
+    // util function to generate lookup map to dashboard variables
+    private getTplVariablesKeyLookup(): any {
+        const rawVariables: any[] = this.tplVariables.viewTplVariables.tvars;
+        const variableLookup: any = {};
+        for(let i = 0; i < rawVariables.length; i++) {
+            let item = rawVariables[i];
+            variableLookup['['+item.alias+']'] = item;
+        }
+
+        return variableLookup;
+    }
+
+    // util to resolve dashboard variables for widgets being moved to clipboard
+    private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
+        let dbTplVarLookup = this.getTplVariablesKeyLookup();
+        this.console.log('RESOLVED TPL VARIABLES', {
+            scope: dbTplVarLookup,
+            widgets
+        });
+
+        // loop through widgets
+        for(let i = 0; i < widgets.length; i++) {
+            let widget: any = widgets[i];
+
+            // loop through queries
+            for (let q = 0; q < widget.queries.length; q++) {
+                let query: any = widget.queries[q];
+
+                // loop through filters
+                for (let f = 0; f < query.filters.length; f++) {
+                    let filter: any = query.filters[f];
+
+                    // check if there is a custom filter
+                    if (filter.customFilter.length > 0) {
+                        const fkey = filter.customFilter[0];
+                        filter.customFilter = [];
+                        filter.filter[0] = dbTplVarLookup[fkey].filter;
+                    }
+                }
+            }
+        }
+
+        return widgets;
     }
 
     ngOnDestroy() {
