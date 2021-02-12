@@ -562,6 +562,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         });
                         sub.unsubscribe();
                     }
+                    // for markdown, after edit, force to apply visual text updated.
+                    if (message.payload.widget.settings.component_type !== 'MarkdownWidgetComponent') {
+                        this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                            this.interCom.responsePut({
+                                action: 'viewTplVariablesValues',
+                                payload: {
+                                    tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                    tplValues: results
+                                }
+                            });
+                        });
+                    }                   
                     // case that widget is updated we need to get new set of dashboard tags
                     this.isDbTagsLoaded = false;
                     break;

@@ -307,9 +307,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             if ( !this.detailsView && val !== null ) {
                 this.setRouterUrl();
             }
-            val = val ? val : '';
-            this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
+            try {
+                this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
+                this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            } catch(e) {
+                console.info(e);
+            }
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
