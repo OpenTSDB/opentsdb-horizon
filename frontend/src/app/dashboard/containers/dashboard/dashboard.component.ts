@@ -669,7 +669,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'GetResolveViewTplVariables':
                     this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
-                        this.console.log('RESOLVED TPL VARIABLES', results);
                         this.interCom.responsePut({
                             action: 'viewTplVariablesValues',
                             payload: {
@@ -744,15 +743,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     };
 
                     let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
-                    this.console.log('RESOLVED WIDGETS', { resolvedWidgets });
-                    /*
-                    this.dbService.resolveTplViewValues(this.tplVariables, [widgetCopy]).subscribe(results => {
-                        this.console.log('RESOLVED TPL VARIABLES', {
-                            results: results,
-                            scope: this.tplVariables
-                        });
-
-                    });*/
 
                     this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
                     break;
@@ -2028,7 +2018,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
            .then((results) => {
                 // resolve dashboard template variables
                 const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
-                this.console.log('RESOLVED WIDGETS', { resolvedWidgets });
 
                 // copy them to clipboard
                 this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
@@ -2165,10 +2154,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // util to resolve dashboard variables for widgets being moved to clipboard
     private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
         let dbTplVarLookup = this.getTplVariablesKeyLookup();
-        this.console.log('RESOLVED TPL VARIABLES', {
-            scope: dbTplVarLookup,
-            widgets
-        });
 
         // loop through widgets
         for(let i = 0; i < widgets.length; i++) {
