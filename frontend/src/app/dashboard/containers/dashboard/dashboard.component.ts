@@ -1033,6 +1033,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
+            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' )  {
+                const search = this.widgets[i].eventQueries[0].search;
+                if ( this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
+                    this.handleEventQueryPayload({
+                            id: this.widgets[i].id,
+                            payload: this.utilService.deepClone({eventQueries: this.widgets[i].eventQueries })
+                        });
+                }
+                continue;
+            }
             for (let j = 0; j < queries.length; j++) {
                 if (tvars.length > 0) {
                     for (let k = 0; k < tvars.length; k++) {
@@ -1235,6 +1245,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+
+    applyTplVarsToEventQuery(search) {
+        const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
+
+        if ( tplVars.length ) {
+            const re = new RegExp(/\[(.+?)\]/, 'g');
+            let matches = [];
+            while (matches = re.exec(search)) {
+                const alias = '' + matches[1];
+                const tplIdx = tplVars.findIndex(tpl => tpl.alias === alias);
+                if ( tplIdx >= 0 ) {
+                    const idreg = new RegExp('\\[' + alias + '\\]', 'gm');
+                    let filter = tplVars[tplIdx].filter || 'regexp(.*)';
+                    const res = filter.match(/^regexp\((.*)\)$/);
+                    filter = res ? '/' + res[1] + '/' : filter;
+                    search = search.replace(idreg, filter);
+                }
+            }
+        }
+        return search;
+    }
+    
     applyToTChange() {
         const cloneWidgets = this.utilService.deepClone( this.snapshot ? [this.newWidget] : this.widgets );
         // find all widget that using downsample as auto
@@ -1410,6 +1442,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if ( message.payload.eventQueries[0].namespace) {
             const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
             const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
+            message.payload.eventQueries[0].search = this.applyTplVarsToEventQuery(message.payload.eventQueries[0].search);
             this.store.dispatch(new GetEvents(
                 {   start: dt.start,
                     end: dt.end
