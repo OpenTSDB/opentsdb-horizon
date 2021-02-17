@@ -11,7 +11,6 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { LoggerService } from '../../../../../core/services/logger.service';
 import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
@@ -69,11 +68,18 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         { label: 'Desc', value: 'desc'}
     ];
 
+    multigraphByOption: Array<any> = [
+        { label: 'Metrics', value: 'metric_group'},
+        { label: 'Queries', value: 'query_group'}
+    ];
+    multigraphMode = 'metric_group';
+    prevMetricGroupConf: any;
+    prevQueryGroupConf: any;
     /** Mat Table Stuff */
     chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
     // default mutilgraph
-    multigraph: any = {
+    defaultMultigraph: any = {
         chart: [
             {
                 key: 'metric_group',
@@ -90,7 +96,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             }
         }
     };
-
+    multigraph: any;
     multigraphSubs: any = false;
 
     constructor(
@@ -98,7 +104,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private httpService: HttpService,
         private utilService: UtilsService,
         private multiService: MultigraphService,
-        private loggerService: LoggerService
     ) { }
 
     ngOnInit() { }
@@ -110,20 +115,56 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         this.setupMultigraph();
     }
 
+    multiModeChange(event: any) {
+        console.log('hill - event', event);
+        this.multigraphMode = event.value;
+        // to keep whatever previous multigraph conf is, so user don't get to default conf.
+        if (this.multigraphMode === 'query_group') {
+            this.prevMetricGroupConf = this.utilService.deepClone(this.widget.settings.multigraph);
+            if (this.prevQueryGroupConf) {
+                this.multigraph = this.prevQueryGroupConf;
+            } else {
+                this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+                this.multigraph.chart[0].key = 'query_group';
+            }
+        } else {
+            this.prevQueryGroupConf = this.utilService.deepClone(this.widget.settings.multigraph);
+            if (this.prevMetricGroupConf) {
+                this.multigraph = this.prevMetricGroupConf;
+            } else {
+                this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+                const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+                this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
+            }
+        }
+        this.widgetChange.emit({
+            action: 'UpdateMultigraph',
+            payload: {
+                requery: this.needRequery,
+                changes: this.multigraph
+            }
+        });
+        this.createForm(this.multigraph);     
+    }
+
+    // setup multigraph now will depend on metric_group or query_group
+    // metric_group is default setup.
     setupMultigraph() {
-        // get widget tags
-        this.getWidgetTagKeys();
-        // check of they have multigraph or not
+        // check of they have multigraph before or not
         if (this.widget.settings.multigraph) {
             this.multigraph = this.utilService.deepClone(this.widget.settings.multigraph);
             // we just set to custom if it used fit before then it can save later
             // since we only support custom not auto for now
             if (this.multigraph.gridOptions.viewportDisplay === 'fit') {
                 this.multigraph.gridOptions.viewportDisplay = 'custom';
-            }
+            }    
+        } else {
+            this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
         }
-        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-        this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
+        if (this.multigraphMode === 'metric_group') {
+            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+            this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
+        } 
         this.createForm(this.multigraph);
     }
 
