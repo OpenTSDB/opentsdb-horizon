@@ -1,6 +1,16 @@
 <form [formGroup]="widgetConfigMultigraph">
     <div class="config-control inline-controls">
-        <label class="fixed-label">Chart</label>
+        <div style="display: flex; flex-direction: column;">
+            <label class="fixed-label">Multigraph by:</label>
+            <mat-radio-group (change)="multiModeChange($event)">
+                <mat-radio-button style="margin: 5px;" *ngFor="let option of multigraphByOption" 
+                [value]="option.value" 
+                [checked]="option.value === multigraphMode" [disabled]="option.value === 'query_group' && widget.queries.length < 2">
+                    {{option.label}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+
         <div class="form-field-group table-output">
             <!-- TABLE GROUP HERE -->
             <mat-table #chartTable [dataSource]="FC_chart['controls']" class="mat-elevation-z0"
@@ -33,7 +43,7 @@
                 <ng-container matColumnDef="label">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element; let rowIndex = index">
-                        {{element.get('key').value === 'metric_group' ? 'Metrics' : element.get('key').value}}
+                        {{element.get('key').value === 'metric_group' ? 'Metrics' : element.get('key').value === 'query_group' ? 'Queries' : element.get('key').value}}
                     </mat-cell>
                 </ng-container>
 
