@@ -112,6 +112,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         if ( !changes.widget ) {
             return;
         }
+        if (changes.widget.currentValue.settings.multigraph) {
+            const idx = changes.widget.currentValue.settings.multigraph.chart.findIndex(item => item.key === 'metric_group');
+            this.multigraphMode = idx > -1 ? 'metric_group' : 'query_group';
+        }
         this.setupMultigraph();
     }
 
