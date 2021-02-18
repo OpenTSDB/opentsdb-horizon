@@ -109,7 +109,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         this.interCom.requestSend({
             id: this.widget.id,
             action: 'getEventData',
-            payload: {eventQueries: this.widget.eventQueries, limit: this.mode === 'edit' ? this.previewEventsCount : this.eventsCount}
+            payload: this.util.deepClone({eventQueries: this.widget.eventQueries, limit: this.mode === 'edit' ? this.previewEventsCount : this.eventsCount})
         });
     }
 
