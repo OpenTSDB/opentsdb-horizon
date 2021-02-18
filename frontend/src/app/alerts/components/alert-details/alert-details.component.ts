@@ -924,6 +924,15 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 }
                 this.setAlertEvaluationLink();
                 break;
+            case 'SetDBDownsample':
+                    this.downsample = {
+                        aggregators: message.payload.aggregators,
+                        value: message.payload.downsample,
+                        customUnit: message.payload.downsample === 'custom' ? message.payload.customDownsampleUnit : '',
+                        customValue: message.payload.downsample === 'custom' ? message.payload.customDownsampleValue : ''
+                    };
+                    this.reloadData();
+                break;
         }
     }
 
@@ -1212,9 +1221,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
             options.periodOverPeriod = this.periodOverPeriodConfig.periodOverPeriod;
-            settings.settings.time = {};
-            settings.settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
+
+        settings.settings.time = {};
+        settings.settings.time.downsample = this.downsample;
 
         const mid = this.thresholdSingleMetricControls.metricId.value;
         options.sources = mid ? [ mid] : [];
@@ -1653,12 +1663,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     end: this.queryTime.end / 1000,
                     zone: 'local'
                 },
-                downsample: {
-                    aggregators: [''],
-                    customUnit: '',
-                    customValue: '',
-                    value: 'auto'
-                },
                 meta : {
                     title: this.data.name
                 }
@@ -1697,9 +1701,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             ]
         };
 
-        if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
-            dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
-        }
+        dConfig.settings.downsample = this.downsample;
+
         const payload: any = {
             'name': encodeURIComponent(this.data.name) || 'Untitled Alert',
             'content': dConfig
