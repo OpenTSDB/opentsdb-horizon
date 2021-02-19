@@ -12,7 +12,81 @@ export class MultigraphService {
 
   constructor(private utils: UtilsService, private tranxService: DatatranformerService) { }
 
-  // fill up tag values from rawdata
+  // for testing 
+  shuffle(array: any[]) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
+  // multigraph by queries
+  fillMultigraphByQuery(widget: any, multiConf: any,  rawdata: any): any {
+    const xTemp = multiConf.x ? '{{{' + Object.keys(multiConf.x).join('}}}/{{{') + '}}}' : 'x';
+    const yTemp = multiConf.y ? '{{{' + Object.keys(multiConf.y).join('}}}/{{{') + '}}}' : 'y';
+    const results = {};
+    let lookupData = {};
+    let myresults  = this.shuffle(JSON.parse(JSON.stringify(rawdata.results)));
+    console.log('shuff', myresults);
+    for (let i = 0; i < myresults.length; i++) {
+      const [source, mid] = myresults[i].source.split(':');
+      const qids = this.REGDSID.exec(mid);
+      const dataSrc = myresults[i];
+      console.log('qids slipt, multiConf', qids[0].split('_'), multiConf);
+      console.log('result', dataSrc);
+      const qid = qids[0].split('_')[0];
+      const key = 'query_group';
+      const keyValue = qid;
+      let x = xTemp;
+      let y = yTemp;
+      if (dataSrc.source) {
+        if (multiConf.x && x.indexOf(key) !== -1) {
+          x = x.replace('{{{' + key + '}}}', keyValue);
+          if (multiConf.x[key] && !multiConf.x[key].values.includes(keyValue)) {
+            multiConf.x[key].values.push(keyValue);
+          }
+        }
+        if (multiConf.y && y.indexOf(key) !== -1) {
+          y = y.replace('{{{' + key + '}}}', keyValue);
+          if (multiConf.y[key] && !multiConf.y[key].values.includes(keyValue)) {
+            multiConf.y[key].values.push(keyValue);
+          }
+        }
+        // build lookupData, x & y are solved above to its values
+        if (!lookupData[y]) {
+          lookupData[y] = {};
+        }
+        if (!lookupData[y][x]) {
+          lookupData[y][x] = {
+            results: []
+          };
+        }
+        lookupData[y][x].results.push(dataSrc);
+        
+      }
+    } // rawdata results for loop
+
+    //debugger;
+
+    // results['y'] = { 'x': rawdata };
+    
+    return lookupData;
+    //return results;
+  }
+
+  // fill up tag values from rawdata,multigraph by metrics
   fillMultiTagValues(widget: any, multiConf: any, rawdata: any): any {
     const startTime = new Date().getTime();
     const xTemp = multiConf.x ? '{{{' + Object.keys(multiConf.x).join('}}}/{{{') + '}}}' : 'x';
