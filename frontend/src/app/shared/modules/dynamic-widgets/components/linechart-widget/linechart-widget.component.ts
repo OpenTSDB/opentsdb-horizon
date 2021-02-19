@@ -140,7 +140,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // TODO: These multigraph values need to be retrieved from widget settings
     multigraphEnabled = false;
     multigraphMode = 'grid'; // grid || freeflow
-    fakeLoopData = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // eventually remove this
+    isMultiByQuery = false; // flag for multigraph by metrics or query
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
     graphData: any = {}; // { y: { x: { ts: [[0]] }}};
@@ -368,6 +368,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             let limitGraphs = {};
                             const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
                             this.multigraphEnabled = (multiConf.x || multiConf.y) ? true : false;
+                            this.isMultiByQuery = (multiConf.x && multiConf.x.hasOwnProperty('query_group') 
+                                || multiConf.y && multiConf.y.hasOwnProperty('query_group')) ? true: false;   
                             if (this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
@@ -382,7 +384,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // result graphRowLabelMarginLeft since we have new data
                                 this.graphRowLabelMarginLeft = 0;
                                 // fill out tag values from rawdata
-                                const results = this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
+                                const results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata) 
+                                                                    : this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
+                                console.log('results', results);
                                 const maxGraphs = 60;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
                                 const colKeys = rowKeys.length ? this.getGraphDataObjectKeys(results[rowKeys[0]]) : [];
@@ -420,15 +424,19 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                 options.isIslandLegendOpen = firstGraph && options.isIslandLegendOpen;
                                                 firstGraph = false;
                                                 // preserve previous series and visibility so we can remap in data transformer
-                                                if (this.graphData.hasOwnProperty(ykey)) {
+                                                // this might not need anymore since it rarely hit this.
+                                                /*if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
-                                                        const prevOptions = this.utilService.deepClone(this.graphData[ykey][xkey].options);
-                                                        // console.log('PREVIOUS OPTIONS', prevOptions);
-                                                        options.series = prevOptions.series;
-                                                        options.visibility = prevOptions.visibility;
-                                                        options.visibilityHash[prevOptions.hash] = prevOptions.visbilityHash;
+                                                        if (this.graphData[ykey][xkey].hasOwnProperty('options')) {
+                                                            const prevOptions = this.utilService.deepClone(this.graphData[ykey][xkey].options);
+                                                            // console.log('PREVIOUS OPTIONS', prevOptions);
+                                                            options.series = prevOptions.series;
+                                                            options.visibility = prevOptions.visibility;
+                                                            options.visibilityHash[prevOptions.hash] = prevOptions.visbilityHash;
+                                                        }
                                                     }
                                                 }
+                                                */
 
                                                 limitGraphs[ykey][xkey].ts = this.dataTransformer.yamasToDygraph(
                                                      this.widget, options, limitGraphs[ykey][xkey].ts, limitGraphs[ykey][xkey]
@@ -750,6 +758,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.needRequery = message.payload.reQuery;
                 break;
             case 'UpdateMultigraph':
+                console.log('this is call tpo update mulrifre', message);
                 this.widget.settings.multigraph = message.payload.changes;
                 this.multigraphMode = this.widget.settings.multigraph.layout;
                 // will depend on message.payload.requery to handle requery or not

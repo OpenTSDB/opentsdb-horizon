@@ -1319,9 +1319,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const payload = this.utilService.deepClone(message.payload);
         // tslint:disable-next-line:max-line-length
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
-        // TODO: add toggle to enable or display multigraph.
+        // should we have option to turn on and off multigraph?
         const groupby = payload.settings.multigraph ?
-            payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
+            payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group' && d.displayAs !== 'g').map(d => d.key) : [];
+            console.log(' groupby', groupby);
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
