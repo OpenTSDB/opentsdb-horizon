@@ -1235,7 +1235,8 @@ This simulates the output of the query editor - minus a few events and buttons
             [timezone]="'local'"
             [startTime]="startTime"
             [endTime]="endTime"
-            [downsample]="''"
+            [downsample]=" data.type === 'simple' ? downsample: null"
+            [tot]="null"
             [config]="{enableSync: false, enableRefresh: false}"
             [xPosition]="menuXAlignValue">
         </time-picker>
