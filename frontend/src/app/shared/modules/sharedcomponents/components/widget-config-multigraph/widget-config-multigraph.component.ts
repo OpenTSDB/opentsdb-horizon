@@ -163,12 +163,16 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 this.multigraph.gridOptions.viewportDisplay = 'custom';
             }    
         } else {
-            this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+          this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+          if (this.multigraphMode === 'query_group') {
+                this.multigraph.chart[0].key = 'query_group';
+            }
         }
-        if (this.multigraphMode === 'metric_group') {
+        //if (this.multigraphMode === 'metric_group') {
             const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
             this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
-        } 
+        //} 
+        console.log('hill - this multigraphg before create a form', this.multigraph);
         this.createForm(this.multigraph);
     }
 
