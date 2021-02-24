@@ -244,8 +244,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
     /** Toolbar controls */
     trackmouseCheckboxChange(event: any) {
-        // console.log('trackmouse', event);
-
         // update options, then interCom requestSend change
         this.options.trackMouse = event.checked;
         this.interCom.responsePut({
@@ -372,7 +370,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        //console.log('DATA', this.tableDataSource.data);
+
         this.updateMasterCheckboxStates();
         if (this._legendTable) {
             this._legendTable.renderRows();
@@ -428,7 +426,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
             // everything else
             value = item[property];
         }
-        //console.log('SORT ACCESSOR', {item, property, value});
+
         return value;
     }
 
@@ -591,7 +589,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 if (itemIndex < lastIndex) {
                     for(let i = itemIndex; i <= lastIndex; i++) {
                         let item = <any>this.tableDataSource.data[i];
-                        console.log(i,item);
                         toShow.push(item.srcIndex);
                     }
                 }
@@ -600,7 +597,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 if(itemIndex > lastIndex) {
                     for(let i = lastIndex; i <= itemIndex; i++) {
                         let item = <any>this.tableDataSource.data[i];
-                        console.log(i,item)
                         toShow.push(item.srcIndex);
                     }
                 }
