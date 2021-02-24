@@ -14,7 +14,7 @@
                 This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
             </span>
         </span>
-        
+
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
         <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
@@ -202,12 +202,14 @@
             </div>
 
             <div class="step-section notification-section is-visible" #steplegend>
+
                 <div class="step-section-label">
                     <span class="step-section-label-text" (click)="toggleConfigSection('legend', $event);scrollToElement(steplegend);">
                         <span>4. Legend</span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.legend ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
+
                 <div class="step-section-content" *ngIf="visibleSections.legend">
                     <widget-config-legend *ngIf="!multigraphEnabled" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-legend>
                     <div *ngIf="multigraphEnabled" class="disabled-message">
@@ -217,45 +219,76 @@
             </div>
 
             <div class="step-section notification-section is-visible" #stepmultigraph>
+                <div class="step-section-header">
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('multigraph', $event);scrollToElement(stepmultigraph);">
                             <span>5. Multigraph</span>
                             <mat-icon fontSet="denali" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
-                    <div class="step-section-content" *ngIf="visibleSections.multigraph">
-                        <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
+                    <div>
+                        <mat-slide-toggle
+                        [checked]="multigraphEnabled"
+                        (change)="configSectionToggleChanged('multigraph', $event.checked)">
+                            <span *ngIf="multigraphEnabled">
+                                Multigraph Enabled
+                            </span>
+                            <span *ngIf="!multigraphEnabled">
+                                Multigraph <b>Disabled</b>
+                            </span>
+                        </mat-slide-toggle>
                     </div>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.multigraph">
+                    <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
+                </div>
             </div>
             <div class="step-section notification-section is-visible" #stepevents>
+                <div class="step-section-header">
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
                             <span>6. Events</span>
                             <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
-                    <div class="step-section-content" *ngIf="visibleSections.events">
-                        <div class="events-config" *ngIf="!multigraphEnabled">
-                            <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
-                            <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
-                            <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
-                            <event-list class="events-list"
-                                *ngIf="widget.settings.visual.showEvents"
-                                [events]="events"
-                                [timezone]="timezone"
-                                [startTime]="startTime"
-                                [endTime]="endTime"
-                                [previewLimit]="previewEventsCount"
-                                [loading]="eventsLoading"
-                                [error]="eventsError">
-                            </event-list>
-                            </div>
-                        </div>
-
-                        <div *ngIf="multigraphEnabled" class="disabled-message">
-                            Events <b>disabled</b> with multiple graphs.
+                    <div *ngIf="!multigraphEnabled">
+                        <mat-slide-toggle
+                        [checked]="widget.settings.visual.showEvents"
+                        (change)="configSectionToggleChanged('events', $event.checked)">
+                            <span *ngIf="widget.settings.visual.showEvents">
+                                Events Enabled
+                            </span>
+                            <span *ngIf="!widget.settings.visual.showEvents">
+                                Events <b>Disabled</b>
+                            </span>
+                        </mat-slide-toggle>
+                    </div>
+                    <div *ngIf="multigraphEnabled" class="disabled-message">
+                        Events <b>disabled</b> with multigraphs.
+                    </div>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.events">
+                    <div class="events-config" *ngIf="!multigraphEnabled">
+                        <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
+                        <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
+                        <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
+                        <event-list class="events-list"
+                            *ngIf="widget.settings.visual.showEvents"
+                            [events]="events"
+                            [timezone]="timezone"
+                            [startTime]="startTime"
+                            [endTime]="endTime"
+                            [previewLimit]="previewEventsCount"
+                            [loading]="eventsLoading"
+                            [error]="eventsError">
+                        </event-list>
                         </div>
                     </div>
+
+                    <!--<div *ngIf="multigraphEnabled" class="disabled-message">
+                        Events <b>disabled</b> with multiple graphs.
+                    </div>-->
+                </div>
             </div>
         </div>
     </div>

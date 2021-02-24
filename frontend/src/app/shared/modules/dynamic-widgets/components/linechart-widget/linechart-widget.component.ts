@@ -368,8 +368,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             let limitGraphs = {};
                             const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
                             this.multigraphEnabled = (multiConf.x || multiConf.y) ? true : false;
-                            this.isMultiByQuery = (multiConf.x && multiConf.x.hasOwnProperty('query_group') 
-                                || multiConf.y && multiConf.y.hasOwnProperty('query_group')) ? true: false;   
+                            this.isMultiByQuery = (multiConf.x && multiConf.x.hasOwnProperty('query_group')
+                                || multiConf.y && multiConf.y.hasOwnProperty('query_group')) ? true: false;
                             if (this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
@@ -384,7 +384,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // result graphRowLabelMarginLeft since we have new data
                                 this.graphRowLabelMarginLeft = 0;
                                 // fill out tag values from rawdata
-                                const results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata) 
+                                const results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata)
                                                                     : this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
                                 console.log('results', results);
                                 const maxGraphs = 60;
@@ -553,7 +553,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // true is just a dummy value to trigger
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
-        this.newSizeSub = this.newSize$.subscribe(flag => {         
+        this.newSizeSub = this.newSize$.subscribe(flag => {
             const _size = this.widgetOutputElement.nativeElement.getBoundingClientRect();
             if (JSON.stringify(_size) !== JSON.stringify(this.currentGraphSize)) {
                 setTimeout(() => this.setSize(), 0);
@@ -657,7 +657,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.legendDataSource.sort = this.sort;
                 this.setSize();
                 break;
-            case 'ChangeAxisLabel': 
+            case 'ChangeAxisLabel':
                 const payload = message.payload;
                 this.widget.settings.axes[payload.axis].label = payload.label;
                 break;
@@ -1295,7 +1295,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.resetYZoom();
         }
     }
-    
+
     resetYZoom(redraw= true) {
         if ( this.widget.settings.chartOptions.axes ) {
             delete this.widget.settings.chartOptions.axes;
@@ -1683,6 +1683,24 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         return inwvp.topLeft || inwvp.topRight || inwvp.bottomLeft || inwvp.bottomRight;
     };
+
+    configSectionToggleChanged(type: string, event: any) {
+        switch (type) {
+            case 'events':
+                this.updateConfig({
+                    action: 'SetShowEvents',
+                    payload: {
+                        showEvents: event
+                    }
+                });
+                break;
+            case 'multigraph':
+                // TODO: Need to qire up multigraph enable/disable flag to toggle
+                // is this good enough?
+                this.multigraphEnabled = event;
+                break;
+        }
+    }
 
     private isIn(pBounding:any, cCord: any) {
         return cCord.x > pBounding.left &&
