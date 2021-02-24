@@ -145,6 +145,11 @@ $widgets-common-config: (
             margin-bottom: 8px;
             display: none;
 
+            .step-section-header {
+                width: 100%;
+                display: flex;
+            }
+
             .step-section-label {
                 border-top: 1px solid #e6eded; // why is color here??
                 display: inline-block;
@@ -152,6 +157,7 @@ $widgets-common-config: (
                 border-bottom-right-radius: 4px;
                 background-color: #e6eded; // why is color here???
                 width: 200px;
+                margin-right: 16px;
 
                 .step-section-label-text {
                     flex: 1;
