@@ -1,7 +1,7 @@
 @mixin widget-config-multigraph-component-base() {
     .widget-config-tab.multigraph-configuration {
         // style rules here
-        padding: 14px 10px;
+        padding: 0 10px 14px 10px;
         display: flex;
 
         > form {
@@ -103,6 +103,30 @@
                 }
             }
         }
+
+        .multigraph-mode-selector.mat-select {
+            .mat-select-value {
+                width: auto;
+                max-width: initial;
+            }
+
+        }
+
+        .multigraph-data-row:first-child {
+            .mat-cell.mat-column-label,
+            .cdk-column-label {
+                padding-left: 16px;
+                padding-right: 8px;
+            }
+        }
+
+        .mat-cell.mat-column-label,
+        .cdk-column-label {
+
+            .mat-form-field-underline {
+                display: none; // get rid of the underline
+            }
+        }
     }
 
     // cdk items
@@ -132,8 +156,6 @@
     .widget-config-tab.multigraph-configuration {
 
         .form-field-group.table-output {
-
-
             .mat-row:hover {
                 background: lighten(map-get($foreground, divider), 50%);
             }
