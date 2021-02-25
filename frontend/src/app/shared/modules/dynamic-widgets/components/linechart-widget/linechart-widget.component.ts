@@ -1435,6 +1435,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     toggleConfigSection(section, e) {
         this.visibleSections[section] = !this.visibleSections[section];
+        console.log('hill - this.visibleSections', this.visibleSections);
         e.stopPropagation();
     }
 
@@ -1695,8 +1696,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 });
                 break;
             case 'multigraph':
-                // TODO: Need to qire up multigraph enable/disable flag to toggle
-                // is this good enough?
                 this.multigraphEnabled = event;
                 break;
         }

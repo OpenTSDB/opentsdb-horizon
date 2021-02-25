@@ -148,6 +148,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 changes: this.multigraph
             }
         });
+        console.log('hill - modifued multi', this.multigraph);
         this.createForm(this.multigraph);     
     }
 
