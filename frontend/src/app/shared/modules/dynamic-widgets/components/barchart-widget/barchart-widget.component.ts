@@ -73,7 +73,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             position: 'right'
         }
     };
-    data: any = [ ];
+    data: any = null;
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
     isEditContainerResized = false;

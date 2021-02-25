@@ -129,6 +129,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         {
             label: 'Last',
             value: 'last'
+        },
+        {
+            label: 'Count',
+            value: 'count'
         }
     ];
 
