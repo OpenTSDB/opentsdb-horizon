@@ -386,7 +386,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // fill out tag values from rawdata
                                 const results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata)
                                                                     : this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
-                                console.log('results', results);
+                                console.log('hill - results', results);
                                 const maxGraphs = 60;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
                                 const colKeys = rowKeys.length ? this.getGraphDataObjectKeys(results[rowKeys[0]]) : [];

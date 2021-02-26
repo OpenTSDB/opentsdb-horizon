@@ -178,58 +178,7 @@ export class MultigraphService {
     if (!Object.keys(lookupData).length) {
       results['y'] = { 'x': rawdata };
     }
-    console.log('multigrap - query', results);
     return results;
-
-    /** olb block
-    const xTemp = multiConf.x ? '{{{' + Object.keys(multiConf.x).join('}}}/{{{') + '}}}' : 'x';
-    const yTemp = multiConf.y ? '{{{' + Object.keys(multiConf.y).join('}}}/{{{') + '}}}' : 'y';
-    const results = {};
-    let lookupData = {};
-    let myresults  = this.shuffle(JSON.parse(JSON.stringify(rawdata.results)));
-    console.log('shuff', myresults);
-    for (let i = 0; i < myresults.length; i++) {
-      const [source, mid] = myresults[i].source.split(':');
-      const qids = this.REGDSID.exec(mid);
-      const dataSrc = myresults[i];
-      console.log('qids slipt, multiConf', qids[0].split('_'), multiConf);
-      console.log('result', dataSrc);
-      const qid = qids[0].split('_')[0];
-      const key = 'query_group';
-      const keyValue = qid;
-      let x = xTemp;
-      let y = yTemp;
-      if (dataSrc.source) {
-        if (multiConf.x && x.indexOf(key) !== -1) {
-          x = x.replace('{{{' + key + '}}}', keyValue);
-          if (multiConf.x[key] && !multiConf.x[key].values.includes(keyValue)) {
-            multiConf.x[key].values.push(keyValue);
-          }
-        }
-        if (multiConf.y && y.indexOf(key) !== -1) {
-          y = y.replace('{{{' + key + '}}}', keyValue);
-          if (multiConf.y[key] && !multiConf.y[key].values.includes(keyValue)) {
-            multiConf.y[key].values.push(keyValue);
-          }
-        }
-        // build lookupData, x & y are solved above to its values
-        if (!lookupData[y]) {
-          lookupData[y] = {};
-        }
-        if (!lookupData[y][x]) {
-          lookupData[y][x] = {
-            results: []
-          };
-        }
-        lookupData[y][x].results.push(dataSrc);
-        
-      }
-    } // rawdata results for loop
-    // results['y'] = { 'x': rawdata };
-    
-    return lookupData;
-    //return results;
-    */
   }
 
   // fill up tag values from rawdata,multigraph by metrics
