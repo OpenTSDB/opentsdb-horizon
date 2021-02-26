@@ -119,7 +119,10 @@
                 <!-- row and header definition -->
                 <mat-header-row *matHeaderRowDef="chartDisplayColumns"></mat-header-row>
                 <!-- we DRAG the whole row -->
-                <mat-row class="multigraph-data-row" [ngClass]="{'multigraph-mode-row': i === 0}" *matRowDef="let row; columns: chartDisplayColumns; let i = index" cdkDrag [cdkDragData]="row"></mat-row>
+                <mat-row class="multigraph-data-row"
+                    [ngClass]="{'multigraph-mode-row': row.get('key').value === 'metric_group' || row.get('key').value === 'query_group'}"
+                    *matRowDef="let row; columns: chartDisplayColumns; let i = index"
+                    cdkDrag [cdkDragData]="row"></mat-row>
             </mat-table>
 <!-- disbable not allow to add tag from multigraph for now
             <div class="add-tag-control">
