@@ -606,6 +606,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.setThresholds('recovery', val);
         }));
 
+        this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].valueChanges.subscribe(val => {
+            if ( val !== null && val === 'all_of_the_times' ) {
+                this.thresholdSingleMetricControls['requiresFullWindow'].setValue(true);
+                this.thresholdSingleMetricControls['reportingInterval'].setValue(60);
+            }
+        }));
+
         // tslint:disable-next-line:max-line-length
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].valueChanges.subscribe(val => {
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
