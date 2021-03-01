@@ -16,15 +16,12 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
 import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragHandle} from '@angular/cdk/drag-drop';
-
-
+import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 
 import {
@@ -47,6 +44,7 @@ interface IQueryEditorOptions {
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
     enableAlias?: boolean;
+    excludeMetricGroupByTags?: string[];
 }
 
 @Component({
@@ -88,6 +86,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
     @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
 
+    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger }) artifactsMenuTrigger: MatMenuTrigger;
     @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
 
@@ -302,9 +301,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     fxCall: 'Rollup',
                     val: 'sum,auto'
                 }
-                ]
-            },
-            {
+            ]
+        },
+        {
             label: 'Timeshift',
             functions: [
                 {
@@ -326,6 +325,112 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     label: 'Month Before',
                     fxCall: 'Timeshift',
                     val: '4w'
+                }
+            ]
+        },
+        /*
+        {
+            label: 'Group By',
+            functions: [
+                {
+                    label: 'Avg',
+                    fxCall: 'GroupByAvg',
+                    val: 'avg'
+                },
+                {
+                    label: 'Min',
+                    fxCall: 'GroupByMin',
+                    val: 'min'
+                },
+                {
+                    label: 'Max',
+                    fxCall: 'GroupByMax',
+                    val: 'max'
+                },
+                {
+                    label: 'Sum',
+                    fxCall: 'GroupBySum',
+                    val: 'sum'
+                },
+                {
+                    label: 'Count',
+                    fxCall: 'GroupByCount',
+                    val: 'count'
+                }
+            ]
+        },
+        */
+        {
+            label: 'Ratio',
+            functions: [
+                {
+                    label: 'Ratio',
+                    fxCall: 'Ratio',
+                    val: null
+                },
+                {
+                    label: 'Percentage',
+                    fxCall: 'Percentage',
+                    val: null
+                }
+            ]
+        },
+        {
+            label: 'Sliding Window',
+            functions: [
+                {
+                    label: 'Sliding Sum 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,5m"
+                },
+                {
+                    label: 'Sliding Sum 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,15m"
+                },{
+                    label: 'Sliding Count 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,5m"
+                },
+                {
+                    label: 'Sliding Count 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,15m"
+                },
+                {
+                    label: 'Sliding Min 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,5m"
+                },
+                {
+                    label: 'Sliding Min 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,15m"
+                },
+                {
+                    label: 'Sliding Max 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,5m"
+                },
+                {
+                    label: 'Sliding Max 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,15m"
+                }
+            ]
+        },
+        {
+            label: 'Time Difference',
+            functions: [
+                {
+                    label: 'Delta in Minutes',
+                    fxCall: 'TimeDiff',
+                    val: 'MINUTES'
+                },
+                {
+                    label: 'Delta in Seconds',
+                    fxCall: 'TimeDiff',
+                    val: 'SECONDS'
                 }
             ]
         }
@@ -351,11 +456,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'ValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CounterValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CntrRate' : {
             errorMessage: null,
@@ -373,6 +480,29 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
             regexValidator: /^\d+[hdw]$/i
         },
+        'GroupByAvg' : {
+            groupByFx : true
+        },
+        'GroupByMin' : {
+            groupByFx : true
+        },
+        'GroupByMax' : {
+            groupByFx : true
+        },
+        'GroupBySum' : {
+            groupByFx : true
+        },
+        'GroupByCount' : {
+            groupByFx : true
+        },
+        'SlidingWindow' : {
+            errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        },
+        'TimeDiff' : {
+            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
+            regexValidator: /^SECONDS|MINUTES|HOURS$/
+        }
     };
 
     // MAT-TABLE DEFAULT COLUMNS
@@ -389,6 +519,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     metricTableDataSource = new MatTableDataSource<any>([]);
 
     visualPanelId = -1;
+
+    pctSelectedMetrics; 
+
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -397,13 +530,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService
+        private logger: LoggerService,
+        private multiService: MultigraphService
     ) {
+        /*
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
             'function_icon',
             domSanitizer.bypassSecurityTrustResourceUrl('assets/function-icon.svg')
-        );
+        ); */
 
     }
 
@@ -462,6 +597,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     hasValidFilter(query: any): Number {
         const index =  query.filters.findIndex(f => f.filter.length || (f.customFilter && f.customFilter.length));
         return  index;
+    }
+
+    isArray(d : any ) {
+        return Array.isArray(d);
     }
 
     // helper function to format the table datasource into a structure
@@ -559,7 +698,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     settings: {
                         visual: {
                             visible: this.options.enableMultiMetricSelection,
-                            color: 'auto',
+                            color: '',
                             label: ''
                         }
                     },
@@ -658,7 +797,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (index !== -1) {
             this.query.metrics[index].joinType = value;
             this.queryChanges$.next(true);
-            console.log("join type id=", id, this.query.metrics[index].joinType )
         }
     }
 
@@ -666,6 +804,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const index = this.query.metrics.findIndex(item => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].groupByTags = tags;
+            // this is in edit widget mode, if they make change to groupby
+            // we need also update the the multigraph conf
+            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+            this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
             this.queryChanges$.next(true);
         }
     }
@@ -930,7 +1072,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
-                    color: 'auto',
+                    color: '',
                     label: ''
                 }
             },
@@ -1160,6 +1302,37 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.tagFilterMenuTrigger.closeMenu();
     }
 
+    createPercentageMetrics() {
+        if ( this.pctSelectedMetrics.length > 1 ) {
+            const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+            expConfig.settings.visual.label = 'Total';
+            expConfig.settings.visual.visible = false;
+            this.query.metrics.push(expConfig);
+
+            const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
+            const aliases = this.getMetricAliases();
+            for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+                const mid = aliases[this.pctSelectedMetrics[i]];
+                const index = this.query.metrics.findIndex( d =>  d.id === mid );
+                // set the actual metric visible=false and groupby=everything
+                this.query.metrics[index].settings.visual.visible = false;
+                this.query.metrics[index].groupByTags = [];
+
+                const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+                expConfig.settings.visual.type = 'area';
+                expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+                this.query.metrics.push(expConfig);
+            }
+            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' } );
+            this.queryChanges$.next(true);
+            this.initMetricDataSource();
+        }
+        this.closeMetricDialog();
+    }
+
+    closeMetricDialog() {
+        this.artifactsMenuTrigger.closeMenu();
+    }
 
 
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show

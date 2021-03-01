@@ -22,10 +22,10 @@
                 position:relative is required on parent container as
                 chartjs-zoom and threshold plugins inserts a canvas on top of chart canvas.
             */
-            position: relative;
+            // position: relative;
             canvas {
-                width: 100% !important;
-                height: 100% !important;
+                // width: 100% !important;
+                // height: 100% !important;
             }
             .loading-spinner,
             .gif-spinner {

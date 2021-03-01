@@ -14,6 +14,7 @@ import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -213,6 +214,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     isDbTagsLoaded$ = new Subject();
     isDbTagsLoaded = false;
     isToTChanged = false;
+    isDBScopeLoaded = false;
     eWidgets: any = {}; // to whole eligible widgets with custom dashboard tags
     tagKeysByNamespaces = [];
 
@@ -251,7 +253,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
-        private iiService: InfoIslandService
+        private iiService: InfoIslandService,
+        private localStorageService: LocalStorageService
     ) { }
 
     ngOnInit() {
@@ -265,6 +268,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.meta = {};
             this.wdMetaData = {}
             this.isDbTagsLoaded = false;
+            this.isDBScopeLoaded = false;
             this.variablePanelMode = { view: true };
             this.dbDownsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
             this.store.dispatch(new ClearWidgetsData());
@@ -456,6 +460,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         });
                         sub.unsubscribe();
                     }
+                    // for markdown, after edit, force to apply visual text updated.
+                    if (message.payload.widget.settings.component_type !== 'MarkdownWidgetComponent') {
+                        this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                            this.interCom.responsePut({
+                                action: 'viewTplVariablesValues',
+                                payload: {
+                                    tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                    tplValues: results
+                                }
+                            });
+                        });
+                    }                   
                     // case that widget is updated we need to get new set of dashboard tags
                     this.isDbTagsLoaded = false;
                     break;
@@ -525,10 +541,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     break;
                 case 'updateTemplateVariables':
-                    this.store.dispatch(new UpdateVariables(message.payload));
+                    this.store.dispatch(new UpdateVariables(message.payload));                   
                     break;
                 case 'ApplyTplVarValue':
                     this.applyTplVarValue(message.payload);
+                    // this is pass down to markdown widget to resolve only in view mode
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.interCom.responsePut({
+                            action: 'viewTplVariablesValues',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplValues: results
+                            }
+                        });
+                    });                  
                     break;
                 case 'UpdateTplAlias':
                     this.updateTplAlias(message.payload);
@@ -546,7 +572,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // custom tag to select.
                     this.interCom.responsePut({
                         action: 'TplVariables',
-                        payload: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables
+                        payload: { 
+                            tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                        }
+                    });
+                    break;
+                case 'GetResolveViewTplVariables':
+                    this.dbService.resolveTplViewValues(this.tplVariables, this.widgets).subscribe(results => {
+                        this.interCom.responsePut({
+                            action: 'viewTplVariablesValues',
+                            payload: {
+                                tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                                tplValues: results,
+                                scope: this.tplVariables
+                            }
+                        });
                     });
                     break;
                 case 'UpdateTagKeysByNamespaces':
@@ -626,6 +666,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             if (db && db.fullPath) {
                 this.dbOwner = this.getOwnerFromPath(db.fullPath);
+                const namespace = this.getNamespaceFromPath(db.fullPath);
+                if ( namespace ) {
+                    this.localStorageService.setLocal('defaultNS', namespace);
+                }
             }
 
             const dbstate = this.store.selectSnapshot(DBState);
@@ -745,25 +789,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
-                this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
-                    this.tplVariables.scopeCache = scopes;
-                    // sort widget by grid row, then assign
-                    const sortWidgets = this.utilService.deepClone(widgets);
-                    if (!this.snapshot) {
-                        sortWidgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                        this.widgets = this.utilService.deepClone(sortWidgets);
-
-                        // set oldWidgets when widgets is not empty and oldWidgets is empty
-                        if (this.widgets.length && this.oldWidgets.length === 0) {
-                            this.oldWidgets = [...this.widgets];
-                        }
-                    } else {
-                        this.newWidget = sortWidgets[0];
-                        this.setSnapshotMeta();
-                    }
-                }));
+                if (!this.isDBScopeLoaded) {
+                    this.subscription.add(this.dbService.resolveDBScope(this.tplVariables, widgets, this.variablePanelMode).subscribe(scopes => {
+                        this.tplVariables.scopeCache = scopes;
+                        this.isDBScopeLoaded = true;
+                        this.handleWidgetsLoad(widgets);
+                    }));
+                } else {
+                    this.handleWidgetsLoad(widgets);
+                }
             }
         }));
+
 
         // initial from state mode is undefine.
         this.subscription.add(this.dashboardMode$.subscribe(mode => {
@@ -915,6 +952,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }));
     }
 
+    // to handle widgets after loaded to dashboard itself
+    private handleWidgetsLoad(widgets: any) {
+        // sort widget by grid row, then assign
+        this.widgets = this.utilService.deepClone(widgets);
+        if (!this.snapshot) {
+            this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
+            // set oldWidgets when widgets is not empty and oldWidgets is empty
+            if (this.widgets.length && this.oldWidgets.length === 0) {
+                this.oldWidgets = [...this.widgets];
+            }
+        } else {
+            this.newWidget = this.widgets[0];
+            this.setSnapshotMeta();
+        }
+    }
+
     setSnapshotMeta() {
         setTimeout( () => {
             const dbstate = this.store.selectSnapshot(DBState);
@@ -980,6 +1033,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
+            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' )  {
+                const search = this.widgets[i].eventQueries[0].search;
+                if ( this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
+                    this.handleEventQueryPayload({
+                            id: this.widgets[i].id,
+                            payload: this.utilService.deepClone({eventQueries: this.widgets[i].eventQueries })
+                        });
+                }
+                continue;
+            }
             for (let j = 0; j < queries.length; j++) {
                 if (tvars.length > 0) {
                     for (let k = 0; k < tvars.length; k++) {
@@ -1182,6 +1245,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+
+    applyTplVarsToEventQuery(search) {
+        const tplVars = this.variablePanelMode.view ? this.tplVariables.viewTplVariables.tvars : this.tplVariables.editTplVariables.tvars;
+
+        if ( tplVars.length ) {
+            const re = new RegExp(/\[(.+?)\]/, 'g');
+            let matches = [];
+            while (matches = re.exec(search)) {
+                const alias = '' + matches[1];
+                const tplIdx = tplVars.findIndex(tpl => tpl.alias === alias);
+                if ( tplIdx >= 0 ) {
+                    const idreg = new RegExp('\\[' + alias + '\\]', 'gm');
+                    let filter = tplVars[tplIdx].filter || 'regexp(.*)';
+                    const res = filter.match(/^regexp\((.*)\)$/);
+                    filter = res ? '/' + res[1] + '/' : filter;
+                    search = search.replace(idreg, filter);
+                }
+            }
+        }
+        return search;
+    }
+    
     applyToTChange() {
         const cloneWidgets = this.utilService.deepClone( this.snapshot ? [this.newWidget] : this.widgets );
         // find all widget that using downsample as auto
@@ -1246,6 +1331,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.tagKeysByNamespaces.length === 0) {
                 this.getTagkeysByNamespaces(this.tplVariables.editTplVariables.namespaces);
             }
+        } else {
+            // also passdown for who need it
+            this.interCom.responsePut({
+                action: 'TplVariables',
+                payload: { 
+                    tplVariables: this.variablePanelMode.view ? this.tplVariables.viewTplVariables : this.tplVariables.editTplVariables,
+                    tplScope: this.tplVariables.scope
+                }
+            });          
         }
         this.variablePanelMode = {...mode};
     }
@@ -1257,6 +1351,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const payload = this.utilService.deepClone(message.payload);
         // tslint:disable-next-line:max-line-length
         // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
+        // TODO: add toggle to enable or display multigraph.
         const groupby = payload.settings.multigraph ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group').map(d => d.key) : [];
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
@@ -1347,6 +1442,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if ( message.payload.eventQueries[0].namespace) {
             const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
             const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
+            message.payload.eventQueries[0].search = this.applyTplVarsToEventQuery(message.payload.eventQueries[0].search);
             this.store.dispatch(new GetEvents(
                 {   start: dt.start,
                     end: dt.end
@@ -1536,6 +1632,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return '';
     }
 
+    getNamespaceFromPath(fullPath) {
+        let namespace = '';
+        if ( fullPath && fullPath.indexOf('namespace') !== -1 ) {
+            const res = fullPath.split('/');
+            namespace = res[2];
+        }
+        return namespace;
+    }
+
     setWriteSpaces() {
         const writeSpaces = [];
         for (const ns of this.userNamespaces) {
@@ -1652,7 +1757,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const namespaces = this.getNamespaceNames();
         // user has only 1 ns with write access
         if (namespaces.length === 1) {
-            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0]});
+            this.dataShare.setData({widgetId: message.id, widget: message.payload, dashboardId: this.dbid, namespace: namespaces[0], tplVariables: this.tplVariables.viewTplVariables});
             this.dataShare.setMessage('WidgetToAlert');
             this.router.navigate(['a', namespaces[0], '_new_']);
         } else if (namespaces.length > 1) {

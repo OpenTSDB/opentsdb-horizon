@@ -240,12 +240,13 @@
                                     (fxDel)="functionDelete($event)"
                                     [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
                                     [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
-                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
+                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}"
+                                    [optionalData]=" fx.fxCall.indexOf('GroupBy') >= 0 ? {tags: getGroupByTags(data.metric.id)} : {}">
                                 </metric-function>
                             </div>
                         </div>
                         <!-- custom function icon [ ALWAYS LAST ] -->
-                        <div class="metric-row-data add-function" *ngIf="data.type === 'metric'"
+                        <div class="metric-row-data add-function"
                             [matMenuTriggerFor]="functionSelectionMenu" [matMenuTriggerData]="{metric: data.metric}"
                             (click)="functionMenuOpened($event, i)" (menuClosed)="functionMenuClosed($event)">
                             <button mat-flat-button>
@@ -268,7 +269,12 @@
                         (menuClosed)="toggleVisualRow(i - 1, false)">
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
                         <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                        <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="(data.visual.color && data.visual.color !== 'auto') || data.visual.scheme"></span>{{ data.visual.scheme ? 'palette: ' + data.visual.scheme : ((!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName) }}</span>
+                        <!--<span>color: {{data | json}}</span>-->
+                        <ng-container *ngIf="data.visual.color && isArray(data.visual.color)">
+                            <span *ngFor="let color of data.visual.color "><span [style.background]="color" class="color-chip" ></span>{{ color  }}</span>
+                        </ng-container>
+                        <span *ngIf="data.visual.color && !isArray(data.visual.color)"><span [style.background]="data.visual.color" class="color-chip" ></span>{{ data.visual.color  }}</span>
+                        <span *ngIf="!data.visual.color"><span class="color-chip"></span>{{  'palette: ' +  ( data.visual.scheme || 'auto' )   }}</span>
                         <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
                             {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
                             background</span>
@@ -399,6 +405,9 @@
             (click)="editExpression(-1)" [disabled]="query.metrics.length === 0">
             <span>Add expression</span>
         </button>
+        <button *ngIf="type === 'LinechartWidgetComponent' && query.metrics.length > 1" mat-button color="primary" class="add-expression-button" #artifactsMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="artifactsMenu">
+            <span>Add Artifacts</span>
+        </button>
     </div>
 </div>
 <!-- METRIC MENU -->
@@ -420,6 +429,35 @@
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             <span>Delete</span>
         </button>
+    </ng-template>
+</mat-menu>
+<!-- ARTIFACTS MENU -->
+<mat-menu class="metric-action-cdk-menu" #artifactsMenu="matMenu" hasBackdrop="true">
+    <ng-template matMenuContent let-metric="metric">
+        <!-- conditional button -->
+        <button mat-menu-item [matMenuTriggerFor]="metricsMenu">
+            <span>Percentage</span>
+        </button>
+    </ng-template>
+</mat-menu>
+<!-- PERCENTAGE GRAPH -  METRICS MENU -->
+<mat-menu class="metrics-list-cdk-menu" yPosition="above" #metricsMenu="matMenu">
+    <ng-template matMenuContent>
+        <div class="metric-list has-scroller" *ngIf="query.metrics.length" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+            <div class="is-scroller">
+                <mat-selection-list #metrics [(ngModel)]="pctSelectedMetrics">
+                    <ng-container *ngFor="let metric of query.metrics; let index = index">
+                        <mat-list-option checkboxPosition="before" *ngIf="!metric.expression" [value]="'m' + (index + 1)" selected="true">
+                                {{ metric.name }}
+                        </mat-list-option>
+                    </ng-container>
+                </mat-selection-list>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button mat-button color="primary" (click)="createPercentageMetrics()">Create</button>
+            <button mat-button  color="primary" (click)="closeMetricDialog()">Cancel</button>
+        </div>
     </ng-template>
 </mat-menu>
 <!-- TAG FILTER MENU -->
@@ -445,7 +483,7 @@
 <!-- FUNCTION MENU-->
 <mat-menu class="function-selection-cdk-menu" #functionSelectionMenu="matMenu">
     <ng-template matMenuContent let-metric="metric">
-        <div class="function-selection-wrapper" style="height: 200px;">
+        <div class="function-selection-wrapper" style="height: 230px;">
             <div class="function-categories">
                 <mat-nav-list>
                     <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"

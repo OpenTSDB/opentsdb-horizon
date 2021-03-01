@@ -178,6 +178,12 @@ export class ColorPickerSelectorComponent
      */
     heightOfComponent: number;
 
+    presetColors = [ { hex: '#000000', rgb: [0, 0, 0] }, { hex: '#FFFFFF' , rgb: [255,255,255] }, { hex: '#00FFFF', rgb: [0, 255, 255] }, { hex: '#1E90FF', rgb: [30, 144, 255] }, 
+        { hex: '#228B22', rgb: [34, 139, 34] }, { hex: '#FF00FF', rgb: [255, 0, 255] }, { hex: '#FFD700', rgb: [255, 215, 0] }, { hex: '#0000FF', rgb: [0, 0, 255] }, 
+        { hex: '#00FF00', rgb: [0, 255, 0] }, { hex: '#FFA500', rgb: [255, 165, 0] }, { hex: '#FF4500', rgb: [255, 69, 0] }, { hex: '#808000', rgb: [128, 128, 0] }, 
+        { hex: '#800080', rgb: [128,0,128] }, { hex: '#FFFF00', rgb: [255, 255, 0] }, { hex: '#FF0000', rgb: [255, 0, 0] }, { hex: '#A52A2A', rgb: [165, 42, 42] }
+    ];
+
     constructor(
         private formBuilder: FormBuilder,
         private render: Renderer2,
@@ -188,9 +194,9 @@ export class ColorPickerSelectorComponent
     ngOnInit() {
         this._tmpSelectedColor = new BehaviorSubject<string>(this._selectedColor);
         if (this.pickerMode === this.embedded) {
-            this.heightOfComponent = 190;
+            this.heightOfComponent = 232;
         } else {
-            this.heightOfComponent = 212; // has cancel and apply buttons
+            this.heightOfComponent = 280; // has cancel and apply buttons
         }
 
         this._tmpSelectedColorSub = this._tmpSelectedColor.subscribe(color => {

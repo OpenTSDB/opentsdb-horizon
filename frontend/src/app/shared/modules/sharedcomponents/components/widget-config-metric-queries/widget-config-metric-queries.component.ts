@@ -20,6 +20,7 @@ interface IMetricQueriesConfigOptions {
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
+    enableAlias?: boolean;
     // toggleMetric?: boolean;  // future use
 }
 
@@ -60,7 +61,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     showNewQueryEditor = false;
     newQueryId = '';
     editQueryId = '';
-    selectAllToggle: String = 'none'; // none/all/some
+    selectAllToggle: string = 'none'; // none/all/some
     tplVariables: any = {};
     hasCustomFilter = false;
     hasExpression = false;
@@ -79,7 +80,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
         this.subscription.add(this.interCom.responseGet().subscribe(message => {
             if (message.action === 'TplVariables') {
-                this.tplVariables = message.payload;
+                this.tplVariables = message.payload.tplVariables;
             }
         }));
         this.interCom.requestSend({
@@ -204,6 +205,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 break;
             case 'QueryChange':
                 this.updateQuery(message.payload.query);
+                break;
+            case 'ChangeAxisLabel':
+                    this.widgetChange.emit({ id: message.id, action: 'ChangeAxisLabel', payload: message.payload });
                 break;
             case 'SummarizerChange':
                 this.widgetChange.emit({ id: message.id, action: 'SummarizerChange', payload:  { summarizer: message.payload.summarizer }});

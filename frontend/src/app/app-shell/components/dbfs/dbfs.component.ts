@@ -19,7 +19,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import { IntercomService } from '../../../core/services/intercom.service';
 
 import {
     Select,
@@ -54,11 +54,13 @@ import {
     DbfsRemoveUserFav,
     DbfsAddUserFav
 } from '../../state/dbfs-resources.state';
-import { LoggerService } from '../../../core/services/logger.service';
+
 import { MatMenuTrigger } from '@angular/material';
+
 import {
     MatTableDataSource
 } from '@angular/material';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -197,8 +199,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
-        private logger: LoggerService,
         private fb: FormBuilder,
+        private logger: LoggerService,
         @Inject('WINDOW') private window: any
     ) {
 
@@ -212,10 +214,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         const self = this;
 
         this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
-            if (loaded === false) {
-                // should be triggered by app-shell/container
-                // this.store.dispatch(new DbfsLoadResources());
-            }
             if (loaded === true) {
                 this.store.dispatch(new DbfsPanelsInitialize());
             }
@@ -302,7 +300,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.panelAction$.subscribe( action => {
-
             switch (action.method) {
                 case 'goNextPanel':
                     setTimeout(function() {
@@ -379,11 +376,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.subscription.add(this.curDashboardId$.subscribe(db => {
             this.curDashboardId = (db) ? db : false;
         }));
-
-        // INTERCOM SUBSCRIPTION
-        // this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-        // intercom stuff
-        // }));
 
     }
 
@@ -477,7 +469,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
     clickMoreMenu(id: number, type: string, event: any) {
         event.stopPropagation();
         const mTrigger: MatMenuTrigger = <MatMenuTrigger>this.findMoreMenuTrigger(id, type);
-       if (mTrigger) {
+
+        if (mTrigger) {
             mTrigger.toggleMenu();
         } else {
             this.logger.error('clickMoreMenu', 'CANT FIND TRIGGER');
@@ -644,10 +637,18 @@ export class DbfsComponent implements OnInit, OnDestroy {
         this.closeDrawer();
     }
 
+    /* NOTE: Do we need? maybe in future?
+    editDashboards() {
+
+    }
+
+    navigateToDashboard(path: string) {
+
+    }*/
+
     // MORE MENU BEHAVIORS
 
     favoriteMenuAction(action: string, data: any, event?: any) {
-        this.logger.log('FAVORITE MENU ACTION', {action, data, event});
         switch (action) {
             case 'removeFromFavorites':
                 this.store.dispatch(
@@ -665,7 +666,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     folderMenuAction(action: string, folder: any, event?: any) {
-        switch (action) {
+       switch (action) {
             case 'editName':
                 this.folderForm.reset({fc_FolderName: folder.name});
                 this.edit = {
@@ -824,8 +825,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     gotoFolder(path: string) {
         if (!this.bulkEdit) {
-            this.logger.log('GOTO FOLDER', { path });
-            const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
+           const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
 
             if (folder.fullPath === ':user-recent:' || folder.fullPath === ':user-favorites:') {
                 if (folder.fullPath === ':user-recent:') {

@@ -136,7 +136,7 @@ export class DatatranformerService {
             } else {
                 dict[mid]['values'] = {}; // queryResults.data;
                 const n = queryResultsObj[i].data.length;
-                if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+                if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                     nAutoColors += n;
                 }
                 totalSeries += n;
@@ -221,7 +221,7 @@ export class DatatranformerService {
 
                 if ( vConfig.color && vConfig.color !== 'auto' ) {
                     colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT] ).reverse();
-                } else if ( vConfig.scheme ) {
+                } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;
                 }
@@ -454,7 +454,7 @@ export class DatatranformerService {
 
             const timeSpecification = queryResults.timeSpecification;
             const n = queryResults.data.length;
-            const color = !widget.settings.visual.color || widget.settings.visual.color === 'auto' ? autoColors[cIndex++] : widget.settings.visual.color;
+            const color = !widget.settings.visual.color ? autoColors[cIndex++] : widget.settings.visual.color;
             options.heatmap.nseries = n;
             options.heatmap.color = color;
             for ( let j = 0; j < n; j ++ ) {
@@ -558,13 +558,13 @@ export class DatatranformerService {
                 continue;
             }
             const n = results[i].data.length;
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                 nAutoColors += n;
-            } else if ( vConfig.scheme ) {
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                colors[mid] = this.util.getColorsHSV( vConfig.color, n );
+                colors[mid] = n === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color, n );
             }
             for ( let j = 0;  j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
@@ -644,13 +644,13 @@ export class DatatranformerService {
             }
 
             const n = results[i].data.length;
-            if ( !vConfig.color && !vConfig.scheme || vConfig.color === 'auto' ) {
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
                 nAutoColors += n;
-            } else if ( vConfig.scheme ) {
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                 colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
                 schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
             } else {
-                colors[mid] = this.util.getColorsHSV( vConfig.color, n );
+                colors[mid] =  n === 1 ? [ vConfig.color ] : this.util.getColorsHSV( vConfig.color, n );
             }
 
             for ( let j = 0; j < n; j++ ) {

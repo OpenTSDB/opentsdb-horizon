@@ -1,10 +1,18 @@
 <div class="main-container" [ngClass]="{'flex': mode === 'edit' }">
     <div class="widget-output-container" fxLayout="column" >
         <div class="widget-title" *ngIf="mode !== 'edit'" fxLayout="row" fxFlex="1 1 30px">
-            <span fxFlex="1 1 100%">({{events.length}}) {{getTitle()}}</span>
+            <span class="readonly" fxFlex="1 1 100%">{{ resolveTitle(widget.settings.title) }}</span>
         </div>
         <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 30px">
-            <span fxFlex="1 1 100%">{{getTitle()}} </span>
+            <span fxFlex="1 1 100%">
+                <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
+                showEditIcon="true"
+                [fieldValue]="widget.settings.title"
+                [minLength]="3"
+                [maxLength]="100"
+                (updatedValue)="setTitle($event)">
+            </inline-editable>
+            </span>
             <span>
                 <button mat-button color="primary" class="close-edit-view-btn" (click)="closeViewEditMode()">
                     <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>

@@ -42,7 +42,8 @@ import {
     ToggleAlerts,
     SaveAlerts,
     SetNamespace,
-    SaveSnoozes
+    SaveSnoozes,
+    ClearNamespace
 } from '../state/alerts.state';
 import { DbfsResourcesState } from '../../app-shell/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
@@ -63,6 +64,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
 import { LoggerService } from '../../core/services/logger.service';
 import { UtilsService } from '../../core/services/utils.service';
+import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
 import { DataShareService } from '../../core/services/data-share.service';
@@ -123,6 +125,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     allNamespacesDS = new MatTableDataSource([]);
 
     @Select(AlertState.getAlertDetails) alertDetail$: Observable<any>;
+    @Select(AlertState.getError) alertDetailError$: Observable<any>;
     @Select(SnoozeState.getSnoozeDetails) snoozeDetail$: Observable<any>;
 
     // this gets dynamically selected depending on the tab filter.
@@ -274,6 +277,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private interCom: IntercomService,
         private logger: LoggerService,
         private utils: UtilsService,
+        private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
         private infoIslandService: InfoIslandService
     ) {
@@ -303,9 +307,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             if ( !this.detailsView && val !== null ) {
                 this.setRouterUrl();
             }
-            val = val ? val : '';
-            this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
+            try {
+                this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
+                this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            } catch(e) {
+                console.info(e);
+            }
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
@@ -340,6 +348,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.selectedNamespace$.subscribe(data => {
             this.selectedNamespace = data;
             if (this.selectedNamespace) {
+                this.localStorageService.setLocal('defaultNS', data);
                 // this.hasNamespaceWriteAccess = this.userNamespaces.find(d => d.name === this.selectedNamespace ) ? true : false;
                 this.stateLoaded.alerts = false;
                 this.stateLoaded.snooze = false;
@@ -385,8 +394,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.stateLoaded.snooze = true;
             this.snoozes = JSON.parse(JSON.stringify(snoozes));
             this.snoozes = this.snoozes.map((d: any) => {
-                if (d.filter && d.filter.filters && d.filter.filters.length) {
-                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter.filters);
+                if ( d.filter && Object.keys(d.filter).length ) {
+                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter);
                 } else {
                     d.rawFilters = [];
                 }
@@ -513,13 +522,26 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.error$.subscribe(error => {
-            // console.log('ERROR', error);
+
             if (Object.keys(error).length > 0) {
                 this.error = error;
             } else {
                 this.error = false;
             }
             // maybe intercom error for messaging bar?
+        }));
+
+        this.subscription.add(this.alertDetailError$.subscribe(error => {
+            if (error && ( error.error || error.message) ) {
+                // set system message bar
+                this.interCom.requestSend({
+                    action: 'systemMessage',
+                    payload: {
+                        type: 'error',
+                        message: error.error || error.message
+                    }
+                });
+            }
         }));
 
         this.subscription.add(this.saveError$.subscribe(error => {
@@ -540,13 +562,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.snoozeDetailsComp.data.error = error;
             }
 
-            if (error && error.message) {
+            if ( error && ( error.error || error.message ) ) {
                 // set system message bar
                 this.interCom.requestSend({
                     action: 'systemMessage',
                     payload: {
                         type: 'error',
-                        message: 'Saving Error: ' + error.message
+                        message: 'Saving Error: ' + ( error.error || error.message )
                     }
                 });
             }
@@ -558,7 +580,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             // this.logger.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
-
+            this.clearSystemMessage();
+            
+            let defaultNS = this.getDefaultNamespace();
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
             } else if (url.length >= 1 && url[0].path === 'snooze') {
@@ -572,7 +596,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 } else {
                     this.detailsView = false;
                     // tslint:disable-next-line:max-line-length
-                    const ns = url[1] && url[1].path ? url[1].path : (this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                    const ns = url[1] && url[1].path ? url[1].path : defaultNS;
                     this.setNamespace(ns);
                     this.infoIslandService.closeIsland();
                 }
@@ -600,9 +624,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.infoIslandService.closeIsland();
                 this.setNavbarPortal();
 
-            } else if (this.userNamespaces.length || this.allNamespaces.length) {
+            } else if ( defaultNS ) {
                 // set a namespace... probably should update url?
-                this.setNamespace(this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                this.setNamespace(defaultNS);
 
                 if (this.detailsView) {
                     this.detailsView = false;
@@ -615,7 +639,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alertDetail$.pipe(skip(1)).subscribe(data => {
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let parts;
-
+            const namespace = data.namespace ? data.namespace : this.getDefaultNamespace();
             // url path has 2 parts, (i.e. /a/1234/view)
             if (
                 routeSnapshot.length === 2 &&
@@ -623,11 +647,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 (['view', 'edit', 'clone'].includes(routeSnapshot[1].path.toLowerCase()))
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace( namespace, null);
 
                 // url path has 1 parts, (i.e. /a/1234)
             } else if (
@@ -635,14 +658,18 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.utils.checkIfNumeric(routeSnapshot[0].path)
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, 'view'];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, 'view'] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace(namespace, null);
+            } else if ( !data.id ) {
+                this.location.go('/a/' + namespace);
+                this.setNamespace(namespace, null);
             }
 
-            this.store.dispatch(new CheckWriteAccess(data));
+            if ( data.id ) {
+                this.store.dispatch(new CheckWriteAccess(data));
+            }
 
         }));
 
@@ -650,6 +677,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.store.dispatch(new CheckWriteAccess(data));
         }));
 
+    }
+
+    getDefaultNamespace() {
+        let defaultNS = this.localStorageService.getLocal('defaultNS');
+        defaultNS =  defaultNS && defaultNS !== null ? defaultNS : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
+        return defaultNS;
     }
 
     getFilteredAlerts(regexFilter: RegExp, alerts: AlertModel[]) {
@@ -702,11 +735,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         return filteredSnoozes;
     }
 
-    setNavbarPortal() {
+    clearSystemMessage() {
         this.interCom.requestSend({
             action: 'clearSystemMessage',
             payload: {}
         });
+    }
+    setNavbarPortal() {
+        this.clearSystemMessage();
         this.cdkService.setNavbarPortal(this.alertspageNavbarPortal);
     }
 
@@ -872,6 +908,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
         this.openEditMode(data);
         this.location.go('a/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     createAlertFromWidget(payload) {
@@ -1020,6 +1057,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             const nowInMillis = Date.now();
             data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
+        if ( data.id && !data.enabled && this.list === 'alerts') {
+            this.interCom.requestSend({
+                action: 'systemMessage',
+                payload: {
+                    type: 'warning',
+                    message: 'This alert is disabled'
+                }
+            });
+        }
         this.configurationEditData = data;
         this.detailsView = true;
     }
@@ -1051,6 +1097,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.detailsView = true;
         this.switchType('snooze');
         this.location.go('a/snooze/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     editSnooze(element: any) {
@@ -1231,6 +1278,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngOnDestroy() {
+        this.store.dispatch(new ClearNamespace());
         this.subscription.unsubscribe();
         this.utils.setTabTitle();
     }

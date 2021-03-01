@@ -56,7 +56,7 @@ export class ConditionalFormatterComponent implements OnInit, OnDestroy {
     this.conditionChanges$.next(true);
   }
   selectColor(color,index ) {
-    this.conditions[index].color = color.hex;
+    this.conditions[index].color = color;
     this.conditionChanges$.next(true);
   }
 

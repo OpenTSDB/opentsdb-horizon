@@ -463,10 +463,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.refreshLegendSource();
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
+                            // also need to update view in edit mode
                             setTimeout(() => {
-                                if ( this.mode !== 'edit'  ) {
+                                // if ( this.mode !== 'edit'  ) {
                                     this.setSize();
-                                }
+                                // }
                                 if (!this.multigraphEnabled) {
                                     this.legendDataSource.sort = this.sort;
                                 }
@@ -647,6 +648,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.refreshLegendSource();
                 this.legendDataSource.sort = this.sort;
                 this.setSize();
+                break;
+            case 'ChangeAxisLabel': 
+                const payload = message.payload;
+                this.widget.settings.axes[payload.axis].label = payload.label;
                 break;
             case 'UpdateQuery':
                 this.utilService.updateQuery(this.widget, message.payload);

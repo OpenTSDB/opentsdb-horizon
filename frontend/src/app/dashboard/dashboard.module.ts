@@ -8,6 +8,7 @@ import { GridsterModule } from 'angular2gridster';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
 import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-widgets.module';
+import { AppShellModule } from '../app-shell/app-shell.module';
 
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
 
@@ -67,7 +68,8 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
             EventsState
         ]),
         DynamicWidgetsModule,
-        UniversalDataTooltipDirectivesModule
+        UniversalDataTooltipDirectivesModule,
+        AppShellModule
     ],
     declarations: [
         DashboardComponent,

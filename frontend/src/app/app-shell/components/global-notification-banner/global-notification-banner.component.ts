@@ -16,7 +16,7 @@ import {
 import { Subscription, Observable, interval } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { LoggerService } from '../../../core/services/logger.service';
-import { LocalStorageService } from '../../services/local-storage.service';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { HttpService } from '../../../core/http/http.service';
 
 @Component({

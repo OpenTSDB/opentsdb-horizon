@@ -18,11 +18,8 @@
         }
 
         .widget-output {
-            padding: 0px 0px;
             width: 100%;
-            height: 100%;
             display: flex;
-            flex: 1 1 0;
 
 
             .loading-spinner,
@@ -72,13 +69,11 @@
                 white-space: nowrap;
             }
         }
-
         #container {
             box-sizing: border-box;
             padding: 0px 0px 0px 0px;
-            display:flex;
-            flex: 1;
-            justify-content: center;
+            display:inline-block;
+            width: 100%;
             overflow: overlay;
 
             text {

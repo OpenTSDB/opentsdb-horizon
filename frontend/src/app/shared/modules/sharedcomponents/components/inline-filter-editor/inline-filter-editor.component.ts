@@ -44,6 +44,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @ViewChild('trigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
     @ViewChild('searchInput') searchInput: ElementRef;
 
+    TAGVALUELEN = 100;
     namespace: string;
     filters: any[];
     metrics: any[];

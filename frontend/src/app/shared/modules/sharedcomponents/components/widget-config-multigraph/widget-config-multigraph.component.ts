@@ -70,7 +70,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     ];
 
     /** Mat Table Stuff */
-    chartDisplayColumns: string[] = ['remove', 'label', 'sort', 'x', 'y', 'g', 'order'];
+    chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
     // default mutilgraph
     multigraph: any = {
@@ -101,8 +101,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private loggerService: LoggerService
     ) { }
 
-    ngOnInit() {
-    }
+    ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
         if ( !changes.widget ) {
@@ -124,17 +123,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             }
         }
         const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-        for (let i = 0; i < groupByTags.length; i++) {
-            if (this.multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
-                continue;
-            }
-            const item = {
-                key: groupByTags[i],
-                displayAs: 'g',
-                sortAs: 'asc'
-            };
-            this.multigraph.chart.push(item);
-        }
+        this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
         this.createForm(this.multigraph);
     }
 
@@ -153,11 +142,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             })
         });
 
-        // patch with values (triggering first valueChange)
-        this.widgetConfigMultigraph.patchValue(this.multigraph, {
-            emitEvent: true
-        });
-
         for (const i in multigraph.chart) {
             if (multigraph.chart[i]) {
                 let chartItem = multigraph.chart[i];
@@ -167,6 +151,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 this.addChartItem(chartItem);
             }
         }
+        // patch with values (triggering first valueChange)
+        this.widgetConfigMultigraph.patchValue(this.multigraph, {
+            emitEvent: true
+        });
 
         this.widgetConfigMultigraph.updateValueAndValidity({ onlySelf: false, emitEvent: true });
 
@@ -204,7 +192,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     startWith(''),
                     distinctUntilChanged(),
                     pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {
+                ).subscribe(([prev, changes]: [any, any]) => {                    
                     if (!deepEqual(prev, changes)) {
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
@@ -225,7 +213,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     addChartItem(data: any) {
-        this.needRequery = true;
+        // this.needRequery = true;
         const chartItem = this.fb.group(data);
         const control = <FormArray>this.FC_chart;
         control.push(chartItem);

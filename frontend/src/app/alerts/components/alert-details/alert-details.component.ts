@@ -606,6 +606,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.setThresholds('recovery', val);
         }));
 
+        this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].valueChanges.subscribe(val => {
+            if ( val !== null && val === 'all_of_the_times' ) {
+                this.thresholdSingleMetricControls['requiresFullWindow'].setValue(true);
+                this.thresholdSingleMetricControls['reportingInterval'].setValue(60);
+            }
+        }));
+
         // tslint:disable-next-line:max-line-length
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].valueChanges.subscribe(val => {
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
@@ -924,10 +931,20 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 }
                 this.setAlertEvaluationLink();
                 break;
+            case 'SetDBDownsample':
+                    this.downsample = {
+                        aggregators: message.payload.aggregators,
+                        value: message.payload.downsample,
+                        customUnit: message.payload.downsample === 'custom' ? message.payload.customDownsampleUnit : '',
+                        customValue: message.payload.downsample === 'custom' ? message.payload.customDownsampleValue : ''
+                    };
+                    this.reloadData();
+                break;
         }
     }
 
     validateSingleMetricThresholds(group) {
+        const slidingWindowCntrl = this.thresholdSingleMetricControls['slidingWindow'];
         const badStateCntrl = this.thresholdSingleMetricControls['badThreshold'];
         const warningStateCntrl = this.thresholdSingleMetricControls['warnThreshold'];
         const recoveryStateCntrl = this.thresholdSingleMetricControls['recoveryThreshold'];
@@ -947,6 +964,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value === null ) {
             this.thresholdSingleMetricControls['reportingInterval'].setErrors({ 'required': true });
+        }
+
+        slidingWindowCntrl.setErrors(null);
+        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && slidingWindowCntrl.value <= reportingIntervalCntrl.value ) {
+            slidingWindowCntrl.setErrors({ 'invalid': true });
         }
 
         // validate the warning value
@@ -1206,9 +1228,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
             options.periodOverPeriod = this.periodOverPeriodConfig.periodOverPeriod;
-            settings.settings.time = {};
-            settings.settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
+
+        settings.settings.time = {};
+        settings.settings.time.downsample = this.downsample;
 
         const mid = this.thresholdSingleMetricControls.metricId.value;
         options.sources = mid ? [ mid] : [];
@@ -1546,10 +1569,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         if ( this.alertForm.valid ) {
             // clear system message bar
-            this.interCom.requestSend({
-                action: 'clearSystemMessage',
-                payload: {}
-            });
+            this.clearSystemMessage();
 
             if ( !this.data.id && this.data.name === 'Untitled Alert' ) {
                 this.openAlertNameDialog();
@@ -1568,6 +1588,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             });
         }
 
+    }
+
+    clearSystemMessage() {
+        this.interCom.requestSend({
+            action: 'clearSystemMessage',
+            payload: {}
+        });
     }
 
     saveAlert() {
@@ -1643,12 +1670,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     end: this.queryTime.end / 1000,
                     zone: 'local'
                 },
-                downsample: {
-                    aggregators: [''],
-                    customUnit: '',
-                    customValue: '',
-                    value: 'auto'
-                },
                 meta : {
                     title: this.data.name
                 }
@@ -1687,9 +1708,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             ]
         };
 
-        if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
-            dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
-        }
+        dConfig.settings.downsample = this.downsample;
+
         const payload: any = {
             'name': encodeURIComponent(this.data.name) || 'Untitled Alert',
             'content': dConfig
