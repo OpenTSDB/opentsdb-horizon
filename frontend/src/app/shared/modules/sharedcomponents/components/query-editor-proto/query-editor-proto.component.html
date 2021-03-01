@@ -3,7 +3,29 @@
         <div class="toolbar-item query-index">
             <span>{{ label }}</span>
             <span class="query-disabled-label" *ngIf="!query.settings.visual.visible">disabled</span>
+            <span class="query-alias-edit-toggle"
+                matTooltip="Edit query alias"
+                *ngIf="query.settings.visual.visible"
+                (click)="toggleQueryAliasEditForm()">
+                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+            </span>
+            <div class="query-alias-label"
+                matTooltip="Edit query alias"
+                *ngIf="!queryAliasEdit && query.settings.visual.visible && query.settings.visual.label.length > 0"
+                (click)="toggleQueryAliasEditForm()">
+                <span>{{query.settings.visual.label}}</span>
+            </div>
         </div>
+        <!-- query alias editor -->
+        <div class="toolbar-item query-alias-edit-form" *ngIf="queryAliasEdit; else queryNamespaceBlock;" style="padding-left: 16px;">
+            <mat-form-field floatLabel="always">
+                <input matInput placeholder="Query Alias:" [formControl]="queryAliasFormControl">
+            </mat-form-field>
+            <button mat-button color="primary" (click)="saveQueryAliasForm()">Save</button>
+            <button mat-button color="secondary" (click)="toggleQueryAliasEditForm()">Cancel</button>
+        </div>
+        <!-- normal query namespace -->
+        <ng-template #queryNamespaceBlock>
         <div class="toolbar-item">
             <span class="title"> Namespace:</span>
         </div>
@@ -21,6 +43,7 @@
                     (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
             </span>
         </div>
+        </ng-template>
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
             <mat-icon style="cursor: move;">reorder</mat-icon>
