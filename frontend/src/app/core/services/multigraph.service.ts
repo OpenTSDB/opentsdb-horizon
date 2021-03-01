@@ -419,9 +419,47 @@ export class MultigraphService {
     if (results) {
       rowKeys = Object.keys(results);
     }
+    // they all have same col keys
     const colKeys = rowKeys.length ? Object.keys(results[rowKeys[0]]) : [];
-    console.log('hill - rowkeys', rowKeys, colKeys);
-
+    // rows
+    for (let r = 0; r < rowKeys.length; r++) {
+      let isEmpty = true;
+      for (let c = 0; c < colKeys.length; c++) {
+        if (results[rowKeys[r]][colKeys[c]].results && results[rowKeys[r]][colKeys[c]].results.length) {
+          isEmpty = false;
+          break;
+        }
+      }
+      // the whole row is empty
+      if (isEmpty) {
+        delete results[rowKeys[r]];
+      }
+    }
+    // cols
+    let tmpResults = JSON.parse(JSON.stringify(results));
+    rowKeys = Object.keys(tmpResults);
+    for (let c = 0; c < colKeys.length; c++) {
+      let colKey = colKeys[c];
+      let canDelete = true;
+      for (let r = 0; r < rowKeys.length; r++) {
+        let row = tmpResults[rowKeys[r]];
+        if (!row[colKey].results || !row[colKey].results.length) {
+          delete row[colKey];
+        } else {
+          // one of col cell is not empty
+          canDelete = false;
+          break;
+        }
+      }
+      if (canDelete) {
+        // update results
+        results = JSON.parse(JSON.stringify(tmpResults));
+      } else {
+        // reset to good part
+        tmpResults = JSON.parse(JSON.stringify(results));
+      }
+    }
+    tmpResults = null;
     return results;
   }
 }
