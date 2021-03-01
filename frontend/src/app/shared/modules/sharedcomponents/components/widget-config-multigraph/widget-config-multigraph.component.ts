@@ -73,8 +73,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         { label: 'Queries', value: 'query_group'}
     ];
     multigraphMode = 'metric_group';
-    prevMetricGroupConf: any;
-    prevQueryGroupConf: any;
     /** Mat Table Stuff */
     chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
@@ -109,6 +107,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log('changes', changes);
         if ( !changes.widget ) {
             return;
         }
@@ -122,7 +121,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     multiModeChange(event: any) {
         this.multigraphMode = event.value;
         // to keep whatever previous multigraph conf is, so user don't get to default conf.
-        if (this.multigraphMode === 'query_group') {
+        /*if (this.multigraphMode === 'query_group') {
             this.prevMetricGroupConf = this.utilService.deepClone(this.widget.settings.multigraph);
             if (this.prevQueryGroupConf) {
                 this.multigraph = this.prevQueryGroupConf;
@@ -139,7 +138,20 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
                 this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
             }
-        }
+        } */
+        if (this.multigraphMode === 'query_group') {
+
+
+                // this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+                this.multigraph.chart[0].key = 'query_group';
+            
+        } else {
+            this.multigraph.chart[0].key = 'metric_group';
+                // this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+            
+        }     
+        // const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        // this.multiService.updateMultigraphConf(groupByTags, this.multigraph);   
         this.widgetChange.emit({
             action: 'UpdateMultigraph',
             payload: {
@@ -168,11 +180,8 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 this.multigraph.chart[0].key = 'query_group';
             }
         }
-        //if (this.multigraphMode === 'metric_group') {
-            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-            this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
-        //} 
-        console.log('hill - this multigraphg before create a form', this.multigraph);
+        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
         this.createForm(this.multigraph);
     }
 
@@ -222,6 +231,8 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 ).subscribe(([prev, changes]: [any, any]) => {
                     if (this.chartTable && !deepEqual(prev, changes)) {
                         this.chartTable.renderRows();
+                        console.log('hill - control[chart].vlauechabge');
+                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
@@ -243,6 +254,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     pairwise()
                 ).subscribe(([prev, changes]: [any, any]) => {                    
                     if (!deepEqual(prev, changes)) {
+                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
