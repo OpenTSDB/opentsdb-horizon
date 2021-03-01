@@ -120,7 +120,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     multiModeChange(event: any) {
-        console.log('hill - event', event);
         this.multigraphMode = event.value;
         // to keep whatever previous multigraph conf is, so user don't get to default conf.
         if (this.multigraphMode === 'query_group') {

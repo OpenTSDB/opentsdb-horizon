@@ -384,10 +384,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // result graphRowLabelMarginLeft since we have new data
                                 this.graphRowLabelMarginLeft = 0;
                                 // fill out tag values from rawdata
-                                const results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata)
+                                let results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata)
                                                                     : this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
                                 console.log('hill - results', results);
-                                const maxGraphs = 60;
+                                results = this.multiService.removeEmptyRowsColumns(results);
+                                const maxGraphs = 100;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
                                 const colKeys = rowKeys.length ? this.getGraphDataObjectKeys(results[rowKeys[0]]) : [];
                                 const maxCols = colKeys.length <= maxGraphs ? colKeys.length : maxGraphs;
@@ -1435,7 +1436,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     toggleConfigSection(section, e) {
         this.visibleSections[section] = !this.visibleSections[section];
-        console.log('hill - this.visibleSections', this.visibleSections);
         e.stopPropagation();
     }
 

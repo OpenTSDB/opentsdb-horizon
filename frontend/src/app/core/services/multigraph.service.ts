@@ -413,4 +413,15 @@ export class MultigraphService {
       }
     }
   }
+  // remove empty rows/columns from multigraph
+  removeEmptyRowsColumns(results: any) {
+    let rowKeys = [];
+    if (results) {
+      rowKeys = Object.keys(results);
+    }
+    const colKeys = rowKeys.length ? Object.keys(results[rowKeys[0]]) : [];
+    console.log('hill - rowkeys', rowKeys, colKeys);
+
+    return results;
+  }
 }
