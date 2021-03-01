@@ -76,6 +76,10 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         {
             label: 'Last',
             value: 'last'
+        },
+        {
+            label: 'Count',
+            value: 'count'
         }
     ];
 
