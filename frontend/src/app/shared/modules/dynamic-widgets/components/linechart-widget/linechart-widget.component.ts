@@ -140,7 +140,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // TODO: These multigraph values need to be retrieved from widget settings
     multigraphEnabled = false;
     multigraphMode = 'grid'; // grid || freeflow
-    isMultiByQuery = false; // flag for multigraph by metrics or query
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
     graphData: any = {}; // { y: { x: { ts: [[0]] }}};
@@ -368,8 +367,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             let limitGraphs = {};
                             const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
                             this.multigraphEnabled = (multiConf.x || multiConf.y) ? true : false;
-                            this.isMultiByQuery = (multiConf.x && multiConf.x.hasOwnProperty('query_group')
-                                || multiConf.y && multiConf.y.hasOwnProperty('query_group')) ? true: false;
                             if (this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
@@ -384,9 +381,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // result graphRowLabelMarginLeft since we have new data
                                 this.graphRowLabelMarginLeft = 0;
                                 // fill out tag values from rawdata
-                                let results = this.isMultiByQuery ? this.multiService.fillMultigraphByQuery(this.widget, multiConf, rawdata)
-                                                                    : this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
-                                console.log('hill - results', results);
+                                let results = this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
                                 results = this.multiService.removeEmptyRowsColumns(results);
                                 const maxGraphs = 100;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
@@ -459,6 +454,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 limitGraphs = graphs;
                             }
                             this.setMultigraphColumns(limitGraphs);
+                            console.log('hill - final data', limitGraphs);
                             this.graphData = {...limitGraphs};
                             if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                                 environment.debugLevel.toUpperCase() === 'DEBUG' ||
