@@ -61,6 +61,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
     masterChecked = false;
     masterIndeterminate = false;
+    lastClickedSrcIndex: any = -1;
 
     multigraph: any = false;
 
@@ -243,8 +244,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
     /** Toolbar controls */
     trackmouseCheckboxChange(event: any) {
-        // console.log('trackmouse', event);
-
         // update options, then interCom requestSend change
         this.options.trackMouse = event.checked;
         this.interCom.responsePut({
@@ -371,7 +370,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        //console.log('DATA', this.tableDataSource.data);
+
         this.updateMasterCheckboxStates();
         if (this._legendTable) {
             this._legendTable.renderRows();
@@ -427,7 +426,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
             // everything else
             value = item[property];
         }
-        //console.log('SORT ACCESSOR', {item, property, value});
+
         return value;
     }
 
@@ -564,21 +563,81 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 multigraph: this.multigraph
             }
         });
+
     }
 
-    timeseriesVisibilityBy(filter: string, data: any) {
-        // this.logger.ng('TIMESERIES VISIBILITY BY', {filter, data});
+    timeseriesVisibilityBy(filter: string, data: any, event: any) {
+
         let toHide: number[] = [];
         let toShow: number[] = [];
-        if (filter === 'row' && data.srcIndex) {
-            toHide = (this.tableDataSource.data.filter((item: any) => item.srcIndex !== data.srcIndex)).map((item: any) => item.srcIndex);
-            toShow = [data.srcIndex];
+
+        let modifierKey = false;
+        if (event.shiftKey || event.metaKey || event.ctrlKey) {
+            modifierKey = true;
         }
+
+        // FILTERING BY ROW (i.e., Metric Name or checkbox)
+        if (filter === 'row' && data.srcIndex > -1) {
+            if (modifierKey && event.shiftKey) {
+                // get some indices
+                const itemIndex = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === data.srcIndex);
+                const lastIndex = this.tableDataSource.data.findIndex((item:any) => item.srcIndex === this.lastClickedSrcIndex);
+
+                // check the direction of the shift select
+
+                // select an item ABOVE the last clicked item in the list
+                if (itemIndex < lastIndex) {
+                    for(let i = itemIndex; i <= lastIndex; i++) {
+                        let item = <any>this.tableDataSource.data[i];
+                        toShow.push(item.srcIndex);
+                    }
+                }
+
+                // select an item BELOW the last clicked item in the list
+                if(itemIndex > lastIndex) {
+                    for(let i = lastIndex; i <= itemIndex; i++) {
+                        let item = <any>this.tableDataSource.data[i];
+                        toShow.push(item.srcIndex);
+                    }
+                }
+
+                // filter out the ones to hide
+                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
+
+            } else if(modifierKey && (event.metaKey || event.ctrlKey)) {
+
+                // since this is a single click to add an item to the existing list,
+                // we need to find the currently selected items
+                for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
+                    const itemVis = this.currentWidgetOptions.visibility[i];
+                    if (itemVis === true) {
+                        toShow.push(i);
+                    }
+                }
+
+                // add the new clicked one
+                toShow.push(data.srcIndex);
+
+                // filter out the ones to hide
+                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
+
+            } else {
+                // default behavior, select only the one you click
+                toHide = (this.tableDataSource.data.filter((item: any) => item.srcIndex !== data.srcIndex)).map((item: any) => item.srcIndex);
+                toShow = [data.srcIndex];
+            }
+
+        }
+
+        // FILTERING BY TAG
         if (filter === 'tag' && data.tag && data.value) {
             toHide = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] !== data.value)).map((item: any) => item.srcIndex);
             toShow = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] === data.value)).map((item: any) => item.srcIndex);
         }
-        // this.logger.ng('FILTER TARGETS', {toHide, toShow});
+
+        // set last one clicked
+        this.lastClickedSrcIndex = data.srcIndex;
+
         if (toHide.length > 0) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
@@ -590,6 +649,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             });
         }
+
         if (toShow.length > 0) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
