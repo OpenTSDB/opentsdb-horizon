@@ -137,8 +137,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     meta: any = {};
 
     // MULTIGRAPH
-    // TODO: These multigraph values need to be retrieved from widget settings
-    multigraphEnabled = false;
+    multigraphEnabled = false; // flag from multigraph settings 'enabled'
+    displayMultigraph = false; // this is can be multigraph with all 'g'
     multigraphMode = 'grid'; // grid || freeflow
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
@@ -196,6 +196,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     ) { }
 
     ngOnInit() {
+
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'snap';
         this.widget.settings.chartOptions = this.widget.settings.chartOptions || {};
@@ -300,9 +301,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         break;
                     case 'tsLegendRequestWidgetSettings':
                         const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
-                        const multigraphEnabled = (multiConf.x || multiConf.y) ? true : false;
+                        const displayMultigraph = (multiConf.x || multiConf.y) ? true : false;
                         let tsLegendOptions;
-                        if (multigraphEnabled && message.payload.multigraph) {
+                        if (displayMultigraph && message.payload.multigraph) {
                             tsLegendOptions = this.graphData[message.payload.multigraph.y][message.payload.multigraph.x].options;
                         } else {
                             tsLegendOptions = this.options;
@@ -366,8 +367,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             // render multigraph or not is here
                             let limitGraphs = {};
                             const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
-                            this.multigraphEnabled = (multiConf.x || multiConf.y) ? true : false;
-                            if (this.multigraphEnabled) {
+                            this.displayMultigraph = (multiConf.x || multiConf.y) ? true : false;
+                            if (this.displayMultigraph) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
                                     this.updateConfig({action: 'SetShowEvents', payload: {data: {showEvents: false}}});
@@ -464,7 +465,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             // console.log("graphData", this.graphData)
                             // we should not call setLegendDiv here as it's taken care in getUpdatedWidgetConfig
                             this.setLegendDiv();
-                            if (!this.multigraphEnabled) {
+                            if (!this.displayMultigraph) {
                                 this.refreshLegendSource();
                             }
                             // delay required. sometimes, edit to viewmode the chartcontainer width is not available
@@ -473,7 +474,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // if ( this.mode !== 'edit'  ) {
                                     this.setSize();
                                 // }
-                                if (!this.multigraphEnabled) {
+                                if (!this.displayMultigraph) {
                                     this.legendDataSource.sort = this.sort;
                                 }
                                 // this is for initial load before scroll event on widget
@@ -844,7 +845,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             nWidth = newSize.width - widthOffset - paddingSides;
         }
 
-        if (this.multigraphEnabled && this.widget.settings.multigraph) {
+        if (this.displayMultigraph && this.widget.settings.multigraph) {
             const multigraphSettings = this.widget.settings.multigraph;
 
             if (this.multigraphMode === 'freeflow') {
@@ -1094,7 +1095,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === mid);
         const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
         const multiGraphConf = this.widget.settings.multigraph;
-        const isMetricMultiGraph = this.multigraphEnabled && multiGraphConf && multiGraphConf.chart[0].displayAs !== 'g' ? true : false;
+        // TODO: fix it
+        const isMetricMultiGraph = this.displayMultigraph && multiGraphConf && multiGraphConf.chart[0].displayAs !== 'g' ? true : false;
         if ( curtype === 'line' && visual.type && !isMetricMultiGraph && ['area', 'bar'].includes(visual.type) ) {
             visual.axis = this.widget.queries[qindex].metrics[mindex].settings.visual.axis || 'y1';
             visual.stacked = 'true';
@@ -1148,7 +1150,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     getEvents() {
-        if (this.widget.settings.visual.showEvents && !this.multigraphEnabled) {
+        if (this.widget.settings.visual.showEvents && !this.displayMultigraph) {
             this.eventsLoading = true;
             this.interCom.requestSend({
                 id: this.widget.id,
@@ -1556,9 +1558,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
+        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.displayMultigraph, widget: this.widget, event});
         let multigraph: any = false;
-        if (this.multigraphEnabled) {
+        if (this.displayMultigraph) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
         }
 
@@ -1692,7 +1694,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 });
                 break;
             case 'multigraph':
-                this.multigraphEnabled = event;
+                this.displayMultigraph = event;
                 break;
         }
     }
