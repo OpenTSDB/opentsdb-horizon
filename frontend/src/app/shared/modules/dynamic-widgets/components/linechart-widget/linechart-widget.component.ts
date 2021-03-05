@@ -164,6 +164,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsWidth: number;
     startTime: number;
     endTime: number;
+    timezone: string = 'local';
     previewEventsCount = 100;
     eventsCount = 10000;
     eventsLoading: boolean = false;
@@ -968,6 +969,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     setTimezone(timezone) {
+        this.timezone = timezone;
         this.options.labelsUTC = timezone === 'utc' ? true : false;
         this._timezone.next(timezone);
     }
