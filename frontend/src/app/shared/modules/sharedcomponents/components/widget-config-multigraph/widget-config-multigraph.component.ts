@@ -164,6 +164,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
             layout: new FormControl('', [Validators.required]),
+            enabled: new FormControl('', [Validators.required]),
             gridOptions: this.fb.group({
                 viewportDisplay: new FormControl('', [Validators.required]),
                 custom: this.fb.group({
