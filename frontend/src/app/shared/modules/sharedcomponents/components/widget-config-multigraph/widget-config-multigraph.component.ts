@@ -85,6 +85,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 sortAs: 'asc'
             }
         ],
+        enabled: true,
         layout: 'grid', // grid | freeflow
         gridOptions: {
             viewportDisplay: 'custom', // fit | custom
