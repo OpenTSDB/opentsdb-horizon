@@ -1349,12 +1349,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
-        // tslint:disable-next-line:max-line-length
-        // const groupby = payload.settings.multigraph ? payload.settings.multigraph.chart.filter(d=> d.key !== 'metric_group' && d.displayAs !== 'g').map(d => d.key) : [];
-        // should we have option to turn on and off multigraph?
-        const groupby = payload.settings.multigraph ?
+        // set groupby if multigraph is enabled
+        const groupby = payload.settings.multigraph.enabled ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];
-            console.log(' groupby', groupby);
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
