@@ -165,7 +165,7 @@
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
     </div>-->
     <div class="widget-control-steps has-scroller">
-        <div class="is-scroller">
+        <div class="is-scroller" cdkScrollable>
             <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
                     <span class="step-section-label-text" (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
