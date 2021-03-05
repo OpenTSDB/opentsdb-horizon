@@ -601,10 +601,18 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    urlValidator() : ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !/^https:\/\/[^ "]+$/.test(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
         this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
+        this.httpEndpoint = new FormControl('', [this.urlValidator()]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
         this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
