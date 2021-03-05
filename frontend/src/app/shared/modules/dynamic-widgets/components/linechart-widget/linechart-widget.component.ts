@@ -139,6 +139,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // MULTIGRAPH
     multigraphEnabled = false; // flag from multigraph settings 'enabled'
     displayMultigraph = false; // this is can be multigraph with all 'g'
+    multiConf: any = {};
     multigraphMode = 'grid'; // grid || freeflow
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
@@ -196,7 +197,18 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     ) { }
 
     ngOnInit() {
-
+        // act like conversion for widget with or without multigraph
+        if (!this.widget.settings.multigraph) {
+            this.multigraphEnabled = false;
+            this.widget.settings.multigraph.enabled = false;
+        } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
+            this.multigraphEnabled = true;
+            this.widget.settings.multigraph.enabled = true;
+        } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
+            this.multigraphEnabled = this.widget.settings.multigraph.enabled;
+        }
+        this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
+        this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'snap';
         this.widget.settings.chartOptions = this.widget.settings.chartOptions || {};
@@ -300,10 +312,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         this.updatedShowEventStream(false);
                         break;
                     case 'tsLegendRequestWidgetSettings':
-                        const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
-                        const displayMultigraph = (multiConf.x || multiConf.y) ? true : false;
+                        this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
+                        this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
                         let tsLegendOptions;
-                        if (displayMultigraph && message.payload.multigraph) {
+                        if (this.displayMultigraph && message.payload.multigraph) {
                             tsLegendOptions = this.graphData[message.payload.multigraph.y][message.payload.multigraph.x].options;
                         } else {
                             tsLegendOptions = this.options;
@@ -366,9 +378,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
                             // render multigraph or not is here
                             let limitGraphs = {};
-                            const multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
-                            this.displayMultigraph = (multiConf.x || multiConf.y) ? true : false;
-                            if (this.displayMultigraph) {
+                            this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
+                            this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
+                            this.multigraphEnabled = this.widget.settings.multigraph.enabled;
+                            if (this.displayMultigraph && this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
                                     this.updateConfig({action: 'SetShowEvents', payload: {data: {showEvents: false}}});
@@ -382,7 +395,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // result graphRowLabelMarginLeft since we have new data
                                 this.graphRowLabelMarginLeft = 0;
                                 // fill out tag values from rawdata
-                                let results = this.multiService.fillMultiTagValues(this.widget, multiConf, rawdata);
+                                let results = this.multiService.fillMultiTagValues(this.widget, this.multiConf, rawdata);
                                 results = this.multiService.removeEmptyRowsColumns(results);
                                 const maxGraphs = 100;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
@@ -402,11 +415,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                             limitGraphs[rowKeys[i]][colKeys[j]] = results[rowKeys[i]][colKeys[j]];
                                         }
                                     }
-                                    // this.multiLimitMessage = 'Display first ' + numOfRows * maxCols + ' of ' + rowKeys.length * colKeys.length;
-                                    // emit message to display on widget header
-                                    // this.widgetOut.emit({
-                                    //    message: this.multiLimitMessage
-                                    // });
                                 } else {
                                     limitGraphs = this.utilService.deepClone(results);
                                 }
@@ -422,7 +430,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                 firstGraph = false;
                                                 // preserve previous series and visibility so we can remap in data transformer
                                                 // this might not need anymore since it rarely hit this.
-                                                /*if (this.graphData.hasOwnProperty(ykey)) {
+                                                if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
                                                         if (this.graphData[ykey][xkey].hasOwnProperty('options')) {
                                                             const prevOptions = this.utilService.deepClone(this.graphData[ykey][xkey].options);
@@ -433,7 +441,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                         }
                                                     }
                                                 }
-                                                */
 
                                                 limitGraphs[ykey][xkey].ts = this.dataTransformer.yamasToDygraph(
                                                      this.widget, options, limitGraphs[ykey][xkey].ts, limitGraphs[ykey][xkey]
@@ -452,10 +459,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.data = { ...this.data };
                                 graphs['y'] = {};
                                 graphs['y']['x'] = this.data;
+                                graphs['y']['x'].options = this.options;
                                 limitGraphs = graphs;
                             }
                             this.setMultigraphColumns(limitGraphs);
-                            console.log('hill - final data', limitGraphs);
                             this.graphData = {...limitGraphs};
                             if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                                 environment.debugLevel.toUpperCase() === 'DEBUG' ||
@@ -483,7 +490,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
-                        // console.log("getUpdatedWidgetConfig", message);
                         this.widget = message.payload.widget;
                         this.setOptions();
                         this.refreshData(message.payload.needRefresh);
@@ -608,7 +614,19 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     resetChart() {
-        this.options = {...this.options, labels: ['x']};
+        this.options = {...this.options, labels: ['x'], axes: {
+            y: {
+                valueRange: [null, null],
+                tickFormat: {}
+            },
+            y2: {
+                valueRange: [null, null],
+                tickFormat: {},
+                drawGrid: true,
+                independentTicks: true
+            }
+        }
+    };
         this.data = { ts: [[0]] };
     }
 
@@ -1407,7 +1425,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 action: 'getQueryData',
                 payload: this.widget,
             });
-            this.cdRef.detectChanges();
+            //no need to detect anything here
+            //this.cdRef.detectChanges();
         }
     }
 
@@ -1559,8 +1578,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
         // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.displayMultigraph, widget: this.widget, event});
-        let multigraph: any = false;
-        if (this.displayMultigraph) {
+        let multigraph: any = null;
+        if (this.displayMultigraph && this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
         }
 
@@ -1694,7 +1713,21 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 });
                 break;
             case 'multigraph':
-                this.displayMultigraph = event;
+                this.multigraphEnabled = event;
+                this.displayMultigraph = false; // reset mode to display 1 blank graph
+                this.widget.settings.multigraph.enabled = event;
+                this.resetChart();
+                // build empty reset data.
+                let graphs = {};
+                graphs['y'] = {};
+                graphs['y']['x'] = this.data;
+                graphs['y']['x'].options = this.options;
+                this.graphData = {...graphs};
+                this.setMultigraphColumns(this.graphData);
+                this.setSize();
+                // refresh data with changes of groupby
+                this.doRefreshData$.next(true);
+                this.needRequery = true;            
                 break;
         }
     }
