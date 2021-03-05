@@ -78,10 +78,10 @@
                                         [chartType]="chartType"
                                         [data]="graphData[yKey][xKey]"
                                         [size]="{'width':(size.width - 6), 'height': (size.height - 6)}"
-                                        [options]="displayMultigraph ? graphData[yKey][xKey].options : options"
+                                        [options]="graphData[yKey][xKey].options"
                                         [eventBuckets]="buckets"
                                         [showEvents]="widget.settings.visual.showEvents"
-                                        [multigraph]="displayMultigraph"
+                                        [multigraph]="displayMultigraph && multigraphEnabled"
                                         [timeseriesLegend]="tsLegendOptions"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
@@ -228,12 +228,12 @@
                     </div>
                     <div>
                         <mat-slide-toggle
-                        [checked]="displayMultigraph"
+                        [checked]="multigraphEnabled"
                         (change)="configSectionToggleChanged('multigraph', $event.checked)">
-                            <span *ngIf="displayMultigraph">
+                            <span *ngIf="multigraphEnabled">
                                 Multigraph Enabled
                             </span>
-                            <span *ngIf="!displayMultigraph">
+                            <span *ngIf="!multigraphEnabled">
                                 Multigraph <b>Disabled</b>
                             </span>
                         </mat-slide-toggle>
