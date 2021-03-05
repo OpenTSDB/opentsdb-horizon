@@ -223,7 +223,7 @@
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('multigraph', $event);scrollToElement(stepmultigraph);">
                             <span>5. Multigraph</span>
-                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            <mat-icon fontSet="denali" *ngIf="multigraphEnabled" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
                     <div>
@@ -239,7 +239,7 @@
                         </mat-slide-toggle>
                     </div>
                 </div>
-                <div class="step-section-content" *ngIf="visibleSections.multigraph">
+                <div class="step-section-content" *ngIf="visibleSections.multigraph && multigraphEnabled">
                     <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
                 </div>
             </div>
@@ -248,10 +248,10 @@
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
                             <span>6. Events</span>
-                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            <mat-icon fontSet="denali" *ngIf="widget.settings.visual.showEvents" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
-                    <div *ngIf="!displayMultigraph">
+                    <div *ngIf="!displayMultigraph || !multigraphEnabled">
                         <mat-slide-toggle
                         [checked]="widget.settings.visual.showEvents"
                         (change)="configSectionToggleChanged('events', $event.checked)">
@@ -263,12 +263,12 @@
                             </span>
                         </mat-slide-toggle>
                     </div>
-                    <div *ngIf="displayMultigraph" class="disabled-message">
+                    <div *ngIf="displayMultigraph && multigraphEnabled" class="disabled-message">
                         Events <b>disabled</b> with multigraphs.
                     </div>
                 </div>
                 <div class="step-section-content" *ngIf="visibleSections.events">
-                    <div class="events-config" *ngIf="!displayMultigraph">
+                    <div class="events-config" *ngIf="!displayMultigraph || !multigraphEnabled">
                         <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
                         <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
                         <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
