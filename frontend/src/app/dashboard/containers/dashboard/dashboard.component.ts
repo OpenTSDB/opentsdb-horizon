@@ -1350,7 +1350,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
         // set groupby if multigraph is enabled
-        const groupby = payload.settings.multigraph.enabled ?
+        const groupby = (payload.settings.multigraph && payload.settings.multigraph.enabled) ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];
         const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
 
