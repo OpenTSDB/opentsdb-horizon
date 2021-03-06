@@ -201,7 +201,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // act like conversion for widget with or without multigraph
         if (!this.widget.settings.multigraph) {
             this.multigraphEnabled = false;
-            this.widget.settings.multigraph.enabled = false;
+            //if (!this.widget.settings.multigraph.enabled) {
+            //     this.widget.settings.multigraph.enabled = false;
+            // }
         } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = true;
             this.widget.settings.multigraph.enabled = true;
@@ -381,7 +383,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             let limitGraphs = {};
                             this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
                             this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
-                            this.multigraphEnabled = this.widget.settings.multigraph.enabled;
+                            // this.multigraphEnabled = this.widget.settings.multigraph.enabled;
                             if (this.displayMultigraph && this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
@@ -1717,7 +1719,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'multigraph':
                 this.multigraphEnabled = event;
                 this.displayMultigraph = false; // reset mode to display 1 blank graph
-                this.widget.settings.multigraph.enabled = event;
+                // for exisitng multigraph
+                if (this.widget.settings.multigraph) {
+                    this.widget.settings.multigraph.enabled = event;
+                }
                 this.resetChart();
                 // build empty reset data.
                 let graphs = {};
