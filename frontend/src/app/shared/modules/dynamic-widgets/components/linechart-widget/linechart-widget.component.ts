@@ -198,18 +198,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     ) { }
 
     ngOnInit() {
-        // act like conversion for widget with or without multigraph
-        if (!this.widget.settings.multigraph) {
-            this.multigraphEnabled = false;
-            //if (!this.widget.settings.multigraph.enabled) {
-            //     this.widget.settings.multigraph.enabled = false;
-            // }
-        } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
-            this.multigraphEnabled = true;
-            this.widget.settings.multigraph.enabled = true;
-        } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
-            this.multigraphEnabled = this.widget.settings.multigraph.enabled;
-        }
+        this.checkMultigraphEnabled();
         this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
         this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -383,7 +372,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                             let limitGraphs = {};
                             this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
                             this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
-                            // this.multigraphEnabled = this.widget.settings.multigraph.enabled;
+                            this.checkMultigraphEnabled();
                             if (this.displayMultigraph && this.multigraphEnabled) {
                                 // disable events and legend
                                 if (this.widget.settings.visual && this.widget.settings.visual.showEvents) {
@@ -1722,6 +1711,26 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 // for exisitng multigraph
                 if (this.widget.settings.multigraph) {
                     this.widget.settings.multigraph.enabled = event;
+                } else {
+                    // set default multigraph for it
+                    this.widget.settings.multigraph = {
+                        chart: [
+                            {
+                                key: 'metric_group',
+                                displayAs: 'g', // g|x|y
+                                sortAs: 'asc'
+                            }
+                        ],
+                        enabled: true,
+                        layout: 'grid', // grid | freeflow
+                        gridOptions: {
+                            viewportDisplay: 'custom', // fit | custom
+                            custom: {
+                                x: 3,
+                                y: 3
+                            }
+                        }
+                    };
                 }
                 this.resetChart();
                 // build empty reset data.
@@ -1737,6 +1746,18 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.needRequery = true;            
                 break;
         }
+    }
+
+    // to check if this multigraphEnabled to set or not
+    // even the widget has multigraph or not
+    checkMultigraphEnabled() {
+        if (!this.widget.settings.multigraph) {
+            this.multigraphEnabled = false;
+        } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
+            this.multigraphEnabled = true;
+        } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
+            this.multigraphEnabled = this.widget.settings.multigraph.enabled;
+        }        
     }
 
     private isIn(pBounding:any, cCord: any) {
