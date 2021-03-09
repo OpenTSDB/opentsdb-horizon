@@ -317,7 +317,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     scrollDetect_event(event) {
         const srcEl = event.srcElement;
 
-        if (!srcEl.classList.contains('metric-search-result') && !this.elRef.nativeElement.contains(srcEl)) {
+        if (!srcEl.closest('.metric-search-result')) {
             // due to how mat-menu/cdk-menu works, we need to close the autocomplete menu on scroll to avoid wierd UI issues
             this.trigger.closeMenu();
         }
