@@ -17,7 +17,7 @@
     <div class="preset-color">
         <div class="title">Preset Colors</div>
         <div class="colors">
-            <button class="btn-preset-color" *ngFor="let color of presetColors" mat-flat-button [style.backgroundColor]="color.hex" (click)="changeColorValue(color.rgb)"></button>
+            <button class="btn-preset-color" *ngFor="let color of presetColors" mat-flat-button [style.backgroundColor]="color.hex" [matTooltip]="color.name" (click)="changeColorValue(color.rgb)"></button>
         </div>
     </div>
 
