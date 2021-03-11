@@ -1,0 +1,25 @@
+<ng-container *ngIf="namespaceListMode; else namespaceDetail">
+    <ng-container *ngTemplateOutlet="namespaceList"></ng-container>
+</ng-container>
+
+<ng-template #namespaceList>
+    <STRONG>NAMESPACE LIST</STRONG>
+</ng-template>
+
+<ng-template #namespaceDetail>
+    <STRONG>NAMESPACE DETAIL: {{nsAlias}}</STRONG>
+</ng-template>
+
+<ng-template #namespaceNotFound>
+    <STRONG>NAMESPACE NOT FOUND</STRONG>
+</ng-template>
+
+<ng-template #namespaceListNavbarTmpl>
+    <span class="navbar-item nav-title-readonly">Namespace List</span>
+    <span class="flex-spacer"></span>
+</ng-template>
+
+<ng-template #namespaceDetailNavbarTmpl>
+    <span class="navbar-item nav-title-readonly">Namespace: {{nsAlias}}</span>
+    <span class="flex-spacer"></span>
+</ng-template>

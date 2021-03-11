@@ -1,0 +1,20 @@
+@mixin app-user-component-base() {
+
+}
+
+@mixin app-user-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+    $status: map-get($theme-config, status);
+    $close-button-background: map-get($accent, A400);
+    $close-button-text: map-get($foreground, navbar-text);
+    $navbar-background: map-get($background, navbar);
+}

@@ -47,6 +47,8 @@ import { TemplateVariablePanelComponent } from './components/template-variable-p
 import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
+import { NamespaceComponent } from './containers/namespace/namespace.component';
+import { UserComponent } from './containers/user/user.component';
 
 @NgModule({
     imports: [
@@ -88,7 +90,9 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
         TemplateVariablePanelComponent,
-        DashboardToAlertDialogComponent
+        DashboardToAlertDialogComponent,
+        NamespaceComponent,
+        UserComponent
     ],
     providers: [
         DashboardService,
