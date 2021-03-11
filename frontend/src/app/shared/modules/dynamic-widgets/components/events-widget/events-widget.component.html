@@ -3,7 +3,7 @@
         <div class="widget-title" *ngIf="mode !== 'edit'" fxLayout="row" fxFlex="1 1 30px">
             <span class="readonly" fxFlex="1 1 100%">{{ resolveTitle(widget.settings.title) }}</span>
         </div>
-        <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 30px">
+        <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 48px">
             <span fxFlex="1 1 100%">
                 <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
                 showEditIcon="true"
@@ -31,7 +31,7 @@
                 <div class="flex-spacer"></div>
             </mat-tab-group>
         </div>
-      
+
         <div class="widget-output notCentered" #widgetoutput [ngClass]="{'top-margin': mode === 'edit' }">
             <div class="widget-container">
                 <div *ngIf="mode === 'edit'" class="event-result-title"> Preview </div>
