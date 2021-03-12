@@ -74,6 +74,10 @@
     .edit-view-container.is-active {
         .widget-panel-content.events-widget {
 
+            .widget-title {
+                margin-bottom: 0;
+            }
+
             .widget-output-container {
                 flex: 1;
                 max-height: initial;
@@ -83,15 +87,16 @@
             .widget-output {
                 height: initial;
                 max-height: initial;
-                margin-bottom: 12px;
+                //margin-bottom: 12px;
                 align-items: flex-start;
             }
 
             .widget-controls-container {
                 flex: 1;
                 flex-grow: 0.25;
-                margin: 12px;
+                margin: 12px 0;
                 background-color: white;
+                min-height: 240px;
             }
 
             .widget-configs .mat-tab-header .mat-tab-label:last-child {
