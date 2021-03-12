@@ -93,6 +93,12 @@
             flex-direction: column;
         }
 
+        .alert-status {
+            padding: 10px 10px;
+            .mat-slide-toggle-content .mat-caption {
+                font-size: 14px;
+            }
+        }
         // preview area - graph and legend
         .preview-wrapper {
             padding: 0px;
@@ -774,6 +780,10 @@
             .mat-card-actions {
                 border-top: 1px solid $divider-color;
             }
+        }
+
+        .alert-status {
+            background-color: $card;
         }
 
         .preview-wrapper {

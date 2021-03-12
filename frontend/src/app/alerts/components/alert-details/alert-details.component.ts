@@ -71,6 +71,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     @Input() hasWriteAccess: boolean = false;
 
+    @Input() enabled: boolean = true;
+
     get readOnly(): boolean {
         if (!this.hasWriteAccess) { return true; }
         return (this.viewMode === 'edit' || this.viewMode === 'clone') ? false : true;
@@ -1524,6 +1526,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.utils.setTabTitle(name);
     }
 
+    toggleAlert() {
+        this.configChange.emit({ action: 'ToggleAlert', payload: { id: this.data.id, enabled: this.enabled }} );
+    }
+
     metricSubTypeChanged(e) {
         this.data.threshold.subType = e.value;
         if (e.value === 'singleMetric' || (e.value === 'periodOverPeriod' && Object.keys(this.periodOverPeriodConfig).length > 0)) {
@@ -1660,6 +1666,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
            data.createdFrom = this.createdFrom;
         }
 
+        data.enabled = this.enabled;
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
