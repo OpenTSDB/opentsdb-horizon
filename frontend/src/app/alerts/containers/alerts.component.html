@@ -1,5 +1,5 @@
 <ng-template [ngIf]="detailsView">
-    <alert-details *ngIf="list === 'alerts'" [data]="configurationEditData" [viewMode]="detailsMode" [hasWriteAccess]="hasNamespaceWriteAccess" (configChange)="configurationEdit_change($event)"></alert-details>
+    <alert-details *ngIf="list === 'alerts'" [data]="configurationEditData" [viewMode]="detailsMode" [enabled]="isAlertEnabled" [hasWriteAccess]="hasNamespaceWriteAccess" (configChange)="configurationEdit_change($event)"></alert-details>
     <snooze-details *ngIf="list === 'snooze'" [data]="configurationEditData" [alertListMeta]="alertListMeta" [viewMode]="detailsMode" [hasWriteAccess]="hasNamespaceWriteAccess" (configChange)="configurationEdit_change($event)"></snooze-details>
 </ng-template>
 
