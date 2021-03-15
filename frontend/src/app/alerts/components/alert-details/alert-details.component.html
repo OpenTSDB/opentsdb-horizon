@@ -1,10 +1,20 @@
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
         <div class="alert-status" *ngIf="data.id">
-            <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="!hasWriteAccess">
-                <span class="mat-caption">This alert is {{enabled ? 'Enabled' : 'Disabled'}}</span>
+            <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="!hasWriteAccess">
+                <span class="mat-caption" *ngIf="enabled">This alert is enabled</span>
             </mat-slide-toggle>
+            <div *ngIf="!enabled" class="messaging-bar is-warning-type">
+                <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="!hasWriteAccess"></mat-slide-toggle>
+                <div class="message-icon">
+                    <mat-icon fontSet="denali" fontIcon="d-warning-solid"></mat-icon>
+                </div>
+                <div class="message-text">
+                    This alert is disabled
+                </div>
+            </div>
         </div>
+
         <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
             <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
                 <div class="graph-output">
