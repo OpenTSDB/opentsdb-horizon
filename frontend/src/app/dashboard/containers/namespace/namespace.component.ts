@@ -1,8 +1,10 @@
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { DbfsResourcesState } from '../../../app-shell/state';
 import { CdkService } from '../../../core/services/cdk.service';
 import { LoggerService } from '../../../core/services/logger.service';
 
@@ -15,9 +17,16 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.app-namespace') private hostClass = true;
 
+    @Select(DbfsResourcesState.getResourcesLoaded) dbfsReady$: Observable<boolean>;
+    @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
+    nsData$: Observable<any>;
+    dbfsReady: boolean = false;
+
     namespaceListMode: boolean = false;
+    nsListItems: any[] = [];
 
     nsAlias: string = '';
+    nsDbfs: any = {};
 
     private subscription: Subscription = new Subscription();
 
@@ -32,16 +41,21 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
+        private store: Store,
         private logger: LoggerService
     ) {
         logger.ng('NAMESPACE LANDING PAGE CONSTRUCT');
         const namespaceList = false;
+        this.subscription.add(this.dbfsReady$.subscribe(value => {
+            this.dbfsReady = value;
+        }));
+
         this.subscription.add(
             this.router
                 .events.pipe(
                     filter(event => event instanceof NavigationEnd),
                     map(() => {
-                        this.logger.log('ROUTE CHILD', this.activatedRoute);
+                        //this.logger.log('ROUTE CHILD', this.activatedRoute);
                         if (this.activatedRoute.snapshot.data['namespaceList']) {
                             return this.activatedRoute.snapshot.data['namespaceList'];
                         }
@@ -65,16 +79,27 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
         this.subscription.add(
             this.activatedRoute.params.subscribe(params => {
-                this.nsAlias = params['nsalias'];
-                // do something else
+                this.logger.log('ROUTE PARAMS', params);
+                if (params && params['nsalias']) {
+                    this.nsAlias = params['nsalias'];
+                    // do something else
+                    this.nsDbfs = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
+                    this.logger.log('NS DBFS', this.nsDbfs);
+                }
             })
         );
+
+        this.subscription.add(this.namespacesData$.subscribe( namespaces => {
+            this.nsListItems = namespaces;
+            this.logger.log('nsListItems DATA', namespaces);
+        }));
 
     }
 
 
+    /* privates */
 
-
+    /* ON DESTROY LAST */
     ngOnDestroy() {
         this.subscription.unsubscribe()
     }

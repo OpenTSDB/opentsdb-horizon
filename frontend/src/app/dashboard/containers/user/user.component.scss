@@ -17,4 +17,10 @@
     $close-button-background: map-get($accent, A400);
     $close-button-text: map-get($foreground, navbar-text);
     $navbar-background: map-get($background, navbar);
+
+    $navbar-text: map-get($foreground, navbar-text);
+
+    .nav-user-title {
+        color: $navbar-text;
+    }
 }

@@ -4,10 +4,16 @@
 
 <ng-template #namespaceList>
     <STRONG>NAMESPACE LIST</STRONG>
+    <div *ngFor="let item of nsListItems">
+        {{item|json}}
+    </div>
 </ng-template>
 
 <ng-template #namespaceDetail>
-    <STRONG>NAMESPACE DETAIL: {{nsAlias}}</STRONG>
+    <STRONG>NAMESPACE DETAIL: {{nsDbfs.name}}</STRONG>
+    <div>
+        {{nsDbfs|json}}
+    </div>
 </ng-template>
 
 <ng-template #namespaceNotFound>
@@ -15,11 +21,11 @@
 </ng-template>
 
 <ng-template #namespaceListNavbarTmpl>
-    <span class="navbar-item nav-title-readonly">Namespace List</span>
+    <span class="navbar-item nav-namespace-title">Namespace List</span>
     <span class="flex-spacer"></span>
 </ng-template>
 
 <ng-template #namespaceDetailNavbarTmpl>
-    <span class="navbar-item nav-title-readonly">Namespace: {{nsAlias}}</span>
+    <span class="navbar-item nav-namespace-title">Namespace: {{nsDbfs.name}}</span>
     <span class="flex-spacer"></span>
 </ng-template>
