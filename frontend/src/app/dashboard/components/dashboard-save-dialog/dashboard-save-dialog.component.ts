@@ -139,7 +139,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         this.formReady = true;
     }
 
-    saveLocationVal(): string {
+    get saveLocationVal(): string {
         return this.saveForm['controls']['dbSaveLocation'].value;
     }
 
