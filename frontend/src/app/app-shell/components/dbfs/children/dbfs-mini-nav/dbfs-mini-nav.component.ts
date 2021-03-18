@@ -156,8 +156,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             initialPath = '/user/'+this.user.alias;
         }
 
-        console.log('%cINIT PATH', 'color: white; background: red; padding: 2px;', {mode: this.mode, initialPath});
-
         // setup origin details
         const pathDetails = this.dbfsUtils.detailsByFullPath(initialPath);
         if (this.type === 'file') {
