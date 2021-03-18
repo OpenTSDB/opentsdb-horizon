@@ -68,9 +68,10 @@
     #dnavMiniNavigator="matMenu">
     <ng-template matMenuContent>
         <div mat-menu-item (click)="$event.stopPropagation();" [disableRipple]="true">
-            <dbfs-mini-nav mode="save"
+            <dbfs-mini-nav
+                mode="save"
                 type="folder"
-                path="/user/{{user.alias}}"
+                [path]="saveLocationVal()"
                 (navigationCancel)="miniNavCancel($event)"
                 (directorySelected)="miniNavSelected($event)"
                 #miniNav></dbfs-mini-nav>
