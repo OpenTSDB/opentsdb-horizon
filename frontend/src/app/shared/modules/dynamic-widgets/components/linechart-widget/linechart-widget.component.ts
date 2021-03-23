@@ -545,7 +545,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // true is just a dummy value to trigger
         const dummyFlag = 1;
         this.newSize$ = new BehaviorSubject(dummyFlag);
-        this.newSizeSub = this.newSize$.subscribe(flag => {         
+        this.newSizeSub = this.newSize$.subscribe(flag => {
             const _size = this.widgetOutputElement.nativeElement.getBoundingClientRect();
             if (JSON.stringify(_size) !== JSON.stringify(this.currentGraphSize)) {
                 setTimeout(() => this.setSize(), 0);
@@ -649,7 +649,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.legendDataSource.sort = this.sort;
                 this.setSize();
                 break;
-            case 'ChangeAxisLabel': 
+            case 'ChangeAxisLabel':
                 const payload = message.payload;
                 this.widget.settings.axes[payload.axis].label = payload.label;
                 break;
@@ -1262,9 +1262,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setSeriesVisibilityConfig(index: number, visibility: boolean, multigraph: any = false) {
         const options = (multigraph) ? this.graphData[multigraph.y][multigraph.x].options : this.options;
+
         options.visibility[index] = visibility;
-        options.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
-        this.resetYZoom();
+
+        const series = options.series[index + 1];
+
+        options.visibilityHash[series.hash] = options.visibility[index];
     }
 
     handleZoom(zConfig) {
@@ -1286,7 +1289,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.resetYZoom();
         }
     }
-    
+
     resetYZoom(redraw= true) {
         if ( this.widget.settings.chartOptions.axes ) {
             delete this.widget.settings.chartOptions.axes;
