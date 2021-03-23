@@ -1,11 +1,11 @@
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
         <div class="alert-status" *ngIf="data.id">
-            <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="!hasWriteAccess">
+            <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess">
                 <span class="mat-caption" *ngIf="enabled">This alert is enabled</span>
             </mat-slide-toggle>
             <div *ngIf="!enabled" class="messaging-bar is-warning-type">
-                <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="!hasWriteAccess"></mat-slide-toggle>
+                <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess"></mat-slide-toggle>
                 <div class="message-icon">
                     <mat-icon fontSet="denali" fontIcon="d-warning-solid"></mat-icon>
                 </div>
@@ -208,7 +208,7 @@
                                                     <div class="sentence-item">
                                                         <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
                                                     </div>
-                                                    <mat-error *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window should be greater than the reporting interval</mat-error>
+                                                    <mat-error style="text-align: right;" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window should be greater than or equals to the reporting interval</mat-error>
                                                 </div>
                                                 <div *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
                                                     <div class="is-fullwindow">

@@ -435,15 +435,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     message = 'Snooze has been deleted.';
                     break;
             }
-            if (message !== '') {
-                this.snackBar.open(message, '', {
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'info'
-                });
-            }
             if ( !this.detailsView ) {
+                if (message !== '') {
+                    this.snackBar.open(message, '', {
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                        panelClass: 'info'
+                    });
+                }
                 this.infoIslandService.closeIsland();
             }
             this.retriggerAlertSearch();
@@ -1063,7 +1063,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
         this.configurationEditData = data;
-        this.isAlertEnabled = this.list === 'alerts' && data.id && data.enabled;
+        this.isAlertEnabled = this.list === 'alerts' && ( ( data.id && data.enabled ) || !data.id);
         this.detailsView = true;
     }
 
@@ -1222,7 +1222,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         } else if (type === RecipientType.slack) {
             return 'Slack';
         } else if (type === RecipientType.http) {
-            return 'HTTP';
+            return 'WebHook';
         } else if (type === RecipientType.oc) {
             return 'OC';
         } else if (type === RecipientType.email) {
