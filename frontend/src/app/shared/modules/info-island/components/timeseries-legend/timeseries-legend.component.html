@@ -26,15 +26,21 @@
             <!-- Selection Column -->
             <ng-container matColumnDef="checkbox">
                 <th mat-header-cell *matHeaderCellDef >
-                    <mat-checkbox value="" color="primary"
+                    <!--<mat-checkbox value="" color="primary"
                         [checked]="masterChecked"
                         [indeterminate]="masterIndeterminate"
-                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>
+                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="$event.stopPropagation(); masterCheckboxClick($event)">
+                        <mat-icon>{{masterIndeterminate ? 'indeterminate_check_box' : masterChecked ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                    <mat-checkbox value="" color="primary"
+                    <!--<mat-checkbox value="" color="primary"
                         [checked]="currentWidgetOptions.visibility[element.srcIndex]"
-                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>
+                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="timeSeriesVisibilityToggle(element.srcIndex, currentWidgetOptions.visibility[element.srcIndex], $event);">
+                        <mat-icon>{{currentWidgetOptions.visibility[element.srcIndex] ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
                 </td>
             </ng-container>
 
