@@ -208,7 +208,7 @@
                                                     <div class="sentence-item">
                                                         <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
                                                     </div>
-                                                    <mat-error style="text-align: right;" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window should be greater than or equals to the reporting interval</mat-error>
+                                                    <mat-error style="text-align: right;" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window size should be greater than or equal to the reporting interval</mat-error>
                                                 </div>
                                                 <div *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
                                                     <div class="is-fullwindow">
