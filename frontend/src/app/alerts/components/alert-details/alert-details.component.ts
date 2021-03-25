@@ -1927,9 +1927,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     // FOR DISPLAY ONLY VIEW OF METRICS - helper to get display value of recipient type
     typeToDisplayName(type: string): string {
         const types = {
-            opsgenie: 'OpsGenie',
+            opsgenie: 'Opsgenie',
             slack: 'Slack',
-            http: 'WebHook',
+            http: 'Webhook',
             oc: 'OC',
             email: 'Email'
         }

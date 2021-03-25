@@ -222,7 +222,7 @@
                                         [value]="recipientsFormData[_recipientType.http].endpoint"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.http], 'endpoint', $event.target.value)">
                                     <mat-error *ngIf="httpEndpoint.errors && (httpEndpoint.dirty || httpEndpoint.touched)">
-                                        Valid HTTPS endpoint required. Max endpoint characters is 300.
+                                        Valid HTTPS endpoint required.
                                     </mat-error>
                                 </mat-form-field>
                             </div>

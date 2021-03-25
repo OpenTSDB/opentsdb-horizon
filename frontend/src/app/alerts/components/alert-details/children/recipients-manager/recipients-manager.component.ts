@@ -450,7 +450,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         } else if (type === RecipientType.slack) {
             return 'Slack';
         } else if (type === RecipientType.http) {
-            return 'WebHook';
+            return 'Webhook';
         } else if (type === RecipientType.oc) {
             return 'OC';
         } else if (type === RecipientType.email) {
