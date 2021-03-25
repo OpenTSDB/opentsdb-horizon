@@ -131,12 +131,16 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
 
         this.saveForm['controls']['title'].setValue(this.dbData.title);
 
-        this.saveForm['controls']['dbSaveLocation'].setValue('/user/'+this.user.alias);
+        //this.saveForm['controls']['dbSaveLocation'].setValue('/user/'+this.user.alias);
         this.selectedSaveFolder = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/'+this.user.alias));
 
         this.saveForm.setValidators(this.duplicateDashboard());
 
         this.formReady = true;
+    }
+
+    get saveLocationVal(): string {
+        return this.saveForm['controls']['dbSaveLocation'].value;
     }
 
     // Custom Validator for Duplicate

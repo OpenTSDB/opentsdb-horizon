@@ -302,13 +302,13 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
         }
     }
 
-    @HostListener('window:focus', ['$event'])
-    onFocus(e: any) {
-        this.paused$.next(this.isEditMode);
-    }
-    @HostListener('window:blur', ['$event'])
-    onBlur(e: any) {
-        this.paused$.next(true);
+    @HostListener('document:visibilitychange', ['$event'])
+    onVisibilitychange(e) {
+        if (document.hidden) {
+            this.paused$.next(true);
+          } else {
+            this.paused$.next(this.isEditMode);
+        }
     }
 
     ngOnDestroy() {
