@@ -1232,8 +1232,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const queries = {};
 
         // check and add moving average or sliding window fx based sliding window time sampler value
-        const timeSampler = this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].value : null;
-        const slidingWindow = this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['slidingWindow'].value : '0';
+        const timeSampler = this.data.threshold && this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].value : null;
+        const slidingWindow = this.data.threshold && this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['slidingWindow'].value : '0';
         const fx =  timeSampler === 'on_avg' ? { fxCall: "EWMA", val: slidingWindow + 's,0.0'} : timeSampler === 'in_total' ? { fxCall: "SlidingWindow", val: 'sum,' + slidingWindow + 's'  } : null;
         for (let i = 0; i < this.queries.length; i++) {
             const query: any = JSON.parse(JSON.stringify(this.queries[i]));
