@@ -4,7 +4,7 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DbfsResourcesState } from '../../../app-shell/state';
+import { DbfsLoadNamespacesList, DbfsLoadTopFolder, DbfsResourcesState } from '../../../app-shell/state';
 import { CdkService } from '../../../core/services/cdk.service';
 import { LoggerService } from '../../../core/services/logger.service';
 
@@ -18,9 +18,11 @@ export class NamespaceComponent implements OnInit, OnDestroy {
     @HostBinding('class.app-namespace') private hostClass = true;
 
     @Select(DbfsResourcesState.getResourcesLoaded) dbfsReady$: Observable<boolean>;
+    @Select(DbfsResourcesState.getDynamicLoaded) dynamicLoaded$: Observable<any>;
     @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
     nsData$: Observable<any>;
     dbfsReady: boolean = false;
+    namespacesLoaded: boolean = false;
 
     namespaceListMode: boolean = false;
     nsListItems: any[] = [];
@@ -83,15 +85,36 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                 if (params && params['nsalias']) {
                     this.nsAlias = params['nsalias'];
                     // do something else
-                    this.nsDbfs = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
-                    this.logger.log('NS DBFS', this.nsDbfs);
+                    this.store.dispatch(new DbfsLoadTopFolder('namespace', this.nsAlias, {}))
+                        .subscribe(
+                            () => {
+                                setTimeout(() => {
+                                    this.nsDbfs = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
+                                    this.logger.log('NS DBFS', this.nsDbfs);
+                                }, 200);
+                            }
+                        );
+
+
                 }
             })
         );
 
+        this.subscription.add(this.dynamicLoaded$.subscribe( data => {
+            this.logger.log('dynamicLoaded', data);
+            if (!data.namespaces) {
+                this.store.dispatch(
+                    new DbfsLoadNamespacesList({})
+                );
+            } else {
+                this.namespacesLoaded = data.namespaces;
+            }
+
+        }));
+
         this.subscription.add(this.namespacesData$.subscribe( namespaces => {
             this.nsListItems = namespaces;
-            this.logger.log('nsListItems DATA', namespaces);
+            // this.logger.log('nsListItems DATA', namespaces);
         }));
 
     }
