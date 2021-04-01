@@ -2,7 +2,7 @@
     <span widget-view-container></span>
 </div>
 
-<div class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
+<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
     <div class="is-scroller">
         <ngx-gridster #gridster class="dashboard"
             [options]="gridsterOptions"

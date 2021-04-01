@@ -206,6 +206,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     list = 'alerts';
     detailsMode = 'edit'; // 'edit' or 'view'
     configurationEditData: any = {};
+    isAlertEnabled = true;
 
     // confirmDelete Dialog
     confirmDeleteDialog: MatDialogRef<TemplateRef<any>> | null;
@@ -415,9 +416,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     // this.editMode = false;
                     break;
                 case 'enable-success':
+                    this.isAlertEnabled = true;
                     message = 'Alert has been enabled.';
                     break;
                 case 'disable-success':
+                    this.isAlertEnabled = false;
                     message = 'Alert has been disabled.';
                     break;
                 case 'delete-success':
@@ -432,15 +435,17 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     message = 'Snooze has been deleted.';
                     break;
             }
-            if (message !== '') {
-                this.snackBar.open(message, '', {
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'info'
-                });
+            if ( !this.detailsView ) {
+                if (message !== '') {
+                    this.snackBar.open(message, '', {
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                        panelClass: 'info'
+                    });
+                }
+                this.infoIslandService.closeIsland();
             }
-            this.infoIslandService.closeIsland();
             this.retriggerAlertSearch();
             this.retriggerSnoozeSearch();
         }));
@@ -1057,16 +1062,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             const nowInMillis = Date.now();
             data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
-        if ( data.id && !data.enabled && this.list === 'alerts') {
-            this.interCom.requestSend({
-                action: 'systemMessage',
-                payload: {
-                    type: 'warning',
-                    message: 'This alert is disabled'
-                }
-            });
-        }
         this.configurationEditData = data;
+        this.isAlertEnabled = this.list === 'alerts' && ( ( data.id && data.enabled ) || !data.id);
         this.detailsView = true;
     }
 
@@ -1137,6 +1134,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
                 this.router.navigateByUrl('a/' + this.selectedNamespace);
                 break;
+            case 'ToggleAlert':
+                this.toggleAlert(message.payload);
+                break;
             case 'SaveSnooze':
                 this.store.dispatch(new SaveSnoozes(message.namespace, message.payload));
                 this.location.go('a/snooze/' + message.namespace);
@@ -1159,9 +1159,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
         }
-        this.infoIslandService.closeIsland();
-        this.retriggerAlertSearch();
-        this.retriggerSnoozeSearch();
+        if ( message.action !== 'ToggleAlert' ) {
+            this.infoIslandService.closeIsland();
+            this.retriggerAlertSearch();
+            this.retriggerSnoozeSearch();
+        }
     }
 
     retriggerAlertSearch() {
@@ -1220,7 +1222,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         } else if (type === RecipientType.slack) {
             return 'Slack';
         } else if (type === RecipientType.http) {
-            return 'HTTP';
+            return 'Webhook';
         } else if (type === RecipientType.oc) {
             return 'OC';
         } else if (type === RecipientType.email) {

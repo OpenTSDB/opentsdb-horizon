@@ -2,6 +2,7 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
 import { ConsoleService } from '../../core/services/console.service';
+import { Observable } from 'rxjs';
 
 export interface EventsModel {
     eventQueries: any[];
@@ -121,6 +122,8 @@ export class SetEventsTimeZone {
 })
 
 export class EventsState {
+    subs: any = {};
+    queryObserver: Observable<any>;
     constructor(
         private httpService: HttpService,
         private console: ConsoleService
@@ -167,11 +170,18 @@ export class EventsState {
         this.console.action(GetEvents.type, { time, eventQueries, wid });
         ctx.patchState({loading: true});
 
-        return this.httpService.getEvents(wid, time, eventQueries, limit).pipe(
-            map( (response: any) => {
-                return ctx.dispatch(new GetEventsSuccess(response, { time, eventQueries, wid, limit } ));
-            }),
-            catchError( error => ctx.dispatch(new GetEventsFailed(error, wid)) )
+        if (  this.subs[wid] ) {
+            this.subs[wid].unsubscribe();
+        }
+        this.queryObserver = this.httpService.getEvents(wid, time, eventQueries, limit);
+
+        this.subs[wid] = this.queryObserver.subscribe(
+            response => {
+                ctx.dispatch(new GetEventsSuccess(response, { time, eventQueries, wid, limit } ));
+            },
+            err => {
+                ctx.dispatch(new GetEventsFailed(err, wid))
+            }
         );
     }
 
@@ -191,6 +201,10 @@ export class EventsState {
             loading: false,
             error: null
         });
+        if ( this.subs[origParams.wid]) {
+            this.subs[origParams.wid].unsubscribe();
+        }
+        this.queryObserver = null;
     }
 
     @Action(GetEventsFailed)
@@ -199,6 +213,10 @@ export class EventsState {
         const state = ctx.getState();
         const events: any = { events: [], wid, error: response.error.error.message};
         ctx.setState({ ...state, loading: false, error: response.error.error.message, events});
+        if ( this.subs[wid]) {
+            this.subs[wid].unsubscribe();
+        }
+        this.queryObserver = null;
     }
 
     // @Action(LoadEventsSuccess)

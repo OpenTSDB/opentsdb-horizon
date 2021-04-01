@@ -22,7 +22,7 @@
     </div>
     <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="barchart">
         <div id="container" [style.width.px]="width" [style.height.px]="height">
-            <canvas id="canvas" chartjs [chartType]="type" [data]="data" [options]="options"></canvas>
+            <canvas id="canvas" *ngIf="data !== null" chartjs [chartType]="type" [data]="data" [options]="options"></canvas>
             <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                 <img src="/assets/spinner-26x26.gif" />
             </div>

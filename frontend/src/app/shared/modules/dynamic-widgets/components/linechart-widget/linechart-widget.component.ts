@@ -1266,9 +1266,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setSeriesVisibilityConfig(index: number, visibility: boolean, multigraph: any = false) {
         const options = (multigraph) ? this.graphData[multigraph.y][multigraph.x].options : this.options;
+
         options.visibility[index] = visibility;
-        options.visibilityHash[options.series[index + 1].hash] = options.visibility[index];
-        this.resetYZoom();
+
+        const series = options.series[index + 1];
+
+        options.visibilityHash[series.hash] = options.visibility[index];
     }
 
     handleZoom(zConfig) {

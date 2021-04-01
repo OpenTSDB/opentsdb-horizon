@@ -965,7 +965,7 @@ export class UtilsService {
         const filter = filters[i];
         const ftype = filter.type;
         if ( ftype === 'Chain' && filter['op'] === 'OR' ) {
-            newFilters = newFilters.concat(this.getFiltersTsdbToLocal(filter.filters));
+            newFilters = newFilters.concat(this.getFiltersTsdbToLocal(filter));
         } else if ( filterTypes.includes(ftype) ) {
             let values = [];
             switch ( ftype ) {

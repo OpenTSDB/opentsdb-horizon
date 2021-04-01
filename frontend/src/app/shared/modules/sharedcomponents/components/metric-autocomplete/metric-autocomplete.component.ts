@@ -62,7 +62,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     firstRun: boolean = true;
     scrollDetect: any;
 
-
     autocompleteWidth$: BehaviorSubject<number> = new BehaviorSubject<number>(700);
     autocompleteWidth: number;
     autocompleteDefaultWidth: number;
@@ -72,12 +71,10 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         private httpService: HttpService,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef
-    ) {
-    }
+    ) { }
 
     /** ANGULAR INTERFACE METHODS */
     ngOnInit() {
-        // console.log('metric autocomplete', this.metrics);
         this.setMetricSearch();
     }
 
@@ -85,7 +82,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         if (this.focus === true) {
             setTimeout(() => {
                 if (!this.multiple) {
-                    console.log(this.metricSearchFormField);
                     this.autocompleteDefaultWidth = this.metricSearchFormField.nativeElement.getBoundingClientRect().width;
                     this.autocompleteWidth = this.autocompleteDefaultWidth;
                 }
@@ -129,8 +125,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
             this.autocompleteWidth = this.autocompleteDefaultWidth;
         }
         this.autocompleteWidth$.next(this.autocompleteWidth);
-        
-        //console.log('AC WIDTH', this.autocompleteWidth, this.autocompleteDefaultWidth);
     }
 
     /** METHODS */
@@ -143,7 +137,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
                 debounceTime(200)
             )
             .subscribe(value => {
-                //console.log('IT DID SOMETHING **');
                 const query: any = { namespace: this.namespace, tags: this.filters };
                 query.search = value ? value : '';
                 this.message['metricSearchControl'] = {};
@@ -179,7 +172,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
 
     detectChanges() {
         if ( ! this.isDestroying ) {
-            //console.log('DETECT CHANGE!!');
             this.cdRef.detectChanges();
         }
     }
@@ -276,7 +268,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         const textVal = this.metricSearchControl.value;
 
         // check if value is valid metric option
-        // console.log('OPTIONS', this.metricOptions);
         const checkIdx = this.metricOptions.findIndex(item => textVal.toLowerCase() === item.name.toLowerCase());
 
         if (checkIdx >= 0) {
@@ -290,7 +281,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     }
 
     metricMultipleACKeydown(event: any) {
-        // console.log('METRICS', this.metrics);
 
         const textVal = this.metricSearchControl.value;
 
@@ -327,10 +317,19 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     scrollDetect_event(event) {
         const srcEl = event.srcElement;
 
-        if (!srcEl.classList.contains('metric-search-result') && !this.elRef.nativeElement.contains(srcEl)) {
-            // this.trigger.closeMenu();
+        if (!srcEl.closest('.metric-search-result')) {
+            // due to how mat-menu/cdk-menu works, we need to close the autocomplete menu on scroll to avoid wierd UI issues
+            this.trigger.closeMenu();
         }
     }
+
+    checkMenuOpen(event) {
+        // BUT, if the menu is closed, and the user tries to input text, then we OPEN the autocomplete menu
+        if (event.code !== 'Enter' && this.trigger.menuClosed) {
+            this.trigger.openMenu();
+        }
+    }
+
 
 
 }
