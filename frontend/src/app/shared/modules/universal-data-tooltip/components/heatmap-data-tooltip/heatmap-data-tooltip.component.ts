@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -25,14 +25,14 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        logger: LoggerService,
+        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
             sanitizer,
-            logger
+            console
         );
         this.utils = _utils;
     }
@@ -40,7 +40,6 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
     ngOnInit() {
         super.ngOnInit();
         super._dataStreamSubscribe((data: any) => {
-            // this.logger.log('HEATMAP DATA CB', {data});
             const percentage = Math.ceil((100 - data.percentage)) / 100;
             // use pSBC to get matching color value from heatmap opacity color
             // we don't want opacity due to how tooltip color chip works

@@ -12,8 +12,6 @@
 @import './components/navigator-sidenav/navigator-sidenav.component';
 @import './components/app-navbar/app-navbar.component';
 @import './components/navigator-panel/navigator-panel.component';
-@import './components/dbfs/dbfs.component';
-@import './components/dbfs/children/dbfs-mini-nav/dbfs-mini-nav.component';
 
 @import './components/settings-panel/settings-panel.component';
 @import './components/admin-panel/admin-panel.component';
@@ -43,11 +41,10 @@ $navbar-config: (
     @include app-navigator-sidenav-component-base();
     @include app-navbar-component-base();
     @include navigator-panel-component-base();
-    @include dbfs-component-base();
-    @include dbfs-mini-nav-component-base();
     @include settings-panel-component-base();
     @include admin-panel-component-base();
     @include global-notification-component-base();
+
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
@@ -61,9 +58,8 @@ $navbar-config: (
     @include app-navigator-sidenav-component-theme($theme-config);
     @include app-navbar-component-theme($theme-config);
     @include navigator-panel-component-theme($theme-config);
-    @include dbfs-component-theme($theme-config);
-    @include dbfs-mini-nav-component-theme($theme-config);
     @include settings-panel-component-theme($theme-config);
     @include admin-panel-component-theme($theme-config);
     @include global-notification-component-theme($theme-config);
+
 }

@@ -33,6 +33,7 @@
             <mat-drawer-container class="app-navigator-outlet-container" fxFlex="1 1 100%" autosize>
                 <mat-drawer class="app-navigator-drawer"
                     (closedStart)="drawerClosedStart()"
+                    (openedChange)="drawerOpenChange($event)"
                     [mode]="drawerMode"
                     [autoFocus]="false"
                     #drawer>
@@ -146,24 +147,30 @@
                         (toggleDrawer)="toggleDrawerMode($event)"
                         ></test-navigator>
                 </mat-drawer>
-                <mat-drawer-content class="router-outlet" fxLayout="column" fxFlex="1 1 100%" fxFlexFill>
-                    <app-navbar fxFlex="1 1 48px" [mediaQuery]="activeMediaQuery" (sidenavToggle)="sidenavToggle()" fxLayout fxLayoutAlign="stretch stretch" fxFlexFill></app-navbar>
-                    <!-- GLOBAL MESSAGING BAR -->
-                    <div class="messaging-bar" [ngClass]="{'is-hidden': !messageBarVisible, 'is-error-type': messageBarData.type === 'error', 'is-warning-type': messageBarData.type === 'warning', 'is-success-type': messageBarData.type === 'success', 'is-info-type': messageBarData.type === 'info'}">
-                        <div class="message-icon">
-                            <mat-icon fontSet="denali" [fontIcon]="messageBarIconMap[messageBarData.type]"></mat-icon>
+                <mat-drawer-content class="router-outlet" fxLayout="row" fxFlex="1 1 100%" fxFlexFill>
+                    <div class="app-content-wrap" fxLayout="column" fxFlex="1 1 100%" fxFlexFill>
+                        <app-navbar fxFlex="1 1 48px" [mediaQuery]="activeMediaQuery" (sidenavToggle)="sidenavToggle()" fxLayout fxLayoutAlign="stretch stretch" fxFlexFill></app-navbar>
+                        <!-- GLOBAL MESSAGING BAR -->
+                        <div class="messaging-bar" [ngClass]="{'is-hidden': !messageBarVisible, 'is-error-type': messageBarData.type === 'error', 'is-warning-type': messageBarData.type === 'warning', 'is-success-type': messageBarData.type === 'success', 'is-info-type': messageBarData.type === 'info'}">
+                            <div class="message-icon">
+                                <mat-icon fontSet="denali" [fontIcon]="messageBarIconMap[messageBarData.type]"></mat-icon>
+                            </div>
+                            <div class="message-text">
+                                {{messageBarData.message}}
+                            </div>
+                            <div class="message-close">
+                                <button mat-icon-button (click)="closeMessageBar()">
+                                    <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+                                </button>
+                            </div>
                         </div>
-                        <div class="message-text">
-                            {{messageBarData.message}}
-                        </div>
-                        <div class="message-close">
-                            <button mat-icon-button (click)="closeMessageBar()">
-                                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
-                            </button>
-                        </div>
+                        <!-- THE ENTIRE APP CONTENT FLOWS THROUGH HERE -->
+                        <router-outlet></router-outlet>
                     </div>
-                    <!-- THE ENTIRE APP CONTENT FLOWS THROUGH HERE -->
-                    <router-outlet></router-outlet>
+                    <!-- clipboard drawer -->
+                    <ng-container *ngIf="clipboardAvailable">
+                        <clipboard-drawer></clipboard-drawer>
+                    </ng-container>
                 </mat-drawer-content>
             </mat-drawer-container>
         </mat-sidenav-content>

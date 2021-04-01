@@ -5,7 +5,6 @@ import {
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({

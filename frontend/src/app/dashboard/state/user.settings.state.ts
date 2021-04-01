@@ -80,9 +80,6 @@ export class UserSettingsState {
     LoadUserFolderData(ctx: StateContext<UserSettingsModel>) {
         return this.httpService.getUserFolderData().pipe(
             map((response: any) => {
-
-
-                // console.log('USER FOLDER DATA RESPONSE', response);
                 if (response.body.memberNamespaces) {
                     const memberNamspaces = [];
                     const namespaceFolders = [];
@@ -113,21 +110,18 @@ export class UserSettingsState {
 
     @Action(UpdateUserNamespaces)
     updateUserNamespaces(ctx: StateContext<UserSettingsModel>, { namespaces }: UpdateUserNamespaces) {
-        // console.log('#### NAMESPACES ####', namespaces);
         const state = ctx.getState();
         ctx.patchState({ ...state, namespaces: namespaces });
     }
 
     @Action(UpdatePersonalFolders)
     updatePersonalFolders(ctx: StateContext<UserSettingsModel>, { personalFolders }: UpdatePersonalFolders) {
-        // console.log('#### NAMESPACES ####', namespaces);
         const state = ctx.getState();
         ctx.patchState({ ...state, personalFolders: personalFolders });
     }
 
     @Action(UpdateNamespaceFolders)
     updateNamespaceFolders(ctx: StateContext<UserSettingsModel>, { namespaceFolders }: UpdateNamespaceFolders) {
-        // console.log('#### NAMESPACES ####', namespaces);
         const state = ctx.getState();
         ctx.patchState({ ...state, namespaceFolders: namespaceFolders });
     }

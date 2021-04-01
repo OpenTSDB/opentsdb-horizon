@@ -124,6 +124,14 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 case 'SnapshotMeta':
                     this.meta = message.payload;
                     break;
+                case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
+                    break;
             }
             if (message && (message.id === this.widget.id)) {
                 switch (message.action) {
@@ -373,7 +381,6 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setVisualConditions( vConditions ) {
         this.widget.settings.visual.conditions = vConditions;
-        // console.log("setVisualConditions", this.widget.settings.visual);
     }
 
     setSorting(sConfig) {

@@ -45,7 +45,6 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
         });
 
         this.varFormSub = this.varForm.valueChanges.subscribe(val => {
-            // console.log('%cVARIABLES FORM [CHANGES]', 'background-color: skyblue; padding: 2px 4px;', val);
             // need to remove unused variables (ones without keys)
             const pending = val;
             const pendingKeys = [];
@@ -68,8 +67,6 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
         });
 
         this.initializeTplVariables(this.dbData.variables.tplVariables);
-
-        //console.log('%cVAR FORM', 'background-color: skyblue; padding: 2px 4px', this.varForm);
     }
 
     ngOnDestroy() {

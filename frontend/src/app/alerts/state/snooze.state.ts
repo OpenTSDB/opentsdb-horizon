@@ -2,15 +2,14 @@ import {
     State,
     StateContext,
     Action,
-    Selector,
-    createSelector
+    Selector
 } from '@ngxs/store';
 
 
 
 import { HttpService } from '../../core/http/http.service';
 import { AlertConverterService } from '../services/alert-converter.service';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 
 export interface SnoozeStateModel {
     status: string;
@@ -45,7 +44,7 @@ export class SnoozeState {
     constructor(
         private httpService: HttpService,
         private alertConverter: AlertConverterService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     @Selector() static getSnoozeDetails(state: SnoozeStateModel) {
@@ -54,15 +53,15 @@ export class SnoozeState {
 
     @Action(GetSnoozeDetailsById)
     getSnoozeDetailsById(ctx: StateContext<SnoozeStateModel>, { id: id }: GetSnoozeDetailsById) {
-        this.logger.action('Snooze::getSnoozeDetailsById', {id});
+        this.console.action('Snooze::getSnoozeDetailsById', {id});
         ctx.patchState({ status: 'loading', loaded: false, error: {} });
         this.httpService.getSnoozeDetailsById(id).subscribe(
             data => {
-                this.logger.success('Snooze::getSnoozeDetailsById', {data});
+                this.console.success('Snooze::getSnoozeDetailsById', {data});
                 ctx.patchState({data: data, status: 'success', loaded: true, error: {}});
             },
             err => {
-                this.logger.error('Snooze::getSnoozeDetailsById', {error: err});
+                this.console.error('Snooze::getSnoozeDetailsById', {error: err});
                 ctx.patchState({ data: {}, status: 'failed', loaded: false, error: err });
             }
         );

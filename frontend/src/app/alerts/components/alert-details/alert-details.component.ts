@@ -345,7 +345,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             })
         );
         this.subscription.add(this.interCom.responseGet().subscribe((message: any) => {
-            // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
             if (message.action && message.id === this.chartId) {
               switch (message.action) {
                 case 'tsLegendToggleSeries':
@@ -616,7 +615,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['requiresFullWindow'].setValue(true);
                 this.thresholdSingleMetricControls['reportingInterval'].setValue(60);
             }
-            if ( (['at_least_once', 'all_of_the_times'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) || 
+            if ( (['at_least_once', 'all_of_the_times'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ||
                     (['at_least_once', 'all_of_the_times'].includes(val) && ['on_avg', 'in_total'].includes(this.prevTimeSampler)) ||
                     (['on_avg', 'in_total'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ) {
                 this.getData();
@@ -1122,7 +1121,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     cancelSaveNamespace(e) {
         // this.eventAlertNamespace = this.alertForm.get('threshold').get('eventAlert').get('namespace').value;
         // this.alertForm.get('threshold').get('eventAlert').get('namespace').setValue(ns, {emitModelToViewChange: true});
-        // console.log("cancelSaveNamespace", this.alertForm.get('threshold').get('eventAlert').get('namespace').value);
     }
 
 
@@ -1255,7 +1253,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         settings.settings.time = {};
         settings.settings.time.downsample = this.downsample;
-        
+
         options.sources = mid ? [ mid] : [];
         if ( Object.keys(queries).length ) {
             const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
@@ -1951,7 +1949,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.nameAlertDialog = this.dialog.open(NameAlertDialogComponent, dialogConf);
 
         this.nameAlertDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('NAME ALERT DIALOG [afterClosed]', dialog_out);
             if (dialog_out && dialog_out.alertName) {
                 this.data.name = dialog_out.alertName;
                 this.alertForm.controls.name.setValue(this.data.name);

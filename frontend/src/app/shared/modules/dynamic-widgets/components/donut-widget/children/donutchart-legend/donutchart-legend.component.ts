@@ -61,7 +61,6 @@ export class DonutchartLegendComponent implements OnInit {
     constructor(private fb: FormBuilder) { }
 
     ngOnInit() {
-        // console.log(this.widget.settings.legend, 'settings....');
         this.gForm = new FormGroup({
             display : new FormControl(this.widget.settings.legend.display || false),
             position: new FormControl(this.widget.settings.legend.position ||  'right'),
@@ -69,7 +68,6 @@ export class DonutchartLegendComponent implements OnInit {
         });
 
         this.subs = this.gForm.valueChanges.subscribe(data => {
-            // console.log("form changes...", data);
             this.widgetChange.emit( {action: 'SetLegend', payload: {data: data} } );
         });
     }

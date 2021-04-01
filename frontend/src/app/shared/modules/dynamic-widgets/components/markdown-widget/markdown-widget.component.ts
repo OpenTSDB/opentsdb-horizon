@@ -36,8 +36,8 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
           this.tplVariables.tvars.forEach(tvar => {
             this.tplMarcos['{{'+tvar.alias+'}}'] = tvar.filter;
           });
-        } 
-        this.setDefaults();       
+        }
+        this.setDefaults();
       }
     }));
     this.interCom.requestSend({
@@ -50,6 +50,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
           case 'getUpdatedWidgetConfig': // called when switching to presentation view
             this.widget = message.payload.widget;
             break;
+
         }
       }
     }));

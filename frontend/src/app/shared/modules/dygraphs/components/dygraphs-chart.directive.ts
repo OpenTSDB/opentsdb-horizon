@@ -228,7 +228,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
         };
 
         const clickCallback = function(e, x, points) {
-            // console.log('GRAPH CLICK', this.lastSeriesHighlighted, {e, x, points, _g: this}, this);
 
             // check if tsLegend is configured
             if (Object.keys(self.timeseriesLegend).length > 0) {
@@ -351,8 +350,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
         // heatmap legend
         const setHeatmapLegend = function (event, g, x, bucket) {
-
-            // console.log('%cHEATMAP LEGEND', 'color: white; background-color: maroon; padding 2px;', {event, g, x, bucket});
 
             /* NEW */
             let ttData: any = {

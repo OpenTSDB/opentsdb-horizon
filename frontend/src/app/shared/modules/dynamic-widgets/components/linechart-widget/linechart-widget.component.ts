@@ -19,7 +19,7 @@ import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
@@ -189,7 +189,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private utilService: UtilsService,
         private elRef: ElementRef,
         private unit: UnitConverterService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
@@ -213,8 +213,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             });
 
         this.subscription.add(this.themeService.getThemeType().subscribe( themeType => {
-            this.logger.log('THEME TYPE', { themeType });
-
             this.options = {...this.options,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
@@ -290,6 +288,14 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     break;
                 case 'SnapshotMeta':
                     this.meta = message.payload;
+                    break;
+                case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
                     break;
             }
 
@@ -423,7 +429,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                 if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
                                                         const prevOptions = this.utilService.deepClone(this.graphData[ykey][xkey].options);
-                                                        // console.log('PREVIOUS OPTIONS', prevOptions);
                                                         options.series = prevOptions.series;
                                                         options.visibility = prevOptions.visibility;
                                                         options.visibilityHash[prevOptions.hash] = prevOptions.visbilityHash;
@@ -456,7 +461,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 environment.debugLevel.toUpperCase() === 'INFO') {
                                     this.debugData = rawdata.log; // debug log
                             }
-                            // console.log("graphData", this.graphData)
                             // we should not call setLegendDiv here as it's taken care in getUpdatedWidgetConfig
                             this.setLegendDiv();
                             if (!this.multigraphEnabled) {
@@ -477,7 +481,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
-                        // console.log("getUpdatedWidgetConfig", message);
                         this.widget = message.payload.widget;
                         this.setOptions();
                         this.refreshData(message.payload.needRefresh);
@@ -834,7 +837,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 nHeight = nHeight - 35;
             }
 
-            // nWidth = newSize.width - widthOffset  - (padding * 2);
             nWidth = newSize.width - widthOffset - paddingSides;
         }
 
@@ -1553,7 +1555,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
+        // this.console.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.multigraphEnabled, widget: this.widget, event});
         let multigraph: any = false;
         if (this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
