@@ -31,12 +31,7 @@ export class SettingsThemeComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
-        this.console.log('SETTING THEMES', {
-            options: this.themeOptions,
-            active: this.activeTheme
-        });
-    }
+    ngOnInit() {}
 
     selectTheme(item) {
         this.activeTheme = item.value;

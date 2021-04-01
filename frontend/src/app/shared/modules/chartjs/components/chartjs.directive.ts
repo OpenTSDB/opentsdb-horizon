@@ -225,7 +225,6 @@ export class ChartjsDirective implements OnInit, OnChanges, OnDestroy  {
                         datasets: this.data
                     }
                 });
-                // console.log("comse here-1", Object.assign(this.defaultOptions, this.options));
             }
         }
     }

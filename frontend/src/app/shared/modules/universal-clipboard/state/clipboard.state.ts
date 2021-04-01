@@ -268,14 +268,11 @@ export class UniversalClipboardState {
                 name: '_clipboard_',
                 parentId: userFolder.id
             };
-            this.console.log('CREATE FOLDER', folderPayload);
             this.store.dispatch(new DbfsCreateFolder(folderPayload, {})).pipe(
                 map((res: any) => {
                     // folder created, now lets create default clipboard
-                    //this.console.log('attempt to create default clipboard');
                     this.service.createClipboardResource('Default clipboard').pipe(
                         map((payload: any) => {
-                            //this.console.log('default clipboard created! yay!');
                             // resource created successfully... tell DBFS to update folder
                             this.store.dispatch(new DbfsLoadSubfolder(folderPath, {})).pipe(
                                 map(() => {
@@ -291,19 +288,15 @@ export class UniversalClipboardState {
             ).subscribe();
         } else {
             // folder exists...:D
-            //this.console.log('YAY! folder exists -> lets load it', { yay: 'true', cbResource });
             // load the clipboard resource folder
             this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
                 map(() => {
-                    //this.console.log('folder loaded -> check for default clipboard');
                     // check for default clipboard
                     const defaultCheck = this.store.selectSnapshot(DbfsResourcesState.getFile(cbResource.fullPath + '/default-clipboard'));
                     if (!defaultCheck) {
-                        //this.console.log('uh oh... default didn\'t get created for some reason -> TRY AGAIN');
                         // hmmm... for some reason it didn't get created, or maybe it was deleted
                         this.service.createClipboardResource('Default clipboard').pipe(
                             map((payload: any) => {
-                                //this.console.log('default clipboard created! yay!');
                                 // resource created successfully... tell DBFS to update folder
                                 this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
                                     map(() => {
@@ -315,7 +308,6 @@ export class UniversalClipboardState {
                             catchError(error => ctx.dispatch(new ClipboardError(error, 'clipboardResourceInitialization :: Create default clipboard resource [2]')))
                         ).subscribe();
                     } else {
-                        //this.console.log('Says the default clipboard exists... lets call it success', defaultCheck);
                         ctx.dispatch(new ClipboardResourceInitializeSuccess());
                     }
                 }),
@@ -423,7 +415,6 @@ export class UniversalClipboardState {
         const cbResource = this.service.clipboardFolderResource();
         this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
             map(() => {
-                this.console.log('telling DBFS to reload the clipboard resource');
                 // should be good
                 ctx.dispatch(
                     new ClipboardResourceInitializeSuccess()
@@ -435,11 +426,6 @@ export class UniversalClipboardState {
                         return item.resource.id === response.id;
                     });
 
-                    this.console.log('CLIPBOARD CREATED...INITIALIZING', {
-                        response,
-                        list,
-                        index
-                    });
                     if (index > -1) {
                         // make it active
                         ctx.dispatch(new SetClipboardActive(index));

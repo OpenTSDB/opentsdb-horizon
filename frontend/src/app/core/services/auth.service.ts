@@ -8,9 +8,7 @@ import { DbfsState } from '../../shared/modules/dashboard-filesystem/state/dbfs.
 
 @Injectable()
 export class AuthService {
-    constructor(private http: HttpClient, private store: Store) {
-        //console.log('auth service store=>', this.store);
-    }
+    constructor(private http: HttpClient, private store: Store) {}
 
     /*
         renews the cookie.

@@ -169,13 +169,11 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
                     // this.console.success('LOAD NOTIFICATION FILE', res);
                     this.checkForActiveNotification(res.body.content.widgets);
                 },
-                err => { this.console.error('LOAD NOTIFICATION FILE', err); },
-                // () => { this.console.log('LOAD NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('LOAD NOTIFICATION FILE', err); }
             );
     }
 
     private checkForActiveNotification(notifications: any[]) {
-        // this.console.log('CHECK FOR ACTIVE NOTIFICATION', {notifications});
 
         const activeIndex = notifications.findIndex((el: any) => el.settings.notification.enabled);
 
@@ -185,7 +183,6 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
     }
 
     private parseNotification(data: any) {
-        // this.console.log('PARSE NOTIFICATION', data);
 
         // tslint:disable-next-line: prefer-const
         let globalNofication: any = {

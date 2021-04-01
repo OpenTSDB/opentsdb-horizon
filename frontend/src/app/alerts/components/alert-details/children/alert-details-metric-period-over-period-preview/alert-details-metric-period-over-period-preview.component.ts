@@ -87,7 +87,6 @@ export class AlertDetailsMetricPeriodOverPeriodPreviewComponent implements OnIni
 
   ngOnInit() {
       this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
-        // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
         if (message.action && message.id === this.id) {
           switch (message.action) {
             case 'tsLegendToggleSeries':

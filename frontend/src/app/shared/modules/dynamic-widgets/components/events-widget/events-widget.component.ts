@@ -109,7 +109,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
-            // console.log(changes);
+            // do something?
         }
     }
 

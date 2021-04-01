@@ -41,7 +41,6 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         super.ngOnInit();
         super._addPositionListener();
         super._dataStreamSubscribe((data: any) => {
-            // this.console.log('BAR CHART DATA CB', {data});
             const contrast = this.utils.findContrastColor(data.color);
             data.colorContrast = contrast.hex;
             return data;

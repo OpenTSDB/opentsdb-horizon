@@ -429,7 +429,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                 if (this.graphData.hasOwnProperty(ykey)) {
                                                     if (this.graphData[ykey].hasOwnProperty(xkey)) {
                                                         const prevOptions = this.utilService.deepClone(this.graphData[ykey][xkey].options);
-                                                        // console.log('PREVIOUS OPTIONS', prevOptions);
                                                         options.series = prevOptions.series;
                                                         options.visibility = prevOptions.visibility;
                                                         options.visibilityHash[prevOptions.hash] = prevOptions.visbilityHash;
@@ -462,7 +461,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 environment.debugLevel.toUpperCase() === 'INFO') {
                                     this.debugData = rawdata.log; // debug log
                             }
-                            // console.log("graphData", this.graphData)
                             // we should not call setLegendDiv here as it's taken care in getUpdatedWidgetConfig
                             this.setLegendDiv();
                             if (!this.multigraphEnabled) {

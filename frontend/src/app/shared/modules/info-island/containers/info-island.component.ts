@@ -171,7 +171,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     }
 
     dragResizeStart(e: any) {
-        // this.console.log('dragResizeStart', {event: e});
 
         const element = this._islandContainer.nativeElement;
         this.origDims.width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
@@ -185,7 +184,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     }
 
     dragResizeMove(e: any) {
-        // this.console.log('dragResizeMove', {event: e, dragContainer: this.dragContainer});
         const currentResizer = e.source.element.nativeElement;
         const element = this._islandContainer.nativeElement;
 
@@ -234,7 +232,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
                 element.style.height = height + 'px';
             }
 
-            // this.console.log('BOTTOM-RIGHT', {origin: this.origDims, width, height});
         } else if (currentResizer.classList.contains('bottom-left')) {
             width = this.origDims.width - (e.pointerPosition.x - this.origDims.pointerPosition.x);
             height = this.origDims.height + (e.pointerPosition.y - this.origDims.pointerPosition.y);
@@ -248,9 +245,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
                 transform[0] = (e.delta.x === 1) ? transform[0] + diff : transform[0] - (diff * e.delta.x);
                 triggerTransform = true;
             }
-
-            // this.console.log('BOTTOM-LEFT', {origin: this.origDims, width, height, diff });
-
         } else if (currentResizer.classList.contains('top-right')) {
             width = this.origDims.width + (e.pointerPosition.x - this.origDims.pointerPosition.x);
             height = this.origDims.height - (e.pointerPosition.y - this.origDims.pointerPosition.y);
@@ -265,7 +259,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
                 transform[1] = (e.delta.y === 1) ? transform[1] + diff : transform[1] - (diff * e.delta.y);
                 triggerTransform = true;
             }
-            // this.console.log('TOP-RIGHT', {origin: this.origDims, width, height, diff });
         } else {
 
             width = this.origDims.width - (e.pointerPosition.x - this.origDims.pointerPosition.x);
@@ -287,9 +280,6 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
                 transform[1] = (e.delta.y === 1) ? transform[1] + diff : transform[1] - (diff * e.delta.y);
                 triggerTransform = true;
             }
-
-            // this.console.log('TOP-LEFT', {origin: this.origDims, width, height, diffX, diffY });
-
         }
         if (triggerTransform) {
             element.style.transform = 'translate3d(' + transform.join('px,') + 'px)';
@@ -299,7 +289,7 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     }
 
     dragResizeRelease(e: any) {
-        this.console.log('dragResizeRelease', {event: e});
+        // do something?
     }
 
     /** On Destroy */

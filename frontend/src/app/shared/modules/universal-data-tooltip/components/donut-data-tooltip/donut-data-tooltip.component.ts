@@ -42,7 +42,6 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
     ngOnInit() {
         super.ngOnInit();
         super._dataStreamSubscribe((data: any) => {
-            // this.console.log('DONUT DATA CB', {data});
             const contrast = this.utils.findContrastColor(data.color);
             data.colorContrast = contrast.hex;
             return data;

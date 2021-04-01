@@ -69,13 +69,12 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
 
         // events setup
         const bEl = this._colorBlock.nativeElement;
-        
+
 
         this.renderer.listen(bEl, 'mousedown', e => {
             const bCoords = bEl.getBoundingClientRect();
             if (!this.isDragging) {
-                // console.log('MOUSE DOWN', e);
-                this.isDragging = true;
+            this.isDragging = true;
                 if (!e.target.classList.contains('picker')) {
                     const leftVal = e.offsetX / bCoords.width;
                     const bottomVal = ( bCoords.height - e.offsetY ) / bCoords.height;
@@ -89,7 +88,6 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
         this.renderer.listen(bEl, 'mouseup', e => {
             const bCoords = bEl.getBoundingClientRect();
             if (this.isDragging) {
-                // console.log('MOUSEUP', e);
                 this.isDragging = false;
                 if (!e.target.classList.contains('picker')) {
                     const leftVal = e.offsetX / bCoords.width;

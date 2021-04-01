@@ -43,7 +43,6 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
         this.subscription.add(this.userFavorites$.subscribe(favs => {
             this.userFavorites = favs || [];
             this.userFavoritesDataSource.data = this.userFavorites;
-            // this.console.log('FAVS', this.userFavorites);
         }));
 
         this.subscription.add(this.userFavoritesFilter.valueChanges.subscribe(val => {

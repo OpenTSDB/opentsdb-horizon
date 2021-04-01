@@ -15,9 +15,7 @@ export class WidgetDeleteDialogComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public dbData: any
     ) { }
 
-    ngOnInit() {
-        console.log('****** DELETE DIALOG ******', this.dbData);
-    }
+    ngOnInit() {}
 
     confirm() {
         this.dialogRef.close( {delete : true } );

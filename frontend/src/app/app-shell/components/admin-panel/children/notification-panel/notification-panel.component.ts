@@ -66,8 +66,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     // actions that come from the list
     listAction(event: any) {
-        //this.console.log('LIST ACTION', event);
-        console.log(this.notificationStore);
+
         switch (event.action) {
             /*
                 Create & Edit will trigger the notification editor view
@@ -100,7 +99,6 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     // actions that come from the editor
     editorAction(event: any) {
-        //this.console.log('EDITOR ACTION', event);
         let index;
         switch (event.action) {
             case 'create notification':
@@ -145,7 +143,6 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
     }
 
     private updateNotification(data: any, index: any) {
-        // this.console.log('updateNotification', {data, index});
         // get new updatedTime and updatedBy values for the notification
         data.settings.notification = Object.assign(this.notificationService.getNewUpdateValues(), data.settings.notification);
         // replace widget in store
@@ -157,7 +154,6 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     // toggles notification enabled
     private enableNotification(data: any, index: any, enabled: boolean) {
-        // this.console.log('enableNotification', {data, index});
         // if there is already an activeNotification, reset it
         if (this.activeNotification && data.id !== this.activeNotification.id && enabled) {
             const activeIndex = this.notificationStore.content.widgets.findIndex((el) => el.settings.notification.enabled);
@@ -190,8 +186,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.console.error('SAVE NOTIFICATION STORE', err);
-                },
-                // () => { this.console.log('SAVE NOTIFICATION STORE [DONE]'); }
+                }
             );
     }
 
@@ -225,8 +220,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                             }
                         );
                 },
-                err => { this.console.error('SAVE NOTIFICATION FILE', err); },
-                // () => { this.console.log('SAVE NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('SAVE NOTIFICATION FILE', err); }
             );
     }
 
@@ -243,8 +237,7 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                     this.notificationStore = res.body;
                     this.panelReady = true;
                 },
-                err => { this.console.error('LOAD NOTIFICATION FILE', err); },
-                // () => { this.console.log('LOAD NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('LOAD NOTIFICATION FILE', err); }
             );
     }
 

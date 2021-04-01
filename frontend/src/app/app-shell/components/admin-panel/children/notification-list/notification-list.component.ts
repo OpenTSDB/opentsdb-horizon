@@ -38,7 +38,6 @@ export class NotificationListComponent implements OnInit {
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
         }
-        // this.console.log('EDIT NOTIFICATION', { notification, index});
         this.listActionOutput.emit({
             action: 'edit notification',
             payload: { notification, index }
@@ -49,7 +48,6 @@ export class NotificationListComponent implements OnInit {
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
         }
-        // this.console.log('DISABLE NOTIFICATION', { notification, index});
         this.expandPanel(0);
         this.listActionOutput.emit({
             action: 'disable notification',
@@ -58,7 +56,6 @@ export class NotificationListComponent implements OnInit {
     }
 
     enableNotification(notification: any, index: any) {
-        // this.console.log('ENABLE NOTIFICATION', { notification, index});
         // should check if there is active already
         // if there is active, should prompt user to confirm active switch to new notification
         this.expandPanel('active');
@@ -74,30 +71,24 @@ export class NotificationListComponent implements OnInit {
         }
         const notification = this.notifications[index];
         this.deleteConfirm = notification.id;
-       //  this.console.log('showDeleteConfirm', {deleteConfirm: this.deleteConfirm, index, notification});
     }
 
     cancelDeletion() {
         this.deleteConfirm = -1;
-        // this.console.log('cancelDeletion');
     }
 
     deleteNotification(notification: any, index: any) {
 
         if (index === 'active') {
             index = this.notifications.findIndex((el) => el.settings.notification.enabled);
-            // this.console.log('DELETE [ACTIVE] NOTIFICATION', { notification, index});
         }
 
         if (
             this.deleteConfirm === -1 ||
             (this.deleteConfirm !== -1 && this.deleteConfirm !== this.notifications[index].id)
          ) {
-            // this.console.log('NEEDS DELETE CONFIRMATION', { notification, index});
             this.showDeleteConfirmation(index);
         } else {
-            // this.console.log('DELETE NOTIFICATION', { notification, index});
-
             this.deleteConfirm = -1;
             this.listActionOutput.emit({
                 action: 'delete notification',
@@ -108,7 +99,6 @@ export class NotificationListComponent implements OnInit {
     }
 
     createNotification() {
-        // this.console.event('CLICK CREATE NOTIFICATION');
         this.listActionOutput.emit({
             action: 'create notification'
         });

@@ -128,7 +128,6 @@ export class HttpService {
         }
         const apiUrl = environment.metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS', Object.values(newQueryParams));
-        // console.log('tag query for query', query);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
@@ -260,7 +259,6 @@ export class HttpService {
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
-                    // console.log('the res', res);
                     let tagvalues = [];
                     for (let i = 0; res && i < res.results.length; i++) {
                         if (Object.keys(res.results[i].tagKeysAndValues).length > 0 && res.results[i].tagKeysAndValues[queryObj.tag.key]) {
@@ -300,7 +298,6 @@ export class HttpService {
             'Content-Type': 'application/json'
         });
         const params = { 'userId': 'user.arunmohzi', 'type': 'DASHBOARD' };
-        // console.log("get dahboards params", apiUrl, params);
         return this.http.get(apiUrl, { params: params, headers, withCredentials: true });
     }
 
@@ -312,7 +309,6 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // console.log("save dahboard params", apiUrl, data);
         return this.http.put(apiUrl, data, httpOptions);
     }
 
@@ -363,7 +359,6 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // console.log('[API] getUserFolderData', apiUrl, httpOptions);
         return this.http.get(apiUrl, httpOptions);
     }
 
@@ -494,7 +489,6 @@ export class HttpService {
           'Content-Type': 'application/json',
         });
         const apiUrl = environment.configdb + '/namespace/' + namespace + '/alert/delete';
-        // console.log("deleteA;lert", namespace, payload);
         return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
     }
 
@@ -543,7 +537,6 @@ export class HttpService {
 
     getEvents(wid: string, time: any, eventQueries: any[], limit) {
         let query = this.yamasService.buildEventsQuery(time, eventQueries, limit);
-        // console.log(JSON.stringify(query, null, 2));
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });

@@ -107,8 +107,6 @@ export class InfoIslandService {
         const optionsToPass = JSON.parse(JSON.stringify(this.DEFAULT_OPTIONS));
         Object.assign(optionsToPass, options);
 
-        //console.log('OPTIONS TO PASS', optionsToPass);
-
         this.originId = options.originId;
 
         // create overlay reference
@@ -118,7 +116,6 @@ export class InfoIslandService {
         const componentRef = this.overlayRef.attach(this.portalOutlet);
 
         this.islandComp = componentRef.instance;
-        // console.log('ISLAND REF', this.islandComp);
 
         /* Dynamic width from the opening widget - commented out for now
         const containerDims = widgetContainerRef.nativeElement.getBoundingClientRect();
@@ -129,7 +126,6 @@ export class InfoIslandService {
         */
 
         portalRef.component.prototype.islandRef = this.islandComp;
-        // console.log('PORTAL REF', portalRef);
 
         this.islandComp.open(<Portal<any>>portalRef, optionsToPass);
         this.compSub = this.islandComp.onCloseIsland$.subscribe(() => {

@@ -363,9 +363,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.allNamespaces$.subscribe(data => {
             this.allNamespaces = data;
-            // this.console.log('NAMESPACES', this.allNamespaces);
             this.allNamespacesDS = new MatTableDataSource(this.allNamespaces);
-            // this.console.log('NAMESPACES_DS', this.allNamespacesDS);
             this.allNamespacesDS.filterPredicate = (data: any, filter: string) => {
                 return data.name.toLowerCase().includes(filter.toLowerCase());
             };
@@ -478,7 +476,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.hasNamespaceWriteAccess = !readOnly;
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let modeCheck;
-            // this.console.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
 
             if (routeSnapshot.length > 1 && this.utils.checkIfNumeric(routeSnapshot[0].path) && routeSnapshot[1].path !== '_new_') {
 
@@ -486,7 +483,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 // purely aesthetic. If url has 'edit', but its readonly, it will still be readonly
                 if (readOnly) {
                     modeCheck = routeSnapshot[routeSnapshot.length - 1];
-                    // console.log('modeCheck', modeCheck.path);
 
                     // there is no mode in the url
                     if (modeCheck.path.toLowerCase() !== 'view' && modeCheck.path.toLowerCase() !== 'edit') {
@@ -583,7 +579,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // handle route for alerts
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
-            // this.console.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
             this.clearSystemMessage();
 
@@ -881,7 +876,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     editAlert(element: any) {
-        // console.log('****** WRITE ACCESS ******', this.hasNamespaceWriteAccess);
         // check if they have write access
         const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
         this.detailsMode = mode;
@@ -1098,7 +1092,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     editSnooze(element: any) {
-        // console.log('****** WRITE ACCESS ******', this.hasNamespaceWriteAccess);
         // check if they have write access
         const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
         this.detailsMode = mode;
@@ -1245,7 +1238,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     contactMenuEsc($event: any) {
-        // console.log('contactMenuEsc', $event);
+        // NOTE: do we need this still?
     }
 
     showAuraDialog(alertId, filters) {

@@ -40,7 +40,6 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
     ngOnInit() {
         super.ngOnInit();
         super._dataStreamSubscribe((data: any) => {
-            // this.console.log('HEATMAP DATA CB', {data});
             const percentage = Math.ceil((100 - data.percentage)) / 100;
             // use pSBC to get matching color value from heatmap opacity color
             // we don't want opacity due to how tooltip color chip works

@@ -40,7 +40,6 @@ export class SimpleRecentsListComponent implements OnInit, OnDestroy {
         this.subscription.add(this.userRecents$.subscribe(recs => {
             this.userRecents = recs || [];
             this.userRecentsDataSource.data = this.userRecents;
-            // this.console.log('RECS', this.userRecents);
         }));
 
         this.subscription.add(this.userRecentsFilter.valueChanges.subscribe(val => {

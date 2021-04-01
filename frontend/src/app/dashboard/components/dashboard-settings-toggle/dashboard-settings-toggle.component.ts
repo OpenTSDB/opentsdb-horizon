@@ -33,10 +33,7 @@ export class DashboardSettingsToggleComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
             if (message.action === 'dashboardSettingsToggleResponse' && message.id === 'settingsToggle') {
-                /* console.log('%cSETTINGS TOGGLE ResponseGet [InterCom]',
-                        'color: white; background-color: darkmagenta; padding: 2px 4px;',
-                        message);
-                */
+
                 this.displaySettingsDialog(message.payload);
             }
 
@@ -64,7 +61,6 @@ export class DashboardSettingsToggleComponent implements OnInit, OnDestroy {
     }
 
     private displaySettingsDialog(data: any) {
-        // console.log('SHOW DASHBOARD SETTINGS DIALOG');
         // do something
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         dialogConf.width = '100%';
@@ -86,7 +82,6 @@ export class DashboardSettingsToggleComponent implements OnInit, OnDestroy {
 
         // getting data passing out from dialog
         this.dashboardSettingsDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('%cSETTINGS DIALOG CLOSED [EVENT]', 'color: #ffffff; background-color: blue; padding: 2px 4px;', dialog_out);
             if (dialog_out) {
                 this.interCom.requestSend(<IMessage> {
                     id: 'settingsToggle',

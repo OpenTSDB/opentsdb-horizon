@@ -154,16 +154,6 @@ export class EventsState {
         return state.timezone;
     }
 
-    // @Selector() static GetErrors(state: EventsStateModel) {
-    //     console.log('getEvents error');
-    //     return state.error;
-    // }
-
-    // @Selector() static GetLastUpdated(state: EventsStateModel) {
-    //     console.log('getEvents last updated');
-    //     return state.lastUpdated;
-    // }
-
     @Action(GetEvents)
     getEvents(ctx: StateContext<EventsStateModel>, { time, eventQueries, wid, limit }: GetEvents) {
 
@@ -218,20 +208,6 @@ export class EventsState {
         }
         this.queryObserver = null;
     }
-
-    // @Action(LoadEventsSuccess)
-    // loadEventsSuccess(ctx: StateContext<EventsStateModel>, events) {
-    //     console.log('#### EVENTS SUCCESS ####', events);
-    //     const state = ctx.getState();
-    //     ctx.setState({ ...state, events: events, loading: false, });
-    // }
-
-    // @Action(LoadEventsFail)
-    // loadEventsFail(ctx: StateContext<EventsStateModel>, error) {
-    //     console.log('#### EVENTS FAIL ####', error);
-    //     const state = ctx.getState();
-    //     ctx.setState({ ...state, loading: false, error });
-    // }
 
     @Action(SetEventBuckets)
     setEventBuckets(ctx: StateContext<EventsStateModel>, { buckets }: SetEventBuckets) {

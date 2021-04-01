@@ -553,7 +553,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   timeseriesTickListener(event: any) {
-    // console.log('TIMESERIES TICK LISTENER', { widget: this.widget, event});
 
     const widgetOptions = this.options;
 

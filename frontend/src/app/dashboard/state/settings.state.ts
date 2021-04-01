@@ -185,7 +185,7 @@ export class DBSettingsState {
     @Action(UpdateDownsample)
     updateDownsample(ctx: StateContext<DBSettingsModel>, { payload }: UpdateDownsample) {
         const state = ctx.getState();
-        
+
         let downsample = {
             aggregators: payload.aggregators,
             value: payload.downsample,
@@ -216,7 +216,6 @@ export class DBSettingsState {
         const newTime = {... time};
         newTime.zone = state.time.zone;
         ctx.patchState({...state, time: newTime, initialZoomTime: defaultInitialZoomTime });
-        // console.log('** SETTING DASHBOARD TIME', ctx.getState());
     }
 
     @Action(UpdateDashboardTimeZone)
@@ -225,7 +224,6 @@ export class DBSettingsState {
         const time = {...state.time};
         time.zone = zone;
         ctx.patchState({ time: time });
-        // console.log('** SETTING DASHBOARD TIME ZONE', ctx.getState());
     }
 
     @Action(UpdateDashboardTimeOnZoom)
@@ -243,7 +241,6 @@ export class DBSettingsState {
         t = {...zoomTime};
         t.zone = state.time.zone;
         ctx.setState({...state, time: {...t}, initialZoomTime: {...zTime} });
-        // console.log('** SETTING DASHBOARD TIME ON ZOOM', ctx.getState());
     }
 
     @Action(UpdateDashboardTimeOnZoomOut)
@@ -256,7 +253,6 @@ export class DBSettingsState {
             t = state.time;
         }
         ctx.setState({...state, time: {...t}, initialZoomTime: defaultInitialZoomTime});
-        // console.log('** SETTING DASHBOARD TIME ON ZOOM OUT', ctx.getState());
     }
 
     @Action(UpdateDashboardAutoRefresh)

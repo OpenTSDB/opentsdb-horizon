@@ -573,7 +573,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                                 }
                             });
                         });
-                    }                   
+                    }
                     // case that widget is updated we need to get new set of dashboard tags
                     this.isDbTagsLoaded = false;
                     break;
@@ -1083,9 +1083,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         // NOTE: we do nothing with this subscription... do we need it?
         this.subscription.add(this.auth$.subscribe(auth => {
-            // console.log('auth$ calling', auth);
             if (auth === 'invalid') {
-                // console.log('open auth dialog');
+                // do something?
             }
         }));
 
@@ -1425,7 +1424,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         return search;
     }
-    
+
     applyToTChange() {
         const cloneWidgets = this.utilService.deepClone( this.snapshot ? [this.newWidget] : this.widgets );
         // find all widget that using downsample as auto
@@ -1551,7 +1550,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     }
                     // override the multigraph groupby config
                     for (let j = 0; j < query.metrics.length; j++) {
-                        // console.log("payload1", query.metrics[j].groupByTags.concat(groupby))
                         const metricGroupBy = query.metrics[j].groupByTags || [];
                         query.metrics[j].groupByTags = this.utilService.arrayUnique(metricGroupBy.concat(groupby));
                         if (query.metrics[j].settings.visual.visible) {
@@ -1901,7 +1899,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.store.dispatch(new DeleteDashboardFail(err));
                 },
                 () => {
-                    // console.log('COMPLETE');
+                    // its done;
                 });
             }
         });

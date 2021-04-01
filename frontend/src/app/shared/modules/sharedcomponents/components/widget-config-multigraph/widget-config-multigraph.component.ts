@@ -226,7 +226,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     dropTable(event: any) {
-        // console.log('DROP TABLE EVENT', event);
         const prevIndex = this.FC_chart['controls'].findIndex((d) => d === event.item.data);
         moveItemInArray(this.FC_chart['controls'], prevIndex, event.currentIndex);
         this.setChartDataOrder();
@@ -243,12 +242,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     setViewportDisplayMode(event: any) {
-        // console.log('SET VIEWPORT DISPLAY MODE', event);
         this.FC_gridOpts_viewportDisplay.setValue(event.value);
     }
 
     selectLayoutTypeChange(event: any) {
-        // console.log('SET LAYOUT TYPE CHANGE', event);
         this.FC_layout.setValue(event.value);
         // this.widgetConfigMultigraph.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     }
@@ -273,7 +270,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     /** auto complete stuff */
 
     onTagKeyInputBlur(event: any) {
-        // console.log('TAG KEY INPUT BLUR', event);
         // check if in tag key array
         const val = this.tagKeyControlInput.value;
 
@@ -288,13 +284,11 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     onTagKeyInputFocus() {
-        // console.log('TAG KEY INPUT FOCUS');
         this.tagKeyControlInput.setValue('');
         this.tagKeyACTrigger.openPanel();
     }
 
     tagKeyOptionSelected(event: any) {
-        // console.log('TAG KEY OPTION SELECTED', event);
         this.addTagKeyChartItem(event.option.value);
         this.tagKeyControlInput.setValue('');
         this.tagKeyInput.nativeElement.focus();

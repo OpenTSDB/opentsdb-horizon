@@ -6,16 +6,14 @@ var Thresholds = (function() {
  //var Thresholds = (function() {
 
 var Thresholds= function() {
-    this.thresholds = []; 
-    //console.log("yahooo", this.thresholds);
+    this.thresholds = [];
     //this.thresholds = thresholds;
-    //console.log("comes here... threshollllll", this.thresholds)
   };
-  
+
   Thresholds.prototype.toString = function() {
     return "Thresholds Plugin";
   };
-  
+
   Thresholds.prototype.activate = function(g) {
     return {
         //clearChart: this.clearChart,
@@ -48,8 +46,8 @@ var Thresholds= function() {
       ctx.lineTo(a.x + a.w, y);
       ctx.stroke();
       ctx.closePath();
-      
-      // draw value 
+
+      // draw value
       ctx.textAlign="end";
       ctx.font = "12px Ubuntu";
       ctx.fillText(threshold.value, a.x + a.w, y-2);

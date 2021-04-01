@@ -118,7 +118,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         // 32 is for option left/right padding
         const renderedWidth = this.utils.calculateTextWidth(<string>longestOption.name, '17', 'Ubuntu');
 
-        //console.log('LONGEST OPTION', longestOption, renderedWidth);
         if (renderedWidth > this.autocompleteDefaultWidth) {
             this.autocompleteWidth = renderedWidth + 32;
         } else {
