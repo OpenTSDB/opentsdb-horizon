@@ -1,5 +1,43 @@
 @mixin app-namespace-component-base() {
+    .app-namespace {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
 
+        .dynamic-scroller {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .namespace-list {
+                flex: 1;
+
+                .cdk-virtual-scroll-viewport {
+                    min-height: 100%;
+                }
+            }
+        }
+
+        .namespace-contents {
+            display: flex;
+            flex-direction: columns;
+            flex: 1;
+            position: relative;
+
+            .namespace-content-list {
+                flex: 1;
+
+                .cdk-virtual-scroll-viewport {
+                    min-height: 100%;
+                }
+            }
+        }
+
+        .simple-list-item {
+            display: flex;
+        }
+    }
 }
 
 @mixin app-namespace-component-theme($theme-config) {

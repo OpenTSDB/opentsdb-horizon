@@ -29,6 +29,7 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
     nsAlias: string = '';
     nsDbfs: any = {};
+    nsDbfsLoaded: boolean = false;
 
     private subscription: Subscription = new Subscription();
 
@@ -84,18 +85,18 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                 this.logger.log('ROUTE PARAMS', params);
                 if (params && params['nsalias']) {
                     this.nsAlias = params['nsalias'];
-                    // do something else
-                    this.store.dispatch(new DbfsLoadTopFolder('namespace', this.nsAlias, {}))
-                        .subscribe(
-                            () => {
-                                setTimeout(() => {
-                                    this.nsDbfs = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
-                                    this.logger.log('NS DBFS', this.nsDbfs);
-                                }, 200);
-                            }
-                        );
-
-
+                    if (!this.namespacesLoaded) {
+                        this.loadNamespaceList()
+                            .subscribe(
+                                () => {
+                                    setTimeout(() => {
+                                        this.loadNamespaceData();
+                                    });
+                                }
+                            )
+                    } else {
+                        this.loadNamespaceData()
+                    }
                 }
             })
         );
@@ -103,9 +104,7 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         this.subscription.add(this.dynamicLoaded$.subscribe( data => {
             this.logger.log('dynamicLoaded', data);
             if (!data.namespaces) {
-                this.store.dispatch(
-                    new DbfsLoadNamespacesList({})
-                );
+                this.loadNamespaceList()
             } else {
                 this.namespacesLoaded = data.namespaces;
             }
@@ -120,7 +119,62 @@ export class NamespaceComponent implements OnInit, OnDestroy {
     }
 
 
+    formattedFolderData(nsPath: string): any[] {
+        const folderData: any = this.nsDbfs[nsPath];
+        this.logger.ng('FOLDER DATA', folderData);
+
+        const data: any[] = [];
+
+        for (let i = 0; i < folderData.subfolders.length; i++) {
+            let item: any = {...folderData.subfolders[i]};
+            if (!item.hidden && !item.trashFolder) {
+                item.dataType = 'folder';
+                data.push(item);
+            }
+        }
+
+        for (let i = 0; i < folderData.files.length; i++) {
+            let item: any = {...folderData.files[i]};
+            if (!item.hidden) {
+                item.dataType = 'file';
+                data.push(item);
+            }
+        }
+        this.logger.ng('DATA', data);
+        return data;
+    }
+
+    navigateToNamespace(item: any) {
+        this.router.navigateByUrl('/d/namespace/'+item.alias);
+    }
+
+    navigateToFolder(item: any) {
+
+    }
+
+    dashboardDetails(item: any) {
+
+    }
+
     /* privates */
+    private loadNamespaceList() {
+        return this.store.dispatch(
+            new DbfsLoadNamespacesList({})
+        );
+    }
+
+    private loadNamespaceData() {
+        this.store.dispatch(new DbfsLoadTopFolder('namespace', this.nsAlias, {}))
+            .subscribe(
+                () => {
+                    setTimeout(() => {
+                        this.nsDbfs[':nsroot:'] = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
+                        this.nsDbfsLoaded = true;
+                        this.logger.log('NS DBFS', this.nsDbfs);
+                    }, 200);
+                }
+            );
+    }
 
     /* ON DESTROY LAST */
     ngOnDestroy() {
