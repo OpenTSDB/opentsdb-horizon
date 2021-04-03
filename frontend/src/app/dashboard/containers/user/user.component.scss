@@ -1,5 +1,7 @@
 @mixin app-user-component-base() {
+    .app-user {
 
+    }
 }
 
 @mixin app-user-component-theme($theme-config) {
@@ -22,5 +24,9 @@
 
     .nav-user-title {
         color: $navbar-text;
+    }
+
+    .app-user {
+
     }
 }

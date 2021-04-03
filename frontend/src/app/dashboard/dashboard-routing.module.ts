@@ -6,6 +6,7 @@ import { DashboardComponent } from './containers/dashboard/dashboard.component';
 import { DashboardCanDeactivateGuardService } from './containers/dashboard/dashboard-can-deactivate-guard.service';
 
 import { NamespaceComponent } from './containers/namespace/namespace.component';
+import { UserComponent } from './containers/user/user.component';
 
 const routes: Routes = [
     {
@@ -23,6 +24,13 @@ const routes: Routes = [
         path: 'namespace',
         redirectTo: 'namespaces',
         pathMatch: 'full'
+    },
+    {
+        path: 'users',
+        component: UserComponent,
+        data: {
+            userList: true
+        }
     },
     {
         path: '',
