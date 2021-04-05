@@ -38,11 +38,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     @Input() mode = 'view'; // view/explore/edit
     @Input() widget: WidgetModel;
 
-    @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
-    @ViewChild('widgetTitle') private widgetTitle: ElementRef;
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('graphLegend') private dygraphLegend: ElementRef;
-    @ViewChild('dygraph') private dygraph: ElementRef;
     @ViewChild(MatSort) sort: MatSort;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -72,7 +68,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     error: any;
     needRequery = false;
     isDestroying = false;
-    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': true, 'conditions': true };
+    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
     resizeSensor: any;
     isEditContainerResized = false;
     width: any = '100%';
@@ -85,7 +81,6 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     meta: any = {};
     formErrors: any = {};
 
-    //constructor
     constructor(
         private cdRef: ChangeDetectorRef,
         private interCom: IntercomService,
@@ -97,7 +92,6 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         private dateUtil: DateUtilsService
     ) { }
 
-    //initial method
     ngOnInit() 
     {
         this.widget.settings.layout = this.widget.settings.layout || 'column';
@@ -181,7 +175,6 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                             this.data = this.dataTransformer.yamasToTable(this.widget, this.options, rawdata); 
 
                             this.dataSource = new MatTableDataSource(this.data);
-                            // /*
                             this.dataSource.sortingDataAccessor = (data, colId) => {
                                 switch (colId) {
                                   case 'metric': 
@@ -191,11 +184,8 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                                   default: return parseFloat(data[colId]);
                                 }
                               };
-                            //  */
                             this.displayedColumns = this.util.deepClone(this.options.displayColumns); 
-                            // this.data.length ? Object.keys(this.data[0]).filter(d => !d.includes(':Color')) : [];
                             this.displayedColumnsIds = [...this.displayedColumns.map(d => d.id)];
-                            // console.log("displayedColumnsIds", this.displayedColumnsIds, this.displayedColumns);
                             this.dataSource.sort = this.sort;
 
                             this.cdRef.detectChanges();
@@ -598,40 +588,3 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         this.doRefreshDataSub.unsubscribe();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-    
-        
-
-
-    
-     
-        
-
-
-            
-    
-      
-
-
-

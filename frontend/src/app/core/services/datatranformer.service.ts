@@ -25,7 +25,7 @@ export class DatatranformerService {
     const objData = {};
     let timeSpecification: any = {};
     const visual = widget.settings.visual;
-    const summary = visual.layout !== 'time:metric';
+    const summary = visual.layout === 'metrics:tags' || visual.layout === 'tags:metrics';
     const decimals = !visual.decimals || visual.decimals.toString().trim() === 'auto' ? 2 : visual.decimals;
     
 
@@ -67,12 +67,12 @@ export class DatatranformerService {
                 const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
                 
                     if ( summary ) {
-                        const colId = visual.layout == 'metric:tags' ? tagLabel : mLabel;
-                        const colLabel = visual.layout == 'metric:tags' ? tagLabel : label;
-                        const rowId = visual.layout == 'metric:tags' ? mLabel : tagLabel;
+                        const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
+                        const colLabel = visual.layout == 'metrics:tags' ? tagLabel : label;
+                        const rowId = visual.layout == 'metrics:tags' ? mLabel : tagLabel;
                         displayColumns[colId] = {id: colId, label: colLabel };
                         if (!objData[rowId] ) {
-                            objData[rowId] = visual.layout == 'metric:tags' ? { metric: label } : { tag: tagLabel };
+                            objData[rowId] = visual.layout == 'metrics:tags' ? { metric: label } : { tag: tagLabel };
                         }
                         const aggs = data.aggregations;
                         data = data.data[0];
@@ -124,7 +124,7 @@ export class DatatranformerService {
     options.displayColumns.sort((a: any, b: any) => {
         return this.util.sortAlphaNum(a.label, b.label);
     });
-    options.displayColumns.unshift( !summary ? { id: 'time', 'label': 'Time' } : visual.layout == 'metric:tags' ? { id: 'metric', 'label': 'Metric' }  : { id: 'tag', 'label': 'Tag' } );
+    options.displayColumns.unshift( !summary ? { id: 'time', 'label': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'label': 'Metric' }  : { id: 'tag', 'label': 'Tag' } );
     return dataTable;
   }
 

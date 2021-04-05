@@ -95,7 +95,7 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
         if ( this.widget.settings.component_type === 'TableWidgetComponent' ) {
             if ( !this.formInitialized ){
                 this.gForms = this.fb.group({
-                    layout: new FormControl(this.widget.settings.visual.layout || 'time:metric'),
+                    layout: new FormControl(this.widget.settings.visual.layout || 'time:metrics'),
                     fontSize: new FormControl(this.widget.settings.visual.fontSize || 12),
                     padding: new FormControl(this.widget.settings.visual.padding || 5),
                     decimals: new FormControl(this.widget.settings.visual.decimals || 'auto')
@@ -165,7 +165,6 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
     }
 
     changeLayout(layout) {
-        console.log("layout=", layout);
         this.gForms['controls']['layout'].setValue(layout);
     }
 }

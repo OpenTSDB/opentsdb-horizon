@@ -54,16 +54,10 @@
     <div class="table-widget-visual-container" [formGroup]="gForms">
         <div class="form-group unit-control" >
             <span class="form-label">Layout</span>
-            <!--
-            <mat-button-toggle-group  class="mat-button-toggle-group-horizontal" formControlName="layout">
-                <mat-button-toggle value="time:metric" name="layout">Time+Metrics+Tags</mat-button-toggle>
-                <mat-button-toggle value="metric:tags" name="layout">Metrics+Tags</mat-button-toggle>
-                <mat-button-toggle value="tags:metric" name="layout">Tags+Metrics</mat-button-toggle>
-            </mat-button-toggle-group>-->
             <div class="table-type-selector">
-                <button mat-button class="table-time-metrics-tags {{ gForms['controls']['layout'].value === 'time:metric' ? 'selected-table-type' : ''}} mat-button"  value="time:metric" (click)="changeLayout('time:metric')"></button>
-                <button mat-button class="table-metrics-tags {{ gForms['controls']['layout'].value === 'metric:tags' ? 'selected-table-type' : ''}} mat-button" value="metric:tags" (click)="changeLayout('metric:tags')"></button>
-                <button mat-button class="table-tags-metrics {{ gForms['controls']['layout'].value === 'tags:metric' ? 'selected-table-type' : ''}} mat-button" value="tags:metric" (click)="changeLayout('tags:metric')"></button>
+                <button mat-button class="table-time-metrics-tags {{ gForms['controls']['layout'].value === 'time:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('time:metrics')"></button>
+                <button mat-button class="table-metrics-tags {{ gForms['controls']['layout'].value === 'metrics:tags' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('metrics:tags')"></button>
+                <button mat-button class="table-tags-metrics {{ gForms['controls']['layout'].value === 'tags:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('tags:metrics')"></button>
             </div>
         </div>
         <div class="form-group font-size-control">

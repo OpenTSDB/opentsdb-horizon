@@ -1581,7 +1581,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 dbid: this.dbid
             };
             const query = this.getQuery(message);
-            console.log("query", query);
             if ( query ) {
                 gquery.query = query;
                 // console.debug("****** DSHBID: " + this.dbid + "  WID: " + gquery.wid);
