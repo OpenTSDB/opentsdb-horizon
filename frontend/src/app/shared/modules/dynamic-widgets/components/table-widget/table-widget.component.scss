@@ -1,0 +1,220 @@
+@mixin table-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.table-widget {
+        // flex-direction: column;
+        // padding-top: 10px;
+        // overflow: hidden;
+
+        flex: 1;
+        display: flex;
+        padding-top: 20px;
+        .widget-output {
+            width: 100%;
+            // height: 100%;
+            display: flex;
+        }
+
+        .widget-output-container {
+            height: 50px;
+        }
+
+        .widget-config-container{
+            display: flex;
+            flex: 1;
+        }
+
+        
+
+        .mat-button-toggle-group{
+            overflow: initial;
+
+            margin: 0px 10px;
+            .mat-button-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                &::first-child {
+                    border-top-left-radius: 4px;
+                    border-bottom-left-radius: 4px;
+                }
+
+                &::last-child {
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                }
+            }
+
+            .mat-button-toggle-button {
+                display: inline-flex;
+
+                .mat-button-toggle-focus-overlay {
+                    border-bottom: solid 25px;
+                }
+            }
+
+            /*.mat-button-toggle-checked {
+                box-shadow: inset 0 -2px 0 blue;
+                background: white;
+            }*/
+        }
+        
+        .widget-config-container {
+            //flex-direction: row-reverse;
+            box-sizing: border-box;
+            padding: 0;
+            .table-widget-output-container {
+                // width: 50%;
+                // height: 100%;
+                // background-color: khaki;
+                .widget-output {
+                    // display: flex;
+                    // flex: 1;
+                    height: 100%;
+
+                    .gif-spinner {
+                        position: absolute;
+                        left: 5px;
+                        bottom: 5px;
+                        z-index: 1;
+                    }
+
+                    .error,
+                    .debug {
+                        position: absolute;
+                        left: 0px;
+                        top: 0px;
+                        z-index: 1;
+                        width: 30px;
+                        height: 30px;
+                    }
+                }
+            }
+        }
+
+        #container {
+            box-sizing: border-box;
+            padding: 0px 0px 0px 0px;
+            display:inline-block;
+            width: 100%;
+            height: calc(100% - 2px);
+            // overflow: auto;
+            position: relative;
+            .mat-table {
+                // width: 100%;
+                .mat-header-row, .mat-footer-row, .mat-row {
+                    min-height: inherit;
+                }
+                height: 100%;
+                .mat-header-cell, .mat-cell {
+                    font-size: inherit;
+                    padding: inherit;
+                    text-align: right;
+                    justify-content: flex-end;
+                    &.mat-column-time,
+                    &.mat-column-metric,
+                    &.mat-column-tag {
+                        text-align: left;
+                        justify-content: flex-start;
+                    }
+                }
+            }
+            .message {
+                text-align: center;
+                font-size: 16px;
+                font-weight: 400;
+            }
+
+        }
+    }
+
+    // EDIT MODE
+    .edit-view-container.is-active 
+    {
+        .widget-config-container[style*="flex-direction: row-reverse;"] {
+            //flex-direction: row-reverse;
+            box-sizing: border-box;
+            padding: 0;
+            .table-widget-output-container {
+                width: 50%;
+                height: 100%;
+                // background-color: khaki;
+                .widget-output {
+                    // display: flex;
+                    // flex: 1;
+                    min-height: 100%;
+                    .gif-spinner {
+                        position: absolute;
+                        left: calc(50% + 15px);
+                        top: 50px;
+                        z-index: 1000;
+                    }
+                }
+            }
+        }
+
+        .widget-config-container[style*="flex-direction: column;"] {
+            //flex-direction: row-reverse;
+            // box-sizing: border-box;
+            // padding: 0;
+            
+            .table-widget-output-container {
+                // border: 1px solid #000;
+                width: 100%;
+                padding: 0px 14px;
+                // height: 100%;
+                // background-color: khaki;
+                .widget-output {
+                    display: flex;
+                    flex: 1;
+                    min-height: 250px;
+                    height: calc(100% - 10px);
+                    padding: 0px 0px;
+                }
+            }
+        }
+    }
+
+}
+
+@mixin table-widget-component-theme($theme-config) 
+{
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $card-background: map-get($background, card);
+    $ink-bar-color: map-get($background, ink-bar);
+
+    .mat-button-toggle-group{
+
+        .mat-button-toggle-appearance-standard {
+
+
+            &.mat-button-toggle-checked {
+                background: $card-background;
+                position: relative;
+
+                &::after {
+                    // box-shadow: inset 0 -2px 0 $ink-bar-color;
+                    //background: white;
+                    content: '';
+                    display: block;
+                    height: 2px;
+                    background-color: $ink-bar-color;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                }
+            }
+        }
+    }
+    
+}

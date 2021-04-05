@@ -547,13 +547,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.tplVariables && changes.tplVariables.currentValue.tvars) {
             this.tplVars = changes.tplVariables.currentValue.tvars;
         }
+        if ( changes.options && changes.options.currentValue ) {
+            this.initOptions();
+            this.initSummarizerValue();
+        }
     }
 
     ngOnInit() {
-        this.initOptions();
         this.initFormControls();
         this.initMetricDataSource();
-        this.initSummarizerValue();
         this.queryChanges$ = new BehaviorSubject(false);
 
         this.queryChangeSub = this.queryChanges$

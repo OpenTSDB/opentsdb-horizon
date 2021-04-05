@@ -61,6 +61,11 @@ export class PlaceholderWidgetComponent  {
             label: 'Events',
             type: 'EventsWidgetComponent',
             iconClass: 'widget-icon-events'
+        },
+        {
+            label: 'Table',
+            type: 'TableWidgetComponent',
+            iconClass: 'widget-icon-table'
         }
         /*,
         {

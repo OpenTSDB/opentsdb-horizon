@@ -609,6 +609,13 @@ export class UtilsService {
         }
     }
 
+    sortObject(obj) {
+        return Object.keys(obj).sort().reduce(function (result, key) {
+          result[key] = obj[key];
+          return result;
+        }, {});
+      }
+
     getSummarizerForMetric(id, queries) {
         const metric = this.getMetricFromId(id, queries);
         return metric.summarizer ? metric.summarizer : 'avg';

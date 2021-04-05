@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { IDygraphOptions } from '../../shared/modules/dygraphs/IDygraphOptions';
 import { barChartPlotter, heatmapPlotter, stackedAreaPlotter } from '../../shared/dygraphs/plotters';
 import { UtilsService } from './utils.service';
+import { UnitConverterService } from './unit-converter.service';
 import * as d3 from 'd3';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,120 @@ export class DatatranformerService {
 
    REGDSID = /q?(\d+)?_?(m|e)(\d+).*/;
   // tslint:disable:max-line-length
-  constructor(private util: UtilsService ) {  }
+  constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
+
+  //ADDED: table data 
+  yamasToTable(widget, options, result: any): any {
+
+    const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
+    const defDtFormat = 'MM/DD/YYYY';
+    const dtFormats = { 's': 'hh:mm:ss a', 'm': 'hh:mm a', 'h': 'hh:mm a'};
+
+    const objData = {};
+    let timeSpecification: any = {};
+    const visual = widget.settings.visual;
+    const summary = visual.layout !== 'time:metric';
+    const decimals = !visual.decimals || visual.decimals.toString().trim() === 'auto' ? 2 : visual.decimals;
+    
+
+    const displayColumns = {};
+    let dataTable = [];
+
+    if ( result && result.results ) {
+        // sometimes opentsdb returns empty results
+        for ( let i = 0;  i < result.results.length; i++ ) {
+            if (result.results[i].data.length === 0) {
+                continue;
+            }
+            const queryResults = result.results[i];
+            const [ source, mid ] = queryResults.source.split(':');
+            const qids = this.REGDSID.exec(mid);
+            const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
+            const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
+
+            const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
+            const mConfig = gConfig && gConfig.metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : null;
+            const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
+            if ( (source === 'summarizer' && !summary) || (source !== 'summarizer' && summary)  || !gConfig || !gConfig.settings.visual.visible || !vConfig.visible) {
+                continue;
+            }
+
+            timeSpecification = queryResults.timeSpecification;
+            const n = queryResults.data.length;
+            const unit = vConfig.unit ? vConfig.unit : 'auto';
+            const format = { unit: unit, precision: decimals, unitDisplay: true };
+            const summarizer = mConfig.summarizer || 'avg';
+            for ( let j = 0; j < n; j ++ ) {
+                let data = summary ? queryResults.data[j].NumericSummaryType : queryResults.data[j].NumericType;
+                const tags = this.util.sortObject(queryResults.data[j].tags);
+                const mLabel = this.util.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
+                const metric = !mConfig.expression ? queryResults.data[j].metric : mLabel
+                let label = vConfig.label ? vConfig.label : metric;
+                label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
+                const tagLabel = this.getLableFromMetricTags('', { metric: '', ...tags}) || 'All';
+                const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
+                
+                    if ( summary ) {
+                        const colId = visual.layout == 'metric:tags' ? tagLabel : mLabel;
+                        const colLabel = visual.layout == 'metric:tags' ? tagLabel : label;
+                        const rowId = visual.layout == 'metric:tags' ? mLabel : tagLabel;
+                        displayColumns[colId] = {id: colId, label: colLabel };
+                        if (!objData[rowId] ) {
+                            objData[rowId] = visual.layout == 'metric:tags' ? { metric: label } : { tag: tagLabel };
+                        }
+                        const aggs = data.aggregations;
+                        data = data.data[0];
+                        const ts = Object.keys(data)[0];
+                        const index = aggs.indexOf(summarizer);
+                        
+                        const dunit = this.unit.getNormalizedUnit(data[ts][index], format);
+                        
+                        objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
+                    } else {
+                        
+                        displayColumns[id] = {id: id, label: label};
+                        objData[id] = { rawdata:data, data: data.map(d => { 
+                            const dunit = this.unit.getNormalizedUnit(d, format);
+                            return this.unit.convert(d, format.unit, dunit, format);
+                        }), config: vConfig };
+                        
+                    }
+
+            }
+        }
+
+        if ( summary ) {
+            dataTable = Object.values(objData);
+        } else {
+            const unit = timeSpecification.interval.replace(/[0-9]/g, '');
+            const m = parseInt(timeSpecification.interval, 10);
+            const keys = Object.keys(objData);
+            const numPoints = keys.length ? objData[keys[0]].data.length : 0;
+            const dtFormat = dtFormats[unit] || defDtFormat;
+            for (let i = 0; i < numPoints ; i++ ) {
+                const time = (timeSpecification.start + ( m * i * mSeconds[unit] ));
+                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat) };
+                for ( let j = 0; j < keys.length; j++ ) {
+                    const key = keys[j];
+                    row[key] = objData[key].data[i];
+                    const bgColor = !isNaN(objData[key].rawdata[i]) ? this.overrideColor(objData[key].rawdata[i], objData[key].config.color, objData[key].config.conditions) : '';
+                    const  rgbColor = bgColor ? d3.rgb(bgColor) : '';
+                    const color = rgbColor ? 'rgb(' + Math.floor(255 - rgbColor.r) + ',' + Math.floor(255 - rgbColor.g) + ',' + Math.floor(255 - rgbColor.b) + ')' : '';
+                    row[key + ':backgroundColor'] = bgColor;
+                    row[key + ':color'] = color;
+                }
+                dataTable.push(row);
+            }
+        }
+    }
+
+    options.displayColumns = Object.values(displayColumns);
+    options.displayColumns.sort((a: any, b: any) => {
+        return this.util.sortAlphaNum(a.label, b.label);
+    });
+    options.displayColumns.unshift( !summary ? { id: 'time', 'label': 'Time' } : visual.layout == 'metric:tags' ? { id: 'metric', 'label': 'Metric' }  : { id: 'tag', 'label': 'Tag' } );
+    return dataTable;
+  }
 
   removeEmptySeries(result ) {
     if ( result !== undefined && result.results ) {
@@ -614,6 +729,7 @@ export class DatatranformerService {
                 }
             }
         }
+        label = label.replace(/^\-+|\-+$/g, '')
         label = label.length > len ? label.substr(0, len - 2) + '..' : label;
         return label;
     }
