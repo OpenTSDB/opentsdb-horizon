@@ -134,7 +134,6 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
         // this.gForms.updateValueAndValidity( { emitEvent: false });
         if ( this.displayControl ) {
             this.displayControl.valueChanges.subscribe( d => {
-                // console.log('display changed', d );
                 this.widgetChange.emit( {'action': 'ChangeVisualization', payload: { type: d }});
             });
         }

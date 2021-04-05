@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 export interface TooltipData { data: any; position: any; };
 
@@ -13,7 +13,7 @@ export class TooltipDataService implements OnInit {
     private _tooltipStream: Subject<TooltipData | Boolean> = new Subject(); // tooltip data
 
     constructor(
-        private logger: LoggerService
+        private console: ConsoleService
     ) {}
 
     ngOnInit() {}
@@ -27,7 +27,7 @@ export class TooltipDataService implements OnInit {
     }
 
     _ttDataPut(data: TooltipData | Boolean) {
-        //this.logger.api('_ttDataPut', data);
+        //this.console.api('_ttDataPut', data);
         this._tooltipStream.next(data);
     }
 

@@ -12,10 +12,10 @@ export class WidgetDeleteDialogComponent implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<WidgetDeleteDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dbData: any ) { }
+        @Inject(MAT_DIALOG_DATA) public dbData: any
+    ) { }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     confirm() {
         this.dialogRef.close( {delete : true } );

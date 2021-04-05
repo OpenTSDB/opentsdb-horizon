@@ -12,21 +12,22 @@ import {
 
 import { Observable, Subscription, of } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../../../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
 import {
     DbfsResourcesState,
     DbfsLoadResources,
     DbfsState,
     DbfsLoadSubfolderSuccess
-} from '../../../../state';
+} from '../../state';
 
 import {
     Select,
     Store
 } from '@ngxs/store';
-import { DbfsUtilsService } from '../../../../services/dbfs-utils.service';
-import { DbfsService } from '../../../../services/dbfs.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
+import { DbfsUtilsService } from '../../services/dbfs-utils.service';
+import { DbfsService } from '../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
@@ -120,6 +121,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
+        private console: ConsoleService,
         private service: DbfsService,
         private cdref: ChangeDetectorRef
     ) { }

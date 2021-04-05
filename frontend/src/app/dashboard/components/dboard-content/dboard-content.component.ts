@@ -1,7 +1,7 @@
 import {
   Component, Input, ViewChild, ViewEncapsulation,
   OnChanges, SimpleChanges, ComponentFactoryResolver, Type,
-  HostBinding, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef
+  HostBinding, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, QueryList, ViewChildren
 } from '@angular/core';
 import { GridsterComponent, GridsterItemComponent, IGridsterOptions, IGridsterDraggableOptions } from 'angular2gridster';
 import { WidgetViewDirective } from '../../directives/widgetview.directive';
@@ -9,6 +9,7 @@ import { WidgetComponentModel } from '../../widgets/models/widgetcomponent';
 import { DashboardService } from '../../services/dashboard.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
 @Component({
   selector: 'app-dboard-content',
@@ -22,12 +23,18 @@ export class DboardContentComponent implements OnChanges {
   @ViewChild(WidgetViewDirective) widgetViewContainer: WidgetViewDirective;
   @ViewChild(GridsterComponent) gridster: GridsterComponent;
 
+  // widgetLoader Children
+  @ViewChildren(WidgetLoaderComponent, {read: WidgetLoaderComponent})  widgetLoaders: QueryList<WidgetLoaderComponent>;
+
   @Output() widgetsLayoutUpdate = new EventEmitter();
   @Input() widgets: any[];
   @Input() newWidget: any; // new widget when adding from top bar
   @Input() mWidget: any;
   @Input() rerender: any;
   @Input() dashboardMode: string;
+
+  @Input() batchControlsToggle: boolean = false;
+  @Input() batchSelectedItems: any = {};
 
   viewEditMode = false;
   winSize = 'md'; // flag to check if window size change to sm
