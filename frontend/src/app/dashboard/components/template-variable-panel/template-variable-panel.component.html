@@ -12,17 +12,26 @@
                             (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
                         <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
-                        <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto">
-                            <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
-                                {{option}}
-                            </mat-option>
-                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
-                                <img src="/assets/spinner-26x26.gif" />
+                        <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
+                            <nav mat-tab-nav-bar class="filter-type-toggle">
+                                <a mat-tab-link [active]="checkRegexp(vartpl.get('filter').value)">
+                                    <span>Regex</span>
+                                </a>
+                                <a mat-tab-link [active]="!checkRegexp(vartpl.get('filter').value)">
+                                    <span>Librange</span>
+                                </a>
+                            </nav>
+                            <div class="option-list">
+                                <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                    {{option}}
+                                </mat-option>
+                                <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                    <img src="/assets/spinner-26x26.gif" />
+                                </div>
+                                <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                    No matches found
+                                </mat-option>
                             </div>
-                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
-                                No matches found
-                            </mat-option>
-
                         </mat-autocomplete>
                     </mat-form-field>
                 </li>
@@ -140,17 +149,27 @@
                                     <mat-form-field appearance="fill" color="primary" floatLabel="never">
                                         <input matInput placeholder="Enter default value" formControlName="display"
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
-                                            <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
-                                            <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
-                                            <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
-                                                {{option}}
-                                            </mat-option>
-                                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
-                                                <img src="/assets/spinner-26x26.gif" />
+                                        <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
+                                        <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
+                                            <nav mat-tab-nav-bar class="filter-type-toggle">
+                                                <a mat-tab-link [active]="checkRegexp(tpl.get('filter').value)">
+                                                    <span>Regex</span>
+                                                </a>
+                                                <a mat-tab-link [active]="!checkRegexp(tpl.get('filter').value)">
+                                                    <span>Librange</span>
+                                                </a>
+                                            </nav>
+                                            <div class="option-list">
+                                                <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                                    {{option}}
+                                                </mat-option>
+                                                <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                                    <img src="/assets/spinner-26x26.gif" />
+                                                </div>
+                                                <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                                    No matches found
+                                                </mat-option>
                                             </div>
-                                            <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
-                                                No matches found
-                                            </mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
                                     <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i, alias: tpl.get('alias').value}">
