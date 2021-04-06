@@ -204,14 +204,15 @@
                         <div *ngIf="recipientType === _recipientType.http" class="contacts-create-form">
                             <div class="form-group">
                                 <div class="form-label vertical-center">Name </div>
-                                <mat-form-field floatLabel="never" appearance="fill">
+                                <mat-form-field floatLabel="never" appearance="fill" class="formfield-name">
                                     <input [formControl]="httpName" matInput placeholder="Enter Name*" required minlength="2"
                                         maxlength="36" [value]="recipientsFormData[_recipientType.http].name"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.http], 'name', $event.target.value)">
                                     <mat-error *ngIf="httpName.errors && (httpName.dirty || httpName.touched)">
-                                        Unique HTTPS name required. Min length is 2. Max length is 36.
+                                        This name is already used. Please enter the new name. Min length is 2. Max length is 36.
                                     </mat-error>
                                 </mat-form-field>
+                                
                             </div>
                             <div class="form-group">
                                 <div class="form-label vertical-center">Endpoint</div>
@@ -221,7 +222,7 @@
                                         [value]="recipientsFormData[_recipientType.http].endpoint"
                                         (input)="updateRecipient(recipientsFormData[_recipientType.http], 'endpoint', $event.target.value)">
                                     <mat-error *ngIf="httpEndpoint.errors && (httpEndpoint.dirty || httpEndpoint.touched)">
-                                        HTTPS endpoint required. Max length is 300.
+                                        Valid HTTPS endpoint required.
                                     </mat-error>
                                 </mat-form-field>
                             </div>

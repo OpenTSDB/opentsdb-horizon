@@ -12,31 +12,36 @@ import {
 import { Location, DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 
 import {
     MatDrawer
 } from '@angular/material';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
-
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
+
 import {
     AppShellState,
-    DbfsState,
     NavigatorState,
     SetSideNavOpen,
     SSGetUserProfile,
+} from '../state';
+
+import {
+    DbfsState,
     DbfsLoadResources,
     DbfsInitialized,
     DbfsResourcesState,
     DbfsLoadUserRecents
-} from '../state';
+} from '../../shared/modules/dashboard-filesystem/state';
+
 import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
-import { filter, map, take } from 'rxjs/operators';
-import { LoggerService } from '../../core/services/logger.service';
+
+import { filter, map } from 'rxjs/operators';
+import { ConsoleService } from '../../core/services/console.service';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
 
@@ -101,9 +106,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     private routedApp: any = '';
 
+    clipboardAvailable = false;
+
     constructor(
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private store: Store,
         private router: Router,
         private activatedRoute: ActivatedRoute,
@@ -151,6 +158,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 urlPath.shift();
                 // second item in arrant should be which horizon app we are in. extract it
                 const app = urlPath.shift();
+
+                // should clipboard be available
+                this.clipboardAvailable = (app === 'd' || app === 'a');
 
                 // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
                 if (app === 'd' || app === 'snap') {
@@ -222,18 +232,15 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit() {
 
         this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
-            // this.logger.log('LS THEME', { theme });
             this.setAppTheme(theme);
         }));
 
         this.subscription.add(this.mediaQuery$.subscribe(currentMediaQuery => {
-            // console.log('[SUB] currentMediaQuery', currentMediaQuery);
             this.activeMediaQuery = currentMediaQuery;
             this.store.dispatch(new SetSideNavOpen((currentMediaQuery !== 'xs')));
         }));
 
         this.subscription.add(this.userProfile$.subscribe(data => {
-            // console.log('[SUB] User Profile', data);
             this.userProfile = data;
 
             if (!data.loaded) {
@@ -242,7 +249,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         }));
 
         this.subscription.add(this.currentApp$.subscribe(app => {
-            // console.log('[SUB] currentApp', app);
             this.activeNavSection = app;
 
             // open drawer if on landing page
@@ -253,12 +259,10 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         }));
 
         this.subscription.add(this.sideNavOpen$.subscribe(isOpen => {
-            // console.log('[SUB] sidenavopen', isOpen);
             this.sideNavOpen = isOpen;
         }));
 
         this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
-            // console.log('**** INTERCOM ****', message);
             switch (message.action) {
                 // sets system message and type
                 case 'systemMessage':
@@ -278,10 +282,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         }));
 
         this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
-            // this.logger.ng('RESOURCES LOADED?', resourcesLoaded ? 'YES' : 'NO');
             if (resourcesLoaded) {
                 const user = this.store.selectSnapshot(DbfsState.getUser());
-                // this.logger.log('USER', user);
                 this.isYamasMember = user.memberNamespaces.includes('yamas');
             }
         }));
@@ -291,10 +293,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         // when then path is changes
         if (changes.fullUrlPath && changes.fullUrlPath.currentValue) {
             // now do whatever with this full path
-            // this.logger.ng('new url path', changes.fullUrlPath.currentValue);
             const pathParts = changes.fullUrlPath.currentValue.split('/');
             pathParts.shift();
-            // this.logger.ng('PATH PARTS', { changes, pathParts});
+
             const activeNav: any = { section: '' };
             switch (pathParts[0]) {
                 case 'a':
@@ -330,7 +331,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     /** BEHAVIORS */
 
     globalMessageVisibility(event: any) {
-      // this.logger.log('GLOBAL MESSAGE VISIBILITY', event);
       if (event.visible) {
           this.sideNavTopGap = 30;
       } else {
@@ -342,8 +342,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.messageBarVisible = false;
     }
 
-    drawerClosedStart() {
-        // console.log('DRAWER IS CLOSING');
+    drawerClosedStart() {}
+
+    drawerOpenChange(event: any) {
+        this.interCom.requestSend({
+            action: 'ResizeAllWidgets'
+        });
     }
 
     /** EVENTS */
@@ -406,7 +410,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     toggleDrawerMode(event?: any) {
-        // console.log('%c******** TOGGLE DRAWER MODE **********', 'color: white; background: red; padding: 20px;', event);
         if (event && event.resetForMobile) {
             this.sidenavToggle();
             this.sideNavOpen = false;
@@ -427,15 +430,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     sidenavToggle() {
-        // console.log('%cSIDENAV TOGGLE [TOP]', 'color: white; background: red; padding: 20px;');
         if (this.activeMediaQuery === 'xs') {
             if (this.drawer.opened) {
-                // console.log('%cOPENED', 'color: white; background: red; padding: 20px;');
                 this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: '' }));
                 this.closeNavigator();
                 this.sideNav.resetActiveNav();
             } else {
-                // console.log('%cNOT OPENED', ' color: white; background: red; padding: 20px;');
                 this.sideNavOpen = !this.sideNavOpen;
             }
         }

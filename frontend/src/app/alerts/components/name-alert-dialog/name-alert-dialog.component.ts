@@ -42,7 +42,6 @@ export class NameAlertDialogComponent implements OnInit {
     }
 
     saveAlertName() {
-        // console.log('SAVE ALERT NAME', this.alertName);
         if (!this.alertName.invalid) {
             this.dialogRef.close({ alertName: this.alertName.value });
         }

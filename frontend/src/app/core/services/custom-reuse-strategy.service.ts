@@ -4,9 +4,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
 
     handlers: {[key: string]: DetachedRouteHandle} = {};
 
-    constructor() {
-        //console.log('custom reuse ctor');
-    }
+    constructor() {}
 
     shouldAttach(route: ActivatedRouteSnapshot): boolean {
         return !!route.routeConfig && !!this.handlers[route.routeConfig.path];

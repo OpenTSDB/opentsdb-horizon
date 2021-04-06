@@ -54,7 +54,6 @@ export class DatatranformerService {
 
   // options will also be update of its labels array
   yamasToDygraph(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
-    // console.log('### [Y2D] ###', JSON.parse(JSON.stringify({widget, options, normalizedData, result})));
     const startTime = new Date().getTime();
     let intermediateTime = startTime;
     result = { ...result };

@@ -25,9 +25,7 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
         //private service: UniversalDataTooltipService,
         private ttCompSvc: TooltipComponentService,
         private elRef: ElementRef
-    ) {
-        //console.log('***** MOUSE LISTENER *****');
-    }
+    ) {}
 
     ngOnInit() {}
 
@@ -36,16 +34,13 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
     }
 
     private setupMouseListener() {
-        // console.log('%c[[[[ SETUP MOUSE LISTENER ]]]]]', 'color: white; background: red; padding: 4px;');
 
         this._mouseEnterListener = this.elRef.nativeElement.addEventListener('mouseenter', (event: any) => {
-            // console.log('===> ME EVENT', event);
             // find the outer boundary
             const el = this.elRef.nativeElement;
             let mBoundaryEl;
 
             if (this.ttMultigraph) {
-                // console.log('%cHAS MULTIGRAPH', 'color: white; background: green;');
                 this._mouseMoveListener = this.elRef.nativeElement.addEventListener('mousemove', (e: any) => {
                     mBoundaryEl = e.target.closest('.graph-cell');
                     if (mBoundaryEl && this._mouseBoundaryEl !== mBoundaryEl) {
@@ -57,17 +52,13 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
                 }, {capture: true, passive: true});
 
             } else {
-                // console.log('%cNOT MULTIGRAPH', 'color: white; background: red;');
                 if (el.closest('.gridster-stage')) {
-                    // console.log('===> DASHBOARD');
                     mBoundaryEl = el.closest('.widget-loader');
                 }
                 else if (el.closest('.edit-view-container')) {
-                    // console.log('===> EDIT DASHBOARD');
                     mBoundaryEl = this.elRef.nativeElement;
                 }
                 else if (el.closest('.alert-configuration-wrapper')) {
-                    // console.log('===> EDIT ALERT');
                     // alerts page with chart
                     mBoundaryEl = this.elRef.nativeElement;
                 }
@@ -75,9 +66,6 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
                 // so it can set up the correct tooltip layout
                 this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
             }
-
-            // console.log('%cTT MOUSE BOUNDARY', 'color: white; background: purple; padding: 2px 3px;', mBoundaryEl, this.elRef.nativeElement);
-
         }, {capture: true, passive: true});
 
         this._mouseOutListener = this.elRef.nativeElement.addEventListener('mouseout', (event: any) => {
@@ -94,8 +82,6 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
     }
 
     private removeListeners() {
-        //console.log('%c[[[[ REMOVE LISTENERS ]]]]]', 'color: white; background: red; padding: 4px;', this._mouseListeners);
-
         this.elRef.nativeElement.removeEventListener('mouseenter', this._mouseEnterListener);
         this.elRef.nativeElement.removeEventListener('mouseout', this._mouseOutListener);
         if (this.ttMultigraph && this._mouseMoveListener) {

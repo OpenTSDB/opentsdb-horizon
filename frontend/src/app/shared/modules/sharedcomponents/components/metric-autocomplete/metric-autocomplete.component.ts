@@ -118,7 +118,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         // 32 is for option left/right padding
         const renderedWidth = this.utils.calculateTextWidth(<string>longestOption.name, '17', 'Ubuntu');
 
-        //console.log('LONGEST OPTION', longestOption, renderedWidth);
         if (renderedWidth > this.autocompleteDefaultWidth) {
             this.autocompleteWidth = renderedWidth + 32;
         } else {
@@ -317,7 +316,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     scrollDetect_event(event) {
         const srcEl = event.srcElement;
 
-        if (!srcEl.classList.contains('metric-search-result') && !this.elRef.nativeElement.contains(srcEl)) {
+        if (!srcEl.closest('.metric-search-result')) {
             // due to how mat-menu/cdk-menu works, we need to close the autocomplete menu on scroll to avoid wierd UI issues
             this.trigger.closeMenu();
         }

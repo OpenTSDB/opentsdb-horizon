@@ -5,12 +5,8 @@ import {
     StateContext
 } from '@ngxs/store';
 
-import {
-    DbfsState
-} from './dbfs.state';
-
 import { MediaObserver } from '@angular/flex-layout';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 
 /** Model interface */
 export interface NavigatorStateModel {
@@ -87,16 +83,13 @@ export class SetSideNavOpen {
         sideNavOpen: true,
         sideNavMode: 'side',
         drawerOpen: false
-    }/*,
-    children: [
-        DbfsState
-    ]*/
+    }
 })
 
 export class NavigatorState {
     constructor (
         public mediaObserver: MediaObserver,
-        private logger: LoggerService // importing this to use static method to check for flexLayout media query
+        private console: ConsoleService // importing this to use static method to check for flexLayout media query
     ) {}
 
     /** Selectors */
@@ -129,14 +122,14 @@ export class NavigatorState {
 
     @Action(ChangeNavigatorApp)
     changeNavigatorApp(ctx: StateContext<NavigatorStateModel>, { app }: ChangeNavigatorApp) {
-        this.logger.action(ChangeNavigatorApp.type, {app});
+        this.console.action(ChangeNavigatorApp.type, {app});
         const state = ctx.getState();
         ctx.patchState({...state, currentApp: app });
     }
 
     @Action(UpdateNavigatorSideNav)
     updateNavigatorSide(ctx: StateContext<NavigatorStateModel>, { payload }: UpdateNavigatorSideNav) {
-        this.logger.action(UpdateNavigatorSideNav.type, payload);
+        this.console.action(UpdateNavigatorSideNav.type, payload);
         const state = ctx.getState();
         const drawerOpen = payload.mode === 'side' && payload.currentApp !== '';
         const sideNavOpen = !(this.mediaObserver.isActive('xs'));
@@ -152,7 +145,7 @@ export class NavigatorState {
 
     @Action(ResetNavigator)
     ResetNavigator(ctx: StateContext<NavigatorStateModel>, {}: ResetNavigator) {
-        this.logger.action(ResetNavigator.type);
+        this.console.action(ResetNavigator.type);
         const state = ctx.getState();
         ctx.setState({
             ...state,
@@ -164,7 +157,7 @@ export class NavigatorState {
 
     @Action(SetSideNavOpen)
     SetSideNavOpen(ctx: StateContext<NavigatorStateModel>, { sideNavOpen }: SetSideNavOpen) {
-        this.logger.action(SetSideNavOpen.type, {sideNavOpen});
+        this.console.action(SetSideNavOpen.type, {sideNavOpen});
         const state = ctx.getState();
         ctx.setState({
             ...state,
@@ -174,7 +167,7 @@ export class NavigatorState {
 
     @Action(SetSideNavMode)
     SetSideNavMode(ctx: StateContext<NavigatorStateModel>, { sideNavMode }: SetSideNavMode) {
-        this.logger.action(SetSideNavMode.type, {sideNavMode});
+        this.console.action(SetSideNavMode.type, {sideNavMode});
         const state = ctx.getState();
         ctx.setState({
             ...state,
@@ -184,7 +177,7 @@ export class NavigatorState {
 
     @Action(SetDrawerOpen)
     SetDrawerOpen(ctx: StateContext<NavigatorStateModel>, { drawerOpen }: SetDrawerOpen) {
-        this.logger.action(SetDrawerOpen.type, {drawerOpen});
+        this.console.action(SetDrawerOpen.type, {drawerOpen});
         const state = ctx.getState();
         ctx.setState({
             ...state,

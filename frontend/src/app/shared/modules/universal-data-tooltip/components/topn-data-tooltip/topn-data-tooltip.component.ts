@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
@@ -22,13 +22,13 @@ export class TopnDataTooltipComponent extends DataTooltipComponent implements On
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        logger: LoggerService
+        console: ConsoleService
     ) {
         super(
             ttDataSvc,
             renderer,
             sanitizer,
-            logger
+            console
         );
     }
 

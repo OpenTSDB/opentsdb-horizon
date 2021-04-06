@@ -72,6 +72,14 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
                         delete this.widget.settings.time.zoomTime;
                     }
                     break;
+                /*case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
+                    break;*/
             }
 
             if (message && (message.id === this.widget.id)) {
@@ -101,7 +109,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
-            // console.log(changes);
+            // do something?
         }
     }
 

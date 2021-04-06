@@ -31,7 +31,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -534,7 +534,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private multiService: MultigraphService
     ) {
         /*
@@ -1092,13 +1092,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     functionMenuOpened($event, idx) {
         // maybe need this?
-        // console.log('MENU OPENED', $event, idx);
-        // console.log('TRIGGERS', this.functionMenuTriggers);
         this.currentFunctionMenuTriggerIdx = idx;
     }
 
     functionMenuClosed($event) {
-        // console.log('MENU CLOSED', $event);
         this.selectedFunctionCategoryIndex = -1;
         this.currentFunctionMenuTriggerIdx = null;
     }
@@ -1285,7 +1282,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     addQueryItemProgress(type: string) {
-        // console.log('ADD QUERY ITEM PROGRESS', type);
         if (type === 'metric') {
             this.isAddExpressionProgress = false;
             this.isAddMetricProgress = !this.isAddMetricProgress;

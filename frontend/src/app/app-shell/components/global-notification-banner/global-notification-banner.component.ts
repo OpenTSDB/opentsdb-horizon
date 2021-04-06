@@ -10,18 +10,18 @@ import {
 
 import {
     DbfsState
-} from '../../state/dbfs.state';
+} from '../../../shared/modules/dashboard-filesystem/state/dbfs.state';
 
 import {
     DbfsResourcesState,
     DbfsLoadSubfolder,
     DbfsLoadTopFolder,
-} from '../../state/dbfs-resources.state';
+} from '../../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 
 import { Subscription, Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../core/services/console.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { HttpService } from '../../../core/http/http.service';
 
@@ -63,7 +63,7 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
         private store: Store,
         private localStorage: LocalStorageService,
         private http: HttpService,
-        private logger: LoggerService,
+        private console: ConsoleService,
     ) {
         if (!localStorage.hasKey('globalNotifications')) {
             // initialize global notifications dismissal cache
@@ -87,7 +87,6 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
         // possibly disable polling if an alert is already visible?
         const notificationCheck = interval(60 * 1000);
         this.subscription.add(notificationCheck.subscribe(() => {
-            // this.logger.action('NOTIFICATION CHECK');
             if (this.resourcesReady) {
                 this.checkNotificationFile();
             }
@@ -160,23 +159,21 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
     }
 
     private loadNotificationFile() {
-        // this.logger.action('LOAD NOTIFICATION FILE');
+        // this.console.action('LOAD NOTIFICATION FILE');
         const files = this.store.selectSnapshot(DbfsResourcesState.getFileResources);
         const resource = files[this.rootPath + '/_notifications_'];
 
         this.http.getDashboardById(resource.id)
             .subscribe(
                 (res: any) => {
-                    // this.logger.success('LOAD NOTIFICATION FILE', res);
+                    // this.console.success('LOAD NOTIFICATION FILE', res);
                     this.checkForActiveNotification(res.body.content.widgets);
                 },
-                err => { this.logger.error('LOAD NOTIFICATION FILE', err); },
-                // () => { this.logger.log('LOAD NOTIFICATION FILE COMPLETE'); }
+                err => { this.console.error('LOAD NOTIFICATION FILE', err); }
             );
     }
 
     private checkForActiveNotification(notifications: any[]) {
-        // this.logger.log('CHECK FOR ACTIVE NOTIFICATION', {notifications});
 
         const activeIndex = notifications.findIndex((el: any) => el.settings.notification.enabled);
 
@@ -186,7 +183,6 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
     }
 
     private parseNotification(data: any) {
-        // this.logger.log('PARSE NOTIFICATION', data);
 
         // tslint:disable-next-line: prefer-const
         let globalNofication: any = {
