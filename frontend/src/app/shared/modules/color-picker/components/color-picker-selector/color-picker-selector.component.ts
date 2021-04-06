@@ -202,7 +202,7 @@ export class ColorPickerSelectorComponent
         this._tmpSelectedColorSub = this._tmpSelectedColor.subscribe(color => {
             if (color !== this._selectedColor && isValidColor(color)) {
                 if (this.hexForm.get('hexCode').value !== color) {
-                    this.hexForm.setValue({ hexCode: color });
+                    this.hexForm.setValue({ hexCode: color }, { emitEvent: false });
                 }
                 // if embedded, immedietly emit new color
                 if (this.pickerMode === this.embedded) {

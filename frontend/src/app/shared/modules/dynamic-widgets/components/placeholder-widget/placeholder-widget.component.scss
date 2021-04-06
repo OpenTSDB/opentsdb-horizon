@@ -91,6 +91,9 @@
                         background-position: -50px -100px;
                     }
         
+                    &.widget-icon-table::after {
+                        background-position: -150px -100px;
+                    }
                     /*&::after {
                         content: '';
                         display: block;

@@ -18,26 +18,27 @@
             <strong>Line Type</strong>
             <dropdown-line-type [value]="data.visual.lineType || 'solid'" (change)="setLineType(data.metric.id, $event)"></dropdown-line-type>
         </div>
-        <div class="vis-conf-col has-columns is-bn-or-tn" *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
+        <div class="vis-conf-col has-columns is-bn-or-tn" *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent' || type === 'TableWidgetComponent'">
             <div class="column">
                 <mat-button-toggle-group class="color-toggle" color="primary" [(value)]="colorToggleVal" *ngIf="type === 'BignumberWidgetComponent'">
                     <mat-button-toggle mat-button color="primary" value="color">Text</mat-button-toggle>
                     <mat-button-toggle mat-button color="primary" value="background">Background</mat-button-toggle>
                 </mat-button-toggle-group>
-                <span *ngIf="type !== 'BignumberWidgetComponent'" class="mat-body-strong">Fill color</span>
+                <span *ngIf="type === 'TopnWidgetComponent'" class="mat-body-strong">Fill color</span>
+                <span *ngIf="type === 'TableWidgetComponent'" class="mat-body-strong">Text color</span>
                 <color-picker *ngIf="type !== 'BignumberWidgetComponent' || colorToggleVal === 'color'" (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color"></color-picker>
                 <color-picker *ngIf="type === 'BignumberWidgetComponent' && colorToggleVal === 'background'" (newColor)="setColor(data.metric.id, $event, 'backgroundColor')" [pickerMode]="'embedded'" [color]="data.visual.backgroundColor"></color-picker>
             </div>
-            <div class="column" *ngIf="type === 'TopnWidgetComponent'" style="display: flex; flex-direction: column;">
+            <div class="column" *ngIf="type === 'TopnWidgetComponent' || type === 'TableWidgetComponent'" style="display: flex; flex-direction: column;">
                 <span class="mat-body-strong">Unit</span>
                 <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
             </div>
             <div class="column">
-                <span class="mat-body-strong">Conditional Background Color</span>
+                <span class="mat-body-strong">Conditional {{ type === 'TopnWidgetComponent' ? 'Background' : '' }} Color</span>
                 <conditional-formatter [conditions]="data.visual.conditions" [type]="type" (conditionChange)="setVisualConditions(data.metric.id, $event)"></conditional-formatter>
             </div>
         </div>
-        <div class="vis-conf-col" *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent'">
+        <div class="vis-conf-col" *ngIf="type !== 'BignumberWidgetComponent'  && type !== 'TopnWidgetComponent' && type !== 'TableWidgetComponent'">
             <strong>{{ (type === 'LinechartWidgetComponent' && (!this.mode || this.mode === 'line') ? 'Line ' : 'Fill ') + 'color' }}</strong>
             <color-picker (newColor)="setColor(data.metric.id, $event, $event.scheme ? 'scheme' : 'color')" [pickerMode]="'embedded'" [color]="data.visual.color || data.visual.scheme" [enableMultiSelection]="type === 'HeatmapWidgetComponent'" [enablePalette]="type !== 'HeatmapWidgetComponent'"></color-picker>
         </div>

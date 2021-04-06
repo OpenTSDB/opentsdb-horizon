@@ -10,3 +10,4 @@ export * from './topn-widget/topn-widget.component';
 export * from './status-widget/status-widget.component';
 export * from './markdown-widget/markdown-widget.component';
 export * from './events-widget/events-widget.component';
+export * from './table-widget/table-widget.component';

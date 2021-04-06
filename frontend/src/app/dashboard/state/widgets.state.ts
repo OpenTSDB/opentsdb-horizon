@@ -35,6 +35,7 @@ export interface WidgetModel {
         description?: string;
         useDBFilter?: boolean;
         time?: any;
+        layout?: string;
         visual?: {
             type?: string;
             stacks?: StackConfig[];

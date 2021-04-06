@@ -183,6 +183,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             type: 'EventsWidgetComponent',
             iconClass: 'widget-icon-events'
         },
+        {
+            label: 'Table',
+            type: 'TableWidgetComponent',
+            iconClass: 'widget-icon-table'
+        }
 
         /*,
         {
@@ -1537,7 +1542,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             for (let i = 0; i < payload.queries.length; i++) {
                 let query: any = JSON.parse(JSON.stringify(payload.queries[i]));
                 groupid = query.id;
-                if (query.namespace && query.metrics.length) {
+                if (query.namespace && query.settings.visual.visible && query.metrics.length) {
                     // filter only visible metrics, disable it now since it will break the expression
                     // query = this.dbService.filterMetrics(query);
                     // here we need to resolve template variables
