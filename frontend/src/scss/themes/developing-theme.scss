@@ -34,6 +34,7 @@ $developing-theme: (
         ink-bar: map_get($denali-brand-6, 500),
         app-bar: #084b4e,
         navbar: #084b4e,
+        navbar-alt:               #8eaeaf,
         background: lighten(map_get($denali-cool-grey, 50), 4%),
         header: rgba(map_get($mat-blue, 900), 0.08),
         hover: rgba(#000000, 0.04),

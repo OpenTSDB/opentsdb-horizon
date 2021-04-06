@@ -46,7 +46,7 @@ export class EventListComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['events']) {
+        if (changes['events'] && changes.events.currentValue) {
           this.generateTitlesTagsList();
           this.collapseExpansion();
         }
