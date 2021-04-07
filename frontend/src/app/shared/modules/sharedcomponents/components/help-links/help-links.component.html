@@ -1,0 +1,13 @@
+<button  class="help-links-button" mat-raised-button
+  [matMenuTriggerFor]="helpMenu">
+  <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
+</button>
+
+<mat-menu #helpMenu="matMenu" [overlapTrigger]="false" xPosition="before" class="links-menu">
+  <ng-template matMenuContent>
+      <a mat-menu-item *ngFor="let link of links" target="_blank" href="{{link.href}}">
+        <mat-icon *ngIf="link.icon" fontSet="denali" [fontIcon]="link.icon"></mat-icon>
+        {{link.label}}
+      </a>
+  </ng-template>
+</mat-menu>

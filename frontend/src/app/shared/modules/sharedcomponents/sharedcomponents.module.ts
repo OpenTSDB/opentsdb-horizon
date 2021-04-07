@@ -70,6 +70,7 @@ import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import {  Nl2BrPipe } from './pipes/nl2br.pipe';
+import { HelpLinksComponent } from './components/help-links/help-links.component';
 
 @NgModule({
     imports: [
@@ -132,7 +133,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         HighlightStripTextPipe,
         SafePipe,
         Nl2BrPipe,
-        ResizableDirective
+        ResizableDirective,
+        HelpLinksComponent
     ],
     exports: [
         ThemePickerComponent,
@@ -176,7 +178,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         DateToRelativePipe,
         AliasDisplayPipe,
         HighlightStripTextPipe,
-        ResizableDirective
+        ResizableDirective,
+        HelpLinksComponent
     ],
     entryComponents: [
         InlineFilterEditorComponent,
