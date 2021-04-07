@@ -42,6 +42,7 @@
 @import 'components/graph-type/graph-type.component';
 @import 'components/aura-dialog/aura-dialog.component';
 @import 'components/info-tooltip/info-tooltip.component';
+@import 'components/help-links/help-links.component';
 
 
 // widget common FIRST
@@ -93,6 +94,7 @@
     @include graph-type-component-base();
     @include aura-dialog-component-base();
     @include info-tooltip-component-base();
+    @include help-links-component-base();
 
     // WIDGET CONFIG ITEMS
     @include widget-config-common-base();
@@ -143,6 +145,7 @@
     @include graph-type-component-theme($theme-config);
     @include aura-dialog-component-theme($theme-config);
     @include info-tooltip-component-theme($theme-config);
+    @include help-links-component-theme($theme-config);
 
     // WIDGET CONFIG ITEMS
     @include widget-config-common-theme($theme-config);
