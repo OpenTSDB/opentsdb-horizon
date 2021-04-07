@@ -1,11 +1,11 @@
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
-import { UtilsService } from '../../core/services/utils.service';
-import { LoggerService } from '../../core/services/logger.service';
+import { UtilsService } from '../../../../core/services/utils.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 import { DbfsPanelsState } from './dbfs-panels.state';
 import { DbfsResourcesState } from './dbfs-resources.state';
 import { DbfsResourcesModel } from './dbfs-resources.interfaces';
-import { DBState } from '../../dashboard/state';
+import { DBState } from '../../../../dashboard/state';
 
 /** Interface model */
 
@@ -34,7 +34,7 @@ export class DbfsInitialized {
 export class DbfsState {
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private store: Store,
         private util: UtilsService
     ) { }
@@ -52,14 +52,13 @@ export class DbfsState {
 
     @Selector([DBState])
     static getLoadedDashboardId(dbstate) {
-        // console.log('DBSTATE from DBFS', dbstate);
         return dbstate.id || false;
     }
 
     // utility selector to get a users profile
     // defaults to activeUser (Browser Session User)
     // fullDetail optional parameter, will expand out memberNamespace with more detail
-    static getUser(userid?: string, fullDetail?: boolean) {
+    static getUser(userid?: any, fullDetail?: boolean) {
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
 
             if (state.loaded === false) {
@@ -137,7 +136,6 @@ export class DbfsState {
     // this selector is meant to return data in a format similar to what was originally defined in <DBState>Dashboard.UserSettings
     // will default to activeUser (Browser Session User)
     static getUserFolderData(userid?: any) {
-        // console.log('DBFS getUserFolderData', userid);
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
 
             if (state.loaded === false) {

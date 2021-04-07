@@ -129,6 +129,10 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         {
             label: 'Last',
             value: 'last'
+        },
+        {
+            label: 'Count',
+            value: 'count'
         }
     ];
 
@@ -372,7 +376,6 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         });
 
             this.selectedDownsample_Sub = this.widgetConfigTime.get('downsample').valueChanges.subscribe(function(data) {
-                // console.log('SELECTED DOWNSAMPLE CHANGED', data, this);
                 if (data === 'custom') {
                     this.widgetConfigTime.controls.customDownsampleValue.enable();
                     this.widgetConfigTime.controls.customDownsampleUnit.enable();

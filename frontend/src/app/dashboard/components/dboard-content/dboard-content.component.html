@@ -2,7 +2,7 @@
     <span widget-view-container></span>
 </div>
 
-<div class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
+<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
     <div class="is-scroller">
         <ngx-gridster #gridster class="dashboard"
             [options]="gridsterOptions"
@@ -23,6 +23,8 @@
                 (end)="gridEventEnd($event)">
               <app-widget-loader
                 (editComponent)="editComponent($event)"
+                [batchSelector]="batchControlsToggle"
+                [batchSelected]="batchSelectedItems[widget.id]"
                 [widget]="widget"></app-widget-loader>
             </ngx-gridster-item>
         </ngx-gridster>

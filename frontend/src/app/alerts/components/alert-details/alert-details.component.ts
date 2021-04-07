@@ -71,6 +71,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     @Input() hasWriteAccess: boolean = false;
 
+    @Input() enabled: boolean = true;
+
     get readOnly(): boolean {
         if (!this.hasWriteAccess) { return true; }
         return (this.viewMode === 'edit' || this.viewMode === 'clone') ? false : true;
@@ -270,6 +272,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     events: any = [];
     startTime;
     endTime;
+    prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
     alertspageNavbarPortal: TemplatePortal;
@@ -343,7 +346,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             })
         );
         this.subscription.add(this.interCom.responseGet().subscribe((message: any) => {
-            // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
             if (message.action && message.id === this.chartId) {
               switch (message.action) {
                 case 'tsLegendToggleSeries':
@@ -389,6 +391,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.getCount();
         this.setAlertEvaluationLink();
     }
+
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -526,6 +529,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 ocTier: data.notification.ocTier || this.defaultOCTier
             })
         });
+        this.prevTimeSampler = data.threshold.singleMetric.timeSampler || 'at_least_once';
         this.setTags();
         this.reloadData();
 
@@ -605,6 +609,19 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['recoveryType'].setValue('specific');
             }
             this.setThresholds('recovery', val);
+        }));
+
+        this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].valueChanges.subscribe(val => {
+            if ( val !== null && val === 'all_of_the_times' ) {
+                this.thresholdSingleMetricControls['requiresFullWindow'].setValue(true);
+                this.thresholdSingleMetricControls['reportingInterval'].setValue(60);
+            }
+            if ( (['at_least_once', 'all_of_the_times'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ||
+                    (['at_least_once', 'all_of_the_times'].includes(val) && ['on_avg', 'in_total'].includes(this.prevTimeSampler)) ||
+                    (['on_avg', 'in_total'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ) {
+                this.getData();
+            }
+            this.prevTimeSampler = val;
         }));
 
         // tslint:disable-next-line:max-line-length
@@ -925,6 +942,15 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 }
                 this.setAlertEvaluationLink();
                 break;
+            case 'SetDBDownsample':
+                    this.downsample = {
+                        aggregators: message.payload.aggregators,
+                        value: message.payload.downsample,
+                        customUnit: message.payload.downsample === 'custom' ? message.payload.customDownsampleUnit : '',
+                        customValue: message.payload.downsample === 'custom' ? message.payload.customDownsampleValue : ''
+                    };
+                    this.reloadData();
+                break;
         }
     }
 
@@ -952,7 +978,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
 
         slidingWindowCntrl.setErrors(null);
-        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && slidingWindowCntrl.value <= reportingIntervalCntrl.value ) {
+        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && slidingWindowCntrl.value < reportingIntervalCntrl.value ) {
             slidingWindowCntrl.setErrors({ 'invalid': true });
         }
 
@@ -1096,7 +1122,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     cancelSaveNamespace(e) {
         // this.eventAlertNamespace = this.alertForm.get('threshold').get('eventAlert').get('namespace').value;
         // this.alertForm.get('threshold').get('eventAlert').get('namespace').setValue(ns, {emitModelToViewChange: true});
-        // console.log("cancelSaveNamespace", this.alertForm.get('threshold').get('eventAlert').get('namespace').value);
     }
 
 
@@ -1192,6 +1217,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         // ******* Remember to modify getTsdbQuery() too
         // *******
 
+        const mid = this.thresholdSingleMetricControls.metricId.value;
         const settings: any = {
             settings: {
                 data_source: 'yamas',
@@ -1203,8 +1229,19 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             end: this.dateUtil.timeToMoment(this.endTime, 'local').valueOf()
         };
         const queries = {};
+
+        // check and add moving average or sliding window fx based sliding window time sampler value
+        const timeSampler = this.data.threshold && this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].value : null;
+        const slidingWindow = this.data.threshold && this.data.threshold.subType === 'singleMetric' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['slidingWindow'].value : '0';
+        const fx =  timeSampler === 'on_avg' ? { fxCall: "EWMA", val: slidingWindow + 's,0.0'} : timeSampler === 'in_total' ? { fxCall: "SlidingWindow", val: 'sum,' + slidingWindow + 's'  } : null;
         for (let i = 0; i < this.queries.length; i++) {
             const query: any = JSON.parse(JSON.stringify(this.queries[i]));
+            if ( fx ) {
+                for ( let j =0; j < query.metrics.length; j++ ) {
+                    query.metrics[j].functions = query.metrics[j].functions || [];
+                    query.metrics[j].functions.push(fx);
+                }
+            }
             if (query.namespace && query.metrics.length) {
                 queries[i] = query;
             }
@@ -1213,11 +1250,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
             options.periodOverPeriod = this.periodOverPeriodConfig.periodOverPeriod;
-            settings.settings.time = {};
-            settings.settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
 
-        const mid = this.thresholdSingleMetricControls.metricId.value;
+        settings.settings.time = {};
+        settings.settings.time.downsample = this.downsample;
+
         options.sources = mid ? [ mid] : [];
         if ( Object.keys(queries).length ) {
             const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
@@ -1489,6 +1526,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.utils.setTabTitle(name);
     }
 
+    toggleAlert() {
+        this.configChange.emit({ action: 'ToggleAlert', payload: { id: this.data.id, enabled: this.enabled }} );
+    }
+
     metricSubTypeChanged(e) {
         this.data.threshold.subType = e.value;
         if (e.value === 'singleMetric' || (e.value === 'periodOverPeriod' && Object.keys(this.periodOverPeriodConfig).length > 0)) {
@@ -1625,6 +1666,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
            data.createdFrom = this.createdFrom;
         }
 
+        data.enabled = this.enabled;
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
@@ -1653,12 +1695,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     start: this.queryTime.start / 1000,
                     end: this.queryTime.end / 1000,
                     zone: 'local'
-                },
-                downsample: {
-                    aggregators: [''],
-                    customUnit: '',
-                    customValue: '',
-                    value: 'auto'
                 },
                 meta : {
                     title: this.data.name
@@ -1698,9 +1734,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             ]
         };
 
-        if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
-            dConfig.widgets[0].settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
-        }
+        dConfig.settings.downsample = this.downsample;
+
         const payload: any = {
             'name': encodeURIComponent(this.data.name) || 'Untitled Alert',
             'content': dConfig
@@ -1891,22 +1926,16 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     // FOR DISPLAY ONLY VIEW OF METRICS - helper to get display value of recipient type
     typeToDisplayName(type: string): string {
         const types = {
-            opsgenie: 'OpsGenie',
+            opsgenie: 'Opsgenie',
             slack: 'Slack',
-            http: 'HTTP',
+            http: 'Webhook',
             oc: 'OC',
             email: 'Email'
         }
         return types[type];
     }
-
     setAlertEvaluationLink() {
         let url = this.appConfig.getConfig().alert_history_url + this.data.id;
-        if (this.startTime && this.endTime) {
-            const start =  Math.floor(this.dateUtil.timeToMoment(this.startTime, 'local').valueOf() / 1000);
-            const end =  Math.floor(this.dateUtil.timeToMoment(this.endTime, 'local').valueOf() / 1000);
-            url = url + '%20earliest%3D' + start + '%20latest%3D' + end;
-        }
         this.alertEvaluationLink = url;
     }
 
@@ -1921,7 +1950,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.nameAlertDialog = this.dialog.open(NameAlertDialogComponent, dialogConf);
 
         this.nameAlertDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('NAME ALERT DIALOG [afterClosed]', dialog_out);
             if (dialog_out && dialog_out.alertName) {
                 this.data.name = dialog_out.alertName;
                 this.alertForm.controls.name.setValue(this.data.name);

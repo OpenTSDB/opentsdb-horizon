@@ -93,6 +93,23 @@
             flex-direction: column;
         }
 
+        .alert-status {
+            height: 46px;
+            .mat-slide-toggle {
+                display: inline-flex;
+                height: inherit;
+                padding-left: 5px;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+            .message-icon {
+                border-radius: 0px;
+            }
+            .mat-slide-toggle-content .mat-caption {
+                font-size: 14px;
+            }
+        }
+
         // preview area - graph and legend
         .preview-wrapper {
             padding: 0px;
@@ -773,6 +790,15 @@
 
             .mat-card-actions {
                 border-top: 1px solid $divider-color;
+            }
+        }
+
+        .alert-status {
+            background-color: $card;
+            .messaging-bar {
+                .mat-slide-toggle {
+                    background-color: rgba(255, 255, 255, 0.8);
+                }
             }
         }
 

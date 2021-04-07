@@ -14,7 +14,7 @@
                 This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
             </span>
         </span>
-        
+
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
         <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
@@ -23,8 +23,8 @@
     <div class="widget-output" #widgetoutput [style.height]="mode !== 'view' && !isEditContainerResized ? (widgetOutputElHeight - 70) +'px' : 'inherit'"
         appResizable [resize]="mode !== 'view'" (resizeOut)="handleEditResize($event)"
         [ngClass]="{
-            'multigraph-enabled': multigraphEnabled,
-            'singlegraph-enabled': !multigraphEnabled,
+            'multigraph-enabled': displayMultigraph,
+            'singlegraph-enabled': !displayMultigraph,
             'display-legend-top': widget.settings.legend.display && widget.settings.legend.position=='top' && options.labels.length > 1,
             'display-legend-right': widget.settings.legend.display && widget.settings.legend.position=='right' && options.labels.length > 1,
             'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position=='bottom' && options.labels.length > 1,
@@ -32,10 +32,10 @@
         }">
         <div class="dygraph-legend" #graphLegend style="display: none !important;"></div>
         <!-- STANDARD GRAPH OUTPUT -->
-        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="multigraphEnabled">
+        <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="displayMultigraph">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
-                [style.minWidth.px]="(multigraphEnabled && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
+                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
                 <!-- column headers -->
                 <div class="graph-header-row" #multigraphHeaderRow *ngIf="multigraphColumns.length > 0 && multigraphMode === 'grid'">
                     <div class="graph-header-cell" *ngFor="let columnName of multigraphColumns" [style.width.px]="size.width">
@@ -47,7 +47,7 @@
                 <!-- graphs -->
                 <ng-container *ngFor="let yKey of getGraphDataObjectKeys(graphData); let i = index;">
                     <!-- row labels-->
-                    <ng-container *ngIf="multigraphEnabled && multigraphMode === 'grid' && yKey !== 'y'">
+                    <ng-container *ngIf="displayMultigraph && multigraphMode === 'grid' && yKey !== 'y'">
                         <div class="graph-row-label">
                             <div class="graph-row-label-inner" [style.marginLeft.px]="graphRowLabelMarginLeft">
                                 <span>{{yKey | aliasmetric }}</span>
@@ -58,11 +58,11 @@
                         <!-- graph loop -->
                         <ng-container *ngFor="let xKey of getGraphDataObjectKeys(graphData[yKey]); let j = index;">
                             <div class="graph-cell graph-cell-{{i}}-{{j}}"
-                                [ngClass]="{'ts-legend-focus': (!multigraphEnabled) ? legendFocus : (legendFocus && (legendFocus.y === yKey && legendFocus.x === xKey))}"
-                                [style.width.px]="(!multigraphEnabled) ? size.width + legendWidth : size.width"
-                                [style.height.px]="(!multigraphEnabled) ? size.height + legendHeight : (multigraphEnabled && multigraphMode === 'freeflow') ? size.height + 15 : size.height"
-                                [style.maxWidth]="(multigraphEnabled && multigraphMode === 'freeflow') ? size.width + 'px' : 'initial'">
-                                <div class="graph-header" *ngIf="multigraphEnabled && multigraphMode === 'freeflow'">
+                                [ngClass]="{'ts-legend-focus': (!displayMultigraph) ? legendFocus : (legendFocus && (legendFocus.y === yKey && legendFocus.x === xKey))}"
+                                [style.width.px]="(!displayMultigraph) ? size.width + legendWidth : size.width"
+                                [style.height.px]="(!displayMultigraph) ? size.height + legendHeight : (displayMultigraph && multigraphMode === 'freeflow') ? size.height + 15 : size.height"
+                                [style.maxWidth]="(displayMultigraph && multigraphMode === 'freeflow') ? size.width + 'px' : 'initial'">
+                                <div class="graph-header" *ngIf="displayMultigraph && multigraphMode === 'freeflow'">
                                     <div class="graph-header-inner">
                                         <span>{{(yKey !== 'y') ? (yKey | aliasmetric) + ': ' : ''}}{{xKey | aliasmetric }}</span>
                                     </div>
@@ -71,24 +71,24 @@
                                     <span>No Data Available</span>
                                 </div>
                                 <div #graphdiv id="{{yKey}}|{{xKey}}" *ngIf="graphData[yKey][xKey].ts.length > 0">
-                                    <div #dygraph class="graph-chart" *ngIf="(inViewport[yKey] !== undefined && inViewport[yKey][xKey] === true) || !multigraphEnabled"
+                                    <div #dygraph class="graph-chart" *ngIf="(inViewport[yKey] !== undefined && inViewport[yKey][xKey] === true) || !displayMultigraph"
                                         [ngClass]="{'hide': widget.settings.legend.display &&  ( size.width <= 10 || size.height <= 10 ) }"
                                         dygraphsChart
                                         [widgetId]="widget.id"
                                         [chartType]="chartType"
                                         [data]="graphData[yKey][xKey]"
                                         [size]="{'width':(size.width - 6), 'height': (size.height - 6)}"
-                                        [options]="multigraphEnabled ? graphData[yKey][xKey].options : options"
+                                        [options]="graphData[yKey][xKey].options"
                                         [eventBuckets]="buckets"
                                         [showEvents]="widget.settings.visual.showEvents"
-                                        [multigraph]="multigraphEnabled"
+                                        [multigraph]="displayMultigraph && multigraphEnabled"
                                         [timeseriesLegend]="tsLegendOptions"
                                         (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)"
                                         (dateWindow)="receivedDateWindow($event)"
                                         (zoomed)="handleZoom($event)">
                                     </div>
                                     <!--<div class="dygraph-legend" #graphLegend [attr.id]="'graphlegend-' + i + '-' + j"></div>-->
-                                    <div class="events-overlay" [hidden]="!widget.settings.visual.showEvents" *ngIf="!multigraphEnabled"
+                                    <div class="events-overlay" [hidden]="!widget.settings.visual.showEvents" *ngIf="!displayMultigraph"
                                         [ngStyle]="axisEnabled(options.series).has('y') && {'padding-left': '50px'}">
                                         <event-timeline
                                         [startTime]="startTime"
@@ -107,7 +107,7 @@
                                     [style.minWidth]="legendWidth"
                                     [style.height]="legendHeight"
                                     [style.flex]="(widget.settings.legend.display && (widget.settings.legend.position=='top' || widget.settings.legend.position=='bottom')) ? '1 1 ' + legendHeight : '1 1 ' + legendWidth"
-                                    *ngIf="!multigraphEnabled">
+                                    *ngIf="!displayMultigraph">
                                     <ng-container *ngIf="widget.settings.legend.display">
                                         <table mat-table matSort [dataSource]="legendDataSource">
                                             <ng-container matColumnDef="color">
@@ -165,7 +165,7 @@
         <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
     </div>-->
     <div class="widget-control-steps has-scroller">
-        <div class="is-scroller">
+        <div class="is-scroller" cdkScrollable>
             <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
                     <span class="step-section-label-text" (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
@@ -202,60 +202,93 @@
             </div>
 
             <div class="step-section notification-section is-visible" #steplegend>
+
                 <div class="step-section-label">
                     <span class="step-section-label-text" (click)="toggleConfigSection('legend', $event);scrollToElement(steplegend);">
                         <span>4. Legend</span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.legend ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
                 </div>
+
                 <div class="step-section-content" *ngIf="visibleSections.legend">
-                    <widget-config-legend *ngIf="!multigraphEnabled" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-legend>
-                    <div *ngIf="multigraphEnabled" class="disabled-message">
+                    <widget-config-legend *ngIf="!displayMultigraph" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-legend>
+                    <div *ngIf="displayMultigraph" class="disabled-message">
                         Legend <b>disabled</b> with multiple graphs.
                     </div>
                 </div>
             </div>
 
-            <div class="step-section notification-section is-visible" #stepmultigraph>
+            <div class="step-section multigraph-section is-visible" #stepmultigraph>
+                <div class="step-section-header">
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('multigraph', $event);scrollToElement(stepmultigraph);">
                             <span>5. Multigraph</span>
-                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            <mat-icon fontSet="denali" *ngIf="multigraphEnabled" [fontIcon]="visibleSections.multigraph ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
-                    <div class="step-section-content" *ngIf="visibleSections.multigraph">
-                        <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
+                    <div>
+                        <mat-slide-toggle
+                        [checked]="multigraphEnabled"
+                        (change)="configSectionToggleChanged('multigraph', $event.checked)">
+                            <span *ngIf="multigraphEnabled">
+                                Multigraph Enabled
+                            </span>
+                            <span *ngIf="!multigraphEnabled">
+                                Multigraph <b>Disabled</b>
+                            </span>
+                        </mat-slide-toggle>
                     </div>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.multigraph && multigraphEnabled">
+                    <widget-config-multigraph [isDataLoaded]= "isDataLoaded" [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-multigraph>
+                </div>
             </div>
             <div class="step-section notification-section is-visible" #stepevents>
+                <div class="step-section-header">
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
                             <span>6. Events</span>
                             <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
-                    <div class="step-section-content" *ngIf="visibleSections.events">
-                        <div class="events-config" *ngIf="!multigraphEnabled">
-                            <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
-                            <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
-                            <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
-                            <event-list class="events-list"
-                                *ngIf="widget.settings.visual.showEvents"
-                                [events]="events"
-                                [timezone]="timezone"
-                                [startTime]="startTime"
-                                [endTime]="endTime"
-                                [previewLimit]="previewEventsCount"
-                                [loading]="eventsLoading"
-                                [error]="eventsError">
-                            </event-list>
-                            </div>
-                        </div>
-
-                        <div *ngIf="multigraphEnabled" class="disabled-message">
-                            Events <b>disabled</b> with multiple graphs.
+                    <div *ngIf="!displayMultigraph || !multigraphEnabled">
+                        <mat-slide-toggle
+                        [checked]="widget.settings.visual.showEvents"
+                        (change)="configSectionToggleChanged('events', $event.checked)">
+                            <span *ngIf="widget.settings.visual.showEvents">
+                                Events Enabled
+                            </span>
+                            <span *ngIf="!widget.settings.visual.showEvents">
+                                Events <b>Disabled</b>
+                            </span>
+                        </mat-slide-toggle>
+                    </div>
+                    <div *ngIf="displayMultigraph && multigraphEnabled" class="disabled-message">
+                        Events <b>disabled</b> with multigraphs.
+                    </div>
+                </div>
+                <div class="step-section-content" *ngIf="visibleSections.events">
+                    <div class="events-config" *ngIf="!displayMultigraph || !multigraphEnabled">
+                        <widget-config-events [widget]="widget" (widgetChange)="updateConfig($event);" style="padding: 16px;"></widget-config-events>
+                        <div *ngIf="widget.settings.visual.showEvents" class="event-result-title"> Preview </div>
+                        <div class="event-preview-list-wrapper" style="min-height: 500px; max-height: 500px;">
+                        <event-list class="events-list"
+                            *ngIf="widget.settings.visual.showEvents"
+                            [events]="events"
+                            [timezone]="timezone"
+                            [startTime]="startTime"
+                            [endTime]="endTime"
+                            [previewLimit]="previewEventsCount"
+                            [loading]="eventsLoading"
+                            [error]="eventsError">
+                        </event-list>
                         </div>
                     </div>
+
+                    <!--<div *ngIf="displayMultigraph" class="disabled-message">
+                        Events <b>disabled</b> with multiple graphs.
+                    </div>-->
+                </div>
             </div>
         </div>
     </div>

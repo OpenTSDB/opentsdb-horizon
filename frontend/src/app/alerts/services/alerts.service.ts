@@ -4,7 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { AppConfigService } from '../../core/services/config.service';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service'
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AlertsService {
 
     version = 1;
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private http: HttpClient,
         private utils: UtilsService,
         private appConfig: AppConfigService
@@ -28,7 +28,7 @@ export class AlertsService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.logger.error('AlertsService :: An API error occurred', error.error.message);
+            this.console.error('AlertsService :: An API error occurred', error.error.message);
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -60,7 +60,7 @@ export class AlertsService {
             responseType: 'json'
         };
 
-        // this.logger.api('AlertsService :: Get Namespaces I Belong to', apiUrl);
+        // this.console.api('AlertsService :: Get Namespaces I Belong to', apiUrl);
 
         return this.http.get(apiUrl, httpOptions).pipe(
             catchError(this.handleError)
@@ -80,7 +80,7 @@ export class AlertsService {
             responseType: 'json'
         };
 
-        // this.logger.api('AlertsService :: Get All Namespaces', apiUrl);
+        // this.console.api('AlertsService :: Get All Namespaces', apiUrl);
 
         return this.http.get(apiUrl, httpOptions).pipe(
             catchError(this.handleError)

@@ -130,7 +130,6 @@ export class TimeRangePickerComponent implements OnInit {
         time.startTimeDisplay = this.startTimeReference.date;
         time.endTimeDisplay = this.endTimeReference.date;
 
-        // console.log(time);
         return time;
     }
 

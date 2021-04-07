@@ -89,10 +89,6 @@ export class GenericMessageBarComponent implements OnInit, OnDestroy {
                 }
             }
 
-            /*console.log('%cGENERIC MESSAGE [InterCom]',
-                    'color: white; background-color: darkmagenta; padding: 2px 4px;',
-                    message);*/
-
         });
     }
 

@@ -3,6 +3,7 @@ import { NgModule, ErrorHandler, Injectable, APP_INITIALIZER } from '@angular/co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
 
 // components
 import { AppComponent } from './app.component';
@@ -45,6 +46,21 @@ const appInitializerFn = (appConfig: AppConfigService) => {
   };
 };
 
+export class CustomUrlSerializer implements UrlSerializer {
+  private _defaultUrlSerializer: DefaultUrlSerializer = new DefaultUrlSerializer();
+
+  parse(url: string): UrlTree {
+     // Encode parentheses
+     url = url.replace(/\(/g, '%28').replace(/\)/g, '%29');
+     // Use the default serializer.
+     return this._defaultUrlSerializer.parse(url)
+  }
+
+  serialize(tree: UrlTree): string {
+     return this._defaultUrlSerializer.serialize(tree).replace(/%28/g, '(').replace(/%29/g, ')');
+  }
+}
+
 @NgModule({
   declarations: [
     AppComponent
@@ -75,6 +91,10 @@ const appInitializerFn = (appConfig: AppConfigService) => {
       useFactory: appInitializerFn,
       multi: true,
       deps: [AppConfigService]
+    },
+    {
+      provide: UrlSerializer,
+      useClass: CustomUrlSerializer
     },
     {
       provide: HTTP_INTERCEPTORS,

@@ -31,7 +31,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -520,7 +520,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     visualPanelId = -1;
 
-    pctSelectedMetrics; 
+    pctSelectedMetrics;
+
+    // QUERY ALIAS EDITING
+    queryAliasEdit: boolean = false;
+    queryAliasFormControl: FormControl;
 
     constructor(
         private elRef: ElementRef,
@@ -530,7 +534,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private multiService: MultigraphService
     ) {
         /*
@@ -547,13 +551,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.tplVariables && changes.tplVariables.currentValue.tvars) {
             this.tplVars = changes.tplVariables.currentValue.tvars;
         }
+        if ( changes.options && changes.options.currentValue ) {
+            this.initOptions();
+            this.initSummarizerValue();
+        }
     }
 
     ngOnInit() {
-        this.initOptions();
         this.initFormControls();
         this.initMetricDataSource();
-        this.initSummarizerValue();
         this.queryChanges$ = new BehaviorSubject(false);
 
         this.queryChangeSub = this.queryChanges$
@@ -571,6 +577,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (this.elRef.nativeElement.closest('.alert-details-component')) {
             this.inAlertEditor = true;
         }
+
+        if (!this.query.settings.visual.label) {
+            this.query.settings.visual.label = '';
+        }
+
     }
 
     ngOnDestroy() {
@@ -1083,13 +1094,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     functionMenuOpened($event, idx) {
         // maybe need this?
-        // console.log('MENU OPENED', $event, idx);
-        // console.log('TRIGGERS', this.functionMenuTriggers);
         this.currentFunctionMenuTriggerIdx = idx;
     }
 
     functionMenuClosed($event) {
-        // console.log('MENU CLOSED', $event);
         this.selectedFunctionCategoryIndex = -1;
         this.currentFunctionMenuTriggerIdx = null;
     }
@@ -1276,7 +1284,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     addQueryItemProgress(type: string) {
-        // console.log('ADD QUERY ITEM PROGRESS', type);
         if (type === 'metric') {
             this.isAddExpressionProgress = false;
             this.isAddMetricProgress = !this.isAddMetricProgress;
@@ -1332,6 +1339,22 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     closeMetricDialog() {
         this.artifactsMenuTrigger.closeMenu();
+    }
+
+    // QUERY ALIAS EDITING
+    toggleQueryAliasEditForm() {
+        if (!this.queryAliasEdit) {
+            this.queryAliasFormControl = new FormControl(this.query.settings.visual.label);
+            this.queryAliasEdit = true;
+        } else {
+            this.queryAliasEdit = false;
+        }
+    }
+
+    saveQueryAliasForm() {
+        let value = this.queryAliasFormControl.value;
+        this.query.settings.visual.label = value;
+        this.queryAliasEdit = false;
     }
 
 

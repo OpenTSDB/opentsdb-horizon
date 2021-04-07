@@ -258,6 +258,14 @@
                 }
             }
 
+            .formfield-name {
+                width: 80%;
+                .mat-form-field-flex,
+                .mat-form-field-underline {
+                    width: 35%;
+                }
+            }
+
             .wide-formfield {
                 width: 80%;
 

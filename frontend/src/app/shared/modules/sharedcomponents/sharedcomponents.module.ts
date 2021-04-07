@@ -19,7 +19,6 @@ import { ThemePickerComponent } from './components/theme-picker/theme-picker.com
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
 import { ResizableDirective } from '../directives/resizable.directive';
 
-
  // widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
 import { WidgetConfigGeneralComponent } from './components/widget-config-general/widget-config-general.component';

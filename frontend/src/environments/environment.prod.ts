@@ -34,7 +34,7 @@ export const environment = {
         guideUrl: 'https://git.ouroath.com/pages/monitoring/horizon_userguide/alerts/recipients/#operations-center-oc'
       },
       http: {
-        enable: false
+        enable: true
       },
       email: {
         enable: true

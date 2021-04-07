@@ -40,7 +40,6 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.auth$.subscribe(auth => {
             if (auth === 'invalid') {
-                // console.log('open auth dialog');
                 this.dialog.open(LoginExpireDialogComponent, {
                     disableClose: true
                 });

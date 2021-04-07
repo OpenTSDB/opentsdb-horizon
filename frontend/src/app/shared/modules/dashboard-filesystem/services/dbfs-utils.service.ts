@@ -2,25 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 import {
     DbfsPanelFolderModel,
     DbfsFileModel,
-    DbfsFolderModel,
-    DbfsNamespaceModel,
-    DbfsResourcesModel,
-    DbfsSyntheticFolderModel,
-    DbfsUserModel
+    DbfsFolderModel
 } from '../state/dbfs-resources.interfaces';
 
-import { UtilsService } from '../../core/services/utils.service';
+import { UtilsService } from '../../../../core/services/utils.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DbfsUtilsService {
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private utils: UtilsService
     ) { }
 
@@ -107,23 +105,30 @@ export class DbfsUtilsService {
             icon: 'd-dashboard-tile',
             parentPath: details.parentPath
         };
-        if (file.parentPath === '/namespace/yamas' && file.name === '_notifications_') {
+
+        if (
+            (file.parentPath === '/namespace/yamas' && file.name === '_notifications_') ||
+            (file.ownerType === 'user' && file.name === '_clipboard_')
+        ) {
             file.hidden = true;
         }
+
         file[details.type] = details.typeKey;
+
         // locked flag
         if (locked) {
             file.locked = true;
         }
+
         return file;
     }
 
     normalizePanelFolder(rawFolder: any, moveEnabled: boolean = true, selectEnabled: boolean = true, noDisplay: boolean = false): DbfsPanelFolderModel {
 
-        // console.log('RAW FOLDER', rawFolder);
         const folder = this.normalizeFolder(rawFolder);
 
         const panelFolder: DbfsPanelFolderModel  = <DbfsPanelFolderModel>{...folder, moveEnabled, selectEnabled, selected: false};
+
         if (panelFolder.files) {
             delete panelFolder.files;
         }

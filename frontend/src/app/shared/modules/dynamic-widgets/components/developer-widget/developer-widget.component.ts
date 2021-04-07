@@ -72,6 +72,11 @@ export class DeveloperWidgetComponent implements OnInit {
             label: 'Statuses',
             type: 'WidgetStatusComponent',
             iconClass: 'widget-icon-statuses'
+        },
+        {
+            label: 'Table',
+            type: 'WidgetTableComponent',
+            iconClass: 'widget-icon-table'
         }
     ];
 

@@ -9,10 +9,10 @@ import { Router } from '@angular/router';
 
 import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
-import { DbfsResourcesState } from '../../../../../app-shell/state';
+import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { MatTableDataSource } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -35,7 +35,7 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
 
     constructor(
         private store: Store,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private router: Router
     ) { }
 
@@ -43,7 +43,6 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
         this.subscription.add(this.userFavorites$.subscribe(favs => {
             this.userFavorites = favs || [];
             this.userFavoritesDataSource.data = this.userFavorites;
-            // this.logger.log('FAVS', this.userFavorites);
         }));
 
         this.subscription.add(this.userFavoritesFilter.valueChanges.subscribe(val => {

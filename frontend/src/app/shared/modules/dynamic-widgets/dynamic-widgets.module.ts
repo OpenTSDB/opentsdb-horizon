@@ -40,6 +40,7 @@ import { MarkdownWidgetVisualAppearanceComponent } from './components/markdown-w
 import { TopnWidgetComponent } from './components/topn-widget/topn-widget.component';
 import { HeatmapWidgetComponent } from './components/heatmap-widget/heatmap-widget.component';
 import { EventsWidgetComponent } from './components/events-widget/events-widget.component';
+import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 
 import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/universal-data-tooltip-directives.module';
 
@@ -78,7 +79,8 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         DonutchartLegendComponent,
         MarkdownWidgetComponent,
         MarkdownWidgetVisualAppearanceComponent,
-        EventsWidgetComponent
+        EventsWidgetComponent,
+        TableWidgetComponent
     ],
     declarations: [
         PlaceholderWidgetComponent,
@@ -95,7 +97,8 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         MarkdownWidgetVisualAppearanceComponent,
         TopnWidgetComponent,
         HeatmapWidgetComponent,
-        EventsWidgetComponent
+        EventsWidgetComponent,
+        TableWidgetComponent
     ],
     entryComponents: [
         PlaceholderWidgetComponent,
@@ -108,7 +111,8 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         TopnWidgetComponent,
         StatusWidgetComponent,
         MarkdownWidgetComponent,
-        EventsWidgetComponent
+        EventsWidgetComponent,
+        TableWidgetComponent
     ]
 })
 export class DynamicWidgetsModule { }

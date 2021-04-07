@@ -59,8 +59,6 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
         const hsv = this.cs.hexToHsv(this._selectedColor);
         this.baseHsv = hsv;
 
-        // console.log('CPHS HSV', hsv);
-
         const hsEl = this._hueStrip.nativeElement;
         const hsCoords = hsEl.getBoundingClientRect();
         const left = hsv.h * hsCoords.width;
@@ -78,7 +76,6 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
         this.renderer.listen(hstripEl, 'mousedown', e => {
             if (!this.isSliding) {
-                // console.log('MOUSE DOWN', e);
                 this.isSliding = true;
                 if (!e.target.classList.contains('hue-slider')) {
                     this.sliderLeft = e.offsetX;
@@ -90,7 +87,6 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
         this.renderer.listen(hstripEl, 'mouseup', e => {
             if (this.isSliding) {
-                // console.log('MOUSEUP', e);
                 this.isSliding = false;
                 if (!e.target.classList.contains('hue-slider')) {
                     this.sliderLeft = e.offsetX;
@@ -102,7 +98,6 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
         this.renderer.listen(hstripEl, 'mousemove', e => {
             if (this.isSliding && !e.target.classList.contains('hue-slider')) {
-                // console.log('MOUSEMOVE', e);
                 this.sliderLeft = e.offsetX;
                 this.renderer.setStyle(hslideEl, 'left', e.offsetX + 'px');
                 this.changeHueColor(e.offsetX);
@@ -130,8 +125,6 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
         if (this.baseHsv.h !== hsv.h) {
             // set new base HSV
             this.baseHsv = hsv;
-
-            // console.log('CPHS HSV', hsv);
 
             const hsEl = this._hueStrip.nativeElement;
             const hsCoords = hsEl.getBoundingClientRect();

@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -10,10 +8,7 @@ import { NgxsModule } from '@ngxs/store';
 
 import {
     AppShellState,
-    NavigatorState,
-    DbfsState,
-    DbfsPanelsState,
-    DbfsResourcesState
+    NavigatorState
  } from './state';
 
 // modules
@@ -23,44 +18,39 @@ import {
   MarkdownModule,
   MarkedOptions
 } from 'ngx-markdown';
+import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
+import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module';
 
 // services
 import { AppShellService } from './services/app-shell.service';
-import { DbfsUtilsService } from './services/dbfs-utils.service';
-import { DbfsService } from './services/dbfs.service';
 import { NotificationService } from './services/notification.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
 import { AppNavbarComponent } from './components/app-navbar/app-navbar.component';
 import { TestNavigatorComponent } from './components/test-navigator/test-navigator.component';
-import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.directive';
-import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
 import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
 
-import {
-    DbfsComponent,
-    DbfsMiniNavComponent
-} from './components/dbfs';
+import { AppShellSharedModule } from './app-shell-shared.module';
 
 import {
     SettingsPanelComponent,
     SettingsThemeComponent
 } from './components/settings-panel';
+
 import {
     AdminPanelComponent,
     NotificationPanelComponent,
     NotificationListComponent,
     NotificationEditorComponent
 } from './components/admin-panel';
+
 import { DashboardService } from '../dashboard/services/dashboard.service';
 
 @NgModule({
     imports: [
         CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
@@ -75,25 +65,20 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         }),
         NgxsModule.forFeature([
             AppShellState,
-            NavigatorState,
-            DbfsState,
-            DbfsPanelsState,
-            DbfsResourcesState
+            NavigatorState
         ]),
+        UniversalClipboardModule,
+        DashboardFilesystemModule,
+        AppShellSharedModule,
         RouterModule
     ],
     declarations: [
         AppShellComponent,
         AppNavbarComponent,
         TestNavigatorComponent,
-        NavigatorPanelItemDirective,
-        NavigatorPanelComponent,
-        NavigatorPanelItemElement,
         NavigatorSidenavComponent,
-        DbfsComponent,
-        DbfsMiniNavComponent,
-        SettingsPanelComponent,
         SettingsThemeComponent,
+        SettingsPanelComponent,
         GlobalNotificationBannerComponent,
         NotificationEditorComponent,
         AdminPanelComponent,
@@ -103,8 +88,6 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
     providers: [
         AppShellService,
         DashboardService,
-        DbfsService,
-        DbfsUtilsService,
         NotificationService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],

@@ -191,6 +191,14 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
              case 'SnapshotMeta':
                   this.meta = message.payload;
                   break;
+            case 'ResizeAllWidgets':
+                if(this.resizeSensor) {
+                    this.resizeSensor.detach();
+                }
+                this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                    this.newSize$.next(1);
+                });
+                break;
           }
 
           if (message && (message.id === this.widget.id)) {
@@ -490,7 +498,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
           this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
         // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
           : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
       // let newSize = outputSize;
@@ -546,7 +554,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   timeseriesTickListener(event: any) {
-    // console.log('TIMESERIES TICK LISTENER', { widget: this.widget, event});
 
     const widgetOptions = this.options;
 

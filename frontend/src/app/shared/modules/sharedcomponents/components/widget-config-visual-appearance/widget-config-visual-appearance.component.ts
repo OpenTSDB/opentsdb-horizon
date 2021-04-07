@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, SimpleChanges, HostBinding, Input, Output
 
 import { FormArray, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 /*
 export interface VisualizationData {
@@ -33,9 +34,11 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
 
     displayControl: FormControl;
     stackOrderControl: FormControl;
+    layoutControl: FormControl;
+    decimalControl: FormControl;
 
-    gSubscriptions: Subscription[] = [];
-
+    gSubscriptions: Subscription;
+    formInitialized = false;
     stackOrderOptions: Array<any> = [
         {
             label: 'Metric',
@@ -89,7 +92,23 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
             }
         });
 
-        if (this.widget.settings.component_type !== 'LinechartWidgetComponent') {
+        if ( this.widget.settings.component_type === 'TableWidgetComponent' ) {
+            if ( !this.formInitialized ){
+                this.gForms = this.fb.group({
+                    layout: new FormControl(this.widget.settings.visual.layout || 'time:metrics'),
+                    fontSize: new FormControl(this.widget.settings.visual.fontSize || 12),
+                    padding: new FormControl(this.widget.settings.visual.padding || 5),
+                    decimals: new FormControl(this.widget.settings.visual.decimals || 'auto')
+                });
+                this.formInitialized = true;
+                this.gSubscriptions = this.gForms.valueChanges
+                                            // delay is required since we convert the min & max values to the respective unit size
+                                            .pipe(debounceTime(500))
+                                            .subscribe(function(data) {
+                                                this.widgetChange.emit( {action: 'SetVisualization', payload: { data: data }} );
+                                            }.bind(this));
+            }
+        } else if (this.widget.settings.component_type !== 'LinechartWidgetComponent') {
             const displayControlDefault = (this.widget.settings.component_type === 'DonutWidgetComponent') ? 'doughnut' : 'vertical';
             this.displayControl = new FormControl(this.widget.settings.visual.type || displayControlDefault);
         } else {
@@ -112,10 +131,9 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
             break;
         }*/
 
-        this.gForms.updateValueAndValidity( { emitEvent: false });
+        // this.gForms.updateValueAndValidity( { emitEvent: false });
         if ( this.displayControl ) {
             this.displayControl.valueChanges.subscribe( d => {
-                // console.log('display changed', d );
                 this.widgetChange.emit( {'action': 'ChangeVisualization', payload: { type: d }});
             });
         }
@@ -127,6 +145,7 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
         }
     }
 
+    /*
     selectColor(color, gIndex, index ) {
         this.gForms.controls[gIndex]['controls'][index]['controls'].color.setValue(color.hex);
     }
@@ -135,12 +154,17 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
     selectStackColor(color, index ) {
         this.gForms.controls['stacks']['controls'][index]['controls'].color.setValue(color.hex);
     }
+    */
 
     setVisualConditions(conditions) {
         this.widgetChange.emit( {'action': 'SetVisualConditions', payload: { data: conditions}});
     }
 
     setUnit( value ) {
-        this.widgetChange.emit( {'action': 'SetUnit', payload: { data: value}});
+        this.gForms['controls']['unit'].setValue(value);
+    }
+
+    changeLayout(layout) {
+        this.gForms['controls']['layout'].setValue(layout);
     }
 }

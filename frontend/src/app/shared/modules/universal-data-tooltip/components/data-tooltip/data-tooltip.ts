@@ -1,7 +1,7 @@
 import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 import { Subscription, Observable } from 'rxjs';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
 export abstract class DataTooltipComponent implements OnInit, OnDestroy {
@@ -65,7 +65,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
         public ttDataSvc: TooltipDataService,
         public renderer: Renderer2,
         public sanitizer: DomSanitizer,
-        public logger: LoggerService,
+        public console: ConsoleService,
     ) {}
 
     ngOnInit() {
@@ -75,7 +75,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     _dataStreamSubscribe(dataFormatter?: Function, positionAdjuster?: Function) {
         this.subscription.add(this._dataStream$.subscribe((ttData: any) => {
-            // this.logger.log('__DT STREAM DATA', ttData);
             if (!ttData) {
                 this._ttData = false;
                 this.hide();
@@ -98,12 +97,10 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     }
 
     show() {
-        // console.log('===> SHOW');
         this.tooltipHidden = false;
     }
 
     hide() {
-        // console.log('===> HIDE');
         this.tooltipHidden = true;
         this.renderer.removeClass(this.mouseBoundaryEl, 'tooltip-mouse-boundary-hover');
         this.largeWidgetOverride = undefined;
@@ -129,9 +126,9 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             this._positioner();
         });
     }
+
     /* POSITIONER */
     private _positioner() {
-        // this.logger.ng('_POSITIONER', this.mouseBoundaryEl);
 
         if (!this.ttOutputEl || !this.ttOutputEl.nativeElement) {
             this.tooltipHidden = true;
@@ -155,7 +152,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                //this.logger.action('CHECK FOR LARGE WIDGET');
+                //this.console.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior

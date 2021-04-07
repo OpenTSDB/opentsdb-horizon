@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material';
 
 import {
@@ -11,10 +11,9 @@ import {
 } from '@ngxs/store';
 
 import {
-    DbfsResourcesState
-} from '../../../app-shell/state/dbfs-resources.state';
-import { LoggerService } from '../../../core/services/logger.service';
-import { DbfsState } from '../../../app-shell/state';
+    DbfsState
+} from '../../../shared/modules/dashboard-filesystem/state';
+import { ConsoleService } from '../../../core/services/console.service';
 
 // import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
@@ -114,13 +113,12 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
         private store: Store,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
         this.createSearchForm();
         this.subscription.add(this.route.queryParams.subscribe(params => {
-            // console.log("comes in router params....", params)
             if (params['db-delete']) {
                 this.snackBar.open('Dashboard has been deleted.', '', {
                     horizontalPosition: 'center',
@@ -132,7 +130,6 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.user$.subscribe(user => {
-            // this.logger.log('USER', user);
             this.user = user;
         }));
     }

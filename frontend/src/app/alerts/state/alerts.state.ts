@@ -11,9 +11,9 @@ import { HttpService } from '../../core/http/http.service';
 import { AlertsService } from '../services/alerts.service';
 import { forkJoin } from 'rxjs';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
-import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../app-shell/state';
+import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
 import { map } from 'rxjs/operators';
 
 
@@ -139,7 +139,7 @@ export class ClearNamespace {
 
 export class AlertsState {
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private httpService: HttpService,
         private alertsService: AlertsService,
         private utils: UtilsService,
@@ -216,7 +216,7 @@ export class AlertsState {
 
     @Action(LoadNamespaces)
     loadNamespaces(ctx: StateContext<AlertsStateModel>, { options }: LoadNamespaces) {
-        //this.logger.state('AlertsState :: Load namespaces', { options });
+        //this.console.state('AlertsState :: Load namespaces', { options });
         const state = ctx.getState();
        if (!state.loaded.userNamespaces) {
         ctx.patchState({ loading: true, error: {} });

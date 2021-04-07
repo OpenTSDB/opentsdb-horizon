@@ -2,7 +2,6 @@ import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDest
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { Subscription } from 'rxjs';
-// import { LoggerService } from '../../../../../core/services/logger.service';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -37,12 +36,10 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
 
     constructor(
         private util: UtilsService,
-        // private logger: LoggerService,
         private interCom: IntercomService,
         @Inject(ISLAND_DATA) private _data: any
     ) {
 
-        // console.log('DATA', _data);
         this.title = _data.data.title;
 
         this.subscription.add(_data.data.timeRange$.subscribe( time => {
@@ -57,7 +54,6 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
         }));
 
         this.subscription.add(this._data.data.expandedBucketIndex$.pipe(distinctUntilChanged()).subscribe( index => {
-            // console.log('SELECTED BUCKET INDEX RECEIVED', {index});
             this.expandedBucketIndex = index;
 
             if (this.displayReady) {
@@ -75,7 +71,6 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
         }));
 
         this.subscription.add(_data.data.buckets$.pipe(distinctUntilChanged()).subscribe( buckets => {
-            // console.log('BUCKETS RECEIVED', {buckets});
             this.buckets = buckets.map(bucket => {
                 if (bucket.events.length > 1) {
                     bucket.displayTime = this.util.buildDisplayTime(bucket.endTime, this.startTime, this.endTime, true, this.timezone);

@@ -271,12 +271,18 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                             const res = val.match(/^regexp\((.*)\)$/);
                             const va = res ? res[1] : val;
                             const matches = [];
-                            const regx = new RegExp(va, 'gi');
-                            this.tplVariables.scopeCache[index].forEach(v => {
-                                if (v.match(regx)) {
-                                    matches.push(v);
-                                }
-                            });
+                            try {
+                                const regx = new RegExp(va, 'gi');
+                                this.tplVariables.scopeCache[index].forEach(v => {
+                                    if (v.match(regx)) {
+                                        matches.push(v);
+                                    }
+                                });
+                            } catch (e) {
+                                let err = (e as Error).message;
+                                console.info('Error: ', err);
+                            }
+
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(matches);
                         } else {
                             this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.tplVariables.scopeCache[index]);
@@ -1047,7 +1053,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
   */
     // DragDrop Table reorder event
     dropTable(event: any) {
-        // console.log('DROP TABLE EVENT', event);
+
         // move item within the controls array
         moveItemInArray(this.formTplVariables['controls'], event.previousIndex, event.currentIndex);
 
@@ -1063,7 +1069,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     dragStart(cdkEvent: CdkDragStart, index: number) {
-        // console.log('DRAG START', cdkEvent, index);
         // get size of the element we are dragging
         const sourceElCoords = cdkEvent.source.element.nativeElement.getBoundingClientRect();
         // synchronize the width of the placeholder with the dragged element
@@ -1077,7 +1082,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
     // this is just ready method once we extend to have more menu
     scopeMenuNavChange($event: any) {
-        // console.log('%cNAV CHANGE', 'border: 1px solid green; color: green; font-weight: bold; padding: 2px;', $event);
         this.scopeMenuNavSelection = $event;
     }
 

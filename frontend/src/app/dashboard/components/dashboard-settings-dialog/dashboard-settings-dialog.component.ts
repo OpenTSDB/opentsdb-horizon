@@ -69,17 +69,15 @@ export class DashboardSettingsDialogComponent implements OnInit {
         //    action: 'applyDialog',
         //    data: this.dialog_data
         // });
-        //console.log('%cSETTINGS APPLY [EVENT]', 'color: white; background-color: blue; padding: 2px 4px;', this.pendingData);
         this.dialogRef.close(this.pendingData);
     }
 
     tabChangeEvent(e: any) {
-        //console.log('%cSETTINGS TAB CHANGE [EVENT]', 'color: #ffffff; background-color: blue; padding: 2px 4px;', e);
+        //NOTE: do we need this still?
     }
 
     settingsDataModified(e: any) {
         // SETTINGS UPDATED
-        //console.log('%cSETTINGS UPDATED [EVENT]', 'color: #ffffff; background-color: blue; padding: 2px 4px;', e);
         if (!this.pendingModifications) {
             this.pendingModifications = true;
         }
