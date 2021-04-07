@@ -522,6 +522,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     pctSelectedMetrics;
 
+    // QUERY ALIAS EDITING
+    queryAliasEdit: boolean = false;
+    queryAliasFormControl: FormControl;
+
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -573,6 +577,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (this.elRef.nativeElement.closest('.alert-details-component')) {
             this.inAlertEditor = true;
         }
+
+        if (!this.query.settings.visual.label) {
+            this.query.settings.visual.label = '';
+        }
+
     }
 
     ngOnDestroy() {
@@ -1330,6 +1339,22 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     closeMetricDialog() {
         this.artifactsMenuTrigger.closeMenu();
+    }
+
+    // QUERY ALIAS EDITING
+    toggleQueryAliasEditForm() {
+        if (!this.queryAliasEdit) {
+            this.queryAliasFormControl = new FormControl(this.query.settings.visual.label);
+            this.queryAliasEdit = true;
+        } else {
+            this.queryAliasEdit = false;
+        }
+    }
+
+    saveQueryAliasForm() {
+        let value = this.queryAliasFormControl.value;
+        this.query.settings.visual.label = value;
+        this.queryAliasEdit = false;
     }
 
 
