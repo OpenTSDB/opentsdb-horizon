@@ -1,0 +1,89 @@
+@mixin help-links-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+    .help-links-button {
+        &.mat-raised-button {
+            @include mat-elevation(0);
+            line-height: 24px;
+            font-size: 12px;
+            padding-left: 6px;
+            padding-right: 0;
+            min-width: 25px;
+            margin-bottom: 8px;
+
+            span {
+                // pointer-events: none;
+                cursor: default;
+                margin-right: 6px;
+            }
+
+            .mat-icon {
+                cursor: pointer;
+                font-size: 1.5em;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+
+            }
+        }
+        /*
+        
+
+        .mat-icon {
+            
+        }
+        */
+    }
+
+    .links-menu.mat-menu-panel {
+        .mat-menu-item {
+            font-size: 12px;
+            height: 26px;
+            line-height: 26px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(16px);
+                margin-right: 2px;
+            }
+        }
+    }
+
+}
+
+@mixin help-links-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $status: map-get($theme-config, status);
+    $is-dark: map-get($theme-config, is-dark);
+    $chip-bg: rgba(map-get($primary, default), .1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+
+    $widgets: map-get($theme-config, widgets);
+
+    $card-background: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $query-marker-bg: map-get($widgets, query-editor-marker);
+    $query-marker-text: map-get($widgets, query-editor-marker-text);
+    $query-block-bg: map-get($widgets, query-editor-block-bg);
+    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+
+    $ink-bar-color: map-get($background, ink-bar);
+
+    .mat-raised-button {
+        background-color: darken(map-get($background, navbar), 4%);
+        color: map-get($foreground, navbar-text);
+
+        &:hover {
+            background-color: lighten(map-get($background, navbar), 8%);
+        }
+    }
+}
