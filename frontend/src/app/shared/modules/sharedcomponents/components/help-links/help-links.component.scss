@@ -62,21 +62,6 @@
     $background: map-get($theme-config, background);
     $status: map-get($theme-config, status);
     $is-dark: map-get($theme-config, is-dark);
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
-
-    $widgets: map-get($theme-config, widgets);
-
-    $card-background: map-get($background, card);
-    $divider: map-get($foreground, divider);
-
-    $query-marker-bg: map-get($widgets, query-editor-marker);
-    $query-marker-text: map-get($widgets, query-editor-marker-text);
-    $query-block-bg: map-get($widgets, query-editor-block-bg);
-    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
-
-    $ink-bar-color: map-get($background, ink-bar);
 
     .mat-raised-button {
         background-color: darken(map-get($background, navbar), 4%);
