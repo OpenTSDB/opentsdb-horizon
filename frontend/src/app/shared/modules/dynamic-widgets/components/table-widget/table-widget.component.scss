@@ -112,6 +112,7 @@
                 height: 100%;
                 overflow: overlay;
                 .mat-header-cell, .mat-cell {
+                    min-width: 80px;
                     font-size: inherit;
                     padding: inherit;
                     text-align: right;
@@ -122,6 +123,18 @@
                         text-align: left;
                         justify-content: flex-start;
                     }
+
+                    &.mat-column-metric,
+                    &.mat-column-tag {
+                        &.mat-table-sticky {
+                            min-width: 120px;
+                            overflow-wrap: anywhere;
+                        }
+                    }
+                    
+                }
+                .mat-header-cell {
+                    overflow-wrap: anywhere;
                 }
             }
             .message {
@@ -194,6 +207,7 @@
     $background: map-get($theme-config, background);
     $card-background: map-get($background, card);
     $ink-bar-color: map-get($background, ink-bar);
+    $is-dark: map-get($theme-config, is-dark);
 
     .mat-button-toggle-group{
 
@@ -222,4 +236,9 @@
         background-color: map-get($background, card);
     }
     
+    .mat-cell {
+        &.mat-table-sticky {
+            border-right: 1px solid if($is-dark, find-color-invert(#e0e0e0), #e0e0e0);
+        }
+    }
 }
