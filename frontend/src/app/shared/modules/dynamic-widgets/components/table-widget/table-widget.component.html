@@ -76,7 +76,7 @@
                     </div>
                     <div class="step-section-content" *ngIf="visibleSections.queries">
                         <widget-config-metric-queries
-                            [options]="{enableSummarizer: widget.settings.visual.layout === 'metric:tags', enableMultipleQueries:true}" [widget]="widget"
+                            [options]="{enableSummarizer: widget.settings.visual.layout === 'metrics:tags' || widget.settings.visual.layout === 'tags:metrics', enableMultipleQueries:true}" [widget]="widget"
                             (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
                     </div>
                 </div>
