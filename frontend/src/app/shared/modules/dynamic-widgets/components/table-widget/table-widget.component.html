@@ -34,9 +34,9 @@
                     <mat-table *ngIf="data.length" #dataTable [dataSource] = "dataSource" [style.fontSize.px]="widget.settings.visual.fontSize || 12" matSort>
                        
                         <!-- automated columns and rows generator based on query result from  TSDB -->
-                        <ng-container *ngFor="let col of displayedColumns; trackBy: trackByIndex" matColumnDef = {{col.id}}>
-                            <mat-header-cell *matHeaderCellDef [style.padding.px]="widget.settings.visual.padding" mat-sort-header>
-                                <span>{{col.label}}</span>
+                        <ng-container *ngFor="let col of displayedColumns; let index=index; trackBy: trackByIndex" matColumnDef = {{col.id}} [sticky]="index === 0">
+                            <mat-header-cell *matHeaderCellDef [style.padding.px]="widget.settings.visual.padding" mat-sort-header [matTooltip]="col.label" [matTooltipDisabled]="!col.label || col.shortLabel === col.label">
+                                <span>{{col.shortLabel}}</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef = "let row" 
                                 [style.color]="row[col.id + ':color']"
@@ -76,7 +76,7 @@
                     </div>
                     <div class="step-section-content" *ngIf="visibleSections.queries">
                         <widget-config-metric-queries
-                            [options]="{enableSummarizer: widget.settings.visual.layout === 'metric:tags', enableMultipleQueries:true}" [widget]="widget"
+                            [options]="{enableSummarizer: widget.settings.visual.layout === 'metrics:tags' || widget.settings.visual.layout === 'tags:metrics', enableMultipleQueries:true}" [widget]="widget"
                             (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
                     </div>
                 </div>
