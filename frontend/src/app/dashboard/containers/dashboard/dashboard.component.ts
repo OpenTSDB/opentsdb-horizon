@@ -2083,7 +2083,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
                 this.batchSelectedCount = 0;
                 this.batchSelectedItems = selectedItems
-           });
+           })
+           .catch((e) => {
+                // Handle errors here?
+                console.error(e);
+
+                // reset batchSelectItems
+                let keys = Object.keys(this.batchSelectedItems);
+                let selectedItems = {};
+
+                for(let i = 0; i < keys.length; i++) {
+                    selectedItems[keys[i]] = false;
+                }
+
+                this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
+                this.batchSelectedItems = selectedItems
+            });
 
     }
 
