@@ -133,7 +133,8 @@
                     }
                     
                 }
-                .mat-header-cell {
+                .mat-header-cell,
+                .mat-cell {
                     overflow-wrap: anywhere;
                 }
             }
