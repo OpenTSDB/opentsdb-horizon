@@ -83,6 +83,7 @@ export class DatatranformerService {
                         const dunit = this.unit.getNormalizedUnit(data[ts][index], format);
                         
                         objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
+                        objData[rowId][colId + ':raw'] = data[ts][index];
                     } else {
                         
                         displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
@@ -110,6 +111,7 @@ export class DatatranformerService {
                 for ( let j = 0; j < keys.length; j++ ) {
                     const key = keys[j];
                     row[key] = objData[key].data[i];
+                    row[key+':raw'] = objData[key].rawdata[i];
                     const bgColor = !isNaN(objData[key].rawdata[i]) ? this.overrideColor(objData[key].rawdata[i], objData[key].config.color, objData[key].config.conditions) : '';
                     const  rgbColor = bgColor ? d3.rgb(bgColor) : '';
                     const color = rgbColor ? 'rgb(' + Math.floor(255 - rgbColor.r) + ',' + Math.floor(255 - rgbColor.g) + ',' + Math.floor(255 - rgbColor.b) + ')' : '';
