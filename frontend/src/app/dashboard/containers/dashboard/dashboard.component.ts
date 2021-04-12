@@ -758,9 +758,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         referencePath: dbData.path + '@' + widgetCopy.id,
                         preview: message.payload.preview
                     };
-                    this.console.ng('RESOLVE VARIABLES #1', {
-                        widgetCopy: [widgetCopy]
-                    });
+
                     let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
 
                     this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
@@ -2064,9 +2062,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // allow all promises to resolve before anything else can be done
         Promise.all(promises)
            .then((results) => {
-            this.console.ng('RESOLVE VARIABLES #2', {
-                widgetCopy: results
-            });
+
                 // resolve dashboard template variables
                 const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
 
@@ -2087,9 +2083,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
                 this.batchSelectedCount = 0;
                 this.batchSelectedItems = selectedItems
-           })
-           .catch((e) => {
-               // Handle errors here?
            });
 
     }

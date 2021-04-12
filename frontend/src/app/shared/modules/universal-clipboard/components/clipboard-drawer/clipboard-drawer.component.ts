@@ -543,7 +543,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         for(let i = 0; i < keys.length; i++) {
             let keyId = keys[i];
             if (items.includes(keyId)) {
-                this.selectedItems[keyId] = false;
                 delete this.selectedItems[keyId];
             }
         }
