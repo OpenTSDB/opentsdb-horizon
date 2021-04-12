@@ -758,7 +758,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         referencePath: dbData.path + '@' + widgetCopy.id,
                         preview: message.payload.preview
                     };
-
+                    this.console.ng('RESOLVE VARIABLES #1', {
+                        widgetCopy: [widgetCopy]
+                    });
                     let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
 
                     this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
@@ -2062,6 +2064,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // allow all promises to resolve before anything else can be done
         Promise.all(promises)
            .then((results) => {
+            this.console.ng('RESOLVE VARIABLES #2', {
+                widgetCopy: results
+            });
                 // resolve dashboard template variables
                 const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
 
@@ -2214,7 +2219,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     let filter: any = query.filters[f];
 
                     // check if there is a custom filter
-                    if (filter.customFilter.length > 0) {
+                    if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
                         filter.customFilter = [];
                         filter.filter[0] = dbTplVarLookup[fkey].filter;

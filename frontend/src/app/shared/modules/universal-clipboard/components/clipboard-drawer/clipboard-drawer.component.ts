@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
@@ -28,7 +28,7 @@ import { DashboardService } from '../../../../../dashboard/services/dashboard.se
         ])
     ]
 })
-export class ClipboardDrawerComponent implements OnInit, OnDestroy {
+export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
 
     private drawerState: string = 'closed';
     private resourcesReady: boolean = false;
@@ -49,8 +49,6 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     @ViewChild('clipboardMoreMenuTrigger', {read: MatMenuTrigger}) clipboardMoreMenuTrigger: MatMenuTrigger;
     @ViewChild('removeClipboardMenuTrigger', {read: MatMenuTrigger}) removeClipboardMenuTrigger: MatMenuTrigger;
-    //@ViewChild('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) clipboardItemMoreMenuTrigger: MatMenuTrigger;
-    //@ViewChild('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) removeClipboardItemMenuTrigger: MatMenuTrigger;
 
     @ViewChildren('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) cbItemMoreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) cbItemRemoveTriggers: QueryList<MatMenuTrigger>;
@@ -221,6 +219,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
         }));
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        this.console.log('SIMPLE CHANGES', changes);
+    }
+
      /**
      * DRAWER ACTIONS
      */
@@ -367,6 +369,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
         // call upon the state to remove
         this.store.dispatch(new ClipboardRemoveItems(items)).subscribe(() => {
+            this.pruneSelectedItems(items);
             this.resetBatch();
         });
     }
@@ -463,7 +466,12 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
 
     removeClipboardItem(data: any, index: any) {
         // remove item from clipboard
-        this.store.dispatch(new ClipboardRemoveItems([data.settings.clipboardMeta.cbId]));
+        let items: any[] = [data.settings.clipboardMeta.cbId];
+        this.store.dispatch(new ClipboardRemoveItems(items))
+        .subscribe(() => {
+            this.pruneSelectedItems(items);
+            this.resetBatch();
+        });
     }
 
      /**
@@ -479,11 +487,14 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     }
 
     private resetBatch() {
+
         let keys = Object.keys(this.selectedItems);
 
         // everything was selected, so deselect
         for(let i = 0; i < keys.length; i++) {
-            this.selectedItems[keys[i]] = false;
+            let keyId = keys[i];
+            this.selectedItems[keyId] = false;
+
         }
         this.selectAll = false;
         this.selectAllIndeterminate = false;
@@ -524,6 +535,18 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
             return ids.includes(item.settings.clipboardMeta.cbId);
         });
         return items;
+    }
+
+    private pruneSelectedItems(items: any[]) {
+        let keys = Object.keys(this.selectedItems);
+
+        for(let i = 0; i < keys.length; i++) {
+            let keyId = keys[i];
+            if (items.includes(keyId)) {
+                this.selectedItems[keyId] = false;
+                delete this.selectedItems[keyId];
+            }
+        }
     }
 
     @HostListener('@toggleDrawer.done', ['$event']) doneDrawerHandler(event: any): void {
