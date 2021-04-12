@@ -354,6 +354,10 @@
                     background-color: map-get($widget, widget-icons-background-hover);
                 }
             }
+
+            .widget-type-label {
+                color: map-get($foreground, text);
+            }
         }
     }
 
