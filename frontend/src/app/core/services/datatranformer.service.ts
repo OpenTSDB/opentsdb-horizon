@@ -30,6 +30,7 @@ export class DatatranformerService {
     
 
     const displayColumns = {};
+    const colLabelLen = 40;
     let dataTable = [];
 
     if ( result && result.results ) {
@@ -70,7 +71,7 @@ export class DatatranformerService {
                         const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
                         const colLabel = visual.layout == 'metrics:tags' ? tagLabel : label;
                         const rowId = visual.layout == 'metrics:tags' ? mLabel : tagLabel;
-                        displayColumns[colId] = {id: colId, label: colLabel };
+                        displayColumns[colId] = {id: colId, label: colLabel, shortLabel: colLabel.length > colLabelLen ? colLabel.substr(0, colLabelLen - 2) + '..' : colLabel };
                         if (!objData[rowId] ) {
                             objData[rowId] = visual.layout == 'metrics:tags' ? { metric: label } : { tag: tagLabel };
                         }
@@ -84,7 +85,7 @@ export class DatatranformerService {
                         objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
                     } else {
                         
-                        displayColumns[id] = {id: id, label: label};
+                        displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
                         objData[id] = { rawdata:data, data: data.map(d => { 
                             const dunit = this.unit.getNormalizedUnit(d, format);
                             return this.unit.convert(d, format.unit, dunit, format);
@@ -124,7 +125,7 @@ export class DatatranformerService {
     options.displayColumns.sort((a: any, b: any) => {
         return this.util.sortAlphaNum(a.label, b.label);
     });
-    options.displayColumns.unshift( !summary ? { id: 'time', 'label': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'label': 'Metric' }  : { id: 'tag', 'label': 'Tag' } );
+    options.displayColumns.unshift( !summary ? { id: 'time', 'shortLabel': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'shortLabel': 'Metric' }  : { id: 'tag', 'shortLabel': 'Tag' } );
     return dataTable;
   }
 
