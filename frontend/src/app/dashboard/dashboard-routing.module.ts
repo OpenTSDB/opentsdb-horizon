@@ -33,6 +33,15 @@ const routes: Routes = [
         }
     },
     {
+        path: 'user/:useralias',
+        component: UserComponent
+    },
+    {
+        path: 'user',
+        redirectTo: 'users',
+        pathMatch: 'full'
+    },
+    {
         path: '',
         redirectTo: '/main',
         pathMatch: 'full'

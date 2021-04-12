@@ -1,3 +1,4 @@
+<!-- We'll come back to layout for this page
 <ng-container *ngIf="userListMode; else userDetail">
     <ng-container *ngTemplateOutlet="userList"></ng-container>
 </ng-container>
@@ -12,6 +13,7 @@
     <STRONG>USER DETAIL</STRONG>
 
 </ng-template>
+-->
 
 <ng-template #userNotFound>
     <STRONG>USER NOT FOUND</STRONG>
@@ -23,6 +25,6 @@
 </ng-template>
 
 <ng-template #userDetailNavbarTmpl>
-    <span class="navbar-item nav-namespace-title">User: </span>
+    <span class="navbar-item nav-namespace-title">User: {{userData.name && userData.name.length > 0 ? userData.name : userData.alias}}</span>
     <span class="flex-spacer"></span>
 </ng-template>

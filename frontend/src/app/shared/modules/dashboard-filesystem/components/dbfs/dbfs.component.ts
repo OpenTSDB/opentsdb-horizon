@@ -19,7 +19,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
-import { IntercomService } from '../../../../../core/services/intercom.service';
+import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 
 import {
     Select,
@@ -373,6 +373,17 @@ export class DbfsComponent implements OnInit, OnDestroy {
             this.curDashboardId = (db) ? db : false;
         }));
 
+        this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+            switch (message.action) {
+                case 'changeToSpecificNamespaceView':
+                    this.changeToSpecificNamespaceView(message.payload);
+                    break;
+                case 'changeToSpecificUserView':
+                    this.changeToSpecificUserView(message.payload);
+                    break;
+            }
+        }));
+
     }
 
     ngOnDestroy() {
@@ -511,19 +522,35 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     // DYNAMIC FOLDER BEHAVIOR
 
-    loadAllNamespacesPanel() {
+    loadAllNamespacesPanel(callback?: any) {
         if (!this.namespacesListLoaded) {
             this.store.dispatch(
                 new DbfsLoadNamespacesList({})
-            );
+            ).subscribe(() => {
+                if (callback) {
+                    callback();
+                }
+            });
+        } else {
+            if (callback) {
+                callback();
+            }
         }
     }
 
-    loadAllUsersPanel() {
+    loadAllUsersPanel(callback?: any) {
         if (!this.usersListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUsersList({})
-            );
+            ).subscribe(() => {
+                if (callback) {
+                    callback();
+                }
+            });
+        } else {
+            if (callback) {
+                callback();
+            }
         }
     }
 
@@ -769,10 +796,12 @@ export class DbfsComponent implements OnInit, OnDestroy {
             return;
         }
 
+        let action: any;
+
         // switch panel roots (AKA tabs)
         switch (tab) {
             case 'favorites':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -781,7 +810,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'recent':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -790,7 +819,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'users':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -799,7 +828,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'namespaces':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -809,7 +838,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 break;
             default:
                 // default is 'personal'
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -818,6 +847,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
         }
+        return action;
     }
 
     gotoFolder(path: string) {
@@ -909,6 +939,29 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 this.gotoFolder(path);
             }.bind(this), 200);
         }
+    }
+
+    // privates
+    private changeToSpecificNamespaceView(nsAlias: string) {
+        //this.console.ng('CHANGE TO SPECIFIC NAMESPACE VIEW', {nsAlias});
+        this.navtoPanelTab('namespaces').subscribe(() => {
+            if (nsAlias !== 'namespaceList') {
+                setTimeout(() => {
+                    this.gotoTopFolder(nsAlias, 'namespace')
+                }, 100);
+            }
+        });
+    }
+
+    private changeToSpecificUserView(userAlias: string) {
+        //this.console.ng('CHANGE TO SPECIFIC USER VIEW', {userAlias});
+        this.navtoPanelTab('users').subscribe(() => {
+            if (userAlias !== 'userList') {
+                setTimeout(() => {
+                    this.gotoTopFolder(userAlias, 'user')
+                }, 100);
+            }
+        });
     }
 
 }

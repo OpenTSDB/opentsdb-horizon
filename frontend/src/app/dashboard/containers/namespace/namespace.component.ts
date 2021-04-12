@@ -4,9 +4,10 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DbfsLoadNamespacesList, DbfsLoadTopFolder, DbfsResourcesState } from '../../../app-shell/state';
+import { DbfsLoadNamespacesList, DbfsLoadTopFolder, DbfsResourcesState } from '../../../shared/modules/dashboard-filesystem/state';
 import { CdkService } from '../../../core/services/cdk.service';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../core/services/console.service';
+import { IntercomService } from '../../../core/services/intercom.service';
 
 @Component({
     selector: 'app-namespace',
@@ -20,9 +21,11 @@ export class NamespaceComponent implements OnInit, OnDestroy {
     @Select(DbfsResourcesState.getResourcesLoaded) dbfsReady$: Observable<boolean>;
     @Select(DbfsResourcesState.getDynamicLoaded) dynamicLoaded$: Observable<any>;
     @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
+
     nsData$: Observable<any>;
     dbfsReady: boolean = false;
     namespacesLoaded: boolean = false;
+    activeMediaQuery: string = '';
 
     namespaceListMode: boolean = false;
     nsListItems: any[] = [];
@@ -45,9 +48,9 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
         private store: Store,
-        private logger: LoggerService
+        private console: ConsoleService,
+        private interCom: IntercomService
     ) {
-        logger.ng('NAMESPACE LANDING PAGE CONSTRUCT');
         const namespaceList = false;
         this.subscription.add(this.dbfsReady$.subscribe(value => {
             this.dbfsReady = value;
@@ -58,7 +61,6 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                 .events.pipe(
                     filter(event => event instanceof NavigationEnd),
                     map(() => {
-                        //this.logger.log('ROUTE CHILD', this.activatedRoute);
                         if (this.activatedRoute.snapshot.data['namespaceList']) {
                             return this.activatedRoute.snapshot.data['namespaceList'];
                         }
@@ -69,6 +71,12 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
                     if (this.namespaceListMode) {
                         this.namespaceNavbarPortal = new TemplatePortal(this.namespaceListNavbarTmpl, undefined, {});
+                        // intercom here to open navigator to namepsace list
+                        this.interCom.requestSend( {
+                            action: 'changeToSpecificNamespaceView',
+                            payload: 'namespaceList'
+                        });
+
                     } else {
                         this.namespaceNavbarPortal = new TemplatePortal(this.namespaceDetailNavbarTmpl, undefined, {});
                     }
@@ -79,10 +87,9 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-
         this.subscription.add(
             this.activatedRoute.params.subscribe(params => {
-                this.logger.log('ROUTE PARAMS', params);
+                //this.console.log('ROUTE PARAMS', params);
                 if (params && params['nsalias']) {
                     this.nsAlias = params['nsalias'];
                     if (!this.namespacesLoaded) {
@@ -91,18 +98,29 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                                 () => {
                                     setTimeout(() => {
                                         this.loadNamespaceData();
-                                    });
+                                        // intercom here to open navigator to specific page
+                                        this.interCom.requestSend( {
+                                            action: 'changeToSpecificNamespaceView',
+                                            payload: this.nsAlias
+                                        });
+
+                                    }, 100);
                                 }
                             )
                     } else {
-                        this.loadNamespaceData()
+                        this.loadNamespaceData();
+                        // intercom here to open navigator to specific page
+                        this.interCom.requestSend( {
+                            action: 'changeToSpecificNamespaceView',
+                            payload: this.nsAlias
+                        });
+
                     }
                 }
             })
         );
 
         this.subscription.add(this.dynamicLoaded$.subscribe( data => {
-            this.logger.log('dynamicLoaded', data);
             if (!data.namespaces) {
                 this.loadNamespaceList()
             } else {
@@ -113,7 +131,6 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.namespacesData$.subscribe( namespaces => {
             this.nsListItems = namespaces;
-            // this.logger.log('nsListItems DATA', namespaces);
         }));
 
     }
@@ -121,8 +138,6 @@ export class NamespaceComponent implements OnInit, OnDestroy {
 
     formattedFolderData(nsPath: string): any[] {
         const folderData: any = this.nsDbfs[nsPath];
-        this.logger.ng('FOLDER DATA', folderData);
-
         const data: any[] = [];
 
         for (let i = 0; i < folderData.subfolders.length; i++) {
@@ -140,7 +155,7 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                 data.push(item);
             }
         }
-        this.logger.ng('DATA', data);
+
         return data;
     }
 
@@ -170,7 +185,6 @@ export class NamespaceComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         this.nsDbfs[':nsroot:'] = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
                         this.nsDbfsLoaded = true;
-                        this.logger.log('NS DBFS', this.nsDbfs);
                     }, 200);
                 }
             );

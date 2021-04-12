@@ -1,56 +1,3 @@
-<ng-container *ngIf="namespaceListMode; else namespaceDetail">
-    <ng-container *ngTemplateOutlet="namespaceList"></ng-container>
-</ng-container>
-
-<ng-template #namespaceList>
-    <STRONG>NAMESPACES</STRONG>
-    <div class="namespace-items dynamic-scroller">
-        <mat-nav-list class="namespace-list">
-            <cdk-virtual-scroll-viewport itemSize="36" *ngIf="nsListItems.length > 0">
-            <mat-list-item class="namespace-list-item"
-                *cdkVirtualFor="let item of nsListItems; let i = index;"
-                (click)="navigateToNamespace(item)">
-                <div class="namespace-nav-item">
-                    <div class="list-item folder-name flex-spacer">
-                        <span>{{item.name}}</span>
-                    </div>
-                </div>
-            </mat-list-item>
-            </cdk-virtual-scroll-viewport>
-        </mat-nav-list>
-    </div>
-</ng-template>
-
-<ng-template #namespaceDetail>
-
-    <div class="namespace-detail">
-        <STRONG>NAMESPACE DETAIL: {{nsDbfs.name}}</STRONG>
-    </div>
-    <div class="namespace-contents">
-        <!--{{nsDbfs|json}}-->
-        <mat-nav-list class="namespace-content-list">
-            <cdk-virtual-scroll-viewport itemSize="36" *ngIf="!namespaceListMode && nsDbfsLoaded">
-            <mat-list-item class="namespace-folder-item"
-                *cdkVirtualFor="let item of formattedFolderData(':nsroot:'); let i = index;"
-                (click)="navigateToFolder(item)">
-                <ng-container *ngIf="item.dataType === 'folder'">
-                    <ng-container *ngTemplateOutlet="simpleFolderDisplay;context:{data: item}"></ng-container>
-                </ng-container>
-                <ng-container *ngIf="item.dataType === 'file'">
-                    <ng-container *ngTemplateOutlet="simpleFileDisplay;context:{data: item}"></ng-container>
-                </ng-container>
-            </mat-list-item>
-
-            <!--<mat-list-item class="namespace-dashboard-item"
-                *cdkVirtualFor="let item of nsDbfs.subfolders; let i = index;"
-                (click)="navigateToFolder(item)">
-                <ng-container *ngTemplateOutlet="simpleFileDisplay;context:{data: item}"></ng-container>
-            </mat-list-item>-->
-            </cdk-virtual-scroll-viewport>
-        </mat-nav-list>
-    </div>
-</ng-template>
-
 <ng-template #namespaceNotFound>
     <STRONG>NAMESPACE NOT FOUND</STRONG>
 </ng-template>
@@ -61,40 +8,7 @@
 </ng-template>
 
 <ng-template #namespaceDetailNavbarTmpl>
-    <span class="navbar-item nav-namespace-title">Namespace: {{nsDbfs[':nsroot:'].name}}</span>
+    <span class="navbar-item nav-namespace-title">Namespace: {{nsDbfs[':nsroot:'] ? nsDbfs[':nsroot:'].name : ''}}</span>
     <span class="flex-spacer"></span>
 </ng-template>
 
-
-<ng-template #simpleFolderDisplay let-data="data" let-loading="loading" let-showcount="showcount">
-    <div class="simple-list-item simple-folder-item">
-        <div class="list-item">
-            <mat-icon class="folder-icon" fontSet="denali" fontIcon="d-folder"></mat-icon>
-        </div>
-        <div class="list-item folder-name flex-spacer">
-            <span>{{data.alias}}{{data.name? ' (' + data.name + ')' : '' }}</span>
-        </div>
-        <div class="list-item" *ngIf="showcount">
-            <span class="counter">
-                <span class="chip-count">{{((data.subfolders) ? data.subfolders.length : 0) + ((data.files) ? data.files.length : 0)}}</span>
-            </span>
-        </div>
-        <div class="list-item goto-next-folder">
-            <div class="loading-spinner size-s color-primary" *ngIf="loading"></div>
-            <button mat-icon-button *ngIf="!loading">
-                <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
-            </button>
-        </div>
-    </div>
-</ng-template>
-
-<ng-template #simpleFileDisplay let-data="data" let-loading="loading" let-showcount="showcount">
-    <div class="simple-list-item simple-file-item">
-        <div class="list-item">
-            <mat-icon class="dashboard-icon" fontSet="denali" fontIcon="d-dashboard-tile"></mat-icon>
-        </div>
-        <div class="list-item folder-name flex-spacer">
-            <span>{{data.alias}}{{data.name? ' (' + data.name + ')' : '' }}</span>
-        </div>
-    </div>
-</ng-template>
