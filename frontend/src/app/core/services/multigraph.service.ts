@@ -12,9 +12,29 @@ export class MultigraphService {
 
   constructor(private utils: UtilsService, private tranxService: DatatranformerService) { }
 
-  // fill up tag values from rawdata
+  // for testing 
+  shuffle(array: any[]) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
+  // fill up tag values from rawdata,multigraph by metrics
   fillMultiTagValues(widget: any, multiConf: any, rawdata: any): any {
-    const startTime = new Date().getTime();
+    let isMultiByQuery = this.isMultiQuery(multiConf);
     const xTemp = multiConf.x ? '{{{' + Object.keys(multiConf.x).join('}}}/{{{') + '}}}' : 'x';
     const yTemp = multiConf.y ? '{{{' + Object.keys(multiConf.y).join('}}}/{{{') + '}}}' : 'y';
     let xCombine = [];
@@ -31,6 +51,7 @@ export class MultigraphService {
       const tot = mid.split('-')[1];
       hasToT = tot ? true : false;
       const qids = this.REGDSID.exec(mid);
+      const qid = qids[0].split('_')[0];
       const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
       const mIndex = this.utils.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2]);
       const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
@@ -38,6 +59,7 @@ export class MultigraphService {
       const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
       const dataSrc = rawdata.results[i];
       const mLabel = this.utils.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
+      const gLabel = gConfig.settings.visual.label ? gConfig.settings.visual.label : '';
       if (gConfig && gConfig.settings.visual.visible && vConfig.visible) {
         if (dataSrc.source) {
           for (let j = 0; j < dataSrc.data.length; j++) {
@@ -60,14 +82,19 @@ export class MultigraphService {
             }
             // if it hasToT and expression, the metric in data return has ToT info, exclude it
             let tempMetric = !mConfig.expression ? dataSrc.data[j].metric : hasToT ? midExToT : mid;
-            const tags = { metric_group: mConfig.id + '~' + tempMetric + alias, ...dataSrc.data[j].tags };
+            let tags = {};
+            if (isMultiByQuery) {
+              tags = { query_group: qid + '~' + gLabel, ...dataSrc.data[j].tags };
+            } else {
+              tags = { metric_group: mConfig.id + '~' + tempMetric + alias, ...dataSrc.data[j].tags };
+            }
             let x = xTemp;
             let y = yTemp;
             // resolve multigraph with values
             const tagKeys = Object.keys(tags);
             for (let k = 0; k < tagKeys.length; k++) {
               const key = tagKeys[k];
-              const tagValue = key === 'metric_group' ? tags[key] : tags[key].toLowerCase();
+              const tagValue = key === 'metric_group' || key === 'query_group' ? tags[key] : tags[key].toLowerCase();
               if (multiConf.x && x.indexOf(key) !== -1) {
                 x = x.replace('{{{' + key + '}}}', tagValue);
                 if (multiConf.x[key] && !multiConf.x[key].values.includes(tagValue)) {
@@ -161,6 +188,19 @@ export class MultigraphService {
     return results;
   }
 
+  // check if it's query or metric group
+  isMultiQuery(multiConf: any): boolean {
+    let isQueryGroup = false;
+    const keys = Object.keys(multiConf);
+    for (let i = 0; i < keys.length; i++) {
+      if (multiConf[keys[i]].hasOwnProperty('query_group')) {
+        isQueryGroup = true;
+        break;
+      }
+    }
+    return isQueryGroup;
+  }
+
   // build multigraph config
   buildMultiConf(multigraph: any): any {
     const conf: any = {};
@@ -227,7 +267,7 @@ export class MultigraphService {
     if (multigraph) {
       if (groupByTags.length) {
         // make sure to keep item that key are in groupTags
-        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || groupByTags.includes(item.key));
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || item.key === 'query_group' || groupByTags.includes(item.key));
         for (let i = 0; i < groupByTags.length; i++) {
           if (multigraph.chart.findIndex((t: any) => t.key === groupByTags[i]) > -1) {
             continue;
@@ -240,8 +280,57 @@ export class MultigraphService {
           multigraph.chart.push(item);
         }
       } else {
-        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group');
+        multigraph.chart = multigraph.chart.filter(item => item.key === 'metric_group' || item.key === 'query_group');
       }
     }
+  }
+  // remove empty rows/columns from multigraph
+  removeEmptyRowsColumns(results: any) {
+    let rowKeys = [];
+    if (results) {
+      rowKeys = Object.keys(results);
+    }
+    // they all have same col keys
+    const colKeys = rowKeys.length ? Object.keys(results[rowKeys[0]]) : [];
+    // rows
+    for (let r = 0; r < rowKeys.length; r++) {
+      let isEmpty = true;
+      for (let c = 0; c < colKeys.length; c++) {
+        if (results[rowKeys[r]][colKeys[c]].results && results[rowKeys[r]][colKeys[c]].results.length) {
+          isEmpty = false;
+          break;
+        }
+      }
+      // the whole row is empty
+      if (isEmpty) {
+        delete results[rowKeys[r]];
+      }
+    }
+    // cols
+    let tmpResults = JSON.parse(JSON.stringify(results));
+    rowKeys = Object.keys(tmpResults);
+    for (let c = 0; c < colKeys.length; c++) {
+      let colKey = colKeys[c];
+      let canDelete = true;
+      for (let r = 0; r < rowKeys.length; r++) {
+        let row = tmpResults[rowKeys[r]];
+        if (!row[colKey].results || !row[colKey].results.length) {
+          delete row[colKey];
+        } else {
+          // one of col cell is not empty
+          canDelete = false;
+          break;
+        }
+      }
+      if (canDelete) {
+        // update results
+        results = JSON.parse(JSON.stringify(tmpResults));
+      } else {
+        // reset to good part
+        tmpResults = JSON.parse(JSON.stringify(results));
+      }
+    }
+    tmpResults = null;
+    return results;
   }
 }

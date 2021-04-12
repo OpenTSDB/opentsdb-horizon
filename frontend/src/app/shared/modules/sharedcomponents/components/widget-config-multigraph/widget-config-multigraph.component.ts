@@ -11,7 +11,7 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
@@ -69,11 +69,16 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         { label: 'Desc', value: 'desc'}
     ];
 
+    multigraphByOption: Array<any> = [
+        { label: 'Metrics', value: 'metric_group'},
+        { label: 'Queries', value: 'query_group'}
+    ];
+    multigraphMode = 'metric_group';
     /** Mat Table Stuff */
     chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
     // default mutilgraph
-    multigraph: any = {
+    defaultMultigraph: any = {
         chart: [
             {
                 key: 'metric_group',
@@ -81,6 +86,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 sortAs: 'asc'
             }
         ],
+        enabled: true,
         layout: 'grid', // grid | freeflow
         gridOptions: {
             viewportDisplay: 'custom', // fit | custom
@@ -90,7 +96,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             }
         }
     };
-
+    multigraph: any;
     multigraphSubs: any = false;
 
     constructor(
@@ -98,28 +104,55 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private httpService: HttpService,
         private utilService: UtilsService,
         private multiService: MultigraphService,
-        private loggerService: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log('changes', changes);
         if ( !changes.widget ) {
             return;
+        }
+        if (changes.widget.currentValue.settings.multigraph) {
+            const idx = changes.widget.currentValue.settings.multigraph.chart.findIndex(item => item.key === 'metric_group');
+            this.multigraphMode = idx > -1 ? 'metric_group' : 'query_group';
         }
         this.setupMultigraph();
     }
 
+    multiModeChange(event: any) {
+        this.multigraphMode = event.value;
+        if (this.multigraphMode === 'query_group') {
+            this.multigraph.chart[0].key = 'query_group';   
+        } else {
+            this.multigraph.chart[0].key = 'metric_group';            
+        }       
+        this.widgetChange.emit({
+            action: 'UpdateMultigraph',
+            payload: {
+                requery: this.needRequery,
+                changes: this.multigraph
+            }
+        });
+        this.createForm(this.multigraph);     
+    }
+
+    // setup multigraph now will depend on metric_group or query_group
+    // metric_group is default setup.
     setupMultigraph() {
-        // get widget tags
-        this.getWidgetTagKeys();
-        // check of they have multigraph or not
+        // check of they have multigraph before or not
         if (this.widget.settings.multigraph) {
             this.multigraph = this.utilService.deepClone(this.widget.settings.multigraph);
             // we just set to custom if it used fit before then it can save later
             // since we only support custom not auto for now
             if (this.multigraph.gridOptions.viewportDisplay === 'fit') {
                 this.multigraph.gridOptions.viewportDisplay = 'custom';
+            }    
+        } else {
+          this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
+          if (this.multigraphMode === 'query_group') {
+                this.multigraph.chart[0].key = 'query_group';
             }
         }
         const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
@@ -128,11 +161,12 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     createForm(multigraph: any) {
-       
+
         // setup the group
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
             layout: new FormControl('', [Validators.required]),
+            enabled: new FormControl('', [Validators.required]),
             gridOptions: this.fb.group({
                 viewportDisplay: new FormControl('', [Validators.required]),
                 custom: this.fb.group({
@@ -162,7 +196,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     setViewportDisplayValidators() {
-
         // form changes for chart group
         this.subscription.add(
             this.widgetConfigMultigraph.controls['chart'].valueChanges
@@ -173,6 +206,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 ).subscribe(([prev, changes]: [any, any]) => {
                     if (this.chartTable && !deepEqual(prev, changes)) {
                         this.chartTable.renderRows();
+                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
@@ -184,7 +218,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     }
                 })
         );
-
         // form change for viewport options
         this.subscription.add(
             this.widgetConfigMultigraph.controls['gridOptions'].valueChanges
@@ -192,8 +225,9 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                     startWith(''),
                     distinctUntilChanged(),
                     pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {                    
+                ).subscribe(([prev, changes]: [any, any]) => {
                     if (!deepEqual(prev, changes)) {
+                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
@@ -226,7 +260,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     dropTable(event: any) {
-        // console.log('DROP TABLE EVENT', event);
         const prevIndex = this.FC_chart['controls'].findIndex((d) => d === event.item.data);
         moveItemInArray(this.FC_chart['controls'], prevIndex, event.currentIndex);
         this.setChartDataOrder();
@@ -243,12 +276,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     setViewportDisplayMode(event: any) {
-        // console.log('SET VIEWPORT DISPLAY MODE', event);
         this.FC_gridOpts_viewportDisplay.setValue(event.value);
     }
 
     selectLayoutTypeChange(event: any) {
-        // console.log('SET LAYOUT TYPE CHANGE', event);
         this.FC_layout.setValue(event.value);
         // this.widgetConfigMultigraph.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     }
@@ -273,7 +304,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     /** auto complete stuff */
 
     onTagKeyInputBlur(event: any) {
-        // console.log('TAG KEY INPUT BLUR', event);
         // check if in tag key array
         const val = this.tagKeyControlInput.value;
 
@@ -288,13 +318,11 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     onTagKeyInputFocus() {
-        // console.log('TAG KEY INPUT FOCUS');
         this.tagKeyControlInput.setValue('');
         this.tagKeyACTrigger.openPanel();
     }
 
     tagKeyOptionSelected(event: any) {
-        // console.log('TAG KEY OPTION SELECTED', event);
         this.addTagKeyChartItem(event.option.value);
         this.tagKeyControlInput.setValue('');
         this.tagKeyInput.nativeElement.focus();
@@ -357,5 +385,4 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

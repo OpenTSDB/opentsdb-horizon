@@ -1,7 +1,7 @@
 
-<div *ngIf="allowEventToggling">
-    <mat-slide-toggle 
-    [checked]="widget.settings.visual.showEvents" 
+<!--<div *ngIf="allowEventToggling">
+    <mat-slide-toggle
+    [checked]="widget.settings.visual.showEvents"
     (change)="showEventsChanged($event.checked)">
     <span *ngIf="widget.settings.visual.showEvents">
         Events Enabled
@@ -10,7 +10,11 @@
         Events <b>Disabled</b>
     </span>
   </mat-slide-toggle>
-</div>
+</div>-->
+
+<span *ngIf="!widget.settings.visual.showEvents">
+    Events are <b>Disabled</b>. Please enable to configure.
+</span>
 
 <div *ngIf="!allowEventToggling || (allowEventToggling && widget.settings.visual.showEvents)">
     <div class="namespace">
@@ -18,13 +22,13 @@
         <namespace-autocomplete [value]="widget.eventQueries[0].namespace" (nschange)="saveNamespace($event)" (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
         <mat-error *ngIf="!widget.eventQueries[0].namespace">* Mandatory</mat-error>
     </div>
-    
+
     <div class="search">
-        <b>Search</b> 
+        <b>Search</b>
         <mat-hint class="info-hint">
             <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
             <a href="https://git.ouroath.com/pages/monitoring/horizon_userguide/Events/eventSearch/" target="_blank">Guide</a>
-        </mat-hint> 
+        </mat-hint>
         <input matInput type="search" class="search-input" [formControl]="seachControl" placeholder='source:chef AND tag.env:prod AND (title:failed* OR !alert_type:success message:"error creating") AND "http://10.99.76.245:8080"'>
     </div>
 </div>

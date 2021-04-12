@@ -1,6 +1,16 @@
 <form [formGroup]="widgetConfigMultigraph">
     <div class="config-control inline-controls">
-        <label class="fixed-label">Chart</label>
+        <!--<div style="display: flex; flex-direction: column;">
+            <label class="fixed-label">Multigraph by:</label>
+            <mat-radio-group (change)="multiModeChange($event)">
+                <mat-radio-button style="margin: 5px;" *ngFor="let option of multigraphByOption"
+                [value]="option.value"
+                [checked]="option.value === multigraphMode" [disabled]="option.value === 'query_group' && widget.queries.length < 2">
+                    {{option.label}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>-->
+
         <div class="form-field-group table-output">
             <!-- TABLE GROUP HERE -->
             <mat-table #chartTable [dataSource]="FC_chart['controls']" class="mat-elevation-z0"
@@ -33,7 +43,16 @@
                 <ng-container matColumnDef="label">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element; let rowIndex = index">
-                        {{element.get('key').value === 'metric_group' ? 'Metrics' : element.get('key').value}}
+                        <mat-form-field *ngIf="element.get('key').value === 'metric_group' || element.get('key').value === 'query_group'">
+                            <!--<mat-label>Multigraph by:</mat-label>-->
+                            <mat-select [value]="multigraphMode" (selectionChange)="multiModeChange($event)" class="multigraph-mode-selector">
+                              <mat-option *ngFor="let option of multigraphByOption"
+                                [value]="option.value"
+                                [disabled]="option.value === 'query_group' && widget.queries.length < 2">{{option.label}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <span *ngIf="element.get('key').value !== 'metric_group' && element.get('key').value !== 'query_group'">{{element.get('key').value}}</span>
+                        <!--{{element.get('key').value === 'metric_group' ? 'Metrics' : element.get('key').value === 'query_group' ? 'Queries' : element.get('key').value}}-->
                     </mat-cell>
                 </ng-container>
 
@@ -55,7 +74,7 @@
                     <mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
                         <mat-radio-group formControlName="displayAs">
                             <mat-radio-button
-                                value="y" 
+                                value="y"
                                 [checked]="FC_chart['controls'][rowIndex].get('displayAs').value === 'y'">
                             </mat-radio-button>
                         </mat-radio-group>
@@ -68,7 +87,7 @@
                     <mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
                         <mat-radio-group formControlName="displayAs">
                             <mat-radio-button
-                                value="x" 
+                                value="x"
                                 [checked]="FC_chart['controls'][rowIndex].get('displayAs').value === 'x'">
                             </mat-radio-button>
                         </mat-radio-group>
@@ -81,7 +100,7 @@
                     <mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
                         <mat-radio-group formControlName="displayAs">
                             <mat-radio-button
-                                value="g" 
+                                value="g"
                                 [checked]="FC_chart['controls'][rowIndex].get('displayAs').value === 'g'">
                             </mat-radio-button>
                         </mat-radio-group>
@@ -100,12 +119,15 @@
                 <!-- row and header definition -->
                 <mat-header-row *matHeaderRowDef="chartDisplayColumns"></mat-header-row>
                 <!-- we DRAG the whole row -->
-                <mat-row class="multigraph-data-row" *matRowDef="let row; columns: chartDisplayColumns;" cdkDrag [cdkDragData]="row"></mat-row>
+                <mat-row class="multigraph-data-row"
+                    [ngClass]="{'multigraph-mode-row': row.get('key').value === 'metric_group' || row.get('key').value === 'query_group'}"
+                    *matRowDef="let row; columns: chartDisplayColumns; let i = index"
+                    cdkDrag [cdkDragData]="row"></mat-row>
             </mat-table>
 <!-- disbable not allow to add tag from multigraph for now
             <div class="add-tag-control">
                 <mat-form-field appearance="fill">
-                    <input matInput placeholder="Add tag key" 
+                    <input matInput placeholder="Add tag key"
                         [formControl]="tagKeyControlInput"
                         [matAutocomplete]="widgetTagAuto"
                         (blur)="onTagKeyInputBlur($event)"
@@ -124,7 +146,7 @@
         </div>
     </div>
     <div class="config-control inline-controls" [ngStyle]="{ 'pointer-events': isDataLoaded ? 'initial' : 'none', 'opacity': isDataLoaded ? 1 : .5}">
-        <label class="fixed-label">Display</label>
+        <!--<label class="fixed-label">Display</label>-->
         <div class="form-field-group">
             <!-- DISPLAY OPTIONS HERE -->
             <!--<div class="display-as-type">
@@ -140,7 +162,7 @@
             <div class="grid-options" formGroupName="gridOptions">
                 <!--<div class="radio-row">
                     <mat-radio-group>
-                        <mat-radio-button 
+                        <mat-radio-button
                             value="fit"
                             [checked]="FC_gridOpts_viewportDisplay.value === 'fit'"
                             (change)="setViewportDisplayMode($event)"></mat-radio-button>
@@ -151,6 +173,7 @@
                 </div>-->
                 <!-- grid graph size options -->
                 <div class="radio-row" *ngIf="FC_layout.value === 'grid'">
+                    <span>Display</span>
                     <!--<mat-radio-group>
                         <mat-radio-button
                             value="custom"
@@ -160,7 +183,7 @@
                     <div class="radio-inline-label" formGroupName="custom">
                         <mat-form-field appearance="fill" class="numeric-options">
                             <mat-select
-                                [value]="FC_gridOpts_custom_x.value" 
+                                [value]="FC_gridOpts_custom_x.value"
                                 (selectionChange)="selectCustomRows($event)"
                                 required>
                                 <mat-option *ngFor="let option of customPresetValues" [value]="option">
@@ -171,8 +194,8 @@
                         </mat-form-field>
                         <span>rows and</span>
                         <mat-form-field appearance="fill" class="numeric-options">
-                            <mat-select 
-                                [value]="FC_gridOpts_custom_y.value" 
+                            <mat-select
+                                [value]="FC_gridOpts_custom_y.value"
                                 (selectionChange)="selectCustomColumns($event)"
                                 required>
                                 <mat-option *ngFor="let option of customPresetValues" [value]="option">
@@ -194,8 +217,8 @@
                     </mat-radio-group>
                     <div class="radio-inline-label" formGroupName="custom">
                         <mat-form-field appearance="fill" class="numeric-options">
-                            <mat-select 
-                                [value]="FC_gridOpts_custom_y.value" 
+                            <mat-select
+                                [value]="FC_gridOpts_custom_y.value"
                                 (selectionChange)="selectCustomColumns($event)"
                                 required>
                                 <mat-option *ngFor="let option of customPresetValues" [value]="option">

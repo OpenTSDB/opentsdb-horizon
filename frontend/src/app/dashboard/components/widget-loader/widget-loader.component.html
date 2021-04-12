@@ -4,6 +4,11 @@
         <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
             <mat-toolbar>
                 <mat-toolbar-row>
+                    <span class="batch-selector"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && batchSelector">
+                        <mat-checkbox [checked]="batchSelected"
+                            (change)="toggleSelectItem($event)"></mat-checkbox>
+                    </span>
                     <span class="panel-title"
                         matTooltip="{{widget.settings.title}}"
                         [matTooltipClass]="{'cdk-widget-title-tooltip':true}"
@@ -50,6 +55,10 @@
                             <button mat-menu-item (click)="widgetClone()">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                                 <span>Clone</span>
+                            </button>
+                            <button mat-menu-item (click)="widgetCopy()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-copy-file"></mat-icon>
+                                <span>Copy Widget</span>
                             </button>
                             <button mat-menu-item (click)="createAlert()" *ngIf="userHasWriteAccessToNamespace && widget.settings.component_type !== 'PlaceholderWidgetComponent'
                                 && widget.settings.component_type !== 'MarkdownWidgetComponent'">

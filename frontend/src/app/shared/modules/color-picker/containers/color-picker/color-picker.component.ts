@@ -278,11 +278,13 @@ export class ColorPickerComponent implements OnInit {
         this.toggle();
     }
 
+    /*
     // Update selectedColor and close the panel
     confirmSelectedColor() {
         this.emitColor();
         this.toggle();
     }
+    */
 
     /**
      * Hex and RGB conversions

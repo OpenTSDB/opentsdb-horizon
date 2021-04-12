@@ -11,6 +11,7 @@ import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-
 import { AppShellModule } from '../app-shell/app-shell.module';
 
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
+import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
 
 // services
 import { DashboardService } from './services/dashboard.service';
@@ -50,6 +51,8 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
 import { NamespaceComponent } from './containers/namespace/namespace.component';
 import { UserComponent } from './containers/user/user.component';
 
+import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module'
+
 @NgModule({
     imports: [
         CommonModule,
@@ -71,7 +74,9 @@ import { UserComponent } from './containers/user/user.component';
         ]),
         DynamicWidgetsModule,
         UniversalDataTooltipDirectivesModule,
-        AppShellModule
+        UniversalClipboardModule,
+        //AppShellModule
+        DashboardFilesystemModule
     ],
     declarations: [
         DashboardComponent,

@@ -15,7 +15,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { Select, Store } from '@ngxs/store';
 
-import { DbfsState, DbfsResourcesState, DbfsLoadResources, DbfsLoadSubfolder } from '../../../app-shell/state';
+import { DbfsState, DbfsResourcesState, DbfsLoadResources, DbfsLoadSubfolder } from '../../../shared/modules/dashboard-filesystem/state';
 import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({

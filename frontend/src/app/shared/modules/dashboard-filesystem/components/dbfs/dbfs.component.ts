@@ -17,9 +17,9 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import { Observable, Subscription } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
-import { IntercomService } from '../../../core/services/intercom.service';
+import { IntercomService } from '../../../../../core/services/intercom.service';
 
 import {
     Select,
@@ -56,11 +56,11 @@ import {
 } from '../../state/dbfs-resources.state';
 
 import { MatMenuTrigger } from '@angular/material';
-
+import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -195,8 +195,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
+        private console: ConsoleService,
         private fb: FormBuilder,
-        private logger: LoggerService,
         @Inject('WINDOW') private window: any
     ) {
 
@@ -469,7 +469,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         if (mTrigger) {
             mTrigger.toggleMenu();
         } else {
-            this.logger.error('clickMoreMenu', 'CANT FIND TRIGGER');
+            this.console.error('clickMoreMenu', 'CANT FIND TRIGGER');
         }
     }
 
@@ -482,7 +482,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
             // close the more menu
             this.clickMoreMenu(id, type, event);
         } else {
-            this.logger.error('clickFolderMove', 'CANT FIND TRIGGER');
+            this.console.error('clickFolderMove', 'CANT FIND TRIGGER');
         }
     }
 
@@ -663,7 +663,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     folderMenuAction(action: string, folder: any, event?: any) {
-       switch (action) {
+        switch (action) {
             case 'editName':
                 this.folderForm.reset({fc_FolderName: folder.name});
                 this.edit = {
@@ -822,7 +822,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     gotoFolder(path: string) {
         if (!this.bulkEdit) {
-           const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
+            const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
 
             if (folder.fullPath === ':user-recent:' || folder.fullPath === ':user-favorites:') {
                 if (folder.fullPath === ':user-recent:') {

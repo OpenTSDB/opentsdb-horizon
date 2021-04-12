@@ -9,7 +9,7 @@ import {
     ComponentFactory,
     EmbeddedViewRef
 } from '@angular/core';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
 import {
     HeatmapDataTooltipComponent,
@@ -50,7 +50,7 @@ export class TooltipComponentService {
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
         private rendererFactory: RendererFactory2,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     /*
@@ -78,8 +78,6 @@ export class TooltipComponentService {
 
     // comes from tt-mouse-listener
     tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
-        //console.log('TOOLTIP TYPE', type, mouseBoundaryEl);
-
         if (this._mouseElRef !== mouseBoundaryEl) {
             this._mouseElRef = mouseBoundaryEl;
         }
@@ -93,14 +91,12 @@ export class TooltipComponentService {
     }
 
     tooltipListen() {
-        // console.log('TOOLTIP LISTEN');
         if (this._componentRef) {
             this._componentRef.instance.show();
         }
     }
 
     tooltipMute() {
-        // console.log('TOOLTIP MUTE');
         if (this._componentRef) {
             this._componentRef.instance.hide();
         }

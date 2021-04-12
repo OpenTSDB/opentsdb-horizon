@@ -111,6 +111,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             case 'HeatmapWidgetComponent':
             case 'BarchartWidgetComponent':
             case 'DonutWidgetComponent':
+            case 'TableWidgetComponent':
             case 'TopnWidgetComponent':
                 query.settings = {
                                     visual: {
@@ -143,6 +144,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 this.addNewQuery();
             }
             this.hasExpression = this.getExpressionCount() ? true : false;
+        }
+        if ( changes.options && changes.options.currentValue ) {
+            this.initOptions();
         }
     }
     getExpressionCount() {

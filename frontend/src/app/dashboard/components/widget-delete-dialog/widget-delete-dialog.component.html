@@ -1,6 +1,13 @@
-<h1 mat-dialog-title>Delete Widget</h1>
+<h1 mat-dialog-title>Delete {{(dbData.batch && dbData.selectedCount > 1) ? 'Widgets' : 'Widget'}}</h1>
 <div mat-dialog-content>
-  <p>Do you want to delete the widget?</p>
+
+  <p *ngIf="dbData.batch && dbData.selectedCount > 1; else singleConfirm">
+    Do you want to delete the selected {{dbData.selectedCount}} widgets?
+  </p>
+
+  <ng-template #singleConfirm>
+    <p>Do you want to delete the widget?</p>
+  </ng-template>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="confirm()" >Ok</button>

@@ -83,6 +83,10 @@
             &.widget-icon-donut-chart::after {
                 background-position: 0px -25px;
             }
+
+            &.widget-icon-table::after {
+                background-position: -75px -50px;
+            }
         }
     }
 }

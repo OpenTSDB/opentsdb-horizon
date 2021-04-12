@@ -16,7 +16,7 @@ export class PlaceholderWidgetComponent  {
     @Output() loadNewWidget = new EventEmitter<any>();
 
     // Available Widget Types
-    availableWidgetTypes: Array<object> = [
+    availableWidgetTypes: any[] = [
         {
             label: 'Bar Graph',
             type: 'BarchartWidgetComponent',
@@ -61,6 +61,11 @@ export class PlaceholderWidgetComponent  {
             label: 'Events',
             type: 'EventsWidgetComponent',
             iconClass: 'widget-icon-events'
+        },
+        {
+            label: 'Table',
+            type: 'TableWidgetComponent',
+            iconClass: 'widget-icon-table'
         }
         /*,
         {

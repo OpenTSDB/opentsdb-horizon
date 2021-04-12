@@ -209,6 +209,10 @@
 
                 .query-metric-row {
                     margin-bottom: 8px;
+
+                    &:not(:first-child) {
+                        margin-top: 18px;
+                    }
                 }
             }
         }

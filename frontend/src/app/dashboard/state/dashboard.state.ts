@@ -9,7 +9,7 @@ import { DashboardService } from '../services/dashboard.service';
 import { URLOverrideService } from '../services/urlOverride.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { map, catchError } from 'rxjs/operators';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
 
 export interface DBStateModel {
@@ -29,7 +29,10 @@ export interface DBStateModel {
 /* action */
 export class LoadDashboard {
     static readonly type = '[Dashboard] Load Dashboard';
-    constructor(public id: string) {}
+    constructor(
+        public id: string,
+        public clipboardItems?: any[]
+    ) {}
 }
 
 export class MigrateAndLoadDashboard {
@@ -148,7 +151,7 @@ export class DBState {
         private dbService: DashboardService,
         private urlOverrideService: URLOverrideService,
         private dbConverterService: DashboardConverterService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private store: Store,
         private utils: UtilsService
     ) {}
@@ -193,8 +196,8 @@ export class DBState {
     }
 
     @Action(LoadDashboard)
-    loadDashboard(ctx: StateContext<DBStateModel>, { id }: LoadDashboard) {
-        this.logger.action('State :: Load Dashboard', { id });
+    loadDashboard(ctx: StateContext<DBStateModel>, { id, clipboardItems }: LoadDashboard) {
+        this.console.action('State :: Load Dashboard', { id });
         // id is the path
         if ( id !== '_new_' ) {
             ctx.patchState({ loading: true});
@@ -227,13 +230,16 @@ export class DBState {
                 path: '',
                 fullPath: ''
             };
+            if (clipboardItems) {
+                payload.content.widgets = clipboardItems;
+            }
             ctx.dispatch(new LoadDashboardSuccess(payload));
         }
     }
 
     @Action(MigrateAndLoadDashboard)
     migrateAndLoadDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadDashboard) {
-            this.logger.action('State :: Migrate and Load Dashboard', { id, payload });
+            this.console.action('State :: Migrate and Load Dashboard', { id, payload });
             this.dbConverterService.convert(payload).subscribe((res) => {
                 this.dbService.updateTplVariablesFromURL(res);
                 ctx.dispatch(new LoadDashboardSuccess(res));
@@ -251,7 +257,7 @@ export class DBState {
 
     @Action(LoadDashboardSuccess)
     loadDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadDashboardSuccess) {
-        this.logger.success('State :: Load Dashboard [SUCCESS]', { payload });
+        this.console.success('State :: Load Dashboard [SUCCESS]', { payload });
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -272,7 +278,7 @@ export class DBState {
     @Action(SaveDashboard)
     saveDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveDashboard) {
             ctx.patchState({ status: 'save-progress', error: {} });
-            this.logger.action('State :: Save Dashboard', { id, payload });
+            this.console.action('State :: Save Dashboard', { id, payload });
             return this.httpService.saveDashboard(id, payload).pipe(
                 map( (res: any) => {
                     ctx.dispatch(new SaveDashboardSuccess(res.body));
@@ -284,7 +290,7 @@ export class DBState {
     @Action(SaveDashboardSuccess)
     saveDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveDashboardSuccess) {
         const state = ctx.getState();
-        this.logger.success('State :: Save Dashboard [SUCCESS]', payload);
+        this.console.success('State :: Save Dashboard [SUCCESS]', payload);
         // we dont need to upload loadedDB here, do that will cause its state updated.
         ctx.patchState({...state,
             id: payload.id,
@@ -302,7 +308,7 @@ export class DBState {
 
     @Action(LoadSnapshot)
     loadSnapshot(ctx: StateContext<DBStateModel>, { id }: LoadSnapshot) {
-        this.logger.action('State :: Load Snapshot', { id });
+        this.console.action('State :: Load Snapshot', { id });
         ctx.patchState({ loading: true});
         return this.httpService.getSnapshotById(id).pipe(
             map(res => {
@@ -321,7 +327,7 @@ export class DBState {
 
     @Action(MigrateAndLoadSnapshot)
     migrateAndLoadSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadSnapshot) {
-            this.logger.action('State :: Migrate and Load Snapshot', { id, payload });
+            this.console.action('State :: Migrate and Load Snapshot', { id, payload });
             this.dbConverterService.convert(payload).subscribe((res) => {
                 this.dbService.updateTplVariablesFromURL(res);
                 ctx.dispatch(new LoadSnapshotSuccess(res));
@@ -330,7 +336,7 @@ export class DBState {
 
     @Action(LoadSnapshotSuccess)
     loadSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadSnapshotSuccess) {
-        this.logger.success('State :: Load Snapshot [SUCCESS]', { payload });
+        this.console.success('State :: Load Snapshot [SUCCESS]', { payload });
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -351,7 +357,7 @@ export class DBState {
     @Action(SaveSnapshot)
     saveSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveSnapshot) {
             ctx.patchState({ status: 'save-progress', error: {} });
-            this.logger.action('State :: Save Snapshot', { id, payload });
+            this.console.action('State :: Save Snapshot', { id, payload });
             return this.httpService.saveSnapshot(id, payload).pipe(
                 map( (res: any) => {
                     ctx.dispatch(new SaveSnapshotSuccess(res.body));
@@ -363,7 +369,7 @@ export class DBState {
     @Action(SaveSnapshotSuccess)
     saveSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveSnapshotSuccess) {
         const state = ctx.getState();
-        this.logger.success('State :: Save Snapshot [SUCCESS]', payload);
+        this.console.success('State :: Save Snapshot [SUCCESS]', payload);
         ctx.patchState({...state,
             lastSnapshotId: payload.id,
             status: 'save-snapshot-success'

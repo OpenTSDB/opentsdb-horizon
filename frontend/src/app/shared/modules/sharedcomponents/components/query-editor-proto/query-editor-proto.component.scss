@@ -83,6 +83,41 @@
                     color: white; // TODO: add to theme
                     background: rgba(255, 255, 255, 0.25); // TODO: add to theme
                 }
+
+                .query-alias-edit-icon {
+                    margin-left: 8px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(12px);
+                        margin-top: -2px;
+                    }
+                }
+
+                .query-alias-label {
+                    position: absolute;
+                    top: -8px;
+                    left: -8px;
+                    min-width: 100%;
+                    font-size: 12px;
+                    line-height: 12px;
+                    //color: white; // TODO: add to theme
+                    //background: rgba(255, 255, 255, 0.25); // TODO: add to theme
+                    padding: 2px 8px;
+                    border-radius: 8px;
+                    cursor: pointer;
+
+
+                }
+
+            }
+
+            .query-alias-edit-form {
+                .mat-form-field {
+                    align-self: flex-end;
+                }
+                .mat-button {
+                    margin-left: 4px;
+                }
             }
 
             .action-icons {
@@ -1287,6 +1322,7 @@
         lighten(map-get($background, navbar), 15%),
         map-get($background, navbar)
     );
+    $brand-color-lighter: map-get($background, navbar-alt);
     $brand-color-inverse: find-color-invert($brand-color);
 
     $lighter-divider: rgba(0, 0, 0, 0.04);
@@ -1326,6 +1362,17 @@
                 .mat-icon {
                     color: $link;
                 }
+            }
+
+            .query-alias-edit-icon {
+                .mat-icon {
+                    color: white;
+                }
+            }
+
+            .query-alias-label {
+                color: $brand-color-inverse;
+                background-color: $brand-color-lighter;
             }
         }
 
