@@ -240,7 +240,7 @@
         }*/
 
         .batch-selector {
-            border: 1px solid rgba(if($is-dark-theme, $white, $black), .8);
+            // border: 1px solid rgba(if($is-dark-theme, $white, $black), .8);
             background: $card;
         }
     }
