@@ -2062,6 +2062,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // allow all promises to resolve before anything else can be done
         Promise.all(promises)
            .then((results) => {
+
                 // resolve dashboard template variables
                 const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
 
@@ -2084,8 +2085,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.batchSelectedItems = selectedItems
            })
            .catch((e) => {
-               // Handle errors here?
-           });
+                // Handle errors here?
+                console.error(e);
+
+                // reset batchSelectItems
+                let keys = Object.keys(this.batchSelectedItems);
+                let selectedItems = {};
+
+                for(let i = 0; i < keys.length; i++) {
+                    selectedItems[keys[i]] = false;
+                }
+
+                this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
+                this.batchSelectedItems = selectedItems
+            });
 
     }
 
@@ -2214,7 +2227,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     let filter: any = query.filters[f];
 
                     // check if there is a custom filter
-                    if (filter.customFilter.length > 0) {
+                    if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
                         filter.customFilter = [];
                         filter.filter[0] = dbTplVarLookup[fkey].filter;

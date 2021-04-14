@@ -21,8 +21,6 @@ import { environment } from '../../../../../../environments/environment';
 
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 
-import * as moment from 'moment';
-
 @Component({
     //tslint:disable-next-line:component-selector
     selector: 'table-widget',
@@ -42,7 +40,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     @ViewChild(MatSort) sort: MatSort;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild('dataTable', {read: MatTable}) displayDataTable: MatTable<any>;
+    @ViewChild('dataTable', {read: MatTable}) dataTable: MatTable<any>;
 
     //global vars
     Object = Object;
@@ -173,22 +171,14 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                             this.setTimezone(message.payload.timezone);
                             const rawdata = message.payload.rawdata;
                             this.data = this.dataTransformer.yamasToTable(this.widget, this.options, rawdata); 
-
+                            this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
                             this.dataSource = new MatTableDataSource(this.data);
-                            this.dataSource.sortingDataAccessor = (data, colId) => {
-                                switch (colId) {
-                                  case 'metric': 
-                                  case 'tag':
-                                  case 'time':
-                                      return data[colId];
-                                  default: return parseFloat(data[colId]);
-                                }
-                              };
                             this.displayedColumns = this.util.deepClone(this.options.displayColumns); 
                             this.displayedColumnsIds = [...this.displayedColumns.map(d => d.id)];
-                            this.dataSource.sort = this.sort;
-
                             this.cdRef.detectChanges();
+                            if ( this.sort ) {
+                                this.sortData(this.sort);
+                            }
                         break;
                     case 'getUpdatedWidgetConfig':
                         this.widget = message.payload.widget;
@@ -313,6 +303,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     ngAfterViewInit() {
+        this.dataSource.sort = this.sort;
         ElementQueries.listen();
         ElementQueries.init();
         const dummyFlag = 1;
@@ -328,7 +319,30 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         });
     }
 
+    sortingDataAccessor(data, colId)  {
+        switch (colId) {
+          case 'metric': 
+          case 'tag':
+          case 'time':
+              return data[colId];
+          default: return parseFloat(data[colId+':raw']);
+        }
+    }
 
+    sortData(sort) {
+        this.widget.settings.visual.sortBy = sort.active;
+        this.widget.settings.visual.sortDir = sort.direction;
+        this.data.sort((a: any, b: any) => {
+            const valueA = this.sortingDataAccessor(a, sort.active);
+            const valueB = this.sortingDataAccessor(b, sort.active);
+            if (sort.active === 'time' || sort.active === 'metric' || sort.active === 'tag' ) {
+                return (valueA < valueB ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
+            } else {
+                return (sort.direction === 'asc') ? valueA - valueB : valueB - valueA;
+            }
+        });
+        this.dataTable.renderRows();
+    }
 
     trackByIndex(index) {
         return index;

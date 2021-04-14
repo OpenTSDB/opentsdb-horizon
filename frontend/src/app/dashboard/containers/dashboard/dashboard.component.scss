@@ -285,6 +285,8 @@
     $close-button-text: map-get($foreground, navbar-text);
     $navbar-background: map-get($background, navbar);
 
+    $disabled-text: map-get($foreground, disabled-text);
+
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
@@ -324,6 +326,10 @@
             .batch-copy,
             .batch-trash {
                 color: map-get($foreground, link);
+
+                &[disabled] {
+                    color: $disabled-text;
+                }
             }
 
             .batch-select.is-checked {
@@ -353,6 +359,10 @@
                 &:hover {
                     background-color: map-get($widget, widget-icons-background-hover);
                 }
+            }
+
+            .widget-type-label {
+                color: map-get($foreground, text);
             }
         }
     }
