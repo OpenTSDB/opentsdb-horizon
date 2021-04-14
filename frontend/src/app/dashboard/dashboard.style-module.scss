@@ -18,8 +18,6 @@
 
 // containers
 @import './containers/dashboard/dashboard.component'; // nothing to style yet
-@import './containers/namespace/namespace.component';
-@import './containers/user/user.component';
 
 // components
 @import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
@@ -42,8 +40,6 @@
 
     // containers
     @include dashboard-component-base(); // nothing to style yet
-    @include app-namespace-component-base();
-    @include app-user-component-base();
 
     // components
     @include navbar-dashboard-actions-menu-component-base();
@@ -66,8 +62,6 @@
 
     // container
     @include dashboard-component-theme($theme-config); //nothing to style yet
-    @include app-namespace-component-theme($theme-config);
-    @include app-user-component-theme($theme-config);
 
     // components
     @include navbar-dashboard-actions-menu-component-theme($theme-config);

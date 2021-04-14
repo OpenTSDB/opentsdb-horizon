@@ -14,6 +14,8 @@
 
 @import 'landing-page/landing-page.style-module';
 @import 'dashboard/dashboard.style-module';
+@import 'namespace/namespace.style-module';
+@import 'user/user.style-module';
 @import 'alerts/alerts.style-module';
 
 @import 'shared/modules/dashboard-filesystem/dashboard-filesystem.style-module';
@@ -34,6 +36,8 @@
     @include universal-clipboard-module-core();
     @include landing-page-module-core();
     @include dashboard-module-core();
+    @include namespace-module-core();
+    @include user-module-core();
     @include alerts-module-core();
     @include dynamic-widgets-module-core();
     @include sharedcomponents-module-core();
@@ -63,6 +67,8 @@
     @include universal-clipboard-module-theme($theme-config);
     @include landing-page-module-theme($theme-config);
     @include dashboard-module-theme($theme-config);
+    @include namespace-module-theme($theme-config);
+    @include user-module-theme($theme-config);
     @include alerts-module-theme($theme-config);
     @include dynamic-widgets-module-theme($theme-config);
     @include sharedcomponents-module-theme($theme-config);
