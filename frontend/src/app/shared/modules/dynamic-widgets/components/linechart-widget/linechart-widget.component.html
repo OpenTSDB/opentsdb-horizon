@@ -35,7 +35,7 @@
         <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="displayMultigraph">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
-                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
+                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid' && multigraphColumns.length > 0) ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
                 <!-- column headers -->
                 <div class="graph-header-row" #multigraphHeaderRow *ngIf="multigraphColumns.length > 0 && multigraphMode === 'grid'">
                     <div class="graph-header-cell" *ngFor="let columnName of multigraphColumns" [style.width.px]="size.width">
