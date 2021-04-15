@@ -613,6 +613,28 @@
             }
         }
     }
+
+    .mat-autocomplete-panel.default-value-autocomplete {
+        position: relative;
+        min-width: 320px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .option-list {
+            overflow: auto;
+            max-height: 224px;
+            flex: 1;
+        }
+
+        .filter-type-toggle {
+            width: 100%;
+
+            .mat-tab-link {
+                height: 32px;
+            }
+        }
+    }
 }
 
 @mixin template-variable-panel-component-theme($theme-config) {
@@ -834,6 +856,10 @@
 
     // cdk items here (if any)
     .mat-autocomplete-panel.default-value-autocomplete {
+        .filter-type-toggle {
+            border-bottom: 2px solid $divider;
+        }
+
         // regexp option is treated differently
         .mat-option:first-child {
             border-bottom: 1px solid $divider;
