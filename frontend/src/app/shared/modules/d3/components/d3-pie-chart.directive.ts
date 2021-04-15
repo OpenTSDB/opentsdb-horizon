@@ -129,7 +129,8 @@ export class D3PieChartDirective implements OnInit, OnChanges {
         let total = d3.sum(dataset.map(d => (d.enabled) ? d.value : 0));
 
         let labels;
-        if (this.options.legend.showPercentages) {
+        if ( this.options.legend.showPercentages || this.options.legend.showValue ) {
+            const format = this.options.legend.showPercentages ? '.1%' : '.3s';
             labels = arcs.append('text')
                 .attr('transform', function (d) {
                     const diff = d.endAngle - d.startAngle;
@@ -139,11 +140,19 @@ export class D3PieChartDirective implements OnInit, OnChanges {
                 .attr('dy', '.30em')
                 .style('text-anchor', 'middle')
                 .style('font-size', '0.9em')
-                .attr('stroke', 'black')
+                .attr('stroke', (d: any) => {
+                    const color = d3.rgb(d.data.color === 'auto' ? '#000000' : d.data.color);
+                    const luminance = Math.sqrt(0.241 * Math.pow(color.r, 2) + 0.691 * Math.pow(color.g, 2) +  0.068 * Math.pow(color.b, 2));
+                     if (luminance >= 130) {
+                         return '#000000';
+                     } else {
+                         return '#ffffff';
+                     }
+                })
                 .attr('stroke-width', '0.7px')
                 .style('font-weight', '100')
                 .style('opacity', (d) => (d.endAngle - d.startAngle) * chartSize > 25 && d.data.enabled ? 1 : 0)
-                .text(d => d3.format('.1%')(d.value / total))
+                .text(d => d3.format(format)( this.options.legend.showPercentages ? d.value / total : d.value ))
                 .on('mouseover', mouseover)
                 .on('mousemove', mousemove)
                 .on('mouseleave', mouseleave);
