@@ -72,8 +72,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     useDBFScope = false;
     doSearch = false;
     scopeModify = false;
-
     scopeMenuNavSelection = 'tagscope';
+    valueMode = 'regexp'; // regexp or librange
 
     constructor(
         private fb: FormBuilder,
@@ -123,6 +123,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.selectedNamespaces = [];
     }
 
+    // change value selection mode, default will be regexp
+    valueModeChange(event: any, mode: string) {
+        this.valueMode = mode;
+        event.preventDefault();
+        event.stopPropagation();
+    }
     ngOnChanges(changes: SimpleChanges) {
         if (changes.widgets) {
             // call to get dashboard namespaces

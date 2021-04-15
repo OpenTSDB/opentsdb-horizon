@@ -14,10 +14,10 @@
                         <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
                             <nav mat-tab-nav-bar class="filter-type-toggle">
-                                <a mat-tab-link [active]="checkRegexp(vartpl.get('filter').value)">
+                                <a mat-tab-link [active]="valueMode === 'regexp'" (click)="valueModeChange($event, 'regexp')">
                                     <span>Regex</span>
                                 </a>
-                                <a mat-tab-link [active]="!checkRegexp(vartpl.get('filter').value)">
+                                <a mat-tab-link [active]="valueMode === 'librange'" (click)="valueModeChange($event, 'librange')">
                                     <span>Librange</span>
                                 </a>
                             </nav>
@@ -152,10 +152,10 @@
                                         <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
                                         <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
                                             <nav mat-tab-nav-bar class="filter-type-toggle">
-                                                <a mat-tab-link [active]="checkRegexp(tpl.get('filter').value)">
+                                                <a mat-tab-link [active]="valueMode === 'regexp'" (click)="valueModeChange($event, 'regexp')">
                                                     <span>Regex</span>
                                                 </a>
-                                                <a mat-tab-link [active]="!checkRegexp(tpl.get('filter').value)">
+                                                <a mat-tab-link [active]="valueMode === 'librange'" (click)="valueModeChange($event, 'librange')">
                                                     <span>Librange</span>
                                                 </a>
                                             </nav>
