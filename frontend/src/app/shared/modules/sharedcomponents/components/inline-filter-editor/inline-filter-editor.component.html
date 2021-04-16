@@ -64,11 +64,19 @@
                 <div class="column-output spinner" *ngIf="tagValueSearch">
                     <mat-spinner color="primary" diameter="20"></mat-spinner>
                 </div>
-                <div class="column-output">
+                <div class="column-output" [@.disabled]="true">
                     <div class="tag-values-count"  *ngIf="!tagValueSearch">
                         <span class="mat-caption">{{filteredTagValues.length}} <strong>"{{selectedTag}}"</strong> tag
                             {{filteredTagValues.length > 1 ? 'values' : 'value'}} available</span>
                     </div>
+                    <nav mat-tab-nav-bar class="filter-type-toggle" (click)="$event.stopProgation(); $event.preventDefault()">
+                        <div mat-tab-link [active]="tagValueFilterType === 'regexp'" (click)="$event.stopPropagation(); setTagFilterType('regexp');">
+                            <span>Regex</span>
+                        </div>
+                        <div mat-tab-link [active]="tagValueFilterType === 'librange'" (click)="$event.stopPropagation(); setTagFilterType('librange');">
+                            <span>Librange</span>
+                        </div>
+                    </nav>
                     <div class="tag-values-search-results has-scroller">
                         <div class="is-scroller">
                             <div class="option-item" *ngIf="tagValueSearchControl.value"
