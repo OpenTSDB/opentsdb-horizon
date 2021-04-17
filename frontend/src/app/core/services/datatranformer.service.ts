@@ -63,11 +63,12 @@ export class DatatranformerService {
                 const mLabel = this.util.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
                 const metric = !mConfig.expression ? queryResults.data[j].metric : mLabel
                 let label = vConfig.label ? vConfig.label : metric;
-                label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
+                
                 const tagLabel = this.getLableFromMetricTags('', { metric: '', ...tags}) || 'All';
                 const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
                 
                     if ( summary ) {
+                        label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
                         const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
                         const colLabel = visual.layout == 'metrics:tags' ? tagLabel : label;
                         const rowId = visual.layout == 'metrics:tags' ? mLabel : tagLabel;
@@ -85,7 +86,7 @@ export class DatatranformerService {
                         objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
                         objData[rowId][colId + ':raw'] = data[ts][index];
                     } else {
-                        
+                        label = this.getLableFromMetricTags(vConfig.label, { metric: metric, ...tags});
                         displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
                         objData[id] = { rawdata:data, data: data.map(d => { 
                             const dunit = this.unit.getNormalizedUnit(d, format);
