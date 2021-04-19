@@ -863,16 +863,47 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     bulkDisableAlerts() {
         // TODO: get list of selected items, then disable (see this.toggleAlert)
+        const selected: any[] = this.selection.selected.map(item => {
+            const data: any = {id: item.id, enabled: false};
+            return data;
+        });
+        this.store.dispatch(
+            new ToggleAlerts(
+                this.selectedNamespace,
+                { data: selected }
+            )
+        );
     }
 
     bulkDeleteAlerts() {
         // TODO: get list of selected items, then do delete confirmation, then delete (see this.deleteItem)
+        const selected: any[] = this.selection.selected.map(item => item.id);
+        const dialogData: any = {
+            bulk: true,
+            items: selected
+        }
+        this.confirmDeleteDialog = this.dialog.open(this.confirmDeleteDialogRef, { data: dialogData });
+        this.confirmDeleteDialog.afterClosed().subscribe(event => {
+            if (event.deleted) {
+                if (this.list === 'alerts') {
+                    this.store.dispatch(new DeleteAlerts(this.selectedNamespace, { data: selected }));
+                } else {
+                    this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: selected }));
+                }
+            }
+            this.confirmDeleteDialog = null;
+        });
     }
 
     /** actions */
 
     toggleAlert(alertObj: any) {
-        this.store.dispatch(new ToggleAlerts(this.selectedNamespace, { data: [{ id: alertObj.id, enabled: !alertObj.enabled }] }));
+        this.store.dispatch(
+            new ToggleAlerts(
+                this.selectedNamespace,
+                { data: [{ id: alertObj.id, enabled: !alertObj.enabled }] }
+            )
+        );
     }
 
     editAlert(element: any) {
@@ -1110,6 +1141,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: [obj.id] }));
                 }
             }
+            this.confirmDeleteDialog = null;
         });
     }
 
