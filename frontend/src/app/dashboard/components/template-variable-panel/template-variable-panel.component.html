@@ -13,7 +13,7 @@
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
                         <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
-                            <nav mat-tab-nav-bar class="filter-type-toggle">
+                            <!-- <nav mat-tab-nav-bar class="filter-type-toggle">
                                 <a mat-tab-link [active]="valueMode === 'regexp'" (click)="valueModeChange($event, 'regexp')">
                                     <span>Regex</span>
                                 </a>
@@ -21,6 +21,7 @@
                                     <span>Librange</span>
                                 </a>
                             </nav>
+                        -->
                             <div class="option-list">
                                 <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                     {{option}}
