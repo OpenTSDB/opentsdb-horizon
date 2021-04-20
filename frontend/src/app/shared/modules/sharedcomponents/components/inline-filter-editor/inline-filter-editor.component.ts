@@ -74,6 +74,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     bsTagValSearch = '';
     showDashboardFilters = false;
 
+    tagValueFilterType: string = 'regexp'; // regexp || librange
+
     constructor(
         private elRef: ElementRef,
         private httpService: HttpService,
@@ -165,6 +167,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    setTagFilterType(type: string) {
+        this.tagValueFilterType = type;
     }
 
     setTagKeys() {
