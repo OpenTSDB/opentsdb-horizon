@@ -27,7 +27,7 @@
             flex: 1;
         }
 
-        
+
 
         .mat-button-toggle-group{
             overflow: initial;
@@ -62,7 +62,7 @@
                 background: white;
             }*/
         }
-        
+
         .widget-config-container {
             //flex-direction: row-reverse;
             box-sizing: border-box;
@@ -106,12 +106,17 @@
             position: relative;
             .mat-table {
                 // width: 100%;
-                .mat-header-row, .mat-footer-row, .mat-row {
+                .mat-header-row,
+                .mat-footer-row,
+                .mat-row {
                     min-height: inherit;
                 }
+
                 height: 100%;
                 overflow: overlay;
-                .mat-header-cell, .mat-cell {
+
+                .mat-header-cell,
+                .mat-cell{
                     min-width: 80px;
                     font-size: inherit;
                     padding: inherit;
@@ -131,11 +136,15 @@
                             overflow-wrap: anywhere;
                         }
                     }
-                    
+
                 }
                 .mat-header-cell,
                 .mat-cell {
                     overflow-wrap: anywhere;
+                }
+
+                .mat-header-cell .mat-sort-header-button span {
+                    text-align: right;
                 }
             }
             .message {
@@ -150,7 +159,7 @@
     }
 
     // EDIT MODE
-    .edit-view-container.is-active 
+    .edit-view-container.is-active
     {
         .widget-config-container[style*="flex-direction: row-reverse;"] {
             //flex-direction: row-reverse;
@@ -178,7 +187,7 @@
             //flex-direction: row-reverse;
             // box-sizing: border-box;
             // padding: 0;
-            
+
             .table-widget-output-container {
                 // border: 1px solid #000;
                 width: 100%;
@@ -198,7 +207,7 @@
 
 }
 
-@mixin table-widget-component-theme($theme-config) 
+@mixin table-widget-component-theme($theme-config)
 {
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
@@ -236,7 +245,7 @@
     .widget-output {
         background-color: map-get($background, card);
     }
-    
+
     .mat-cell {
         &.mat-table-sticky {
             border-right: 1px solid if($is-dark, find-color-invert(#e0e0e0), #e0e0e0);
