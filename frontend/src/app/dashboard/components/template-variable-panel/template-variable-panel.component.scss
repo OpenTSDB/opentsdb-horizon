@@ -631,7 +631,14 @@
             width: 100%;
 
             .mat-tab-link {
-                height: 32px;
+                font-size: 12px;
+                height: 26px;
+            }
+        }
+
+        &.mat-autocomplete-hidden {
+            .mat-tab-nav-bar {
+                display: none;
             }
         }
     }
