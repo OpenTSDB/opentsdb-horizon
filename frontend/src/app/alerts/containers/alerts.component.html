@@ -402,10 +402,11 @@
     </mat-menu>
 </ng-template>
 
-<ng-template #confirmDeleteDialog let-data>
+<ng-template #confirmDeleteDialog let-data let-batch>
     <h2 matDialogTitle>Delete {{list === 'alerts' ? 'Alert' : 'Snooze'}} Confirmation</h2>
     <mat-dialog-content>
-        <p><em>Are you sure you want to delete the {{list === 'alerts' ? 'alert' : 'snooze'}} <strong *ngIf="list === 'alerts'">"{{ data.name }}"</strong></em></p>
+        <p *ngIf="!data.bulk"><em>Are you sure you want to delete the {{list === 'alerts' ? 'alert' : 'snooze'}} <strong *ngIf="list === 'alerts'">"{{ data.name }}"</strong></em></p>
+        <p *ngIf="data.bulk"><em>Are you sure you want to delete <strong>{{data.items.length}} {{(list === 'alerts' ? 'alert' : 'snooze')+(data.items.length > 1 ? 's':'')}}</strong></em></p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
         <button mat-button color="primary" (click)="confirmDelete(data)">Yes</button>
