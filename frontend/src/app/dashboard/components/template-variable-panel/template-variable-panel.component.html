@@ -13,18 +13,6 @@
                         <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
                         <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
                         <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
-            <!--                <div (click)="$event.stopPropagation(); $event.prevent.default();" style="cursor: pointer;">
-                                click deny test
-                            </div>
-                            <nav mat-tab-nav-bar class="filter-type-toggle" (click)="$event.stopProgation(); $event.preventDefault()">
-                                <div mat-tab-link [active]="checkRegexp(vartpl.get('filter').value)" (click)="$event.stopPropagation()">
-                                    <span>Regex</span>
-                                </div>
-                                <div mat-tab-link [active]="!checkRegexp(vartpl.get('filter').value)" (click)="$event.stopPropagation()">
-                                    <span>Librange</span>
-                                </div>
-                            </nav>
-            -->
                             <div class="option-list">
                                 <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                     {{option}}
@@ -155,14 +143,6 @@
                                             (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
                                         <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
                                         <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
-                                            <nav mat-tab-nav-bar class="filter-type-toggle">
-                                                <a mat-tab-link [active]="checkRegexp(tpl.get('filter').value)" (click)="$event.stopPropagation()">
-                                                    <span>Regex</span>
-                                                </a>
-                                                <a mat-tab-link [active]="!checkRegexp(tpl.get('filter').value)" (click)="$event.stopPropagation()">
-                                                    <span>Librange</span>
-                                                </a>
-                                            </nav>
                                             <div class="option-list">
                                                 <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
                                                     {{option}}

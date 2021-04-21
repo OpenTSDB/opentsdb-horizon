@@ -616,7 +616,7 @@
 
     .mat-autocomplete-panel.default-value-autocomplete {
         position: relative;
-        min-width: 320px;
+        min-width: initial;
         overflow: hidden;
         display: flex;
         flex-direction: column;
