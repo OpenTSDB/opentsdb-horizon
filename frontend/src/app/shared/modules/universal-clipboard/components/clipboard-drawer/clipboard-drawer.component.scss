@@ -305,6 +305,10 @@
             &.widget-icon-events::after {
                 background-position: (-($widgetSize)) (-($widgetSize * 2));
             }
+
+            &.widget-icon-table::after {
+                background-position: (-($widgetSize * 3)) (-($widgetSize * 2));
+            }
         }
     }
 
