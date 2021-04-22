@@ -186,7 +186,13 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .on("mouseleave", mouseleave);
 
             bars.append("text")
-                .attr("class", "label")
+                .attr("class", (d: any) => {
+                    let tmpClass = 'label';
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    console.log('%ctcContrast', 'background: red; padding: 2px; color white;', tcContrast);
+                    return tmpClass + ' ' + tcContrast.type;
+                })
                 .attr("y", (d, i) => y(i) + y.bandwidth() / 2)
                 .attr("x", 0)
                 .attr("font-size", fontSize)
@@ -194,8 +200,15 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .attr("dx", "0.25em")
                 .text((d, i) => d.label)
                 .style('fill', (d: any) => {
-                    const color = d3.rgb(d.color === 'auto' ? '#000000' : d.color);
-                    return 'rgb(' + Math.floor(255 - color.r) + ',' + Math.floor(255 - color.g) + ',' + Math.floor(255 - color.b) + ')';
+                    console.log('%cCOLOR', 'background: red; padding: 2px; color white;', d);
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    let returnVal;
+
+                    return 'rgba(' + tcContrast.rgb.r + ', ' + tcContrast.rbg.b + ', ' + tcContrast.rgb.g + ', .85)';
+
+                    //const color = d3.rgb(d.color === 'auto' ? '#000000' : d.color);
+                    //return 'rgb(' + Math.floor(255 - color.r) + ',' + Math.floor(255 - color.g) + ',' + Math.floor(255 - color.b) + ')';
                 })
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
