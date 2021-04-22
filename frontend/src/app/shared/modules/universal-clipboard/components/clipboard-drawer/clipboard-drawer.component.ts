@@ -123,6 +123,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
             label: 'Events',
             type: 'EventsWidgetComponent',
             iconClass: 'widget-icon-events'
+        },
+        {
+            label: 'Table',
+            type: 'TableWidgetComponent',
+            iconClass: 'widget-icon-table'
         }
         /*,
         {
