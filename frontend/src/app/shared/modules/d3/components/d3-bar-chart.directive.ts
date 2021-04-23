@@ -219,7 +219,6 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                     let tmpClass = 'label';
                     let tmpColor = d.color === 'auto' ? '#000000' : d.color;
                     let tcContrast = this.utils.findContrastColor(tmpColor);
-                    console.log('%ctcContrast', 'background: red; padding: 2px; color white;', tcContrast);
                     return tmpClass + ' ' + tcContrast.type;
                 })
                 .attr("y", (d, i) => y(i))
@@ -227,7 +226,6 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .attr("height", barHeight)
                 .attr("width", (d: any) => {
                     let txtWidth = this.utils.calculateTextWidth(d.label, '12px', 'Helvetica Neue');
-                    console.log('%cWidth', 'color: white; background: green; padding: 2px;', txtWidth);
                     return txtWidth + 10;
                 })
                 .style("position","relative")
@@ -240,7 +238,6 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .style("margin-top", "-9px")
                 .style("color", "rgba(0, 0, 0, .85)")
                 .style("background-color",(d: any) => {
-                    console.log('%cCOLOR', 'background: red; padding: 2px; color white;', d);
                     let tmpColor = d.color === 'auto' ? '#000000' : d.color;
                     let tcContrast = this.utils.findContrastColor(tmpColor);
                     let opacity: any = (tcContrast.type === 'white') ? .65 : 0
