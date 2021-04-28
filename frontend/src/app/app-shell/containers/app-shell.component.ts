@@ -275,6 +275,10 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                         this.messageBarData = {};
                         this.messageBarVisible = false;
                     }
+                case 'changeToSpecificNamespaceView':
+                case 'changeToSpecificUserView':
+                    this.drawer.open();
+                    this.store.dispatch(new UpdateNavigatorSideNav({ mode: this.drawerMode, currentApp: 'dashboard' }));
                     break;
                 default:
                     break;

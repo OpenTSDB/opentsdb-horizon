@@ -34,7 +34,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets'), { maxAg
 app.use(express.static(path.join(__dirname, 'public')));
 
 // for now, we need to get the better regex and re-organize the api url
-app.get(/^\/(d|snap|main|a)(.*)/, function (req, res) {
+app.get(/^\/(d|snap|main|user|namespace|a)(.*)/, function (req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
