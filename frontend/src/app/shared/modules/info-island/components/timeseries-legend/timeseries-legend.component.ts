@@ -1,5 +1,5 @@
 import {
-    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener
+    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
@@ -11,6 +11,8 @@ import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { I } from '@angular/cdk/keycodes';
+import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
+import { ResizeSensor} from 'css-element-queries';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -18,13 +20,14 @@ import { I } from '@angular/cdk/keycodes';
     templateUrl: './timeseries-legend.component.html',
     styleUrls: []
 })
-export class TimeseriesLegendComponent implements OnInit, OnDestroy {
+export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterContentInit {
 
     @HostBinding('class.timeseries-legend-component') private _hostClass = true;
 
     @ViewChild('legendTable', { read: MatTable }) private _legendTable: MatTable<any>;
     @ViewChild('legendTable', { read: ElementRef }) private _legendTableEl: ElementRef<any>;
     @ViewChild('legendTable', { read: CdkObserveContent }) private _legendTableObserve: CdkObserveContent;
+    @ViewChild('tsDataWrapper', { read: ElementRef }) private _tsDataWrapper: ElementRef<any>;
     @ViewChild(MatSort) sort: MatSort;
 
     islandRef: InfoIslandComponent;
@@ -55,7 +58,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
     /** Table Stuff */
     tableColumns: string[] = [];
-    tableDataSource: MatTableDataSource<any[]> = new MatTableDataSource<any[]>([]);
+    //tableDataSource: MatTableDataSource<any[]> = new MatTableDataSource<any[]>([]);
+    tableDataSource: TableVirtualScrollDataSource<any[]> = new TableVirtualScrollDataSource<any[]>([]);
     resultTagKeys: string[] = [];
 
     highlightTag: any = { key: '', value: '' };
@@ -67,6 +71,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     firstClickedSrcIndex: any = -1;
     lastClickedSrcIndex: any = -1;
 
+    virtualScrollHeight: number = 193;
 
     multigraph: any = false;
 
@@ -90,10 +95,14 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
             this.options.showLogscaleToggle = false;
         }
 
-        this.currentWidgetOptions = utilsService.deepClone(_islandData.data.options);
-        this.currentWidgetQueries = utilsService.deepClone(_islandData.data.queries);
+        //this.currentWidgetOptions = utilsService.deepClone(_islandData.data.options);
+        //this.currentWidgetQueries = utilsService.deepClone(_islandData.data.queries);
+        this.currentWidgetOptions = _islandData.data.options;
+        this.currentWidgetQueries = _islandData.data.queries;
+
         this.multigraph = _islandData.data.multigraph;
-        this.data = utilsService.deepClone(_islandData.data.tsTickData);
+        //this.data = utilsService.deepClone(_islandData.data.tsTickData);
+        this.data = _islandData.data.tsTickData;
         this.setTableColumns();
         this.setTableData();
         this.options.open = true;
@@ -123,12 +132,17 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
         this.subscription.add(this.interCom.requestListen().subscribe(message => {
             // this.console.intercom('[TSL] RequestListen', {message});
             switch (message.action) {
+                case 'islandResizeComplete':
+                    console.log('%cRESIZE COMPLETE', 'color: white; background: green; padding: 2px;')
+                    break;
                 case 'tsLegendWidgetOptionsUpdate':
-                    this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                    //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                    this.currentWidgetOptions = message.payload.options;
                     this.updateMasterCheckboxStates();
                     break;
                 case 'tsLegendWidgetSettingsResponse':
-                    this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                    //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                    this.currentWidgetOptions = message.payload.options;
                     const settings = message.payload.settings;
                     this.currentWidgetType = settings.component_type;
                     const axes = settings.axes;
@@ -168,9 +182,11 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                         this.currentWidgetId = message.id;
                         this.multigraph = message.payload.multigraph;
                         if (message.payload.queries) {
-                            this.currentWidgetQueries = this.utilsService.deepClone(message.payload.queries);
+                            //this.currentWidgetQueries = this.utilsService.deepClone(message.payload.queries);
+                            this.currentWidgetQueries = message.payload.queries;
                         }
-                        this.data = this.utilsService.deepClone(message.payload.tickData);
+                        //this.data = this.utilsService.deepClone(message.payload.tickData);
+                        this.data = message.payload.tickData;
                         this.setTableColumns();
                         this.setTableData();
 
@@ -233,6 +249,18 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
         this.tableDataSource.sort = this.sort;
         this.tableDataSource.sortingDataAccessor = this.sortingDataAccessor;
         this.tableDataSource.sortData = this.sortData;
+    }
+
+    ngAfterContentInit() {
+        const resizeSensor = new ResizeSensor(this._tsDataWrapper.nativeElement, (size) => {
+            /*const newSize = {
+               width: size.width * ( this.data.type === 'event' ? 0.65 : 1 ) - 5,
+               height: size.height
+           };
+           this.size = newSize;*/
+           console.log('%cTS DATA WRAPPER SIZE CHANGE', 'color: white; background-color: purple; padding: 2px;', size);
+           this.virtualScrollHeight = size.height ? size.height : 193;
+        });
     }
 
     get visibleDataCount() {
