@@ -78,7 +78,7 @@
                                         [chartType]="chartType"
                                         [data]="graphData[yKey][xKey]"
                                         [size]="{'width':(size.width - 6), 'height': (size.height - 6)}"
-                                        [options]="graphData[yKey][xKey].options"
+                                        [options]="displayMultigraph ? graphData[yKey][xKey].options : options"
                                         [eventBuckets]="buckets"
                                         [showEvents]="widget.settings.visual.showEvents"
                                         [multigraph]="displayMultigraph && multigraphEnabled"
