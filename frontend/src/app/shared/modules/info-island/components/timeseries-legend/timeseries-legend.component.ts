@@ -253,12 +253,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     ngAfterContentInit() {
         const resizeSensor = new ResizeSensor(this._tsDataWrapper.nativeElement, (size) => {
-            /*const newSize = {
-               width: size.width * ( this.data.type === 'event' ? 0.65 : 1 ) - 5,
-               height: size.height
-           };
-           this.size = newSize;*/
-           console.log('%cTS DATA WRAPPER SIZE CHANGE', 'color: white; background-color: purple; padding: 2px;', size);
            this.virtualScrollHeight = size.height ? size.height : 193;
         });
     }
