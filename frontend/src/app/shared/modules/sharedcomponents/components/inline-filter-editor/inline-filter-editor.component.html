@@ -79,13 +79,24 @@
                     </div>
                     <div class="tag-values-search-results has-scroller">
                         <div class="is-scroller">
-                            <div class="option-item" *ngIf="tagValueSearchControl.value"
-                            (click)="updateTagValueSelection(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
-                            <div class="option-cell add-remove">
-                                <mat-icon>{{ getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}</mat-icon>
+                            <div class="option-item" *ngIf="tagValueSearchControl.value && tagValueFilterType === 'regexp'"
+                                (click)="updateTagValueSelection(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
+                                <div class="option-cell add-remove">
+                                    <mat-icon>
+                                        {{ getTagValueIndex(selectedTag, 'regexp(' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}
+                                    </mat-icon>
+                                </div>
+                                <div class="option-cell label">regexp({{tagValueSearchControl.value.trim()}})</div>
                             </div>
-                            <div class="option-cell label">regexp({{tagValueSearchControl.value.trim()}})</div>
-                        </div>
+                            <div class="option-item" *ngIf="tagValueSearchControl.value && tagValueFilterType === 'librange'"
+                                (click)="updateTagValueSelection(selectedTag, 'librange(@' + tagValueSearchControl.value.trim() + ')', getTagValueIndex(selectedTag, 'librange(@' + tagValueSearchControl.value.trim() + ')') === -1 ? 'add' : 'remove')">
+                                <div class="option-cell add-remove">
+                                    <mat-icon>
+                                        {{ getTagValueIndex(selectedTag, 'librange(@' + tagValueSearchControl.value.trim() + ')' ) === -1 ? 'add_circle_outline' : 'remove_circle_outline' }}
+                                    </mat-icon>
+                                </div>
+                                <div class="option-cell label">librange(@{{tagValueSearchControl.value.trim()}})</div>
+                            </div>
                             <div class="option-item" *ngFor="let option of filteredTagValues"
                                 (click)="updateTagValueSelection(selectedTag, option.name, (getTagValueIndex(selectedTag, option.name) === -1 ? 'add' : 'remove'))">
                                 <div class="option-cell add-remove">
