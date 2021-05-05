@@ -26,22 +26,29 @@
             <!-- Selection Column -->
             <ng-container matColumnDef="checkbox">
                 <th mat-header-cell *matHeaderCellDef >
-                    <mat-checkbox value="" color="primary"
+                    <!--<mat-checkbox value="" color="primary"
                         [checked]="masterChecked"
                         [indeterminate]="masterIndeterminate"
-                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>
+                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="$event.stopPropagation(); masterCheckboxClick($event)">
+                        <mat-icon>{{masterIndeterminate ? 'indeterminate_check_box' : masterChecked ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                    <mat-checkbox value="" color="primary"
+                    <!--<mat-checkbox value="" color="primary"
                         [checked]="currentWidgetOptions.visibility[element.srcIndex]"
-                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>
+                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="timeSeriesVisibilityToggle(element.srcIndex, currentWidgetOptions.visibility[element.srcIndex], $event);">
+                        <mat-icon>{{currentWidgetOptions.visibility[element.srcIndex] ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
                 </td>
             </ng-container>
 
             <!-- Metric Name Column -->
             <ng-container matColumnDef="metric">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header >metric</th>
-                <td mat-cell *matCellDef="let element" (click)="timeseriesVisibilityBy('row', element)">
+                <td mat-cell *matCellDef="let element; let i = index"
+                    (click)="timeseriesVisibilityBy('row', element, $event)">
                     <span class="color-chip" [style.color]="element.series.color"></span>
                     <span [matTooltip]="element.series.hash">{{formattedMetricLabel(element)}}</span>
                 </td>
@@ -50,7 +57,11 @@
             <!-- Tag Columns (dynamic) -->
             <ng-container *ngFor="let resultTag of resultTagKeys" [matColumnDef]="resultTag">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header >{{resultTag}}</th>
-                <td mat-cell *matCellDef="let element" [ngClass]="{'tag-highlight': !multigraph && highlightTag.key === resultTag && highlightTag.value === element.series.tags[resultTag]}" (click)="timeseriesVisibilityBy('tag', {'tag': resultTag, 'value': element.series.tags[resultTag]})" (mouseover)="tableHighlightTag(resultTag, element.series.tags[resultTag]);" (mouseleave)="tableHighlightTag('', '')">
+                <td mat-cell *matCellDef="let element"
+                    [ngClass]="{'tag-highlight': !multigraph && highlightTag.key === resultTag && highlightTag.value === element.series.tags[resultTag]}"
+                    (click)="timeseriesVisibilityBy('tag', {'tag': resultTag, 'value': element.series.tags[resultTag], srcIndex: element.srcIndex}, $event)"
+                    (mouseover)="tableHighlightTag(resultTag, element.series.tags[resultTag]);"
+                    (mouseleave)="tableHighlightTag('', '')">
                     <span>{{element.series.tags[resultTag] || 'n/a'}}</span>
                 </td>
             </ng-container>
@@ -64,7 +75,8 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true" class="mat-elevation-z1"></tr>
-            <tr mat-row *matRowDef="let row; columns: tableColumns;" [ngClass]="{'tag-highlight': !multigraph && row.series.tags[highlightTag.key] === highlightTag.value}"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;"
+                [ngClass]="{'tag-highlight': !multigraph && row.series.tags[highlightTag.key] === highlightTag.value}"></tr>
         </table>
     </div>
 </div>

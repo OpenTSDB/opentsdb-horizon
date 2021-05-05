@@ -12,21 +12,22 @@ import {
 
 import { Observable, Subscription, of } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../../../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
 import {
     DbfsResourcesState,
     DbfsLoadResources,
     DbfsState,
     DbfsLoadSubfolderSuccess
-} from '../../../../state';
+} from '../../state';
 
 import {
     Select,
     Store
 } from '@ngxs/store';
-import { DbfsUtilsService } from '../../../../services/dbfs-utils.service';
-import { DbfsService } from '../../../../services/dbfs.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
+import { DbfsUtilsService } from '../../services/dbfs-utils.service';
+import { DbfsService } from '../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
@@ -120,6 +121,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
+        private console: ConsoleService,
         private service: DbfsService,
         private cdref: ChangeDetectorRef
     ) { }
@@ -149,12 +151,19 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     /* INIT MINI NAV */
     private miniNavInit() {
 
+        let resetToRoot = false;
+        let initialPath = this.path;
+        if (initialPath === '' && this.mode === 'save') {
+            resetToRoot = true;
+            initialPath = '/user/'+this.user.alias;
+        }
+
         // setup origin details
-        const pathDetails = this.dbfsUtils.detailsByFullPath(this.path);
+        const pathDetails = this.dbfsUtils.detailsByFullPath(initialPath);
         if (this.type === 'file') {
-            this.originDetails = this.store.selectSnapshot(DbfsResourcesState.getFile(this.path));
+            this.originDetails = this.store.selectSnapshot(DbfsResourcesState.getFile(initialPath));
         } else {
-            this.originDetails = this.store.selectSnapshot(DbfsResourcesState.getFolder(this.path));
+            this.originDetails = this.store.selectSnapshot(DbfsResourcesState.getFolder(initialPath));
         }
 
         // setup root panel
@@ -175,7 +184,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         // take care of path panels
         // NOTE: we can use the cache (on first init) since they should have loaded them in order to initiate the mini nav
 
-        const pathParts = this.path.split('/');
+        const pathParts = initialPath.split('/');
 
         // pop off the last thing, because it is the origin target
         if (this.mode === 'move') {
@@ -268,6 +277,14 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                     }
                 }
             }
+        }
+
+
+
+        if (this.mode === 'save' && resetToRoot) {
+            // there was no initial path, so we need to reset panels
+            // to the panel root now that we have loaded necessary data
+            this.panels.splice(1, this.panels.length);
         }
 
         this.panelIndex = this.panels.length - 1;

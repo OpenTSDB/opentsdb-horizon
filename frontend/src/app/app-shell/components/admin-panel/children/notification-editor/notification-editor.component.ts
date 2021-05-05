@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, OnDestroy, Input, Output, EventEmitter 
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     formChangeSub: Subscription;
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private fb: FormBuilder,
         private utils: UtilsService
     ) {}
@@ -47,18 +47,11 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
             detail: new FormControl(this.notificationData.settings.visual.text)
         });
 
-        /*this.formChangeSub = this.notificationForm.valueChanges.subscribe(changes => {
-            this.logger.ng('FORM CHANGES', changes);
-        });*/
-
-        // this.logger.log('EDITOR NOTIFICATION DATA', this.notificationData);
     }
 
     /* BEHAVIORS */
 
     createNotificationAction() {
-        // this.logger.event('CREATE NOTIFICATION ACTION');
-
         // check for form validity
         if (this.notificationForm.valid) {
             // if good, format data, and emit
@@ -71,7 +64,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
 
     updateNotificationAction() {
-        // this.logger.event('UPDATE NOTIFICATION ACTION');
         // check for form validity
         if (this.notificationForm.valid) {
             // if good, format data, and emit
@@ -84,8 +76,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
 
     disableNotificationAction() {
-        //this.logger.event('DISABLE NOTIFICATION ACTION');
-
         // check for form validity
         if (this.notificationForm.valid) {
             // if good, format data, and emit
@@ -98,7 +88,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
 
     cancelAction() {
-        // this.logger.event('CANCEL ACTION');
         this.editorActionOutput.emit({
             action: 'cancel action'
         });

@@ -17,9 +17,9 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import { Observable, Subscription } from 'rxjs';
 
-import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
+import { NavigatorPanelComponent } from '../../../../../app-shell/components/navigator-panel/navigator-panel.component';
 
-import { IntercomService } from '../../../core/services/intercom.service';
+import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 
 import {
     Select,
@@ -56,11 +56,11 @@ import {
 } from '../../state/dbfs-resources.state';
 
 import { MatMenuTrigger } from '@angular/material';
-
+import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';
-import { LoggerService } from '../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -199,8 +199,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
+        private console: ConsoleService,
         private fb: FormBuilder,
-        private logger: LoggerService,
         @Inject('WINDOW') private window: any
     ) {
 
@@ -377,6 +377,17 @@ export class DbfsComponent implements OnInit, OnDestroy {
             this.curDashboardId = (db) ? db : false;
         }));
 
+        this.subscription.add(this.interCom.requestListen().subscribe((message: IMessage) => {
+            switch (message.action) {
+                case 'changeToSpecificNamespaceView':
+                    this.changeToSpecificNamespaceView(message.payload);
+                    break;
+                case 'changeToSpecificUserView':
+                    this.changeToSpecificUserView(message.payload);
+                    break;
+            }
+        }));
+
     }
 
     ngOnDestroy() {
@@ -473,7 +484,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
         if (mTrigger) {
             mTrigger.toggleMenu();
         } else {
-            this.logger.error('clickMoreMenu', 'CANT FIND TRIGGER');
+            this.console.error('clickMoreMenu', 'CANT FIND TRIGGER');
         }
     }
 
@@ -485,7 +496,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
             // close the more menu
             this.clickMoreMenu(id, type, event);
         } else {
-            this.logger.error('clickFolderMove', 'CANT FIND TRIGGER');
+            this.console.error('clickFolderMove', 'CANT FIND TRIGGER');
         }
     }
 
@@ -514,19 +525,35 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     // DYNAMIC FOLDER BEHAVIOR
 
-    loadAllNamespacesPanel() {
+    loadAllNamespacesPanel(callback?: any) {
         if (!this.namespacesListLoaded) {
             this.store.dispatch(
                 new DbfsLoadNamespacesList({})
-            );
+            ).subscribe(() => {
+                if (callback) {
+                    callback();
+                }
+            });
+        } else {
+            if (callback) {
+                callback();
+            }
         }
     }
 
-    loadAllUsersPanel() {
+    loadAllUsersPanel(callback?: any) {
         if (!this.usersListLoaded) {
             this.store.dispatch(
                 new DbfsLoadUsersList({})
-            );
+            ).subscribe(() => {
+                if (callback) {
+                    callback();
+                }
+            });
+        } else {
+            if (callback) {
+                callback();
+            }
         }
     }
 
@@ -666,7 +693,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     folderMenuAction(action: string, folder: any, event?: any) {
-       switch (action) {
+        switch (action) {
             case 'editName':
                 this.folderForm.reset({fc_FolderName: folder.name});
                 this.edit = {
@@ -772,10 +799,12 @@ export class DbfsComponent implements OnInit, OnDestroy {
             return;
         }
 
+        let action: any;
+
         // switch panel roots (AKA tabs)
         switch (tab) {
             case 'favorites':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -784,7 +813,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'recent':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -793,7 +822,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'users':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -802,7 +831,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
             case 'namespaces':
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -812,7 +841,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 break;
             default:
                 // default is 'personal'
-                this.store.dispatch(new DbfsChangePanelTab({
+                action = this.store.dispatch(new DbfsChangePanelTab({
                     panelTab: tab,
                     panelAction: {
                         method: 'changePanelTab',
@@ -821,11 +850,12 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 }));
                 break;
         }
+        return action;
     }
 
     gotoFolder(path: string) {
         if (!this.bulkEdit) {
-           const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
+            const folder = this.store.selectSnapshot<any>(DbfsResourcesState.getFolderResource(path));
 
             if (folder.fullPath === ':user-recent:' || folder.fullPath === ':user-favorites:') {
                 if (folder.fullPath === ':user-recent:') {
@@ -912,6 +942,29 @@ export class DbfsComponent implements OnInit, OnDestroy {
                 this.gotoFolder(path);
             }.bind(this), 200);
         }
+    }
+
+    // privates
+    private changeToSpecificNamespaceView(nsAlias: string) {
+        //this.console.ng('CHANGE TO SPECIFIC NAMESPACE VIEW', {nsAlias});
+        this.navtoPanelTab('namespaces').subscribe(() => {
+            if (nsAlias !== 'namespaceList') {
+                setTimeout(() => {
+                    this.gotoTopFolder(nsAlias, 'namespace')
+                }, 100);
+            }
+        });
+    }
+
+    private changeToSpecificUserView(userAlias: string) {
+        //this.console.ng('CHANGE TO SPECIFIC USER VIEW', {userAlias});
+        this.navtoPanelTab('users').subscribe(() => {
+            if (userAlias !== 'userList') {
+                setTimeout(() => {
+                    this.gotoTopFolder(userAlias, 'user')
+                }, 100);
+            }
+        });
     }
 
 }

@@ -19,7 +19,6 @@ import { ThemePickerComponent } from './components/theme-picker/theme-picker.com
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
 import { ResizableDirective } from '../directives/resizable.directive';
 
-
  // widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
 import { WidgetConfigGeneralComponent } from './components/widget-config-general/widget-config-general.component';
@@ -71,6 +70,7 @@ import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import {  Nl2BrPipe } from './pipes/nl2br.pipe';
+import { HelpLinksComponent } from './components/help-links/help-links.component';
 
 @NgModule({
     imports: [
@@ -133,7 +133,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         HighlightStripTextPipe,
         SafePipe,
         Nl2BrPipe,
-        ResizableDirective
+        ResizableDirective,
+        HelpLinksComponent
     ],
     exports: [
         ThemePickerComponent,
@@ -177,7 +178,8 @@ import {  Nl2BrPipe } from './pipes/nl2br.pipe';
         DateToRelativePipe,
         AliasDisplayPipe,
         HighlightStripTextPipe,
-        ResizableDirective
+        ResizableDirective,
+        HelpLinksComponent
     ],
     entryComponents: [
         InlineFilterEditorComponent,

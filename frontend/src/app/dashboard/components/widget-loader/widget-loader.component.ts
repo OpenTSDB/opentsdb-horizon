@@ -15,6 +15,9 @@ import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 
+import domtoimage from 'dom-to-image-more';
+import { ConsoleService } from '../../../core/services/console.service';
+
 @Component({
     selector: 'app-widget-loader',
     templateUrl: './widget-loader.component.html',
@@ -90,6 +93,12 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
     private subscription: Subscription = new Subscription();
 
+    // this is a toggle switched by dashboard when
+    // dashboard batch operations are turned on
+    @Input() batchSelector: boolean = false;
+
+    @Input() batchSelected: boolean = false;
+
     constructor(
         private widgetService: WidgetService,
         private interCom: IntercomService,
@@ -98,7 +107,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
         private utils: UtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
@@ -113,11 +123,16 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 switch (message.action) {
                     case 'WriteAccessToNamespace':
                         this.userHasWriteAccessToNamespace = message.payload.userHasWriteAccessToNamespace;
+                        break;
+                    case 'batchCopyWidget':
+                        if (message.payload.includes(this.widget.id)) {
+                            this.widgetCopy();
+                        }
+                        break;
                 }
             }
 
             if (message.action && this.widget.id === message.id) {
-                // console.log('===>>> WIDGET LOADER INTERCOM <<<===', message);
                 switch (message.action) {
                     case 'InfoIslandOpen':
                         const dataToInject = {
@@ -145,8 +160,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                             // OTHERWISE USE THE WIDGET HOST
                             overlayOriginRef = this.hostElRef.nativeElement;
                         }
-
-                        //console.log('OVERLAY ORIGIN REF', overlayOriginRef);
 
                         if (portalDef.type === 'component') {
                             // component based
@@ -248,7 +261,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     loadComponent() {
-        // console.log('component creating', this.widget.id, this.widget.settings.component_type);
         let componentName = '__notfound__';
         if (this.widget.settings.component_type) {
             componentName = this.widget.settings.component_type;
@@ -347,16 +359,16 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         });
     }
 
-    widgetShare() {
-        // ('SHARE WIDGET CLICKED');
-    }
-
-    widgetExportJSON() {
-        // console.log('EXPORT JSON CLICKED');
-    }
-
     widgetExportImage() {
-        // console.log('EXPORT IMAGE CLICKED');
+        let componentEl: any = this._component.instance.elRef.nativeElement;
+        componentEl.style.backgroundColor = '#ffffff';
+        domtoimage.toJpeg(componentEl)
+            .then((dataUrl: any) => {
+                var link = document.createElement('a');
+                link.download = (this.widget.settins.title.toLowercase().replace(' ','-')) + '.jpeg';
+                link.href = dataUrl;
+                link.click();
+            });
     }
 
     widgetRemove() {
@@ -373,12 +385,50 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         dialogConf.data = {};
         this.widgetDeleteDialog = this.dialog.open(WidgetDeleteDialogComponent, dialogConf);
         this.widgetDeleteDialog.afterClosed().subscribe((dialog_out: any) => {
-            // console.log('delete widget confirm', dialog_out);
             if ( dialog_out && dialog_out.delete  ) {
                 this.interCom.requestSend(<IMessage> {
                     action: 'removeWidget',
                     payload: { widgetId: this.widget.id }
                 });
+            }
+        });
+    }
+
+    /** WIDGET COPY */
+
+    widgetCopy() {
+        // get the dom element
+        let componentEl: any = this._component.instance.elRef.nativeElement;
+
+        // adding white to background so it is easier to see graph when capturing image
+        componentEl.style.backgroundColor = '#ffffff';
+
+        domtoimage.toJpeg(componentEl)
+            .then((dataUrl: any) => {
+                // remove the background style
+                delete componentEl.style.backgroundColor;
+
+                // send the package through intercom so dashboard finish the request
+                this.interCom.requestSend(<IMessage> {
+                    action: 'copyWidgetToClipboard',
+                    id: this.widget.id,
+                    payload: {
+                        widget: this.widget,
+                        preview: dataUrl
+                    }
+                });
+            });
+    }
+
+    toggleSelectItem(event: any) {
+        // need to emit something up to dashboard
+        // in order to keep track of what is selected
+        this.batchSelected = event.checked;
+        this.interCom.requestSend({
+            action: 'batchItemUpdated',
+            id: this.widget.id,
+            payload: {
+                selected: this.batchSelected
             }
         });
     }

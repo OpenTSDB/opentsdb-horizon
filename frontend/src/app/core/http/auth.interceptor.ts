@@ -61,7 +61,6 @@ export class AuthInterceptor implements HttpInterceptor {
                         .pipe(
                             switchMap(
                                 (res) => {
-                                    // console.log(' check login expiration ', res);
                                     // re-try the request in case the cookie is renewed
                                     if ( res === 'cookie-renewed' ) {
                                         return next.handle(request);

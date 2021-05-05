@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
+import { catchError} from 'rxjs/operators';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../../../core/services/console.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DbfsService {
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private http: HttpClient
     ) { }
 
@@ -24,7 +26,7 @@ export class DbfsService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.logger.error('DbfsService :: An API error occurred', error.error.message);
+            this.console.error('DbfsService :: An API error occurred', error.error.message);
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -41,7 +43,7 @@ export class DbfsService {
     loadResources() {
         const apiUrl = environment.configdb + '/dashboard/topFolders';
 
-        this.logger.api('DbfsService :: Load Resources', { apiUrl });
+        this.console.api('DbfsService :: Load Resources', { apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -68,7 +70,7 @@ export class DbfsService {
             apiUrl = environment.configdb + '/dashboard' + path;
         }
 
-        this.logger.api('DbfsService :: Get Folder By Path', { path, topFolder, apiUrl, params });
+        this.console.api('DbfsService :: Get Folder By Path', { path, topFolder, apiUrl, params });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -88,7 +90,7 @@ export class DbfsService {
     getUsersList() {
         const apiUrl = environment.configdb + '/user/list';
 
-        this.logger.api('DbfsService :: Get Users List', { apiUrl });
+        this.console.api('DbfsService :: Get Users List', { apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -107,7 +109,7 @@ export class DbfsService {
     getNamespacesList() {
         const apiUrl = environment.configdb + '/namespace';
 
-        this.logger.api('DbfsService :: Get Namespaces List', { apiUrl });
+        this.console.api('DbfsService :: Get Namespaces List', { apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -126,7 +128,7 @@ export class DbfsService {
     getUserFavoritesList(userid: string) {
         const apiUrl = environment.configdb + '/dashboard/favorite';
 
-        this.logger.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
+        this.console.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
 
         const params: any = {
             userId : userid
@@ -149,7 +151,7 @@ export class DbfsService {
     addUserFavorite(dbid: any) {
         const apiUrl = environment.configdb + '/dashboard/favorite';
 
-        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+        this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -174,7 +176,7 @@ export class DbfsService {
     removeUserFavorite(dbid: any) {
         const apiUrl = environment.configdb + '/dashboard/favorite';
 
-        this.logger.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+        this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -197,7 +199,7 @@ export class DbfsService {
     }
 
     getUserFrequentList(userid?: string): Observable<any> {
-        this.logger.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
+        this.console.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -213,7 +215,7 @@ export class DbfsService {
 
         const apiUrl = environment.configdb + '/dashboard/recent';
 
-        this.logger.api('DbfsService :: Get User Recently Visited List', {userId, limit});
+        this.console.api('DbfsService :: Get User Recently Visited List', {userId, limit});
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -239,7 +241,7 @@ export class DbfsService {
     createFolder(folder: any) {
         const apiUrl = environment.configdb + '/dashboard/folder';
 
-        this.logger.api('DashboardNavigatorService :: Create Dashboard Folder', { folder, apiUrl });
+        this.console.api('DashboardNavigatorService :: Create Dashboard Folder', { folder, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -272,7 +274,7 @@ export class DbfsService {
         const apiUrl = environment.configdb + '/dashboard/folder/move';
 
         // tslint:disable-next-line:max-line-length
-        this.logger.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
+        this.console.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -292,7 +294,7 @@ export class DbfsService {
     updateResource(type: string, payload: any) {
         const apiUrl = environment.configdb + '/dashboard/' + type;
 
-        this.logger.api('DashboardNavigatorService :: Update Dashboard ' + type.toUpperCase(), { id: payload.id, payload, apiUrl });
+        this.console.api('DashboardNavigatorService :: Update Dashboard ' + type.toUpperCase(), { id: payload.id, payload, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -320,7 +322,7 @@ export class DbfsService {
     getResourceById(id: any) {
         const apiUrl = environment.configdb + '/dashboard/' + id;
 
-        this.logger.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
+        this.console.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'

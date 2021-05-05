@@ -50,3 +50,40 @@
         </div>
     </div>
 </ng-template>
+<ng-template [ngIf]="widget.settings.component_type==='TableWidgetComponent'">
+    <div class="table-widget-visual-container" [formGroup]="gForms">
+        <div class="form-group unit-control" >
+            <span class="form-label">Layout</span>
+            <div class="table-type-selector">
+                <button mat-button class="table-time-metrics-tags {{ gForms['controls']['layout'].value === 'time:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('time:metrics')"></button>
+                <button mat-button class="table-metrics-tags {{ gForms['controls']['layout'].value === 'metrics:tags' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('metrics:tags')"></button>
+                <button mat-button class="table-tags-metrics {{ gForms['controls']['layout'].value === 'tags:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('tags:metrics')"></button>
+            </div>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Font Size</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput type="number" formControlName="fontSize">
+            </mat-form-field>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Cell padding</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput type="number" formControlName="padding">
+            </mat-form-field>
+        </div>
+        <div class="form-group decimals-control">
+            <span class="form-label">Decimals</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput  formControlName="decimals">
+                <mat-hint>Number of decimals</mat-hint>
+            </mat-form-field>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Column width</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput  formControlName="colWidth">
+            </mat-form-field>
+        </div>
+    </div>
+</ng-template>

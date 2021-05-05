@@ -56,6 +56,7 @@
                     margin-left: 6px;
                 }
             }
+
             &.explore-close-button,
             &.save-dashboard-button {
                 padding: 0;
@@ -79,6 +80,17 @@
         .mat-raised-button,
         .mat-flat-button {
             padding-left: 6px;
+        }
+
+        .widget-clipboard-paste-trigger.mat-flat-button {
+            margin-left: 4px;
+            min-width: initial;
+            padding: 0;
+
+            .mat-icon {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
     }
 
@@ -118,6 +130,32 @@
 
     .app-navbar .navbar-item.nav-dashboard-config-trigger {
         margin-left: 0;
+    }
+
+    .controls-bar {
+        display: flex;
+
+        .batch-controls-wrap {
+            .mat-icon {
+                @include sizeDenaliIcon(18px);
+            }
+        }
+
+        .batch-controls {
+            //background: rgba($black, 0.08);
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+        }
+
+        .batch-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -5px
+        }
     }
 
     // cdk items
@@ -220,6 +258,10 @@
                     &.widget-icon-events::after {
                         background-position: -50px -100px;
                     }
+
+                    &.widget-icon-table::after {
+                        background-position: -150px -100px;
+                    }
                 }
             }
         }
@@ -242,6 +284,8 @@
     $close-button-background: map-get($accent, A400);
     $close-button-text: map-get($foreground, navbar-text);
     $navbar-background: map-get($background, navbar);
+
+    $disabled-text: map-get($foreground, disabled-text);
 
     .nav-add-new-widget,
     .nav-dashboard-actions,
@@ -271,6 +315,29 @@
         }
     }*/
 
+    .controls-bar {
+
+        .batch-controls-wrap {
+            .batch-toggle {
+                background: rgba(map-get($primary, default), 0.08);
+            }
+
+            .batch-select,
+            .batch-copy,
+            .batch-trash {
+                color: map-get($foreground, link);
+
+                &[disabled] {
+                    color: $disabled-text;
+                }
+            }
+
+            .batch-select.is-checked {
+                color: map-get($accent, default);
+            }
+        }
+    }
+
     .mat-flat-button {
         &.save-dashboard-button {
             background-color: map-get($status, success);
@@ -292,6 +359,10 @@
                 &:hover {
                     background-color: map-get($widget, widget-icons-background-hover);
                 }
+            }
+
+            .widget-type-label {
+                color: map-get($foreground, text);
             }
         }
     }

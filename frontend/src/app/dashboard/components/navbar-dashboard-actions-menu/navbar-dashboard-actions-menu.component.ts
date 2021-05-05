@@ -109,7 +109,6 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
 
         // getting data passing out from dialog
         this.dashboardSaveDialog.afterClosed().subscribe((dialog_out: any) => {
-            //console.log('%cSAVE DIALOG CLOSED [EVENT]', 'color: #ffffff; background-color: blue; padding: 2px 4px;', dialog_out);
             // dialog_out will be empty if the dialog is cancelled
             if ( dialog_out ) {
                 this.triggerSaveAction(dialog_out);

@@ -609,6 +609,13 @@ export class UtilsService {
         }
     }
 
+    sortObject(obj) {
+        return Object.keys(obj).sort().reduce(function (result, key) {
+          result[key] = obj[key];
+          return result;
+        }, {});
+      }
+
     getSummarizerForMetric(id, queries) {
         const metric = this.getMetricFromId(id, queries);
         return metric.summarizer ? metric.summarizer : 'avg';
@@ -965,7 +972,7 @@ export class UtilsService {
         const filter = filters[i];
         const ftype = filter.type;
         if ( ftype === 'Chain' && filter['op'] === 'OR' ) {
-            newFilters = newFilters.concat(this.getFiltersTsdbToLocal(filter.filters));
+            newFilters = newFilters.concat(this.getFiltersTsdbToLocal(filter));
         } else if ( filterTypes.includes(ftype) ) {
             let values = [];
             switch ( ftype ) {

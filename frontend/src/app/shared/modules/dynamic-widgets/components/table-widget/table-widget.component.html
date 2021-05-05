@@ -1,0 +1,130 @@
+<div class="widget-output-container" *ngIf="mode !== 'view'">
+    <div class="widget-title" #widgetTitle *ngIf="mode !== 'view'">
+        <div class="title-label" *ngIf="mode === 'edit'">
+            <span class="navbar-item">Widget name: </span>
+        </div>
+        <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
+            <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
+                showEditIcon="true"
+                [fieldValue]="widget.settings.title"
+                [minLength]="3"
+                [maxLength]="100"
+                (updatedValue)="setTitle($event)">
+            </inline-editable>
+            <span class="info" *ngIf="mode === 'snap'">
+                This snpashot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
+            </span>
+        </span>
+        <graph-type (change)="changeWidgetType($event)" selected="TableWidgetComponent"></graph-type>
+        <mat-button-toggle-group  (change)="changeLayout($event.value)" [value]="widget.settings.layout">
+            <mat-button-toggle value="column" aria-label="Column"><mat-icon fontSet="denali" fontIcon="d-layout-one"></mat-icon></mat-button-toggle>
+            <mat-button-toggle value="row-reverse" aria-label="Row"><mat-icon fontSet="denali" fontIcon="d-layout-two"></mat-icon></mat-button-toggle>
+        </mat-button-toggle-group>
+        <button mat-flat-button class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
+            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+        </button>
+    </div>
+</div>
+<div class="widget-config-container" [style.flexDirection]="widget.settings.layout">
+    <div class="table-widget-output-container" [style.height]="mode !== 'view' && widget.settings.layout === 'column' ? (widgetOutputElHeight) +'px' : '100%'">
+        <div class="widget-output" #widgetoutput appResizable [resize]="mode !== 'view' && widget.settings.layout === 'column'" (resizeOut)="handleEditResize($event)" ttMouseListener ttType="barchart">
+            <div id="container">
+                <div class="is-scroller">
+                    <!-- material table (sortable) -->
+                    <mat-table *ngIf="data.length" #dataTable [dataSource] = "dataSource" [style.fontSize.px]="widget.settings.visual.fontSize || 12" 
+                        matSort
+                        [matSortActive]="widget.settings.visual.sortBy"
+                        [matSortDirection]="widget.settings.visual.sortDir"
+                        matSortDisableClear="true"
+                        (matSortChange)="sortData($event)">
+                       
+                        <!-- automated columns and rows generator based on query result from  TSDB -->
+                        <ng-container *ngFor="let col of displayedColumns; let index=index; trackBy: trackByIndex" matColumnDef = {{col.id}} [sticky]="index === 0">
+                            <mat-header-cell *matHeaderCellDef 
+                                [style.padding.px]="widget.settings.visual.padding"
+                                [style.minWidth.px]="widget.settings.visual.colWidth" 
+                                mat-sort-header [matTooltip]="col.label" [matTooltipDisabled]="!col.label || col.shortLabel === col.label">
+                                <span>{{col.shortLabel}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef = "let row" 
+                                [style.color]="row[col.id + ':color']"
+                                [style.minWidth.px]="widget.settings.visual.colWidth"
+                                [style.backgroundColor]="row[col.id + ':backgroundColor']"  
+                                [style.padding.px]="widget.settings.visual.padding">{{row[col.id]}}</mat-cell> 
+                        </ng-container>
+                
+                        <!-- sticky header -->
+                        <mat-header-row *matHeaderRowDef="displayedColumnsIds; sticky:true" mat-header-row>displayedColumns</mat-header-row>
+                        <mat-row *matRowDef = "let row; columns: displayedColumnsIds"></mat-row>
+                        
+                    </mat-table>
+                    <div class="message" *ngIf="isDataLoaded && data.length === 0 ">No data found</div>
+                </div>
+            </div>
+            <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
+                <img src="/assets/spinner-26x26.gif" />
+            </div>
+            <div class="error" *ngIf="error" (click)="showError()">
+                <mat-icon>error</mat-icon>
+            </div>
+            <div class="debug" *ngIf="debugData" (click)="showDebug()">
+                <mat-icon>info</mat-icon> {{ this.widget.id }}
+            </div>
+        </div>
+    </div>
+    <!-- NOTE: This needs to move to other component -->
+    <div class="widget-controls-container" *ngIf="mode !== 'view'">
+        <div class="widget-control-steps has-scroller">
+            <div class="is-scroller">
+                <div class="step-section query-section is-visible" #stepqueries>
+                    <div class="step-section-label">
+                        <span class="step-section-label-text"
+                            (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
+                            <span>1. Queries </span>
+                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        </span>
+                    </div>
+                    <div class="step-section-content" *ngIf="visibleSections.queries">
+                        <widget-config-metric-queries
+                            [options]="{enableSummarizer: widget.settings.visual.layout === 'metrics:tags' || widget.settings.visual.layout === 'tags:metrics', enableMultipleQueries:true}" [widget]="widget"
+                            (widgetChange)="updateConfig($event);"></widget-config-metric-queries>
+                    </div>
+                </div>
+
+                <div class="step-section query-section is-visible" #steptime>
+                    <div class="step-section-label">
+                        <span class="step-section-label-text"
+                            (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
+                            <span>2. Time Configuration </span>
+                            <mat-icon fontSet="denali"
+                                [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        </span>
+                    </div>
+                    <div class="step-section-content" *ngIf="visibleSections.time">
+                        <widget-config-time [widget]="widget" (widgetChange)="updateConfig($event);"></widget-config-time>
+                    </div>
+                </div>
+                <div class="step-section query-section is-visible" #stepvisuals>
+                    <div class="step-section-label">
+                        <span class="step-section-label-text"
+                            (click)="toggleConfigSection('visuals', $event);scrollToElement(stepvisuals);">
+                            <span>3. Display </span>
+                            <mat-icon fontSet="denali"
+                                [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                        </span>
+                    </div>
+                    <div class="step-section-content" *ngIf="visibleSections.visuals">
+                        <widget-config-visual-appearance [widget]="widget" (widgetChange)="updateConfig($event);">
+                        </widget-config-visual-appearance>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-actions" *ngIf="mode === 'edit'">
+            <!-- controls to save/cancel -->
+            <button mat-raised-button color="primary" class="mat-elevation-z0" (click)="applyConfig()" [disabled]="Object.keys(formErrors).length > 0">Apply to
+                Dashboard</button>
+            <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>
+        </div>
+    </div>
+</div>

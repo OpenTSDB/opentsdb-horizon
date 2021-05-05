@@ -10,13 +10,13 @@ var utils = require("dygraphs/src/dygraph-utils");
       var prevPoint = null;
       var nextPoint = null;
       var nextPointIdx = -1;
-    
+
       // Find the next stackable point starting from the given index.
       var updateNextPoint = function(idx) {
         // If we've previously found a non-NaN point and haven't gone past it yet,
         // just use that.
         if (nextPointIdx >= idx) return;
-    
+
         // We haven't found a non-NaN point yet or have moved past it,
         // look towards the right to find a non-NaN point.
         for (var j = idx; j < points.length; ++j) {
@@ -30,14 +30,14 @@ var utils = require("dygraphs/src/dygraph-utils");
           }
         }
       };
-    
+
       for (var i = 0; i < points.length; ++i) {
         var point = points[i];
         var xval = point.xval;
         if (cumulativeYval[xval] === undefined) {
           cumulativeYval[xval] = 0;
         }
-    
+
         var actualYval = point.yval;
         if (isNaN(actualYval) || actualYval === null) {
           if(fillMethod == 'none') {
@@ -60,7 +60,7 @@ var utils = require("dygraphs/src/dygraph-utils");
         } else {
           prevPoint = point;
         }
-    
+
         var stackedYval = cumulativeYval[xval];
         if (lastXval != xval) {
           // If an x-value is repeated, we ignore the duplicates.
@@ -68,24 +68,24 @@ var utils = require("dygraphs/src/dygraph-utils");
           cumulativeYval[xval] = stackedYval;
         }
         lastXval = xval;
-    
+
         point.yval_stacked = stackedYval;
-        
+
         if (stackedYval > seriesExtremes[1]) {
           seriesExtremes[1] = stackedYval;
         }
         if (stackedYval < seriesExtremes[0]) {
           seriesExtremes[0] = stackedYval;
         }
-    
+
       }
     };
-    
+
     // BEGIN HEADER BLOCK
-    // This first block can be copied to other plotters to capture the group 
+    // This first block can be copied to other plotters to capture the group
     var g = e.dygraph;
-    
-    
+
+
     var group;
     var firstAreaSeriesIndex = -1;
     var groupIdx = [];
@@ -102,15 +102,14 @@ var utils = require("dygraphs/src/dygraph-utils");
     // later on.
     var seriesExtremes = [];
     // if (e.seriesIndex !== 0) return;
-    
+
     var currGroup = g.attr_("group", setName);
-    // console.log("setName", setName,  currGroup);
-    
+
     for (var setIdx = 0; setIdx < allSets.length; setIdx++) {
       // get the name and group of the current setIdx
       setName = setNames[setIdx];
       group = g.attr_("group", setName);
-  
+
       if (group === currGroup) {
         firstAreaSeriesIndex = firstAreaSeriesIndex === -1 ? setIdx : firstAreaSeriesIndex;
         //save the indv index and the points
@@ -118,14 +117,14 @@ var utils = require("dygraphs/src/dygraph-utils");
         sets.push(allSets[setIdx]);
         groupSetNames.push(setName);
         fillColors.push(strokeColors[setIdx]);
-       
-        // the aforementioned stuff for later on 
+
+        // the aforementioned stuff for later on
         var tmpExtremes = [];
         tmpExtremes[0] = Infinity;
         tmpExtremes[1] = -Infinity;
-        
+
         seriesExtremes.push(tmpExtremes);
-        
+
         // capturing the min indx helps to ensure we don't render the plotter
         // multiple times
         if (setIdx < minIdx) minIdx = setIdx;
@@ -136,25 +135,25 @@ var utils = require("dygraphs/src/dygraph-utils");
       return;
     }
     // END HEADER BLOCK
-      
+
       //Stack the points
     // set up cumulative records
     var cumulativeYval = [];
     var packed = g.gatherDatasets_(g.rolledSeries_, null);
     var extremes = packed.extremes;
     var seriesName;
-    
+
     for (var j = sets.length - 1; j >= 0; j--) {
       points = sets[j];
-      seriesName = groupSetNames[j]; 
-      
-      //  stack the data 
+      seriesName = groupSetNames[j];
+
+      //  stack the data
       stackPoints(points, cumulativeYval, seriesExtremes[j],
             g.getBooleanOption("stackedGraphNaNFill"));
-      
+
       extremes[seriesName] = seriesExtremes[j];
     }
-    
+
       // Helper function to trace a line back along the baseline.
     var traceBackPath = function(ctx, baselineX, baselineY, pathBack) {
       ctx.lineTo(baselineX, baselineY);
@@ -163,7 +162,7 @@ var utils = require("dygraphs/src/dygraph-utils");
         ctx.lineTo(pt[0], pt[1]);
       }
     };
-    
+
       // Do the actual plotting.
       // First, we'll plot the line for this series, then...
       // Second, we'll add the fills
@@ -171,43 +170,43 @@ var utils = require("dygraphs/src/dygraph-utils");
       // order to align with the fillplotter
       var area = e.plotArea;
     var fillAlpha = g.getNumericOption('fillAlpha');
-      
+
       var baseline = {};
     var currBaseline;
     var prevStepPlot;  // for different line drawing modes (line/step) per series
-  
+
     var ctx = e.drawingContext;
-      
+
       // For filled charts, we draw points from left to right, then back along
     // the x-axis to complete a shape for filling.
     // For stacked plots, this "back path" is a more complex shape. This array
     // stores the [x, y] values needed to trace that shape.
     var pathBack = [];
-  
+
       //We'll save the group indices of the current set,
-                  // so as to test later and hopefully skip 
+                  // so as to test later and hopefully skip
                   // past needless iterations of the loops
 
-    
+
     for (var j = sets.length - 1; j >= 0; j--) {
       setName = groupSetNames[j];
       e.setName = setName;
 
       var connectSeparated = g.getOption('connectSeparatedPoints', setName);
       var logscale = g.attributes_.getForSeries("logscale", setName);
-    
+
       axis = g.axisPropertiesForSeries(setName);
-    
+
       points = sets[j];
-    
+
       for (var i = 0; i < points.length; i++) {
         var point = points[i];
-        
+
         var yval = point.yval;
-        
+
         point.y_stacked = DygraphLayoutCalcYNormal_(
             axis, point.yval_stacked, logscale);
-            
+
         if (yval !== null && !isNaN(yval)) {
           yval = point.yval_stacked;
         }
@@ -218,13 +217,12 @@ var utils = require("dygraphs/src/dygraph-utils");
           }
         }
         point.y = DygraphLayoutCalcYNormal_(axis, yval, logscale);
-      
+
         point.canvasx = g.plotter_.area.w * point.x + g.plotter_.area.x;
         point.canvasy = g.plotter_.area.h * point.y + g.plotter_.area.y;
       }
-      // console.log("area chart")
       // g.user_attrs_.observer.next(1234);
-      
+
           //BEGIN THE FILL
       var stepPlot = g.getBooleanOption('stepPlot', setName);
           var color = g.getOption("color", setName);
@@ -233,38 +231,38 @@ var utils = require("dygraphs/src/dygraph-utils");
       if (axisY < 0.0) axisY = 0.0;
       else if (axisY > 1.0) axisY = 1.0;
       axisY = area.h * axisY + area.y;
-  
-  
+
+
       // setup graphics context
       var prevX = NaN;
       var prevYs = [-1, -1];
       var newYs;
-      
+
         // should be same color as the lines but only 15% opaque.
       var rgb = utils.toRGB_(color);
       var err_color =
           'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + fillAlpha + ')';
-      
-  
+
+
       var iter = utils.createIterator(points, 0, points.length,
           DygraphCanvasRendererGetIteratorPredicate(
               g.getBooleanOption("connectSeparatedPoints", setName)));
-  
+
       ctx.fillStyle = err_color;
       ctx.beginPath();
       var last_x, is_first = true;
-  
+
       // If the point density is high enough, dropping segments on their way to
       // the canvas justifies the overhead of doing so.
       // if (points.length > 2 * g.width_ || Dygraph.FORCE_FAST_PROXY) {
         // ctx = DygraphCanvasRendererFastCanvasProxy_(ctx);
       // }
-  
+
       // TODO(danvk): there are a lot of options at play in this loop.
       //     The logic would be much clearer if some (e.g. stackGraph and
       //     stepPlot) were split off into separate sub-plotters.
       var point;
-  
+
           // Throughout this loop, we test to see if the top-level called series
                       // matches the one current in the parent FOR loop.  If not, we skip
                       // the parts that draw the line but leave the others so the pathback
@@ -288,7 +286,7 @@ var utils = require("dygraphs/src/dygraph-utils");
           is_first = false;
           last_x = point.xval;
         }
-  
+
         currBaseline = baseline[point.canvasx];
         var lastY;
         if (currBaseline === undefined) {
@@ -301,7 +299,7 @@ var utils = require("dygraphs/src/dygraph-utils");
           }
         }
         newYs = [ point.canvasy, lastY ];
-  
+
         if (stepPlot) {
           // Step plots must keep track of the top and bottom of
           // the baseline at each point.
@@ -313,7 +311,7 @@ var utils = require("dygraphs/src/dygraph-utils");
         } else {
           baseline[point.canvasx] = point.canvasy;
         }
-  
+
         if (!isNaN(prevX)) {
                   if (e.setName === setName) {
               // Move to top fill point
@@ -324,7 +322,7 @@ var utils = require("dygraphs/src/dygraph-utils");
                 ctx.lineTo(point.canvasx, newYs[0]);
               }
           }
-  
+
           // Record the baseline for the reverse path.
           pathBack.push([prevX, prevYs[1]]);
           if (prevStepPlot && currBaseline) {
@@ -353,16 +351,16 @@ var utils = require("dygraphs/src/dygraph-utils");
       setName = groupSetNames[j];
        points = sets[j];
        e.points = points;
-  
+
       var strokeWidth = e.strokeWidth;
-    
+
       var borderWidth = g.getNumericOption("strokeBorderWidth", setName);
       var drawPointCallback = g.getOption("drawPointCallback", setName) ||
           utils.Circles.DEFAULT;
       var strokePattern = g.getOption("strokePattern", setName);
       var drawPoints = g.getBooleanOption("drawPoints", setName);
       var pointSize = g.getNumericOption("pointSize", setName);
-        
+
       if (borderWidth && strokeWidth) {
         DygraphCanvasRendererDrawStyledLine(e,
             g.getOption("strokeBorderColor", setName),

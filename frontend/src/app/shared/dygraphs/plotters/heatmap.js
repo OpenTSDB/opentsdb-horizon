@@ -26,7 +26,7 @@ var heatmapPlotter = function (e) {
     if ( color.length > 2 ) {
       domain.splice(1, 0, maxN / 2 );
     }
-    colors = d3.scaleLinear()
+    colors = d3.scaleLog()
               .domain(domain)
               .range(config.color);
     singleColor = false;

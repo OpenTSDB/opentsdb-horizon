@@ -22,11 +22,21 @@
             <label class="fixed-label">Percentages</label>
             <div class="form-field-group">
                 <!--<mat-slide-toggle formControlName="showPercentages"><span class="mat-caption" [ngClass]="{'is-enabled': gForm.controls['showPercentages'].value }">Show Percentages</span></mat-slide-toggle>-->
-                <mat-radio-group formControlName="showPercentages">
+                <mat-radio-group (change)="setPercentage($event.value)" [value]="gForm.controls['showPercentages'].value">
                     <mat-radio-button
                         *ngFor="let option of percentagesOptions"
                         [value]="option.value">{{option.label}}</mat-radio-button>
                 </mat-radio-group>
             </div>
+    </div>
+    <div class="config-control with-enable-label">
+        <label class="fixed-label">Value</label>
+        <div class="form-field-group">
+            <mat-radio-group (change)="setValue($event.value)" [value]="gForm.controls['showValue'].value">
+                <mat-radio-button
+                    *ngFor="let option of valueOptions"
+                    [value]="option.value">{{option.label}}</mat-radio-button>
+            </mat-radio-group>
+        </div>
     </div>
 </form>

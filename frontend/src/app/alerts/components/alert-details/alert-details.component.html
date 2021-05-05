@@ -1,5 +1,20 @@
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
+        <div class="alert-status" *ngIf="data.id">
+            <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess">
+                <span class="mat-caption" *ngIf="enabled">This alert is enabled</span>
+            </mat-slide-toggle>
+            <div *ngIf="!enabled" class="messaging-bar is-warning-type">
+                <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess"></mat-slide-toggle>
+                <div class="message-icon">
+                    <mat-icon fontSet="denali" fontIcon="d-warning-solid"></mat-icon>
+                </div>
+                <div class="message-text">
+                    This alert is disabled
+                </div>
+            </div>
+        </div>
+
         <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
             <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
                 <div class="graph-output">
@@ -209,39 +224,71 @@
                                                 <div class="sentence-item">
                                                     <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
                                                 </div>
-                                                <mat-error *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window should be greater than the reporting interval</mat-error>
+                                                <mat-error style="text-align: right;" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window size should be greater than or equal to the reporting interval</mat-error>
                                             </div>
                                             <div class="sentence-item">
-                                                <time-selector
-                                                    [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow"
-                                                    (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)">
-                                                </time-selector>
-                                            </div>
-                                        </div>
-                                        <div
-                                            *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
-                                            <div class="is-fullwindow">
-                                                <mat-checkbox formControlName="requiresFullWindow">
-                                                    Require full window for evaluation
-                                                </mat-checkbox>
-                                            </div>
-                                            <div class="reporting-interval">
-                                                <span>Reporting interval </span>
-                                                <mat-form-field appearance="fill" floatLabel="never"
-                                                    [ngClass]="{'mat-form-field-invalid': thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required}">
-                                                    <input matInput type="number" autocomplete="off"
-                                                        placeholder="Enter value"
-                                                        formControlName="reportingInterval">
+                                                <mat-form-field appearance="fill">
+                                                    <mat-label></mat-label>
+                                                    <mat-select placeholder="Select" formControlName="comparisonOperator" disableOptionCentering>
+                                                        <mat-option value="above">above</mat-option>
+                                                        <mat-option value="above_or_equal_to">above or equal to</mat-option>
+                                                        <mat-option value="below">below</mat-option>
+                                                        <mat-option value="below_or_equal_to">below or equal to</mat-option>
+                                                    </mat-select>
                                                 </mat-form-field>
-                                                <mat-hint class="info-hint">
-                                                    <span>secs</span>
-                                                </mat-hint>
-                                                <mat-error
-                                                    *ngIf="thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required">
-                                                    Reporting interval should not be empty</mat-error>
                                             </div>
+                                            <div class="sentence-item">
+                                                <span>the threshold</span>
+                                            </div>
+                                            <div class="sentence-item">
+                                                <mat-form-field appearance="fill">
+                                                    <mat-label></mat-label>
+                                                    <mat-select placeholder="Select" formControlName="timeSampler" disableOptionCentering>
+                                                        <mat-option value='at_least_once'>at least once</mat-option>
+                                                        <mat-option value='all_of_the_times'>at all times</mat-option>
+                                                        <mat-option value='on_avg'>on average</mat-option>
+                                                        <mat-option value='in_total'>in total</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="sentence-item">
+                                                <span>during the last</span>
+                                            </div>
+                                            <div class="sentence-item">
+                                                <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
+                                            </div>
+                                            <mat-error *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window should be greater than the reporting interval</mat-error>
+                                        </div>
+                                        <div class="sentence-item">
+                                            <time-selector
+                                                [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow"
+                                                (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)">
+                                            </time-selector>
                                         </div>
                                     </div>
+                                    <div *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
+                                        <div class="is-fullwindow">
+                                            <mat-checkbox formControlName="requiresFullWindow">
+                                                Require full window for evaluation
+                                            </mat-checkbox>
+                                        </div>
+                                        <div class="reporting-interval">
+                                            <span>Reporting interval </span>
+                                            <mat-form-field appearance="fill" floatLabel="never"
+                                                [ngClass]="{'mat-form-field-invalid': thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required}">
+                                                <input matInput type="number" autocomplete="off"
+                                                    placeholder="Enter value"
+                                                    formControlName="reportingInterval">
+                                            </mat-form-field>
+                                            <mat-hint class="info-hint">
+                                                <span>secs</span>
+                                            </mat-hint>
+                                            <mat-error
+                                                *ngIf="thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required">
+                                                Reporting interval should not be empty</mat-error>
+                                        </div>
+                                    </div>
+
 
 
                                     <div class="form-group bad-threshold-setting" formGroupName="singleMetric">
@@ -1429,5 +1476,8 @@ This simulates the output of the query editor - minus a few events and buttons
             [config]="{enableSync: false, enableRefresh: false}"
             [xPosition]="menuXAlignValue">
         </time-picker>
+    </div>
+    <div class="navbar-item">
+        <help-links></help-links>
     </div>
 </ng-template>

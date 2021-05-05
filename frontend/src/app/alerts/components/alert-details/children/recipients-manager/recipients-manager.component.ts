@@ -450,7 +450,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         } else if (type === RecipientType.slack) {
             return 'Slack';
         } else if (type === RecipientType.http) {
-            return 'HTTP';
+            return 'Webhook';
         } else if (type === RecipientType.oc) {
             return 'OC';
         } else if (type === RecipientType.email) {
@@ -601,10 +601,18 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    urlValidator() : ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !/^https:\/\/(www\.)?(([-a-zA-Z0-9@:%._[\]]{1,256}\.[a-zA-Z0-9()]{0,6}\b)|(\[?[a-fA-F0-9]*:[a-fA-F0-9:]+\]))([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/.test(control.value);
+            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+        };
+    }
+
     updateValidators() {
         // tslint:disable:max-line-length
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
         this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
+        this.httpEndpoint = new FormControl('', [this.urlValidator()]);
         this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
         this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);

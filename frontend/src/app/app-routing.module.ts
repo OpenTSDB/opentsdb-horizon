@@ -6,6 +6,8 @@ const routes: Routes = [
   { path: 'snap', loadChildren: 'app/dashboard/dashboard.module#DashboardModule' },
   { path: 'main', loadChildren: 'app/landing-page/landing-page.module#LandingPageModule' },
   { path: 'a', loadChildren: 'app/alerts/alerts.module#AlertsModule' },
+  { path: 'user', loadChildren: 'app/user/user.module#UserModule' },
+  { path: 'namespace', loadChildren: 'app/namespace/namespace.module#NamespaceModule' },
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   { path: '**', redirectTo: 'main', pathMatch: 'full'}
 ];

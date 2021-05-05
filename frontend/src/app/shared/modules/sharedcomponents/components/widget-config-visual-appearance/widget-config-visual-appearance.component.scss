@@ -116,6 +116,13 @@
             }
         }
 
+        .table-widget-visual-container{
+            .mat-label {
+                width: 150px;
+                display: inline-block;
+            }
+        }
+
         .column.barchart-container,
         .column.circlechart-container,
         .column.topnchart-container,
@@ -282,6 +289,77 @@
         }
         */
         
+        .form-group {
+            display: flex;
+            align-items: flex-start;
+
+            &:not(:last-child),
+            &:not(.select-threshold-type) {
+                margin-bottom: 12px;
+            }
+
+            .form-label,
+            .toggle-wrap {
+                height: 32px;
+                width: 180px;
+                min-width: 180px;
+                margin-right: 16px;
+                line-height: 1.2;
+                // text-align: right;
+                font-size: 12px;
+            }
+
+
+
+            .form-control-wrap {
+                width: 100%;
+                max-width: 60%;
+                display: flex;
+                flex-direction: column;
+
+                &.auto-width {
+                    width: initial;
+                    max-width: initial;
+                }
+            }
+
+        }
+
+        .table-type-selector {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            [class^="table-"] {
+                height: 92px;
+                width: 131px;
+                background-repeat: no-repeat;
+                background-size: 450px;
+                // background-image is handled by theme
+            }
+            .table-time-metrics-tags {
+                background-position: 0px 0px;
+                &:hover,
+                &.selected-table-type {
+                    background-position: 0 -105px;
+                }
+            }
+            .table-tags-metrics {
+                background-position: -160px 0px;
+                &:hover,
+                &.selected-table-type {
+                    background-position: -160px -105px;
+                }
+            }
+            .table-metrics-tags {
+                width: 145px;
+                background-position: -305px 0px;
+                &:hover,
+                &.selected-table-type {
+                    background-position: -305px -105px;
+                }
+            }
+        }
+        
     }    
 }
 
@@ -295,6 +373,7 @@
     $background: map-get($theme-config, background);
 
     $input-bg: rgba(map-get($primary, default), 0.08);
+    $is-dark: map-get($theme-config, is-dark);
 
     .widget-config-tab.visual-appearance-configuration {
         // style rules here
@@ -317,6 +396,17 @@
             .mat-button-toggle-checked {
                 background: map-get($background, card);
                 color: map-get($foreground, text);
+            }
+        }
+        
+        .table-type-selector {
+            $table-bg-file: if(
+                $is-dark,
+                '/assets/table-types-dtheme-sprite.png',
+                '/assets/table-types-ltheme-sprite.png'
+            );
+            [class^="table-"] {
+                background-image: url($table-bg-file);
             }
         }
     } 

@@ -1,15 +1,16 @@
 import {
-    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef
+    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { I } from '@angular/cdk/keycodes';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -62,18 +63,23 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     masterChecked = false;
     masterIndeterminate = false;
 
+    shiftModifierKey: boolean = false;
+    firstClickedSrcIndex: any = -1;
+    lastClickedSrcIndex: any = -1;
+
+
     multigraph: any = false;
 
     private tableListen;
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private interCom: IntercomService,
         private renderer: Renderer2,
         private utilsService: UtilsService,
         @Inject(ISLAND_DATA) private _islandData: any
     ) {
-        // this.logger.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
+        // this.console.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
         // Set initial incoming data (data from first click that opens island)
         this.currentWidgetId = _islandData.originId;
         if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.component_type) {
@@ -115,7 +121,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
         // set subscriptions
         this.subscription.add(this.interCom.requestListen().subscribe(message => {
-            // this.logger.intercom('[TSL] RequestListen', {message});
+            // this.console.intercom('[TSL] RequestListen', {message});
             switch (message.action) {
                 case 'tsLegendWidgetOptionsUpdate':
                     this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
@@ -150,7 +156,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                                 // check if previous series were all hidden, if so, then turn on
                                 this.checkExitVisbility();
                                 this.masterIndeterminate = false;
-                                // this.logger.error('DIFFERENT MULTIGRAPH GRAPH', message);
+                                // this.console.error('DIFFERENT MULTIGRAPH GRAPH', message);
                                 newOptionsNeeded = true;
                                 this.tableHighlightTag('', '');
                             }
@@ -243,8 +249,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
 
     /** Toolbar controls */
     trackmouseCheckboxChange(event: any) {
-        // console.log('trackmouse', event);
-
         // update options, then interCom requestSend change
         this.options.trackMouse = event.checked;
         this.interCom.responsePut({
@@ -371,7 +375,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        //console.log('DATA', this.tableDataSource.data);
+
         this.updateMasterCheckboxStates();
         if (this._legendTable) {
             this._legendTable.renderRows();
@@ -427,7 +431,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
             // everything else
             value = item[property];
         }
-        //console.log('SORT ACCESSOR', {item, property, value});
+
         return value;
     }
 
@@ -551,34 +555,192 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
     }
 
     // single table row checkbox
-    timeSeriesVisibilityToggle(srcIndex: any, event: any) {
-        const itemIndex = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === srcIndex);
-        (<any>this.tableDataSource.data[itemIndex]).visible = event.checked;
+    timeSeriesVisibilityToggle(srcIndex: any, currentCheckedStatus: boolean, event: any) {
+        const newVisibilityState = !currentCheckedStatus;
+        let itemIndex: any = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === srcIndex);
+        let lastItemIndex: any = this.lastClickedSrcIndex >= 0 ? this.tableDataSource.data.findIndex((item: any) => item.srcIndex === this.lastClickedSrcIndex) : this.lastClickedSrcIndex;
+        let firstItemIndex: any = this.firstClickedSrcIndex >= 0 ? this.tableDataSource.data.findIndex((item: any) => item.srcIndex === this.firstClickedSrcIndex) : this.firstClickedSrcIndex;
 
-        this.interCom.responsePut({
-            id: this.currentWidgetId,
-            action: 'tsLegendToggleSeries',
-            payload: {
-                visible: event.checked,
-                batch: [srcIndex],
-                multigraph: this.multigraph
-            }
-        });
-    }
-
-    timeseriesVisibilityBy(filter: string, data: any) {
-        // this.logger.ng('TIMESERIES VISIBILITY BY', {filter, data});
         let toHide: number[] = [];
         let toShow: number[] = [];
-        if (filter === 'row' && data.srcIndex) {
-            toHide = (this.tableDataSource.data.filter((item: any) => item.srcIndex !== data.srcIndex)).map((item: any) => item.srcIndex);
-            toShow = [data.srcIndex];
+
+        if (this.shiftModifierKey && this.firstClickedSrcIndex >= 0) {
+            let srcIndexVisibilityMap: any = {}
+            for(var i = 0; i < this.tableDataSource.data.length; i++) {
+                const item: any = this.tableDataSource.data[i];
+                srcIndexVisibilityMap[item.srcIndex] = {
+                    dataIndex: i,
+                    visible: this.currentWidgetOptions.visibility[item.srcIndex]
+                };
+            }
+
+            if (itemIndex > firstItemIndex && itemIndex > lastItemIndex) {
+                for(let i = lastItemIndex; i <= itemIndex; i++) {
+                    const item: any = this.tableDataSource.data[i];
+                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                }
+            } else if (itemIndex > firstItemIndex && itemIndex < lastItemIndex) {
+                for(let i = itemIndex; i <= lastItemIndex; i++) {
+                    const item: any = this.tableDataSource.data[i];
+                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                }
+            } else if (itemIndex < firstItemIndex && itemIndex < lastItemIndex ) {
+                for(let i = itemIndex; i <= lastItemIndex; i++) {
+                    const item: any = this.tableDataSource.data[i];
+                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                }
+            } else if (itemIndex < firstItemIndex && itemIndex > lastItemIndex ) {
+                for(let i = lastItemIndex; i <= itemIndex; i++) {
+                    const item: any = this.tableDataSource.data[i];
+                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                }
+            } else if (itemIndex === firstItemIndex) {
+                // they clicked on the same checkbox as the first click
+                if (itemIndex > lastItemIndex) {
+                    for(let i = lastItemIndex; i <= itemIndex; i++) {
+                        const item: any = this.tableDataSource.data[i];
+                        srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    }
+
+                } else if (itemIndex < lastItemIndex ) {
+                    for(let i = itemIndex; i <= lastItemIndex; i++) {
+                        const item: any = this.tableDataSource.data[i];
+                        srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    }
+                }
+            }
+
+            let mapKeys: number[] = Object.keys(srcIndexVisibilityMap).map(item => parseInt(item));
+
+            for(let i = 0; i < mapKeys.length; i++) {
+                if (srcIndexVisibilityMap[mapKeys[i]].visible) {
+                    toShow.push(mapKeys[i]);
+                } else {
+                    toHide.push(mapKeys[i]);
+                }
+                (<any>this.tableDataSource.data[srcIndexVisibilityMap[mapKeys[i]].dataIndex]).visible = srcIndexVisibilityMap[mapKeys[i]].visible;
+            }
+
+            if (toHide.length > 0) {
+                this.interCom.responsePut({
+                    id: this.currentWidgetId,
+                    action: 'tsLegendToggleSeries',
+                    payload: {
+                        visible: false,
+                        batch: toHide,
+                        multigraph: this.multigraph
+                    }
+                });
+            }
+
+            if (toShow.length > 0) {
+                this.interCom.responsePut({
+                    id: this.currentWidgetId,
+                    action: 'tsLegendToggleSeries',
+                    payload: {
+                        visible: true,
+                        batch: toShow,
+                        multigraph: this.multigraph
+                    }
+                });
+            }
+
+
+        } else {
+
+            if (this.shiftModifierKey && this.firstClickedSrcIndex === -1) {
+                this.firstClickedSrcIndex = srcIndex;
+            }
+
+            (<any>this.tableDataSource.data[itemIndex]).visible = newVisibilityState;
+
+            this.interCom.responsePut({
+                id: this.currentWidgetId,
+                action: 'tsLegendToggleSeries',
+                payload: {
+                    visible: newVisibilityState,
+                    batch: [srcIndex],
+                    multigraph: this.multigraph
+                }
+            });
         }
+
+        this.lastClickedSrcIndex = srcIndex;
+
+    }
+
+    timeseriesVisibilityBy(filter: string, data: any, event: any) {
+
+        let toHide: number[] = [];
+        let toShow: number[] = [];
+
+        let modifierKey = false;
+        if (event.shiftKey || event.metaKey || event.ctrlKey) {
+            modifierKey = true;
+        }
+
+        // FILTERING BY ROW (i.e., Metric Name or checkbox)
+        if (filter === 'row' && data.srcIndex > -1) {
+            if (modifierKey && event.shiftKey) {
+                // get some indices
+                const itemIndex = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === data.srcIndex);
+                const lastIndex = this.tableDataSource.data.findIndex((item:any) => item.srcIndex === this.lastClickedSrcIndex);
+
+                // check the direction of the shift select
+
+                // select an item ABOVE the last clicked item in the list
+                if (itemIndex < lastIndex) {
+                    for(let i = itemIndex; i <= lastIndex; i++) {
+                        let item = <any>this.tableDataSource.data[i];
+                        toShow.push(item.srcIndex);
+                    }
+                }
+
+                // select an item BELOW the last clicked item in the list
+                if(itemIndex > lastIndex) {
+                    for(let i = lastIndex; i <= itemIndex; i++) {
+                        let item = <any>this.tableDataSource.data[i];
+                        toShow.push(item.srcIndex);
+                    }
+                }
+
+                // filter out the ones to hide
+                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
+
+            } else if(modifierKey && (event.metaKey || event.ctrlKey)) {
+
+                // since this is a single click to add an item to the existing list,
+                // we need to find the currently selected items
+                for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
+                    const itemVis = this.currentWidgetOptions.visibility[i];
+                    if (itemVis === true) {
+                        toShow.push(i);
+                    }
+                }
+
+                // add the new clicked one
+                toShow.push(data.srcIndex);
+
+                // filter out the ones to hide
+                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
+
+            } else {
+                // default behavior, select only the one you click
+                toHide = (this.tableDataSource.data.filter((item: any) => item.srcIndex !== data.srcIndex)).map((item: any) => item.srcIndex);
+                toShow = [data.srcIndex];
+            }
+
+        }
+
+        // FILTERING BY TAG
         if (filter === 'tag' && data.tag && data.value) {
             toHide = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] !== data.value)).map((item: any) => item.srcIndex);
             toShow = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] === data.value)).map((item: any) => item.srcIndex);
         }
-        // this.logger.ng('FILTER TARGETS', {toHide, toShow});
+
+        // set last one clicked
+        this.lastClickedSrcIndex = data.srcIndex;
+
         if (toHide.length > 0) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
@@ -590,6 +752,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             });
         }
+
         if (toShow.length > 0) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
@@ -624,6 +787,21 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    @HostListener('document:keydown.shift', ['$event'])
+    onShiftKeydown(e) {
+        this.shiftModifierKey = true;
+        if (this.lastClickedSrcIndex >= 0) {
+            this.firstClickedSrcIndex = this.lastClickedSrcIndex;
+        }
+    }
+
+    @HostListener('document:keyup.shift', ['$event'])
+    onShiftKeyup(e) {
+        this.shiftModifierKey = false;
+        this.firstClickedSrcIndex = -1; // reset first clicked
+        this.lastClickedSrcIndex = -1;
     }
 
     /** OnDestory - Always Last */

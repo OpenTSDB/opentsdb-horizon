@@ -1,4 +1,7 @@
 <ng-template [ngIf]="multiple" [ngIfElse]="noMultiples">
+    <span [matMenuTriggerFor]="metricAutocompletePanel"
+    (menuOpened)="multipleMenuOpened()"
+    (menuClosed)="multipleMenuClosed()"></span>
     <mat-form-field
         class="metric-search-input-field"
         appearance="outline"
@@ -10,14 +13,13 @@
             [formControl]="metricSearchControl"
             (focus)="doMetricSearch()"
             (keydown.enter)="metricMultipleACKeydown($event)"
+            (keydown)="checkMenuOpen($event)"
             #metricSearchInput>
     </mat-form-field>
-    <span [matMenuTriggerFor]="metricAutocompletePanel"
-    (menuOpened)="multipleMenuOpened()"
-    (menuClosed)="multipleMenuClosed()"></span>
+
     <mat-menu
         class="metric-autocomplete-cdk-panel"
-        yPosition="below"
+        yPosition="above"
         [hasBackdrop]="false"
         [overlapTrigger]="false"
         #metricAutocompletePanel="matMenu">

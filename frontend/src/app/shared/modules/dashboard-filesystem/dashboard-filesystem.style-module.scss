@@ -1,0 +1,18 @@
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+//@import './components/dbfs/dbfs.component';
+//@import './components/dbfs-mini-nav/dbfs-mini-nav.component';
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin dashboard-filesystem-module-core() {
+    //@include dbfs-component-base();
+    //@include dbfs-mini-nav-component-base();
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin dashboard-filesystem-module-theme($theme-config) {
+   // @include dbfs-component-theme($theme-config);
+    //@include dbfs-mini-nav-component-theme($theme-config);
+}
