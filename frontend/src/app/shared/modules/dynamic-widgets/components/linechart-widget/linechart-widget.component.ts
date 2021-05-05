@@ -953,6 +953,12 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     setTimezone(timezone) {
         this.timezone = timezone;
         this.options.labelsUTC = timezone === 'utc' ? true : false;
+        for ( var y in this.graphData ) {
+            for ( var x in this.graphData[y] ) {
+                this.graphData[y][x].options.labelsUTC = this.options.labelsUTC;
+                this.graphData[y][x].options = { ...this.graphData[y][x].options };
+            }
+        }
         this._timezone.next(timezone);
     }
 

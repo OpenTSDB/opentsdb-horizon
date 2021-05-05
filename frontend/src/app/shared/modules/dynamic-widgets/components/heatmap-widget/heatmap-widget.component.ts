@@ -185,6 +185,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                 if ( !message.id || message.id === this.widget.id ) {
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };
+                  this.cdRef.detectChanges();
                 }
                 break;
              case 'SnapshotMeta':

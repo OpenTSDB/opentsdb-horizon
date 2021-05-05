@@ -185,8 +185,14 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);
 
-            bars.append("text")
-                .attr("class", "label")
+            /*bars.append("text")
+                .attr("class", (d: any) => {
+                    let tmpClass = 'label';
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    console.log('%ctcContrast', 'background: red; padding: 2px; color white;', tcContrast);
+                    return tmpClass + ' ' + tcContrast.type;
+                })
                 .attr("y", (d, i) => y(i) + y.bandwidth() / 2)
                 .attr("x", 0)
                 .attr("font-size", fontSize)
@@ -194,9 +200,51 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .attr("dx", "0.25em")
                 .text((d, i) => d.label)
                 .style('fill', (d: any) => {
-                    const color = d3.rgb(d.color === 'auto' ? '#000000' : d.color);
-                    return 'rgb(' + Math.floor(255 - color.r) + ',' + Math.floor(255 - color.g) + ',' + Math.floor(255 - color.b) + ')';
+                    console.log('%cCOLOR', 'background: red; padding: 2px; color white;', d);
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    let returnVal;
+
+                    return 'rgba(' + tcContrast.rgb.r + ', ' + tcContrast.rgb.b + ', ' + tcContrast.rgb.g + ', .85)';
+
+                    //const color = d3.rgb(d.color === 'auto' ? '#000000' : d.color);
+                    //return 'rgb(' + Math.floor(255 - color.r) + ',' + Math.floor(255 - color.g) + ',' + Math.floor(255 - color.b) + ')';
                 })
+                .on("mouseover", mouseover)
+                .on("mousemove", mousemove)
+                .on("mouseleave", mouseleave);*/
+
+            bars.append("foreignObject")
+                .attr("class", (d: any) => {
+                    let tmpClass = 'label';
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    return tmpClass + ' ' + tcContrast.type;
+                })
+                .attr("y", (d, i) => y(i))
+                .attr("x", 5)
+                .attr("height", barHeight)
+                .attr("width", (d: any) => {
+                    let txtWidth = this.utils.calculateTextWidth(d.label, '12px', 'Helvetica Neue');
+                    return txtWidth + 10;
+                })
+                .style("position","relative")
+              .append("xhtml:div")
+                .attr("class", "text")
+                .style("padding", "2px")
+                .style("font","12px 'Helvetica Neue'")
+                .style("position","absolute")
+                .style("top", "50%")
+                .style("margin-top", "-9px")
+                .style("color", "rgba(0, 0, 0, .85)")
+                .style("background-color",(d: any) => {
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    let opacity: any = (tcContrast.type === 'white') ? .65 : 0
+
+                    return 'rgba(255, 255, 255, ' + opacity + ')';
+                })
+                .html((d: any) => "<span>" + d.label + "</span>")
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);

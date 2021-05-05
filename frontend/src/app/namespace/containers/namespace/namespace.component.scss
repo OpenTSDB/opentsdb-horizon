@@ -1,0 +1,64 @@
+@mixin app-namespace-component-base() {
+    .app-namespace {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .dynamic-scroller {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .namespace-list {
+                flex: 1;
+
+                .cdk-virtual-scroll-viewport {
+                    min-height: 100%;
+                }
+            }
+        }
+
+        .namespace-contents {
+            display: flex;
+            flex-direction: columns;
+            flex: 1;
+            position: relative;
+
+            .namespace-content-list {
+                flex: 1;
+
+                .cdk-virtual-scroll-viewport {
+                    min-height: 100%;
+                }
+            }
+        }
+
+        .simple-list-item {
+            display: flex;
+        }
+    }
+}
+
+@mixin app-namespace-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+    $status: map-get($theme-config, status);
+    $close-button-background: map-get($accent, A400);
+    $close-button-text: map-get($foreground, navbar-text);
+    $navbar-background: map-get($background, navbar);
+
+    $navbar-text: map-get($foreground, navbar-text);
+
+    .nav-namespace-title {
+        color: $navbar-text;
+    }
+}
