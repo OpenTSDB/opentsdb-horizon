@@ -224,18 +224,17 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .attr("y", (d, i) => y(i))
                 .attr("x", 5)
                 .attr("height", barHeight)
-                .attr("width", (d: any) => {
+                /*.attr("width", (d: any) => {
                     let txtWidth = this.utils.calculateTextWidth(d.label, '12px', 'Helvetica Neue');
                     return txtWidth + 10;
-                })
+                })*/
                 .style("position","relative")
+                .style("width","100%")
               .append("xhtml:div")
                 .attr("class", "text")
                 .style("padding", "2px")
-                .style("font","12px 'Helvetica Neue'")
-                .style("position","absolute")
-                .style("top", "50%")
-                .style("margin-top", "-9px")
+                .style("font-size", fontSize)
+                .style("line-height","1")
                 .style("color", "rgba(0, 0, 0, .85)")
                 .style("background-color",(d: any) => {
                     let tmpColor = d.color === 'auto' ? '#000000' : d.color;
