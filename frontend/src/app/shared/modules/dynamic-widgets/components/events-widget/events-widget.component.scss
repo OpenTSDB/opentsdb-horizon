@@ -21,17 +21,28 @@
         }
 
         .widget-output-container {
-
+            height: 100%;
             .event-stream-title {
                 border-bottom: 1px solid lightgray;
                 line-height: 21px;
                 text-transform: uppercase;
                 font-size: 12px;
             }
+
+            .widget-title .readonly {
+                display: inline-block;
+                padding: 2px;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 12px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
         }
 
         .widget-output {
-            overflow: auto;
+            overflow: overlay;
             align-items: flex-start;
             padding: 0;
 
@@ -42,6 +53,12 @@
             .event-result-title {
                 font-weight: bold;
                 padding-left: 10px;
+            }
+        }
+
+        @-moz-document url-prefix() {
+            .widget-output {
+                overflow: auto;
             }
         }
 
@@ -57,6 +74,10 @@
     .edit-view-container.is-active {
         .widget-panel-content.events-widget {
 
+            .widget-title {
+                margin-bottom: 0;
+            }
+
             .widget-output-container {
                 flex: 1;
                 max-height: initial;
@@ -66,15 +87,16 @@
             .widget-output {
                 height: initial;
                 max-height: initial;
-                margin-bottom: 12px;
+                //margin-bottom: 12px;
                 align-items: flex-start;
             }
 
             .widget-controls-container {
                 flex: 1;
                 flex-grow: 0.25;
-                margin: 12px;
+                margin: 12px 0;
                 background-color: white;
+                min-height: 240px;
             }
 
             .widget-configs .mat-tab-header .mat-tab-label:last-child {

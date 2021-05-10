@@ -17,6 +17,7 @@
 @import 'components/markdown-widget/markdown-widget.component';
 @import 'components/markdown-widget/children/markdown-widget-visual-appearance/markdown-widget-visual-appearance.component';
 @import 'components/events-widget/events-widget.component';
+@import 'components/table-widget/table-widget.component';
 
 @mixin dynamic-widgets-module-core() {
     // common
@@ -37,6 +38,7 @@
     @include markdown-widget-component-base();
     @include markdown-visual-appearance-widget-component-base();
     @include events-widget-component-base();
+    @include table-widget-component-base();
 }
 
 @mixin dynamic-widgets-module-theme($theme-config) {
@@ -57,4 +59,5 @@
     @include markdown-widget-component-theme($theme-config);
     @include markdown-visual-appearance-widget-component-theme($theme-config);
     @include events-widget-component-theme($theme-config);
+    @include table-widget-component-theme($theme-config);
 }

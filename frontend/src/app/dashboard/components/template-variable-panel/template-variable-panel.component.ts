@@ -44,6 +44,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     filteredKeyOptions: Observable<string[]>; // options for key autosuggest
     filteredValueOptions: string[][];
     filterValLoading = true;
+    filterValLoadingErr = false;
     prevSelectedTagk = '';
     disableDone = false;
     trackingSub: any = {};
@@ -62,13 +63,26 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     tagValueViewBlurTimeout: any;
     tagValueViewFocusTimeout: any;
 
+    tagValueScopeSub: Subscription;
+    rebuildScopeSub: Subscription;
+    tagValueSearchInputControl: FormControl = new FormControl('');
+    scopeIndex = -1;
+    tagValueSearch: string[] = [];
+    tagScope: string[] = [];
+    useDBFScope = false;
+    doSearch = false;
+    scopeModify = false;
+
+    scopeMenuNavSelection = 'tagscope';
+
     constructor(
         private fb: FormBuilder,
         private interCom: IntercomService,
         private dbService: DashboardService,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private httpService: HttpService) {
+        private httpService: HttpService
+    ) {
         // predefine there
          this.listForm = this.fb.group({
             listVariables: this.fb.array([])
@@ -76,9 +90,32 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.editForm = this.fb.group({
             formTplVariables: this.fb.array([])
         });
-        }
+    }
 
-    ngOnInit() {}
+    ngOnInit() {
+        // this is for getting tag value for scope
+        this.tagValueScopeSub = this.tagValueSearchInputControl.valueChanges
+        .pipe(
+            debounceTime(200)
+        ).subscribe(val => {
+            this.filterValLoading = true;
+            const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
+            this.tagValueSearch = [];
+            this.tagValueSearch[0] = regexStr;
+            this.cdRef.markForCheck();
+            if (this.scopeIndex > -1) {
+                if (this.trackingSub[this.scopeIndex]) {
+                    this.trackingSub[this.scopeIndex].unsubscribe();
+                }
+                const query = this.buildTagValuesQuery(val, this.scopeIndex);
+                this.trackingSub[this.scopeIndex] = this.httpService.getTagValues(query).subscribe(results => {
+                    this.filterValLoading = false;
+                    this.tagValueSearch = this.tagValueSearch.concat(results);
+                    this.cdRef.markForCheck();
+                });
+            }
+        });
+    }
 
     // to set reset these variable, will be call from dashboard component.
     reset() {
@@ -116,12 +153,56 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             } else {
                 this.initEditFormGroup(true);
             }
-        } 
+        }
     }
     doEdit() {
         this.modeChange.emit({ view: false });
     }
 
+    buildTagValuesQuery(val: string, index: number): any {
+        const arrayControl = this.mode.view ? this.listForm.get('listVariables') as FormArray
+            : this.editForm.get('formTplVariables') as FormArray;
+        const selControl = arrayControl.at(index);
+        const alias = selControl.get('alias').value;
+        const tagk = selControl.get('tagk').value;
+        const metrics = [];
+        // get tag values that matches metrics or namespace if metrics is empty
+        for (let i = 0; i < this.widgets.length; i++) {
+            const queries = this.widgets[i].queries;
+            for (let j = 0; j < queries.length; j++) {
+                const filters = queries[j].filters;
+                let aliasFound = false;
+                for (let k = 0; k < filters.length; k++) {
+                    if (filters[k].tagk === tagk && filters[k].customFilter) {
+                        filters[k].customFilter.forEach(f => {
+                            const hasNot = f[0] === '!';
+                            const _alias = f.substring(hasNot ? 2 : 1, f.length - 1);
+                            if (alias === _alias) {
+                                aliasFound = true;
+                            }
+                        });
+                    }
+                }
+                if (aliasFound) {
+                    for (let k = 0; k < queries[j].metrics.length; k++) {
+                        if (!queries[j].metrics[k].expression) {
+                            metrics.push(queries[j].namespace + '.' + queries[j].metrics[k].name);
+                        }
+                    }
+                }
+            }
+        }
+        const query: any = {
+            tag: { key: tagk, value: val }
+        };
+        if (metrics.length) {
+            query.metrics = metrics;
+        } else {
+            // tslint:disable-next-line: max-line-length
+            query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
+        }
+        return query;
+    }
     // for filteredValueOptions, we can use both in view or edit mode, since
     // they have same index and all
     // @mode: from input, view or edit
@@ -136,8 +217,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         // only when it not there
         if (!this.filteredValueOptions[index]) {
             this.filteredValueOptions[index] = [];
-        } 
-
+        }
         this.trackingSub[name + index] = selControl.get('display').valueChanges
             .pipe(
                 startWith(initVal),
@@ -145,65 +225,109 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                 debounceTime(200)
             ).subscribe(val => {
                 val = val ? val.trim() : '';
-                const alias = '[' + selControl.get('alias').value + ']';
+                const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
+                // const regexStr = val === '' ? 'regexp(.*)' : 'regexp(' + val.replace(/\s/g, ".*") + ')';
                 const tagk = selControl.get('tagk').value;
-                const metrics = [];
-                // get tag values that matches metrics or namespace if metrics is empty
-                for ( let i = 0; i < this.widgets.length; i++ ) {
-                    const queries = this.widgets[i].queries;
-                    for ( let j = 0; j < queries.length; j++ ) {
-                        const filters = queries[j].filters;
-                        let aliasFound = false;
-                        for ( let k = 0; k < filters.length; k++ ) {
-                            if ( filters[k].tagk === tagk && filters[k].customFilter && filters[k].customFilter.includes(alias)) {
-                                aliasFound = true;
-                            }
-                        }
-                        if ( aliasFound ) {
-                            for ( let k = 0; k < queries[j].metrics.length; k++ ) {
-                                if (!queries[j].metrics[k].expression) {
-                                    metrics.push( queries[j].namespace + '.' + queries[j].metrics[k].name );
-                                }
-                            }
-                        }
-                    }
-                }
-                const query: any = {
-                    tag: { key: tagk, value: val }
-                };
-                if ( metrics.length ) {
-                    query.metrics = metrics;
-                } else {
-                    // tslint:disable-next-line: max-line-length
-                    query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
-                }
+                const query = this.buildTagValuesQuery(val, index);
                 const qid = 'v-' + name + index;
-                if ( this.trackingSub[qid] ) {
+                if (this.trackingSub[qid]) {
                     this.trackingSub[qid].unsubscribe();
                 }
-                // const regexStr = val === '' || val === 'regexp()' ? 'regexp(.*)' : /^regexp\(.*\)$/.test(val) ? val : 'regexp('+val.replace(/\s/g, ".*")+')';
-                const regexStr = val === '' ? 'regexp(.*)' : 'regexp('+val.replace(/\s/g, ".*")+')';
-                // assign regexpStr to first element right away
-                if (this.filteredValueOptions[index]) {
-                    if (this.filteredValueOptions[index].length > 1) {
-                        this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
-                    }
-                    this.filteredValueOptions[index][0] = regexStr;
-                    this.cdRef.markForCheck();
-                }
                 this.filterValLoading = true;
-                this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
-                    results => {
-                        this.filterValLoading = false;
-                        if (results && results.length > 0 && this.filteredValueOptions[index]) {                    
-                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
-                            this.cdRef.markForCheck();
+                this.filterValLoadingErr = false;
+                // if they have scope defined then we use scope instead
+                if (selControl.get('scope').value && selControl.get('scope').value.length > 0) {
+                    this.useDBFScope = true;
+                    if (!this.tplVariables.scopeCache[index]) {
+                        this.tplVariables.scopeCache[index] = [];
+                    }
+                    if (!this.tplVariables.scopeCache[index].length) {
+                        for (let i = 0; i < selControl.get('scope').value.length; i++) {
+                            let v = selControl.get('scope').value[i];
+                            if (v[0] === '!' || v.match(/regexp\((.*)\)/)) {
+                                this.doSearch = true;
+                                query.tagsFilter = [{
+                                    tagk: tagk,
+                                    filter: selControl.get('scope').value
+                                }];
+                                break;
+                            }
                         }
-                    });
+                    }
+                    if (!this.doSearch) {
+                        if (!this.tplVariables.scopeCache[index].length) {
+                            //selControl.get('scopeCache').setValue(selControl.get('scope').value);
+                            // this.updateState(selControl, false);
+                            this.tplVariables.scopeCache[index] = selControl.get('scope').value;
+                        }
+                        if (this.filteredValueOptions[index] && this.filteredValueOptions[index].length > 0) {
+                            this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
+                        } else {
+                            this.filteredValueOptions[index] = [];
+                        }
+                        this.filteredValueOptions[index][0] = regexStr;
+                        // if we have scopeCache then just filter thru it.
+                        if (val !== '') {
+                            const res = val.match(/^regexp\((.*)\)$/);
+                            const va = res ? res[1] : val;
+                            const matches = [];
+                            try {
+                                const regx = new RegExp(va, 'gi');
+                                this.tplVariables.scopeCache[index].forEach(v => {
+                                    if (v.match(regx)) {
+                                        matches.push(v);
+                                    }
+                                });
+                            } catch (e) {
+                                let err = (e as Error).message;
+                                console.info('Error: ', err);
+                            }
+
+                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(matches);
+                        } else {
+                            this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(this.tplVariables.scopeCache[index]);
+                        }
+                        this.filterValLoading = false;
+                        this.cdRef.markForCheck();
+                    }
+                } else {
+                    this.useDBFScope = false;
+                    this.doSearch = true;
+                    query.tagsFilter = [];
+                }
+                if (this.doSearch) {
+                    // assign regexpStr to first element right away
+                    if (this.filteredValueOptions[index]) {
+                        if (this.filteredValueOptions[index].length > 1) {
+                            this.filteredValueOptions[index].splice(1, this.filteredValueOptions[index].length - 1);
+                        }
+                        this.filteredValueOptions[index][0] = regexStr;
+                        this.cdRef.markForCheck();
+                    }
+                    this.trackingSub[qid] = this.httpService.getTagValues(query).subscribe(
+                        results => {
+                            this.filterValLoading = false;
+                            if (results && results.length > 0 && this.filteredValueOptions[index]) {
+                                if (this.useDBFScope) {
+                                    //selControl.get('scopeCache').setValue(results);
+                                    this.tplVariables.scopeCache[index] = results;
+                                }
+                                this.filteredValueOptions[index] = this.filteredValueOptions[index].concat(results);
+                            }
+                            this.doSearch = false;
+                            this.cdRef.markForCheck();
+                        },
+                        err => {
+                            this.filterValLoading = false;
+                            this.filterValLoadingErr = true;
+                            this.doSearch = false;
+                            this.cdRef.markForCheck();
+                        });
+                }
             });
     }
     initListFormGroup(checkRun: boolean = false) {
-        this.editForm.reset({ emitEvent: false});
+        // this.editForm.reset({ emitEvent: false});
         // when switching to edit mode, we use the edit form and value and requery of needed
         if (checkRun) {
             if (JSON.stringify(this.tplVariables.editTplVariables.tvars) !== JSON.stringify(this.tplVariables.viewTplVariables.tvars)) {
@@ -212,7 +336,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     payload: this.tplVariables.viewTplVariables.tvars
                 });
             }
-        }     
+        }
         this.filteredValueOptions = [];
         this.listForm.controls['listVariables'] = this.fb.array([]);
         if (this.tplVariables.viewTplVariables.tvars) {
@@ -224,6 +348,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     filter: new FormControl((data.filter) ? data.filter : '', []),
                     mode: new FormControl((data.mode) ? data.mode : 'auto'),
                     display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
+                    scope: new FormControl(data.scope ? data.scope : []),
                     applied: data.applied,
                     isNew: data.isNew
                 };
@@ -234,7 +359,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     initEditFormGroup(checkRun: boolean = false) {
-        this.listForm.reset({ emitEvent: false});
+        // this.listForm.reset({ emitEvent: false});
         this.filteredValueOptions = [];
         this.editForm.controls['formTplVariables'] = this.fb.array([]);
         this.initializeTplVariables(this.tplVariables.editTplVariables.tvars);
@@ -294,6 +419,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             filter: new FormControl((data.filter) ? data.filter : '', []),
             mode: new FormControl((data.mode) ? data.mode : 'auto'),
             display: new FormControl(res ? res[1] : data.filter ? data.filter : '', []),
+            scope: new FormControl(data.scope ? data.scope : []),
             applied: data.applied,
             isNew: data.isNew
         };
@@ -303,13 +429,14 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     onVariableFocus(index: number) {
+        this.filterValLoading =  true;
         this.tagValueViewFocusTimeout = setTimeout(() => {
             this.manageFilterControl(index);
         }, 300);
     }
 
     onVariableBlur(event: any, index: number) {
-        if (this.isSecondBlur) { 
+        if (this.isSecondBlur) {
             this.isSecondBlur = false;
             return;
         }
@@ -317,7 +444,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         const selControl = control.at(index);
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(()=> {
-            const val = selControl.get('display').value;
+            let val = selControl.get('display').value;
+            val = val ? val.trim() : '';
             // no check and let user enter whatever
             let idx = -1;
             if (val === '') {
@@ -341,8 +469,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
                     } else {
                         selControl.get('filter').setValue(this.filteredValueOptions[index][idx], { emitEvent: true });
-                    }                                    
-                }              
+                    }
+                }
             }
             if (this.tplVariables.viewTplVariables.tvars[index].filter !== selControl.get('filter').value) {
                 this.tplVariables.viewTplVariables.tvars[index].filter = selControl.get('filter').value;
@@ -384,9 +512,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     ).subscribe(val => {
                         this.justValidateForm(val.toString(), index);
                     });
-                } 
+                }
                 break;
             case 'display':
+                this.filterValLoading = true;
                 this.tagValueFocusTimeout = setTimeout(() => {
                     this.manageFilterControl(index);
                 }, 300);
@@ -422,8 +551,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                     this.cdRef.markForCheck();
                     return;
                 }
-            } 
-        }       
+            }
+        }
     }
     // since alias/name has to be unique with db filters
     private validateAlias(val: string, index: number, selControl: any, originAlias: string[]) {
@@ -473,7 +602,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
                         const tagk = rowControl.get('tagk').value;
                         if (!aliasInfo[tagk]) {
                             aliasInfo[tagk] = [];
-                        } 
+                        }
                         aliasInfo[tagk].push(tmpObj);
                     }
                 }
@@ -506,8 +635,8 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         }
         if (cname === 'display') {
             if (selControl.invalid) { return; }
-            // to check filter again return list       
-            this.tagValueBlurTimeout = setTimeout(() => {              
+            // to check filter again return list
+            this.tagValueBlurTimeout = setTimeout(() => {
                 let idx = -1;
                 if (val === '') {
                     selControl.get('filter').setValue('', { eventEmit: true});
@@ -621,10 +750,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.tplVariables.editTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index);
         selControl.get('display').setValue(display, { eventEmit: false });
-        selControl.get('filter').setValue(event.option.value, { eventEmit: false }); 
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });
         if (this.tplVariables.editTplVariables.tvars[index].filter !== event.option.value) {
             this.updateState(selControl);
-        }       
+        }
     }
 
     selectVarValueOption(event: any, index: number) {
@@ -648,7 +777,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         this.tplVariables.viewTplVariables.tvars[index].display = display;
         const selControl = this.getSelectedControl(index, 'listVariables');
         selControl.get('display').setValue(display, { eventEmit: false });
-        selControl.get('filter').setValue(event.option.value, { eventEmit: false });        
+        selControl.get('filter').setValue(event.option.value, { eventEmit: false });
         // the event is matAutocomplete event, we deal later to clear focus
         if (this.tplVariables.viewTplVariables.tvars[index].filter !== event.option.value) {
             this.tplVariables.viewTplVariables.tvars[index].filter = event.option.value;
@@ -842,6 +971,69 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             }
         });
     }
+
+    addToScope(val: string, index: number) {
+        if (!this.tagScope.includes(val)) {
+            this.tagScope.push(val);
+            this.scopeModify = true;
+            this.cdRef.markForCheck();
+        }
+    }
+
+    removeFromScope(val: string, index: number) {
+        const idx = this.tagScope.indexOf(val);
+        if (idx > -1) {
+            this.tagScope.splice(idx, 1);
+            this.scopeModify = true;
+            this.cdRef.markForCheck();
+        }
+    }
+
+    toggleExcludeFromScope(val: string, index: number) {
+        // by puutting ! infront of exlude value
+        const valStrip = val.charAt(0) === '!' ? val.substr(1) : val;
+        const idx = this.tagScope.indexOf(val);
+        if (idx > -1) {
+            this.tagScope[idx] = this.tagScope[idx].charAt(0) === '!' ? valStrip : '!' + valStrip;
+            this.scopeModify = true;
+            this.cdRef.markForCheck();
+        }
+    }
+
+    scopeClose(index: number) {
+        this.tagValueSearchInputControl.setValue('', {emitEvent: false});
+        this.tagValueSearch = [];
+        this.scopeIndex = -1;
+        const selControl = this.getSelectedControl(index);
+        selControl.get('scope').setValue(this.tagScope);
+        if (this.scopeModify) {
+            this.tplVariables.scopeCache[index] = [];
+            this.scopeModify = false;
+            // rebuild scopeCache for this item
+            const query = this.buildTagValuesQuery('', index);
+            query.tagsFilter = [{
+                tagk: selControl.get('tagk').value,
+                filter: selControl.get('scope').value
+            }];
+            this.rebuildScopeSub = this.httpService.getTagValues(query).subscribe(
+                results => {
+                    this.tplVariables.scopeCache[index] = results;
+                },
+                err => {
+                    this.tplVariables.scopeCache[index] = [];
+                });
+            // update query
+            this.updateState(selControl);
+        } else {
+            this.updateState(selControl, false);
+        }
+    }
+    scopeOpen(index: number) {
+        this.scopeIndex = index;
+        this.tagScope = this.tplVariables.editTplVariables.tvars[index].scope ? this.tplVariables.editTplVariables.tvars[index].scope : [];
+        this.cdRef.markForCheck();
+        this.tagValueSearchInputControl.setValue('');
+    }
 /*
     resetFilterValue(event: any, index: number) {
         event.stopPropagation();
@@ -858,10 +1050,10 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             });
         }
     }
-  */  
+  */
     // DragDrop Table reorder event
     dropTable(event: any) {
-        // console.log('DROP TABLE EVENT', event);
+
         // move item within the controls array
         moveItemInArray(this.formTplVariables['controls'], event.previousIndex, event.currentIndex);
 
@@ -877,11 +1069,20 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     }
 
     dragStart(cdkEvent: CdkDragStart, index: number) {
-        // console.log('DRAG START', cdkEvent, index);
         // get size of the element we are dragging
         const sourceElCoords = cdkEvent.source.element.nativeElement.getBoundingClientRect();
         // synchronize the width of the placeholder with the dragged element
         this.placeholderStyles = { width: (sourceElCoords.width - 6) + 'px', height: '49px', transform: 'translate3d(0px,0px,0px)' };
+    }
+
+    scopeMenuClosed($event: any) {
+        // reset nav selection when menu closed
+        this.scopeMenuNavSelection = 'tagscope';
+    }
+
+    // this is just ready method once we extend to have more menu
+    scopeMenuNavChange($event: any) {
+        this.scopeMenuNavSelection = $event;
     }
 
     ngOnDestroy() {
@@ -889,6 +1090,12 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
             if (this.trackingSub.hasOwnProperty(sub) && this.trackingSub[sub] instanceof Subscription) {
                 this.trackingSub[sub].unsubscribe();
             }
+        }
+        if (this.tagValueScopeSub) {
+            this.tagValueScopeSub.unsubscribe();
+        }
+        if (this.rebuildScopeSub) {
+            this.rebuildScopeSub.unsubscribe();
         }
     }
     get listVariables(): FormArray {

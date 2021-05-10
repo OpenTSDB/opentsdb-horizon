@@ -17,6 +17,7 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
  // tslint:disable:max-line-length
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
+import { ResizableDirective } from '../directives/resizable.directive';
 
  // widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
@@ -65,6 +66,11 @@ import { MetricVisualPanelComponent } from './components/metric-visual-panel/met
 import { HexToColorNamePipe } from './pipes/hex-to-color-name.pipe';
 import { DateToRelativePipe } from './pipes/date-to-relative.pipe';
 import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropdown-join-type.component';
+import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
+import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
+import { SafePipe } from './pipes/safe.pipe';
+import {  Nl2BrPipe } from './pipes/nl2br.pipe';
+import { HelpLinksComponent } from './components/help-links/help-links.component';
 
 @NgModule({
     imports: [
@@ -122,7 +128,13 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
         MetricVisualPanelComponent,
         HexToColorNamePipe,
         DateToRelativePipe,
-        DropdownJoinTypeComponent
+        DropdownJoinTypeComponent,
+        AliasDisplayPipe,
+        HighlightStripTextPipe,
+        SafePipe,
+        Nl2BrPipe,
+        ResizableDirective,
+        HelpLinksComponent
     ],
     exports: [
         ThemePickerComponent,
@@ -164,7 +176,11 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
         MetricVisualPanelComponent,
         HexToColorNamePipe,
         DateToRelativePipe,
-        TagAggregatorComponent
+        TagAggregatorComponent,
+        AliasDisplayPipe,
+        HighlightStripTextPipe,
+        ResizableDirective,
+        HelpLinksComponent
     ],
     entryComponents: [
         InlineFilterEditorComponent,

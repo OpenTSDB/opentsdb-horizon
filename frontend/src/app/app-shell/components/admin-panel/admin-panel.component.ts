@@ -28,7 +28,6 @@ export class AdminPanelComponent implements OnInit {
     }
 
     toggleDrawerMode() {
-        // console.log('TOGGLE 1');
         this.toggleDrawer.emit(true);
     }
 

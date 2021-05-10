@@ -4,6 +4,7 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -22,11 +23,12 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.barchart-widget') private _componentClass = true;
 
-    @Input() editMode: boolean;
     @Input() widget: any;
+    @Input() mode = 'view'; // view/explore/edit
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
 
+    Object = Object;
     private listenSub: Subscription;
     // tslint:disable-next-line:no-inferrable-types
     private isDataLoaded: boolean = false;
@@ -71,11 +73,13 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             position: 'right'
         }
     };
-    data: any = [ ];
+    data: any = null;
     newSize$: BehaviorSubject<any>;
     newSizeSub: Subscription;
-    width = '100%';
-    height = '100%';
+    isEditContainerResized = false;
+    width: any = '100%';
+    height: any = '100%';
+    widgetOutputElHeight = 60;
     nQueryDataLoading = 0;
     error: any;
     errorDialog: MatDialogRef < ErrorDialogComponent > | null;
@@ -85,6 +89,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     needRequery = false;
     isDestroying = false;
     visibleSections: any = { 'queries' : true, 'time': false, 'axes': false, 'visuals': false, 'sorting': false };
+    formErrors: any = {};
+    meta: any = {};
+    resizeSensor: any;
 
     constructor(
         private interCom: IntercomService,
@@ -92,11 +99,14 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         public dialog: MatDialog,
         private util: UtilsService,
         private unit: UnitConverterService,
-        private cdRef: ChangeDetectorRef
+        private elRef: ElementRef,
+        private cdRef: ChangeDetectorRef,
+        private dateUtil: DateUtilsService
     ) { }
 
     ngOnInit() {
 
+        this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.doRefreshData$ = new BehaviorSubject(false);
 
         this.doRefreshDataSub = this.doRefreshData$
@@ -125,11 +135,51 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
         // subscribe to event stream
         this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
+            let overrideTime;
             switch( message.action ) {
                 case 'TimeChanged':
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( !overrideTime ) {
+                        this.refreshData();
+                    }
+                    break;
                 case 'reQueryData':
+                    if ( !message.id || message.id === this.widget.id ) {
+                        this.refreshData();
+                    }
+                    break;
                 case 'ZoomDateRange':
-                    this.refreshData();
+                    if ( !message.id || message.id === this.widget.id ) {
+                        overrideTime = this.widget.settings.time.overrideTime;
+                        if ( message.payload.date.isZoomed && overrideTime ) {
+                            const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                            const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                            if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                                this.options.isCustomZoomed = message.payload.date.isZoomed;
+                                this.widget.settings.time.zoomTime = message.payload.date;
+                                this.refreshData();
+                            }
+                        // tslint:disable-next-line: max-line-length
+                        } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.refreshData();
+                        }
+                        // unset the zoom time
+                        if ( !message.payload.date.isZoomed ) {
+                            delete this.widget.settings.time.zoomTime;
+                        }
+                    }
+                    break;
+                case 'SnapshotMeta':
+                    this.meta = message.payload;
+                    break;
+                case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
                     break;
             }
             if (message && (message.id === this.widget.id)) {
@@ -169,6 +219,14 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         this.widget.settings.useDBFilter = true;
                         this.cdRef.detectChanges();
                         break;
+                    case 'widgetDragDropEnd':
+                        if (this.resizeSensor) {
+                            this.resizeSensor.detach();
+                        }
+                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                            this.newSize$.next(1);
+                        });
+                        break;
                 }
             }
         });
@@ -183,7 +241,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
         setTimeout(()=>{
-            this.refreshData(this.editMode ? false : true);
+            this.refreshData(this.mode !== 'view' ? false : true);
             this.setOptions();
         });
     }
@@ -198,23 +256,16 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         // Dimension will be picked up by parent node which is #container
         ElementQueries.listen();
         ElementQueries.init();
-        const initSize = {
-            width: this.widgetOutputElement.nativeElement.clientWidth,
-            height: this.widgetOutputElement.nativeElement.clientHeight
-        };
-        this.newSize$ = new BehaviorSubject(initSize);
+        const dummyFlag = 1;
+        this.newSize$ = new BehaviorSubject(dummyFlag);
 
         this.newSizeSub = this.newSize$.pipe(
             debounceTime(100)
-        ).subscribe(size => {
-            this.setSize(size);
+        ).subscribe(flag => {
+            this.setSize();
         });
-        const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () =>{
-             const newSize = {
-                width: this.widgetOutputElement.nativeElement.clientWidth,
-                height: this.widgetOutputElement.nativeElement.clientHeight
-            };
-            this.newSize$.next(newSize);
+        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+            this.newSize$.next(dummyFlag);
         });
     }
 
@@ -250,7 +301,15 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
+            case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
             case 'SetTimeConfiguration':
+                delete this.formErrors.time;
                 this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
@@ -309,6 +368,20 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
+            case 'UpdateQueryOrder':
+                this.widget.queries = this.util.deepClone(message.payload.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
+            case 'UpdateQueryMetricOrder':
+                const qindex = this.widget.queries.findIndex(q => q.id === message.id );
+                this.widget.queries[qindex] = message.payload.query;
+                this.widget.queries = this.util.deepClone(this.widget.queries);
+                this.widget = {...this.widget};
+                this.doRefreshData$.next(true);
+                this.needRequery = true;
+                break;
             case 'ToggleDBFilterUsage':
                 this.widget.settings.useDBFilter = message.payload.apply;
                 this.refreshData();
@@ -327,21 +400,30 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     }
 
     // for first time and call.
-    setSize(newSize) {
+    setSize() {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
-        const nativeEl = (this.editMode) ?
+        const nativeEl = (this.mode !== 'view') ?
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
+        const heightMod = 0.55;
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
+                                                                : nativeEl.getBoundingClientRect().height + 60;
         const outputSize = nativeEl.getBoundingClientRect();
-        if (this.editMode) {
-            this.width = '100%';
-            this.height = '100%';
+        if (this.mode !== 'view') {
+            this.width = outputSize.width;
+            this.height = this.widgetOutputElHeight - 73;
         } else {
-            this.width = (outputSize.width - 30) + 'px';
-            this.height = (outputSize.height - 3) + 'px';
+            this.width = (outputSize.width - 30);
+            this.height = (outputSize.height - 3);
         }
+        this.options = {...this.options};
         this.detectChanges();
+    }
+
+    handleEditResize(e) {
+        this.isEditContainerResized = true;
     }
 
     detectChanges() {
@@ -471,8 +553,19 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         this.closeViewEditMode();
     }
 
+    saveAsSnapshot() {
+        const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'SaveSnapshot',
+            id: cloneWidget.id,
+            payload: { widget: cloneWidget, needRequery: false }
+        });
+    }
+
     ngOnDestroy() {
         this.isDestroying = true;
+        this.newSizeSub.unsubscribe();
         if (this.listenSub) {
             this.listenSub.unsubscribe();
         }

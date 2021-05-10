@@ -6,6 +6,20 @@
         display: flex;
         flex: 1 1 auto;
 
+        .widget-menu-trigger,
+        .snapshot-icon,
+        .expand-trigger {
+            visibility: hidden;
+        }
+
+        &:hover {
+            .widget-menu-trigger,
+            .expand-trigger,
+            .snapshot-icon {
+                visibility: visible;
+            }
+        }
+
         .mat-card {
             padding: initial;
         }
@@ -48,6 +62,38 @@
             padding: initial;
         }
 
+        .batch-selector {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            height: 24px;
+            padding: 0 3px;
+            transform: scale(.8);
+
+            .mat-checkbox-layout {
+                margin-top: -14px;
+            }
+
+            + .panel-title::before {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                position: relative;
+            }
+        }
+
+        .mat-icon.time-lock
+        //.snapshot-icon,
+        //.expand-trigger
+        {
+            cursor: pointer;
+            margin: 0px 6px;
+            font-size: 12px;
+            width: 12px;
+            height: 12px;
+        }
+
         .mat-icon-button {
             &,
             .mat-icon {
@@ -63,6 +109,19 @@
             .mat-icon {
                 font-size: 18px;
                 line-height: 24px;
+            }
+
+           &.expand-trigger,
+           &.snapshot-icon {
+               .mat-icon {
+                   font-size: 12px;
+               }
+           }
+        }
+
+        &.inverse-menu-color {
+            .mat-toolbar .mat-icon-button {
+                color: rgba($white, .87);
             }
         }
 
@@ -128,6 +187,9 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
+    $divider: map-get($foreground, divider);
+    $card: map-get($background, card);
+
     .widget-loader {
         .mat-card {
             box-shadow: none;
@@ -167,6 +229,19 @@
                     }
                 }
             }
+        }
+
+        /*&.inverse-menu-color {
+            .batch-selector {
+                .mat-checkbox-frame {
+                    border-color: rgba($white, .54);
+                }
+            }
+        }*/
+
+        .batch-selector {
+            // border: 1px solid rgba(if($is-dark-theme, $white, $black), .8);
+            background: $card;
         }
     }
 

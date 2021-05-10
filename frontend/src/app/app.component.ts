@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private router: Router,
         private authService: AuthService
-    ) { 
+    ) {
         // register this router events to capture url changes
         this.router.events.subscribe((event) => {
           if (event instanceof NavigationEnd) {
@@ -35,12 +35,9 @@ export class AppComponent implements OnInit, OnDestroy {
         });
     }
 
-
-
     ngOnInit() {
         this.auth$.subscribe(auth => {
             if (auth === 'invalid') {
-                // console.log('open auth dialog');
                 this.dialog.open(LoginExpireDialogComponent, {
                     disableClose: true
                 });
@@ -48,15 +45,24 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.dialog.closeAll();
             }
         });
-
+        // store last heartbeat check to localStorage
+        if (!localStorage.getItem('lastHeartBeat')) {
+            localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
+        }
+        // interval for 1 min
         const authCheck = interval(60 * 1000);
         this.authCheckSub = authCheck.subscribe(val => {
-            return this.authService.getCookieStatus(true)
-                .subscribe(
+            const now = new Date().getTime();
+            const lastHB = parseInt(localStorage.getItem('lastHeartBeat'), 10);
+            // only active tab and 10 mins ago
+            if (!document.hidden && (now - lastHB >= 600000)) {
+                return this.authService.getCookieStatus(true)
+                    .subscribe(
                         (res) => {
-                            console.log("heatbeat check res", res);
+                            localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
                         }
-                );
+                    );
+            }
         });
     }
 

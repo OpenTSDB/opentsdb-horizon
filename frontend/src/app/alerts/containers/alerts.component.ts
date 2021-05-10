@@ -42,9 +42,10 @@ import {
     ToggleAlerts,
     SaveAlerts,
     SetNamespace,
-    SaveSnoozes
+    SaveSnoozes,
+    ClearNamespace
 } from '../state/alerts.state';
-import { DbfsResourcesState } from '../../app-shell/state/dbfs-resources.state';
+import { DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
 import { SnoozeState, GetSnoozeDetailsById } from '../state/snooze.state';
 
@@ -61,11 +62,13 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
+import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
 import { DataShareService } from '../../core/services/data-share.service';
+import { InfoIslandService } from '../../shared/modules/info-island/services/info-island.service';
 const moment = _moment;
 
 @Component({
@@ -122,6 +125,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     allNamespacesDS = new MatTableDataSource([]);
 
     @Select(AlertState.getAlertDetails) alertDetail$: Observable<any>;
+    @Select(AlertState.getError) alertDetailError$: Observable<any>;
     @Select(SnoozeState.getSnoozeDetails) snoozeDetail$: Observable<any>;
 
     // this gets dynamically selected depending on the tab filter.
@@ -202,6 +206,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     list = 'alerts';
     detailsMode = 'edit'; // 'edit' or 'view'
     configurationEditData: any = {};
+    isAlertEnabled = true;
 
     // confirmDelete Dialog
     confirmDeleteDialog: MatDialogRef<TemplateRef<any>> | null;
@@ -271,9 +276,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private domSanitizer: DomSanitizer,
         private cdkService: CdkService,
         private interCom: IntercomService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private utils: UtilsService,
-        private dataShare: DataShareService
+        private localStorageService: LocalStorageService,
+        private dataShare: DataShareService,
+        private infoIslandService: InfoIslandService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -301,9 +308,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             if ( !this.detailsView && val !== null ) {
                 this.setRouterUrl();
             }
-            val = val ? val : '';
-            this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
+            try {
+                this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
+                this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+            } catch(e) {
+                console.info(e);
+            }
         }));
 
         this.subscription.add(this.snoozeSearch.valueChanges.pipe(
@@ -338,6 +349,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.selectedNamespace$.subscribe(data => {
             this.selectedNamespace = data;
             if (this.selectedNamespace) {
+                this.localStorageService.setLocal('defaultNS', data);
                 // this.hasNamespaceWriteAccess = this.userNamespaces.find(d => d.name === this.selectedNamespace ) ? true : false;
                 this.stateLoaded.alerts = false;
                 this.stateLoaded.snooze = false;
@@ -351,9 +363,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.allNamespaces$.subscribe(data => {
             this.allNamespaces = data;
-            // this.logger.log('NAMESPACES', this.allNamespaces);
             this.allNamespacesDS = new MatTableDataSource(this.allNamespaces);
-            // this.logger.log('NAMESPACES_DS', this.allNamespacesDS);
             this.allNamespacesDS.filterPredicate = (data: any, filter: string) => {
                 return data.name.toLowerCase().includes(filter.toLowerCase());
             };
@@ -383,8 +393,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.stateLoaded.snooze = true;
             this.snoozes = JSON.parse(JSON.stringify(snoozes));
             this.snoozes = this.snoozes.map((d: any) => {
-                if (d.filter && d.filter.filters && d.filter.filters.length) {
-                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter.filters);
+                if ( d.filter && Object.keys(d.filter).length ) {
+                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter);
                 } else {
                     d.rawFilters = [];
                 }
@@ -404,9 +414,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     // this.editMode = false;
                     break;
                 case 'enable-success':
+                    this.isAlertEnabled = true;
                     message = 'Alert has been enabled.';
                     break;
                 case 'disable-success':
+                    this.isAlertEnabled = false;
                     message = 'Alert has been disabled.';
                     break;
                 case 'delete-success':
@@ -421,13 +433,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     message = 'Snooze has been deleted.';
                     break;
             }
-            if (message !== '') {
-                this.snackBar.open(message, '', {
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'info'
-                });
+            if ( !this.detailsView ) {
+                if (message !== '') {
+                    this.snackBar.open(message, '', {
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                        panelClass: 'info'
+                    });
+                }
+                this.infoIslandService.closeIsland();
             }
             this.retriggerAlertSearch();
             this.retriggerSnoozeSearch();
@@ -461,7 +476,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.hasNamespaceWriteAccess = !readOnly;
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let modeCheck;
-            // this.logger.log('READ ONLY?', {readOnly, routeUrl: this.router.url, activatedRoute: this.activatedRoute });
 
             if (routeSnapshot.length > 1 && this.utils.checkIfNumeric(routeSnapshot[0].path) && routeSnapshot[1].path !== '_new_') {
 
@@ -469,7 +483,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 // purely aesthetic. If url has 'edit', but its readonly, it will still be readonly
                 if (readOnly) {
                     modeCheck = routeSnapshot[routeSnapshot.length - 1];
-                    // console.log('modeCheck', modeCheck.path);
 
                     // there is no mode in the url
                     if (modeCheck.path.toLowerCase() !== 'view' && modeCheck.path.toLowerCase() !== 'edit') {
@@ -510,13 +523,26 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
 
         this.subscription.add(this.error$.subscribe(error => {
-            // console.log('ERROR', error);
+
             if (Object.keys(error).length > 0) {
                 this.error = error;
             } else {
                 this.error = false;
             }
             // maybe intercom error for messaging bar?
+        }));
+
+        this.subscription.add(this.alertDetailError$.subscribe(error => {
+            if (error && ( error.error || error.message) ) {
+                // set system message bar
+                this.interCom.requestSend({
+                    action: 'systemMessage',
+                    payload: {
+                        type: 'error',
+                        message: error.error || error.message
+                    }
+                });
+            }
         }));
 
         this.subscription.add(this.saveError$.subscribe(error => {
@@ -537,13 +563,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.snoozeDetailsComp.data.error = error;
             }
 
-            if (error && error.message) {
+            if ( error && ( error.error || error.message ) ) {
                 // set system message bar
                 this.interCom.requestSend({
                     action: 'systemMessage',
                     payload: {
                         type: 'error',
-                        message: 'Saving Error: ' + error.message
+                        message: 'Saving Error: ' + ( error.error || error.message )
                     }
                 });
             }
@@ -553,9 +579,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // handle route for alerts
         this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
 
-            // this.logger.log('ROUTE CHANGE', { url });
             const queryParams = this.activatedRoute.snapshot.queryParams;
+            this.clearSystemMessage();
 
+            let defaultNS = this.getDefaultNamespace();
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
                 this.createAlertFromWidget(this.dataShare.getData());
             } else if (url.length >= 1 && url[0].path === 'snooze') {
@@ -569,8 +596,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 } else {
                     this.detailsView = false;
                     // tslint:disable-next-line:max-line-length
-                    const ns = url[1] && url[1].path ? url[1].path : (this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                    const ns = url[1] && url[1].path ? url[1].path : defaultNS;
                     this.setNamespace(ns);
+                    this.infoIslandService.closeIsland();
                 }
             } else if (url.length === 1 && !this.utils.checkIfNumeric(url[0].path)) {
                 // if only one item, and its not numeric, probably a namespace
@@ -593,14 +621,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             } else if (url.length === 0 && this.detailsView && this.selectedNamespace.length > 0) {
                 this.location.go('/a/' + (this.list === 'snooze' ? 'snooze/' : '') + this.selectedNamespace);
                 this.detailsView = false;
+                this.infoIslandService.closeIsland();
                 this.setNavbarPortal();
 
-            } else if (this.userNamespaces.length || this.allNamespaces.length) {
+            } else if ( defaultNS ) {
                 // set a namespace... probably should update url?
-                this.setNamespace(this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name);
+                this.setNamespace(defaultNS);
 
                 if (this.detailsView) {
                     this.detailsView = false;
+                    this.infoIslandService.closeIsland;
                 }
             }
         }));
@@ -609,7 +639,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alertDetail$.pipe(skip(1)).subscribe(data => {
             const routeSnapshot = this.activatedRoute.snapshot.url;
             let parts;
-
+            const namespace = data.namespace ? data.namespace : this.getDefaultNamespace();
             // url path has 2 parts, (i.e. /a/1234/view)
             if (
                 routeSnapshot.length === 2 &&
@@ -617,11 +647,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 (['view', 'edit', 'clone'].includes(routeSnapshot[1].path.toLowerCase()))
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace( namespace, null);
 
                 // url path has 1 parts, (i.e. /a/1234)
             } else if (
@@ -629,14 +658,18 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.utils.checkIfNumeric(routeSnapshot[0].path)
             ) {
                 // fix the URL if it is abbreviated route from alert email
-                parts = ['/a', data.id, data.namespace, data.slug, 'view'];
+                parts = data.id ? ['/a', data.id, data.namespace, data.slug, 'view'] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
-
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(data.namespace, null);
+                this.setNamespace(namespace, null);
+            } else if ( !data.id ) {
+                this.location.go('/a/' + namespace);
+                this.setNamespace(namespace, null);
             }
 
-            this.store.dispatch(new CheckWriteAccess(data));
+            if ( data.id ) {
+                this.store.dispatch(new CheckWriteAccess(data));
+            }
 
         }));
 
@@ -644,6 +677,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.store.dispatch(new CheckWriteAccess(data));
         }));
 
+    }
+
+    getDefaultNamespace() {
+        let defaultNS = this.localStorageService.getLocal('defaultNS');
+        defaultNS =  defaultNS && defaultNS !== null ? defaultNS : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
+        return defaultNS;
     }
 
     getFilteredAlerts(regexFilter: RegExp, alerts: AlertModel[]) {
@@ -696,11 +735,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         return filteredSnoozes;
     }
 
-    setNavbarPortal() {
+    clearSystemMessage() {
         this.interCom.requestSend({
             action: 'clearSystemMessage',
             payload: {}
         });
+    }
+    setNavbarPortal() {
+        this.clearSystemMessage();
         this.cdkService.setNavbarPortal(this.alertspageNavbarPortal);
     }
 
@@ -821,20 +863,50 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     bulkDisableAlerts() {
         // TODO: get list of selected items, then disable (see this.toggleAlert)
+        const selected: any[] = this.selection.selected.map(item => {
+            const data: any = {id: item.id, enabled: false};
+            return data;
+        });
+        this.store.dispatch(
+            new ToggleAlerts(
+                this.selectedNamespace,
+                { data: selected }
+            )
+        );
     }
 
     bulkDeleteAlerts() {
         // TODO: get list of selected items, then do delete confirmation, then delete (see this.deleteItem)
+        const selected: any[] = this.selection.selected.map(item => item.id);
+        const dialogData: any = {
+            bulk: true,
+            items: selected
+        }
+        this.confirmDeleteDialog = this.dialog.open(this.confirmDeleteDialogRef, { data: dialogData });
+        this.confirmDeleteDialog.afterClosed().subscribe(event => {
+            if (event.deleted) {
+                if (this.list === 'alerts') {
+                    this.store.dispatch(new DeleteAlerts(this.selectedNamespace, { data: selected }));
+                } else {
+                    this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: selected }));
+                }
+            }
+            this.confirmDeleteDialog = null;
+        });
     }
 
     /** actions */
 
     toggleAlert(alertObj: any) {
-        this.store.dispatch(new ToggleAlerts(this.selectedNamespace, { data: [{ id: alertObj.id, enabled: !alertObj.enabled }] }));
+        this.store.dispatch(
+            new ToggleAlerts(
+                this.selectedNamespace,
+                { data: [{ id: alertObj.id, enabled: !alertObj.enabled }] }
+            )
+        );
     }
 
     editAlert(element: any) {
-        // console.log('****** WRITE ACCESS ******', this.hasNamespaceWriteAccess);
         // check if they have write access
         const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
         this.detailsMode = mode;
@@ -866,6 +938,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
         this.openEditMode(data);
         this.location.go('a/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     createAlertFromWidget(payload) {
@@ -1015,6 +1088,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
         this.configurationEditData = data;
+        this.isAlertEnabled = this.list === 'alerts' && ( ( data.id && data.enabled ) || !data.id);
         this.detailsView = true;
     }
 
@@ -1045,10 +1119,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.detailsView = true;
         this.switchType('snooze');
         this.location.go('a/snooze/' + this.selectedNamespace + '/_new_');
+        this.clearSystemMessage();
     }
 
     editSnooze(element: any) {
-        // console.log('****** WRITE ACCESS ******', this.hasNamespaceWriteAccess);
         // check if they have write access
         const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
         this.detailsMode = mode;
@@ -1067,6 +1141,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: [obj.id] }));
                 }
             }
+            this.confirmDeleteDialog = null;
         });
     }
 
@@ -1083,6 +1158,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 // lets save this thing
                 this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
                 this.router.navigateByUrl('a/' + this.selectedNamespace);
+                break;
+            case 'ToggleAlert':
+                this.toggleAlert(message.payload);
                 break;
             case 'SaveSnooze':
                 this.store.dispatch(new SaveSnoozes(message.namespace, message.payload));
@@ -1106,8 +1184,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
         }
-        this.retriggerAlertSearch();
-        this.retriggerSnoozeSearch();
+        if ( message.action !== 'ToggleAlert' ) {
+            this.infoIslandService.closeIsland();
+            this.retriggerAlertSearch();
+            this.retriggerSnoozeSearch();
+        }
     }
 
     retriggerAlertSearch() {
@@ -1166,7 +1247,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         } else if (type === RecipientType.slack) {
             return 'Slack';
         } else if (type === RecipientType.http) {
-            return 'HTTP';
+            return 'Webhook';
         } else if (type === RecipientType.oc) {
             return 'OC';
         } else if (type === RecipientType.email) {
@@ -1189,7 +1270,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     contactMenuEsc($event: any) {
-        // console.log('contactMenuEsc', $event);
+        // NOTE: do we need this still?
     }
 
     showAuraDialog(alertId, filters) {
@@ -1224,6 +1305,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngOnDestroy() {
+        this.store.dispatch(new ClearNamespace());
         this.subscription.unsubscribe();
         this.utils.setTabTitle();
     }

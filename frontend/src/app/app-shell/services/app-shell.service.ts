@@ -5,13 +5,13 @@ import { environment } from '../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { UtilsService } from '../../core/services/utils.service';
 
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
 
 @Injectable()
 export class AppShellService {
 
     constructor(
-        private logger: LoggerService,
+        private console: ConsoleService,
         private http: HttpClient
     ) {}
 
@@ -21,7 +21,7 @@ export class AppShellService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.logger.error('AppShellService :: An API error occurred', error.error.message);
+            this.console.error('AppShellService :: An API error occurred', error.error.message);
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -42,7 +42,7 @@ export class AppShellService {
             'Content-Type': 'application/json'
         });
 
-        this.logger.api('AppShellService :: Get User Profile', {
+        this.console.api('AppShellService :: Get User Profile', {
             apiUrl
         });
 
@@ -54,13 +54,6 @@ export class AppShellService {
         }).pipe(
             catchError(this.handleError)
         );
-        /* return this.http.get(apiUrl, {
-            headers: headers,
-            withCredentials: true,
-            observe: 'response'
-        }).pipe(
-            catchError(this.handleError)
-        );*/
     }
 
     createUser() {
@@ -69,7 +62,7 @@ export class AppShellService {
             'Content-Type': 'application/json'
         });
 
-        this.logger.api('AppShellService :: Create User', {
+        this.console.api('AppShellService :: Create User', {
             apiUrl
         });
 

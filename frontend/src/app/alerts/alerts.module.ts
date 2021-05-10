@@ -21,6 +21,7 @@ import { AlertsComponent } from './containers/alerts.component';
 import { SnoozeDetailsComponent } from './components/snooze-details/snooze-details.component';
 import { NameAlertDialogComponent } from './components/name-alert-dialog/name-alert-dialog.component';
 import { AlertDetailsComponent } from './components/alert-details/alert-details.component';
+import { ResizableDirective } from '../shared/modules/directives/resizable.directive';
 import { DygraphsModule } from '../shared/modules/dygraphs/dygraphs.module';
 // tslint:disable:max-line-length
 import { AlertConfigurationContactsComponent } from './components/alert-details/children/recipients-manager/recipients-manager.component';
@@ -32,6 +33,8 @@ import { AlertDetailsCountComponent } from './components/alert-details/children/
 import { AlertDetailsSuppressConfigComponent } from './components/alert-details/children/alert-details-suppress-config/alert-details-suppress-config.component';
 
 // directives
+import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
+
 
 @NgModule({
     imports: [
@@ -43,6 +46,7 @@ import { AlertDetailsSuppressConfigComponent } from './components/alert-details/
         SharedcomponentsModule,
         DygraphsModule,
         AlertsRoutingModule,
+        UniversalDataTooltipDirectivesModule,
         NgxsModule.forFeature([
             AlertState,
             AlertsState,

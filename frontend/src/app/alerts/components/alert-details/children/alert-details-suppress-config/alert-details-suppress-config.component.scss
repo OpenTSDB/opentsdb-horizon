@@ -31,7 +31,7 @@
             .is-fullwindow {
                 margin: 8px 0px;
             }
-            .read-only {
+            &.read-only {
                 opacity: 0.5;
                 pointer-events: none;
             }

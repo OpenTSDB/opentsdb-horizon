@@ -6,6 +6,8 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
+import { DateUtilsService } from '../../../../../core/services/dateutils.service';
+import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
@@ -17,6 +19,8 @@ import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { environment } from '../../../../../../environments/environment';
+import { ComponentPortal } from '@angular/cdk/portal';
+
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -31,8 +35,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   @HostBinding('class.widget-panel-content') private _hostClass = true;
   @HostBinding('class.heatmap-widget') private _componentClass = true;
 
-  @Input() editMode: boolean;
   @Input() widget: WidgetModel;
+  @Input() mode = 'view'; // view/explore/edit
 
   @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
   @ViewChild('widgetTitle') private widgetTitle: ElementRef;
@@ -40,6 +44,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('graphLegend') private dygraphLegend: ElementRef;
   @ViewChild('dygraph') private dygraph: ElementRef;
 
+  Object = Object;
   private listenSub: Subscription;
   private isDataLoaded = false;
   private isStackedGraph = false;
@@ -80,6 +85,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       series: {},
       gridLineColor: '#ccc',
       plotter: heatmapPlotter,
+      isIslandLegendOpen: false,
       pointSize: 0,
       heatmap: {
           buckets: 30,
@@ -96,6 +102,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   };
   newSize$: BehaviorSubject<any>;
   newSizeSub: Subscription;
+  widgetOutputElSize: any;
+  widgetOutputElHeight = 60;
+  isEditContainerResized = false;
   doRefreshData$: BehaviorSubject<boolean>;
   doRefreshDataSub: Subscription;
   nQueryDataLoading: number;
@@ -106,6 +115,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   storeQuery: any;
   needRequery = false;
   visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
+  formErrors: any = {};
+  meta: any = {};
+  resizeSensor: any;
 
   constructor(
       private cdRef: ChangeDetectorRef,
@@ -114,10 +126,14 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private dataTransformer: DatatranformerService,
       private util: UtilsService,
       private elRef: ElementRef,
-      private unit: UnitConverterService
+      private iiService: InfoIslandService,
+      private unit: UnitConverterService,
+      private dateUtil: DateUtilsService
   ) { }
 
   ngOnInit() {
+    this.visibleSections.queries = this.mode === 'edit' ? true : false;
+    // this.options.isIslandLegendOpen = this.mode === 'explore' || this.mode === 'view';
     this.doRefreshData$ = new BehaviorSubject(false);
     this.doRefreshDataSub = this.doRefreshData$
         .pipe(
@@ -130,16 +146,59 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
         });
       // subscribe to event stream
       this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
+          let overrideTime;
           switch (message.action) {
               case 'TimeChanged':
+                overrideTime = this.widget.settings.time.overrideTime;
+                if ( !overrideTime ) {
+                    this.refreshData();
+                }
+                break;
               case 'reQueryData':
+                if ( !message.id || message.id === this.widget.id ) {
+                    this.refreshData();
+                }
+                break;
               case 'ZoomDateRange':
-                  this.refreshData();
-                  break;
+                if ( !message.id || message.id === this.widget.id ) {
+                    overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.refreshData();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        this.refreshData();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
+                }
+                break;
               case 'TimezoneChanged':
+                if ( !message.id || message.id === this.widget.id ) {
                   this.setTimezone(message.payload.zone);
                   this.options = { ...this.options };
+                  this.cdRef.detectChanges();
+                }
+                break;
+             case 'SnapshotMeta':
+                  this.meta = message.payload;
                   break;
+            case 'ResizeAllWidgets':
+                if(this.resizeSensor) {
+                    this.resizeSensor.detach();
+                }
+                this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                    this.newSize$.next(1);
+                });
+                break;
           }
 
           if (message && (message.id === this.widget.id)) {
@@ -182,34 +241,34 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                       this.widget.settings.useDBFilter = true;
                       this.cdRef.detectChanges();
                       break;
+                  case 'widgetDragDropEnd':
+                      if (this.resizeSensor) {
+                          this.resizeSensor.detach();
+                      }
+                      this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                          this.newSize$.next(1);
+                      });
+                      break;
               }
           }
       });
       // when the widget first loaded in dashboard, we request to get data
       // when in edit mode first time, we request to get cached raw data.
-      setTimeout(() => this.refreshData(this.editMode ? false : true), 0);
+      setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
       this.setOptions();
   }
 
   ngAfterViewInit() {
       ElementQueries.listen();
       ElementQueries.init();
-      const initSize = {
-          width: this.widgetOutputElement.nativeElement.clientWidth,
-          height: this.widgetOutputElement.nativeElement.clientHeight
-      };
-      this.newSize$ = new BehaviorSubject(initSize);
+      const dummyFlag = 1;
+      this.newSize$ = new BehaviorSubject(dummyFlag);
 
-      this.newSizeSub = this.newSize$.subscribe(size => {
-          this.setSize();
-          // this.newSize = size;
+      this.newSizeSub = this.newSize$.subscribe(flag => {
+        setTimeout(() => this.setSize(), 0);
       });
-      const resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-           const newSize = {
-              width: this.widgetOutputElement.nativeElement.clientWidth,
-              height: this.widgetOutputElement.nativeElement.clientHeight
-          };
-          this.newSize$.next(newSize);
+      this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+          this.newSize$.next(dummyFlag);
       });
   }
 
@@ -218,7 +277,15 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
         case 'SetMetaData':
             this.util.setWidgetMetaData(this.widget, message.payload.data);
             break;
-        case 'SetTimeConfiguration':
+        case 'SetTimeError':
+                if ( message.payload.error ) {
+                    this.formErrors.time = true;
+                } else {
+                    delete this.formErrors.time;
+                }
+                break;
+            case 'SetTimeConfiguration':
+                delete this.formErrors.time;
             this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
             this.doRefreshData$.next(true);
             this.needRequery = true; // set flag to requery if apply to dashboard
@@ -427,9 +494,12 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   setSize() {
-       const nativeEl = (this.editMode) ?
-          this.widgetOutputElement.nativeElement.parentElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
-
+       const nativeEl = (this.mode !== 'view') ?
+          this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+        // tslint:disable-next-line:max-line-length
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
+          : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
       // let newSize = outputSize;
       let nWidth, nHeight, padding;
@@ -439,13 +509,13 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       const heightOffset = 0;
 
 
-      if (this.editMode) {
+      if (this.mode !== 'view') {
           let titleSize = {width: 0, height: 0};
           if (this.widgetTitle) {
               titleSize = this.widgetTitle.nativeElement.getBoundingClientRect();
           }
           padding = 8; // 8px top and bottom
-          nHeight = newSize.height - heightOffset - titleSize.height - (padding * 2);
+          nHeight = newSize.height - heightOffset - 5;
           nWidth = newSize.width - widthOffset  - (padding * 2) - 30;
       } else {
           padding = 10; // 10px on the top
@@ -458,6 +528,10 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       this.options.xRangePad = this.options.heatmap.x.length ? nWidth / (this.options.heatmap.x.length * 2) : 0;
       this.size = {width: nWidth, height: nHeight };
       this.cdRef.detectChanges();
+  }
+
+  handleEditResize(e) {
+    this.isEditContainerResized = true;
   }
 
   requestCachedData() {
@@ -480,11 +554,6 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   timeseriesTickListener(event: any) {
-    // console.log('TIMESERIES TICK LISTENER', { widget: this.widget, event});
-
-    if (this.editMode === true) {
-        return;
-    }
 
     const widgetOptions = this.options;
 
@@ -506,12 +575,32 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
             }
         };
 
-        // this goes to widgetLoader
-        this.interCom.requestSend({
-            id: this.widget.id,
-            action: 'InfoIslandOpen',
-            payload: payload
-        });
+        if ( this.mode === 'view' ) {
+            // this goes to widgetLoader
+            this.interCom.requestSend({
+                id: this.widget.id,
+                action: 'InfoIslandOpen',
+                payload: payload
+            });
+        } else {
+            const dataToInject = {
+                widget: this.widget,
+                originId: this.widget.id,
+                data: payload.data
+            };
+            // tslint:disable-next-line: max-line-length
+            const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
+            const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
+            const pos = this.elRef.nativeElement.getBoundingClientRect();
+            const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
+            const height = pos.height * ( 1 - heightMod ) - 5;
+            // tslint:disable-next-line: max-line-length
+            this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
+                originId: this.widget.id,
+                width: pos.width,
+                // positionStrategy: 'connected',
+                height: height });
+        }
     }
 
     if (event.action === 'tickDataChange') {
@@ -578,9 +667,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
     dialogConf.panelClass = 'error-dialog-panel';
      dialogConf.data = {
       log: this.debugData,
-      query: this.storeQuery 
+      query: this.storeQuery
     };
-    
+
     // re-use?
     this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
     this.debugDialog.afterClosed().subscribe((dialog_out: any) => {
@@ -608,9 +697,19 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       });
   }
 
+  saveAsSnapshot() {
+    const cloneWidget = JSON.parse(JSON.stringify(this.widget));
+    cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+    this.interCom.requestSend({
+        action: 'SaveSnapshot',
+        id: cloneWidget.id,
+        payload: { widget: cloneWidget, needRequery: false }
+    });
+  }
+
   ngOnDestroy() {
-      this.listenSub.unsubscribe();
       this.newSizeSub.unsubscribe();
+      this.listenSub.unsubscribe();
       this.doRefreshDataSub.unsubscribe();
   }
 

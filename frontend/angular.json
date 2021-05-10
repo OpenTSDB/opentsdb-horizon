@@ -71,7 +71,7 @@
               "./node_modules/dygraphs/dist/dygraph.css"
             ],
             "scripts": [
-
+              "node_modules/marked/lib/marked.js"
             ]
           },
           "configurations": {

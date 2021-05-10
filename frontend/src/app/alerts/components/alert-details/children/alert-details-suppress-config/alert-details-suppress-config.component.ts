@@ -40,6 +40,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
       }),
       comparisonOperator: this.config.comparisonOperator || 'missing',
       threshold: this.config.threshold ||  0,
+      timeSampler: this.config.timeSampler ||  'all_of_the_times',
       reportingInterval: this.config.reportingInterval || 60,
     });
     const sub = this.suppressForm.valueChanges.subscribe(formval => {
@@ -59,6 +60,9 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     this.resetFormErrors();
     const formval = this.suppressForm.getRawValue();
     if ( formval.query.metric.name ) {
+      if  ( this.tags.length && ( formval.query.metric.groupByTags === null ||  formval.query.metric.groupByTags && !formval.query.metric.groupByTags.length ) ) {
+        this.suppressForm.get('query').get('metric').get('groupByTags').setErrors({ 'required': true });
+      }
       if ( formval.comparisonOperator !== 'missing' && formval.threshold === null ) {
           this.suppressForm.get('threshold').setErrors({ 'required': true });
       }

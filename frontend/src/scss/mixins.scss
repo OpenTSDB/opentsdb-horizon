@@ -155,9 +155,7 @@
 
 @mixin is-scroller(){
     @include overlay;
-    // @include scrollbars;
-    overflow: auto;
-
+    overflow: overlay;
 }
 
 @mixin overflow-touch() {

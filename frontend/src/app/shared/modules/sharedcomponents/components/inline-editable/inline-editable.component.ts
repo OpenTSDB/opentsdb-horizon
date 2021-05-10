@@ -1,10 +1,10 @@
 import {
     Component, Input, EventEmitter, Output, ViewChild, Renderer2,
-    ElementRef, HostListener, HostBinding, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy
+    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { LoggerService } from '../../../../../core/services/logger.service';
-import { MatInput } from '@angular/material';
+import { ConsoleService } from '../../../../../core/services/console.service';
+import { MatFormField, MatInput } from '@angular/material';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -14,7 +14,7 @@ import { MatInput } from '@angular/material';
     styleUrls: []
 })
 
-export class InlineEditableComponent implements OnInit, OnChanges {
+export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.inline-editable') private _hostClass = true;
 
     @Input() fieldValue: string;
@@ -24,18 +24,21 @@ export class InlineEditableComponent implements OnInit, OnChanges {
     @Output() updatedValue: EventEmitter<any> = new EventEmitter();
     @ViewChild('container') container: ElementRef;
     @ViewChild(MatInput) inputControl: MatInput;
+    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
 
     isRequired = true;
     isEditView = false;
     fieldFormControl: FormControl;
-    placeholder = '_placeholder';
+    placeholder = 'placeholder';
 
     private showEditableEventListener: any;
+    private documentKeydownEventListener: any;
 
     constructor(
         private renderer: Renderer2,
         private eRef: ElementRef,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     ngOnInit() {
@@ -65,7 +68,22 @@ export class InlineEditableComponent implements OnInit, OnChanges {
             if (this.fieldFormControl) {
                 this.fieldFormControl.setValue(this.fieldValue);
             }
+            this.fixAutoWidth();
         }
+    }
+
+    ngAfterViewInit() {
+        this.fixAutoWidth()
+    }
+
+    private fixAutoWidth() {
+        // NOTE: this is for the autosizing of the function inputs
+        // NOTE: css uses the data-value attribute to correctly size item
+        // set the initial data-value
+        // needs to live on the .mat-form-field-infix
+        // aka, the wrapper around the actual input field
+        const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+        formFieldInfix.dataset.value = this.fieldValue;
     }
 
     noWhitespaceValidator(control: FormControl) {
@@ -78,18 +96,18 @@ export class InlineEditableComponent implements OnInit, OnChanges {
         this.isEditView = true;
 
         setTimeout(() => {
-            this.inputControl.focus();
+            this.inputControlEl.nativeElement.focus();
         }, 200);
 
-        // click outside the edit zone
-        // saving listener to variable, so we can remove it
-        // (yes renderer2.listen returns function that removes event)
-        this.showEditableEventListener = this.renderer.listen('document', 'click', (event) => {
-            this.logger.log('SHOW EDITABLE', event);
-            if (!this.container.nativeElement.contains(event.target)) {
+        this.documentKeydownEventListener = this.renderer.listen('document','keydown', (event) => {
+            if (event.key === 'Escape') {
                 this.resetFormField();
+                // remove document.keydown listener
+                this.documentKeydownEventListener();
                 // remove document.click listener
-                this.showEditableEventListener();
+                //this.showEditableEventListener();
+                this.inputControlEl.nativeElement.blur();
+                document.body.focus();
             }
         });
     }
@@ -104,8 +122,8 @@ export class InlineEditableComponent implements OnInit, OnChanges {
         } else if (!this.fieldFormControl.errors) {
             this.resetFormField();
         }
-        // remove document.click listener
-        this.showEditableEventListener();
+        // remove document.keydown listener
+        this.documentKeydownEventListener();
     }
 
     resetFormField() {
@@ -113,12 +131,9 @@ export class InlineEditableComponent implements OnInit, OnChanges {
         this.fieldFormControl.setValue(this.fieldValue);
     }
 
-    @HostListener('document:keydown', ['$event'])
-    closeEditIfEscapePressed(event: KeyboardEvent) {
-        if (event.key === 'Escape') {
-            this.resetFormField();
-            // remove document.click listener
-            this.showEditableEventListener();
+    ngOnDestroy() {
+        if (this.documentKeydownEventListener) {
+            this.documentKeydownEventListener();
         }
     }
 }

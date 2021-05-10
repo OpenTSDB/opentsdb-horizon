@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { IDygraphOptions } from '../../shared/modules/dygraphs/IDygraphOptions';
 import { barChartPlotter, heatmapPlotter, stackedAreaPlotter } from '../../shared/dygraphs/plotters';
 import { UtilsService } from './utils.service';
+import { UnitConverterService } from './unit-converter.service';
 import * as d3 from 'd3';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,124 @@ export class DatatranformerService {
 
    REGDSID = /q?(\d+)?_?(m|e)(\d+).*/;
   // tslint:disable:max-line-length
-  constructor(private util: UtilsService ) {  }
+  constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
+
+  //ADDED: table data 
+  yamasToTable(widget, options, result: any): any {
+
+    const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
+    const defDtFormat = 'MM/DD/YYYY';
+    const dtFormats = { 's': 'hh:mm:ss a', 'm': 'hh:mm a', 'h': 'hh:mm a'};
+
+    const objData = {};
+    let timeSpecification: any = {};
+    const visual = widget.settings.visual;
+    const summary = visual.layout === 'metrics:tags' || visual.layout === 'tags:metrics';
+    const decimals = !visual.decimals || visual.decimals.toString().trim() === 'auto' ? 2 : visual.decimals;
+    
+
+    const displayColumns = {};
+    const colLabelLen = 40;
+    let dataTable = [];
+
+    if ( result && result.results ) {
+        // sometimes opentsdb returns empty results
+        for ( let i = 0;  i < result.results.length; i++ ) {
+            if (result.results[i].data.length === 0) {
+                continue;
+            }
+            const queryResults = result.results[i];
+            const [ source, mid ] = queryResults.source.split(':');
+            const qids = this.REGDSID.exec(mid);
+            const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
+            const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
+
+            const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
+            const mConfig = gConfig && gConfig.metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : null;
+            const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
+            if ( (source === 'summarizer' && !summary) || (source !== 'summarizer' && summary)  || !gConfig || !gConfig.settings.visual.visible || !vConfig.visible) {
+                continue;
+            }
+
+            timeSpecification = queryResults.timeSpecification;
+            const n = queryResults.data.length;
+            const unit = vConfig.unit ? vConfig.unit : 'auto';
+            const format = { unit: unit, precision: decimals, unitDisplay: true };
+            const summarizer = mConfig.summarizer || 'avg';
+            for ( let j = 0; j < n; j ++ ) {
+                let data = summary ? queryResults.data[j].NumericSummaryType : queryResults.data[j].NumericType;
+                const tags = this.util.sortObject(queryResults.data[j].tags);
+                const mLabel = this.util.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
+                const metric = !mConfig.expression ? queryResults.data[j].metric : mLabel
+                let label = vConfig.label ? vConfig.label : metric;
+                
+                const tagLabel = this.getLableFromMetricTags('', { metric: '', ...tags}) || 'All';
+                const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
+                
+                    if ( summary ) {
+                        label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
+                        const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
+                        const colLabel = visual.layout == 'metrics:tags' ? tagLabel : label;
+                        const rowId = visual.layout == 'metrics:tags' ? mLabel : tagLabel;
+                        displayColumns[colId] = {id: colId, label: colLabel, shortLabel: colLabel.length > colLabelLen ? colLabel.substr(0, colLabelLen - 2) + '..' : colLabel };
+                        if (!objData[rowId] ) {
+                            objData[rowId] = visual.layout == 'metrics:tags' ? { metric: label } : { tag: tagLabel };
+                        }
+                        const aggs = data.aggregations;
+                        data = data.data[0];
+                        const ts = Object.keys(data)[0];
+                        const index = aggs.indexOf(summarizer);
+                        
+                        const dunit = this.unit.getNormalizedUnit(data[ts][index], format);
+                        
+                        objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
+                        objData[rowId][colId + ':raw'] = data[ts][index];
+                    } else {
+                        label = this.getLableFromMetricTags(vConfig.label, { metric: metric, ...tags});
+                        displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
+                        objData[id] = { rawdata:data, data: data.map(d => { 
+                            const dunit = this.unit.getNormalizedUnit(d, format);
+                            return this.unit.convert(d, format.unit, dunit, format);
+                        }), config: vConfig };
+                        
+                    }
+
+            }
+        }
+
+        if ( summary ) {
+            dataTable = Object.values(objData);
+        } else {
+            const unit = timeSpecification.interval.replace(/[0-9]/g, '');
+            const m = parseInt(timeSpecification.interval, 10);
+            const keys = Object.keys(objData);
+            const numPoints = keys.length ? objData[keys[0]].data.length : 0;
+            const dtFormat = dtFormats[unit] || defDtFormat;
+            for (let i = 0; i < numPoints ; i++ ) {
+                const time = (timeSpecification.start + ( m * i * mSeconds[unit] ));
+                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat) };
+                for ( let j = 0; j < keys.length; j++ ) {
+                    const key = keys[j];
+                    row[key] = objData[key].data[i];
+                    row[key+':raw'] = objData[key].rawdata[i];
+                    const bgColor = !isNaN(objData[key].rawdata[i]) ? this.overrideColor(objData[key].rawdata[i], objData[key].config.color, objData[key].config.conditions) : '';
+                    const  rgbColor = bgColor ? d3.rgb(bgColor) : '';
+                    const color = rgbColor ? 'rgb(' + Math.floor(255 - rgbColor.r) + ',' + Math.floor(255 - rgbColor.g) + ',' + Math.floor(255 - rgbColor.b) + ')' : '';
+                    row[key + ':backgroundColor'] = bgColor;
+                    row[key + ':color'] = color;
+                }
+                dataTable.push(row);
+            }
+        }
+    }
+
+    options.displayColumns = Object.values(displayColumns);
+    options.displayColumns.sort((a: any, b: any) => {
+        return this.util.sortAlphaNum(a.label, b.label);
+    });
+    options.displayColumns.unshift( !summary ? { id: 'time', 'shortLabel': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'shortLabel': 'Metric' }  : { id: 'tag', 'shortLabel': 'Tag' } );
+    return dataTable;
+  }
 
   removeEmptySeries(result ) {
     if ( result !== undefined && result.results ) {
@@ -54,7 +173,6 @@ export class DatatranformerService {
 
   // options will also be update of its labels array
   yamasToDygraph(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
-    // console.log('### [Y2D] ###', JSON.parse(JSON.stringify({widget, options, normalizedData, result})));
     const startTime = new Date().getTime();
     let intermediateTime = startTime;
     result = { ...result };
@@ -68,17 +186,22 @@ export class DatatranformerService {
     }
 
     const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
+    const periods = { 'h': 'Hour', 'd': 'Day', 'w': 'Week'}
     const dict = {};
     // const queryResults = [];
     const queryResultsObj = {};
-    const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
     let isStacked = false;
+    // for time over time, turn bar or area to line type
+    let hasToT = false;
+    const midExToTNSeries = {};
     const groups = {};
     const stackedYAxes = [];
     let yMax = 0, y2Max = 0;
     const min = { y1: null, y2: null };
     const mTimeConfigs = {};
     let totalSeries = 0;
+    let nAutoColors = 0;
+    const schemeMeta = {};
     for ( let i = 0;  i < result.results.length; i++ ) {
         // no data then skip it.
         if (result.results[i].data.length === 0) {
@@ -87,16 +210,25 @@ export class DatatranformerService {
         // queryResults.push(result.results[i]);
         queryResultsObj[i] = result.results[i];
         const [ source, mid ] = result.results[i].source.split(':');
+        const midExToT = mid.split('-')[0];
+        const tot = mid.split('-')[1];
+        if (tot) {
+            hasToT = true;
+            isStacked = false;
+        }
         const qids = this.REGDSID.exec(mid);
         const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
         const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
         const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
         const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
         const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
-        queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line'} );
+        queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line', mid} );
         if ( gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
             if (!dict[mid]) {
                 dict[mid] = { hashes: {}, summarizer: {}};
+            }
+            if ( !midExToTNSeries[midExToT] ) {
+                midExToTNSeries[midExToT] = 0;
             }
             if (source === 'summarizer') {
                 const n = queryResultsObj[i].data.length;
@@ -122,14 +254,18 @@ export class DatatranformerService {
             } else {
                 dict[mid]['values'] = {}; // queryResults.data;
                 const n = queryResultsObj[i].data.length;
+                if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
+                    nAutoColors += n;
+                }
                 totalSeries += n;
+                midExToTNSeries[midExToT] += n;
                 const key = queryResultsObj[i].timeSpecification.start + '-' + queryResultsObj[i].timeSpecification.end + '-' + queryResultsObj[i].timeSpecification.interval;
                 mTimeConfigs[key] = {timeSpecification: queryResultsObj[i].timeSpecification, nSeries: n};
                 for (let j = 0; j < n; j++) {
                     const tags = queryResultsObj[i].data[j].tags;
                     const hash = JSON.stringify(tags);
                     dict[mid]['values'][hash] = queryResultsObj[i].data[j].NumericType;
-                    if ( (vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) {
+                    if ( !hasToT && ((vConfig.type === 'area' && vConfig.stacked !== 'false') || vConfig.type === 'bar' ) ) {
                         isStacked = true;
                         const axis = !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2';
                         if ( !stackedYAxes.includes(axis) ) {
@@ -164,14 +300,11 @@ export class DatatranformerService {
         normalizedData[i][0] = new Date(parseInt(ts[i], 10));
     }
 
-    queryResults.sort((a, b) => a.visualType - b.visualType);
+    queryResults.sort((a, b) => a.mid.localeCompare(b.mid));
     options.axes.y.tickFormat.max = yMax;
     options.axes.y.tickFormat.min = min['y1'];
     options.axes.y2.tickFormat.max = y2Max;
     options.axes.y2.tickFormat.min = min['y2'];
-
-    let autoColors = this.util.getColors(null, wdQueryStats.nVisibleAutoColors);
-    autoColors = wdQueryStats.nVisibleAutoColors > 1 ? autoColors : [autoColors];
 
             // sometimes opentsdb returns empty results
             // reset series in state
@@ -180,9 +313,19 @@ export class DatatranformerService {
             const dseries = [];
             for ( let i = 0;  i < queryResults.length; i++ ) {
                 const [ source, mid ] = queryResults[i].source.split(':');
+                const midExToT = mid.split('-')[0];
+                const tot = mid.split('-')[1] || '';
                 if ( source === 'summarizer') {
                     continue;
                 }
+                let totLabel = tot;
+                if ( totLabel ) {
+                    const totregres = /(\d+)?(\w)/.exec(totLabel);
+                    const totVal = totregres[1] ? parseInt(totregres[1], 10) : 1;
+                    const totPeriod = totregres[2];
+                    totLabel = ' [' + totVal + '-' + periods[totPeriod] + (totVal > 1 ? 's' : '') + ' ago]';
+                }
+                totLabel = totLabel ? totLabel : '';
                 const qids = this.REGDSID.exec(mid);
                 const qIndex = qids[1] ? parseInt(qids[1], 10) - 1 : 0;
                 const mIndex = this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
@@ -190,12 +333,16 @@ export class DatatranformerService {
                 const qid = widget.queries[qIndex].id;
                 const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
                 const mConfig = gConfig && widget.queries[qIndex].metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : {};
-                const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
+                const vConfig = mConfig && mConfig.settings ? this.util.deepClone(mConfig.settings.visual) : {};
+                vConfig.type = hasToT ? 'line' : vConfig.type;
                 const n = queryResults[i].data.length;
-                const colorIndex = vConfig.color === 'auto' || !vConfig.color ? wdQueryStats.mVisibleAutoColorIds.indexOf( qid + '-' + mConfig.id ) : -1;
-                const color = vConfig.color === 'auto' || !vConfig.color ? autoColors[colorIndex] : mConfig.settings.visual.color;
-                colors[mid] = n === 1 ?
-                    [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics === 1 && (vConfig.color === 'auto' || !vConfig.color) ? null : color , n ) ;
+
+                if ( vConfig.color && vConfig.color !== 'auto' ) {
+                    colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT] ).reverse();
+                } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
+                    colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
+                    schemeMeta[mid] = true;
+                }
                 for ( let j = 0; j < n; j ++ ) {
                     const data = queryResults[i].data[j].NumericType;
                     const tags = queryResults[i].data[j].tags;
@@ -207,7 +354,7 @@ export class DatatranformerService {
                         const config: any = {
                             strokeWidth: vConfig.lineWeight ? parseFloat(vConfig.lineWeight) : 1,
                             strokePattern: this.getStrokePattern(vConfig.lineType),
-                            // color: colors[j],
+                            // color: vConfig.color && vConfig.color !== 'auto' && n === 1 ? vConfig.color : '',
                             fillGraph: vConfig.type === 'area' ? true : false,
                             isStacked: vConfig.type === 'area' && vConfig.stacked !== 'false' ? true : false,
                             axis: !vConfig.axis || vConfig.axis === 'y1' ? 'y' : 'y2',
@@ -215,7 +362,11 @@ export class DatatranformerService {
                             tags: { metric: !mConfig.expression ?
                                     queryResults[i].data[j].metric : mLabel, ...tags},
                             aggregations: aggData,
-                            group: vConfig.type ? vConfig.type : 'line'
+                            group: vConfig.type ? vConfig.type : 'line',
+                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
+                            stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
+                            stackOrder: vConfig.stackOrder || 'asc',
+                            connectMissingData: vConfig.connectMissingData === 'true' ? true : false
                         };
                         if ( vConfig.type === 'bar') {
                             config.plotter = barChartPlotter;
@@ -224,7 +375,7 @@ export class DatatranformerService {
                         } else {
                             groups['line'] = true;
                         }
-                        config.label = this.getLableFromMetricTags(vConfig.label ? vConfig.label : '', config.tags);
+                        config.label = this.getLableFromMetricTags(vConfig.label ? vConfig.label : '', config.tags) + totLabel;
                         dseries.push({  mid: mid,
                                         config: config,
                                         data: data,
@@ -236,26 +387,36 @@ export class DatatranformerService {
 
         // sort the data
         intermediateTime = new Date().getTime();
-        dseries.sort((a: any, b: any) => {
-            return  (a.config.group < b.config.group ? -1 : a.config.group > b.config.group ? 1 : 0) || a.config.aggregations ? b.config.aggregations['min'] - a.config.aggregations['min'] : 0;
-        });
+            // if ( !hasToT ) {
+            dseries.sort((a: any, b: any) => {
+                // area/bar plotter draws the series from last to first
+                return  ( a.config.group.localeCompare(b.config.group) ||
+                                    (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
+                                    ( a.config.group === 'line'  ? a.config.label.localeCompare(b.config.label) :
+                                    // the order is reverse as the area/bar plotter draws series from last to first
+                                    (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0));
+            });
+        // }
         // console.debug(widget.id, "time taken for sorting data series(ms) ", new Date().getTime() - intermediateTime );
         intermediateTime = new Date().getTime();
         // reset visibility, instead of constantly pushing (which causes it to grow in size if refresh/autorefresh is called)
         options.visibility = [];
+        let newVisibilityHash: any = {};
+        let cIndex = 0;
+        const autoColors = this.util.getColors();
         for ( let i = 0; i < dseries.length; i++ ) {
-            // console.log('==> DSERIES', dseries);
             const label = options.labels.length.toString();
+            const mid = dseries[i].mid;
+            const midExToT = dseries[i].mid.split('-')[0];
             options.labels.push(label);
-            // check visibility hash for existing data
             if ( options.visibilityHash[dseries[i].hash] !== undefined ) {
                 options.visibility.push(options.visibilityHash[dseries[i].hash]);
             } else {
                 options.visibility.push(true);
             }
-            options.visibilityHash[dseries[i].hash] = options.visibility[i];
+            newVisibilityHash[dseries[i].hash] = options.visibility[i];
             options.series[label] = dseries[i].config;
-            options.series[label].color = colors[dseries[i].mid].pop();
+            options.series[label].color = colors[midExToT] ? colors[midExToT].pop() : autoColors[cIndex++ % nAutoColors];
             options.series[label].hash = dseries[i].hash;
             const seriesIndex = options.labels.indexOf(label);
             const axis = dseries[i].config.axis;
@@ -269,7 +430,7 @@ export class DatatranformerService {
                 const ms = secs * 1000;
                 const tsIndex = tsObj[ms];
                 if ( tsIndex !== undefined ) {
-                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : NaN;
+                    normalizedData[tsIndex][seriesIndex] = !isNaN(data[k]) ? data[k] : ( dseries[i].config.connectMissingData ? null : NaN );
                 }
                 if ( isStacked && !isNaN(data[k]) && ( (type === 'area' && dseries[i].config.isStacked) || type === 'bar') ) {
                     if ( data[k] > 0) {
@@ -280,6 +441,7 @@ export class DatatranformerService {
                 }
             }
         }
+        options.visibilityHash = newVisibilityHash;
         // console.debug(widget.id, "time taken for finding min, max(ms)", new Date().getTime() - intermediateTime );
 
         if (isStacked) {
@@ -410,7 +572,7 @@ export class DatatranformerService {
 
             const timeSpecification = queryResults.timeSpecification;
             const n = queryResults.data.length;
-            const color = !widget.settings.visual.color || widget.settings.visual.color === 'auto' ? autoColors[cIndex++] : widget.settings.visual.color;
+            const color = !widget.settings.visual.color ? autoColors[cIndex++] : widget.settings.visual.color;
             options.heatmap.nseries = n;
             options.heatmap.color = color;
             for ( let j = 0; j < n; j ++ ) {
@@ -494,12 +656,11 @@ export class DatatranformerService {
 
         datasets[0] = {data: [], backgroundColor: [], tooltipData: []};
         options.labels = [];
-        const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
-        let autoColors =  this.util.getColors( null , wdQueryStats.nVisibleAutoColors );
-        autoColors = wdQueryStats.nVisibleAutoColors > 1 ? autoColors : [autoColors];
-
-        let cIndex = 0;
+        let nAutoColors = 0;
         const results = queryData.results ? queryData.results : [];
+        const dseries = [];
+        const schemeMeta = { 'colors': {}, 'midScheme': {}, 'schemeN': {}};
+        const colors = {};
         for ( let i = 0;  i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -510,12 +671,19 @@ export class DatatranformerService {
             const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
             const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
             const mConfig = widget.queries[qIndex] && widget.queries[qIndex].metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : null;
+            const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
             if ( !gConfig || !mConfig || !gConfig.settings.visual.visible || !mConfig.settings.visual.visible ) {
                 continue;
             }
             const n = results[i].data.length;
-            const color = mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ? autoColors[cIndex++] : mConfig.settings.visual.color;
-            const colors = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics === 1 && (mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color) ? null : color , n ) ;
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
+                nAutoColors += n;
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
+                colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
+                schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
+            } else {
+                colors[mid] = n === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color, n );
+            }
             for ( let j = 0;  j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;
@@ -526,11 +694,23 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                options.labels.push(label);
-                datasets[0].data.push(aggData[aggrIndex]);
-                datasets[0].backgroundColor.push(colors[j]);
-                datasets[0].tooltipData.push({ metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags });
+                dseries.push({  mid: mid, order: qIndex + '-' + mIndex, label: label, value: aggData[aggrIndex], tooltipData: { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags } });
             }
+        }
+
+        let cIndex = 0;
+        const autoColors =  this.util.getColors();
+        // assing colors based on value
+        dseries.sort((a: any, b: any) => {
+            return  a.value - b.value;
+        });
+
+        for ( let i = 0; i < dseries.length; i++ ) {
+            const mid = dseries[i].mid;
+            options.labels.push(dseries[i].label);
+            datasets[0].data.push(dseries[i].value);
+            datasets[0].backgroundColor.push( colors[mid] ? (schemeMeta['midScheme'][mid] ? colors[mid].shift() : colors[mid].pop()) : autoColors[ cIndex++ % nAutoColors ]);
+            datasets[0].tooltipData.push(dseries[i].tooltipData);
         }
         return [...datasets];
     }
@@ -552,6 +732,7 @@ export class DatatranformerService {
                 }
             }
         }
+        label = label.replace(/^\-+|\-+$/g, '')
         label = label.length > len ? label.substr(0, len - 2) + '..' : label;
         return label;
     }
@@ -562,11 +743,10 @@ export class DatatranformerService {
             return {...options};
         }
         const results = queryData.results ? queryData.results : [];
-        const wdQueryStats = this.util.getWidgetQueryStatistics(widget.queries);
-        let autoColors =  this.util.getColors( null , wdQueryStats.nVisibleAutoColors );
-        autoColors = wdQueryStats.nVisibleAutoColors > 1 ? autoColors : [autoColors];
-
-        let cIndex = 0;
+        const dseries = [];
+        let nAutoColors = 0;
+        const schemeMeta = { 'colors': {}, 'midScheme': {}, 'schemeN': {}};
+        const colors = {};
         for ( let i = 0; i < results.length; i++ ) {
             const [source, mid ] = results[i].source.split(':');
             if ( source !== 'summarizer') {
@@ -577,13 +757,21 @@ export class DatatranformerService {
             const mIndex =  this.util.getDSIndexToMetricIndex(widget.queries[qIndex], parseInt(qids[3], 10) - 1, qids[2] );
             const gConfig = widget.queries[qIndex] ? widget.queries[qIndex] : null;
             const mConfig = widget.queries[qIndex] && widget.queries[qIndex].metrics[mIndex] ? widget.queries[qIndex].metrics[mIndex] : null;
+            const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
             if ( !gConfig || !mConfig || !gConfig.settings.visual.visible || !mConfig.settings.visual.visible ) {
                 continue;
             }
 
             const n = results[i].data.length;
-            const color = mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ? autoColors[cIndex++]: mConfig.settings.visual.color;
-            const colors = n === 1 ? [color] :  this.util.getColors( wdQueryStats.nVisibleMetrics  === 1 && ( mConfig.settings.visual.color === 'auto' || !mConfig.settings.visual.color ) ? null: color , n ) ;
+            if ( !vConfig.color && ( !vConfig.scheme || vConfig.scheme === 'auto') ) {
+                nAutoColors += n;
+            } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
+                colors[mid] = this.util.getColorsFromScheme(vConfig.scheme, n);
+                schemeMeta['midScheme'][mid] = { scheme: vConfig.scheme, n: n };
+            } else {
+                colors[mid] =  n === 1 ? [ vConfig.color ] : this.util.getColorsHSV( vConfig.color, n );
+            }
+
             for ( let j = 0; j < n; j++ ) {
                 const summarizer = this.getSummarizerOption(widget, qIndex, mIndex);
                 const aggs = results[i].data[j].NumericSummaryType.aggregations;
@@ -594,9 +782,23 @@ export class DatatranformerService {
                 let label = mConfig.settings.visual.label ? mConfig.settings.visual.label : '';
                 const aggrIndex = aggs.indexOf(summarizer);
                 label = this.getLableFromMetricTags(label, { metric: !mConfig.expression ? results[i].data[j].metric : mLabel, ...tags});
-                const o = { label: label, value: aggData[aggrIndex], color: colors[j], tooltipData: tags};
-                options.data.push(o);
+                dseries.push({ mid: mid, label: label, order: qIndex + '-' + mIndex, value: aggData[aggrIndex], tooltipData: tags});
             }
+        }
+
+        const autoColors =  this.util.getColors();
+        let cIndex = 0;
+
+        // assing colors based on value desc
+        dseries.sort((a: any, b: any) => {
+            return  b.value - a.value;
+        });
+
+        for ( let i = 0; i < dseries.length; i++ ) {
+            const mid = dseries[i].mid;
+            options.data.push( { label: dseries[i].label, value: dseries[i].value,
+                                    color: colors[mid] ? (schemeMeta['midScheme'][mid] ? colors[mid].shift() : colors[mid].pop()) : autoColors[ cIndex++ % nAutoColors ],
+                                    tooltipData: dseries[i].tooltipData } );
         }
 
         return {...options};

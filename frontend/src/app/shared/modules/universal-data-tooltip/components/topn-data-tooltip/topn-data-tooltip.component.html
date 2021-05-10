@@ -1,0 +1,6 @@
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
+    <div class="value-marker">
+        <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{(_ttData.value && _ttData.value.n) ? _ttData.value.n : 'n/a'}} <span *ngIf="_ttData.value && _ttData.value.s">({{_ttData.value.s}})</span></span>
+        <span class="label">{{_ttData.label}}</span>
+    </div>
+</div>

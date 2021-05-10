@@ -27,12 +27,17 @@ export class MetaService {
       const query: any = {};
       query.id = params[i].id || 'id-' + i;
       query.namespace =  type !== 'NAMESPACES' ? params[i].namespace : this.utilsService.convertPatternTSDBCompat(params[i].search);
-      if ( type === 'TAG_KEYS_AND_VALUES') {
+      if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
         filters.push({
           type: 'TagValueRegex',
           filter: this.utilsService.convertPattern(params[i].search),
           tagKey: params[i].tagkey
+        });
+      } else if ( type === 'BASIC' ) {
+        filters.push({
+          type: 'AnyFieldRegex',
+          filter: this.utilsService.convertPattern(params[i].search),
         });
       }
       switch( type ) {
@@ -77,7 +82,7 @@ export class MetaService {
         });
       }
 
-      if ( mSource === 'aurastatus' && (type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
+      if ( mSource === 'aurastatus' && (type === 'BASIC' || type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
         filters.unshift({
           'type': 'FieldLiteralOr',
           'key': 'statusType',

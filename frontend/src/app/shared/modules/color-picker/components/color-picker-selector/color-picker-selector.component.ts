@@ -85,7 +85,7 @@ export class ColorPickerSelectorComponent
         if (!value || value.toLowerCase() === 'auto') {
             this._selectedColor = '#000000';
         } else {
-            this._selectedColor = value;
+            this._selectedColor = isValidColor(value) ? value : '#000000' ;
         }
     }
     // tslint:disable-next-line:no-inferrable-types
@@ -178,6 +178,12 @@ export class ColorPickerSelectorComponent
      */
     heightOfComponent: number;
 
+    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' }, 
+        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' }, 
+        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' }, 
+        { hex: '#800080', rgb: [128,0,128], name:'Purple' }, { hex: '#FFFF00', rgb: [255, 255, 0], name:'Yellow' }, { hex: '#FF0000', rgb: [255, 0, 0], name:'Red' }, { hex: '#A52A2A', rgb: [165, 42, 42], name:'Brown' }
+    ];
+
     constructor(
         private formBuilder: FormBuilder,
         private render: Renderer2,
@@ -188,15 +194,15 @@ export class ColorPickerSelectorComponent
     ngOnInit() {
         this._tmpSelectedColor = new BehaviorSubject<string>(this._selectedColor);
         if (this.pickerMode === this.embedded) {
-            this.heightOfComponent = 190;
+            this.heightOfComponent = 232;
         } else {
-            this.heightOfComponent = 212; // has cancel and apply buttons
+            this.heightOfComponent = 280; // has cancel and apply buttons
         }
 
         this._tmpSelectedColorSub = this._tmpSelectedColor.subscribe(color => {
             if (color !== this._selectedColor && isValidColor(color)) {
                 if (this.hexForm.get('hexCode').value !== color) {
-                    this.hexForm.setValue({ hexCode: color });
+                    this.hexForm.setValue({ hexCode: color }, { emitEvent: false });
                 }
                 // if embedded, immedietly emit new color
                 if (this.pickerMode === this.embedded) {

@@ -1,0 +1,14 @@
+<ng-template #namespaceNotFound>
+    <STRONG>NAMESPACE NOT FOUND</STRONG>
+</ng-template>
+
+<ng-template #namespaceListNavbarTmpl>
+    <span class="navbar-item nav-namespace-title">Namespaces</span>
+    <span class="flex-spacer"></span>
+</ng-template>
+
+<ng-template #namespaceDetailNavbarTmpl>
+    <span class="navbar-item nav-namespace-title">Namespace: {{nsDbfs[':nsroot:'] ? nsDbfs[':nsroot:'].name : ''}}</span>
+    <span class="flex-spacer"></span>
+</ng-template>
+

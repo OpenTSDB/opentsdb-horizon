@@ -19,11 +19,11 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         private interCom: IntercomService,
         private util: UtilsService,
         private dateUtil: DateUtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
     ) { }
 
     /** Inputs */
-    @Input() editMode: boolean;
+    @Input() mode = 'view'; // view/edit
     @Input() widget: any; // includes query
 
     /** Local Variables */
@@ -31,6 +31,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     startTime: number;
     endTime: number;
     timezone: string;
+    isCustomZoomed = false;
     previewEventsCount = 100;
     eventsCount = 100;
     loading: boolean = false;
@@ -49,9 +50,36 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
             switch (message.action) {
                 case 'TimeChanged':
                 case 'reQueryData':
-                case 'ZoomDateRange':
                     this.getEvents();
                     break;
+                case 'ZoomDateRange':
+                    const overrideTime = this.widget.settings.time.overrideTime;
+                    if ( message.payload.date.isZoomed && overrideTime ) {
+                        const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
+                        const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
+                        if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
+                            this.isCustomZoomed = message.payload.date.isZoomed;
+                            this.widget.settings.time.zoomTime = message.payload.date;
+                            this.getEvents();
+                        }
+                    // tslint:disable-next-line: max-line-length
+                    } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
+                        this.isCustomZoomed = message.payload.date.isZoomed;
+                        this.getEvents();
+                    }
+                    // unset the zoom time
+                    if ( !message.payload.date.isZoomed ) {
+                        delete this.widget.settings.time.zoomTime;
+                    }
+                    break;
+                /*case 'ResizeAllWidgets':
+                    if(this.resizeSensor) {
+                        this.resizeSensor.detach();
+                    }
+                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
+                        this.newSize$.next(1);
+                    });
+                    break;*/
             }
 
             if (message && (message.id === this.widget.id)) {
@@ -81,7 +109,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
-            // console.log(changes);
+            // do something?
         }
     }
 
@@ -89,7 +117,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         this.interCom.requestSend({
             id: this.widget.id,
             action: 'getEventData',
-            payload: {eventQueries: this.widget.eventQueries, limit: this.editMode ? this.previewEventsCount : this.eventsCount}
+            payload: this.util.deepClone({eventQueries: this.widget.eventQueries, limit: this.mode === 'edit' ? this.previewEventsCount : this.eventsCount})
         });
     }
 
@@ -97,6 +125,28 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
         return this.widget.eventQueries[0].search ?
             this.widget.eventQueries[0].namespace + ' - ' + this.widget.eventQueries[0].search :
             this.widget.eventQueries[0].namespace;
+    }
+
+    setTitle(title) {
+        this.widget.settings.title = title;
+    }
+
+    resolveTitle(title) {
+        const v = {
+            eventCount: this.events.length,
+            namespace: this.widget.eventQueries[0].namespace,
+            eventQuery: this.widget.eventQueries[0].search
+        };
+        const regex = /\{\{([\w-.:\/]+)\}\}/ig
+        title = title.trim();
+        const matches = title.match(regex);
+        if ( matches ) {
+            for ( let i = 0, len = matches.length; i < len; i++ ) {
+                const key = matches[i].replace(/\{|\}/g,'');
+                title = title.replace(matches[i], v[key] !== undefined ? v[key] : '');
+            }
+        }
+        return title;
     }
 
     applyConfig() {

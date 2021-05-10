@@ -8,13 +8,14 @@ import { MaterialModule } from '../material/material.module';
 import { DygraphsModule } from '../dygraphs/dygraphs.module';
 import { D3Module } from '../d3/d3.module';
 import { ChartjsModule } from '../chartjs/chartjs.module';
-import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
 
+import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
+import { RouterModule} from '@angular/router';
 import { PlaceholderWidgetComponent } from './components/placeholder-widget/placeholder-widget.component';
 import { LinechartWidgetComponent } from './components/linechart-widget/linechart-widget.component';
 import { DeveloperWidgetComponent } from './components/developer-widget/developer-widget.component';
 import {
-    MarkdownModule, 
+    MarkdownModule,
     MarkedOptions
 } from 'ngx-markdown';
 
@@ -39,6 +40,10 @@ import { MarkdownWidgetVisualAppearanceComponent } from './components/markdown-w
 import { TopnWidgetComponent } from './components/topn-widget/topn-widget.component';
 import { HeatmapWidgetComponent } from './components/heatmap-widget/heatmap-widget.component';
 import { EventsWidgetComponent } from './components/events-widget/events-widget.component';
+import { TableWidgetComponent } from './components/table-widget/table-widget.component';
+
+import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/universal-data-tooltip-directives.module';
+
 
 @NgModule({
     imports: [
@@ -49,7 +54,9 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
         DygraphsModule,
         ChartjsModule,
         D3Module,
+        RouterModule,
         SharedcomponentsModule,
+        UniversalDataTooltipDirectivesModule,
         MarkdownModule.forRoot({
             markedOptions: {
               provide: MarkedOptions,
@@ -72,7 +79,8 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
         DonutchartLegendComponent,
         MarkdownWidgetComponent,
         MarkdownWidgetVisualAppearanceComponent,
-        EventsWidgetComponent
+        EventsWidgetComponent,
+        TableWidgetComponent
     ],
     declarations: [
         PlaceholderWidgetComponent,
@@ -90,6 +98,7 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
         TopnWidgetComponent,
         HeatmapWidgetComponent,
         EventsWidgetComponent,
+        TableWidgetComponent
     ],
     entryComponents: [
         PlaceholderWidgetComponent,
@@ -102,7 +111,8 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
         TopnWidgetComponent,
         StatusWidgetComponent,
         MarkdownWidgetComponent,
-        EventsWidgetComponent
+        EventsWidgetComponent,
+        TableWidgetComponent
     ]
 })
 export class DynamicWidgetsModule { }

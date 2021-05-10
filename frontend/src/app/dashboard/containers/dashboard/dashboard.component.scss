@@ -1,5 +1,4 @@
 /* DASHBOARD CONTAINER COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
 
 @mixin dashboard-component-base() {
     .app-dashboard {
@@ -17,68 +16,60 @@
 
     .app-navbar {
         // title
-        inline-editable {
+        .inline-editable {
             padding-left: 15px;
+            /* MAY NOT NEED THIS
             input {
                 // padding-left: 0px;
                 &.mat-input-element {
                     &.mat-form-field-autofill-control {
-                        padding-left: 0px;
+                        //padding-left: 0px;
                     }
                 }
-            }
-            .mat-form-field-flex {
-                .mat-form-field-infix {
-                    width: 400px;
-                    padding-left: 0px;
-                }
-            }
+            }*/
         }
     }
 
 
-    // NAVBAR PORTAL ITEMS 
-    /*.nav-close-edit-view {
-        .mat-raised-button {
-            ///@include mat-elevation-transition;
-            @include transition-property(background-color);
-            @include transition-duration(.3s);
-            @include mat-elevation(0);
-            padding: 0;
-            min-width: 38px;
-            margin-left: 20px;
-            
-
-            &,
-            .mat-icon {
-                width: 38px;
-                height: 38px;
-                line-height: 36px;
-            }
-        }
-    }*/
-
+    // NAVBAR PORTAL ITEMS
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
             line-height: 24px;
             font-size: 12px;
-            
+
             .mat-icon {
                 font-size: 1.2em;
                 display: inline-flex;
                 justify-content: center;
                 align-items: center;
-                
+
                 &:first-child {
                     margin-right: 6px;
                 }
 
                 &:last-child {
                     margin-left: 6px;
+                }
+            }
+
+            &.explore-close-button,
+            &.save-dashboard-button {
+                padding: 0;
+                min-width: initial;
+                margin: auto 6px;
+
+                .mat-icon {
+                    margin: 0px;
+                }
+            }
+            &.explore-close-button {
+                .mat-icon {
+                    font-size: 1.8em;
                 }
             }
         }
@@ -89,6 +80,17 @@
         .mat-raised-button,
         .mat-flat-button {
             padding-left: 6px;
+        }
+
+        .widget-clipboard-paste-trigger.mat-flat-button {
+            margin-left: 4px;
+            min-width: initial;
+            padding: 0;
+
+            .mat-icon {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
     }
 
@@ -103,7 +105,7 @@
         &.navbar-item {
             margin-right: 0;
         }
-        
+
         .mat-raised-button,
         .mat-flat-button {
             min-width: auto;
@@ -130,6 +132,32 @@
         margin-left: 0;
     }
 
+    .controls-bar {
+        display: flex;
+
+        .batch-controls-wrap {
+            .mat-icon {
+                @include sizeDenaliIcon(18px);
+            }
+        }
+
+        .batch-controls {
+            //background: rgba($black, 0.08);
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+        }
+
+        .batch-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -5px
+        }
+    }
+
     // cdk items
     .dashboard-actions-menu {
         width: 150px;
@@ -151,7 +179,7 @@
         }
 
         .widget-types {
-            
+
             .widget-type-selector {
                 padding: 8px 16px 0 16px;
                 width: 110px;
@@ -165,21 +193,21 @@
                     display: inline-flex;
                     flex-direction: column;
                 }
-        
+
                 .widget-type-label,
                 .widget-type-icon {
                     width: 100%;
                     line-height: 32px;
                 }
-        
+
                 //.widget-type-label {}
-        
+
                 .widget-type-icon {
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     text-align: center;
-        
+
                     &::after {
                         content: '';
                         display: block;
@@ -194,13 +222,13 @@
                     &.widget-icon-bar-graph::after {
                         background-position: -50px 0px;
                     }
-        
+
                     &.widget-icon-area-graph::after {
                         background-position: 0px 0px;
                     }
 
                     &.widget-icon-line-chart::after {
-                        background-position: -100px -50px    
+                        background-position: -100px -50px
                     }
 
                     &.widget-icon-heatmap::after {
@@ -230,50 +258,10 @@
                     &.widget-icon-events::after {
                         background-position: -50px -100px;
                     }
-                    
-                    /*&::after {
-                        content: '';
-                        display: block;
-                        width: 50px;
-                        height: 50px;
-                        background-repeat: no-repeat;
-                        background-position: 50% 50%;
-                        background-size: 100%;
-                    }
-        
-                    &.widget-icon-bar-graph::after {
-                        background-image: url(/assets/widget-icon-bar-graph.png);
-                    }
-        
-                    &.widget-icon-area-graph::after {
-                        background-image: url(/assets/widget-icon-area-graph.png);
-                    }
 
-                    &.widget-icon-line-chart::after {
-                        background-image: url(/assets/widget-icon-line-chart.png);
+                    &.widget-icon-table::after {
+                        background-position: -150px -100px;
                     }
-                    &.widget-icon-topn-chart::after {
-                        background-image: url(/assets/widget-icon-topn-chart.png);
-                    }
-                    &.widget-icon-heatmap::after {
-                        background-image: url(/assets/widget-icon-heatmap.png);
-                    }
-
-                    &.widget-icon-big-number::after {
-                        background-image: url(/assets/widget-icon-big-number.png);
-                    }
-
-                    &.widget-icon-donut-chart::after {
-                        background-image: url(/assets/widget-icon-donut-chart.png);
-                    }
-
-                    &.widget-icon-statuses::after {
-                        background-image: url(/assets/widget-icon-statuses.png);
-                    }
-
-                    &.widget-icon-notes::after {
-                        background-image: url(/assets/widget-icon-notes.png);
-                    }*/
                 }
             }
         }
@@ -292,34 +280,17 @@
     $background: map-get($theme-config, background);
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
-
+    $status: map-get($theme-config, status);
     $close-button-background: map-get($accent, A400);
     $close-button-text: map-get($foreground, navbar-text);
+    $navbar-background: map-get($background, navbar);
 
-    /*@if $is-dark {
-        $close-button-background: map-get($foreground, navbar-icons);
-        $close-button-text: map-get($background, navbar);
-    }*/
-
-    //.app-dashboard { }
-
-    // 
-    /*.nav-close-edit-view {
-
-        .mat-raised-button {
-            // reversed since it is a blocked element
-            background-color: $close-button-background;
-            color: $close-button-text;
-
-            &:hover {
-                background-color: lighten($close-button-background, 15%);
-            }
-        }
-    }*/
+    $disabled-text: map-get($foreground, disabled-text);
 
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
+    .nav-explore-close,
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
@@ -331,6 +302,9 @@
             }
         }
     }
+    .nav-title-readonly {
+        color: $navbar-background;
+    }
 
     // cdk items
     /*.dashboard-actions-menu {
@@ -340,6 +314,36 @@
             }
         }
     }*/
+
+    .controls-bar {
+
+        .batch-controls-wrap {
+            .batch-toggle {
+                background: rgba(map-get($primary, default), 0.08);
+            }
+
+            .batch-select,
+            .batch-copy,
+            .batch-trash {
+                color: map-get($foreground, link);
+
+                &[disabled] {
+                    color: $disabled-text;
+                }
+            }
+
+            .batch-select.is-checked {
+                color: map-get($accent, default);
+            }
+        }
+    }
+
+    .mat-flat-button {
+        &.save-dashboard-button {
+            background-color: map-get($status, success);
+            color: map-get($status, success-contrast);
+        }
+    }
 
     .dashboard-available-widgets-menu {
         &::after {
@@ -356,6 +360,30 @@
                     background-color: map-get($widget, widget-icons-background-hover);
                 }
             }
+
+            .widget-type-label {
+                color: map-get($foreground, text);
+            }
         }
+    }
+
+
+    %inline-editable-app-navbar-override {
+        .mat-form-field {
+            &.readonly-mode {
+                &:hover {
+                    background-color: rgba($white, 0.25) !important;
+                }
+            }
+
+            &.editing-mode {
+                background-color: rgba($white, 0.25) !important;
+            }
+        }
+    }
+
+    .app-navbar .inline-editable,
+    .app-navbar .mat-toolbar .inline-editable {
+        @extend %inline-editable-app-navbar-override;
     }
 }

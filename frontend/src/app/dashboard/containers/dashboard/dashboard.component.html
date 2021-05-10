@@ -1,20 +1,66 @@
-<div fxLayout="column" fxFlexFill>
+<div fxLayout="column" fxFlexFill ttBoundaryListener>
     <!-- need to figure out how to toggle on/off depending on whether there is template variables -->
     <!--<variable-template-bar *ngIf="!viewEditMode" [dbSettingsVariables]="variables" ></variable-template-bar> -->
-    <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true"
-        [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
-        [mode]="variablePanelMode"
-        [widgets]="widgets"
-        [tagKeysByNamespaces] = "tagKeysByNamespaces"
-        [tplVariables]="tplVariables"
-        (modeChange)="changeVarPanelMode($event)">
-    </template-variable-panel>
+    <div class="controls-bar" style="display: flex;">
+        <template-variable-panel #tplVariablePanel *ngIf="viewEditMode !== true && !snapshot"
+            [ngClass]="{'is-edit-mode': !variablePanelMode.view}"
+            [mode]="variablePanelMode"
+            [widgets]="widgets"
+            [tagKeysByNamespaces] = "tagKeysByNamespaces"
+            [tplVariables]="tplVariables"
+            (modeChange)="changeVarPanelMode($event)">
+        </template-variable-panel>
+        <div class="batch-controls-wrap" fxLayout="row" fxLayoutLaign="stretch stretch" *ngIf="viewEditMode !== true && !snapshot && variablePanelMode.view">
+            <div class="batch-controls" *ngIf="variablePanelMode.view && batchToggle">
+                <button mat-icon-button
+                    class="batch-select"
+                    (click)="batchToggleSelectAll()"
+                    [matTooltip]="batchSelectAll ? 'Deselect all' : 'Select all'"
+                    [ngClass]="{'is-checked': batchSelectAllIndeterminate || batchSelectAll}">
+                    <mat-icon>
+                        {{batchSelectAllIndeterminate ? 'indeterminate_check_box' : batchSelectAll ? 'check_box' : 'check_box_outline_blank'}}
+                    </mat-icon>
+                </button>
+                <button mat-icon-button
+                class="batch-copy"
+                    (click)="batchCopyToClipboard()"
+                    [disabled]="batchSelectedCount === 0"
+                    matTooltip="Copy selected widgets to Clipboard">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+                <button mat-icon-button
+                    class="batch-trash"
+                    (click)="openBatchDeleteDialog()"
+                    [disabled]="batchSelectedCount === 0"
+                    matTooltip="Remove selected widgets">
+                    <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                </button>
+            </div>
+            <div class="batch-toggle">
+                <button mat-icon-button class="toggle-dashboard-batch-button"
+                    [matTooltip]="(variablePanelMode.view && batchToggle)? 'Disable batch controls' : 'Enable batch controls'"
+                    (click)="toggleBatchControls()">
+                    <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--<div class="widget-title" #widgetTitle *ngIf="snapshot">
+        <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
+            <span class="navbar-item">This snapshot created from the dashboard by user.syed on 12/12/2010 09:00 pm</span>
+        </span>
+        <button mat-flat-button class="snapshot-button" matTooltip="Snapshot" matTooltipPosition="below">
+            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+        </button>
+    </div>-->
     <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"
         [newWidget]="newWidget"
         [mWidget]="mWidget"
         (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
         [rerender]="rerender"
         [widgets]="widgets"
+        [batchControlsToggle]="batchToggle"
+        [batchSelectedItems]="batchSelectedItems"
         [dashboardMode]="dashboardMode$ | async">
     </app-dboard-content>
 </div>
@@ -24,30 +70,23 @@
         [minLength]="3"
         [maxLength]="50"
         (updatedValue)="setTitle($event)"
-        style="margin-left: 5px;"
-        *ngIf="activeMediaQuery !== 'xs'">
+        style="margin-left: 5px; margin-right: 0;"
+        *ngIf="(dashboardMode$ | async) !== 'explore' && activeMediaQuery !== 'xs'">
     </inline-editable>
+    <span class="navbar-item nav-title-readonly" *ngIf="(dashboardMode$ | async) === 'explore'">Explore: {{ editViewModeMeta.title }}</span>
 
-    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" *ngIf="activeMediaQuery !== 'xs' && dbid !=='_new_'">
+    <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" style="margin-left: 0;"
+        *ngIf="viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
         <button mat-icon-button class="mat-elevation-z0"
             [ngClass]="{'dashboard-faved': isUserFavorited}"
             (click)="dashboardFavoriteAction(isUserFavorited)">
             <mat-icon fontSet="denali" [fontIcon]="isUserFavorited ? 'd-star-solid' : 'd-star'"></mat-icon>
         </button>
     </span>
-
-    <!--
-    <span class="navbar-item nav-dashboard-template-var-trigger" *ngIf="tplVariables.length === 0">
-        <button mat-raised-button class="mat-elevation-z0" (click)="variablePanelMode = 'edit'">
-            <mat-icon fontSet="denali" fontIcon="d-setting"></mat-icon>
-            <span>Config custom tags</span>
-        </button>
-    </span>
-    -->
     <span class="flex-spacer"></span>
 
-    <span class="navbar-item nav-add-new-widget" *ngIf="activeMediaQuery !== 'xs' && !viewEditMode">
-        <button mat-raised-button class="mat-elevation-z0"
+    <span class="navbar-item nav-add-new-widget" *ngIf="viewEditMode !== true &&!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
+        <button mat-flat-button class=""
             [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
             [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"
             #availableWidgetsMenuTrigger>
@@ -69,10 +108,10 @@
             </ng-template>
         </mat-menu>
     </span>
-
     <time-picker class="navbar-item nav-date-time-picker"
         (newChange)="handleTimePickerChanges($event)"
         [downsample]="dbDownsample"
+        [tot]="dbToT"
         [timezone]="dbTime.zone"
         [startTime]="dbTime.start"
         [endTime]="dbTime.end"
@@ -80,19 +119,26 @@
         [refresh]="refresh$ | async"
         [xPosition]="menuXAlignValue">
     </time-picker>
-
     <span class="navbar-item nav-timezone-toggle">
         <navbar-timezone-toggle [timezone]="dbTime.zone" (change)="setTimezone($event);"></navbar-timezone-toggle>
     </span>
 
-    <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && !viewEditMode">
-        <navbar-dashboard-actions-menu mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+    <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && (!viewEditMode || snapshot)">
+        <navbar-dashboard-actions-menu *ngIf="!viewEditMode" mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
+        <button mat-flat-button class="save-dashboard-button" *ngIf="snapshot && doesUserHaveWriteAccess()" (click)="saveSnapshot()">
+            <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
+        </button>
     </span>
-
-
-    <!-- DISABLE FOR NOW
-    <span class="navbar-item navbar-icon-item nav-theme-picker">
-        <theme-picker mat-button></theme-picker>
+    <span class="navbar-item links">
+        <help-links></help-links>
     </span>
-    -->
+    <!--<span class="navbar-item nav-batch-edit-toggle">
+        <button mat-flat-button class="toggle-dashboard-batch-button" (click)="toggleBatchControls()">
+            <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
+        </button>
+    </span>-->
+    <navbar-clipboard-menu class="navbar-item" #clipboardMenu></navbar-clipboard-menu>
+    <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
+        <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
+    </span>
 </ng-template>

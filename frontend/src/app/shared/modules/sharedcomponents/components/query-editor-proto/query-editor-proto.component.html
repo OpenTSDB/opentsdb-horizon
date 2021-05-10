@@ -3,7 +3,23 @@
         <div class="toolbar-item query-index">
             <span>{{ label }}</span>
             <span class="query-disabled-label" *ngIf="!query.settings.visual.visible">disabled</span>
+            <!-- pill -->
+            <div class="query-alias-label"
+                *ngIf="!queryAliasEdit">
+                <span class="query-alias-text">Query name: {{query.settings.visual.label ? query.settings.visual.label : label}}</span>
+                <span class="query-alias-edit-icon" (click)="toggleQueryAliasEditForm()"><mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon></span>
+            </div>
         </div>
+        <!-- query alias editor -->
+        <div class="toolbar-item query-alias-edit-form" *ngIf="queryAliasEdit; else queryNamespaceBlock;" style="padding-left: 16px;">
+            <mat-form-field floatLabel="always">
+                <input matInput placeholder="Query Alias:" [formControl]="queryAliasFormControl">
+            </mat-form-field>
+            <button mat-button color="primary" (click)="saveQueryAliasForm()">Save</button>
+            <button mat-button color="secondary" (click)="toggleQueryAliasEditForm()">Cancel</button>
+        </div>
+        <!-- normal query namespace -->
+        <ng-template #queryNamespaceBlock>
         <div class="toolbar-item">
             <span class="title"> Namespace:</span>
         </div>
@@ -21,8 +37,10 @@
                     (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
             </span>
         </div>
+        </ng-template>
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
+            <mat-icon style="cursor: move;">reorder</mat-icon>
             <button mat-icon-button color="primary" *ngIf="options.toggleQuery"
                 [matTooltip]="query.settings.visual.visible ? 'click to disable' : 'click to enable'"
                 (click)="toggleQuery(); $event.stopPropagation();">
@@ -53,18 +71,12 @@
     *ngIf="query.namespace || query.metrics.length || query.filters.length">
     <!-- CONTAINER FOR THE COMMON TAGS-->
     <div class="common-tags">
-        <!--<span class="common-tags-label">Tag filters</span>-->
         <div class="common-tags-wrapper">
             <span [matMenuTriggerFor]="tagFilterMenu" #tagFilterMenuTrigger="matMenuTrigger"
                 [matMenuTriggerData]="{query: query}" class="tag-filter-menu-trigger"></span>
             <div class="tags-selected" *ngIf="query.filters.length">
                 <div class="tags-selected-header" (click)="showTagFilterMenu()">
                     <span><strong>Tag Filters</strong></span>
-                    <!--<span class="explicit-match" *ngIf="options.enableExplicitTagMatch">
-                        <mat-checkbox (click)="$event.stopPropagation();"
-                            [checked]="query.settings.explicitTagMatch"
-                            (change)="toggleExplictTagMatch($event)">Only match selected tag keys</mat-checkbox>
-                    </span>-->
                     <button mat-icon-button color="primary">
                         <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                     </button>
@@ -92,7 +104,11 @@
     <div class="metric-list-wrapper">
         <!-- LOOP THROUGH METRICS
                 SECOND COLUMN IS EMPTY TO BE ABLE TO TAKE THE ABSOLUTE POSITIONED COMMON TAGS BOX -->
-        <table mat-table #metricTable [dataSource]="metricTableDataSource" class="query-metric-table mat-elevation-z0">
+        <table class="metric-list-wrapper-table" mat-table #metricTable [dataSource]="metricTableDataSource"
+                cdkDropList
+        [cdkDropListData]="metricTableDataSource.data"
+        (cdkDropListDropped)="reorderMetric($event)"
+        class="query-metric-table mat-elevation-z0">
 
             <!-- INDEX Column -->
             <ng-container matColumnDef="metric-index">
@@ -152,6 +168,21 @@
                             </mat-form-field>
                         </div>
                     </ng-template>
+                    <div class="metric-alias" *ngIf="options.enableAlias">
+                        <div class="display-name" *ngIf="editAliasId !== data.metric.id"
+                            (click)="editAliasId = data.metric.id;">
+                            <span *ngIf="data.metric.settings.visual.label">Alias: </span>
+                            <span class="alias-text" [ngClass]="{'has-alias': data.metric.settings.visual.label && data.metric.settings.visual.label.length > 0}"> {{ data.metric.settings.visual.label || 'As an alias'}}</span>
+                            <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                        </div>
+                        <mat-form-field *ngIf="editAliasId === data.metric.id" class="alias-input-field" appearance="fill"
+                            color="primary" floatLabel="never">
+                            <input matInput placeholder="Enter an alias" [value]="data.metric.settings.visual.label || ''"
+                                (blur)="updateMetricAlias(data.metric.id, $event)"
+                                (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
+                            <span matPrefix>Alias</span>
+                        </mat-form-field>
+                    </div>
                 </td>
             </ng-container>
             <!-- Alias moved to another row
@@ -197,6 +228,7 @@
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
                                     [selected]="data.metric.groupByTags"
                                     [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
+                                    [excludeTags]=" options.excludeMetricGroupByTags && data.type !== 'expression'  ? options.excludeMetricGroupByTags : []"
                                     (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
                                 </dropdown-metric-tags>
                             </div>
@@ -225,12 +257,13 @@
                                     (fxDel)="functionDelete($event)"
                                     [regexValidator]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].regexValidator : null"
                                     [errorMessage]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall].errorMessage: null"
-                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}">
+                                    [options]="FunctionOptions[fx.fxCall] ? FunctionOptions[fx.fxCall] : {}"
+                                    [optionalData]=" fx.fxCall.indexOf('GroupBy') >= 0 ? {tags: getGroupByTags(data.metric.id)} : {}">
                                 </metric-function>
                             </div>
                         </div>
                         <!-- custom function icon [ ALWAYS LAST ] -->
-                        <div class="metric-row-data add-function" *ngIf="data.type === 'metric'"
+                        <div class="metric-row-data add-function"
                             [matMenuTriggerFor]="functionSelectionMenu" [matMenuTriggerData]="{metric: data.metric}"
                             (click)="functionMenuOpened($event, i)" (menuClosed)="functionMenuClosed($event)">
                             <button mat-flat-button>
@@ -244,6 +277,27 @@
                                             *ngIf="data.type === 'expression'">
                                             <label><input type="checkbox" value="true" (change)="setMissingMetrics(data.metric.id,$event.target.checked)">Substitute Missing Metrics</label>
                                         </div>-->
+                    </div>
+                    <div class="visual-panel-dropdown-text"
+                        #metricVisualPanelTrigger="matMenuTrigger"
+                        [matMenuTriggerFor]="metricVisualPanel"
+                        [matMenuTriggerData]="{data: data}"
+                        (menuOpened)="toggleVisualRow(i - 1, true)"
+                        (menuClosed)="toggleVisualRow(i - 1, false)">
+                        <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
+                        <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
+                        <!--<span>color: {{data | json}}</span>-->
+                        <ng-container *ngIf="data.visual.color && isArray(data.visual.color)">
+                            <span *ngFor="let color of data.visual.color "><span [style.background]="color" class="color-chip" ></span>{{ color  }}</span>
+                        </ng-container>
+                        <span *ngIf="data.visual.color && !isArray(data.visual.color)"><span [style.background]="data.visual.color" class="color-chip" ></span>{{ data.visual.color  }}</span>
+                        <span *ngIf="!data.visual.color"><span class="color-chip"></span>{{  'palette: ' +  ( data.visual.scheme || 'auto' )   }}</span>
+                        <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
+                            {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
+                            background</span>
+                        <span>{{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
+                        <span *ngIf="type === 'LinechartWidgetComponent'">on {{ data.visual.axis || 'y1' }} </span>
+                        <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon>
                     </div>
                 </td>
             </ng-container>
@@ -260,10 +314,11 @@
                                 <mat-icon fontSet="denali" fontIcon="d-eye-close" *ngIf="!data.metric.settings.visual.visible">
                                 </mat-icon>
                             </button>-->
-                            <button mat-icon-button color="primary" (click)="cloneMetric(data.metric.id)">
+                            <mat-icon style="cursor: move;" cdkDragHandle>reorder</mat-icon>
+                            <button mat-icon-button color="primary" class="clone-metric" (click)="cloneMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" [disabled]="!canDeleteMetric(data.metric.id)"
+                            <button mat-icon-button color="primary" class="delete-metric" [disabled]="!canDeleteMetric(data.metric.id)"
                                 (click)="deleteMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                             </button>
@@ -318,53 +373,12 @@
                 <td mat-cell *matCellDef="let element"></td>
             </ng-container>
             <ng-container matColumnDef="visual">
-                <td mat-cell [colSpan]="metricTableDisplayColumns.length - 1" *matCellDef="let data; let i = index" style="padding-left: 0;">
+                <th mat-header-cell *matHeaderCellDef>Visual</th>
+                <div mat-cell  *matCellDef="let data; let i = index" style="display:block;padding-left: 0;">
                     <div style="display: flex;">
-                        <!-- alias display and edit controls -->
-                        <div class="metric-alias" *ngIf="options.enableAlias">
-                            <div class="display-name" *ngIf="editAliasId !== data.metric.id"
-                                (click)="editAliasId = data.metric.id;">
-                                <span *ngIf="data.metric.settings.visual.label">Alias: </span>
-                                <span class="alias-text" [ngClass]="{'has-alias': data.metric.settings.visual.label && data.metric.settings.visual.label.length > 0}"> {{ data.metric.settings.visual.label || 'As an alias'}}</span>
-                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-                            </div>
-                            <mat-form-field *ngIf="editAliasId === data.metric.id" class="alias-input-field" appearance="fill"
-                                color="primary" floatLabel="never">
-                                <input matInput placeholder="Enter an alias" [value]="data.metric.settings.visual.label || ''"
-                                    (blur)="updateMetricAlias(data.metric.id, $event)"
-                                    (keyup.enter)="updateMetricAlias(data.metric.id, $event)" autocomplete="off" #editAliasInput>
-                                <span matPrefix>Alias</span>
-                            </mat-form-field>
-                        </div>
-                        <!-- visual panel trigger and summary-->
-                        <!--<div class="visual-panel-dropdown-text"
-                            #metricVisualPanelTrigger="matMenuTrigger"
-                            [matMenuTriggerFor]="metricVisualPanel"
-                            [matMenuTriggerData]="{data: data}"
-                            (menuOpened)="toggleVisualRow(i - 1, true)"
-                            (menuClosed)="toggleVisualRow(i - 1, false)"
-                            *ngIf="(options.enableAlias && editAliasId !== data.metric.id) || type ==='BignumberWidgetComponent'">-->
-                        <div class="visual-panel-dropdown-text"
-                            #metricVisualPanelTrigger="matMenuTrigger"
-                            [matMenuTriggerFor]="metricVisualPanel"
-                            [matMenuTriggerData]="{data: data}"
-                            (menuOpened)="toggleVisualRow(i - 1, true)"
-                            (menuClosed)="toggleVisualRow(i - 1, false)">
-                            <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineWeight || '1px') : ''}}</span>
-                            <span>{{ type === 'LinechartWidgetComponent' && data.visual.type === 'line' ? (data.visual.lineType || 'solid') : ''}}</span>
-                            <span><span [style.background]="data.visual.color" class="color-chip" *ngIf="data.visual.color && data.visual.color !== 'auto'"></span>{{ (!data.visual.color || data.visual.color === 'auto' ? 'auto' : data.visual.color) | hexToColorName }}</span>
-                            <span *ngIf="type === 'BignumberWidgetComponent'">text on <span [style.background]="data.visual.backgroundColor" class="color-chip"></span>
-                                {{ !data.visual.backgroundColor || data.visual.backgroundColor === 'auto' ? 'auto' : data.visual.backgroundColor }}
-                                background</span>
-                            <span>{{ type === 'LinechartWidgetComponent' ? data.visual.type || 'line' : '' }}</span>
-                            <span *ngIf="type === 'LinechartWidgetComponent'">on {{ data.visual.axis || 'y1' }} </span>
-                            <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon>
-                            <!--<span class="mat-select-arrow-wrapper" style="display: inline-flex">
-                                <span class="mat-select-arrow"></span>
-                            </span>-->
-                        </div>
+
                     </div>
-                </td>
+                </div>
             </ng-container>
 
             <!-- main headers [hidden by css] -->
@@ -372,16 +386,17 @@
 
             <!-- DEFAULT DATA ROW -->
             <tr mat-row *matRowDef="let row; columns: metricTableDisplayColumns; let i = index;" class="metric-query-item" [attr.data-index]="i"
+                cdkDrag [cdkDragData]="row"
                 [ngClass]="{
                     'visual-highlight': visualPanelHighlight === i,
                     'metric-type': row.type === 'metric',
                     'expression-type': row.type === 'expression',
                     'row-disabled': options.enableMultiMetricSelection && !row.metric.settings.visual.visible
                 }"></tr>
-            <tr class="metric-query-item-visual" mat-row [attr.data-index]="i"
+            <!--<tr class="metric-query-item-visual" mat-row [attr.data-index]="i"
                 *matRowDef="let row; columns: ['padding', 'visual']; when: checkMetricVisualRow; let i = index;"
                 [ngClass]="{'visual-highlight': visualPanelHighlight === (i - 1)}"
-                style="overflow: hidden"></tr>
+                style="overflow: hidden"></tr>-->
             <!-- SPECIAL ROW - add metric -->
             <tr mat-row *matRowDef="let row; columns: ['add-metric']; when: checkAddMetricRow" class="add-query-item"
                 [ngClass]="{'is-hidden': !isAddMetricProgress}" [@addQueryItem]="isAddMetricProgress ? 'expanded' : 'collapsed'"
@@ -407,6 +422,9 @@
             (click)="editExpression(-1)" [disabled]="query.metrics.length === 0">
             <span>Add expression</span>
         </button>
+        <button *ngIf="type === 'LinechartWidgetComponent' && query.metrics.length > 1" mat-button color="primary" class="add-expression-button" #artifactsMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="artifactsMenu">
+            <span>Add Artifacts</span>
+        </button>
     </div>
 </div>
 <!-- METRIC MENU -->
@@ -428,6 +446,35 @@
             <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
             <span>Delete</span>
         </button>
+    </ng-template>
+</mat-menu>
+<!-- ARTIFACTS MENU -->
+<mat-menu class="metric-action-cdk-menu" #artifactsMenu="matMenu" hasBackdrop="true">
+    <ng-template matMenuContent let-metric="metric">
+        <!-- conditional button -->
+        <button mat-menu-item [matMenuTriggerFor]="metricsMenu">
+            <span>Percentage</span>
+        </button>
+    </ng-template>
+</mat-menu>
+<!-- PERCENTAGE GRAPH -  METRICS MENU -->
+<mat-menu class="metrics-list-cdk-menu" yPosition="above" #metricsMenu="matMenu">
+    <ng-template matMenuContent>
+        <div class="metric-list has-scroller" *ngIf="query.metrics.length" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+            <div class="is-scroller">
+                <mat-selection-list #metrics [(ngModel)]="pctSelectedMetrics">
+                    <ng-container *ngFor="let metric of query.metrics; let index = index">
+                        <mat-list-option checkboxPosition="before" *ngIf="!metric.expression" [value]="'m' + (index + 1)" selected="true">
+                                {{ metric.name }}
+                        </mat-list-option>
+                    </ng-container>
+                </mat-selection-list>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button mat-button color="primary" (click)="createPercentageMetrics()">Create</button>
+            <button mat-button  color="primary" (click)="closeMetricDialog()">Cancel</button>
+        </div>
     </ng-template>
 </mat-menu>
 <!-- TAG FILTER MENU -->
@@ -453,7 +500,7 @@
 <!-- FUNCTION MENU-->
 <mat-menu class="function-selection-cdk-menu" #functionSelectionMenu="matMenu">
     <ng-template matMenuContent let-metric="metric">
-        <div class="function-selection-wrapper" style="height: 200px;">
+        <div class="function-selection-wrapper" style="height: 230px;">
             <div class="function-categories">
                 <mat-nav-list>
                     <a mat-list-item [ngClass]="{'is-active': i === selectedFunctionCategoryIndex}"

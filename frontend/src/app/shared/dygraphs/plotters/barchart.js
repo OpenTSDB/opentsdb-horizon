@@ -100,10 +100,9 @@ var barChartPlotter = function(e) {
     //e.dygraph.user_attrs_.series[].plotter.name;
     var seriesInfo = g.user_attrs_.series;
     var barChartSeries = {};
-    // console.log("seriesinfo", seriesInfo);
     var firstSeriesIndex = -1;
     for (var i in seriesInfo) {
-        if (seriesInfo[i].plotter !== undefined && 
+        if (seriesInfo[i].plotter !== undefined &&
             seriesInfo[i].plotter === barChartPlotter) {
             barChartSeries[i-1] = i;
             if (firstSeriesIndex === -1) {
@@ -111,7 +110,7 @@ var barChartPlotter = function(e) {
             }
         }
     }
-    
+
     if (e.seriesIndex !== firstSeriesIndex) {
         return;
     }
@@ -138,7 +137,7 @@ var barChartPlotter = function(e) {
         points = sets[j];
         seriesName = setNames[j];
 
-        //  stack the data 
+        //  stack the data
         stackPoints(points, cumulativeYval, g.getBooleanOption("stackedGraphNaNFill"));
     }
 
@@ -168,7 +167,7 @@ var barChartPlotter = function(e) {
 
             point.y_stacked = DygraphLayoutCalcYNormal_(
                 axis, point.yval_stacked, logscale);
-            
+
             point.y = point.y_stacked;
             point.canvasx = g.plotter_.area.w * point.x + g.plotter_.area.x;
             point.canvasy = g.plotter_.area.h * point.y + g.plotter_.area.y;

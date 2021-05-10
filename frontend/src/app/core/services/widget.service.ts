@@ -9,7 +9,8 @@ import {
     DeveloperWidgetComponent,
     BignumberWidgetComponent,
     MarkdownWidgetComponent,
-    EventsWidgetComponent
+    EventsWidgetComponent,
+    TableWidgetComponent
 } from '../../shared/modules/dynamic-widgets/components';
 
 @Injectable({
@@ -38,6 +39,8 @@ export class WidgetService {
                 return MarkdownWidgetComponent;
             case 'EventsWidgetComponent':
                 return EventsWidgetComponent;
+            case 'TableWidgetComponent':
+                    return TableWidgetComponent;
             default:
                 return PlaceholderWidgetComponent;
         }
@@ -56,7 +59,8 @@ export class WidgetService {
                         display: false,
                         position: 'bottom',
                         columns: []
-                    }
+                    },
+                    chartOptions: {}
                 };
                 break;
             case 'DonutWidgetComponent':
@@ -99,9 +103,9 @@ export class WidgetService {
         // widget requires data summary
         const summary = ['BarchartWidgetComponent', 'DonutWidgetComponent', 'TopnWidgetComponent', 'BignumberWidgetComponent'];
         // multi metric widgets
-        const isMulti = ['LinechartWidgetComponent', 'BarchartWidgetComponent', 'DonutWidgetComponent'].includes(type);
+        const isMulti = ['LinechartWidgetComponent', 'BarchartWidgetComponent', 'DonutWidgetComponent', 'TableWidgetComponent'].includes(type);
         // summarizer required
-        const summarizer = type !== 'LinechartWidgetComponent' && type !== 'HeatmapWidgetComponent';
+        const summarizer = type !== 'LinechartWidgetComponent' && type !== 'HeatmapWidgetComponent' && type !== 'TableWidgetComponent';
         const queries = widget.queries;
         let hasVisible = false;
         const source = widget.settings.component_type;
@@ -164,6 +168,11 @@ export class WidgetService {
             visual.unit = oVisualConf.unit;
         }
 
+        if ( ['HeatmapWidgetComponent', 'TopnWidgetComponent', ].includes(type) ) {
+            visual.color = type === 'HeatmapWidgetComponent' ? '#3F00FF' : '#dff0ff';
+        }
+
+
         // bignumber and topn widgets have visual conditions
         if ( oVisualConf.conditions && ['BignumberWidgetComponent', 'TopnWidgetComponent'].includes(type)) {
             visual.conditions = oVisualConf.conditions;
@@ -185,7 +194,7 @@ export class WidgetService {
         }
 
         // sorting preference, the following don't have sorting preference
-        if  ( ['BignumberWidgetComponent', 'LinechartWidgetComponent', 'HeatmapWidgetComponent'].includes(type) ) {
+        if  ( ['BignumberWidgetComponent', 'LinechartWidgetComponent', 'HeatmapWidgetComponent', 'TableWidgetComponent'].includes(type) ) {
             delete widget.settings.sorting;
         }
 

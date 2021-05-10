@@ -1,10 +1,18 @@
-<div class="main-container" [ngClass]="{'flex': editMode }">
+<div class="main-container" [ngClass]="{'flex': mode === 'edit' }">
     <div class="widget-output-container" fxLayout="column" >
-        <div class="widget-title" *ngIf="!editMode" fxLayout="row" fxFlex="1 1 30px">
-            <span fxFlex="1 1 100%">({{events.length}}) {{getTitle()}}</span>
+        <div class="widget-title" *ngIf="mode !== 'edit'" fxLayout="row" fxFlex="1 1 30px">
+            <span class="readonly" fxFlex="1 1 100%">{{ resolveTitle(widget.settings.title) }}</span>
         </div>
-        <div class="widget-title" *ngIf="editMode" fxLayout="row" fxFlex="1 1 30px">
-            <span fxFlex="1 1 100%">{{getTitle()}} </span>
+        <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 48px">
+            <span fxFlex="1 1 100%">
+                <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
+                showEditIcon="true"
+                [fieldValue]="widget.settings.title"
+                [minLength]="3"
+                [maxLength]="100"
+                (updatedValue)="setTitle($event)">
+            </inline-editable>
+            </span>
             <span>
                 <button mat-button color="primary" class="close-edit-view-btn" (click)="closeViewEditMode()">
                     <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
@@ -12,7 +20,7 @@
             </span>
         </div>
 
-        <div class="widget-controls-container" *ngIf="editMode">
+        <div class="widget-controls-container" *ngIf="mode === 'edit'">
             <!-- tabs with config content -->
             <mat-tab-group class="widget-configs" selectedIndex="0" color="primary" [@.disabled]="'true'" mat-align-tabs="start">
                 <mat-tab label="Events" [disabled]="editQueryId">
@@ -23,17 +31,17 @@
                 <div class="flex-spacer"></div>
             </mat-tab-group>
         </div>
-      
-        <div class="widget-output notCentered" #widgetoutput [ngClass]="{'top-margin': editMode }">
+
+        <div class="widget-output notCentered" #widgetoutput [ngClass]="{'top-margin': mode === 'edit' }">
             <div class="widget-container">
-                <div *ngIf="editMode" class="event-result-title"> Preview </div>
+                <div *ngIf="mode === 'edit'" class="event-result-title"> Preview </div>
                 <event-list [events]="events" [timezone]="timezone" [startTime]="startTime" [endTime]="endTime" [previewLimit]="100" [loading]="loading" [error]="error"></event-list>
             </div>
         </div>
       </div>
 </div>
 
-<div class="widget-actions" *ngIf="editMode">
+<div class="widget-actions" *ngIf="mode === 'edit'">
     <!-- controls to save/cancel -->
     <button mat-raised-button color="primary" class="mat-elevation-z0" [disabled]="!widget.eventQueries[0].namespace" (click)="applyConfig()">Apply to Dashboard</button>
     <button mat-stroked-button color="primary" class="mat-elevation-z0" (click)="closeViewEditMode()">Cancel</button>

@@ -10,7 +10,7 @@
         display: flex;
         .widget-output {
             width: 100%;
-            height: 100%;
+            // height: 100%;
             display: flex;
         }
         #container {
@@ -22,10 +22,10 @@
                 position:relative is required on parent container as
                 chartjs-zoom and threshold plugins inserts a canvas on top of chart canvas.
             */
-            position: relative;
+            // position: relative;
             canvas {
-                width: 100% !important;
-                height: 100% !important;
+                // width: 100% !important;
+                // height: 100% !important;
             }
             .loading-spinner,
             .gif-spinner {
@@ -70,6 +70,42 @@
             }
         }
     }
+
+                    // when we are in edit view
+                    .edit-view-container.is-active {
+                        .widget-panel-content.barchart-widget {
+                            .widget-output-container {
+                                // background: yellowgreen;
+                                // display: block;
+                                // flex: 1 1 auto;
+                                // height: 250px;
+                                // max-height: calc(100% - 200px);
+                            }
+                    
+                            /*
+                            .widget-controls-container {
+                                display: flex;
+                                padding: 0;
+                                // background: lightblue;
+                                overflow: hidden;
+                                // flex: 1 1 auto;
+                                // min-height: 200px;
+                                // max-height: 100%;
+                                flex-grow: 1;
+                            }
+                            
+
+                            .widget-output {
+                                //top: 30px;
+                                padding: 8px 0px;
+                                //display: block;
+                                position: relative;
+                                // height: inherit;
+                                display: block;
+                            }
+                            */
+                        }
+                    }
 }
 
 @mixin barchart-widget-component-theme($theme-config) {

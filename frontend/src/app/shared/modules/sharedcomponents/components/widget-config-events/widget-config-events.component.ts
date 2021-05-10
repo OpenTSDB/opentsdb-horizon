@@ -63,7 +63,7 @@ export class WidgetConfigEventsComponent implements OnInit {
   }
 
   cancelSaveNamespace(event) {
-    // console.log(event);
+    // do something?
   }
 
 }

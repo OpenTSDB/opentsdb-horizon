@@ -1,0 +1,68 @@
+<mat-toolbar class="mini-navigator-toolbar" [ngClass]="{'is-master-panel': panelIndex === 0}">
+    <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+        <div class="nav-item back-to-master">
+            <!-- click goes back a folder : if top level, this disappears-->
+            <button mat-icon-button (click)="navigatorAction('goUpDirectory', $event); $event.stopPropagation()">
+                <mat-icon fontSet="denali" fontIcon="d-arrowhead-left"></mat-icon>
+            </button>
+        </div>
+        <div class="nav-item panel-label">
+            <strong>{{currentPanelName}}</strong>
+        </div>
+        <span class="flex-spacer"></span>
+        <!-- click to add a folder : this is hidden in a top level folder (master pseudo folder & namespace list) -->
+        <!-- TODO: need to implement add folder from mini nav
+        <div class="nav-item add-folder" *ngIf="mode === 'move'">
+            <button mat-icon-button>
+                <mat-icon fontSet="denali" fontIcon="d-folder-add"></mat-icon>
+            </button>
+        </div>-->
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<navigator-panel #miniNavPanel>
+    <ng-container *ngFor="let panel of panels; let i = index">
+        <ng-container *navigatorPanelItem>
+            <ng-container *ngTemplateOutlet="miniNavList;context:{panel: panel}"></ng-container>
+        </ng-container>
+    </ng-container>
+</navigator-panel>
+
+<div class="mini-navigator-actions">
+    <span class="flex-spacer"></span>
+    <button mat-button *ngIf="moveEnabled" (click)="navigatorAction('move')">MOVE {{selected ? 'TO FOLDER' : 'HERE'}}</button>
+    <button mat-button *ngIf="selectEnabled" (click)="navigatorAction('select')">SELECT {{selected.folder ? 'FOLDER' : 'HERE'}}</button>
+    <button mat-button *ngIf="saveEnabled" (click)="navigatorAction('save')">SAVE HERE</button>
+    <button mat-button (click)="navigatorAction('cancel')">CANCEL</button>
+</div>
+
+<ng-template #miniNavList let-panel="panel">
+    <div class="mini-navigator-folders">
+        <mat-nav-list class="folder-list">
+            <ng-container *ngFor="let folder of panel.subfolders; let i = index;">
+                <mat-list-item class="folder-nav-item"
+                    *ngIf="folders[folder] && !folders[folder].noDisplay"
+                    [ngClass]="{'is-selected': selected === folders[folder].fullPath}"
+                    (click)="folderAction('selectFolder', folders[folder], $event); $event.stopPropagation()">
+                    <ng-container *ngTemplateOutlet="miniNavItem;context:{folder: folders[folder]}"></ng-container>
+                </mat-list-item>
+            </ng-container>
+        </mat-nav-list>
+    </div>
+</ng-template>
+
+<ng-template #miniNavItem let-folder="folder">
+    <div class="mini-navigator-folder-item" [ngClass]="{'is-selected': selected === folder.fullPath}">
+        <div class="list-item">
+            <mat-icon class="folder-icon" fontSet="denali" [fontIcon]="folder.icon || 'd-folder'"></mat-icon>
+        </div>
+        <div class="list-item folder-name flex-spacer">
+            <span>{{folder.name || 'BROKEN'}}</span>
+        </div>
+        <div class="list-item goto-next-folder">
+            <button mat-icon-button (click)="folderAction('gotoFolder', folder, $event); $event.stopPropagation()">
+                <mat-icon fontSet="denali" fontIcon="d-arrowhead-right"></mat-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>

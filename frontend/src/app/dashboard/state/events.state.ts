@@ -1,7 +1,8 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
-import { LoggerService } from '../../core/services/logger.service';
+import { ConsoleService } from '../../core/services/console.service';
+import { Observable } from 'rxjs';
 
 export interface EventsModel {
     eventQueries: any[];
@@ -121,9 +122,11 @@ export class SetEventsTimeZone {
 })
 
 export class EventsState {
+    subs: any = {};
+    queryObserver: Observable<any>;
     constructor(
         private httpService: HttpService,
-        private logger: LoggerService
+        private console: ConsoleService
     ) { }
 
     @Selector()
@@ -151,33 +154,30 @@ export class EventsState {
         return state.timezone;
     }
 
-    // @Selector() static GetErrors(state: EventsStateModel) {
-    //     console.log('getEvents error');
-    //     return state.error;
-    // }
-
-    // @Selector() static GetLastUpdated(state: EventsStateModel) {
-    //     console.log('getEvents last updated');
-    //     return state.lastUpdated;
-    // }
-
     @Action(GetEvents)
     getEvents(ctx: StateContext<EventsStateModel>, { time, eventQueries, wid, limit }: GetEvents) {
 
-        this.logger.action(GetEvents.type, { time, eventQueries, wid });
+        this.console.action(GetEvents.type, { time, eventQueries, wid });
         ctx.patchState({loading: true});
 
-        return this.httpService.getEvents(wid, time, eventQueries, limit).pipe(
-            map( (response: any) => {
-                return ctx.dispatch(new GetEventsSuccess(response, { time, eventQueries, wid, limit } ));
-            }),
-            catchError( error => ctx.dispatch(new GetEventsFailed(error, wid)) )
+        if (  this.subs[wid] ) {
+            this.subs[wid].unsubscribe();
+        }
+        this.queryObserver = this.httpService.getEvents(wid, time, eventQueries, limit);
+
+        this.subs[wid] = this.queryObserver.subscribe(
+            response => {
+                ctx.dispatch(new GetEventsSuccess(response, { time, eventQueries, wid, limit } ));
+            },
+            err => {
+                ctx.dispatch(new GetEventsFailed(err, wid))
+            }
         );
     }
 
     @Action(GetEventsSuccess)
     getEventsSucess(ctx: StateContext<EventsStateModel>, { response, origParams }: GetEventsSuccess) {
-        this.logger.success(GetEventsSuccess.type, { response, origParams });
+        this.console.success(GetEventsSuccess.type, { response, origParams });
 
         const state = ctx.getState();
 
@@ -191,29 +191,23 @@ export class EventsState {
             loading: false,
             error: null
         });
+        if ( this.subs[origParams.wid]) {
+            this.subs[origParams.wid].unsubscribe();
+        }
+        this.queryObserver = null;
     }
 
     @Action(GetEventsFailed)
     getEventsFailed(ctx: StateContext<EventsStateModel>, { response, wid }: GetEventsFailed) {
-        this.logger.error(GetEventsFailed.type, { response });
+        this.console.error(GetEventsFailed.type, { response });
         const state = ctx.getState();
         const events: any = { events: [], wid, error: response.error.error.message};
         ctx.setState({ ...state, loading: false, error: response.error.error.message, events});
+        if ( this.subs[wid]) {
+            this.subs[wid].unsubscribe();
+        }
+        this.queryObserver = null;
     }
-
-    // @Action(LoadEventsSuccess)
-    // loadEventsSuccess(ctx: StateContext<EventsStateModel>, events) {
-    //     console.log('#### EVENTS SUCCESS ####', events);
-    //     const state = ctx.getState();
-    //     ctx.setState({ ...state, events: events, loading: false, });
-    // }
-
-    // @Action(LoadEventsFail)
-    // loadEventsFail(ctx: StateContext<EventsStateModel>, error) {
-    //     console.log('#### EVENTS FAIL ####', error);
-    //     const state = ctx.getState();
-    //     ctx.setState({ ...state, loading: false, error });
-    // }
 
     @Action(SetEventBuckets)
     setEventBuckets(ctx: StateContext<EventsStateModel>, { buckets }: SetEventBuckets) {
@@ -237,7 +231,7 @@ export class EventsState {
 
     @Action(EventsGenericError)
     eventsGenericError(ctx: StateContext<EventsStateModel>, { error, label }: EventsGenericError) {
-        this.logger.error('State :: ' + label, error);
+        this.console.error('State :: ' + label, error);
         ctx.patchState({ error });
     }
 

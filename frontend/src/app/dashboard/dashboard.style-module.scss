@@ -17,7 +17,7 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // containers
-@import './containers/dashboard/dashboard.component.scss'; // nothing to style yet
+@import './containers/dashboard/dashboard.component'; // nothing to style yet
 
 // components
 @import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
@@ -31,9 +31,7 @@
 @import './components/widget-loader/widget-loader.component';
 @import './components/template-variable-panel/template-variable-panel.component';
 
-
-// widgets
-//@import './widgets/widget.common'; // Common classes for widget components
+// widget specific styles are in shared/modules/dynamic-widgets
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin dashboard-module-core() {

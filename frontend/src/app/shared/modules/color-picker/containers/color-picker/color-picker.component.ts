@@ -50,7 +50,8 @@ export class ColorPickerComponent implements OnInit {
     @ViewChild('contentForOtherModes') contentForOtherModes: ElementRef;
 
     /* Inputs */
-    @Input() enableAuto: boolean; // allow auto to be selected - outputs {hex: 'auto', color: 'auto'}
+    @Input() enablePalette = false;
+    @Input() enableMultiSelection = false;
 
     // Behavior of when to output newColor. Valid Values: dropDown, dropDownNoButton, embedded.
     @Input() get pickerMode(): string {
@@ -62,25 +63,8 @@ export class ColorPickerComponent implements OnInit {
     _pickerMode: string;
 
     // Color to display
-    @Input() get color(): string {
-        return this._color;
-    }
-    set color(value: string) {
-        if (this._color !== value) {
-            this.changeDetectorRef.markForCheck();
-        }
+    @Input() color: any;
 
-        if (this.isRgbValid(value)) {
-            this._color = this.rgbToHex(value);
-        } else {
-            this._color = coerceHexaColor(value) || 'Auto';
-        }
-
-        // if on embedded view, do not attempt to switch between default and custom
-        if (this.pickerMode !== 'embedded') {
-            this.determineIfCustomColor();
-        }
-    }
     private _color: string;
 
     // Should panel be open - use with dropDownNoButton mode
@@ -104,10 +88,63 @@ export class ColorPickerComponent implements OnInit {
     embedded = 'embedded';
     dropDownNoButton = 'dropDownNoButton';
     dropDown = 'dropDown';
+    selectedIndex = 0;
+    colors = [];
 
     // tslint:disable:no-inferrable-types
     selectingCustomColor: boolean = false;
     _colorPickerSelectorHeight: number = 136;
+    mode = 'palette';
+
+    palettes: any = [
+        {'name': 'auto', 'label': 'Auto'},
+        {'name': 'Category10', 'label': 'Category10'},
+        {'name': 'Accent', 'label': 'Accent'},
+        {'name': 'Dark2', 'label': 'Dark2'},
+        {'name': 'Paired', 'label': 'Paired'},
+        {'name': 'Set1', 'label': 'Set1'},
+        {'name': 'Set2', 'label': 'Set2'},
+        {'name': 'Set3', 'label': 'Set3'},
+        {'name': 'Tableau10', 'label': 'Tableau10'},
+        {'name': 'sinebow', 'label': 'Sinebow'},
+        {'name': 'rainbow', 'label': 'Rainbow'},
+        {'name': 'Spectral', 'label': 'Spectral'},
+        {'name': 'RdYlGn', 'label': 'RedYellowGreen'},
+        {'name': 'RdYlBu', 'label': 'RedYellowBlue'},
+        {'name': 'RdGy', 'label': 'RedGray'},
+        {'name': 'RdBu', 'label': 'RedBlue'},
+        {'name': 'PuOr', 'label': 'PurpleOrange'},
+        {'name': 'PiYG', 'label': 'PinkYellowGreen'},
+        {'name': 'PRGn', 'label': 'PurpleGreen'},
+        {'name': 'BrBG', 'label': 'BrownGreen'},
+        {'name': 'turbo', 'label': 'Turbo'},
+        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
+        {'name': 'cool', 'label': 'Cool'},
+        {'name': 'warm', 'label': 'Warm'},
+        {'name': 'plasma', 'label': 'Plasma'},
+        {'name': 'magma', 'label': 'Magma'},
+        {'name': 'inferno', 'label': 'Inferno'},
+        {'name': 'viridis', 'label': 'Viridis'},
+        {'name': 'cividis', 'label': 'Cividis'},
+        {'name': 'ylOrRd', 'label': 'YelllowOrangeRed'},
+        {'name': 'ylOrBr', 'label': 'YellowOrangeBrown'},
+        {'name': 'YlGn', 'label': 'YellowGreen'},
+        {'name': 'YlGnBu', 'label': 'YellowGreenBlue'},
+        {'name': 'RdPu', 'label': 'RedPurple'},
+        {'name': 'PuRd', 'label': 'PurpleRed'},
+        {'name': 'PuBu', 'label': 'PurpleBlue'},
+        {'name': 'PuBuGn', 'label': 'PurpleBlueGreen'},
+        {'name': 'OrRd', 'label': 'OrangeRed'},
+        {'name': 'GnBu', 'label': 'GreenBlue'},
+        {'name': 'BuPu', 'label': 'BluePurple'},
+        {'name': 'BuGn', 'label': 'BlueGreen'},
+        {'name': 'reds', 'label': 'Reds'},
+        {'name': 'purples', 'label': 'Purples'},
+        {'name': 'oranges', 'label': 'Oranges'},
+        {'name': 'greys', 'label': 'Greys'},
+        {'name': 'greens', 'label': 'Greens'},
+        {'name': 'blues', 'label': 'Blues'}
+    ];
 
     constructor(
         private elementRef: ElementRef,
@@ -118,13 +155,8 @@ export class ColorPickerComponent implements OnInit {
 
     ngOnInit() {
 
-        if (this.enableAuto === undefined) {
-            this.enableAuto = false;
-        }
-
-        if (!this._color) {
-            this._color = '#000000';
-        }
+        this.color =  this.color || ( this.enablePalette ? 'auto'  : '#000000' );
+        this.colors = Array.isArray(this.color) ? this.color : [this.color];
 
         if (!this.pickerMode) {
             this.pickerMode = this.dropDown;
@@ -145,21 +177,30 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.selectingCustomColor = false;
-        } else if (this.colorToName(this.color) === this.color) {
-            this.selectingCustomColor = true;
+        const index =  this.palettes.findIndex( d => d.name === this.colors[0] );
+        if ( this.enablePalette && index !== -1 ) {
+            this.mode = 'palette';
         } else {
-            this.selectingCustomColor = false;
+            this.mode = 'default';
         }
     }
 
-    toggleSelector() {
-        this.selectingCustomColor = !this.selectingCustomColor;
+    toggleSelector(mode) {
+        // reset the color if single to palette or palette to single
+        const oldMode = this.mode;
+        this.mode = mode;
+        /*
+        if ( mode === 'palette' || oldMode === 'palette' ) {
+            // this.color = '';
+            // this.emitColor();
+        }
+        */
     }
 
     colorSelected(hexColor: string): void {
-        this.color = hexColor;
+        this.colors[this.selectedIndex] = hexColor;
+        // this.color = [...this.color];
+        // this.colors[this.selectedIndex] = hexColor;
         this.emitColor();
 
         // if on custom color and we hit a default color, do not switch to default view
@@ -168,16 +209,35 @@ export class ColorPickerComponent implements OnInit {
         }
     }
 
-    emitColor() {
-        if (this.color.toLowerCase() === 'auto') {
-            this.newColor.emit( { hex: 'auto', rgb: 'auto'});
-        } else {
-            this.newColor.emit(this.hexToColor(this.color));
-        }
+    colorSchemeSelected(scheme) {
+        this.colors[0] = scheme;
+        this.newColor.emit( {'scheme': scheme} );
     }
 
+    emitColor() {
+        const colors = this.colors.filter(d => d);
+        this.newColor.emit( this.enableMultiSelection && colors.length > 1 ? colors : colors[0]);
+    }
+
+    setColorIndex(index) {
+        this.colors[index] = this.colors[index] || null;
+        this.selectedIndex = index;
+    }
+
+    addColor() {
+        this.colors.push(null);
+        this.selectedIndex = this.colors.length - 1;
+    }
+    unsetColorByIndex(index) {
+        // delete this.colors[index];
+        this.colors.splice(index, 1);
+        this.colors = [...this.colors];
+        this.emitColor();
+    }
+
+
     colorToName(hexColor: string): string {
-        let colorName = hexColor;
+        let colorName = '';
         // tslint:disable-next-line:prefer-const
         for (let color of this.DefaultColors) {
             if (color.value === hexColor) {
@@ -199,13 +259,13 @@ export class ColorPickerComponent implements OnInit {
     // Open/close color picker panel
     toggle() {
         // if closed, determine if custom color
-        if (!this._isOpen) {
-            this.determineIfCustomColor();
-        }
+        // if (!this._isOpen) {
+            // this.determineIfCustomColor();
+        // }
         this._isOpen = !this._isOpen;
-        if (!this._isOpen && this._color !== this.emptyColor) {
-            this.colorPickerService.addColor(this._color);
-        }
+        // if (!this._isOpen && this._color !== this.emptyColor) {
+            // this.colorPickerService.addColor(this._color);
+        // }
     }
 
     // Update selected color, close the panel and notify the user
@@ -218,11 +278,13 @@ export class ColorPickerComponent implements OnInit {
         this.toggle();
     }
 
+    /*
     // Update selectedColor and close the panel
     confirmSelectedColor() {
         this.emitColor();
         this.toggle();
     }
+    */
 
     /**
      * Hex and RGB conversions

@@ -6,16 +6,14 @@ import { IDygraphOptions } from '../IDygraphOptions';
 import Dygraph from 'dygraphs/src-es5/dygraph.js';
 import DygraphInteraction from '../../../dygraphs/misc/dygraph-interaction-model';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
-import { UtilsService } from '../../../../core/services/utils.service';
 import ThresholdsPlugin from '../../../dygraph-threshold-plugin/src/index';
 import * as moment from 'moment';
 import * as d3 from 'd3';
-import { LoggerService } from '../../../../core/services/logger.service';
+import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
 
 @Directive({
     // tslint:disable-next-line: directive-selector
-    selector: '[dygraphsChart]',
-
+    selector: '[dygraphsChart]'
 })
 export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
 
@@ -27,6 +25,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @Input() showEvents: boolean;
     @Input() multigraph: boolean;
     @Input() timeseriesLegend: any = {};
+    @Input() widgetId: any;
     @Output() zoomed = new EventEmitter;
     @Output() dateWindow = new EventEmitter<any>();
     @Output() currentTickEvent = new EventEmitter<any>();
@@ -37,24 +36,18 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     private gDimension: any;
     public dataLoading: boolean;
     private lastSeriesHighlighted: number = -1;
-
     public labelsDiv: any;
-    /* Commenting out for now
-        will be part of next PR that will improve tooltip movement*/
     public firstTickHighlight = false;
 
     constructor(
         private element: ElementRef,
-        private utils: UtilsService,
         private uConverter: UnitConverterService,
-        private logger: LoggerService
+        private ttDataSvc: TooltipDataService
     ) { }
 
     ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
-
-        // this.logger.log('SIMPLE CHANGES', {changes});
 
         // NOTE:
         // If changing to custom row/column after splitting metric by tag, it would cause the dygraph option.plugins error
@@ -73,17 +66,12 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 // so lets check for graph-output in alerts
                 parent = this.element.nativeElement.closest('.graph-output');
             }
-            const legendCheck = parent.querySelector('.dygraph-legend');
-            if (legendCheck) {
-                this.labelsDiv = legendCheck;
-            } else {
-                this.labelsDiv = document.createElement('div');
-                this.labelsDiv.classList.add('dygraph-legend');
-                // this.element.nativeElement.parentNode.appendChild(this.labelsDiv);
-                parent.appendChild(this.labelsDiv);
-            }
 
-            this.options.labelsDiv = this.labelsDiv;
+            // still create an element, but not in document, because dygraph legend plugin still looks for it
+            // TODO: create a custom dygraph legend/label plugin that will eliminate the need for this
+            const fakeLabelsDiv = document.createElement('div');
+            fakeLabelsDiv.classList.add('dygraph-legend');
+            this.options.labelsDiv = fakeLabelsDiv;
         }
 
         /* part of coming pr change*/
@@ -91,20 +79,102 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             this.options.hideOverlayOnMouseOut = false;
         }
 
-
         const self = this;
         const mouseover = function (e, x, points, row, seriesName) {
-            this.lastSeriesHighlighted = seriesName;
-
-            /* Commenting out for now
-                will be part of next PR that will improve tooltip movement*/
+            // TODO: check if this can be removed
             if (!self.firstTickHighlight) {
                 self.firstTickHighlight = true;
             }
 
+            this.lastSeriesHighlighted = seriesName;
+
+            //***************************************
+            //**  COMMON VARIABLES                  *
+            //***************************************
+            const options = this.user_attrs_;
+            const series = options.series;
+
+            //***************************************
+            //**  BELOW IS FOR TOOLTIP STUFF        *
+            //***************************************
+            const plotArea = this.layout_.getPlotArea();
+            const graphDiv = this.graphDiv;
+            const graphDivCoords = graphDiv.getBoundingClientRect();
+            const offsetCheck = {
+                xMin: graphDivCoords.left + plotArea.x,
+                xMax: graphDivCoords.right,
+                yMin: graphDivCoords.top,
+                yMax: graphDivCoords.top + plotArea.h
+            };
+
+            // highlighted series
+            const highlightSeries = this.getHighlightSeries();
+
+            // series config for the current point
+            const pvSeries = series[seriesName];
+            // series options for the current point
+            const pvSeriesOpts = this.getPropertiesForSeries(seriesName);
+
+            // check is highlight/mousemovement is within plotted area
+            if (
+                (e.x > offsetCheck.xMin && e.x < offsetCheck.xMax) &&
+                (e.y > offsetCheck.yMin && e.y < offsetCheck.yMax) &&
+                (pvSeriesOpts.visible || highlightSeries === seriesName)
+            ) {
+
+                // find index in points that matches series
+                const pvIdx = points.findIndex(item => item.name === seriesName + '');
+                // get point values
+                const pv = points[pvIdx];
+
+                const axis = pvSeries.axis;
+                const format = options.axes[axis].tickFormat;
+                const precision = format.precision ? format.precision : 2;
+                const dunit = self.uConverter.getNormalizedUnit(pv.yval, format);
+
+                const label = pvSeries.label;
+                const tags = pvSeries.tags;
+
+                let ttData: any = {
+                    multigraph: self.multigraph
+                };
+
+                ttData.timestamp = pv.xval;
+                ttData.timestampFormatted =
+                    options.labelsUTC ?
+                        moment(pv.xval).utc().format('YYYY/MM/DD HH:mm') :
+                        moment(pv.xval).format('YYYY/MM/DD HH:mm');
+
+                ttData.color = pvSeries.color;
+                ttData.value = pv.yval;
+                if (isNaN(pv.yval)) {
+                    // don't format a NaN value
+                    ttData.valueFormatted = pv.yval;
+                } else {
+                    ttData.valueFormatted = self.uConverter.convert(pv.yval, format.unit, dunit, { unit: format.unit, precision: precision });
+                }
+                const tempLabel = (tags.metric !== label) ? label : tags.metric;
+                ttData.metric = tempLabel.indexOf(tags.metric) > -1 ? tags.metric : tempLabel;
+                // ttData.metric = (tags.metric !== label) ? label : tags.metric;
+                ttData.tags = [];
+
+                for (const k in tags) {
+                    if (k !== 'metric') {
+                        ttData.tags.push({key: k, value: tags[k]});
+                    }
+                }
+
+                self.ttDataSvc._ttDataPut({data: ttData, position: {x: e.x, y: e.y, plotArea}});
+
+            } else {
+                self.ttDataSvc._ttDataPut(false);
+            }
+
+            //***************************************
+            //**  BELOW IS FOR ISLAND LEGEND STUFF  *
+            //***************************************
+
             if (self.timeseriesLegend.open && self.timeseriesLegend.trackMouse) {
-                const options = this.user_attrs_;
-                const series = options.series;
 
                 // raw data row index
                 // need this because we want to populate the non-visible lines (if any)
@@ -155,12 +225,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 });
             }
 
-            // console.log('MOUSEOVER', e, {event, x, points, row, seriesName});
-
         };
 
         const clickCallback = function(e, x, points) {
-            // console.log('GRAPH CLICK', this.lastSeriesHighlighted, {e, x, points, _g: this}, this);
 
             // check if tsLegend is configured
             if (Object.keys(self.timeseriesLegend).length > 0) {
@@ -268,38 +335,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             }
         };
 
-        const legendFormatter = function (data) {
-            const seriesConfig = this.user_attrs_.series;
-            if (data.x == null) {
-                const labelsDiv = this.user_attrs_.labelsDiv;
-                if (labelsDiv) {
-                    labelsDiv.style.display = 'none';
-                }
-                return '';
-            }
-
-            let html = '<p>' + data.xHTML + '</p>';
-            if (self.chartType !== 'heatmap') {
-                // console.log('%cLEGEND FORMATTER','color: white; background-color: maroon; padding 2px;', data, seriesConfig);
-                data.series.forEach(function (series) {
-                    if (!series.isVisible || !series.isHighlighted) {
-                        return;
-                    }
-                    const tags = seriesConfig[series.label].tags;
-                    const label = seriesConfig[series.label].label;
-                    const metric = (tags.metric !== label) ? label : tags.metric;
-                    html += '<p>Value: ' + series.yHTML + '</p>';
-                    html += '<p>' + metric + '</p>';
-                    for (const k in tags) {
-                        if (k !== 'metric') {
-                            html += '<p>' + k + ': ' + tags[k] + '</p>';
-                        }
-                    }
-                });
-            }
-            return html;
-        };
-
         const tickFormatter = function (value, gran, opts) {
             const format = opts('tickFormat');
             const dunit = self.uConverter.getNormalizedUnit(value, format);
@@ -313,9 +348,16 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             return self.uConverter.convert(value, format.unit, dunit, { unit: format.unit, precision: precision });
         };
 
+        // heatmap legend
         const setHeatmapLegend = function (event, g, x, bucket) {
 
-            const labelsDiv = g.user_attrs_.labelsDiv;
+            /* NEW */
+            let ttData: any = {
+                multigraph: (self.multigraph === undefined) ? false : self.multigraph
+            };
+
+            const plotArea = g.layout_.getPlotArea();
+
             const options = g.user_attrs_;
             const tooltipData = options.series[bucket] && options.series[bucket][x] ? options.series[bucket][x] : [];
             const format = options.axes.y.tickFormat;
@@ -325,39 +367,30 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 .domain(options.axes.y.valueRange)
                 .range(Array.from(Array(options.heatmap.buckets), (x, index) => (index + 1)));
             const range: any = yScale.invertExtent(bucket);
-            for (let i = 0; i < 2; i++) {
-                const dunit = self.uConverter.getNormalizedUnit(range[i], format);
-                range[i] = self.uConverter.convert(range[i], format.unit, dunit, { unit: format.unit, precision: precision });
-            }
 
-            let html = '';
-            html = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
-            html += '<p>' + self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision }) + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries + '</p>';
-            html += '<p>Bucket Range: [' + range[0] + ', ' + range[1] + ')</b><table>';
-            tooltipData.sort((a, b) => b.v - a.v);
+            ttData.timestamp = x;
+            // tslint:disable:max-line-length
+            ttData.timestampFormatted = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
+
+            const percentage = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision });
+            ttData.affectedSeries = percentage + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
+            ttData.bucketRange = [range[0], range[1]];
+            // tslint:disable:max-line-length
+            ttData.color = !Array.isArray(options.heatmap.color) ? options.heatmap.color : options.heatmap.colorValueMap[tooltipData.length];
+            ttData.percentage = percentage; // use this to calculate opacity of heatmap color;
+
+            ttData.bucketValues = [];
             const n = tooltipData.length < 5 ? tooltipData.length : 5;
             for (let i = 0; i < n; i++) {
                 const dunit = self.uConverter.getNormalizedUnit(tooltipData[i].v, format);
                 const val = self.uConverter.convert(tooltipData[i].v, format.unit, dunit, { unit: format.unit, precision: precision });
 
-                html += '<tr><td>' + val + '</td><td>' + tooltipData[i].label + '</td></tr>';
+                let tagData: any = {label: tooltipData[i].label, value: val, tags: tooltipData[i].tags };
+                ttData.bucketValues.push(tagData);
             }
-            html += '</table>';
-            labelsDiv.innerHTML = html;
 
-            let xOffset = 0;
-            let yOffset = 0;
-            labelsDiv.style.display = 'block';
-            const labelDivWidth = labelsDiv.clientWidth;
-            const labelDivHeight = labelsDiv.clientHeight;
-            if (event.clientX > (window.innerWidth - (labelDivWidth + 10))) {
-                xOffset = - (labelDivWidth + 10);
-            }
-            if (event.clientY > (window.innerHeight - (labelDivHeight + 30))) {
-                yOffset = - (labelDivHeight + 40);
-            }
-            labelsDiv.style.left = (event.offsetX + xOffset) + 'px';
-            labelsDiv.style.top = (event.offsetY + yOffset) + 'px';
+            // send to tooltip data service
+            self.ttDataSvc._ttDataPut({data: ttData, position: {x: event.x, y: event.y, plotArea}});
         };
 
         if (!changes) {
@@ -385,14 +418,21 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.options.plugins = [ThresholdsPlugin];
 
                 if (this.chartType === 'line') {
-                    if (this.options.labelsDiv) {
-                        this.options.highlightCallback = mouseover;
-                    }
-                    this.options.legendFormatter = legendFormatter;
+
+                    // for tooltip && island legend
+                    this.options.highlightCallback = mouseover;
+
+                    this.options.showLabelsOnHighlight = false;
                     this.options.zoomCallback = function (minDate, maxDate, yRanges) {
+                        const n = self.data.ts.length;
                         // we only handle xzoom
-                        if (!yRanges) {
-                            self.zoomed.emit({ start: minDate / 1000, end: maxDate / 1000, isZoomed: true });
+                        if (!yRanges && n > 0 ) {
+                            const actualStart = new Date(self.data.ts[0][0]).getTime() / 1000;
+                            const actualEnd = new Date(self.data.ts[n - 1][0]).getTime() / 1000;
+                            // tslint:disable-next-line:max-line-length
+                            self.zoomed.emit({ axis: 'x', start: minDate / 1000, end: maxDate / 1000, isZoomed: true, actualStart: actualStart, actualEnd: actualEnd });
+                        } else if ( yRanges ) {
+                            self.zoomed.emit( { axis: 'y', y: yRanges[0], y2: yRanges[1] });
                         }
                     };
                     this.options.drawCallback = drawCallback;
@@ -401,9 +441,9 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     this.options.interactionModel = DygraphInteraction.defaultModel;
                     this.options.interactionModel.dblclick = function (e, g, context) {
                         if (g.user_attrs_.isCustomZoomed) {
-                            self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            self.zoomed.emit({ axis: 'x', start: null, end: null, isZoomed: false });
                         } else if (self._g.isZoomed()) { // zooming out (double click)
-                            self.zoomed.emit({ start: null, end: null, isZoomed: false });
+                            self.zoomed.emit( { axis: 'y', y: null, y2: null });
                             g.axes_.forEach((axis, i) => {
                                 const axisKey = i === 0 ? 'y' : 'y2';
                                 if (axis.valueRange) {
@@ -415,9 +455,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                     };
 
                     if (this.timeseriesLegend) {
-                        //this.options.clickCallback = clickCallback;
-                        // TODO: need to detect double click and NOT open the island
-
+                        // detect double click and NOT open the island
                         let clickCount = 0;
                         const handleSingleDoubleClick = function(e, x, points) {
                           if (clickCount === 0) {
@@ -458,7 +496,6 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                             const cx2 = g.toDomXCoord(xv);
 
                             const cy = Dygraph.pageY(event) - graphPos.y;
-
 
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
@@ -511,17 +548,19 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                 g.clearSelection();
                             }
 
-
                             if (cx >= plotArea.x && cy <= plotArea.h) {
                                 const bucket = g.user_attrs_.heatmap.buckets - (cy - cy % height) / height;
                                 const ts = g.toDataXCoord(cx2);
                                 const hasData = g.user_attrs_.series[bucket] && g.user_attrs_.series[bucket][ts];
+
+                                if (labelsDiv) {
+                                    labelsDiv.style.display = 'none';
+                                }
+
                                 if (hasData) {
-                                    setHeatmapLegend(event, g, ts, bucket);
+                                    setHeatmapLegend(event, g, ts, bucket); // set legend formatter
                                 } else {
-                                    if (labelsDiv) {
-                                        labelsDiv.style.display = 'none';
-                                    }
+                                    self.ttDataSvc._ttDataPut(false); // tell tooltip no data
                                 }
 
                                 const x = cx2 - width / 2;
@@ -532,8 +571,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                         tickData: { options: self.options, x: ts, bucket: bucket, data: hasData },
                                     });
                                 }
-
-                                ctx.fillStyle = !hasData ? '#dddddd' : g.user_attrs_.heatmap.color;
+                                // tslint:disable:max-line-length
+                                ctx.fillStyle = Array.isArray(g.user_attrs_.heatmap.color) || !hasData ? '#dddddd' : g.user_attrs_.heatmap.color;
                                 ctx.fillRect(x, y, width, height);
                                 ctx.strokeStyle = 'red';
                                 ctx.strokeWidth = 1;
@@ -541,6 +580,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                 ctx.stroke();
                                 g._prevBucketHighlightBucket = { x: x, y: y, w: width, h: height, bucket: bucket };
                             } else {
+                                self.ttDataSvc._ttDataPut(false); // tell tooltip no data
                                 if (labelsDiv) {
                                     labelsDiv.style.display = 'none';
                                 }
@@ -558,6 +598,30 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                 this.options.height = this.size.height;
                 this._g = new Dygraph(this.element.nativeElement, this.data.ts, this.options);
                 window.removeEventListener('mouseout', this._g.mouseOutHandler_, false);
+                setTimeout(() => {
+                    if ( this.data.ts && this.data.ts.length && this.options.isIslandLegendOpen ) {
+                        const ts = this._g.rawData_[0][0];
+                            if ( this.chartType === 'line') {
+                                clickCallback.call(this._g, {}, ts, []);
+                            } else if ( ts ) {
+                                this.currentTickEvent.emit({
+                                    action: 'openLegend',
+                                    tickData: { options: this.options, x: ts, bucket: 1, data: this._g.user_attrs_.series[1] && this._g.user_attrs_.series[1][ts]  }
+                                });
+                            }
+                    }
+                });
+
+                if ( this.options.initZoom ) {
+                    const opts: any = { axes: {} };
+                    if ( this.options.initZoom.y ) {
+                        opts.axes.y = this.options.initZoom.y;
+                    }
+                    if ( this.options.initZoom.y2 ) {
+                        opts.axes.y2 = this.options.initZoom.y2;
+                    }
+                    this._g.updateOptions(opts);
+                }
             } else if (this._g && ( changes.eventBuckets || changes.showEvents ) ) {
                 this._g.updateOptions(this.options);
             }
@@ -581,10 +645,10 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: any) {
 
+        // NOTE: This will go away once we hook into new tooltip system
+
         if (this.firstTickHighlight && this.labelsDiv) {
             const tooltip = this.labelsDiv;
-            tooltip.style.display = 'block';
-
             let parent = tooltip.closest('.widget-output');
             let widgetScrollContainer;
             if (parent) {
@@ -599,73 +663,67 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             // widget output element
             let wrapperEl;
             if (this.multigraph) {
-                wrapperEl = parent.querySelector('.graph-cell');
+                wrapperEl = event.target.closest('.graph-cell');
             } else {
                 wrapperEl = widgetScrollContainer;
             }
 
-            // widget output el size
+            // canvas dimensions
             const wrapperSize = wrapperEl.getBoundingClientRect();
 
-            const coords = {
-                top: (event.clientY - wrapperSize.top) - widgetScrollContainer.scrollTop,
-                left: (event.clientX - wrapperSize.left) - widgetScrollContainer.scrollLeft
+            // window dimensions
+            const winSize = {
+                width: window.innerWidth,
+                height: window.innerHeight
             };
 
-            let xOffset = 0;
-            let yOffset = 0;
-
+            // tooltip dimensions
             const tooltipSize = {
                 width: tooltip.clientWidth,
                 height: tooltip.clientHeight
             };
 
-            let closeToRight: boolean = false;
-            // if close to the right edge, put it left of the cursor
-            if (coords.left > (wrapperSize.width - (tooltipSize.width - 30))) {
-                xOffset = - (tooltipSize.width + 10);
-                closeToRight = true;
-                // check if it goes off the left edge of scrollContainer, then put back on right of cursor
-                if ((((coords.left + xOffset) - widgetScrollContainer.scrollLeft) + (xOffset)) < 0) {
-                    xOffset = 15;
-                }
+            // parent dimensions
+            const parentSize = parent.getBoundingClientRect();
+
+            // adjusted coordinates
+            let coords: any = {
+                left: event.clientX - parentSize.left,
+                top: event.clientY - parentSize.top
+            };
+
+            // offsets
+            let xOffset = 0;
+            let yOffset = 0;
+            const offsetAmount = 10;
+
+            // detect window right edge proximity
+            if ((winSize.width - event.x) < (tooltipSize.width + (offsetAmount * 2))) {
+                // left
+                xOffset = - (tooltipSize.width + offsetAmount);
             } else {
-                // just ensure it is offset from cursor
-                xOffset = 15;
+                // right
+                xOffset = offsetAmount;
             }
 
-            // if close to bottom edge, put it above the cursor
-            if (coords.top > (wrapperSize.height - (tooltipSize.height - 30))) {
-                yOffset = - (tooltipSize.height + 10);
-                // check if it goes off the top edge of scrollContainer, then put back below cursor
-                if ((((coords.top + yOffset) - widgetScrollContainer.scrollTop) + (yOffset)) < 0) {
-                    yOffset = 15;
-                }
-                // TODO: check if goes off bottom of dashboardScrollContainer
-                // i.e. scrolled down dashboard maybe half way, and hover over graph near bottom
-                // tooltip might go below the scroll. Need to detect so it can adjust. figure out the math
+            // detect window bottom edge proximity
+            if ((winSize.height - event.y) < (tooltipSize.height + (offsetAmount * 2))) {
+                // above
+                yOffset = - (tooltipSize.height + offsetAmount);
             } else {
-                // just ensure it is offset from cursor
-                yOffset = 15;
+                // below
+                yOffset = offsetAmount;
             }
-
-            // set styles
-            if (closeToRight) {
-                tooltip.style.right = (wrapperSize.width - coords.left) + 'px';
-                tooltip.style.left = 'initial';
-            } else {
-                tooltip.style.left = (coords.left + xOffset) + 'px';
-                tooltip.style.right = 'initial';
-            }
-
+            tooltip.style.display = 'block';
+            tooltip.style.left = (coords.left + xOffset) + 'px';
             tooltip.style.top = (coords.top + yOffset) + 'px';
-
         }
+
     }
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: any) {
-        this.labelsDiv.style.display = 'none';
+        //this.labelsDiv.style.display = 'none';
         this.firstTickHighlight = false;
         if (this._g) {
             this._g.clearSelection();

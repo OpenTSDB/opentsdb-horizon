@@ -1,0 +1,53 @@
+@mixin heatmap-data-tooltip-component-base() {
+    .heatmap-data-tooltip {
+        .color-chip {
+            &::after {
+                border: 1px solid rgba($black, .04);
+            }
+
+            &::before {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 6px;
+                background-color: currentColor;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 1;
+            }
+        }
+    }
+}
+
+@mixin heatmap-data-tooltip-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    //$vm-background: map-get($foreground, text);
+    //$vm-text: find-color-invert($vm-background);
+
+    $primary-accent: map-get($primary, A100);
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    $vm-background: if($is-dark, $white, $primary-accent);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
+    .heatmap-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                //background: rgba($vm-background, .65);
+                color: $vm-text;
+            }
+        }
+    }
+}

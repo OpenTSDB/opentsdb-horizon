@@ -12,7 +12,7 @@ $developing-theme: (
     is-dark: false,
     foreground: (
         base: #000000,
-        divider: $dark-dividers,
+        divider: rgba(#000000, 0.0526),
         dividers: $dark-dividers,
         disabled: $dark-disabled-text,
         disabled-button: rgba(#000000, 0.26),
@@ -34,6 +34,7 @@ $developing-theme: (
         ink-bar: map_get($denali-brand-6, 500),
         app-bar: #084b4e,
         navbar: #084b4e,
+        navbar-alt:               #8eaeaf,
         background: lighten(map_get($denali-cool-grey, 50), 4%),
         header: rgba(map_get($mat-blue, 900), 0.08),
         hover: rgba(#000000, 0.04),
@@ -76,10 +77,11 @@ $developing-theme: (
         info-contrast: #ffffff
     ),
     scrollbar: (
-       padding: 2px,
-       size: 8px,
-       track-bg: map_get($mat-grey, 300),
-       thumb-bg: #45aac9
+       padding: 1px,
+       size: 10px,
+       track-bg: rgba(0, 0, 0, .05),
+       track-border: rgba(0, 0, 0, .15),
+       thumb-bg: rgba(0, 0, 0, .2)
     ),
     dashboard-filters: (
         auto-mode-bg: #33FF74,

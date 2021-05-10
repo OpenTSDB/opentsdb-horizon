@@ -1,4 +1,4 @@
-<div class="suppress-alert" [ngClass]="{'read-only' :  config.disabled }" [formGroup]="suppressForm">
+<div class="suppress-alert" [ngClass]="{'read-only' : config.disabled }" [formGroup]="suppressForm">
     <div class="sentence-chain-form">
         <div class="sentence-item" style="flex-direction:column">
             <span class="display-name" *ngIf="!metricEdit" (click)="metricEdit=true;">
@@ -28,7 +28,9 @@
             <dropdown-metric-tags
                 [tags]="tags"
                 [selected]="suppressForm.get('query').get('metric').get('groupByTags').value"
-                (change)="updateSuppressConfig('groupByTags', $event)"></dropdown-metric-tags>
+                (change)="updateSuppressConfig('groupByTags', $event)">
+            </dropdown-metric-tags>
+            <mat-error *ngIf="suppressForm.get('query').get('metric').get('groupByTags').errors && suppressForm.get('query').get('metric').get('groupByTags').errors.required">Select groupby tag</mat-error>
         </div>
         <div class="sentence-item">
             <span>is</span>
@@ -46,10 +48,22 @@
             </mat-form-field>
         </div>
         <div class="sentence-item threshold" *ngIf="suppressForm.get('comparisonOperator').value !== 'missing'">
+            <span>the threshold</span>
             <mat-form-field appearance="fill" floatLabel="never">
                 <input matInput type="number" onkeypress="return event.charCode >= 48" formControlName="threshold" autocomplete="off" placeholder="Enter value">
             </mat-form-field>
             <mat-error *ngIf="suppressForm.get('threshold').errors && suppressForm.get('threshold').errors.required">Threshold should not be empty</mat-error>
+        </div>
+        <div class="sentence-item timeSampler" *ngIf="suppressForm.get('comparisonOperator').value !== 'missing'">
+            <mat-form-field appearance="fill">
+                <mat-label></mat-label>
+                <mat-select placeholder="Select" formControlName="timeSampler" disableOptionCentering>
+                    <mat-option value='at_least_once'>at least once</mat-option>
+                    <mat-option value='all_of_the_times'>at all times</mat-option>
+                    <mat-option value='on_avg'>on average</mat-option>
+                    <mat-option value='in_total'>in total</mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
         <div class="sentence-item threshold">
             <span>for the last </span>

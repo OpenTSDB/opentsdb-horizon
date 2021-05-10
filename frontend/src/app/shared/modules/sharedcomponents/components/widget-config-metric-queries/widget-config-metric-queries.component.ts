@@ -1,5 +1,6 @@
 import {
-    Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges
+    Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges,
+    ChangeDetectorRef, ViewChild
 } from '@angular/core';
 
 import {
@@ -19,6 +20,7 @@ interface IMetricQueriesConfigOptions {
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
     enableMultiMetricSelection?: boolean;
+    enableAlias?: boolean;
     // toggleMetric?: boolean;  // future use
 }
 
@@ -37,6 +39,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     @Input() options: IMetricQueriesConfigOptions;
     /** Outputs */
     @Output() widgetChange = new EventEmitter;
+
+    @ViewChild('queriesContainer') private queriesContainer: ElementRef;
 
 
     /** Local variables */
@@ -57,7 +61,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     showNewQueryEditor = false;
     newQueryId = '';
     editQueryId = '';
-    selectAllToggle: String = 'none'; // none/all/some
+    selectAllToggle: string = 'none'; // none/all/some
     tplVariables: any = {};
     hasCustomFilter = false;
     hasExpression = false;
@@ -67,7 +71,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         public dialog: MatDialog,
         private interCom: IntercomService,
         private util: UtilsService,
-        private elRef: ElementRef
+        private elRef: ElementRef,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -75,7 +80,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
 
         this.subscription.add(this.interCom.responseGet().subscribe(message => {
             if (message.action === 'TplVariables') {
-                this.tplVariables = message.payload;
+                this.tplVariables = message.payload.tplVariables;
             }
         }));
         this.interCom.requestSend({
@@ -106,6 +111,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             case 'HeatmapWidgetComponent':
             case 'BarchartWidgetComponent':
             case 'DonutWidgetComponent':
+            case 'TableWidgetComponent':
             case 'TopnWidgetComponent':
                 query.settings = {
                                     visual: {
@@ -138,6 +144,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 this.addNewQuery();
             }
             this.hasExpression = this.getExpressionCount() ? true : false;
+        }
+        if ( changes.options && changes.options.currentValue ) {
+            this.initOptions();
         }
     }
     getExpressionCount() {
@@ -186,6 +195,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             case 'DeleteQuery':
                 this.widgetChange.emit({ id: message.id, action: 'DeleteQuery' });
                 break;
+            case 'UpdateQueryMetricOrder':
+                this.widgetChange.emit(message);
+                break;
             case 'DeleteQueryMetric':
                 const expCount = this.getExpressionCount();
                 const qindex = this.widget.queries.findIndex(d => d.id === message.id);
@@ -197,6 +209,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 break;
             case 'QueryChange':
                 this.updateQuery(message.payload.query);
+                break;
+            case 'ChangeAxisLabel':
+                    this.widgetChange.emit({ id: message.id, action: 'ChangeAxisLabel', payload: message.payload });
                 break;
             case 'SummarizerChange':
                 this.widgetChange.emit({ id: message.id, action: 'SummarizerChange', payload:  { summarizer: message.payload.summarizer }});
@@ -239,6 +254,24 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
             }
         }
         return metrics;
+    }
+
+
+    reorderQuery(event: any) {
+        const curIndex = event.currentIndex;
+        const dragItem = this.widget.queries[event.previousIndex];
+        const dropItem = this.widget.queries[event.currentIndex];
+        this.widget.queries[event.currentIndex] = dragItem;
+        this.widget.queries[event.previousIndex] = dropItem;
+        this.widgetChange.emit({ action: 'UpdateQueryOrder', payload: { queries: this.widget.queries } });
+    }
+
+    dragStart (e) {
+        this.queriesContainer.nativeElement.classList.add('drag-mode');
+    }
+
+    dragEnd (e) {
+        this.queriesContainer.nativeElement.classList.remove('drag-mode');
     }
 
     ngOnDestroy() {

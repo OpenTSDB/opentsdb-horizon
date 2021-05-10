@@ -43,7 +43,13 @@
             flex: 1 0px;
             display: flex;
             flex-direction: column;
-            overflow: auto;
+            overflow: overlay;
+        }
+
+        @-moz-document url-prefix() {
+            .main-content {
+                overflow: auto;
+            }
         }
 
         .dashboard {
@@ -72,7 +78,7 @@
 
     }
 
-    
+
 }
 
 @mixin dboard-content-component-theme($theme-config) {
@@ -88,5 +94,5 @@
 
     }*/
 
-    
+
 }

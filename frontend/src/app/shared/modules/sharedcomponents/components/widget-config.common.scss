@@ -113,7 +113,8 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
 
         .mat-button,
         .mat-raised-button,
-        .mat-stroked-button {
+        .mat-stroked-button,
+        .mat-icon-button {
             border-radius: 0;
 
             &:first-child {
@@ -139,29 +140,45 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
             &.mat-button-toggle-group-appearance-standard {
                 border: 0px;
                 border-radius: 0px;
+
                 .mat-button-toggle-label-content {
                     line-height: 30px;
                     display: flex;
                     align-items: center;
                 }
+
                 .mat-button-toggle + .mat-button-toggle {
                     border: none;
                 }
+
                 .mat-button-toggle {
                     border-radius: 2px;
                     margin: 3px 0px;
-                    background: #F0F4FE;
-                    color: #4e97eb;
+
                     &.mat-button-toggle-checked  {
-                        background: #fff;
-                        color: #000;
-                        border: 2px solid #3570f4;
                         border-radius: 4px;
                     }
                 }
             }
         }
     }
+
+    .mat-button-toggle-group-horizontal {
+        &.mat-button-toggle-group {
+            height: 34px;
+
+            .mat-button-toggle-button {
+                font-size: 12px;
+                display: flex;
+                align: center;
+
+                .mat-button-toggle-label-content {
+                    line-height: 24px;
+                }
+            }
+        }
+    }
+
     .mat-button-toggle-group-vertical {
         &.mat-button-toggle-group, .mat-button-toggle-standalone {
             flex-direction: column;
@@ -216,6 +233,8 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
     $is-dark: map-get($theme-config, is-dark);
 
     $divider: rgba(map-get($foreground, divider), .05);
+
+    $link: map-get($foreground, link);
 
     $edit-toolbar-border-width: map-get($widgets-common-config, edit-toolbar-border-width);
 
@@ -272,6 +291,26 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
 
         .mat-ink-bar {
             background-color: map-get($background, card);
+        }
+    }
+
+    .mat-button-toggle-group-vertical,
+    .mat-button-toggle-group-horizontal {
+
+        &.mat-button-toggle-group {
+            &.mat-button-toggle-group-appearance-standard {
+
+                .mat-button-toggle {
+                    background: if($is-dark, rgba($black, .4), rgba($white, .8));
+                    color: $link;
+
+                    &.mat-button-toggle-checked  {
+                        background: if($is-dark, rgba($link, .2), rgba($white, .8));
+                        color: if($is-dark, $white, $black);
+                        border: 2px solid $link;
+                    }
+                }
+            }
         }
     }
 }

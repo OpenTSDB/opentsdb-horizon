@@ -35,6 +35,7 @@ export interface WidgetModel {
         description?: string;
         useDBFilter?: boolean;
         time?: any;
+        layout?: string;
         visual?: {
             type?: string;
             stacks?: StackConfig[];
@@ -54,6 +55,8 @@ export interface WidgetModel {
         };
         thresholds?: ThresholdConfig[];
         multigraph?: any;
+        chartOptions?: any;
+        batchSelect?: boolean;
     };
     gridPos: {
         x: number;
@@ -101,6 +104,11 @@ export class UpdateWidget {
 export class DeleteWidget {
     public static type = '[Widget] Delete Widget';
     constructor(public readonly wid: string) {}
+}
+
+export class DeleteWidgets {
+    public static type = '[Widget] Delete Widgets';
+    constructor(public readonly wids: string[]) {}
 }
 
 @State<WidgetsModel>({
@@ -175,6 +183,19 @@ export class WidgetsState {
             state.widgets.splice(index, 1);
             ctx.patchState({ widgets: state.widgets });
         }
+    }
+
+    @Action(DeleteWidgets)
+    deleteWidgets(ctx: StateContext<WidgetsModel>, { wids }: DeleteWidgets) {
+        const curState = ctx.getState();
+        const state = this.utils.deepClone(curState);
+
+        let widgets = state.widgets.filter((item: any) => {
+            return !wids.includes(item.id);
+        });
+
+        ctx.patchState({ widgets: widgets });
+
     }
 
 }

@@ -16,13 +16,12 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
 import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
-
+import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 
 import {
@@ -32,7 +31,7 @@ import {
     transition,
     trigger
 } from '@angular/animations';
-import { LoggerService } from '../../../../../core/services/logger.service';
+import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -45,6 +44,7 @@ interface IQueryEditorOptions {
     enableMultiMetricSelection?: boolean;
     showNamespaceBar?: boolean;
     enableAlias?: boolean;
+    excludeMetricGroupByTags?: string[];
 }
 
 @Component({
@@ -86,6 +86,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
     @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
 
+    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger }) artifactsMenuTrigger: MatMenuTrigger;
     @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
 
@@ -300,9 +301,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     fxCall: 'Rollup',
                     val: 'sum,auto'
                 }
-                ]
-            },
-            {
+            ]
+        },
+        {
             label: 'Timeshift',
             functions: [
                 {
@@ -324,6 +325,112 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     label: 'Month Before',
                     fxCall: 'Timeshift',
                     val: '4w'
+                }
+            ]
+        },
+        /*
+        {
+            label: 'Group By',
+            functions: [
+                {
+                    label: 'Avg',
+                    fxCall: 'GroupByAvg',
+                    val: 'avg'
+                },
+                {
+                    label: 'Min',
+                    fxCall: 'GroupByMin',
+                    val: 'min'
+                },
+                {
+                    label: 'Max',
+                    fxCall: 'GroupByMax',
+                    val: 'max'
+                },
+                {
+                    label: 'Sum',
+                    fxCall: 'GroupBySum',
+                    val: 'sum'
+                },
+                {
+                    label: 'Count',
+                    fxCall: 'GroupByCount',
+                    val: 'count'
+                }
+            ]
+        },
+        */
+        {
+            label: 'Ratio',
+            functions: [
+                {
+                    label: 'Ratio',
+                    fxCall: 'Ratio',
+                    val: null
+                },
+                {
+                    label: 'Percentage',
+                    fxCall: 'Percentage',
+                    val: null
+                }
+            ]
+        },
+        {
+            label: 'Sliding Window',
+            functions: [
+                {
+                    label: 'Sliding Sum 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,5m"
+                },
+                {
+                    label: 'Sliding Sum 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "sum,15m"
+                },{
+                    label: 'Sliding Count 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,5m"
+                },
+                {
+                    label: 'Sliding Count 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "count,15m"
+                },
+                {
+                    label: 'Sliding Min 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,5m"
+                },
+                {
+                    label: 'Sliding Min 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "min,15m"
+                },
+                {
+                    label: 'Sliding Max 5m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,5m"
+                },
+                {
+                    label: 'Sliding Max 15m',
+                    fxCall: 'SlidingWindow',
+                    val: "max,15m"
+                }
+            ]
+        },
+        {
+            label: 'Time Difference',
+            functions: [
+                {
+                    label: 'Delta in Minutes',
+                    fxCall: 'TimeDiff',
+                    val: 'MINUTES'
+                },
+                {
+                    label: 'Delta in Seconds',
+                    fxCall: 'TimeDiff',
+                    val: 'SECONDS'
                 }
             ]
         }
@@ -349,11 +456,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         },
         'ValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CounterValueDiff' : {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true
         },
         'CntrRate' : {
             errorMessage: null,
@@ -371,6 +480,29 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
             regexValidator: /^\d+[hdw]$/i
         },
+        'GroupByAvg' : {
+            groupByFx : true
+        },
+        'GroupByMin' : {
+            groupByFx : true
+        },
+        'GroupByMax' : {
+            groupByFx : true
+        },
+        'GroupBySum' : {
+            groupByFx : true
+        },
+        'GroupByCount' : {
+            groupByFx : true
+        },
+        'SlidingWindow' : {
+            errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        },
+        'TimeDiff' : {
+            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
+            regexValidator: /^SECONDS|MINUTES|HOURS$/
+        }
     };
 
     // MAT-TABLE DEFAULT COLUMNS
@@ -379,13 +511,21 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         'name',
         // 'alias',
         'modifiers',
-        'action'
+        'action',
+        'visual'
     ];
 
     // MAT-TABLE DATA SOURCE
     metricTableDataSource = new MatTableDataSource<any>([]);
 
     visualPanelId = -1;
+
+    pctSelectedMetrics;
+
+    // QUERY ALIAS EDITING
+    queryAliasEdit: boolean = false;
+    queryAliasFormControl: FormControl;
+
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
@@ -394,13 +534,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private logger: LoggerService
+        private console: ConsoleService,
+        private multiService: MultigraphService
     ) {
+        /*
         // add function (f(x)) icon to registry... url has to be trusted
         matIconRegistry.addSvgIcon(
             'function_icon',
             domSanitizer.bypassSecurityTrustResourceUrl('assets/function-icon.svg')
-        );
+        ); */
 
     }
 
@@ -409,13 +551,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.tplVariables && changes.tplVariables.currentValue.tvars) {
             this.tplVars = changes.tplVariables.currentValue.tvars;
         }
+        if ( changes.options && changes.options.currentValue ) {
+            this.initOptions();
+            this.initSummarizerValue();
+        }
     }
 
     ngOnInit() {
-        this.initOptions();
         this.initFormControls();
         this.initMetricDataSource();
-        this.initSummarizerValue();
         this.queryChanges$ = new BehaviorSubject(false);
 
         this.queryChangeSub = this.queryChanges$
@@ -425,6 +569,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     this.triggerQueryChanges();
                 }
             });
+        this.sortFilters(this.query.filters);
         // call this in case of not modify filter list yet
         this.buildTagFilters(this.query.filters);
 
@@ -432,6 +577,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (this.elRef.nativeElement.closest('.alert-details-component')) {
             this.inAlertEditor = true;
         }
+
+        if (!this.query.settings.visual.label) {
+            this.query.settings.visual.label = '';
+        }
+
     }
 
     ngOnDestroy() {
@@ -460,22 +610,40 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         return  index;
     }
 
+    isArray(d : any ) {
+        return Array.isArray(d);
+    }
+
     // helper function to format the table datasource into a structure
     // that allows the table to work more or less like it did before
     initMetricDataSource() {
 
         // extract metrics only, then format with pre-constructed label, a type, and reference to the metric data
         const metrics = [];
+        // this.query.metrics.filter(d => d.expression === undefined);
+        let mIndex = 0, eIndex = 0, indexLabel = '';
+        for ( let i = 0 ; i < this.query.metrics.length; i++ ) {
+            const isExpression = this.query.metrics[i].expression !== undefined;
+            if (  !isExpression ) {
+                mIndex++;
+                indexLabel = 'm' + mIndex;
+            } else {
+                eIndex++;
+                indexLabel = 'e' + eIndex;
+            }
+            metrics.push({ indexLabel: indexLabel, type: isExpression ? 'expression' : 'metric', metric: this.query.metrics[i], visual: this.options.enableMultiMetricSelection ? this.query.metrics[i].settings.visual : this.widget.settings.visual });
+        }
+
+        /*
         this.getMetricsByType('metrics').forEach((metric, i) => {
             metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
             // tslint:disable:max-line-length
             if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+                // metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
             }
         });
 
         // placeholder row for Add Metric form
-        metrics.push({addMetric: true});
 
         // extract expressions only, then format with pre-constructed label, a type, and reference to the expression data
         const expressions = [];
@@ -483,15 +651,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
             // tslint:disable:max-line-length
             if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
+                // expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
             }
         });
+        */
 
+        metrics.push({addMetric: true});
         // placeholder row for Add Expression form
-        expressions.push({addExpression: true});
+        metrics.push({addExpression: true});
 
         // merge the arrays and create datasource
-        this.metricTableDataSource = new MatTableDataSource(metrics.concat(expressions));
+        this.metricTableDataSource = new MatTableDataSource(metrics);
     }
 
     initFormControls() {
@@ -539,7 +709,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     settings: {
                         visual: {
                             visible: this.options.enableMultiMetricSelection,
-                            color: 'auto',
+                            color: '',
                             label: ''
                         }
                     },
@@ -565,8 +735,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // we need to resolve it to diffrent obj to handle it to metric auto-complete
         this.query.filters = filters;
         this.queryChanges$.next(true);
+        this.sortFilters(filters);
         this.buildTagFilters(filters);
     }
+
+    sortFilters(filters) {
+        filters.sort((a: any, b: any) => {
+            return this.utils.sortAlphaNum(a.tagk, b.tagk);
+        });
+    }
+
     // helper function to create clean tag filters for metric auto-complete
     buildTagFilters (filters : any[]) {
         // clone it so we do not alert original object
@@ -630,7 +808,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (index !== -1) {
             this.query.metrics[index].joinType = value;
             this.queryChanges$.next(true);
-            console.log("join type id=", id, this.query.metrics[index].joinType )
         }
     }
 
@@ -638,6 +815,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const index = this.query.metrics.findIndex(item => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].groupByTags = tags;
+            // this is in edit widget mode, if they make change to groupby
+            // we need also update the the multigraph conf
+            if ( this.widget.settings ) {
+                const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+                this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            }
             this.queryChanges$.next(true);
         }
     }
@@ -667,14 +850,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
             for ( let i = 0; i < this.metricTableDataSource.data.length; i++ ) {
                 if ( this.metricTableDataSource.data[i].visual ) {
-                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
+                    // tslint:disable-next-line:max-line-length
+                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
-                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.color ||  newConfig.type ) ) {
+                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.scheme || newConfig.color ||  newConfig.type ) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                         // set existing bar axis
+                        // tslint:disable-next-line:max-line-length
                         if ( newConfig.type && ['area', 'bar'].includes(newConfig.type) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type)) {
                             this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...overrideConfig};
                         }
+                    // tslint:disable-next-line:max-line-length
                     } else if ( message.action === 'UpdateQueryVisual' && newConfig.axis && (curtype !== 'line' || !this.metricTableDataSource.data[i].visual.type || this.metricTableDataSource.data[i].visual.type === 'line') )  {
                         this.metricTableDataSource.data[i].visual.axis = newConfig.axis;
                     }
@@ -880,14 +1066,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // first cross-query
         for (let i = 0; i < result.length; i++) {
             if (result[i].includes('.')) {
-                const regex = new RegExp( result[i] + '(?!})', 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }
         // then shorthand
         for (let i = 0; i < result.length; i++) {
             if (!result[i].includes('.')) {
-                const regex = new RegExp( result[i] +  '(?!})' , 'g');
+                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
                 transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
             }
         }
@@ -899,7 +1085,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
-                    color: 'auto',
+                    color: '',
                     label: ''
                 }
             },
@@ -910,13 +1096,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     functionMenuOpened($event, idx) {
         // maybe need this?
-        // console.log('MENU OPENED', $event, idx);
-        // console.log('TRIGGERS', this.functionMenuTriggers);
         this.currentFunctionMenuTriggerIdx = idx;
     }
 
     functionMenuClosed($event) {
-        // console.log('MENU CLOSED', $event);
         this.selectedFunctionCategoryIndex = -1;
         this.currentFunctionMenuTriggerIdx = null;
     }
@@ -1044,6 +1227,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         return false;
     }
 
+    reorderMetric(event: any) {
+        const curIndex = event.currentIndex;
+        const dragItem = this.query.metrics[event.previousIndex];
+        const dropItem = this.query.metrics[event.currentIndex];
+        this.query.metrics[event.currentIndex] = dragItem;
+        this.query.metrics[event.previousIndex] = dropItem;
+        this.initMetricDataSource();
+        this.requestChanges('UpdateQueryMetricOrder', { qid: this.query.id, query: this.query });
+    }
+
     cloneMetric(id) {
         const index = this.query.metrics.findIndex(d => d.id === id );
         const oMetric = this.query.metrics[index];
@@ -1093,7 +1286,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     addQueryItemProgress(type: string) {
-        // console.log('ADD QUERY ITEM PROGRESS', type);
         if (type === 'metric') {
             this.isAddExpressionProgress = false;
             this.isAddMetricProgress = !this.isAddMetricProgress;
@@ -1119,6 +1311,53 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.tagFilterMenuTrigger.closeMenu();
     }
 
+    createPercentageMetrics() {
+        if ( this.pctSelectedMetrics.length > 1 ) {
+            const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+            expConfig.settings.visual.label = 'Total';
+            expConfig.settings.visual.visible = false;
+            this.query.metrics.push(expConfig);
+
+            const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
+            const aliases = this.getMetricAliases();
+            for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+                const mid = aliases[this.pctSelectedMetrics[i]];
+                const index = this.query.metrics.findIndex( d =>  d.id === mid );
+                // set the actual metric visible=false and groupby=everything
+                this.query.metrics[index].settings.visual.visible = false;
+                this.query.metrics[index].groupByTags = [];
+
+                const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+                expConfig.settings.visual.type = 'area';
+                expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+                this.query.metrics.push(expConfig);
+            }
+            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' } );
+            this.queryChanges$.next(true);
+            this.initMetricDataSource();
+        }
+        this.closeMetricDialog();
+    }
+
+    closeMetricDialog() {
+        this.artifactsMenuTrigger.closeMenu();
+    }
+
+    // QUERY ALIAS EDITING
+    toggleQueryAliasEditForm() {
+        if (!this.queryAliasEdit) {
+            this.queryAliasFormControl = new FormControl(this.query.settings.visual.label);
+            this.queryAliasEdit = true;
+        } else {
+            this.queryAliasEdit = false;
+        }
+    }
+
+    saveQueryAliasForm() {
+        let value = this.queryAliasFormControl.value;
+        this.query.settings.visual.label = value;
+        this.queryAliasEdit = false;
+    }
 
 
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show

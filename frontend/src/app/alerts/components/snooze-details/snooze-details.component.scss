@@ -4,7 +4,7 @@
         min-width: 600px;
         display: flex;
         flex-direction: column;
-        
+
         .snooze-configuration-wrapper {
             border-radius: 0;
             padding: 0;
@@ -61,10 +61,10 @@
             }
 
             .error {
-                color:red; 
-                height: 30px; 
-                text-align:center; 
-                padding: 2px; 
+                color:red;
+                height: 30px;
+                text-align:center;
+                padding: 2px;
             }
         }
 
@@ -78,7 +78,13 @@
             .alert-control-steps {
                 padding: 8px 0 0;
                 flex: 1;
-                overflow: auto;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                .alert-control-steps {
+                    overflow: auto;
+                }
             }
 
             .step-section {
@@ -87,7 +93,7 @@
 
                 .step-section-label {
                     border-top: 1px solid #E0E0E0; // why is color here??
-                    
+
                     .step-section-label-text {
                         display: inline-block;
                         padding: 2px 24px 2px 8px;
@@ -115,7 +121,7 @@
                 &:not(.select-threshold-type) {
                     margin-bottom: 12px;
                 }
-                
+
                 .form-label,
                 .toggle-wrap {
                     height: 32px;
@@ -221,9 +227,6 @@
                         }
                     }
                 }
-
-                
-
             }
 
 
@@ -248,23 +251,28 @@
             .query-editor-proto .metric-wrapper{
                 border-left: 0px;
                 border-right: 0px;
+
                 .common-tags {
-                    background-color: #ffffff;
                     padding: 0px;
                     margin-left: 0px;
+
                     .common-tags-wrapper {
                         margin: 0px;
+
                         .mat-button {
                             padding-left: 0px;
                         }
                     }
+
                     .common-tags-label {
                         display: none;
                     }
                 }
+
                 .tags-selected-header {
                     border-bottom: 0px;
                 }
+
                 .tags-selected .tag {
                     margin-left: 0px;
                 }
@@ -322,7 +330,7 @@
             height: 52px;
         }
     }
-    
+
     .alert-options-cdk-panel.mat-menu-panel {
         min-width: calc(65vw - 250px);
         max-width: 100%;
@@ -373,7 +381,7 @@
                 display: flex;
                 flex: 1;
                 flex-direction: column;
-                margin-left: 12px; 
+                margin-left: 12px;
 
                 .type {
                     line-height: 12px;
@@ -416,6 +424,18 @@
     $widget: map-get($theme-config, widgets);
     $is-dark: map-get($theme-config, is-dark);
 
+    $link-color: map-get($foreground, link);
+    $divider-color: map-get($foreground, divider);
+
+    $brand-color: map-get($background, navbar);
+    $brand-color-inverse: map-get($foreground, navbar-text);
+
+    $card: map-get($background, card);
+
+    $dygraph-tooltip-bg: if($is-dark, map-get($background, menu), #f0f0f0);
+    $dygraph-tooltip-border: if($is-dark, lighten(map-get($background, menu), 10%) , #cccccc);
+
+    $text-color: map-get($foreground, text);
 
     .snooze-alert-dialog-component {
         .mat-dialog-title {
@@ -434,6 +454,18 @@
                     &.mat-button-toggle-checked {
                         background-color: rgba(map-get($primary, default), .08);
                     }
+                }
+            }
+        }
+
+        .controls-wrapper {
+            .step-section-label {
+                border-top: 1px solid $divider-color;
+
+                .step-section-label-text {
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                    background-color: if($is-dark, rgba($brand-color-inverse, 0.15), rgba($brand-color, 0.15));
+                    border-bottom-right-radius: 20px 24px;
                 }
             }
         }

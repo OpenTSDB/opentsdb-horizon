@@ -36,6 +36,7 @@ $dark-theme: (
       app-bar:                  map_get($denali-mid-grey, 900),
       // navbar:                   #1F262C,
       navbar:                   map_get($denali-mid-grey, 900),
+      navbar-alt:               #517888,
       // background:             #303030,
       // background:             #12191F,
       //background:               map_get($mat-blue-grey, 900),
@@ -77,10 +78,11 @@ $dark-theme: (
         info-contrast:    #ffffff
     ),
     scrollbar: (
-       padding: 2px,
-       size: 8px,
-       track-bg: black,
-       thumb-bg: #8ACFED
+       padding: 1px,
+       size: 10px,
+       track-bg: rgba(138, 207, 237, .05),
+       track-border: rgba(138, 207, 237, .15),
+       thumb-bg: rgba(138, 207, 237, .4)
     ),
     dashboard-filters: (
         auto-mode-bg: #33FF74,

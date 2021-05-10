@@ -8,6 +8,7 @@
     .widget-panel-content.heatmap-widget {
         flex: 1;
         display: flex;
+        flex-direction: column;
         .hide {
             display: none;
         }
@@ -71,10 +72,16 @@
                 position: initial; // override dygraph style
                 list-style: none;
                 height: 100%;
-                overflow: auto;
+                overflow: overlay;
                 z-index: 0;
                 .mat-table {
                     font-family: Monaco, monospace;
+                }
+            }
+
+            @-moz-document url-prefix() {
+                .graph-legend {
+                    overflow: auto;
                 }
             }
 
@@ -190,6 +197,7 @@
         }
     }
 
+    /*
      // when we are in edit view
      .edit-view-container.is-active {
         .widget-panel-content.linechart-widget {
@@ -199,6 +207,48 @@
                 //display: block;
                 position: relative;
             }
+        }
+    }
+    */
+    // when we are in edit view
+    .edit-view-container.is-active {
+        .widget-panel-content.heatmap-widget {
+            .graph-chart {
+                padding: 10px 0px 0px 0px;
+            }
+            /*
+            .widget-output-container {
+                // background: yellowgreen;
+                // display: block;
+                // flex: 1 1 auto;
+                height: 250px;
+                // max-height: calc(100% - 200px);
+            }
+    
+            .widget-controls-container {
+                display: flex;
+                padding: 0;
+                // background: lightblue;
+                overflow: hidden;
+                // flex: 1 1 auto;
+                min-height: 200px;
+                // max-height: 100%;
+                flex-grow: 1;
+            }
+            // /*
+
+            .widget-output {
+                //top: 30px;
+                padding: 8px 0px;
+                display: block;
+                position: relative;
+                // height: inherit;
+                // display: block;
+                .graph-chart {
+                    padding: 0px 0px 0px 0px;
+                }
+            }
+            */
         }
     }
 }

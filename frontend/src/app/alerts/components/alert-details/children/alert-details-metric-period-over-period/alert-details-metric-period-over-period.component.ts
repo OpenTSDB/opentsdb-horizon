@@ -144,7 +144,7 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
   thresholdValidator(thresholdToCompare: string): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
         let forbidden;
-        if (control.value === '') {
+        if (control.value === '' || control.value === null ) {
           forbidden = false;
         } else if (thresholdToCompare.includes('bad')) { // compare warn value to bad threshold
           forbidden = this.isValueLargerThanThreshold(thresholdToCompare, control.value, Number.MAX_SAFE_INTEGER);

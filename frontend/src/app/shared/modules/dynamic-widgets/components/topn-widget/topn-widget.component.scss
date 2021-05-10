@@ -18,11 +18,8 @@
         }
 
         .widget-output {
-            padding: 0px 0px;
             width: 100%;
-            height: 100%;
             display: flex;
-            flex: 1 1 0;
 
 
             .loading-spinner,
@@ -72,14 +69,12 @@
                 white-space: nowrap;
             }
         }
-
         #container {
             box-sizing: border-box;
-            padding: px 0px 0px 0px;
-            display:flex;
-            flex: 1;
-            justify-content: center;
-            overflow: auto;
+            padding: 0px 0px 0px 0px;
+            display:inline-block;
+            width: 100%;
+            overflow: overlay;
 
             text {
                 font-family: 'Ubuntu';
@@ -108,23 +103,72 @@
             }
 
             .chart {
-                display: flex;
+                // display: flex;
                 flex: 1;
                 position: relative;
                 overflow: overlay;
+                align-items: center;
             }
+
+            @-moz-document url-prefix() {
+                .chart {
+                    overflow: auto;
+                }
+            }
+
             .chart svg {
                 width: 100%;
                 height: 100%;
             }
+        }
 
+        @-moz-document url-prefix() {
+            #container {
+                overflow: auto;
+            }
         }
     }
 
+    // when we are in edit view
     .edit-view-container.is-active {
         .widget-panel-content.topnchart-widget {
+            /*
+            .widget-output-container {
+                // background: yellowgreen;
+                display: block;
+                // flex: 1 1 auto;
+                height: 250px;
+                // max-height: calc(100% - 200px);
+            }
+    
+            .widget-controls-container {
+                display: flex;
+                padding: 0;
+                // background: lightblue;
+                overflow: hidden;
+                // flex: 1 1 auto;
+                min-height: 200px;
+                // max-height: 100%;
+                flex-grow: 1;
+            }
+            .widget-output {
+                //top: 30px;
+                padding: 4px 0px;
+                //display: block;
+                position: relative;
+                height: 0px;
+                display: block;
+                #container {
+                    margin: 0px 0px 0px 0px;
+                    align-items: flex-end;
+                    justify-content: start;
+                }
+            }
+            */
             #container {
-                //padding-top: 20px;
+                margin: 0px 0px 0px 0px;
+                align-items: flex-end;
+                justify-content: start;
             }
         }
     }

@@ -4,14 +4,14 @@
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
     $tab-width: map-get($widgets-common-config, tab-width);
     $action-bar-height: map-get($widgets-common-config, action-bar-height);
-    
+
     .widget-panel-content.placeholder-widget {
         overflow-y: auto;
 
         // selector icons for the base
         .widget-types {
             margin-top: 20px;
-            
+
             .widget-type-selector {
                 padding: 8px 16px 0 16px;
                 width: 110px;
@@ -25,15 +25,15 @@
                     display: inline-flex;
                     flex-direction: column;
                 }
-        
+
                 .widget-type-label,
                 .widget-type-icon {
                     width: 100%;
                     line-height: 32px;
                 }
-        
+
                 //.widget-type-label {}
-        
+
                 .widget-type-icon {
                     display: flex;
                     align-items: center;
@@ -54,13 +54,13 @@
                     &.widget-icon-bar-graph::after {
                         background-position: -50px 0px;
                     }
-        
+
                     &.widget-icon-area-graph::after {
                         background-position: 0px 0px;
                     }
 
                     &.widget-icon-line-chart::after {
-                        background-position: -100px -50px    
+                        background-position: -100px -50px
                     }
 
                     &.widget-icon-heatmap::after {
@@ -90,7 +90,10 @@
                     &.widget-icon-events::after {
                         background-position: -50px -100px;
                     }
-        
+
+                    &.widget-icon-table::after {
+                        background-position: -150px -100px;
+                    }
                     /*&::after {
                         content: '';
                         display: block;
@@ -100,11 +103,11 @@
                         background-position: 50% 50%;
                         background-size: 100%;
                     }
-        
+
                     &.widget-icon-bar-graph::after {
                         background-image: url(/assets/widget-icon-bar-graph.png);
                     }
-        
+
                     &.widget-icon-area-graph::after {
                         background-image: url(/assets/widget-icon-area-graph.png);
                     }
@@ -163,8 +166,12 @@
                     background-color: map-get($widget, widget-icons-background-hover);
                 }
             }
+
+            .widget-type-label {
+                color: map-get($foreground, text);
+            }
         }
-        
+
     }
 
 }

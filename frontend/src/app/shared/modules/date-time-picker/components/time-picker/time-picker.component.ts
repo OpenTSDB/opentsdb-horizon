@@ -82,21 +82,25 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
     @Input()
     set downsample(ds: any) {
-        this._downsample = ds;   
+        this._downsample = ds;
         this.downsampleDisplay = '';
-        const value = (ds.value === 'custom' ? ds.customValue + ds.customUnit : ds.value);
-        const agg = ds.aggregators[0];
-        if (agg !== '') {
-            this.downsampleDisplay = ' | ' + value + '-' + agg;
-        } else {
-            if (value !== 'auto') {
-                this.downsampleDisplay = ' | ' + value
+        if ( ds ) {
+            const value = (ds.value === 'custom' ? ds.customValue + ds.customUnit : ds.value);
+            const agg = ds.aggregators[0];
+            if (agg !== '') {
+                this.downsampleDisplay = ' | ' + value + '-' + agg;
+            } else {
+                if (value !== 'auto') {
+                    this.downsampleDisplay = ' | ' + value
+                }
             }
-        }     
+        }
     }
     get downsample(): any {
         return this._downsample;
     }
+
+    @Input() tot: any = {};
 
 
     /** Outputs */
@@ -184,6 +188,8 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     setDefaultOptionsValues() {
         this.options = new TimeRangePickerOptions();
 
+        this.options.required = true;
+        this.options.autoTrigger = false;
         this.options.startFutureTimesDisabled = true;
         this.options.endFutureTimesDisabled = true;
 
@@ -233,6 +239,10 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
     downsampleChange(payload: any) {
         this.newChange.emit({ action: 'SetDBDownsample', payload: payload.data });
+    }
+
+    totChange(payload: any) {
+        this.newChange.emit({ action: 'SetToT', payload: payload });
     }
 
     closeTimeRangePicker() {
@@ -298,7 +308,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
             this.paused$.next(true);
           } else {
             this.paused$.next(this.isEditMode);
-          }
+        }
     }
 
     ngOnDestroy() {

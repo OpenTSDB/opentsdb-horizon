@@ -6,7 +6,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { MetaService } from '../services/meta.service';
 import { YamasService } from '../services/yamas.service';
 import { UtilsService } from '../services/utils.service';
-import { LoggerService } from '../services/logger.service';
+import { ConsoleService } from '../services/console.service';
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +27,7 @@ export class HttpService {
         private http: HttpClient,
         private metaService: MetaService,
         private utils: UtilsService,
-        private logger: LoggerService,
+        private console: ConsoleService,
         private yamasService: YamasService) { }
 
     getDashoard(id: string): Observable<any> {
@@ -128,7 +128,6 @@ export class HttpService {
         }
         const apiUrl = environment.metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS', Object.values(newQueryParams));
-        // console.log('tag query for query', query);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
@@ -210,6 +209,18 @@ export class HttpService {
                         );
     }
 
+    getTagKeysAndTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+          });
+        const apiUrl =  environment.metaApi + '/search/timeseries';
+        const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
+        return this.http.post(apiUrl, query, { headers, withCredentials: true })
+                            .pipe(
+                                map((res: any) => res && res.results[0] ? res.results[0] : {'tagKeysAndValues': {}})
+                            );
+    }
+
     // results should filter the lists from already selected filters
     getTagValues(queryObj: any): Observable<string[]> {
         const headers = new HttpHeaders({
@@ -219,7 +230,12 @@ export class HttpService {
         const namespaces = queryObj.namespaces || [];
         for (let i = 0, len = namespaces.length; i < len; i++) {
             if (!newQueryParams[namespaces[i]]) {
-                newQueryParams[namespaces[i]] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespaces[i], metrics: [] };
+                newQueryParams[namespaces[i]] = {
+                    tagkey: queryObj.tag.key,
+                    search: queryObj.tag.value,
+                    namespace: namespaces[i],
+                    metrics: [],
+                    tags: queryObj.tagsFilter };
             }
         }
 
@@ -229,7 +245,12 @@ export class HttpService {
             const namespace = res[1];
             const metric = res[2] + '.' + res[3];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { tagkey: queryObj.tag.key, search: queryObj.tag.value, namespace: namespace, metrics: [] };
+                newQueryParams[namespace] = {
+                    tagkey: queryObj.tag.key,
+                    search: queryObj.tag.value,
+                    namespace: namespace,
+                    metrics: [],
+                    tags: queryObj.tagsFilter };
             }
             newQueryParams[namespace].metrics.push(metric);
         }
@@ -238,7 +259,6 @@ export class HttpService {
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
-                    // console.log('the res', res);
                     let tagvalues = [];
                     for (let i = 0; res && i < res.results.length; i++) {
                         if (Object.keys(res.results[i].tagKeysAndValues).length > 0 && res.results[i].tagKeysAndValues[queryObj.tag.key]) {
@@ -278,7 +298,6 @@ export class HttpService {
             'Content-Type': 'application/json'
         });
         const params = { 'userId': 'user.arunmohzi', 'type': 'DASHBOARD' };
-        // console.log("get dahboards params", apiUrl, params);
         return this.http.get(apiUrl, { params: params, headers, withCredentials: true });
     }
 
@@ -290,7 +309,6 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // console.log("save dahboard params", apiUrl, data);
         return this.http.put(apiUrl, data, httpOptions);
     }
 
@@ -298,6 +316,30 @@ export class HttpService {
         /* This API call is an invalid endpoint */
         const apiUrl = environment.configdb + '/object/' + id;
         return this.http.delete(apiUrl, { withCredentials: true });
+    }
+
+    getSnapshotById(id: string) {
+        const apiUrl = environment.configdb + '/snapshot/' + id;
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        return this.http.get(apiUrl, httpOptions);
+    }
+
+    saveSnapshot(id, data) {
+        const apiUrl = environment.configdb + '/snapshot';
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        if ( id === '_new_') {
+            return this.http.post(apiUrl, data, httpOptions);
+        } else {
+            return this.http.put(apiUrl, data, httpOptions);
+        }
     }
 
     userNamespaces() {
@@ -317,7 +359,6 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // console.log('[API] getUserFolderData', apiUrl, httpOptions);
         return this.http.get(apiUrl, httpOptions);
     }
 
@@ -381,7 +422,7 @@ export class HttpService {
     }
 
     saveAlert(namespace, payload: any): Observable<any> {
-        this.logger.api('saveAlert', {namespace, payload});
+        this.console.api('saveAlert', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -395,7 +436,7 @@ export class HttpService {
     }
 
     getAlertDetailsById(id: number): Observable<any> {
-        this.logger.api('getAlertDetailsById', {id});
+        this.console.api('getAlertDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -404,7 +445,7 @@ export class HttpService {
     }
 
     getAlerts(options): Observable<any> {
-        // this.logger.api('getAlerts', {options});
+        // this.console.api('getAlerts', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -443,18 +484,17 @@ export class HttpService {
     }
 
     deleteAlerts(namespace, payload): Observable<any> {
-        this.logger.api('deleteAlerts', {namespace, payload});
+        this.console.api('deleteAlerts', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
         const apiUrl = environment.configdb + '/namespace/' + namespace + '/alert/delete';
-        // console.log("deleteA;lert", namespace, payload);
         return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
     }
 
     /** snooze */
     saveSnooze(namespace, payload: any): Observable<any> {
-        this.logger.api('saveSnooze', {namespace, payload});
+        this.console.api('saveSnooze', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -468,7 +508,7 @@ export class HttpService {
     }
 
     getSnoozeDetailsById(id: number): Observable<any> {
-        this.logger.api('getSnoozeDetailsById', {id});
+        this.console.api('getSnoozeDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -477,7 +517,7 @@ export class HttpService {
     }
 
     getSnoozes(options): Observable<any> {
-        this.logger.api('getSnoozes', {options});
+        this.console.api('getSnoozes', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -486,7 +526,7 @@ export class HttpService {
     }
 
     deleteSnoozes(namespace, payload): Observable<any> {
-        this.logger.api('deleteSnoozes', {namespace, payload});
+        this.console.api('deleteSnoozes', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -497,7 +537,6 @@ export class HttpService {
 
     getEvents(wid: string, time: any, eventQueries: any[], limit) {
         let query = this.yamasService.buildEventsQuery(time, eventQueries, limit);
-        // console.log(JSON.stringify(query, null, 2));
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });

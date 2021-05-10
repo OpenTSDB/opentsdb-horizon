@@ -117,7 +117,13 @@
                 display: inline-block;
                 min-width: 80px;
                 height: 100%;
-                overflow: auto;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                .legend {
+                    overflow: auto;
+                }
             }
 
             .legend svg {
@@ -129,6 +135,48 @@
                 fill: slategray;
             }
 
+        }
+    }
+
+
+    // when we are in edit view
+    .edit-view-container.is-active {
+        .widget-panel-content.donutchart-widget {
+            /*
+            .widget-output-container {
+                // background: yellowgreen;
+                display: block;
+                // flex: 1 1 auto;
+                height: 250px;
+                // max-height: calc(100% - 200px);
+            }
+    
+            .widget-controls-container {
+                display: flex;
+                padding: 0;
+                // background: lightblue;
+                overflow: hidden;
+                // flex: 1 1 auto;
+                min-height: 200px;
+                // max-height: 100%;
+                flex-grow: 1;
+            }
+            
+            .widget-output {
+                //top: 30px;
+                padding: 8px 0px;
+                //display: block;
+                position: relative;
+                height: 0px;
+                display: block;
+                
+            }
+            */
+            #container {
+                margin: 0px 0px 0px 0px;
+                align-items: flex-end;
+                justify-content: start;
+            }
         }
     }
 }

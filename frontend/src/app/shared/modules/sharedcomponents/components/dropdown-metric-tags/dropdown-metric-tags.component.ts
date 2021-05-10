@@ -33,6 +33,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     @Input() metric: any;
     @Input() selected: any[] = ['all'];
     @Input() tags: any = null;
+    @Input() excludeTags: any = [];
     @Input() all = true;
     @Input() multiple = true;
     @Input() enableGroupBy: boolean;
@@ -55,12 +56,17 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     ngOnInit() {
         // tslint:disable-next-line:arrow-return-shorthand
         this.tagOptions = this.selected ? this.selected.map(d => { return { name: d }; }) : [];
+
         if (this.enableGroupBy === null || this.enableGroupBy === undefined) {
             this.enableGroupBy = true;
         }
 
         this.filterTagInputFC.valueChanges.subscribe((value: any) => {
-            this.filteredTagOptions = this.tagOptions.filter((item: any) => item.name.toLowerCase().includes(value.toLowerCase()));
+            // this.filteredTagOptions = this.tagOptions.filter((item: any) => item.name.toLowerCase().includes(value.toLowerCase()));
+            this.filteredTagOptions = this.tagOptions.map((item: any) => {
+                item.filtered = !item.name.toLowerCase().includes(value.toLowerCase());
+                return item;
+            });
         });
     }
 
@@ -85,6 +91,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
                 return;
             }
             this.httpService.getNamespaceTagKeys(query).subscribe(res => {
+                res = res.filter( ( d ) => !this.excludeTags.includes( d.name ) );
                 this.tagOptions = res;
                 this.filteredTagOptions = this.tagOptions;
                 this.triggerMenu();
@@ -130,7 +137,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
         } else if (this.filterTagInput) { // been searching
             value = this.selected ? [...this.selected] : [];
             for (const s of selected.map(d => d.value)) {
-                if (s !== 'all') {
+                if (s !== 'all' && !value.includes(s)) {
                     value.push(s);
                 }
             }
