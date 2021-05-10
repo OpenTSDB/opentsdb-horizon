@@ -16,6 +16,7 @@ import { TimeseriesLegendComponent } from './components/timeseries-legend/timese
 import { MatTableModule, MatSortModule } from '@angular/material';
 import { InfoIslandToolbarComponent } from './components/info-island-toolbar/info-island-toolbar.component';
 import { HeatmapBucketDetailComponent } from './components/heatmap-bucket-detail/heatmap-bucket-detail.component';
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 import { D3Module } from '../d3/d3.module';
 @NgModule({
@@ -28,7 +29,8 @@ import { D3Module } from '../d3/d3.module';
         MaterialModule,
         MatTableModule,
         MatSortModule,
-        D3Module
+        D3Module,
+        TableVirtualScrollModule
     ],
     declarations: [
         InfoIslandComponent,
