@@ -364,7 +364,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             switch (message.action) {
                 case 'ResizeAllWidgets':
-                    this.dbContent.gridster.reload();
+                    if ( !this.viewEditMode ) {
+                        this.dbContent.gridster.reload();
+                    }
                     break;
                 case 'getWidgetCachedData':
                     const widgetCachedData = this.wData[message.id];
@@ -610,6 +612,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     dbcontent.settings.time.start = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.start : this.wdMetaData[message.id].queryDataRange.start;
                     dbcontent.settings.time.end = this.editViewModeMeta.queryDataRange ? this.editViewModeMeta.queryDataRange.end : this.wdMetaData[message.id].queryDataRange.end;
                     dbcontent.settings.time.zone = this.dbTime.zone;
+                    dbcontent.settings.tot = this.dbToT;
+                    dbcontent.settings.downsample = this.dbDownsample;
                     const payload: any = {
                         'name': encodeURIComponent(snapTitle),
                         'content': dbcontent
@@ -1749,6 +1753,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         content.settings.time.start = this.editViewModeMeta.queryDataRange.start;
         content.settings.time.end = this.editViewModeMeta.queryDataRange.end;
         content.settings.time.zone = this.dbTime.zone;
+        content.settings.tot = this.dbToT;
+        content.settings.downsample = this.dbDownsample;
         delete this.newWidget.settings.time.overrideTime;
         content.widgets = [this.newWidget];
         const payload: any = {
