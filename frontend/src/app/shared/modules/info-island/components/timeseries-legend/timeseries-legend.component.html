@@ -8,11 +8,12 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="ts-data-wrapper has-scroller">
-    <div class="is-scroller" >
+<div class="ts-data-wrapper has-scroller" #tsDataWrapper>
+    <!--<div class="is-scroller" >-->
         <!--
             NOTE: Maybe build as normal table so we can use lazy loading
         -->
+        <cdk-virtual-scroll-viewport tvsItemSize="33" headerHeight="32" [style.height.px]="virtualScrollHeight">
         <table #legendTable class="ts-legend-table"
             mat-table
             [dataSource]="tableDataSource"
@@ -30,7 +31,7 @@
                         [checked]="masterChecked"
                         [indeterminate]="masterIndeterminate"
                         (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>-->
-                    <button mat-icon-button color="primary" (click)="$event.stopPropagation(); masterCheckboxClick($event)">
+                    <button mat-icon-button color="primary" (click)="masterCheckboxClick($event); $event.stopPropagation(); ">
                         <mat-icon>{{masterIndeterminate ? 'indeterminate_check_box' : masterChecked ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
                     </button>
                 </th>
@@ -78,7 +79,8 @@
             <tr mat-row *matRowDef="let row; columns: tableColumns;"
                 [ngClass]="{'tag-highlight': !multigraph && row.series.tags[highlightTag.key] === highlightTag.value}"></tr>
         </table>
-    </div>
+        </cdk-virtual-scroll-viewport>
+    <!--</div> -->
 </div>
 
 <!-- this gets injected into the island window header bar

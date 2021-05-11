@@ -44,6 +44,7 @@ import { filter, map } from 'rxjs/operators';
 import { ConsoleService } from '../../core/services/console.service';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
+import { flattenStyles } from '@angular/platform-browser/src/dom/dom_renderer';
 
 @Component({
     selector: 'app-shell',
@@ -80,6 +81,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     activeNavSection = '';
     drawerMode = 'side'; // over | side;
+    drawerOpened = false;
     sideNavOpen = true; // the skinny icon bar
     activeMediaQuery = '';
 
@@ -276,6 +278,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                         this.messageBarData = {};
                         this.messageBarVisible = false;
                     }
+                    break;
                 case 'changeToSpecificNamespaceView':
                 case 'changeToSpecificUserView':
                     this.drawer.open();
@@ -350,6 +353,10 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     drawerClosedStart() {}
 
     drawerOpenChange(event: any) {
+        // fixes expression changed error
+        setTimeout(() => {
+            this.drawerOpened = event;
+        }, 0);
         this.interCom.requestSend({
             action: 'ResizeAllWidgets'
         });
