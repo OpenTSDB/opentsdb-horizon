@@ -521,7 +521,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
-                // opsgenieTags: data.notification.opsgenieTags || '',
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
@@ -703,7 +703,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
-                // opsgenieTags: data.notification.opsgenieTags || '',
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
@@ -784,6 +784,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
                 ocTier: data.notification.ocTier || this.defaultOCTier
@@ -1791,6 +1792,25 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
     }
 
+    removeOpsgenieTagValue(i: number) {
+        const control = <FormArray>this.alertForm.get('notification').get('opsgenieTags');
+        control.removeAt(i);
+    }
+
+    addOpsgenieTagValue(event: MatChipInputEvent) {
+        const input = event.input;
+        const value = event.value ? event.value.trim() : '';
+
+        if ( value ) {
+            const control = <FormArray>this.alertForm.get('notification').get('opsgenieTags');
+            control.push(new FormControl(value));
+        }
+
+        if (input) {
+            input.value = '';
+        }
+    }
+
     trimRecipientName(name) {
         return name.replace(/^\#/, '');
     }
@@ -1845,6 +1865,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( this.notificationRecipients.value.opsgenie && !event.opsgenie) {
             this.alertForm['controls'].notification.get('opsgeniePriority').setValue('');
             this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
+            this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]); 
         }
         this.notificationRecipients.setValue(event);
 
