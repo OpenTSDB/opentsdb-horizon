@@ -39,6 +39,8 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
     public labelsDiv: any;
     public firstTickHighlight = false;
 
+    private legendMouseoverTimeout: any;
+
     constructor(
         private element: ElementRef,
         private uConverter: UnitConverterService,
@@ -175,54 +177,61 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             //***************************************
 
             if (self.timeseriesLegend.open && self.timeseriesLegend.trackMouse) {
-
-                // raw data row index
-                // need this because we want to populate the non-visible lines (if any)
-                // because 'points' only contains the visible points, but we still want data for rest of dataset
-                const rawRefIndex = this.rawData_.findIndex((d: any[]) => d[0] === x);
-
-                // format tick data output
-                const tickDataOutput = {
-                    timestamp: x,
-                    when: options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm'),
-                    series: []
-                };
-
-                // format series data for timeSeriesLegend
-                for (let i = 0; i < Object.keys(series).length; i++) {
-                    const seriesIndex = i + 1;
-                    const seriesData = series[seriesIndex];
-                    const data: any = {
-                        series: {...seriesData}
-                    };
-                    // point data
-                    const pointIndex = points.findIndex((p: any) => p.name === seriesIndex.toString());
-                    // point exists, so lets use it
-                    if (pointIndex !== -1) {
-                        data.data = {...points[pointIndex]};
-                    } else {
-                        // this must be hidden line, so pull data from rawData
-                        const rawPointData = this.rawData_[rawRefIndex][seriesIndex];
-                        data.data = {yval: rawPointData};
-                    }
-                    // format the value
-                    const axis = series[seriesIndex].axis;
-                    const format = options.axes[axis].tickFormat;
-                    const precision = format.precision ? format.precision : 2;
-                    const dunit = self.uConverter.getNormalizedUnit(data.data.yval, format);
-                    if (isNaN(data.data.yval)) {
-                        // don't format a NaN value
-                        data.formattedValue = data.data.yval;
-                    } else {
-                        data.formattedValue = self.uConverter.convert(data.data.yval, format.unit, dunit, { unit: format.unit, precision: precision });
-                    }
-                    tickDataOutput.series.push(data);
+                if (this.legendMouseoverTimeout) {
+                    clearTimeout(this.legendMouseoverTimeout);
                 }
 
-                self.currentTickEvent.emit({
-                    action: 'tickDataChange',
-                    tickData: tickDataOutput
-                });
+                this.legendMouseoverTimeout = setTimeout(() => {
+
+                    // raw data row index
+                    // need this because we want to populate the non-visible lines (if any)
+                    // because 'points' only contains the visible points, but we still want data for rest of dataset
+                    const rawRefIndex = this.rawData_.findIndex((d: any[]) => d[0] === x);
+
+                    // format tick data output
+                    const tickDataOutput = {
+                        timestamp: x,
+                        when: options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm'),
+                        series: []
+                    };
+
+                    // format series data for timeSeriesLegend
+                    for (let i = 0; i < Object.keys(series).length; i++) {
+                        const seriesIndex = i + 1;
+                        const seriesData = series[seriesIndex];
+                        const data: any = {
+                            series: {...seriesData}
+                        };
+                        // point data
+                        const pointIndex = points.findIndex((p: any) => p.name === seriesIndex.toString());
+                        // point exists, so lets use it
+                        if (pointIndex !== -1) {
+                            data.data = {...points[pointIndex]};
+                        } else {
+                            // this must be hidden line, so pull data from rawData
+                            const rawPointData = this.rawData_[rawRefIndex][seriesIndex];
+                            data.data = {yval: rawPointData};
+                        }
+                        // format the value
+                        const axis = series[seriesIndex].axis;
+                        const format = options.axes[axis].tickFormat;
+                        const precision = format.precision ? format.precision : 2;
+                        const dunit = self.uConverter.getNormalizedUnit(data.data.yval, format);
+                        if (isNaN(data.data.yval)) {
+                            // don't format a NaN value
+                            data.formattedValue = data.data.yval;
+                        } else {
+                            data.formattedValue = self.uConverter.convert(data.data.yval, format.unit, dunit, { unit: format.unit, precision: precision });
+                        }
+                        tickDataOutput.series.push(data);
+                    }
+
+                    self.currentTickEvent.emit({
+                        action: 'tickDataChange',
+                        tickData: tickDataOutput
+                    });
+
+                }, 100);
             }
 
         };
