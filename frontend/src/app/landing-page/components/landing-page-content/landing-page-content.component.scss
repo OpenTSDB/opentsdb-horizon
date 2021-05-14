@@ -2,242 +2,240 @@
  * LANDING PAGE CONTENT COMPONENT
  */
 
- @mixin landing-page-content-component-base() {
-    .landing-page-content {
-        position: relative;
-        height: 100%;
-        width: 100%;
+ @import 'loader-base';
+
+:host.landing-page-content {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
         overflow: hidden;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .main-content {
+        //width: 100%;
+        flex: 1 0px;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
-        justify-content: stretch;
+        overflow: overlay;
+    }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            overflow: hidden;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-
-        }
-
+    @-moz-document url-prefix() {
         .main-content {
-            //width: 100%;
-            flex: 1 0px;
-            display: flex;
-            flex-direction: column;
-            overflow: overlay;
+            overflow: auto;
         }
+    }
 
-        @-moz-document url-prefix() {
-            .main-content {
-                overflow: auto;
-            }
-        }
+    .landing-page-hero,
+    .landing-page-utilities {
+        padding: 10px;
+    }
 
-        .landing-page-hero,
-        .landing-page-utilities {
-            padding: 10px;
-        }
+    .landing-page-hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 60px 30px;
+        justify-content: center;
+        align-items: center;
 
-        .landing-page-hero {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 60px 30px;
-            justify-content: center;
+        .hero-title {
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
 
-            .hero-title {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-
-                span {
-                    margin-right: 8px;
-                }
-            }
-
-            .hero-message {
-                max-width: 40%;
-                text-align: center;
-            }
-
-            .hero-buttons {
-                :not(:last-child) {
-                    margin-right: 8px;
-                }
-            }
-
-            .hero-close-button {
-                position: absolute;
-                top: 10px;
-                right: 10px;
+            span {
+                margin-right: 8px;
             }
         }
 
-        .landing-page-utilities {
-            .mat-toolbar {
+        .hero-message {
+            max-width: 40%;
+            text-align: center;
+        }
 
-                &.mat-toolbar-single-row {
-                    padding-left: 0;
-                    padding-right: 0;
+        .hero-buttons {
+            :not(:last-child) {
+                margin-right: 8px;
+            }
+        }
+
+        .hero-close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    }
+
+    .landing-page-utilities {
+        .mat-toolbar {
+
+            &.mat-toolbar-single-row {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .search-utility,
+            .add-widget-button {
+                margin-right: 20px;
+            }
+
+            .add-widget-button,
+            .new-dashboard-button {
+                .mat-icon {
+                    margin-right: 8px;
+                    font-size: 100%;
+                    width: 12px;
+                    height: 12px;
+                    line-height: 1;
+                }
+            }
+        }
+
+        .search-utility {
+            display: flex;
+            padding: 4px;
+
+            .mat-form-field {
+                padding-bottom: 0;
+                line-height: 1;
+            }
+
+            .mat-form-field-wrapper {
+                padding-bottom: 0;
+            }
+
+            .mat-form-field-infix {
+                padding: .35em 0 .35em 0;
+                border-top: 0;
+            }
+
+            .mat-form-field-flex {
+                line-height: 1;
+                padding: 0 .75em;
+                border-radius: 0;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .mat-form-field-label-wrapper {
+                display: none;
+            }
+
+            .mat-form-field-type-mat-input {
+                width: 100%;
+            }
+
+            .mat-form-field {
+                &:first-child {
+                    .mat-form-field-flex {
+                        border-top-left-radius: 4px;
+                        border-bottom-left-radius: 4px;
+                    }
                 }
 
-                .search-utility,
-                .add-widget-button {
-                    margin-right: 20px;
-                }
-
-                .add-widget-button,
-                .new-dashboard-button {
-                    .mat-icon {
-                        margin-right: 8px;
-                        font-size: 100%;
-                        width: 12px;
-                        height: 12px;
-                        line-height: 1;
+                &:last-child {
+                    .mat-form-field-flex {
+                        border-top-right-radius: 4px;
+                        border-bottom-right-radius: 4px;
                     }
                 }
             }
 
-            .search-utility {
-                display: flex;
-                padding: 4px;
+            // mat-select arrow correction after all these changes
+            .mat-select-arrow-wrapper {
+                transform: initial;
+            }
 
-                .mat-form-field {
-                    padding-bottom: 0;
-                    line-height: 1;
-                }
+            // specific overrides
+            .search-context-form-field {
 
-                .mat-form-field-wrapper {
-                    padding-bottom: 0;
-                }
-
-                .mat-form-field-infix {
-                    padding: .35em 0 .35em 0;
-                    border-top: 0;
-                }
-
-                .mat-form-field-flex {
-                    line-height: 1;
-                    padding: 0 .75em;
-                    border-radius: 0;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .mat-form-field-label-wrapper {
+                .mat-form-field-underline {
                     display: none;
                 }
 
-                .mat-form-field-type-mat-input {
-                    width: 100%;
+                .mat-form-field-infix {
+                    width: 90px;
                 }
 
-                .mat-form-field {
-                    &:first-child {
-                        .mat-form-field-flex {
-                            border-top-left-radius: 4px;
-                            border-bottom-left-radius: 4px;
-                        }
-                    }
-
-                    &:last-child {
-                        .mat-form-field-flex {
-                            border-top-right-radius: 4px;
-                            border-bottom-right-radius: 4px;
-                        }
-                    }
-                }
-
-                // mat-select arrow correction after all these changes
-                .mat-select-arrow-wrapper {
-                    transform: initial;
-                }
-
-                // specific overrides
-                .search-context-form-field {
-
-                    .mat-form-field-underline {
-                        display: none;
-                    }
-
-                    .mat-form-field-infix {
-                        width: 90px;
-                    }
-
-                    .mat-select {
-                        .mat-select-value-text {
-                            font-size: 12px;
-                        }
-                    }
-                }
-
-                .search-query-form-field {
-
-                    .mat-form-field-infix{
-                        padding-bottom: .45em;
-                    }
-
-                    .mat-input-element {
+                .mat-select {
+                    .mat-select-value-text {
                         font-size: 12px;
                     }
-
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 14px;
-                        line-height: 1;
-                    }
-
-                    .mat-form-field-underline {
-                        bottom: 0;
-
-                        &::before {
-                            display: none;
-                        }
-                    }
                 }
             }
-        }
 
-        .dashboard {
-            //flex: 1 1 auto;
-            //overflow: auto; --> disbable x scrolling
-            width: 100%;
-            height: 100%;
-            flex: 1 1 100%;
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
+            .search-query-form-field {
 
-            .widget-projection {
-                &:not(:last-child) {
-                    margin-right: 10px;
+                .mat-form-field-infix{
+                    padding-bottom: .45em;
                 }
 
-                .widget-panel-content {
-                    .mat-card .mat-divider-horizontal {
-                        position: initial;
+                .mat-input-element {
+                    font-size: 12px;
+                }
+
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 14px;
+                    line-height: 1;
+                }
+
+                .mat-form-field-underline {
+                    bottom: 0;
+
+                    &::before {
+                        display: none;
                     }
                 }
-            }
-        }
-
-        .gridster-stage {
-            .is-scroller {
-                //@include is-scroller();
-                padding: 10px;
             }
         }
     }
- }
 
- @mixin landing-page-content-component-theme($theme-config) {
+    .dashboard {
+            width: 100%;
+        height: 100%;
+        flex: 1 1 100%;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+
+        .widget-projection {
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
+
+            .widget-panel-content {
+                .mat-card .mat-divider-horizontal {
+                    position: initial;
+                }
+            }
+        }
+    }
+
+    .gridster-stage {
+        .is-scroller {
+            padding: 10px;
+        }
+    }
+}
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
      /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
@@ -247,31 +245,35 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
-    .landing-page-content {
-        border-right: 2px solid map-get($foreground, divider);
+    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
+    @at-root [theme='#{$theme-name}'] {
 
-        .landing-page-hero {
-            background-color: map-get($background, card);
-        }
+        :host.landing-page-content {
+            border-right: 2px solid map-get($foreground, divider);
 
-        .landing-page-utilities {
-
-            .mat-toolbar {
-                background: transparent;
+            .landing-page-hero {
+                background-color: map-get($background, card);
             }
 
-            .search-utility {
-                background-color: map-get($background, card);
+            .landing-page-utilities {
 
-                .search-query-form-field {
-                    .mat-icon {
-                        color: map-get($primary, default);
-                    }
+                .mat-toolbar {
+                    background: transparent;
+                }
 
-                    .mat-form-field-underline {
+                .search-utility {
+                    background-color: map-get($background, card);
 
-                        .mat-form-field-ripple {
-                            background-color: map-get($primary, default);
+                    .search-query-form-field {
+                        .mat-icon {
+                            color: map-get($primary, default);
+                        }
+
+                        .mat-form-field-underline {
+
+                            .mat-form-field-ripple {
+                                background-color: map-get($primary, default);
+                            }
                         }
                     }
                 }

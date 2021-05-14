@@ -7,7 +7,7 @@ import * as moment from 'moment';
     // tslint:disable-next-line:component-selector
     selector: 'activity-panel',
     templateUrl: './activity-panel.component.html',
-    styleUrls: []
+    styleUrls: ['./activity-panel.component.scss']
 })
 export class ActivityPanelComponent implements OnInit {
     @HostBinding('class.activity-panel') private _hostClass = true;

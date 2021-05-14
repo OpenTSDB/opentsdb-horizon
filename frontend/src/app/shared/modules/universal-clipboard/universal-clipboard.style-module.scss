@@ -1,18 +1,20 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 // [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
 // import your component scss
 // example: @import './components/componentName/componentName.component.scss';
 
-@import './components/clipboard-drawer/clipboard-drawer.component';
-@import './components/navbar-clipboard-menu/navbar-clipboard-menu.component';
+//@import './components/clipboard-drawer/clipboard-drawer.component';
+//@import './components/navbar-clipboard-menu/navbar-clipboard-menu.component';
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin universal-clipboard-module-core() {
-    @include clipboard-drawer-component-base();
-    @include navbar-clipboard-menu-component-base();
+    //@include clipboard-drawer-component-base();
+    //@include navbar-clipboard-menu-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
 @mixin universal-clipboard-module-theme($theme-config) {
-    @include clipboard-drawer-component-theme($theme-config);
-    @include navbar-clipboard-menu-component-theme($theme-config);
+    //@include clipboard-drawer-component-theme($theme-config);
+    //@include navbar-clipboard-menu-component-theme($theme-config);
 }

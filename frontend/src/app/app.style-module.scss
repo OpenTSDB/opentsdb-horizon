@@ -10,16 +10,16 @@
 // [ STEP 1 ] - IMPORT APPLICATION STYLE MODULE SCSS
 //@import 'app.common';
 //@import 'app.component';
-@import 'app-shell/app-shell.style-module';
+//@import 'app-shell/app-shell.style-module';
 
-@import 'landing-page/landing-page.style-module';
+//@import 'landing-page/landing-page.style-module';
 @import 'dashboard/dashboard.style-module';
 @import 'namespace/namespace.style-module';
 @import 'user/user.style-module';
 @import 'alerts/alerts.style-module';
 
 @import 'shared/modules/dashboard-filesystem/dashboard-filesystem.style-module';
-@import 'shared/modules/universal-clipboard/universal-clipboard.style-module';
+//@import 'shared/modules/universal-clipboard/universal-clipboard.style-module';
 @import 'shared/modules/dynamic-widgets/dynamic-widgets.style-module';
 @import 'shared/modules/sharedcomponents/sharedcomponents.style-module';
 @import 'shared/modules/date-time-picker/date-time-picker.style-module';
@@ -31,10 +31,10 @@
 @mixin app-core() {
     //@include app-common-base();
     //@include app-root-base();
-    @include app-shell-module-core();
+    //@include app-shell-module-core();
     // @include dashboard-filesystem-module-core();
-    @include universal-clipboard-module-core();
-    @include landing-page-module-core();
+    //@include universal-clipboard-module-core();
+    //@include landing-page-module-core();
     @include dashboard-module-core();
     @include namespace-module-core();
     @include user-module-core();
@@ -62,10 +62,10 @@
 @mixin generate-app-theme ($theme-config) {
     //@include app-common-theme($theme-config);
     //@include app-root-theme($theme-config);
-    @include app-shell-module-theme($theme-config);
+    //@include app-shell-module-theme($theme-config);
     //@include dashboard-filesystem-module-theme($theme-config);
-    @include universal-clipboard-module-theme($theme-config);
-    @include landing-page-module-theme($theme-config);
+    //@include universal-clipboard-module-theme($theme-config);
+    //@include landing-page-module-theme($theme-config);
     @include dashboard-module-theme($theme-config);
     @include namespace-module-theme($theme-config);
     @include user-module-theme($theme-config);
