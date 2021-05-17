@@ -157,7 +157,7 @@
         alert: ($d-orange, $d-orange-accent)
     );
 
-    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
+    /* [[  THEME  ]] (#{$theme-name}) - activity panel component  */
     @at-root [theme='#{$theme-name}'] {
 
         :host.activity-panel {

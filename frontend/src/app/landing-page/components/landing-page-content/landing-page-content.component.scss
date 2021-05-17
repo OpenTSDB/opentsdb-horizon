@@ -245,7 +245,7 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
-    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
+    /* [[  THEME  ]] (#{$theme-name}) - landing page content component  */
     @at-root [theme='#{$theme-name}'] {
 
         :host.landing-page-content {

@@ -21,7 +21,7 @@
 
      $divider: map-get($foreground, divider);
 
-     /* [[  THEME  ]] (#{$theme-name}) - app component */
+     /* [[  THEME  ]] (#{$theme-name}) - app root component */
      @at-root [theme='#{$theme-name}'] {
          :host.app-root {
             // styles here

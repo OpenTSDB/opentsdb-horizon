@@ -107,7 +107,7 @@ $drawer-min-width: 301px;
     $status-warning: map-get($status, warning);
     $status-warning-contrast: map-get($status, warning-contrast);
 
-    /* [[  THEME  ]] (#{$theme-name}) - app-shell component  */
+    /* [[  THEME  ]] (#{$theme-name}) - app-shell container component  */
     @at-root [theme='#{$theme-name}'] {
 
         :host.app-shell {

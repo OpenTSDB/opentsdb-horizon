@@ -636,7 +636,7 @@ $header-chip-size: 8px;
     $brand-color: map-get($background, navbar);
     $brand-color-inverse: map-get($foreground, navbar-text);
 
-    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
+    /* [[  THEME  ]] (#{$theme-name}) - alerts container component  */
     @at-root [theme='#{$theme-name}'] {
 
         :host.alerts-container-component {

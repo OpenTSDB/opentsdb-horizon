@@ -204,7 +204,7 @@
     $active: map-get($denali-lime, A200);
     $active-text: map-get(map-get($denali-lime, contrast), A200);
 
-    /* [[  THEME  ]] (#{$theme-name}) - DBFS component  */
+    /* [[  THEME  ]] (#{$theme-name}) - notification list component  */
     @at-root [theme='#{$theme-name}'] {
 
         :host.notification-list {

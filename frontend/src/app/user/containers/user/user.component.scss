@@ -1,10 +1,10 @@
-@mixin app-user-component-base() {
-    .app-user {
+@import 'loader-base';
 
-    }
-}
+:host.app-user {}
 
-@mixin app-user-component-theme($theme-config) {
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
     /* Theme config parts */
     $tname: map-get($theme-config, theme-name);
 
@@ -22,11 +22,15 @@
 
     $navbar-text: map-get($foreground, navbar-text);
 
-    .nav-user-title {
-        color: $navbar-text;
-    }
+     /* [[  THEME  ]] (#{$theme-name}) - user container component  */
+     @at-root [theme='#{$theme-name}'] {
 
-    .app-user {
+        .nav-user-title {
+            color: $navbar-text;
+        }
 
+        :host.app-user {
+
+        }
     }
 }

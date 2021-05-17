@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 //* DASHBOARD MODULE LOADER */
 //*
 //* NOTE: Why are there two different mixins?
@@ -17,7 +19,7 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // containers
-@import './containers/user/user.component';
+//@import './containers/user/user.component';
 
 // components
 
@@ -30,7 +32,7 @@
     // example: @include componentName-component-core();
 
     // containers
-    @include app-user-component-base();
+    //@include app-user-component-base();
 
     // components
 
@@ -42,7 +44,7 @@
     // example: @include componentName-component-theme($theme-config);
 
     // container
-    @include app-user-component-theme($theme-config);
+    //@include app-user-component-theme($theme-config);
 
     // components
 
