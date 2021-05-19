@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 //* ALERTS MODULE STYLE LOADER */
 //*
 //* NOTE: Why are there two different mixins?
@@ -19,10 +21,10 @@
 //@import './alerts.common';
 
 // containers
-@import './containers/alerts.component'; // nothing to style yet
+// @import './containers/alerts.component'; // nothing to style yet
 
 // components
-@import  './components/snooze-details/snooze-details.component';
+//@import  './components/snooze-details/snooze-details.component';
 @import './components/alert-details/alert-details.component';
 @import './components/name-alert-dialog/name-alert-dialog.component';
 @import './components/alert-details/children/recipients-manager/recipients-manager.component';
@@ -43,7 +45,7 @@
     //@include alerts-container-component-base(); // nothing to style yet
 
     // components
-    @include snooze-details-component-base();
+    //@include snooze-details-component-base();
     @include alert-details-component-base();
     @include name-alert-dialog-component-base();
     @include alert-configuration-contacts-component-base();
@@ -64,7 +66,7 @@
     //@include alerts-container-component-theme($theme-config); //nothing to style yet
 
     // components
-    @include snooze-details-component-theme($theme-config);
+    //@include snooze-details-component-theme($theme-config);
     @include alert-details-component-theme($theme-config);
     @include name-alert-dialog-component-theme($theme-config);
     @include alert-configuration-contacts-component-theme($theme-config);
