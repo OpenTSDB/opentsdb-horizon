@@ -35,7 +35,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
           metric: this.fb.group({ 
               name: this.config ? this.config.query.metric.name : '',
               tagAggregator: this.config ? this.config.query.metric.tagAggregator : 'sum',
-              groupByTags: this.config ? this.config.query.metric.groupByTags : []
+              groupByTags: this.fb.array(this.config ? this.config.query.metric.groupByTags : [])
           }),
       }),
       comparisonOperator: this.config.comparisonOperator || 'missing',
@@ -43,6 +43,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
       timeSampler: this.config.timeSampler ||  'all_of_the_times',
       reportingInterval: this.config.reportingInterval || 60,
     });
+    
     const sub = this.suppressForm.valueChanges.subscribe(formval => {
       this.validateForm();
       this.configChange.emit(formval);
