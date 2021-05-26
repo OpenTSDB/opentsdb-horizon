@@ -54,6 +54,7 @@
         </button>
     </div>-->
     <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"
+        [dbid]="dbid"
         [newWidget]="newWidget"
         [mWidget]="mWidget"
         (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
