@@ -35,7 +35,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
           metric: this.fb.group({ 
               name: this.config ? this.config.query.metric.name : '',
               tagAggregator: this.config ? this.config.query.metric.tagAggregator : 'sum',
-              groupByTags: this.fb.array(this.config ? this.config.query.metric.groupByTags : [])
+              groupByTags: this.config ? [ this.config.query.metric.groupByTags ] : []
           }),
       }),
       comparisonOperator: this.config.comparisonOperator || 'missing',

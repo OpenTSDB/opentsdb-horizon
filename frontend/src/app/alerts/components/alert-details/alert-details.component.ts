@@ -1361,7 +1361,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             queries[i] = query;
         }
 
-        this.addSuppressQuery(queries);
+        const sQuery : any = this.getSuppressQuery();
+        if ( sQuery ) {
+            this.addSuppressQuery(queries);
+        }
 
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
@@ -1369,7 +1372,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             settings.settings.time = {};
             settings.settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
-        options.sources = mid ? [ mid ] : [];
+
+        options.sources = mid ? ( sQuery ? [ mid, 'm1' ] : [ mid ] ) : [];
 
         const q = this.queryService.buildQuery( settings, time, queries, options);
         return [q];
@@ -1765,7 +1769,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                         comparisonOperator : this.suppressConfig.comparisonOperator,
                         threshold : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.threshold,
                         timeSampler : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.timeSampler,
-                        reportingInterval: this.suppressConfig.reportingInterval
+                        reportingInterval: this.suppressConfig.reportingInterval,
+                        metricId: this.utils.getDSId( this.utils.arrayToObject(queries), queries.length - 1, 0) + '_groupby'
                     }
                 }
                 // tslint:disable-next-line: max-line-length
@@ -1800,6 +1805,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         data.enabled = this.enabled;
         data.version = this.alertConverter.getAlertCurrentVersion();
         this.utils.setTabTitle(this.data.name);
+        console.log("save alert", data)
         // emit to save the alert
         this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
              payload: { data: this.utils.deepClone([data])}} );
