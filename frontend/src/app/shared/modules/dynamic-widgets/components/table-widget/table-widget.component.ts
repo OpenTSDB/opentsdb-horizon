@@ -323,7 +323,6 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         switch (colId) {
           case 'metric': 
           case 'tag':
-          case 'time':
               return data[colId];
           default: return parseFloat(data[colId+':raw']);
         }
@@ -335,7 +334,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         this.data.sort((a: any, b: any) => {
             const valueA = this.sortingDataAccessor(a, sort.active);
             const valueB = this.sortingDataAccessor(b, sort.active);
-            if (sort.active === 'time' || sort.active === 'metric' || sort.active === 'tag' ) {
+            if ( sort.active === 'metric' || sort.active === 'tag' ) {
                 return (valueA < valueB ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
             } else {
                 return (sort.direction === 'asc') ? valueA - valueB : valueB - valueA;

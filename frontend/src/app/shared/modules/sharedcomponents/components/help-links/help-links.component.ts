@@ -10,7 +10,6 @@ export class HelpLinksComponent implements OnInit {
 
   links = [
             { label: 'User guide', href: 'http://yo/yamas-guide' },
-            { label: 'Admin guide', href: 'https://git.vzbuilders.com/pages/monitoring/yamas_userguide_2.0/' },
             { label: 'File a ticket', href: 'https://jira.vzbuilders.com/secure/CreateIssueDetails!init.jspa?pid=10503&issuetype=10100&priority=10300' },
             { label: 'Talk to us', icon: 'd-slack', href: 'https://vzbuilders.slack.com/archives/C6PJGN58S' },
             { label: 'Release notes', href: 'https://git.vzbuilders.com/pages/monitoring/yamas-guide/release_notes/horizon/' },
