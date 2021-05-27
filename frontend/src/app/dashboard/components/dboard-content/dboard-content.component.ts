@@ -97,7 +97,7 @@ export class DboardContentComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     // need to reload grister view to update the UI
-    if (changes.rerender && changes.rerender.currentValue.reload) {
+    if (changes.rerender && changes.rerender.currentValue.reload && !this.viewEditMode) {
        this.gridster.reload();
     }
 

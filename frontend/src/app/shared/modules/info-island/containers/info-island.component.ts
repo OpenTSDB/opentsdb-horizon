@@ -7,6 +7,7 @@ import { InfoIslandOptions } from '../services/info-island-options';
 import { ConsoleService } from '../../../../core/services/console.service';
 import { CdkDrag} from '@angular/cdk/drag-drop';
 import { Portal } from '@angular/cdk/portal';
+import { IntercomService } from '../../../../core/services/intercom.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -37,7 +38,8 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     constructor(
         private console: ConsoleService,
-        private hostEl: ElementRef
+        private hostEl: ElementRef,
+        private interCom: IntercomService
     ) {}
 
     @HostBinding('class.info-island-component') private _hostClass = true;
@@ -290,6 +292,10 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     dragResizeRelease(e: any) {
         // do something?
+        this.interCom.responsePut({
+            action: 'islandResizeComplete',
+            payload: true
+        });
     }
 
     /** On Destroy */
