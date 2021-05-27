@@ -318,6 +318,15 @@ $widgets-common-config: (
                 line-height: 15px;
                 white-space: nowrap;
                 font-weight: 600;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                > span:first-child {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 95%;
+                }
             }
         }
 
