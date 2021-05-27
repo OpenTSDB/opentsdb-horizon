@@ -21,8 +21,8 @@ export const environment = {
   ],
   // configdb: 'https://stg-config.yamas.ouroath.com:4443/api/v1',
   configdb: 'https://config.yamas.ouroath.com:443/api/v1',
-  // metaApi: 'https://meta.yamas.ouroath.com:443/api',
-  metaApi: 'https://stg-metrics.yamas.ouroath.com/api',
+  metaApi: 'https://meta.yamas.ouroath.com:443/api',
+  // metaApi: 'https://stg-metrics.yamas.ouroath.com/api',
   // metaApi: 'https://stg-mt-1-gq1.yamas.ouroath.com/api',
   auraUI: 'https://qa-aura.yamas.ouroath.com:4443',
   alert: {
