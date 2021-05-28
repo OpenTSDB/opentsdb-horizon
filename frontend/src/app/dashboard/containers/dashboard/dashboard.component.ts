@@ -2210,6 +2210,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // util function to generate lookup map to dashboard variables
     private getTplVariablesKeyLookup(): any {
+        //this.console.log('TPL VARIABLES', this.tplVariables);
         const rawVariables: any[] = this.tplVariables.viewTplVariables.tvars;
         const variableLookup: any = {};
         for(let i = 0; i < rawVariables.length; i++) {
@@ -2223,7 +2224,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // util to resolve dashboard variables for widgets being moved to clipboard
     private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
         let dbTplVarLookup = this.getTplVariablesKeyLookup();
-        this.console.log('DBTPLVARMAP', dbTplVarLookup);
+        //this.console.log('DBTPLVARMAP', dbTplVarLookup);
 
         // loop through widgets
         for(let i = 0; i < widgets.length; i++) {
@@ -2252,7 +2253,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }
 
-        this.console.log('WIDGET', widgets);
+        //this.console.log('WIDGET', widgets);
 
         return widgets;
     }
