@@ -180,6 +180,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
                 }
                 this.widgetChange.emit(message);
                 break;
+            case 'UpdateQueryAlias':
+                this.widgetChange.emit(message);
+                break;
             case 'UpdateQueryMetricVisual':
                 this.widgetChange.emit(message);
                 break;
