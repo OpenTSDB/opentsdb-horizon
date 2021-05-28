@@ -320,12 +320,12 @@ $widgets-common-config: (
                 font-weight: 600;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                padding: 0 4px;
 
                 > span:first-child {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    width: 95%;
                 }
             }
         }
