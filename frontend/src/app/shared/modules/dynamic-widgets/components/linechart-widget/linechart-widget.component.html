@@ -248,7 +248,7 @@
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
                             <span>6. Events</span>
-                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            <mat-icon fontSet="denali" *ngIf="(!displayMultigraph || !multigraphEnabled) && widget.settings.visual.showEvents" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
                     <div *ngIf="!displayMultigraph || !multigraphEnabled">

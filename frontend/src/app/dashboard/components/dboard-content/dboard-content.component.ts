@@ -24,7 +24,7 @@ export class DboardContentComponent implements OnChanges {
   @ViewChild(GridsterComponent) gridster: GridsterComponent;
 
   // widgetLoader Children
-  @ViewChildren(WidgetLoaderComponent, {read: WidgetLoaderComponent})  widgetLoaders: QueryList<WidgetLoaderComponent>;
+  @ViewChildren(WidgetLoaderComponent, {read: WidgetLoaderComponent}) widgetLoaders: QueryList<WidgetLoaderComponent>;
 
   @Output() widgetsLayoutUpdate = new EventEmitter();
   @Input() widgets: any[];
@@ -32,6 +32,7 @@ export class DboardContentComponent implements OnChanges {
   @Input() mWidget: any;
   @Input() rerender: any;
   @Input() dashboardMode: string;
+  @Input() dbid: any;
 
   @Input() batchControlsToggle: boolean = false;
   @Input() batchSelectedItems: any = {};

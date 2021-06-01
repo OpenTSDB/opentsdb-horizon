@@ -37,6 +37,14 @@ export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
         return this.drawerState;
     }
 
+    setDrawerOpen() {
+        this.cbService.setDrawerState('opened');
+    }
+
+    setDrawerClosed() {
+        this.cbService.setDrawerState('closed');
+    }
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }

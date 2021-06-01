@@ -77,6 +77,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     @Input() widget: any;
+    @Input() isNewDb: boolean = false;
     @Output() editComponent = new EventEmitter<any>();
 
     @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;

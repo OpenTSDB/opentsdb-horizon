@@ -108,7 +108,7 @@ export class DatatranformerService {
             const dtFormat = dtFormats[unit] || defDtFormat;
             for (let i = 0; i < numPoints ; i++ ) {
                 const time = (timeSpecification.start + ( m * i * mSeconds[unit] ));
-                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat) };
+                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat), 'time:raw': time };
                 for ( let j = 0; j < keys.length; j++ ) {
                     const key = keys[j];
                     row[key] = objData[key].data[i];

@@ -5,13 +5,10 @@
     $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
     .widget-panel-content.table-widget {
-        // flex-direction: column;
-        // padding-top: 10px;
-        // overflow: hidden;
-
         flex: 1;
         display: flex;
         padding-top: 20px;
+
         .widget-output {
             width: 100%;
             // height: 100%;
@@ -56,25 +53,16 @@
                     border-bottom: solid 25px;
                 }
             }
-
-            /*.mat-button-toggle-checked {
-                box-shadow: inset 0 -2px 0 blue;
-                background: white;
-            }*/
         }
 
         .widget-config-container {
-            //flex-direction: row-reverse;
             box-sizing: border-box;
             padding: 0;
+
             .table-widget-output-container {
-                // width: 50%;
-                // height: 100%;
-                // background-color: khaki;
                 .widget-output {
-                    // display: flex;
-                    // flex: 1;
                     height: 100%;
+                    padding: 0;
 
                     .gif-spinner {
                         position: absolute;
@@ -102,26 +90,26 @@
             display:inline-block;
             width: 100%;
             height: calc(100% - 2px);
-            // overflow: auto;
             position: relative;
+
             .mat-table {
-                // width: 100%;
+                height: 100%;
+                overflow: overlay;
+
                 .mat-header-row,
                 .mat-footer-row,
                 .mat-row {
                     min-height: inherit;
                 }
 
-                height: 100%;
-                overflow: overlay;
-
                 .mat-header-cell,
-                .mat-cell{
+                .mat-cell {
                     min-width: 80px;
                     font-size: inherit;
                     padding: inherit;
                     text-align: right;
                     justify-content: flex-end;
+
                     &.mat-column-time,
                     &.mat-column-metric,
                     &.mat-column-tag {
@@ -138,6 +126,7 @@
                     }
 
                 }
+
                 .mat-header-cell,
                 .mat-cell {
                     overflow-wrap: anywhere;
@@ -162,17 +151,16 @@
     .edit-view-container.is-active
     {
         .widget-config-container[style*="flex-direction: row-reverse;"] {
-            //flex-direction: row-reverse;
             box-sizing: border-box;
             padding: 0;
+
             .table-widget-output-container {
                 width: 50%;
                 height: 100%;
-                // background-color: khaki;
+
                 .widget-output {
-                    // display: flex;
-                    // flex: 1;
                     min-height: 100%;
+
                     .gif-spinner {
                         position: absolute;
                         left: calc(50% + 15px);
@@ -184,16 +172,10 @@
         }
 
         .widget-config-container[style*="flex-direction: column;"] {
-            //flex-direction: row-reverse;
-            // box-sizing: border-box;
-            // padding: 0;
-
             .table-widget-output-container {
-                // border: 1px solid #000;
                 width: 100%;
                 padding: 0px 14px;
-                // height: 100%;
-                // background-color: khaki;
+
                 .widget-output {
                     display: flex;
                     flex: 1;
@@ -220,10 +202,7 @@
     $is-dark: map-get($theme-config, is-dark);
 
     .mat-button-toggle-group{
-
         .mat-button-toggle-appearance-standard {
-
-
             &.mat-button-toggle-checked {
                 background: $card-background;
                 position: relative;
