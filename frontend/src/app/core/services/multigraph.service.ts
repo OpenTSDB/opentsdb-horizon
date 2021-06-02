@@ -246,12 +246,16 @@ export class MultigraphService {
   }
 
   // to get all groupby tags of a wigdet
+  // we also need not to include if they visibility is set to false.
   getGroupByTags(queries: any[]): string[] {
     let ret = [];
     for (let i = 0; i < queries.length; i++) {
       const query = queries[i];
+      // skip if query is visible set to false
+      if (!query.settings.visual.visible) continue;
       for (let j = 0; j < query.metrics.length; j++) {
         const metric = query.metrics[j];
+        if (!metric.settings.visual.visible) continue;
         if (metric.groupByTags && metric.groupByTags.length) {
           ret = ret.concat(metric.groupByTags.filter((item) => {
             return ret.indexOf(item) < 0;

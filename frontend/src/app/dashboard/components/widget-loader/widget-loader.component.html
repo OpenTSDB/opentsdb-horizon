@@ -56,7 +56,7 @@
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                                 <span>Clone</span>
                             </button>
-                            <button mat-menu-item (click)="widgetCopy()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
+                            <button mat-menu-item (click)="widgetCopy()" *ngIf="!isNewDb && widget.settings.component_type !== 'PlaceholderWidgetComponent'">
                                 <mat-icon fontSet="denali" fontIcon="d-copy-file"></mat-icon>
                                 <span>Copy Widget</span>
                             </button>

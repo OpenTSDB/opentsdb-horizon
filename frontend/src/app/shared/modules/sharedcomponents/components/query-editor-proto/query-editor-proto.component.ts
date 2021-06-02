@@ -1355,6 +1355,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         let value = this.queryAliasFormControl.value;
         this.query.settings.visual.label = value;
         this.queryAliasEdit = false;
+        this.requestChanges('UpdateQueryAlias', { visual: { label: value } } );
     }
 
 
