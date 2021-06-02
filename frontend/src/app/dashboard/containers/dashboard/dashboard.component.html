@@ -54,6 +54,7 @@
         </button>
     </div>-->
     <app-dboard-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch"
+        [dbid]="dbid"
         [newWidget]="newWidget"
         [mWidget]="mWidget"
         (widgetsLayoutUpdate)="widgetsLayoutUpdate($event)"
@@ -128,6 +129,9 @@
         <button mat-flat-button class="save-dashboard-button" *ngIf="snapshot && doesUserHaveWriteAccess()" (click)="saveSnapshot()">
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
         </button>
+    </span>
+    <span class="navbar-item links">
+        <help-links></help-links>
     </span>
     <!--<span class="navbar-item nav-batch-edit-toggle">
         <button mat-flat-button class="toggle-dashboard-batch-button" (click)="toggleBatchControls()">

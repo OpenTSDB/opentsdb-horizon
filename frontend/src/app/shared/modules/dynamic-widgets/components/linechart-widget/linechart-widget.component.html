@@ -35,7 +35,7 @@
         <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="displayMultigraph">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
-                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid') ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
+                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid' && multigraphColumns.length > 0) ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
                 <!-- column headers -->
                 <div class="graph-header-row" #multigraphHeaderRow *ngIf="multigraphColumns.length > 0 && multigraphMode === 'grid'">
                     <div class="graph-header-cell" *ngFor="let columnName of multigraphColumns" [style.width.px]="size.width">
@@ -78,7 +78,7 @@
                                         [chartType]="chartType"
                                         [data]="graphData[yKey][xKey]"
                                         [size]="{'width':(size.width - 6), 'height': (size.height - 6)}"
-                                        [options]="graphData[yKey][xKey].options"
+                                        [options]="displayMultigraph ? graphData[yKey][xKey].options : options"
                                         [eventBuckets]="buckets"
                                         [showEvents]="widget.settings.visual.showEvents"
                                         [multigraph]="displayMultigraph && multigraphEnabled"
@@ -248,7 +248,7 @@
                     <div class="step-section-label">
                         <span class="step-section-label-text" (click)="toggleConfigSection('events', $event);scrollToElement(stepevents);">
                             <span>6. Events</span>
-                            <mat-icon fontSet="denali" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+                            <mat-icon fontSet="denali" *ngIf="(!displayMultigraph || !multigraphEnabled) && widget.settings.visual.showEvents" [fontIcon]="visibleSections.events ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                         </span>
                     </div>
                     <div *ngIf="!displayMultigraph || !multigraphEnabled">

@@ -16,7 +16,6 @@ export class AppConfigService {
       .then(data => {
         this.appConfig = data;
         this.initialized = true;
-        console.log("config loaded", this.appConfig);
       })
       .catch(error => {
         this.initialized = false;

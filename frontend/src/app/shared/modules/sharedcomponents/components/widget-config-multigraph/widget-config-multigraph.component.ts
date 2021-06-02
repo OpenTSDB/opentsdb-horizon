@@ -74,6 +74,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         { label: 'Queries', value: 'query_group'}
     ];
     multigraphMode = 'metric_group';
+    canSelectQuery: boolean = true;
     /** Mat Table Stuff */
     chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
@@ -110,7 +111,6 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('changes', changes);
         if ( !changes.widget ) {
             return;
         }
@@ -138,6 +138,13 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         this.createForm(this.multigraph);     
     }
 
+    checkAvailableQuery(queries: any[]): boolean {
+        let count = 0;
+        for (let i = 0; i < queries.length; i++) {
+            if (queries[i].settings.visual.visible) ++count;
+        }
+        return count > 1 ? true : false;
+    }
     // setup multigraph now will depend on metric_group or query_group
     // metric_group is default setup.
     setupMultigraph() {
@@ -157,6 +164,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         }
         const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
         this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
+        this.canSelectQuery = this.checkAvailableQuery(this.widget.queries);
         this.createForm(this.multigraph);
     }
 

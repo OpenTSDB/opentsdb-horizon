@@ -75,7 +75,7 @@ export class MetaService {
         }
       }
 
-      if ( mSource === 'aurastatus' && (type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
+      if ( mSource === 'aurastatus' && (type === 'BASIC' || type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
         filters.unshift({
           'type': 'FieldLiteralOr',
           'key': 'statusType',

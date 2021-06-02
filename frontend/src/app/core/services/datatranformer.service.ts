@@ -30,6 +30,7 @@ export class DatatranformerService {
     
 
     const displayColumns = {};
+    const colLabelLen = 40;
     let dataTable = [];
 
     if ( result && result.results ) {
@@ -62,15 +63,16 @@ export class DatatranformerService {
                 const mLabel = this.util.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
                 const metric = !mConfig.expression ? queryResults.data[j].metric : mLabel
                 let label = vConfig.label ? vConfig.label : metric;
-                label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
+                
                 const tagLabel = this.getLableFromMetricTags('', { metric: '', ...tags}) || 'All';
                 const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
                 
                     if ( summary ) {
+                        label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
                         const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
                         const colLabel = visual.layout == 'metrics:tags' ? tagLabel : label;
                         const rowId = visual.layout == 'metrics:tags' ? mLabel : tagLabel;
-                        displayColumns[colId] = {id: colId, label: colLabel };
+                        displayColumns[colId] = {id: colId, label: colLabel, shortLabel: colLabel.length > colLabelLen ? colLabel.substr(0, colLabelLen - 2) + '..' : colLabel };
                         if (!objData[rowId] ) {
                             objData[rowId] = visual.layout == 'metrics:tags' ? { metric: label } : { tag: tagLabel };
                         }
@@ -82,9 +84,10 @@ export class DatatranformerService {
                         const dunit = this.unit.getNormalizedUnit(data[ts][index], format);
                         
                         objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
+                        objData[rowId][colId + ':raw'] = data[ts][index];
                     } else {
-                        
-                        displayColumns[id] = {id: id, label: label};
+                        label = this.getLableFromMetricTags(vConfig.label, { metric: metric, ...tags});
+                        displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
                         objData[id] = { rawdata:data, data: data.map(d => { 
                             const dunit = this.unit.getNormalizedUnit(d, format);
                             return this.unit.convert(d, format.unit, dunit, format);
@@ -105,10 +108,11 @@ export class DatatranformerService {
             const dtFormat = dtFormats[unit] || defDtFormat;
             for (let i = 0; i < numPoints ; i++ ) {
                 const time = (timeSpecification.start + ( m * i * mSeconds[unit] ));
-                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat) };
+                const row = { time: options.timezone === 'local' ?  moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat), 'time:raw': time };
                 for ( let j = 0; j < keys.length; j++ ) {
                     const key = keys[j];
                     row[key] = objData[key].data[i];
+                    row[key+':raw'] = objData[key].rawdata[i];
                     const bgColor = !isNaN(objData[key].rawdata[i]) ? this.overrideColor(objData[key].rawdata[i], objData[key].config.color, objData[key].config.conditions) : '';
                     const  rgbColor = bgColor ? d3.rgb(bgColor) : '';
                     const color = rgbColor ? 'rgb(' + Math.floor(255 - rgbColor.r) + ',' + Math.floor(255 - rgbColor.g) + ',' + Math.floor(255 - rgbColor.b) + ')' : '';
@@ -124,7 +128,7 @@ export class DatatranformerService {
     options.displayColumns.sort((a: any, b: any) => {
         return this.util.sortAlphaNum(a.label, b.label);
     });
-    options.displayColumns.unshift( !summary ? { id: 'time', 'label': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'label': 'Metric' }  : { id: 'tag', 'label': 'Tag' } );
+    options.displayColumns.unshift( !summary ? { id: 'time', 'shortLabel': 'Time' } : visual.layout == 'metrics:tags' ? { id: 'metric', 'shortLabel': 'Metric' }  : { id: 'tag', 'shortLabel': 'Tag' } );
     return dataTable;
   }
 

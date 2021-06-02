@@ -98,12 +98,12 @@ export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges 
                     layout: new FormControl(this.widget.settings.visual.layout || 'time:metrics'),
                     fontSize: new FormControl(this.widget.settings.visual.fontSize || 12),
                     padding: new FormControl(this.widget.settings.visual.padding || 5),
-                    decimals: new FormControl(this.widget.settings.visual.decimals || 'auto')
+                    decimals: new FormControl(this.widget.settings.visual.decimals || 'auto'),
+                    colWidth: new FormControl(this.widget.settings.visual.colWidth || 'auto'),
                 });
                 this.formInitialized = true;
                 this.gSubscriptions = this.gForms.valueChanges
-                                            // delay is required since we convert the min & max values to the respective unit size
-                                            .pipe(debounceTime(500))
+                                            .pipe(debounceTime(600))
                                             .subscribe(function(data) {
                                                 this.widgetChange.emit( {action: 'SetVisualization', payload: { data: data }} );
                                             }.bind(this));

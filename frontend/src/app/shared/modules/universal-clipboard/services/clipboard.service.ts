@@ -77,7 +77,7 @@ export class ClipboardService {
         const user = this.store.selectSnapshot(DbfsState.getUser());
         // get current user clipboard file
         const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/' + user.alias + '/_clipboard_'));
-        if (cbResource.notFound) {
+        if (!cbResource || cbResource.notFound) {
            return false;
         }
 

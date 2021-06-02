@@ -47,6 +47,17 @@ export class DonutchartLegendComponent implements OnInit {
         }
     ];
 
+    valueOptions: any[] = [
+        {
+            label: 'Show',
+            value: true
+        },
+        {
+            label: 'Hide',
+            value: false
+        }
+    ];
+
     positionOptions: any[] = [
         {
             label: 'Right',
@@ -64,7 +75,8 @@ export class DonutchartLegendComponent implements OnInit {
         this.gForm = new FormGroup({
             display : new FormControl(this.widget.settings.legend.display || false),
             position: new FormControl(this.widget.settings.legend.position ||  'right'),
-            showPercentages: new FormControl( this.widget.settings.legend.showPercentages || false)
+            showPercentages: new FormControl( this.widget.settings.legend.showPercentages || false),
+            showValue: new FormControl( this.widget.settings.legend.showValue || false)
         });
 
         this.subs = this.gForm.valueChanges.subscribe(data => {
@@ -72,4 +84,17 @@ export class DonutchartLegendComponent implements OnInit {
         });
     }
 
+    setPercentage(isVisible) {
+        if ( isVisible && this.gForm.controls['showValue'].value ) {
+            this.gForm['controls']['showValue'].setValue(!isVisible, { emitEvent: false, onlySelf: true });
+        }
+        this.gForm['controls']['showPercentages'].setValue(isVisible);
+    }
+
+    setValue(isVisible) {
+        if ( isVisible && this.gForm.controls['showPercentages'].value ) {
+            this.gForm['controls']['showPercentages'].setValue(!isVisible, { emitEvent: false, onlySelf: true });
+        }
+        this.gForm['controls']['showValue'].setValue(isVisible);
+    }
 }

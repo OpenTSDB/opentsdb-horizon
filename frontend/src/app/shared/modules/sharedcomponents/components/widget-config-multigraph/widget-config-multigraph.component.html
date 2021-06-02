@@ -47,8 +47,8 @@
                             <!--<mat-label>Multigraph by:</mat-label>-->
                             <mat-select [value]="multigraphMode" (selectionChange)="multiModeChange($event)" class="multigraph-mode-selector">
                               <mat-option *ngFor="let option of multigraphByOption"
-                                [value]="option.value"
-                                [disabled]="option.value === 'query_group' && widget.queries.length < 2">{{option.label}}</mat-option>
+                                [value]="option.value">{{option.label}}</mat-option>
+                            <!--[disabled]="option.value === 'query_group' && !canSelectQuery"-->
                             </mat-select>
                         </mat-form-field>
                         <span *ngIf="element.get('key').value !== 'metric_group' && element.get('key').value !== 'query_group'">{{element.get('key').value}}</span>
