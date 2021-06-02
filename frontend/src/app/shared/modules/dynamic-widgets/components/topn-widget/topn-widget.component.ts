@@ -225,6 +225,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setOptions() {
         this.options.format.unit = this.widget.settings.visual.unit;
+        this.options.format.precision = this.widget.settings.visual.decimals || 2;
     }
     setSize(newSize) {
 
@@ -376,7 +377,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     setVisualization( visual) {
-        this.widget.settings.visual = {...this.widget.settings.visual, ...visual}
+        this.widget.settings.visual = {...this.widget.settings.visual, ...visual};
     }
 
     setVisualConditions( vConditions ) {
