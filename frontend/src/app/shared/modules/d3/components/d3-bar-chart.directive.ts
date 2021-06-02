@@ -51,8 +51,8 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         // const formatter = d3.formatPrefix(".2s", refValue);
         const unitOptions = this.options.format;
         const tooltipUnitOptions = this.utils.deepClone(this.options.format);
-        unitOptions.precision = 2;
-        tooltipUnitOptions.precision = 'auto';
+        // unitOptions.precision = 2;
+        // tooltipUnitOptions.precision = 'auto';
         let longText = '';
         // const dunit = this.unitService.getNormalizedUnit(max, unitOptions);
         for (let i = 0, len = dataset.length; i < len; i++) {
