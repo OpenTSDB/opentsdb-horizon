@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler, Injectable, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from '../environments/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
 
@@ -70,9 +69,9 @@ export class CustomUrlSerializer implements UrlSerializer {
     BrowserAnimationsModule,
     CoreModule,
     MaterialModule,
-    // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: false }),
     AppRoutingModule,
-    NgxsModule.forRoot([AuthState], { developmentMode: !environment.production }),
+    NgxsModule.forRoot([AuthState], { developmentMode: false }),
     NgxsLoggerPluginModule.forRoot(),
     AdminModule,
     AdhocModule,
