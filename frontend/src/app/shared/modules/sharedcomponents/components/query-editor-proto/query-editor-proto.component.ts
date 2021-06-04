@@ -957,7 +957,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 index = this.query.metrics.length - 1;
             } else {
                 expConfig.id = id;
-                expConfig.settings.visual.visible = this.query.metrics[index].settings.visual.visible;
+                expConfig.settings.visual = this.query.metrics[index].settings.visual;
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }
