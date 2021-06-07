@@ -214,6 +214,7 @@
     <div class="form-group suppress-config">
             <div class="form-label vertical-center"><strong>Suppress alert If</strong></div>
             <alert-details-suppress-config 
+                [queries]="queries"
                 [config]="suppressConfig" 
                 [tags]="tags"
                 (configChange)="updateSuppressConfig($event)">

@@ -708,6 +708,10 @@ export class UtilsService {
         return obj;
     }
 
+    isArraySubset(arr1, arr2) {
+        return arr2.every( v => arr1.includes(v) );
+    }
+
     transformTagMapToArray(map: Map<any, any>): any[] {
         const ret = [];
 
