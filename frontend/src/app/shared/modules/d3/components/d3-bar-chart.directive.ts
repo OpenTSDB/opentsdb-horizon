@@ -51,8 +51,8 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         // const formatter = d3.formatPrefix(".2s", refValue);
         const unitOptions = this.options.format;
         const tooltipUnitOptions = this.utils.deepClone(this.options.format);
-        unitOptions.precision = 2;
-        tooltipUnitOptions.precision = 'auto';
+        // unitOptions.precision = 2;
+        // tooltipUnitOptions.precision = 'auto';
         let longText = '';
         // const dunit = this.unitService.getNormalizedUnit(max, unitOptions);
         for (let i = 0, len = dataset.length; i < len; i++) {
@@ -232,6 +232,10 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .style("width","100%")
               .append("xhtml:div")
                 .attr("class", "text")
+                .style("height", "100%")
+                .style("display", "flex")
+                .style("align-items", "center")
+              .append("xhtml:span")
                 .style("padding", "2px")
                 .style("font-size", fontSize)
                 .style("line-height","1")
@@ -239,11 +243,11 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .style("background-color",(d: any) => {
                     let tmpColor = d.color === 'auto' ? '#000000' : d.color;
                     let tcContrast = this.utils.findContrastColor(tmpColor);
-                    let opacity: any = (tcContrast.type === 'white') ? .65 : 0
+                    let opacity: any = (tcContrast.type === 'white') ? .45 : 0
 
                     return 'rgba(255, 255, 255, ' + opacity + ')';
                 })
-                .html((d: any) => "<span>" + d.label + "</span>")
+                .html((d: any) =>  d.label)
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);

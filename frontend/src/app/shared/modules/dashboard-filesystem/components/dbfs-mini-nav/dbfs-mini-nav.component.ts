@@ -287,6 +287,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.panels.splice(1, this.panels.length);
         }
 
+        console.log('PANEL CONTEXT', this.folders);
+
         this.panelIndex = this.panels.length - 1;
 
         // After initial setup, we will no longer pull from the state resources cache, but will call API
@@ -393,6 +395,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         this.panels.push(this.folders[path]);
         this.panelIndex = this.panels.length - 1;
 
+        console.log('FOLDER CONTEXT', this.folders[path]);
+
         setTimeout(function() {
             this.selected = false;
             this.navPanel.goNext();
@@ -444,6 +448,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
             this.folders[folderPanel.fullPath] = folderPanel;
             this.addPanel(folderPanel.fullPath);
+
+            console.log('PANEL CONTEXT', folderPanel);
 
             // tell DBFS about this as well so the cache is in sync
             this.store.dispatch(new DbfsLoadSubfolderSuccess(resource, {}));

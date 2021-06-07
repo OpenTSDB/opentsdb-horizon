@@ -712,6 +712,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.refreshData(false);
                 this.cdRef.detectChanges();
                 break;
+            case 'UpdateQueryAlias':
+                this.options = { ...this.options };
+                this.utilService.createNewReference(this.widget.queries, [qindex]);
+                this.widget = { ...this.widget };
+                this.refreshData(false);
+                this.cdRef.detectChanges();               
+                break;
             case 'SetShowEvents':
                 this.setShowEvents(message.payload.showEvents);
                 break;
@@ -724,11 +731,15 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             case 'ToggleQueryVisibility':
                 this.utilService.toggleQueryVisibility(this.widget, message.id);
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.updateMultigraphConf();
+                this.widget = { ...this.widget };
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
                 break;
             case 'ToggleQueryMetricVisibility':
                 this.utilService.toggleQueryMetricVisibility(this.widget, message.id, message.payload.mid);
+                this.updateMultigraphConf();
+                this.widget = { ...this.widget };
                 this.needRequery = true;
                 this.doRefreshData$.next(true);
                 break;
@@ -742,6 +753,8 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.utilService.deleteQuery(this.widget, message.id);
                 this.setAxesOption();
                 this.widget = this.utilService.deepClone(this.widget);
+                this.updateMultigraphConf();
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -749,6 +762,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.utilService.deleteQueryMetric(this.widget, message.id, message.payload.mid);
                 this.setAxesOption();
                 this.widget.queries = this.utilService.deepClone(this.widget.queries);
+                this.updateMultigraphConf();
                 this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
@@ -1413,6 +1427,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.isDataLoaded) {
             this.nQueryDataLoading = 1;
             this.error = null;
+            // when something change and need to request data
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'getQueryData',
@@ -1760,6 +1775,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = this.widget.settings.multigraph.enabled;
         }
+    }
+    // update multigraph config for widget queries query/meric is deleted or toggle visibility
+    updateMultigraphConf() {
+        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
     }
 
     private isIn(pBounding: any, cCord: any) {

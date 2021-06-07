@@ -347,9 +347,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 action: 'clearSystemMessage',
                 payload: {}
             });
-
-
         }));
+
         // setup navbar portal
         this.dashboardNavbarPortal = new TemplatePortal(this.dashboardNavbarTmpl, undefined, {});
         this.cdkService.setNavbarPortal(this.dashboardNavbarPortal);
@@ -765,6 +764,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                     let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
 
+                    if (this.clipboardMenu.getDrawerState() === 'closed') {
+                        this.clipboardMenu.toggleDrawerState({});
+                    }
+
                     this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
                     break;
                 case 'batchItemUpdated':
@@ -1159,6 +1162,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     updateURLParams(p) {
         this.urlOverrideService.applyParamstoURL(p);
     }
+
     // applyCustomDownsample to widgets when user change
     applyDBDownsample(dsample: any) {
         // deal with copy of widget since we dont want to write to wiget config
@@ -2037,7 +2041,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 return item.widget.id === widgets[i].id
             });
 
-            const widgetCopy: any = {...widgets[i]};
+            const widgetCopy: any = JSON.parse(JSON.stringify(widgets[i]));
 
             widgetCopy.settings.clipboardMeta = {
                 dashboard: {
@@ -2206,6 +2210,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // util function to generate lookup map to dashboard variables
     private getTplVariablesKeyLookup(): any {
+        //this.console.log('TPL VARIABLES', this.tplVariables);
         const rawVariables: any[] = this.tplVariables.viewTplVariables.tvars;
         const variableLookup: any = {};
         for(let i = 0; i < rawVariables.length; i++) {
@@ -2219,6 +2224,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // util to resolve dashboard variables for widgets being moved to clipboard
     private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
         let dbTplVarLookup = this.getTplVariablesKeyLookup();
+        //this.console.log('DBTPLVARMAP', dbTplVarLookup);
 
         // loop through widgets
         for(let i = 0; i < widgets.length; i++) {
@@ -2235,12 +2241,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // check if there is a custom filter
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
+                        const fval = dbTplVarLookup[fkey].filter;
                         filter.customFilter = [];
-                        filter.filter[0] = dbTplVarLookup[fkey].filter;
+                        if (fval.length > 0) {
+                            filter.filter[0] = dbTplVarLookup[fkey].filter;
+                        } else {
+                            filter.filter = []
+                        }
                     }
                 }
             }
         }
+
+        //this.console.log('WIDGET', widgets);
 
         return widgets;
     }
