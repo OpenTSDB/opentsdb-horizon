@@ -12,7 +12,7 @@ import {
     OnDestroy,
     SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef
 } from '@angular/core';
-import { MatAutocomplete, MatMenuTrigger, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocomplete, MatMenuTrigger } from '@angular/material';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';
@@ -37,12 +37,10 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     @Input() metrics = [];
     // tslint:disable-next-line:no-inferrable-types
     @Input() focus: boolean = true;
-    @Input() empty: boolean = false;
 
     @Output() metricOutput = new EventEmitter();
     @Output() blur = new EventEmitter();
 
-    @ViewChild('singleactrigger') singleactrigger: MatAutocompleteTrigger;
     @ViewChild('metricSearchInput') metricSearchInput: ElementRef;
     @ViewChild('metricAutoComplete') metricAutoCompleteCntrl: MatAutocomplete;
     @ViewChild('metricSearchFormField', {read: ElementRef}) metricSearchFormField: ElementRef;
@@ -141,7 +139,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
             .subscribe(value => {
                 //console.log('IT DID SOMETHING **');
                 // this.visible = true;
-                const query: any = { namespace: this.namespace, tags: this.filters, tagkeys: this.tagkeys };
+                const query: any = { namespace: this.namespace, tags: this.filters };
                 query.search = value ? value : '';
                 this.message['metricSearchControl'] = {};
                 this.firstRun = true;
@@ -149,33 +147,29 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
                 if (  this.metricSub ) {
                     this.metricSub.unsubscribe();
                 }
-                if ( this.namespace ) {
-                    this.metricSub = this.httpService.getMetricsByNamespace(query)
-                        .subscribe(res => {
-                            this.firstRun = false;
-                            this.metricOptions = res;
+                this.metricSub = this.httpService.getMetricsByNamespace(query)
+                    .subscribe(res => {
+                        this.firstRun = false;
+                        this.metricOptions = res;
 
 
-                            if ( this.metricOptions.length === 0 ) {
-                                this.message['metricSearchControl'] = { 'type': 'info', 'message': 'No data found' };
-                            }
-                            setTimeout(() => {
-                                this.calculateAutoCompleteWidth(this.metricOptions);
-                                this.detectChanges();
-                            });
-
-                        },
-                            err => {
-                                this.firstRun = false;
-                                this.metricOptions = [];
-                                const message = err.error.error ? err.error.error.message : err.message;
-                                this.message['metricSearchControl'] = { 'type': 'error', 'message': message };
-                                this.detectChanges();
+                        if ( this.metricOptions.length === 0 ) {
+                            this.message['metricSearchControl'] = { 'type': 'info', 'message': 'No data found' };
+                        }
+                        setTimeout(() => {
+                            this.calculateAutoCompleteWidth(this.metricOptions);
+                            this.detectChanges();
                         });
-                } else {
-                    this.firstRun = false;
-                    this.metricOptions = [];
-                }
+
+                    },
+                        err => {
+                            this.firstRun = false;
+                            this.metricOptions = [];
+                            const message = err.error.error ? err.error.error.message : err.message;
+                            this.message['metricSearchControl'] = { 'type': 'error', 'message': message };
+                            this.detectChanges();
+                    });
+
             });
     }
 
@@ -279,19 +273,13 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         // check if value is valid metric option
         const checkIdx = this.metricOptions.findIndex(item => textVal.toLowerCase() === item.name.toLowerCase());
 
-        if (checkIdx >= 0 || this.empty ) {
-            if ( this.singleactrigger.panelOpen ) {
-                this.singleactrigger.closePanel();
-            }
+        if (checkIdx >= 0) {
             // set value to the option value (since typed version could be different case)
-            this.metrics[0] = checkIdx >= 0 ? this.metricOptions[checkIdx].name : (this.metrics[0] === textVal ? textVal : '');
+            this.metrics[0] = this.metricOptions[checkIdx].name;
             // emit change
             this.requestChanges();
+            this.blur.emit();
         }
-        if ( checkIdx === -1 && this.metrics[0] !== textVal && this.empty ) {
-            this.metricSearchControl.setValue('', { emitEvent: false});
-        }
-        this.blur.emit();
     }
 
     metricMultipleACKeydown(event: any) {

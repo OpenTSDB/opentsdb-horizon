@@ -288,8 +288,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
       };
     chartId = 'eventAlert';
     chartInvisibleMetrics = [];
-    canSuppressAlert = false;
-    editSuppressMetric = false;
     suppressConfig: any = {
         metricId: '',
         reportingInterval : '',
@@ -495,7 +493,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.showDetail = data.id ? true : false;
         this.startTime =  '1h';
         this.endTime = 'now';
-        const sQuery = null; //data.queries && data.queries.raw.length && data.queries.raw[data.queries.raw.length -1].id === 'sq' ? data.queries.raw.pop() : null;
         this.setQuery();
         // TODO: need to check if there is something in this.data
         const bad = data.threshold.singleMetric.badThreshold !== undefined ? data.threshold.singleMetric.badThreshold : null;
@@ -684,7 +681,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         this.setTags();
         const namespace = this.queries[qindex] ? this.queries[qindex].namespace : '';
-        this.canSuppressAlert = mid ? true : false;
         this.reloadData();
     }
 
@@ -1111,7 +1107,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( this.thresholdType === 'singleMetric' ) {
             const mid = this.alertForm.get('threshold').get('singleMetric').get('metricId').value;
             const [qindex, mindex] = this.utils.getMetricIndexFromId(mid, this.queries);
-            const suppressns = this.queries[qindex] ? this.queries[qindex].namespace : '';
             let res = [];
             if ( mid  && this.queries[qindex] && this.queries[qindex].metrics.length) {
                 res = this.queries[qindex].metrics[mindex].groupByTags || [];

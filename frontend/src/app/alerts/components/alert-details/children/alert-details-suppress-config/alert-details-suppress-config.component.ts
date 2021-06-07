@@ -53,7 +53,6 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     if ( formval.metricId ) {
       const [qindex, mindex] = this.utils.getMetricIndexFromId(this.config.metricId, this.queries);
       const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
-      console.log("validateForm", this.tags, suppressTags);
       if  ( this.tags.length &&  !suppressTags.length ) {
         this.suppressForm.get('metricId').setErrors({ 'tagRequired': true });
       }
