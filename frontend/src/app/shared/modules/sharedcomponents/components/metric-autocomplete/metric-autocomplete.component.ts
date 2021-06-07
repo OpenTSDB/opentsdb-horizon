@@ -31,7 +31,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     @HostBinding('class.metric-autocomplete') private _hostClass = true;
     @Input() namespace = '';
     @Input() filters = [];
-    @Input() tagkeys = [];
     // tslint:disable-next-line:no-inferrable-types
     @Input() multiple: boolean = false;
     @Input() metrics = [];

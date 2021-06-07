@@ -16,7 +16,6 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
   @Input() data: any = {};
   @Input() config: any = null;
   @Output() configChange = new EventEmitter();
-  canSuppressAlert = true;
   metricEdit= false;
   suppressForm: FormGroup;
   constructor( private fb: FormBuilder, private utils: UtilsService ) { }
@@ -51,7 +50,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     this.resetFormErrors();
     const formval = this.suppressForm.getRawValue();
     if ( formval.metricId ) {
-      const [qindex, mindex] = this.utils.getMetricIndexFromId(this.config.metricId, this.queries);
+      const [qindex, mindex] = this.utils.getMetricIndexFromId(formval.metricId, this.queries);
       const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
       if  ( this.tags.length &&  !suppressTags.length ) {
         this.suppressForm.get('metricId').setErrors({ 'tagRequired': true });
