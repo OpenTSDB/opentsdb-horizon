@@ -2225,6 +2225,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
         let dbTplVarLookup = this.getTplVariablesKeyLookup();
         //this.console.log('DBTPLVARMAP', dbTplVarLookup);
+        //this.console.log('WIDGETS', widgets);
 
         // loop through widgets
         for(let i = 0; i < widgets.length; i++) {
@@ -2242,11 +2243,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
                         const fval = dbTplVarLookup[fkey].filter;
+                        const fvalScope = dbTplVarLookup[fkey].scope;
                         filter.customFilter = [];
+
+                        // check if there is a set value
                         if (fval.length > 0) {
                             filter.filter[0] = dbTplVarLookup[fkey].filter;
+                        // no value, so check for scoped values
+                        } else if(fvalScope.length > 0) {
+                            filter.filter = fvalScope;
+                        // else, just make it empty array
                         } else {
-                            filter.filter = []
+                            filter.filter = [];
                         }
                     }
                 }
