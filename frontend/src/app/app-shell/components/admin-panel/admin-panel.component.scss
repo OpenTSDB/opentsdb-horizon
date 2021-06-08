@@ -1,6 +1,3 @@
-@import './children/notification-panel/notification-panel.component';
-@import './children/notification-list/notification-list.component';
-@import './children/notification-editor/notification-editor.component';
 
 @mixin admin-panel-component-base() {
     $navbar-height: map-get($navbar-config, 'navbar-height');
@@ -115,10 +112,6 @@
             }
         }
     }
-
-    @include notification-panel-component-base();
-    @include notification-list-component-base();
-    @include notification-editor-component-base();
 }
 
 @mixin admin-panel-component-theme($theme-config) {
@@ -174,8 +167,4 @@
             }
         }
     }
-
-    @include notification-panel-component-theme($theme-config);
-    @include notification-list-component-theme($theme-config);
-    @include notification-editor-component-theme($theme-config);
 }

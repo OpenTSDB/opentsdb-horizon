@@ -16,7 +16,6 @@
 @import './components/settings-panel/settings-panel.component';
 @import './components/admin-panel/admin-panel.component';
 
-@import './components/global-notification-banner/global-notification-banner.component';
 
 
 $navbar-config: (
@@ -43,8 +42,6 @@ $navbar-config: (
     @include navigator-panel-component-base();
     @include settings-panel-component-base();
     @include admin-panel-component-base();
-    @include global-notification-component-base();
-
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
@@ -60,6 +57,5 @@ $navbar-config: (
     @include navigator-panel-component-theme($theme-config);
     @include settings-panel-component-theme($theme-config);
     @include admin-panel-component-theme($theme-config);
-    @include global-notification-component-theme($theme-config);
 
 }

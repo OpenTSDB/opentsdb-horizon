@@ -23,14 +23,12 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
 
 // services
 import { AppShellService } from './services/app-shell.service';
-import { NotificationService } from './services/notification.service';
 
 // components
 import { AppShellComponent } from './containers/app-shell.component';
 import { AppNavbarComponent } from './components/app-navbar/app-navbar.component';
 import { TestNavigatorComponent } from './components/test-navigator/test-navigator.component';
 import { NavigatorSidenavComponent } from './components/navigator-sidenav/navigator-sidenav.component';
-import { GlobalNotificationBannerComponent } from './components/global-notification-banner/global-notification-banner.component';
 
 import { AppShellSharedModule } from './app-shell-shared.module';
 
@@ -41,9 +39,6 @@ import {
 
 import {
     AdminPanelComponent,
-    NotificationPanelComponent,
-    NotificationListComponent,
-    NotificationEditorComponent
 } from './components/admin-panel';
 
 import { DashboardService } from '../dashboard/services/dashboard.service';
@@ -79,16 +74,11 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         NavigatorSidenavComponent,
         SettingsThemeComponent,
         SettingsPanelComponent,
-        GlobalNotificationBannerComponent,
-        NotificationEditorComponent,
         AdminPanelComponent,
-        NotificationListComponent,
-        NotificationPanelComponent
     ],
     providers: [
         AppShellService,
         DashboardService,
-        NotificationService,
         { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
     ],
     exports: [
