@@ -4,7 +4,8 @@ import { catchError, map} from 'rxjs/operators';
 import {
     DbfsCreateFolder,
     DbfsResourcesState, DbfsState,
-    DbfsFolderModel
+    DbfsFolderModel,
+    DbfsDeleteDashboard
 } from '../../dashboard-filesystem/state';
 import { ConsoleService } from '../../../../core/services/console.service';
 import { UtilsService } from '../../../../core/services/utils.service';
@@ -82,7 +83,6 @@ export class ClipboardCreateSuccess {
 export class ClipboardRemove {
     public static type = '[Clipboard] Remove';
     constructor(
-        public readonly clipboard: any,
         public readonly index: any
     ) {}
 }
@@ -442,22 +442,52 @@ export class UniversalClipboardState {
     @Action(ClipboardModify)
     clipboardModify(ctx: StateContext<ClipboardResourceModel>, { clipboard, index }: ClipboardModify) {
         this.console.action('State :: Modify clipboard');
+        // TODO
     }
 
     @Action(ClipboardModifySuccess)
     clipboardModifySuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardModifySuccess) {
         this.console.success('State :: Modify clipboard SUCCESS');
+        // TODO
     }
 
     // remove clipboard - basically move to trash
     @Action(ClipboardRemove)
-    clipboardRemove(ctx: StateContext<ClipboardResourceModel>, { clipboard, index }: ClipboardRemove) {
+    clipboardRemove(ctx: StateContext<ClipboardResourceModel>, { index }: ClipboardRemove) {
         this.console.action('State :: Remove clipboard');
+        let state = ctx.getState();
+        if (index === 0) {
+            // can't delete default
+            ctx.dispatch(new ClipboardError({message: 'Can not delete Default'}, 'clipboardRemove :: error in clipboard removal'));
+        } else {
+            let cbList = state.clipboardsList
+            // get the cb "dashboard"
+            let cbDB = cbList[index];
+
+
+            ctx.dispatch([
+                new SetClipboardActive(0), // set active to default
+                new DbfsDeleteDashboard(cbDB.resource.fullPath, {})
+            ]).subscribe(
+                (resp: any) => {
+                    // good
+                    ctx.dispatch(new ClipboardRemoveSuccess(resp, index));
+                },
+                (error: any) => {
+                    // error
+                    ctx.dispatch(new ClipboardError(error, 'Clipboard Removal [Clipboard Remove]'));
+                },
+                () => {
+                    //it's complete... maybe do something?
+                }
+            );
+        }
     }
 
     @Action(ClipboardRemoveSuccess)
     clipboardRemoveSuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardRemoveSuccess) {
         this.console.success('State :: Remove clipboard SUCCESS');
+        ctx.dispatch(new ClipboardResourceInitialize());
     }
 
     /** CLIPBOARD ITEMS (aka widgets) */

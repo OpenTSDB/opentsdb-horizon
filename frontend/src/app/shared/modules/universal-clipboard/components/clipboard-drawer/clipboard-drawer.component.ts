@@ -6,7 +6,7 @@ import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { ClipboardCreate, ClipboardLoad, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
+import { ClipboardCreate, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
@@ -303,6 +303,18 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         } else {
             this.removeClipboardMenuTrigger.closeMenu();
         }
+    }
+
+    removeActiveClipboard() {
+
+        // current index
+        let cbIndex = this.activeIndex;
+
+        this.store.dispatch(new ClipboardRemove(cbIndex)).subscribe(
+            () => {
+                // good
+            }
+        );
     }
 
      /**
