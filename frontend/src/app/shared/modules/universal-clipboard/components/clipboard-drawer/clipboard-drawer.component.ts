@@ -224,9 +224,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         }));
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        this.console.log('SIMPLE CHANGES', changes);
-    }
+    ngOnChanges(changes: SimpleChanges) {}
 
      /**
      * DRAWER ACTIONS
@@ -310,11 +308,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         // current index
         let cbIndex = this.activeIndex;
 
-        this.store.dispatch(new ClipboardRemove(cbIndex)).subscribe(
-            () => {
-                // good
-            }
-        );
+        this.store.dispatch(new ClipboardRemove(cbIndex));
     }
 
      /**

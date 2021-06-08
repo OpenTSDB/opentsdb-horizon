@@ -476,9 +476,6 @@ export class UniversalClipboardState {
                 (error: any) => {
                     // error
                     ctx.dispatch(new ClipboardError(error, 'Clipboard Removal [Clipboard Remove]'));
-                },
-                () => {
-                    //it's complete... maybe do something?
                 }
             );
         }
@@ -507,9 +504,6 @@ export class UniversalClipboardState {
                 },
                 (error: any) => {
                     ctx.dispatch(new ClipboardError(error, 'Clipboard Add Items [Clipboard Load] - FINAL TRY'));
-                },
-                () => {
-                    // its complete... maybe do something?
                 }
             );
             return;
