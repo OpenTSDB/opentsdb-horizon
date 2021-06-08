@@ -831,7 +831,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setQuery() {
-        if ( this.data.threshold.suppress.metricId )  {
+        if ( this.data.threshold && this.data.threshold.suppress && this.data.threshold.suppress.metricId )  {
             this.suppressConfig.metricId = this.data.threshold.suppress.metricId ? this.utils.getMetricDropdownValue(this.data.queries.raw, this.data.threshold.suppress.metricId) : '';
             this.suppressConfig.reportingInterval = this.data.threshold.suppress.reportingInterval || 60;
             this.suppressConfig.comparisonOperator = this.data.threshold.suppress.comparisonOperator || 'missing';
@@ -1610,10 +1610,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     validate(showTopErrorBar = true) {
         this.alertForm.setErrors(null);
-        this.alertForm.get('threshold').get('singleMetric').setErrors(null);
-        this.alertForm.markAsTouched();
         switch ( this.data.type ) {
             case 'simple':
+                this.alertForm.get('threshold').get('singleMetric').setErrors(null);
+                this.alertForm.markAsTouched();
                 if ( !this.thresholdSingleMetricControls.metricId.value ) {
                     this.thresholdSingleMetricControls.metricId.setErrors({ 'required': true });
                 }
@@ -1646,9 +1646,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 }
                 break;
             case 'healthcheck':
+                this.alertForm.markAsTouched();
                 this.validateHealthCheckForm();
                 break;
             case 'event':
+                this.alertForm.markAsTouched();
                 this.validateEventAlertForm();
                 if ( !this.alertForm['controls'].notification.get('transitionsToNotify').value.length ) {
                     this.alertForm['controls'].notification.get('transitionsToNotify').setErrors({ 'required': true });
