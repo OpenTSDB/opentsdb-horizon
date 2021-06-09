@@ -288,20 +288,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
       };
     chartId = 'eventAlert';
     chartInvisibleMetrics = [];
-    canSuppressAlert = false;
-    editSuppressMetric = false;
     suppressConfig: any = {
-        query: {
-        namespace : '',
-            metric : {
-                name : '',
-                tagAggregator: '',
-                groupByTags: [],
-                settings : { 
-                    visual : { visible : true} 
-                }
-            }
-        },
+        metricId: '',
         reportingInterval : '',
         comparisonOperator : '',
         threshold: ''
@@ -505,7 +493,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.showDetail = data.id ? true : false;
         this.startTime =  '1h';
         this.endTime = 'now';
-        const sQuery = null; //data.queries && data.queries.raw.length && data.queries.raw[data.queries.raw.length -1].id === 'sq' ? data.queries.raw.pop() : null;
         this.setQuery();
         // TODO: need to check if there is something in this.data
         const bad = data.threshold.singleMetric.badThreshold !== undefined ? data.threshold.singleMetric.badThreshold : null;
@@ -694,8 +681,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         this.setTags();
         const namespace = this.queries[qindex] ? this.queries[qindex].namespace : '';
-        this.canSuppressAlert = mid ? true : false;
-        this.resetSuppressConfig( namespace  );
         this.reloadData();
     }
 
@@ -846,15 +831,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     setQuery() {
-        // suppress metric is stored as last entry in the data.queries.raw; exclude that
-        // const sQuery = this.data.queries.raw.length > 1 ? this.data.queries.raw.pop() : {};
-        let sQuery = null;
-        if ( this.data.queries && this.data.queries.raw.length && this.data.queries.raw[this.data.queries.raw.length -1].id === 'sq' )  {
-            sQuery = this.data.queries.raw.pop();
-            sQuery.metrics[0].groupByTags = sQuery.metrics[0].groupByTags; // array to single value
-            this.suppressConfig.query.namespace = sQuery.namespace;
-            this.suppressConfig.settings = { visual: { visible: true }};
-            this.suppressConfig.query.metric = sQuery.metrics[0];
+        if ( this.data.threshold && this.data.threshold.suppress && this.data.threshold.suppress.metricId )  {
+            this.suppressConfig.metricId = this.data.threshold.suppress.metricId ? this.utils.getMetricDropdownValue(this.data.queries.raw, this.data.threshold.suppress.metricId) : '';
             this.suppressConfig.reportingInterval = this.data.threshold.suppress.reportingInterval || 60;
             this.suppressConfig.comparisonOperator = this.data.threshold.suppress.comparisonOperator || 'missing';
             this.suppressConfig.threshold = this.data.threshold.suppress.threshold || 0;
@@ -1129,7 +1107,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( this.thresholdType === 'singleMetric' ) {
             const mid = this.alertForm.get('threshold').get('singleMetric').get('metricId').value;
             const [qindex, mindex] = this.utils.getMetricIndexFromId(mid, this.queries);
-            const suppressns = this.queries[qindex] ? this.queries[qindex].namespace : '';
             let res = [];
             if ( mid  && this.queries[qindex] && this.queries[qindex].metrics.length) {
                 res = this.queries[qindex].metrics[mindex].groupByTags || [];
@@ -1297,11 +1274,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
         }
 
-        const sQuery = this.getSuppressQuery();
-        if ( sQuery ) {
-            queries[i] = sQuery;
-        }
-
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
             options.periodOverPeriod = this.periodOverPeriodConfig.periodOverPeriod;
@@ -1310,7 +1282,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         settings.settings.time = {};
         settings.settings.time.downsample = this.downsample;
 
-        options.sources = mid ? ( sQuery ? [ mid, 'm1' ] : [ mid ] ) : [];
+        options.sources = mid ? ( this.suppressConfig.metricId ? [ mid, this.suppressConfig.metricId ] : [ mid ] ) : [];
         if ( Object.keys(queries).length ) {
             const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
             // this.cdRef.detectChanges();
@@ -1322,27 +1294,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
     }
 
-    toggleSuppressConfig() {
-        this.suppressConfig.disabled = !this.canSuppressAlert;
-    }
-
-    getSuppressQuery() {
-        const metric = this.utils.deepClone(this.suppressConfig.query.metric);
-        metric.id = 'm1';
-        metric.groupByTags = metric.groupByTags ? metric.groupByTags : [];
-        metric.settings = { visual : { visible : true} };
-        const sQuery = { id: 'sq' , namespace: this.suppressConfig.query.namespace, settings: { visual: {visible: true}}, metrics: [ metric ], filters: []};
-        return metric.name  ? sQuery : null;
-    }
-
-    addSuppressQuery(queries) {
-        const sQuery : any = this.getSuppressQuery();
-        if ( sQuery ) {
-            const i = Object.keys(queries).length;
-            queries[i] = sQuery;
-        }
-        return queries;
-    }
 
     getTsdbQuery(mid) {
         const settings: any = {
@@ -1361,7 +1312,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             queries[i] = query;
         }
 
-        this.addSuppressQuery(queries);
 
         const options: any = {};
         if (Object.keys(this.periodOverPeriodConfig).length && this.data.threshold.subType === 'periodOverPeriod') {
@@ -1369,7 +1319,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             settings.settings.time = {};
             settings.settings.time.downsample = { aggregator: 'avg', value: 'custom', customValue: 1, customUnit: 'm'};
         }
-        options.sources = mid ? [ mid ] : [];
+
+        options.sources = mid ? ( this.suppressConfig.metricId ? [ mid, this.suppressConfig.metricId ] : [ mid ] ) : [];
 
         const q = this.queryService.buildQuery( settings, time, queries, options);
         return [q];
@@ -1445,7 +1396,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
         };
         const queries = this.utils.deepClone(this.queries);
-        this.addSuppressQuery(queries);
         // show/hide series 
         for ( let i = 0; i < queries.length; i++ ) {
             for ( let j = 0; j < queries[i].metrics.length; j++ ) {
@@ -1492,6 +1442,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 if (this.thresholdType !== 'healthCheck') { // no preview data for healthCheck
                     this.reloadData();
                 }
+                this.queries = [...this.queries];
                 break;
             case 'CloneQuery':
                 this.cloneQuery(message.id);
@@ -1507,6 +1458,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                  if (!mid) {
                      this.setTags();
                  }
+                 this.queries = [...this.queries];
                 this.reloadData();
                 break;
             case 'DeleteQueryMetric':
@@ -1658,10 +1610,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     validate(showTopErrorBar = true) {
         this.alertForm.setErrors(null);
-        this.alertForm.get('threshold').get('singleMetric').setErrors(null);
-        this.alertForm.markAsTouched();
         switch ( this.data.type ) {
             case 'simple':
+                this.alertForm.get('threshold').get('singleMetric').setErrors(null);
+                this.alertForm.markAsTouched();
                 if ( !this.thresholdSingleMetricControls.metricId.value ) {
                     this.thresholdSingleMetricControls.metricId.setErrors({ 'required': true });
                 }
@@ -1681,18 +1633,24 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                 }
                 this.suppressConfig.checkValidation = false;
-                if ( this.suppressConfig.query.metric.name &&
-                             (this.tags.length && (!this.suppressConfig.query.metric.groupByTags || !this.suppressConfig.query.metric.groupByTags.length)) || this.suppressConfig.reportingInterval <= 0 ||
-                                 (this.suppressConfig.comparisonOperator !== 'missing' && this.suppressConfig.threshold === null)) {
-                    this.suppressConfig.checkValidation = true;
+                if ( this.suppressConfig.metricId) {
+                    const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
+                    const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
+                    if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) ) 
+                                || this.suppressConfig.reportingInterval <= 0 
+                                || (this.suppressConfig.comparisonOperator !== 'missing' && this.suppressConfig.threshold === null)) {
+                        this.suppressConfig.checkValidation = true;
+                        this.alertForm.setErrors({ 'invalid': true });
+                    }
                     this.suppressConfig = { ...this.suppressConfig };
-                    this.alertForm.setErrors({ 'invalid': true });
                 }
                 break;
             case 'healthcheck':
+                this.alertForm.markAsTouched();
                 this.validateHealthCheckForm();
                 break;
             case 'event':
+                this.alertForm.markAsTouched();
                 this.validateEventAlertForm();
                 if ( !this.alertForm['controls'].notification.get('transitionsToNotify').value.length ) {
                     this.alertForm['controls'].notification.get('transitionsToNotify').setErrors({ 'required': true });
@@ -1751,7 +1709,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 const [qindex, mindex] = this.utils.getMetricIndexFromId(metricId, this.queries);
                 const tsdbQuery = this.getTsdbQuery(metricId);
                 const queries = this.utils.deepClone(this.queries);
-                this.addSuppressQuery(queries);
                 data.queries = { raw: queries, tsdb: tsdbQuery };
                 data.threshold.singleMetric.queryIndex = 0;
                 let dsId = this.utils.getDSId( this.utils.arrayToObject(this.queries), qindex, mindex);
@@ -1760,12 +1717,17 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 data.threshold.singleMetric.metricId =  dsId;
                 data.threshold.isNagEnabled = data.threshold.nagInterval !== '0' ? true : false;
 
-                if ( this.suppressConfig.query.metric.name ) {
+                if ( this.suppressConfig.metricId ) {
+                    const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
+                    let dsId = this.utils.getDSId( this.utils.arrayToObject(this.queries), qindex, mindex);
+                    const subNodes = tsdbQuery[0].executionGraph.filter(d => d.id.indexOf(dsId) === 0 );
+                    dsId = subNodes[ subNodes.length - 1 ].id;
                     data.threshold.suppress = {
                         comparisonOperator : this.suppressConfig.comparisonOperator,
                         threshold : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.threshold,
                         timeSampler : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.timeSampler,
-                        reportingInterval: this.suppressConfig.reportingInterval
+                        reportingInterval: this.suppressConfig.reportingInterval,
+                        metricId: dsId
                     }
                 }
                 // tslint:disable-next-line: max-line-length
@@ -1802,7 +1764,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.utils.setTabTitle(this.data.name);
         // emit to save the alert
         this.configChange.emit({ action: 'SaveAlert', namespace: this.data.namespace, dashboard: this.dashboardToCancelTo,
-             payload: { data: this.utils.deepClone([data])}} );
+            payload: { data: this.utils.deepClone([data])}} );
     }
 
     handlePoPPreviewEvents(message) {
@@ -1964,31 +1926,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.reloadData();
     }
 
-    resetSuppressConfig(namespace) {
-        let changed = false;
-        if (this.suppressConfig.query.namespace !== namespace) {
-            this.suppressConfig.query.namespace = namespace;
-            this.suppressConfig.query.metric.name = '';
-            changed = true;
-        }
-        if ( this.suppressConfig.disabled === this.canSuppressAlert ) {
-            this.suppressConfig.disabled = !this.canSuppressAlert;
-            changed = true;
-        }
-        /*
-        console.log("resetSuppressConfig", this.tags, this.suppressConfig.query.metric.groupByTags)
-        const groupByTags = this.suppressConfig.query.metric.groupByTags ? this.suppressConfig.query.metric.groupByTags : [];
-        groupByTags[0] = 'color';
-        if ( groupByTags.length && !this.tags.includes(groupByTags[0]) ) {
-            this.suppressConfig.query.metric.groupByTags = [];
-            this.suppressConfig.query.metric.name = '';
-            changed = true;
-        }
-        */
-        if ( changed ) {
-            this.suppressConfig = this.utils.deepClone(this.suppressConfig);
-        }
-    }
 
     recoveryTypeChange(event: any) {
         const control = <FormControl>this.thresholdSingleMetricControls.recoveryType;

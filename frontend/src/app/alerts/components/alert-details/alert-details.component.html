@@ -23,7 +23,7 @@
                         dygraphsChart
                         [chartType]="'line'"
                         [data]="chartData"
-                        [size]="{'width': size.width - 250, 'height': size.height - 10}"
+                        [size]="{'width': size.width - (data.type === 'event' ? 50 : 250), 'height': size.height - 10}"
                         [options]="options"
                         [timeseriesLegend]="tsLegendOptions"
                         (currentTickEvent)="timeseriesTickListener($event)"
@@ -47,7 +47,7 @@
                     <div class="legend">
                         <ng-container *ngFor="let query of queries; let qindex=index">
                             <ng-container *ngFor="let metric of query.metrics; let mindex = index">
-                                <div *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value" class="metric-name" (click)="toggleQueryMetric(metric.id)">
+                                <div *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === suppressConfig.metricId" class="metric-name" (click)="toggleQueryMetric(metric.id)">
                                     <span class="label">
                                         <mat-icon fontSet="denali" 
                                             [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
@@ -56,13 +56,6 @@
                                 </div>
                             </ng-container>
                         </ng-container>
-                        <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name">
-                            <span class="label">
-                                <mat-icon fontSet="denali" 
-                                [fontIcon]="!chartInvisibleMetrics.includes('m1') ? 'd-check-square' : 'd-minus-square'"></mat-icon>
-                                <span>{{ suppressConfig.query.metric.name }}</span>
-                            </span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -77,10 +70,10 @@
                 [thresholdConfig]="periodOverPeriodConfig"
                 (outputEvents)="handlePoPPreviewEvents($event)">
             </alert-details-metric-period-over-period-preview>
-            <div class="legend" style="margin-top:40px" *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
+            <div class="legend" style="width:200px;overflow:auto;margin-top:40px" *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
                 <ng-container *ngFor="let query of queries; let qindex=index">
                     <ng-container *ngFor="let metric of query.metrics; let mindex = index">
-                        <div  *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value" class="metric-name" (click)="toggleQueryMetric(metric.id)">
+                        <div  *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === suppressConfig.metricId" class="metric-name" (click)="toggleQueryMetric(metric.id)">
                             <span class="label">
                                 <mat-icon fontSet="denali" 
                                     [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
@@ -89,13 +82,6 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <div class="metric-name" (click)="toggleQueryMetric('m1')" *ngIf="suppressConfig.query.metric.name && suppressConfig.query.metric.groupByTags">
-                    <span class="label">
-                        <mat-icon fontSet="denali" 
-                        [fontIcon]="!chartInvisibleMetrics.includes('m1') ? 'd-check-square' : 'd-minus-square'"></mat-icon>
-                        <span>{{ suppressConfig.query.metric.name }}</span>
-                    </span>
-                </div>
             </div>
         </div>
 
@@ -373,6 +359,7 @@
                                             <div class="form-group suppress-alert">
                                                 <div class="form-label vertical-center"><strong>Suppress alert if</strong></div>
                                                 <alert-details-suppress-config
+                                                    [queries]="queries"
                                                     [config]="suppressConfig" 
                                                     [tags]="tags"
                                                     (configChange)="updateSuppressConfig($event)">

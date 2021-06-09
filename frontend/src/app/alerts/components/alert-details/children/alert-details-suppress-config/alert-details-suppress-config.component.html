@@ -1,36 +1,18 @@
 <div class="suppress-alert" [ngClass]="{'read-only' : config.disabled }" [formGroup]="suppressForm">
     <div class="sentence-chain-form">
-        <div class="sentence-item" style="flex-direction:column">
-            <span class="display-name" *ngIf="!metricEdit" (click)="metricEdit=true;">
-              {{suppressForm.get('query').get('metric').get('name').value || 'Select metric'}}
-              <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
-            </span>
-            <metric-autocomplete *ngIf="metricEdit"
-                                [namespace]="suppressForm.get('query').get('namespace').value"
-                                [metrics]="[suppressForm.get('query').get('metric').get('name').value]"
-                                [tagkeys]="tags" 
-                                [focus]="true"
-                                [empty]="true"
-                                (blur)="metricEdit=false"
-                                (metricOutput)="updateSuppressConfig('name', $event[0]);">
-            </metric-autocomplete>
-
-            <mat-error *ngIf="suppressForm.get('query').get('metric').get('name').errors && suppressForm.get('query').get('metric').get('name').errors.required">Metric should not be empty</mat-error>
-        </div>
-        <div class="sentence-item">
-                <tag-aggregator  [value]="suppressForm.get('query').get('metric').get('tagAggregator').value"
-                (change)="updateSuppressConfig('tagAggregator', $event)"></tag-aggregator>
-        </div>
-        <div class="sentence-item">
-            <span>By</span>
-        </div>
-        <div class="sentence-item" style="flex-direction:column">
-            <dropdown-metric-tags
-                [tags]="tags"
-                [selected]="suppressForm.get('query').get('metric').get('groupByTags').value"
-                (change)="updateSuppressConfig('groupByTags', $event)">
-            </dropdown-metric-tags>
-            <mat-error *ngIf="suppressForm.get('query').get('metric').get('groupByTags').errors && suppressForm.get('query').get('metric').get('groupByTags').errors.required">Select groupby tag</mat-error>
+        <div class="sentence-item metric">
+            <div class="form-control-wrap auto-width">
+                <mat-form-field appearance="fill">
+                    <mat-select placeholder="Select Metric" formControlName="metricId" disableOptionCentering>
+                        <mat-option>None</mat-option>
+                        <mat-optgroup  *ngFor="let query of queries; let qindex=index" label="Q{{qindex + 1}}">
+                            <mat-option *ngFor="let metric of query.metrics; let mindex = index" [value]="metric.id">{{ metric.name || utils.getExpressionLabel(qindex, mindex, queries)}}</mat-option>
+                        </mat-optgroup>
+                    </mat-select>
+                </mat-form-field>
+                <mat-error *ngIf="suppressForm.get('metricId').errors && suppressForm.get('metricId').errors.tagRequired">Please select suppress metric's groupby tag(s)</mat-error>
+                <mat-error *ngIf="suppressForm.get('metricId').errors && suppressForm.get('metricId').errors.tagSubset">Suppress metric's groupby tag(s) should be the subset of alert metric's groupby tag(s)</mat-error>
+            </div>
         </div>
         <div class="sentence-item">
             <span>is</span>
