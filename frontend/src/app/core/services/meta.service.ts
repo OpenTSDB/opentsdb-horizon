@@ -98,7 +98,7 @@ export class MetaService {
       }
       metaQuery.queries.push(query);
     }
-    
+
     return metaQuery;
   }
 
