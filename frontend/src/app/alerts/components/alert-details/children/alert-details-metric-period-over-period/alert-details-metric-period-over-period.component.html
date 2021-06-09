@@ -211,4 +211,12 @@
         </span>
         <mat-hint class="info-hint">mins</mat-hint>
     </div>
+    <div class="form-group suppress-config">
+            <div class="form-label vertical-center"><strong>Suppress alert If</strong></div>
+            <alert-details-suppress-config 
+                [config]="suppressConfig" 
+                [tags]="tags"
+                (configChange)="updateSuppressConfig($event)">
+            </alert-details-suppress-config>
+        </div>
 </div>

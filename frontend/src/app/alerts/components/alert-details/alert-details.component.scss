@@ -119,10 +119,35 @@
             height: 180px;
             flex: none;
 
-            .graph-wrapper,
-            .legend-wrapper {
-                flex: 1;
+            .graph-wrapper {
+                // flex: 1;
                 display: flex;
+                width: 100%;
+            }
+
+            .legend-wrapper {
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
+                width: 250px;
+                // flex: 0 0 200px;
+            }
+            .metric-name {
+                padding: 3px;
+                border-radius: 3px;
+                cursor: pointer;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
+                }
+
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 16px;
+                    margin-right: 4px;
+                }
             }
 
             &.is-visible {
@@ -134,11 +159,12 @@
                 padding-top: 5px;
                 .graph-output {
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     justify-content: center;
+                    // width: calc(100% - 250px);
                     .chart {
-                        display: flex;
-                        flex: 1;
+                        // display: flex;
+                        // flex: 1;
                     }
                 }
 
@@ -182,7 +208,7 @@
             }
 
             .legend-wrapper {
-                margin-left: 16px;
+                margin-left: 5px;
             }
 
             event-list {

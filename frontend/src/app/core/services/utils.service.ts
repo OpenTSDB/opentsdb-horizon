@@ -93,9 +93,10 @@ export class UtilsService {
             const qid = queries[i].id;
             for (let j = 0; j < queries[i].metrics.length; j++) {
                 const mid = queries[i].metrics[j].id;
-                if (queries[i].metrics[j].settings.visual.visible === true) {
+                if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.visible === true ) {
                     metricsVisibleLen++;
-                    if (queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
+                    // tslint:disable:max-line-length
+                    if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
                         metricsVisibleAutoColorLen++;
                         metricsVisibleAutoColorIds.push(qid + '-' + mid);
                     }
@@ -1091,6 +1092,18 @@ export class UtilsService {
                 items[i] = {...items[i]};
             }
         }
+    }
+
+    deepmerge(target, source) {
+        for (const key of Object.keys(source)) {
+            if (source[key] instanceof Object && key in target) {
+                Object.assign(source[key], this.deepmerge(target[key], source[key]));
+            }
+        }
+      
+        // Join `target` and modified `source`
+        Object.assign(target || {}, source)
+        return target;
     }
 
     regExpEscSpecialChars(value, replaceChars) {

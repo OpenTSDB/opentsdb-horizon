@@ -1,0 +1,102 @@
+@mixin alert-details-suppress-config-component-base() {
+
+    .alert-details-suppress-config-component {
+        .suppress-alert {
+
+            .sentence-chain-form {
+                margin-bottom: 5px;
+            }
+            .sentence-item {
+                display: inline-flex;
+                align-items: center;
+                height: 36px;
+
+                &:not(:last-child) {
+                    margin-right: 8px;
+                }
+
+                &.threshold,
+                &.reporting-interval {
+                    position: relative;
+                    .mat-form-field {
+                        width: 70px;
+                    }
+                    .mat-error {
+                        position: absolute;
+                        top: 100%;
+                        white-space: nowrap;
+                    }
+                }
+            }
+            .is-fullwindow {
+                margin: 8px 0px;
+            }
+            &.read-only {
+                opacity: 0.5;
+                pointer-events: none;
+            }
+            
+            .display-name {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                height: 32px;
+                cursor: pointer;
+                border-radius: 4px;
+
+                span {
+                    flex: 1;
+                    padding-left: 6px;
+                    text-overflow: ellipsis;
+                    display: inline-block;
+                    overflow: hidden;
+                }
+                .mat-icon {
+                    width: 16px;
+                    height: 16px;
+                    font-size: 12px;
+                    line-height: 16px;
+                    margin-left: 2px;
+                    color: #448aff;
+                }
+            }
+        }
+    }
+}
+
+@mixin alert-details-suppress-config-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $status: map-get($theme-config, status);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $link-color: map-get($foreground, link);
+    $divider-color: map-get($foreground, divider);
+
+    $brand-color: map-get($background, navbar);
+    $brand-color-inverse: map-get($foreground, navbar-text);
+
+    $card: map-get($background, card);
+
+    $dygraph-tooltip-bg: if($is-dark, map-get($background, menu), #f0f0f0);
+    $dygraph-tooltip-border: if($is-dark, lighten(map-get($background, menu), 10%) , #cccccc);
+
+    $text-color: map-get($foreground, text);
+
+    .alert-details-suppress-config-component {
+
+            .display-name {
+                background-color: rgba($link-color, 0.1);
+
+                .mat-icon {
+                    color: $link-color;
+                }
+
+            }
+    }
+}
