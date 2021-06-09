@@ -142,7 +142,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         height: 180
     };
 
-    recipients = {'slack' : [{'name': 'yamas_dev'}], 'oc': [{'name': 'oc red'}]};
 
     thresholds: any = { };
     thresholdType: String = '';
@@ -907,7 +906,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                 };
                 this.options.labels = ['x'];
-                const data = this.dataTransformer.yamasToDygraph(config, this.options, [[0]], res.counts);
+                const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], res.counts);
                 // we are expecting one series. the max logic needs to changed when we support group by
                 let max = 0, min = Infinity;
                 if ( res.counts.results.length && res.counts.results[0].data.length) {
@@ -1219,7 +1218,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const mid = this.thresholdSingleMetricControls.metricId.value;
         const settings: any = {
             settings: {
-                data_source: 'yamas',
+                data_source: 'openTSDB',
                 component_type: 'LinechartWidgetComponent'
             }
         };
@@ -1258,7 +1257,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( Object.keys(queries).length ) {
             const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
             // this.cdRef.detectChanges();
-            this.getYamasData({query: query});
+            this.getOpenTSDBData({query: query});
         } else {
             this.nQueryDataLoading = 0;
             this.options.labels = ['x'];
@@ -1269,7 +1268,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     getTsdbQuery(mid) {
         const settings: any = {
             settings: {
-                data_source: 'yamas',
+                data_source: 'openTSDB',
                 component_type: 'LinechartWidgetComponent'
             }
         };
@@ -1301,11 +1300,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     // to get query for selected metrics, my rebuild to keep time sync 1h-ago
-    getYamasData(query) {
+    getOpenTSDBData(query) {
         if (this.sub) {
             this.sub.unsubscribe();
         }
-        const queryObserver = this.httpService.getYamasData(query);
+        const queryObserver = this.httpService.getOpenTSDBData(query);
         this.sub = queryObserver.subscribe(
             result => {
                 this.nQueryDataLoading = 0;
@@ -1356,7 +1355,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const queries = this.utils.deepClone(this.queries);
         config.queries = queries;
         this.options.labels = ['x'];
-        const data = this.dataTransformer.yamasToDygraph(config, this.options, [[0]], this.queryData);
+        const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], this.queryData);
         this.setChartYMax();
         this.chartData = { ts: data };
     }
@@ -1705,7 +1704,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     id: 'aaa',
                     settings: {
                         title: this.data.name || 'Untitled Alert',
-                        data_source: 'yamas',
+                        data_source: 'openTSDB',
                         component_type: 'LinechartWidgetComponent',
                         visual: {
                             showEvents: false

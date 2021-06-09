@@ -216,7 +216,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                           this.error = null;
                           const rawdata = message.payload.rawdata;
                           this.setTimezone(message.payload.timezone);
-                          this.data.ts = this.dataTransformer.yamasToHeatmap(this.widget, this.options, this.data.ts, rawdata);
+                          this.data.ts = this.dataTransformer.openTSDBToHeatmap(this.widget, this.options, this.data.ts, rawdata);
                           this.data = { ...this.data };
                           if (environment.debugLevel.toUpperCase() === 'TRACE' ||
                             environment.debugLevel.toUpperCase() == 'DEBUG' ||

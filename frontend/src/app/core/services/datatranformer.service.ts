@@ -16,7 +16,7 @@ export class DatatranformerService {
   constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
 
   //ADDED: table data 
-  yamasToTable(widget, options, result: any): any {
+  openTSDBToTable(widget, options, result: any): any {
 
     const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
     const defDtFormat = 'MM/DD/YYYY';
@@ -172,7 +172,7 @@ export class DatatranformerService {
   }
 
   // options will also be update of its labels array
-  yamasToDygraph(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
+  openTSDBToDygraph(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
     const startTime = new Date().getTime();
     let intermediateTime = startTime;
     result = { ...result };
@@ -496,7 +496,7 @@ export class DatatranformerService {
         return res;
     }
 
-  yamasToHeatmap(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
+    openTSDBToHeatmap(widget, options: IDygraphOptions, normalizedData: any[], result: any): any {
 
     normalizedData = [];
     options.series = {};
@@ -621,9 +621,9 @@ export class DatatranformerService {
     bucketValues.sort((a, b) => a - b);
     options.heatmap.bucketValues = bucketValues;
     return [...normalizedData];
-  }
+    }
 
-    yamasToChartJS( chartType, options, widget, data, queryData, stacked = false ) {
+    openTSDBToChartJS( chartType, options, widget, data, queryData, stacked = false ) {
         switch ( chartType ) {
             case 'bar':
                 return this.getChartJSFormattedDataBar(options, widget, data, queryData, stacked);
@@ -737,7 +737,7 @@ export class DatatranformerService {
         return label;
     }
 
-    yamasToD3Donut(options, widget, queryData) {
+    openTSDBToD3Donut(options, widget, queryData) {
         options.data = [];
         if ( queryData === undefined || !queryData.results || !queryData.results.length ) {
             return {...options};
@@ -804,7 +804,7 @@ export class DatatranformerService {
         return {...options};
     }
 
-    yamasToD3Bar(options, widget, queryData) {
+    openTSDBToD3Bar(options, widget, queryData) {
         options.data = [];
         if ( queryData === undefined || !queryData.results || !queryData.results.length ) {
             return {...options};

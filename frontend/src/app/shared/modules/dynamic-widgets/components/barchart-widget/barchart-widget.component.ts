@@ -202,7 +202,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                                 this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.data = this.dataTransformer
-                            .yamasToChartJS(this.type, this.options, this.widget, this.data, message.payload.rawdata, this.isStackedGraph);
+                            .openTSDBToChartJS(this.type, this.options, this.widget, this.data, message.payload.rawdata, this.isStackedGraph);
                         this.detectChanges();
                         break;
                     case 'getUpdatedWidgetConfig':

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { YamasService } from './yamas.service';
+import { OpenTSDBService } from './opentsdb.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { YamasService } from './yamas.service';
 export class QueryService {
 
 
-    constructor(private yamas: YamasService) { }
+    constructor(private openTSDB: OpenTSDBService) { }
 
     buildQuery(widget, time, query, options: any = {}) {
         const source = widget.settings.data_source;
