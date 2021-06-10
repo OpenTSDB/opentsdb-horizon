@@ -64,25 +64,12 @@
             </event-list>
             <alert-details-metric-period-over-period-preview *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'"
                 [chartData]="chartData"
-                [size]="{'width': size.width - 200 , 'height': size.height - 50}"
+                [size]="{'width': size.width - 50 , 'height': size.height - 50}"
                 [options]="options"
                 [nQueryDataLoading]="nQueryDataLoading"
                 [thresholdConfig]="periodOverPeriodConfig"
                 (outputEvents)="handlePoPPreviewEvents($event)">
             </alert-details-metric-period-over-period-preview>
-            <div class="legend" style="width:200px;overflow:auto;margin-top:40px" *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'">
-                <ng-container *ngFor="let query of queries; let qindex=index">
-                    <ng-container *ngFor="let metric of query.metrics; let mindex = index">
-                        <div  *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === suppressConfig.metricId" class="metric-name" (click)="toggleQueryMetric(metric.id)">
-                            <span class="label">
-                                <mat-icon fontSet="denali" 
-                                    [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
-                                <span>{{metric.name || utils.getExpressionLabel(qindex, mindex, queries)}}</span>
-                            </span>
-                        </div>
-                    </ng-container>
-                </ng-container>
-            </div>
         </div>
 
         <!--
@@ -359,12 +346,13 @@
                                             <div class="form-group suppress-alert">
                                                 <div class="form-label vertical-center"><strong>Suppress alert if</strong></div>
                                                 <alert-details-suppress-config
+                                                    [data]="data"
                                                     [queries]="queries"
                                                     [config]="suppressConfig" 
                                                     [tags]="tags"
                                                     (configChange)="updateSuppressConfig($event)">
                                                 </alert-details-suppress-config>
-                                                </div>
+                                            </div>
                                             <div class="form-group alert-auto-recovery-interval">
                                                     <div class="form-label vertical-center"><strong>Automatically recover from bad/warn state</strong></div>
                                                     <div>
@@ -396,7 +384,7 @@
                                                 <mat-hint class="info-hint">mins</mat-hint>
                                             </div>
                                         </div>
-                                    </span>
+                                </span>
                             </div>
                         </span>
                     </div>
