@@ -63,7 +63,6 @@ import { DashboardDeleteDialogComponent } from '../../components/dashboard-delet
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 
-import { ConsoleService } from '../../../core/services/console.service';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
@@ -279,7 +278,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private snackBar: MatSnackBar,
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
-        private console: ConsoleService,
         private httpService: HttpService,
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
