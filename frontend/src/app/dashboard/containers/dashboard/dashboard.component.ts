@@ -72,7 +72,7 @@ import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
-import { ClipboardAddItems } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
+import { ClipboardAddItems, SetHideProgress, SetShowProgress } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
 import { WidgetDeleteDialogComponent } from '../../components/widget-delete-dialog/widget-delete-dialog.component';
 import { DboardContentComponent } from '../../components/dboard-content/dboard-content.component';
 
@@ -748,27 +748,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.updateURLParams(this.dbTime);
                     break;
                 case 'copyWidgetToClipboard':
-                    const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
-                    const widgetCopy: any = {...message.payload.widget};
-                    widgetCopy.settings.clipboardMeta = {
-                        dashboard: {
-                            id: dbData.id,
-                            path: dbData.path,
-                            fullPath: dbData.fullPath,
-                            name: dbData.name
-                        },
-                        copyDate: Date.now(),
-                        referencePath: dbData.path + '@' + widgetCopy.id,
-                        preview: message.payload.preview
-                    };
+                    this.clipboardMenu.setDrawerOpen();
+                    this.store.dispatch(new SetShowProgress());
 
-                    let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
+                    setTimeout(() => {
+                        const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
+                        const widgetCopy: any = {...message.payload.widget};
 
-                    if (this.clipboardMenu.getDrawerState() === 'closed') {
-                        this.clipboardMenu.toggleDrawerState({});
-                    }
+                        widgetCopy.settings.clipboardMeta = {
+                            dashboard: {
+                                id: dbData.id,
+                                path: dbData.path,
+                                fullPath: dbData.fullPath,
+                                name: dbData.name
+                            },
+                            copyDate: Date.now(),
+                            referencePath: dbData.path + '@' + widgetCopy.id,
+                            preview: message.payload.preview
+                        };
 
-                    this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                        let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
+
+                        if (this.clipboardMenu.getDrawerState() === 'closed') {
+                            this.clipboardMenu.toggleDrawerState({});
+                        }
+
+                        this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                    }, 50);
                     break;
                 case 'batchItemUpdated':
                     this.batchSelectedItems[message.id] = message.payload.selected;
@@ -2027,89 +2033,95 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     batchCopyToClipboard() {
-        const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
+        // show progress in drawer
+        this.clipboardMenu.setDrawerOpen();
+        this.store.dispatch(new SetShowProgress());
 
-        let widgets: any[] = this.getBatchSelectedItems();
+        setTimeout(() => {
+            const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
 
-        let widgetLoaders = this.dbContent.widgetLoaders;
+            let widgets: any[] = this.getBatchSelectedItems();
 
-        let promises: any[] = [];
+            let widgetLoaders = this.dbContent.widgetLoaders;
 
-        // we have to get the widgetLoaders so we can locate the visualization element to take a snapshot image
-        for(let i = 0; i < widgets.length; i++) {
-            let loader = widgetLoaders.find((item: any) => {
-                return item.widget.id === widgets[i].id
-            });
+            let promises: any[] = [];
 
-            const widgetCopy: any = JSON.parse(JSON.stringify(widgets[i]));
+            // we have to get the widgetLoaders so we can locate the visualization element to take a snapshot image
+            for(let i = 0; i < widgets.length; i++) {
+                let loader = widgetLoaders.find((item: any) => {
+                    return item.widget.id === widgets[i].id
+                });
 
-            widgetCopy.settings.clipboardMeta = {
-                dashboard: {
-                    id: dbData.id,
-                    path: dbData.path,
-                    fullPath: dbData.fullPath,
-                    name: dbData.name
-                },
-                copyDate: Date.now(),
-                referencePath: dbData.path + '@' + widgetCopy.id
-            };
+                const widgetCopy: any = JSON.parse(JSON.stringify(widgets[i]));
 
-            // create preview
-            let componentEl: any = loader._component.instance.elRef.nativeElement;
-            componentEl.style.backgroundColor = '#ffffff';
-            let p = domtoimage.toJpeg(componentEl)
-                        .then((dataUrl: any) => {
-                            delete componentEl.style.backgroundColor;
-                            widgetCopy.settings.clipboardMeta.preview = dataUrl;
-                            return widgetCopy;
-                        });
-            // because preview generation is a promise,
-            // we push to array to wait for all promises to resolve with Promise.all
-            promises.push(p);
+                widgetCopy.settings.clipboardMeta = {
+                    dashboard: {
+                        id: dbData.id,
+                        path: dbData.path,
+                        fullPath: dbData.fullPath,
+                        name: dbData.name
+                    },
+                    copyDate: Date.now(),
+                    referencePath: dbData.path + '@' + widgetCopy.id
+                };
 
-        }
+                // create preview
+                let componentEl: any = loader._component.instance.elRef.nativeElement;
+                componentEl.style.backgroundColor = '#ffffff';
+                let p = domtoimage.toJpeg(componentEl)
+                            .then((dataUrl: any) => {
+                                delete componentEl.style.backgroundColor;
+                                widgetCopy.settings.clipboardMeta.preview = dataUrl;
+                                return widgetCopy;
+                            });
+                // because preview generation is a promise,
+                // we push to array to wait for all promises to resolve with Promise.all
+                promises.push(p);
 
-        // allow all promises to resolve before anything else can be done
-        Promise.all(promises)
-           .then((results) => {
+            }
 
-                // resolve dashboard template variables
-                const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
+            // allow all promises to resolve before anything else can be done
+            Promise.all(promises)
+            .then((results) => {
 
-                // copy them to clipboard
-                this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                    // resolve dashboard template variables
+                    const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
 
-                // cleanup and resets
-                if (this.clipboardMenu.getDrawerState() === 'closed') {
-                    this.clipboardMenu.toggleDrawerState({});
-                }
-                // deselect
-                let keys = Object.keys(this.batchSelectedItems);
-                let selectedItems = {};
-                this.batchSelectAll = false;
-                this.batchSelectAllIndeterminate = false;
-                for(let i = 0; i < keys.length; i++) {
-                    selectedItems[keys[i]] = false;
-                }
-                this.batchSelectedCount = 0;
-                this.batchSelectedItems = selectedItems
-           })
-           .catch((e) => {
-                // Handle errors here?
-                console.error(e);
+                    // copy them to clipboard
+                    this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
 
-                // reset batchSelectItems
-                let keys = Object.keys(this.batchSelectedItems);
-                let selectedItems = {};
+                    // cleanup and resets
+                    if (this.clipboardMenu.getDrawerState() === 'closed') {
+                        this.clipboardMenu.toggleDrawerState({});
+                    }
+                    // deselect
+                    let keys = Object.keys(this.batchSelectedItems);
+                    let selectedItems = {};
+                    this.batchSelectAll = false;
+                    this.batchSelectAllIndeterminate = false;
+                    for(let i = 0; i < keys.length; i++) {
+                        selectedItems[keys[i]] = false;
+                    }
+                    this.batchSelectedCount = 0;
+                    this.batchSelectedItems = selectedItems
+            })
+            .catch((e) => {
+                    this.store.dispatch(new SetHideProgress());
+                    // Handle errors here?
+                    console.error(e);
 
-                for(let i = 0; i < keys.length; i++) {
-                    selectedItems[keys[i]] = false;
-                }
+                    // reset batchSelectItems
+                    let keys = Object.keys(this.batchSelectedItems);
+                    let selectedItems = {};
 
-                this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
-                this.batchSelectedItems = selectedItems
-            });
+                    for(let i = 0; i < keys.length; i++) {
+                        selectedItems[keys[i]] = false;
+                    }
 
+                    this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
+                    this.batchSelectedItems = selectedItems
+                });
+        }, 100)
     }
 
     openBatchDeleteDialog() {
@@ -2239,15 +2251,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // check if there is a custom filter
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
-                        const fval = dbTplVarLookup[fkey].filter;
-                        const fvalScope = dbTplVarLookup[fkey].scope;
+                        const fval = dbTplVarLookup[fkey].filter ? dbTplVarLookup[fkey].filter : false;
+                        const fvalScope = dbTplVarLookup[fkey].scope ? dbTplVarLookup[fkey].scope : false;
                         filter.customFilter = [];
 
                         // check if there is a set value
-                        if (fval.length > 0) {
+                        if (fval && fval.length > 0) {
                             filter.filter[0] = dbTplVarLookup[fkey].filter;
                         // no value, so check for scoped values
-                        } else if(fvalScope.length > 0) {
+                        } else if(fvalScope && fvalScope.length > 0) {
                             filter.filter = fvalScope;
                         // else, just make it empty array
                         } else {

@@ -36,6 +36,7 @@ export interface ClipboardModel {
 // this is basically loads and transforms a DBFS folder '/user/[user.namer]/_clipboard_'
 export interface ClipboardResourceModel {
     loaded: boolean;
+    showProgress: boolean;
     resource: any; // pointer to DBFS folder resource <DbfsFolderModel>
     clipboardsList: ClipboardModel[];  // list of clipboards ClipboardModel[]
     clipboard: any; // active clipboard
@@ -184,6 +185,16 @@ export class SetClipboardActiveSuccess {
     constructor() {}
 }
 
+export class SetShowProgress {
+    public static type = '[Clipboard] Show Progress';
+    constructor() {}
+}
+
+export class SetHideProgress {
+    public static type = '[Clipboard] Hide Progress';
+    constructor() {}
+}
+
 
 // state
 @State<ClipboardResourceModel>({
@@ -191,6 +202,7 @@ export class SetClipboardActiveSuccess {
     defaults: {
         loaded: false,
         resource: false,
+        showProgress: false,
         clipboardsList: [],
         clipboard: false,
         clipboardAction: {}
@@ -213,6 +225,10 @@ export class UniversalClipboardState {
 
     @Selector() static getClipboardResourceLoaded(state: ClipboardResourceModel) {
         return state.loaded;
+    }
+
+    @Selector() static getShowProgress(state: ClipboardResourceModel) {
+        return state.showProgress;
     }
 
     @Selector() static getClipboards(state: ClipboardResourceModel) {
@@ -644,6 +660,29 @@ export class UniversalClipboardState {
         this.console.action('State :: Set clipboard active SUCCESS');
         ctx.dispatch(new ClipboardLoad());
     }
+
+
+    /** Progress */
+    @Action(SetShowProgress)
+    setShowProgress(ctx: StateContext<ClipboardResourceModel>, {}: SetShowProgress) {
+        this.console.action('State :: Clipboard Show Progress');
+        let state = ctx.getState();
+        ctx.setState({
+            ...state,
+            showProgress: true
+        });
+    }
+
+    @Action(SetHideProgress)
+    setHideProgress(ctx: StateContext<ClipboardResourceModel>, {}: SetHideProgress) {
+        this.console.action('State :: Clipboard Hide Progress');
+        let state = ctx.getState();
+        ctx.setState({
+            ...state,
+            showProgress: false
+        });
+    }
+
 
     /** General Error Action */
     @Action(ClipboardError)

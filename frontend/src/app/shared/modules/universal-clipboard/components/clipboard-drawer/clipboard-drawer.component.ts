@@ -6,7 +6,7 @@ import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { ClipboardCreate, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
+import { ClipboardCreate, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, SetHideProgress, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
@@ -59,6 +59,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
     @Select(UniversalClipboardState.getClipboardResourceLoaded) cbResourcesLoaded$: Observable<boolean>
     cbResourcesLoaded: boolean = false;
+
+    @Select(UniversalClipboardState.getShowProgress) showProgress$: Observable<boolean>;
+    showProgress: boolean = false;
 
     // list of available clipboards
     @Select(UniversalClipboardState.getClipboards) clipboardList$: Observable<any[]>;
@@ -182,6 +185,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
             }
         }));
 
+        this.subscription.add(this.showProgress$.subscribe(showProgress => {
+            this.showProgress = showProgress;
+        }));
+
         // list of available clipboards
         this.subscription.add(this.clipboardList$.subscribe(clipboards => {
             this.clipboardList = clipboards;
@@ -196,6 +203,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
                 }
             }
             this.clipboardItems = items;
+            if (this.showProgress) {
+                this.store.dispatch(new SetHideProgress());
+            }
         }));
 
         // active index === index of currently selected clipboard

@@ -103,6 +103,12 @@
         </button>
 
     </div>
+    <div class="progress-indicator" *ngIf="showProgress">
+        <div class="gif-spinner">
+            <img src="/assets/spinner-26x26.gif" />
+        </div>
+        <div>Copying and generating thumbnails</div>
+    </div>
     <div class="clipboard-content">
         <div class="clipboard-content-scroller has-scroller">
             <div class="clipboard-item-list is-scroller">
