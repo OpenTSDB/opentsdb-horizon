@@ -90,6 +90,7 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
     this.config.periodOverPeriod.highestOutliersToRemove = this.config.periodOverPeriod.highestOutliersToRemove || '1';
     this.config.periodOverPeriod.lowestOutliersToRemove = this.config.periodOverPeriod.lowestOutliersToRemove || '1';
     this.config.periodOverPeriod.algorithm = this.config.periodOverPeriod.algorithm || 'simple-average';
+    console.log("this.config", this.config)
   }
 
   getDelayEvalutionPlaceholder(): string {
