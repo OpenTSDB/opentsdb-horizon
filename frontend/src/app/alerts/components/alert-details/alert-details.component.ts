@@ -434,6 +434,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     newSingleMetricTimeWindowSelected(timeInSeconds: string) {
         this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['slidingWindow'].setValue(timeInSeconds);
+        this.data.threshold.singleMetric.slidingWindow = timeInSeconds;
     }
 
     periodOverPeriodChanged(periodOverPeriodConfig) {
@@ -1602,6 +1603,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
 
         if (e.value === 'periodOverPeriod') { // singleMetric thresholds can interfere with rendering of periodOverPeriod graph
+            this.suppressConfig.metricId = null;
             this.alertForm['controls'].threshold['controls'].singleMetric.get('badThreshold').setValue(null);
             this.alertForm['controls'].threshold['controls'].singleMetric.get('warnThreshold').setValue(null);
             this.periodOverPeriodConfig.delayEvaluation = this.alertForm['controls'].threshold.get('delayEvaluation').value;
@@ -1631,18 +1633,18 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     if ( !this.alertForm['controls'].notification.get('transitionsToNotify').value.length ) {
                         this.alertForm['controls'].notification.get('transitionsToNotify').setErrors({ 'required': true });
                     }
-                }
-                this.suppressConfig.checkValidation = false;
-                if ( this.suppressConfig.metricId) {
-                    const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
-                    const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
-                    if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) ) 
-                                || this.suppressConfig.reportingInterval <= 0 
-                                || (this.suppressConfig.comparisonOperator !== 'missing' && this.suppressConfig.threshold === null)) {
-                        this.suppressConfig.checkValidation = true;
-                        this.alertForm.setErrors({ 'invalid': true });
+                    this.suppressConfig.checkValidation = false;
+                    if ( this.suppressConfig.metricId) {
+                        const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
+                        const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
+                        if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) ) 
+                                    || this.suppressConfig.reportingInterval <= 0 
+                                    || (this.suppressConfig.comparisonOperator !== 'missing' && this.suppressConfig.threshold === null)) {
+                            this.suppressConfig.checkValidation = true;
+                            this.alertForm.setErrors({ 'invalid': true });
+                        }
+                        this.suppressConfig = { ...this.suppressConfig };
                     }
-                    this.suppressConfig = { ...this.suppressConfig };
                 }
                 break;
             case 'healthcheck':

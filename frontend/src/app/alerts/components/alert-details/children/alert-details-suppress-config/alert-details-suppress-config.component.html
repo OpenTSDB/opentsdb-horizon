@@ -48,8 +48,8 @@
             </mat-form-field>
         </div>
         <div class="sentence-item threshold">
-            <span>for the last </span>
-            <!--<time-selector [timeInSeconds]="data.slidingWindow" [isViewMode]="true"></time-selector>-->
+            <span>for the last &nbsp;</span>
+            <time-selector [timeInSeconds]="data.threshold.singleMetric.slidingWindow" [isViewMode]="true"></time-selector>
             <mat-hint class="info-hint">
                 <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
                 <span>sliding window is same as the one above</span>
