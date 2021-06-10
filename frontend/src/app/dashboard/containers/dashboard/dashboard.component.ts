@@ -2249,11 +2249,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // check if there is a custom filter
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
-                        const fval = dbTplVarLookup[fkey].filter ? dbTplVarLookup[fkey].filter : false;
-                        const fvalScope = dbTplVarLookup[fkey].scope ? dbTplVarLookup[fkey].scope : false;
+                        const fval = dbTplVarLookup[fkey].filter ? dbTplVarLookup[fkey].filter : undefined;
+                        const fvalScope = dbTplVarLookup[fkey].scope ? dbTplVarLookup[fkey].scope : undefined;
                         filter.customFilter = [];
 
-                        // check if there is a set value
+                        // check if there is a set values
                         if (fval && fval.length > 0) {
                             filter.filter[0] = dbTplVarLookup[fkey].filter;
                         // no value, so check for scoped values
