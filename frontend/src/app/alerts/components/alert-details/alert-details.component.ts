@@ -666,7 +666,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         this.alertForm['controls'].threshold.get('notifyOnMissing').setValue( notifyOnMissing, { emitEvent: true});
         if (!this.data.threshold) {
-            this.data.threshold = {};
+            this.data.threshold = { 
+                                    singleMetric: {},
+                                    suppress : {}
+                                };
         }
     }
 
