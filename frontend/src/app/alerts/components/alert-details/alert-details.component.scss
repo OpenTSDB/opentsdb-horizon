@@ -209,6 +209,7 @@
 
             .legend-wrapper {
                 margin-left: 5px;
+                padding-left: 6px;
             }
 
             event-list {
@@ -834,6 +835,10 @@
                 border: 1px solid $divider-color;
 
                 //.graph-output { }
+            }
+
+            .legend-wrapper {
+                border-left: 1px solid $divider-color;
             }
         }
 
