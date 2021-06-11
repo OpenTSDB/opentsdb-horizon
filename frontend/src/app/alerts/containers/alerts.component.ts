@@ -796,7 +796,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     setRouterUrl() {
         const prefix = this.list === 'snooze' ? 'a/snooze/' : 'a/';
         const search = this.alertSearch.value;
-        const qs = this.list === 'alerts' && search ? '?q=' +  decodeURIComponent(search) : '';
+        const qs = this.list === 'alerts' && search ? '?q=' +  encodeURIComponent(search) : '';
         this.location.go(prefix + this.selectedNamespace + qs);
     }
 

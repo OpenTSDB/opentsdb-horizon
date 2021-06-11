@@ -30,6 +30,7 @@ import { AlertDetailsMetricPeriodOverPeriodPreviewComponent } from './components
 import { AlertDetailsTransitionsComponent } from './components/alert-details/children/alert-details-transitions/alert-details-transitions.component';
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
 import { AlertDetailsCountComponent } from './components/alert-details/children/alert-details-count/alert-details-count.component';
+import { AlertDetailsSuppressConfigComponent } from './components/alert-details/children/alert-details-suppress-config/alert-details-suppress-config.component';
 
 // directives
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
@@ -62,7 +63,8 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
         AlertDetailsMetricPeriodOverPeriodComponent,
         AlertDetailsMetricPeriodOverPeriodPreviewComponent,
         AlertDetailsTransitionsComponent,
-        AlertDetailsCountComponent
+        AlertDetailsCountComponent,
+        AlertDetailsSuppressConfigComponent
     ],
     providers: [
         AlertsService

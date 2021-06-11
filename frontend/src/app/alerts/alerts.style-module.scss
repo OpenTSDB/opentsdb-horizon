@@ -29,6 +29,7 @@
 @import './components/alert-details/children/alert-details-metric-period-over-period-preview/alert-details-metric-period-over-period-preview.component';
 @import './components/alert-details/children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 @import './components/alert-details/children/alert-details-count/alert-details-count.component';
+@import './components/alert-details/children/alert-details-suppress-config/alert-details-suppress-config.component';
 
 // Common classes for widget components
 
@@ -50,6 +51,7 @@
     @include alert-details-metric-period-over-period-component-base();
     @include alert-details-metric-period-over-period-preview-component-base();
     @include alert-details-count-component-base();
+    @include alert-details-suppress-config-component-base()
 
 }
 
@@ -71,4 +73,5 @@
     @include alert-details-metric-period-over-period-component-theme($theme-config);
     @include alert-details-metric-period-over-period-preview-component-theme($theme-config);
     @include alert-details-count-component-theme($theme-config);
+    @include alert-details-suppress-config-component-theme($theme-config);
 }

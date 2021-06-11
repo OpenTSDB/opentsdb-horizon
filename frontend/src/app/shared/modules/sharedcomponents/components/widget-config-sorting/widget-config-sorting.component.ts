@@ -21,6 +21,7 @@ export class WidgetConfigSortingComponent implements OnInit {
   searchField: FormControl;
   order: string;
   limit: number;
+  decimals: number;
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -40,7 +41,8 @@ export class WidgetConfigSortingComponent implements OnInit {
       this.limitForm.setValue( {limitInput: this.limit});
     }
 
-  }
+    this.decimals = this.widget.settings.visual.decimals !== undefined ? this.widget.settings.visual.decimals : 2; 
+}
 
   // convenience getter for easy access to form fields
   get formFields() { return this.limitForm.controls; }
@@ -50,6 +52,10 @@ export class WidgetConfigSortingComponent implements OnInit {
       this.limit = this.limitForm.value.limitInput;
       this.widgetChange.emit( {action: 'SetSorting', payload: {order: this.order, limit: this.limit} } );
     }
+  }
+
+  setDecimals(v) {
+    this.widgetChange.emit( { action: 'UpdateQueryMetricVisual', payload: { visual: { 'decimals': v } } } );
   }
 
   integerValidator(): ValidatorFn {

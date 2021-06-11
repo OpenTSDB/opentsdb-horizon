@@ -18,6 +18,8 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
   @Input() queries: any[];
   @Input() viewMode: boolean;
   @Input() config: any;
+  @Input() suppressConfig: any;
+  @Input() tags = [];
   @Output() configChange = new EventEmitter();
 
   showThresholdAdvanced = false; // toggle in threshold form
@@ -88,6 +90,7 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
     this.config.periodOverPeriod.highestOutliersToRemove = this.config.periodOverPeriod.highestOutliersToRemove || '1';
     this.config.periodOverPeriod.lowestOutliersToRemove = this.config.periodOverPeriod.lowestOutliersToRemove || '1';
     this.config.periodOverPeriod.algorithm = this.config.periodOverPeriod.algorithm || 'simple-average';
+    console.log("this.config", this.config)
   }
 
   getDelayEvalutionPlaceholder(): string {
@@ -122,6 +125,10 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
     if (!this.anyErrors) {
       this.configChange.emit({ thresholdChanged, requeryData, config: {...this.config}});
     }
+  }
+
+  updateSuppressConfig(config) {
+    this.configChange.emit( { suppressConfig: config, config: {...this.config} });
   }
 
   updateValidators() {

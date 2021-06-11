@@ -20,7 +20,7 @@
         <div #dygraph class="chart" dygraphsChart
             [chartType]="'line'"
             [data]="observedData"
-            [size]="{'width': size.width/2 - 25, 'height': size.height - 10}"
+            [size]="{'width': size.width/2, 'height': size.height - 10}"
             [options]="observedOptions"
             (lastTimeseriesHighlighted)="timeSeriesClicked($event)"
             (zoomed)="handleZoomQuery($event)"
@@ -35,7 +35,7 @@
         <div #dygraph class="chart" dygraphsChart
             [chartType]="'line'"
             [data]="thresholdData"
-            [size]="{'width': size.width/2 - 25, 'height': size.height - 10}"
+            [size]="{'width': size.width/2, 'height': size.height - 10}"
             [options]="thresholdOptions"
             (zoomed)="handleZoomThreshold($event)">
         </div>

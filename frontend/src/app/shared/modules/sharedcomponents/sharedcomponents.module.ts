@@ -176,6 +176,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         MetricVisualPanelComponent,
         HexToColorNamePipe,
         DateToRelativePipe,
+        TagAggregatorComponent,
         AliasDisplayPipe,
         HighlightStripTextPipe,
         ResizableDirective,
