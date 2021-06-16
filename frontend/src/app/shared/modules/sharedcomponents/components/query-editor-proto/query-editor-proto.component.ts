@@ -951,7 +951,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expression = e.srcElement.value.trim();
         let index = this.query.metrics.findIndex(d => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
-            const expConfig: any = this.getExpressionConfig(expression);
+            const expConfig = this.getExpressionConfig(expression);
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
@@ -960,7 +960,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             } else {
                 expConfig.id = id;
                 expConfig.settings.visual = this.query.metrics[index].settings.visual;
-                expConfig.functions = this.query.metrics[index].functions;
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }
