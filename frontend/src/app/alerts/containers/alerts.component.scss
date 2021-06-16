@@ -160,7 +160,7 @@
             border-radius: 4px;
             font-size: 10px;
             padding: 0 6px;
-            margin-right: 4px;
+            margin: 2px 4px;
             outline: none;
         }
 
@@ -298,6 +298,7 @@
                     }
                 }
             }
+
             .cdk-column-select,
             .cdk-column-bad,
             .cdk-column-warn,
@@ -320,6 +321,7 @@
                 .count-empty {
                     margin-right: 24px;
                 }
+
                 // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
                 .count-amount {
                     margin-right: 24px;
@@ -332,6 +334,17 @@
                     padding: 3px 6px;
                     outline: none;
                 }
+            }
+
+            .cdk-column-alertGroupingRules {
+                .mat-chip-list-wrapper {
+                    margin: initial;
+                }
+            }
+
+            .mat-cell.cdk-column-alertGroupingRules {
+                padding-top: 2px;
+                padding-bottom: 2px;
             }
 
             /*
@@ -397,7 +410,8 @@
                 position: relative;
 
                 span.alert-name {
-                    line-height: 48px;
+                    display: inline-block;
+                    margin: 12px 0;
                 }
 
                 .edit-actions-wrapper {

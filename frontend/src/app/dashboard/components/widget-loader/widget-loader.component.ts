@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 
 import domtoimage from 'dom-to-image-more';
-import { ConsoleService } from '../../../core/services/console.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -77,6 +76,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     }
 
     @Input() widget: any;
+    @Input() isNewDb: boolean = false;
     @Output() editComponent = new EventEmitter<any>();
 
     @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;
@@ -107,8 +107,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
         private utils: UtilsService,
-        private cdRef: ChangeDetectorRef,
-        private console: ConsoleService
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
