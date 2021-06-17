@@ -515,14 +515,30 @@
                 <mat-nav-list *ngIf="selectedFunctionCategoryIndex >= 0">
                     <a mat-list-item
                         *ngFor="let catFunction of functionCategories[selectedFunctionCategoryIndex].functions; let j = index;"
-                        (click)="addFunction(catFunction, metric.id)">
+                        (click)="addFunction(catFunction, metric.id)" (mouseover)="selectFunctionHelp($event, j)">
                         <span>{{ catFunction.label }}</span>
                     </a>
                 </mat-nav-list>
             </div>
+            <ng-container *ngIf="selectedFunctionCategoryIndex >= 0 && selectedFunctionHelpIndex >= 0">
+                <ng-container *ngTemplateOutlet="functionHelpLayout; context: functionCategories[selectedFunctionCategoryIndex].functions[selectedFunctionHelpIndex]"></ng-container>
+            </ng-container>
+
         </div>
     </ng-template>
 </mat-menu>
+
+<ng-template #functionHelpLayout let-help="help">
+    <div class="function-category-help" *ngIf="selectedFunctionCategoryIndex >= 0 && selectedFunctionHelpIndex >= 0">
+        <div class="help-title">
+            <span>
+                <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
+            </span>
+            <span [innerHtml]="help.label | safe:'html'"></span>
+        </div>
+        <div class="help-description" [innerHtml]="help.description | safe:'html'"></div>
+    </div>
+</ng-template>
 
 <ng-template #confirmDeleteDialog let-data>
     <h2 matDialogTitle>Delete Query Confirmation</h2>
