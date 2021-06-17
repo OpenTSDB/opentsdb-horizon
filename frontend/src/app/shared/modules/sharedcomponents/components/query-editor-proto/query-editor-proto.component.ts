@@ -601,10 +601,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: null,
                     help: {
                         label: 'Ratio',
-                        description: `<p>For each time series in a set of time series, computes the ratio of that time series against the sum of all time series for the group matching the metric.<p>
-
-                        <p>For example, if you want to know the percentage of traffic each host is handling for a cluster in a data center, you can use the ratio to show that percentage over time.
-                        The output can be a percentage (e.g. 20.5) or a ratio (e.g. 0.205).</p>`
+                        description: `<p>At the UI, this will appear as (for example) <code>Ratio foo</code>, where <code>foo</code> is the
+                        alias you want the resulting ratio values to receive.</p>`
                     }
                 },
                 {
@@ -613,7 +611,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: null,
                     help: {
                         label: 'Percentage',
-                        description: ``
+                        description: `<p>At the UI, this will appear as (for example) <code>Percentage</code> foo, where <code>foo</code> is
+                        the alias you want the resulting percentage values to receive.</p>`
                     }
                 }
             ]
@@ -627,10 +626,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "sum,5m",
                     help: {
                         label: 'SlidingWindow (Sum 5m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,5m</code>, where
+                        <code>sum</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -641,10 +638,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "sum,15m",
                     help: {
                         label: 'SlidingWindow (Sum 15m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,15m</code>, where
+                        <code>sum</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -654,10 +649,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "count,5m",
                     help: {
                         label: 'SlidingWindow (Count 5m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,5m</code>, where
+                        <code>count</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -668,10 +661,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "count,15m",
                     help: {
                         label: 'SlidingWindow (Count 15m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,15m</code>, where
+                        <code>count</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -682,10 +673,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "min,5m",
                     help: {
                         label: 'SlidingWindow (Min 5m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,5m</code>, where
+                        <code>min</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -696,10 +685,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "min,15m",
                     help: {
                         label: 'SlidingWindow (Min 15m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,15m</code>, where
+                        <code>min</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -710,10 +697,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "max,5m",
                     help: {
                         label: 'SlidingWindow (Max 5m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,5m</code>, where
+                        <code>max</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -724,10 +709,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: "max,15m",
                     help: {
                         label: 'SlidingWindow (Max 15m)',
-                        description: `<p>Computes an aggregated value sliding over a single time series over time.<p>
-
-                        <p>E.g. with a configuration to sum 2 minute windows and a 5 values spaced at one minute intervals,
-                        values 1 and 2 are summed, then 2 and 3, then 3 and 4, etc. This can be used to smooth volatile time series.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,15m</code>, where
+                        <code>max</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
                         <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
                     }
@@ -743,9 +726,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'MINUTES',
                     help: {
                         label: 'TimeDiff (Delta in Minutes)',
-                        description: `<p>Computes the delta between data point time stamps. E.g. if one data point is at 11:05 and the second at 11:10 the
-                        difference reported would be 300 seconds (with a resolution of seconds). Only data points with a numeric value are considered, the
-                        node will skip over <code>NaN</code> and <code>null</code> values.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>TimeDiff MINUTES</code>, where <code>MINUTES</code>
+                        is the resolution.</p>
 
                         <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>`
                     }
@@ -756,9 +738,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'SECONDS',
                     help: {
                         label: 'TimeDiff (Delta in Seconds)',
-                        description: `<p>Computes the delta between data point time stamps. E.g. if one data point is at 11:05 and the second at 11:10 the
-                        difference reported would be 300 seconds (with a resolution of seconds). Only data points with a numeric value are considered, the
-                        node will skip over <code>NaN</code> and <code>null</code> values.</p>
+                        description: `<p>At the UI, this will appear as (for example) <code>TimeDiff SECONDS</code>, where <code>SECONDS</code>
+                        is the resolution.</p>
 
                         <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>s`
                     }
