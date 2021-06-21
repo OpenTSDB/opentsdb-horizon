@@ -839,6 +839,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.suppressConfig.metricId = this.data.threshold.suppress.metricId ? this.utils.getMetricDropdownValue(this.data.queries.raw, this.data.threshold.suppress.metricId) : '';
             this.suppressConfig.reportingInterval = this.data.threshold.suppress.reportingInterval || 60;
             this.suppressConfig.comparisonOperator = this.data.threshold.suppress.comparisonOperator || 'missing';
+            this.suppressConfig.timeSampler = this.data.threshold.suppress.timeSampler || 'all_of_the_times';
             this.suppressConfig.threshold = this.data.threshold.suppress.threshold || 0;
             this.suppressConfig = {...this.suppressConfig};
             this.suppressConfig.disabled = false;
