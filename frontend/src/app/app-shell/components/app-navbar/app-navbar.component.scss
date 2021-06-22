@@ -17,7 +17,7 @@
             justify-content: center;
         }
 
-        .app-yamas-logo {
+        .app-opentsdb-logo {
             height: $logo-height;
             //margin: 0 4px 3px 0;
             vertical-align: middle;
@@ -63,10 +63,10 @@
             border-bottom: 0 !important;
             padding: 0 2px;
             display: inline-block;
-    
+
             .sliding-toggle-group {
-                padding: 0 2px; 
-                
+                padding: 0 2px;
+
                 .mat-tab-link {
                     font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
                     height: 24px;
@@ -84,19 +84,19 @@
                             background-color: transparent !important;
                         }
                     }
-        
+
                     &:not(.mat-tab-disabled):focus {
                         background-color: transparent !important;
                     }
                 }
-    
+
                 .mat-ink-bar {
                     height: 20px;
                     bottom: 2px;
                     border-radius: 4px;
                 }
             }
-            
+
         }
     }
 
@@ -151,14 +151,14 @@
         .navbar-sliding-toggle {
             .sliding-toggle-group {
                 background-color: darken(map-get($background, navbar), 4%);
-    
+
                 .mat-tab-link {
                     &,
                     &.mat-tab-label-active {
                         color: map-get($foreground, navbar-text);
                     }
                 }
-    
+
                 .mat-ink-bar {
                     background-color: rgba(map-get($foreground, navbar-text), .25);
                 }
@@ -170,5 +170,5 @@
     .mat-menu-panel.nav-bar-dropmenu {
         @include mat-elevation(5);
     }
-    
+
 }

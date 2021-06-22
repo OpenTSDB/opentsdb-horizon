@@ -91,7 +91,7 @@ export class DbfsState {
         });
     }
 
-    static yamasMember(userid?: string) {
+    static adminMember(userid?: string) {
         return createSelector([DbfsResourcesState], (state: DbfsResourcesModel) => {
             if (state.loaded === false) {
                 return { loaded: false};
@@ -100,7 +100,7 @@ export class DbfsState {
             const id = (userid) ? userid : state.activeUser;
             let user: any = {...state.users[id], loaded: true};
 
-            return user.memberNamespaces.includes('yamas');
+            return user.memberNamespaces.includes('admin');
         });
     }
 

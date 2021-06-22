@@ -150,9 +150,9 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         this.router.navigate(['d', '_new_']);
     }
 
-    // TODO: Get this link to yamas guide to work
-    gotoYamasGuide() {
-        alert('TODO: get link to yamas/horion guide');
+    // TODO: Get this link to opentsdb guide to work
+    gotoOpenTSDBGuide() {
+        alert('TODO: get link to opentsdb/horion guide');
     }
 
     /** AUTO SUGGESTION */

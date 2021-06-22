@@ -108,7 +108,6 @@ export class DbfsUtilsService {
         };
 
         if (
-            (file.parentPath === '/namespace/yamas' && file.name === '_notifications_') ||
             (file.ownerType === 'user' && file.name === '_clipboard_')
         ) {
             file.hidden = true;

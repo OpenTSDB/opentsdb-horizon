@@ -26,7 +26,7 @@
                 [activeNav]="{'section': activeNavSection}"
                 [drawerOpen]="drawerOpened"
                 [mediaQuery]="activeMediaQuery"
-                [yamasMember]="isYamasMember"></app-navigator-sidenav>
+                [adminMember]="isAdminMember"></app-navigator-sidenav>
         </mat-sidenav>
         <!-- where the rest of the app gets output -->
         <mat-sidenav-content class="app-navigator-output" fxFlex="1 1 100%" fxLayout fxLayoutAlign="stretch stretch">
@@ -58,14 +58,14 @@
                         (toggleDrawer)="toggleDrawerMode($event)"
                         ></settings-panel>
                     <admin-panel
-                        *ngIf="activeNavSection === 'admin' && isYamasMember"
+                        *ngIf="activeNavSection === 'admin' && isAdminMember"
                         [activeNavSection]="activeNavSection"
                         [drawerMode]="drawerMode"
                         (toggleDrawer)="toggleDrawerMode($event)"
-                        [yamasMember]="isYamasMember"
+                        [adminMember]="isAdminMember"
                         ></admin-panel>
                     <test-navigator
-                        *ngIf="activeNavSection === 'admin' && !isYamasMember"
+                        *ngIf="activeNavSection === 'admin' && !isAdminMember"
                         panelTitle="Admin Panel"
                         panelText="Sorry... you do not have access to this panel"
                         [activeNavSection]="activeNavSection"
