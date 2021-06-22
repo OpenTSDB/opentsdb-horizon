@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnDestroy, ElementRef } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription, BehaviorSubject, of } from 'rxjs';
 
@@ -12,7 +12,10 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   @HostBinding('class.widget-panel-content') private _hostClass = true;
   @HostBinding('class.markdown-widget') private _componentClass = true;
 
-  constructor(private interCom: IntercomService) { }
+  constructor(
+      private interCom: IntercomService,
+      private elRef: ElementRef
+    ) { }
   /** Inputs */
   @Input() mode = 'view'; // view/edit
   @Input() widget: any;

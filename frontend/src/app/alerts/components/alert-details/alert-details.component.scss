@@ -485,7 +485,8 @@
 
                 &.alert-grouping-rules,
                 &.alert-recipients,
-                &.alert-labels {
+                &.alert-labels,
+                &.alert-opsgenie-tags {
                     .mat-form-field {
                         width: 100%;
                         max-width: 60%;
@@ -717,7 +718,8 @@
             align-items: center;
         }
 
-        .opsgenie-autoclose-flag {
+        .opsgenie-autoclose-flag,
+        .opsgenie-tags {
             line-height: 32px;
         }
 
