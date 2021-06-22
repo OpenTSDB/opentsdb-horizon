@@ -199,6 +199,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     ngOnInit() {
         this.checkMultigraphEnabled();
+        // on-fly to remove previous multigraph tag that users add in
+        // to make sure the multigraph conf and query groupBy in sync
+        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+        
         this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
         this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -1772,6 +1777,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.multigraphEnabled = false;
         } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = true;
+            this.widget.settings.multigraph.enabled = true;
         } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = this.widget.settings.multigraph.enabled;
         }
