@@ -1,7 +1,7 @@
 <mat-toolbar>
     <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
-        <button mat-button class="app-home-link" (click)="gotoMain()" title="Back to Yamas landing page">
-            <img src="/assets/yamas-logo-icon-only.png" class="app-yamas-logo" />
+        <button mat-button class="app-home-link" (click)="gotoMain()" title="Back to OpenTSDB landing page">
+            <img src="/assets/horizon-logo-icon-only.png" class="app-opentsdb-logo" />
         </button>
     </mat-toolbar-row>
 </mat-toolbar>
@@ -14,7 +14,7 @@
             <span class="nav-label">{{nav.label}}</span>
         </a>
         <a mat-list-item (click)="navigationClicked(nav)"
-            *ngIf="nav.requiresUserAdmin && yamasMember"
+            *ngIf="nav.requiresUserAdmin && adminMember"
             [ngClass]="{'is-active': activeNav.section === nav.section}">
             <mat-icon fontSet="denali" [fontIcon]="nav.icon"></mat-icon>
             <span class="nav-label">{{nav.label}}</span>

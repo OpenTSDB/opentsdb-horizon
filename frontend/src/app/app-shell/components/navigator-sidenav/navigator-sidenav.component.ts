@@ -17,7 +17,7 @@ export class NavigatorSidenavComponent implements OnInit {
 
     @HostBinding('class.app-navigator-sidenav') private _hostClass = true;
 
-    @Input() yamasMember: boolean = false;
+    @Input() adminMember: boolean = false;
     @Input() activeNav: any = {};
     @Output() activeNavChange: EventEmitter<any> = new EventEmitter();
 

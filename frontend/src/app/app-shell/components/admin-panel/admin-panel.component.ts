@@ -12,7 +12,7 @@ export class AdminPanelComponent implements OnInit {
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';
-    @Input() yamasMember: boolean = false;
+    @Input() adminMember: boolean = false;
 
     @Output() toggleDrawer: EventEmitter<any> = new EventEmitter();
 
