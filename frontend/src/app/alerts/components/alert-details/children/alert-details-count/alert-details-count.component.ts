@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from "../../../../../core/services/config.service";
 import { AuraDialogComponent } from '../../../../../shared/modules/sharedcomponents/components/aura-dialog/aura-dialog.component';
 
 @Component({
@@ -10,7 +10,8 @@ import { AuraDialogComponent } from '../../../../../shared/modules/sharedcompone
 })
 export class AlertDetailsCountComponent implements OnInit {
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog,
+                private appConfig: AppConfigService) { }
   @HostBinding('class.alert-details-count') private _hostClass = true;
 
   @Input() counts;
@@ -18,10 +19,11 @@ export class AlertDetailsCountComponent implements OnInit {
   @Input() alertId;
 
   displayedColumns: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
-  auraUrl = environment.auraUI + '/#/aura/newquery';
+  auraUrl = '';
   auraDialog: MatDialogRef<AuraDialogComponent> | null;
 
   ngOnInit() {
+    this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
   }
 
   showAuraDialog(filters) {

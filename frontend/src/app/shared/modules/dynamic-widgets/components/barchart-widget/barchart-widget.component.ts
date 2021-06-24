@@ -12,7 +12,7 @@ import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state'
 import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
   selector: 'app-barchart-widget',
@@ -101,7 +101,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         private unit: UnitConverterService,
         private elRef: ElementRef,
         private cdRef: ChangeDetectorRef,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -196,9 +197,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         } else {
                             this.error = null;
                         }
-                        if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                 this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.data = this.dataTransformer

@@ -10,7 +10,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angula
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { debounceTime } from 'rxjs/operators';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
   selector: 'app-topn-widget',
@@ -68,7 +68,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         private util: UtilsService,
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -146,9 +147,9 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                         } else {
                             this.error = null;
                         }
-                        if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                 this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.setOptions();

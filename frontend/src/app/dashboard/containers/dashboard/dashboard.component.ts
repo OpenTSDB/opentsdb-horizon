@@ -897,7 +897,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.dbStatus$.subscribe(status => {
             switch (status) {
                 case 'save-success':
-                    this.snackBar.open('Dashboard has been saved.', '', {
+                case 'save-snapshot-success':
+                    this.snackBar.open( ( status === 'save-success' ? 'Dashboard' : 'Snapshot' )  + ' has been saved.', '', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         duration: 5000,
@@ -952,6 +953,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }
                         }
                     } else {
+                        this.oldWidgets = [...this.widgets];
                         this.newWidget = this.widgets[0];
                         this.setSnapshotMeta();
                     }
