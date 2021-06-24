@@ -4,6 +4,7 @@ import { Observable, interval, Subscription } from 'rxjs';
 import { MatDialog} from '@angular/material';
 import { Router,  NavigationEnd } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { AppConfigService } from './core/services/config.service';
 import { LoginExpireDialogComponent } from './core/components/login-expire-dialog/login-expire-dialog.component';
 import { Select } from '@ngxs/store';
 
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
     constructor(
         private dialog: MatDialog,
         private router: Router,
-        private authService: AuthService
+        private authService: AuthService,
+        public configService: AppConfigService
     ) {
         // register this router events to capture url changes
         this.router.events.subscribe((event) => {

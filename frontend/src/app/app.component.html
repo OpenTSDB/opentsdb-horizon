@@ -1,3 +1,8 @@
-<app-shell [fullUrlPath]="fullUrlPath">
+<app-shell *ngIf="configService.initialized && !configService.errors.length" [fullUrlPath]="fullUrlPath">
     <router-outlet></router-outlet>
 </app-shell>
+<div class="message" *ngIf="configService.initialized === false"> Failed to load the config. Please contact the adminstrator.</div>
+<div class="message" *ngIf="configService.errors.length">Failed to load the app due to config errors. Please contact the adminstrator.</div>
+<div class="error-list">
+    <li *ngFor="let error of configService.errors">{{error}}</li> 
+</div>

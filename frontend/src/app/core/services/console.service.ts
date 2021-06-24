@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './config.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConsoleService {
 
-    constructor() { }
+    constructor(private appConfig: AppConfigService) { }
 
     consoleOutput(type: string, label: string, params?: any) {
-        if (!environment.production) {
+        if (!this.appConfig.getConfig().production) {
             let color;
             let colorInverse = '#ffffff';
 

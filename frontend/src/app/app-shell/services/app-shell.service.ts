@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { UtilsService } from '../../core/services/utils.service';
+import { AppConfigService } from '../../core/services/config.service';
 
 import { ConsoleService } from '../../core/services/console.service';
 
@@ -11,6 +11,7 @@ import { ConsoleService } from '../../core/services/console.service';
 export class AppShellService {
 
     constructor(
+        private appConfig: AppConfigService,
         private console: ConsoleService,
         private http: HttpClient
     ) {}
@@ -37,7 +38,7 @@ export class AppShellService {
     }
 
     getUserProfile() {
-        const apiUrl = environment.configdb + '/user';
+        const apiUrl = this.appConfig.getConfig().configdb + '/user';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
@@ -57,7 +58,7 @@ export class AppShellService {
     }
 
     createUser() {
-        const apiUrl = environment.configdb + '/user';
+        const apiUrl = this.appConfig.getConfig().configdb + '/user';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });

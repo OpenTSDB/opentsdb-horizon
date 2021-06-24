@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from  '../../../../core/services/config.service';
 import { catchError} from 'rxjs/operators';
 
 import { ConsoleService } from '../../../../core/services/console.service';
@@ -12,6 +12,7 @@ import { ConsoleService } from '../../../../core/services/console.service';
 export class DbfsService {
 
     constructor(
+        private appConfig: AppConfigService,
         private console: ConsoleService,
         private http: HttpClient
     ) { }
@@ -41,7 +42,7 @@ export class DbfsService {
     }
 
     loadResources() {
-        const apiUrl = environment.configdb + '/dashboard/topFolders';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
 
         this.console.api('DbfsService :: Load Resources', { apiUrl });
 
@@ -64,10 +65,10 @@ export class DbfsService {
 
         if (topFolder && topFolder.type && topFolder.value) {
             const tokenType = (topFolder.type === 'user') ? 'userId' : 'namespace';
-            apiUrl = environment.configdb + '/dashboard/topFolders';
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
             params[tokenType] = topFolder.value;
         } else {
-            apiUrl = environment.configdb + '/dashboard' + path;
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard' + path;
         }
 
         this.console.api('DbfsService :: Get Folder By Path', { path, topFolder, apiUrl, params });
@@ -88,7 +89,7 @@ export class DbfsService {
     }
 
     getUsersList() {
-        const apiUrl = environment.configdb + '/user/list';
+        const apiUrl = this.appConfig.getConfig().configdb + '/user/list';
 
         this.console.api('DbfsService :: Get Users List', { apiUrl });
 
@@ -107,7 +108,7 @@ export class DbfsService {
     }
 
     getNamespacesList() {
-        const apiUrl = environment.configdb + '/namespace';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace';
 
         this.console.api('DbfsService :: Get Namespaces List', { apiUrl });
 
@@ -126,7 +127,7 @@ export class DbfsService {
     }
 
     getUserFavoritesList(userid: string) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         this.console.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
 
@@ -149,7 +150,7 @@ export class DbfsService {
     }
 
     addUserFavorite(dbid: any) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
 
@@ -174,7 +175,7 @@ export class DbfsService {
     }
 
     removeUserFavorite(dbid: any) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
 
@@ -213,7 +214,7 @@ export class DbfsService {
 
     getUserRecentList(userId: string, limit: number) {
 
-        const apiUrl = environment.configdb + '/dashboard/recent';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/recent';
 
         this.console.api('DbfsService :: Get User Recently Visited List', {userId, limit});
 
@@ -239,7 +240,7 @@ export class DbfsService {
     }
 
     createFolder(folder: any) {
-        const apiUrl = environment.configdb + '/dashboard/folder';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/folder';
 
         this.console.api('DashboardNavigatorService :: Create Dashboard Folder', { folder, apiUrl });
 
@@ -271,7 +272,7 @@ export class DbfsService {
     moveFolder(sourceId: number, destinationId: number, trashFolder?: boolean) {
         const body = { 'sourceId': sourceId, 'destinationId': destinationId };
 
-        const apiUrl = environment.configdb + '/dashboard/folder/move';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/folder/move';
 
         // tslint:disable-next-line:max-line-length
         this.console.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
@@ -292,7 +293,7 @@ export class DbfsService {
     }
 
     updateResource(type: string, payload: any) {
-        const apiUrl = environment.configdb + '/dashboard/' + type;
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + type;
 
         this.console.api('DashboardNavigatorService :: Update Dashboard ' + type.toUpperCase(), { id: payload.id, payload, apiUrl });
 
@@ -320,7 +321,7 @@ export class DbfsService {
     }
 
     getResourceById(id: any) {
-        const apiUrl = environment.configdb + '/dashboard/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + id;
 
         this.console.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
 

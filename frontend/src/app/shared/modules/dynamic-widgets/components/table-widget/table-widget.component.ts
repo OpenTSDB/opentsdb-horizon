@@ -16,7 +16,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
+
 
 
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
@@ -87,7 +88,8 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         private util: UtilsService,
         private elRef: ElementRef,
         private unit: UnitConverterService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() 
@@ -162,9 +164,9 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                         } else {
                             this.error = null;
                         }
-                        if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                             this.debugData = message.payload.rawdata.log; // debug log
                         }
 

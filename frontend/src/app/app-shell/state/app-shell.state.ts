@@ -1,8 +1,6 @@
 import { State , Action, Selector, StateContext, Store} from '@ngxs/store';
 import { map, catchError } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
-
 import { ConsoleService } from '../../core/services/console.service';
 
 import {
