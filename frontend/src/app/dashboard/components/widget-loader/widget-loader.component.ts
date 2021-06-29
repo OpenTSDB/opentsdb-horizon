@@ -17,7 +17,6 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { AppConfigService } from '../../../core/services/config.service';
 
 import domtoimage from 'dom-to-image-more';
-import { ConsoleService } from '../../../core/services/console.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -111,7 +110,6 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private hostElRef: ElementRef,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private console: ConsoleService,
         private appConfig: AppConfigService
     ) { }
 
@@ -410,6 +408,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         // adding white to background so it is easier to see graph when capturing image
         componentEl.style.backgroundColor = '#ffffff';
 
+        let widget = JSON.parse(JSON.stringify(this.widget));
+
         domtoimage.toJpeg(componentEl)
             .then((dataUrl: any) => {
                 // remove the background style
@@ -418,9 +418,9 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 // send the package through intercom so dashboard finish the request
                 this.interCom.requestSend(<IMessage> {
                     action: 'copyWidgetToClipboard',
-                    id: this.widget.id,
+                    id: widget.id,
                     payload: {
-                        widget: this.widget,
+                        widget: widget,
                         preview: dataUrl
                     }
                 });

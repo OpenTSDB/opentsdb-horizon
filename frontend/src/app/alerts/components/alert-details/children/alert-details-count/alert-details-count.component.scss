@@ -32,7 +32,11 @@
         .cdk-column-snoozed {
             text-align: right;
 
-            .count-empty { }
+            .count-empty {
+                width: 100%;
+                display: inline-block;
+                text-align: center;
+            }
 
             .count-amount {
                 padding: 2px;
@@ -105,6 +109,21 @@
         .cdk-column-missing {
             .count-amount {
                 background-color: map-get($denali-blue, 400);
+            }
+        }
+
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed {
+            .count-empty {
+                color: if(
+                    $is-dark,
+                    rgba($white, .25),
+                    rgba($black, .25)
+                );
             }
         }
     }

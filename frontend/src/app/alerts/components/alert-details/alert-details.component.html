@@ -662,6 +662,26 @@
                                         <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
+                                <div class="form-group alert-opsgenie-tags">
+                                    <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                            <mat-chip-list class="filter-values-list" #tagChipList>
+                                                <mat-chip
+                                                    *ngFor="let val of alertForm.get('notification').get('opsgenieTags')['controls']; let n=index"
+                                                    (removed)="removeOpsgenieTagValue(n)">
+                                                    <span>{{val.value}}</span>
+                                                    <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                                </mat-chip>
+                                                <input
+                                                    placeholder="Enter value(s) seperated by commas"
+                                                    [matChipInputFor]="tagChipList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="true"
+                                                    (matChipInputTokenEnd)="addOpsgenieTagValue($event)"
+                                                    autocomplete="off">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -860,6 +880,26 @@
                                     <mat-checkbox formControlName="opsgenieAutoClose" value="true"></mat-checkbox>
                                     <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                 </div>
+                            </div>
+                            <div class="form-group alert-opsgenie-tags">
+                                <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                        <mat-chip-list class="filter-values-list" #tagChipList>
+                                            <mat-chip
+                                                *ngFor="let val of alertForm.get('notification').get('opsgenieTags')['controls']; let n=index"
+                                                (removed)="removeOpsgenieTagValue(n)">
+                                                <span>{{val.value}}</span>
+                                                <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                            </mat-chip>
+                                            <input
+                                                placeholder="Enter value(s) seperated by commas"
+                                                [matChipInputFor]="tagChipList"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="true"
+                                                (matChipInputTokenEnd)="addOpsgenieTagValue($event)"
+                                                autocomplete="off">
+                                        </mat-chip-list>
+                                    </mat-form-field>
                             </div>
                         </div>
                     </div>
@@ -1103,6 +1143,12 @@
                                     <div class="opsgenie-autoclose-flag">
                                         <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
                                         <mat-hint class="info-hint" *ngIf="data.notification.opsgenieAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
+                                <div class="form-group alert-opsgenie-tags" >
+                                    <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                    <div class="opsgenie-tags" *ngIf="data.notification.opsgenieTags">
+                                        {{ data.notification.opsgenieTags.join(', ') }}
                                     </div>
                                 </div>
                             </div>
