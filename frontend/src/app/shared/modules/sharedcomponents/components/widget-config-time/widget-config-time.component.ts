@@ -8,6 +8,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { AppConfigService } from '../../../../../core/services/config.service';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -239,8 +241,9 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
     options: any = {};
     startTime = '';
     endTime = '';
+    canOverrideTime = true;
 
-    constructor(private fb: FormBuilder) { }
+    constructor(private fb: FormBuilder, private appConfig: AppConfigService) { }
 
     ngOnInit() {
         this.minInterval = this.widget.settings.time.downsample.minInterval || '';
@@ -248,6 +251,8 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         this.selectedAggregators = this.widget.settings.time.downsample.aggregators || this.selectedAggregators;
         this.startTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.start : '';
         this.endTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.end : '';
+        const config = this.appConfig.getConfig();
+        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime;
         this.setDefaultOptionsValues();
         this.createForm();
 
@@ -404,7 +409,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
                                                 data.reportingInterval = data.reportingInterval ? data.reportingInterval + data.reportingIntervalUnit : '';
                                                 delete data.reportingIntervalUnit;
                                                 delete data.minIntervalUnit;
-                                                if ( !data.overrideTime.start || !data.overrideTime.end ) {
+                                                if ( !this.canOverrideTime || !data.overrideTime.start || !data.overrideTime.end ) {
                                                     delete data.overrideTime;
                                                 }
                                                 this.widgetChange.emit({'action': 'SetTimeConfiguration', payload: { data: data } });

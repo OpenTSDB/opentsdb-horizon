@@ -37,5 +37,19 @@
         }
       }
     },
-    "alert_history_url": "<% alert log history url %>"
+    "alert_history_url": "<% alert log history url %>",
+    "helpLinks": [
+        { "label": "User guide", "href": "http://yo/yamas-guide" },
+        { "label": "File a ticket", "href": "https://jira.vzbuilders.com/secure/CreateIssueDetails!init.jspa?pid=10503&issuetype=10100&priority=10300" },
+        { "label": "Talk to us", "icon": "d-slack", "href": "https://vzbuilders.slack.com/archives/C6PJGN58S" },
+        { "label": "Release notes", "href": "https://git.vzbuilders.com/pages/monitoring/yamas-guide/release_notes/horizon/" },
+        { "label": "Recommented dashboards", "href" : "https://git.vzbuilders.com/pages/monitoring/yamas-guide/recommended/" }
+    ],
+    "modules": {
+        "dashboard": {
+            "widget": {
+                "overrideTime": true
+            }
+        }
+    }
 }

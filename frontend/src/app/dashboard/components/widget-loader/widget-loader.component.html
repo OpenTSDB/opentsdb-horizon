@@ -22,7 +22,7 @@
                     </button>-->
                     <!-- overide time button -->
                     <button mat-icon-button class="time-lock"
-                        *ngIf="widget.settings.time && widget.settings.time.overrideTime"
+                        *ngIf="canOverrideTime && widget.settings.time && widget.settings.time.overrideTime"
                         matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
                         <mat-icon fontSet="denali" fontIcon="d-time-lock"></mat-icon>
                     </button>

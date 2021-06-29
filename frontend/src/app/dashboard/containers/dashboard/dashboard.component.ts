@@ -18,6 +18,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
+import { AppConfigService } from '../../../core/services/config.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -286,7 +287,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
         private iiService: InfoIslandService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -1520,6 +1522,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.variablePanelMode = {...mode};
     }
 
+    canWidgetOverrideTime() {
+
+        const config = this.appConfig.getConfig();
+        const canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime;
+        return canOverrideTime;
+    }
+
     getQuery(message: any) {
         let groupid = '';
         let query = null;
@@ -1528,7 +1537,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // set groupby if multigraph is enabled
         const groupby = (payload.settings.multigraph && payload.settings.multigraph.enabled) ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];
-        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
+        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : this.canWidgetOverrideTime() ? payload.settings.time.overrideTime : null;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if ( this.viewEditMode || this.snapshot ) {
@@ -1613,7 +1622,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleEventQueryPayload(message: any) {
         if ( message.payload.eventQueries[0].namespace) {
-            const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
+            const overrideTime = this.canWidgetOverrideTime() && message.payload.settings ? message.payload.settings.time.overrideTime : null;
             const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
             message.payload.eventQueries[0].search = this.applyTplVarsToEventQuery(message.payload.eventQueries[0].search);
             this.store.dispatch(new GetEvents(
