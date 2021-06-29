@@ -209,6 +209,7 @@
 
             .legend-wrapper {
                 margin-left: 5px;
+                padding-left: 6px;
             }
 
             event-list {
@@ -484,7 +485,8 @@
 
                 &.alert-grouping-rules,
                 &.alert-recipients,
-                &.alert-labels {
+                &.alert-labels,
+                &.alert-opsgenie-tags {
                     .mat-form-field {
                         width: 100%;
                         max-width: 60%;
@@ -716,7 +718,8 @@
             align-items: center;
         }
 
-        .opsgenie-autoclose-flag {
+        .opsgenie-autoclose-flag,
+        .opsgenie-tags {
             line-height: 32px;
         }
 
@@ -834,6 +837,10 @@
                 border: 1px solid $divider-color;
 
                 //.graph-output { }
+            }
+
+            .legend-wrapper {
+                border-left: 1px solid $divider-color;
             }
         }
 

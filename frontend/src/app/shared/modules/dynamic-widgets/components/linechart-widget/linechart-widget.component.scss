@@ -77,6 +77,7 @@
                 height: 100%;
                 overflow: overlay;
                 z-index: 0;
+                align-items: flex-start;
 
                 .mat-table {
                     font-family: Monaco, monospace;
@@ -141,13 +142,15 @@
                 .graph-legend {
                     display: flex;
                     flex: 1;
+                    align-items: flex-start;
+
                     .line-series{
                         display: inline-flex;
                         width:10px;
                         height: 10px;
                         margin-right: 5px;
                     }
-                  }
+                }
             }
 
             &.display-legend-top{
