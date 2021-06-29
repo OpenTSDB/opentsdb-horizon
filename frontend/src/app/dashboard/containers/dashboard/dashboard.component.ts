@@ -2257,15 +2257,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                         filter.customFilter = [];
 
+                        let filterValue: any[] = (Array.isArray(filter.filter)) ? filter.filter : [];
+
                         // check if there is a set values
                         if (fval && fval.length > 0) {
-                            filter.filter = filter.filter.push(fval).filter((v, i, a) => a.indexOf(v) === i);
+                            filterValue.push(fval);
+                            filterValue = filterValue.filter((v, i, a) => a.indexOf(v) === i);
+                            filter.filter = filterValue;
                         // no value, so check for scoped values
                         } else if(fvalScope && fvalScope.length > 0) {
-                            filter.filter = filter.filter.push(fvalScope).filter((v, i, a) => a.indexOf(v) === i);
+                            filterValue.push(fvalScope);
+                            filterValue = filterValue.filter((v, i, a) => a.indexOf(v) === i);
+                            filter.filter = filterValue;
                         // else, just make it empty array
                         } else {
-                            filter.filter = filter.filter || [];
+                            filter.filter = filterValue;
                         }
                     }
                 }
