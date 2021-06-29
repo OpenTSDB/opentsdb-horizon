@@ -1,7 +1,7 @@
 <div class="landing-page-hero" *ngIf="showHero" style="flex: 1 1 300px; justify-content: flex-start; padding-top: 40px">
         <h2 class="hero-title mat-title">
             <span>Hi {{(user && user.firstName) ? user.firstName : user.alias}}!</span>
-            <span>Welcome to OpenTSDB</span>
+            <span>Welcome to {{appName}}</span>
         </h2>
         <div class="hero-message mat-subheading-2"><!--A next generation dashboard tool from Yamas--></div>
         <div class="hero-buttons">

@@ -1,5 +1,6 @@
 
 {
+    "name"  : "OpenTSDB",
     "production": true,
     "queryParams": null,
     "debugLevel": "ERROR",
