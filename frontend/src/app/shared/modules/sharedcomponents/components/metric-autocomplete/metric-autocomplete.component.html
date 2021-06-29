@@ -75,6 +75,7 @@
             autocomplete="off"
             [formControl]="metricSearchControl"
             [matAutocomplete]="metricAutoComplete"
+            #singleactrigger="matAutocompleteTrigger"
             (focus)="doMetricSearch()"
             (keydown.enter)="metricACKeydown($event)"
             #metricSearchInput>

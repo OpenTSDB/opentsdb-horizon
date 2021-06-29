@@ -18,7 +18,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 
@@ -128,7 +128,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private elRef: ElementRef,
       private iiService: InfoIslandService,
       private unit: UnitConverterService,
-      private dateUtil: DateUtilsService
+      private dateUtil: DateUtilsService,
+      private appConfig: AppConfigService
   ) { }
 
   ngOnInit() {
@@ -218,9 +219,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                           this.setTimezone(message.payload.timezone);
                           this.data.ts = this.dataTransformer.openTSDBToHeatmap(this.widget, this.options, this.data.ts, rawdata);
                           this.data = { ...this.data };
-                          if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                          if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                 this.debugData = rawdata.log; // debug log
                             }
                           setTimeout(() => this.setSize());

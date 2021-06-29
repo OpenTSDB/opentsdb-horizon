@@ -136,6 +136,8 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
                 debounceTime(200)
             )
             .subscribe(value => {
+                //console.log('IT DID SOMETHING **');
+                // this.visible = true;
                 const query: any = { namespace: this.namespace, tags: this.filters };
                 query.search = value ? value : '';
                 this.message['metricSearchControl'] = {};
@@ -165,7 +167,8 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
                             const message = err.error.error ? err.error.error.message : err.message;
                             this.message['metricSearchControl'] = { 'type': 'error', 'message': message };
                             this.detectChanges();
-                        });
+                    });
+
             });
     }
 
@@ -276,7 +279,6 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
             this.requestChanges();
             this.blur.emit();
         }
-
     }
 
     metricMultipleACKeydown(event: any) {

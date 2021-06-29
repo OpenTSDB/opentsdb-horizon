@@ -817,8 +817,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             this.query.metrics[index].groupByTags = tags;
             // this is in edit widget mode, if they make change to groupby
             // we need also update the the multigraph conf
-            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-            this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            if ( this.widget.settings ) {
+                const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+                this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            }
             this.queryChanges$.next(true);
         }
     }
@@ -949,7 +951,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expression = e.srcElement.value.trim();
         let index = this.query.metrics.findIndex(d => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
-            const expConfig = this.getExpressionConfig(expression);
+            const expConfig: any = this.getExpressionConfig(expression);
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
@@ -958,6 +960,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             } else {
                 expConfig.id = id;
                 expConfig.settings.visual = this.query.metrics[index].settings.visual;
+                expConfig.functions = this.query.metrics[index].functions;
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }

@@ -23,6 +23,19 @@
             display: flex;
             flex-direction: column;
             width: 300px;
+
+            .gif-spinner {
+                margin-right: 6px;
+            }
+        }
+
+        .progress-indicator {
+            padding: 8px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         .clipboard-header.mat-toolbar {
@@ -408,6 +421,13 @@
 
     .clipboard-drawer {
         background: $bg;
+
+        .progress-indicator {
+            color: rgba($white, .85);
+            background:  $success-color;
+            border-bottom: 1px solid $divider;
+            border-top: 1px solid $divider;
+        }
 
         .clipboard-header.mat-toolbar {
             // background: rgba($text-color, .5);

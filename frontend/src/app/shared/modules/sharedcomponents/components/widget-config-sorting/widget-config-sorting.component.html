@@ -6,7 +6,7 @@
   </mat-button-toggle-group>
 </div>
 
-<div class="config-control">
+<div class="config-control" *ngIf="widget.settings.component_type === 'TopnWidgetComponent'">
   <div class="form-label">Decimals</div>
   <mat-form-field appearance="fill">
     <input matInput
@@ -15,9 +15,10 @@
     (input)="setDecimals($event.target.value)"
     autocomplete="off"
     min="0"
-    max="1000"/>
+    max="100"/>
 </mat-form-field>
 </div>
+
 
 <div class="config-control">
   <div class="limit-title">

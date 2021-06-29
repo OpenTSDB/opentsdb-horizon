@@ -1027,6 +1027,21 @@
                 }
             }
 
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed {
+                .count-empty {
+                    color: if(
+                        $is-dark,
+                        rgba($white, .25),
+                        rgba($black, .25)
+                    );
+                }
+            }
+
             // disabled state
             .mat-row.is-disabled {
                 background-color: rgba(map-get($foreground, divider), .05);

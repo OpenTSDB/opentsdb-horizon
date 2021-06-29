@@ -19,8 +19,8 @@ import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { ConsoleService } from '../../../../../core/services/console.service';
-import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -194,11 +194,17 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
         this.checkMultigraphEnabled();
+        // on-fly to remove previous multigraph tag that users add in
+        // to make sure the multigraph conf and query groupBy in sync
+        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+        
         this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
         this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -462,11 +468,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 limitGraphs = graphs;
                             }
                             this.setMultigraphColumns(limitGraphs);
-                            this.graphData = { ...limitGraphs };
-                            if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                                environment.debugLevel.toUpperCase() === 'DEBUG' ||
-                                environment.debugLevel.toUpperCase() === 'INFO') {
-                                this.debugData = rawdata.log; // debug log
+                            this.graphData = {...limitGraphs};
+                            if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'DEBUG' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'INFO') {
+                                    this.debugData = rawdata.log; // debug log
                             }
                             // we should not call setLegendDiv here as it's taken care in getUpdatedWidgetConfig
                             this.setLegendDiv();
@@ -1772,6 +1778,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.multigraphEnabled = false;
         } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = true;
+            this.widget.settings.multigraph.enabled = true;
         } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = this.widget.settings.multigraph.enabled;
         }

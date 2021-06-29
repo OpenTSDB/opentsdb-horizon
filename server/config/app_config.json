@@ -1,43 +1,41 @@
+
 {
-    "dev": {
-        "port": "4443",
-        "application_protocol": "https:",
-        "redirect_port": [],
-        "tsdb_host": "https://tsdbr-1-gq1.yamas.ops.yahoo.com:4443",
-        "statusdb": "http://statusdb-2.yms.gq1.yahoo.com:4080/status/v1/",
-        "sherpa_url": "http://gamma-bcp1792.dht.yahoo.com:4080/",
-        "storageType": "sherpa",
-        "elasticsearch": {
-            "source": [
-                {
-                    "protocol": "https",
-                    "host": "proxy-meta-gq1.yamas.ops.yahoo.com",
-                    "port": 4443
-                }
-            ],
-            "policy": "fallback"
+    "production": true,
+    "queryParams": null,
+    "debugLevel": "ERROR",
+    "tsdbCacheMode": null,
+    "tsdbSource": null,
+    "tsdb_host": "<%tsdb endpoint%>",
+    "tsdb_hosts": [
+        "<%tsdb endpoint a%>",
+        "<%tsdb endpoint b%>",
+        "<%tsdb endpoint c%>"
+    ],
+    "configdb": "<% configdb endpoint %>",
+    "metaApi": "<% meta endpoint %>",
+    "auraUI": "<% Aura UI endpoint %>",
+    "alert": {
+        "recipient": {
+            "opsgenie": {
+                "enable": false,
+                "guideUrl": "<% opsgenie guide url %>"
+        },
+        "slack": {
+            "enable": false,
+            "guideUrl": "<% slack guide url %>"
+        },
+        "oc": {
+            "enable": false,
+            "onboardUrl": "<% OC onboad url %>",
+            "guideUrl": "<% OC guide url %>"
+        },
+        "http": {
+            "enable": false
+        },
+        "email": {
+            "enable": true
         }
+      }
     },
-    "prod": {
-        "port": "4443",
-        "application_protocol": "https:",
-        "tsdb_host": "https://tsdbr-1-gq1.yamas.ops.yahoo.com:4443",
-        "statusdb": "http://statusapi.yamas.ops.yahoo.com:4080/status/v1/",
-        "sherpa_url": "http://sherpa-bcp1280.dht.yahoo.com:4080/",
-        "storageType": "sherpa",
-        "elasticsearch": {
-            "source": [
-                {
-                    "protocol": "https",
-                    "host": "proxy-meta-gq1.yamas.ops.yahoo.com",
-                    "port": 4443
-                },
-                {
-                    "host": "bcp-metasearch.yamas.ops.yahoo.com",
-                    "port": 9999
-                }
-            ],
-            "policy": "fallback"
-        }
-    }
+    "alert_history_url": "<% alert log history url %>"
 }

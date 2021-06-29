@@ -162,7 +162,8 @@ export class UnitConverterService {
         let dUnit = this.getDetails(destUnitKey);
         dUnit = !dUnit ? sUnit : dUnit;
 
-        let precision = options.precision ? options.precision : ( options.precision === 'auto' || options.precision === '' ? 2 : 0);
+        let precision = options.precision ? Math.abs(options.precision) : ( options.precision === 'auto' || options.precision === '' ? 2 : 0);
+        precision = precision > 100 ? 100 : precision; //max number supported by toFixed() func.
         const prefix = options.unit === 'usd' ? '$' : '';
         const postfix =  options.unit && this.isCustomUnit(options.unit) ? options.unit : ''; // unknown units will be added as postfix
 

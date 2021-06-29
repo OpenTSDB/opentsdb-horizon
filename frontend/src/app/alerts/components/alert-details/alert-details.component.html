@@ -17,12 +17,13 @@
 
         <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
             <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
-                <div class="graph-output">
+                <div #graphOutput class="graph-output" >
+                    
                     <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
                         [data]="chartData"
-                        [size]="{'width': size.width - 50, 'height': size.height - 10}"
+                        [size]="{'width': size.width - (data.type === 'event' ? 50 : 250), 'height': size.height - 10}"
                         [options]="options"
                         [timeseriesLegend]="tsLegendOptions"
                         (currentTickEvent)="timeseriesTickListener($event)"
@@ -31,25 +32,39 @@
                     <!--<div class="dygraph-legend" #graphLegend></div>-->
                 </div>
                 <!--<div class="loading-spinner size-s color-primary" *ngIf="nQueryDataLoading > 0"></div>-->
-                <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
-                    <img src="/assets/spinner-26x26.gif" />
-                </div>
-                <div class="snapshot" *ngIf="data.type === 'simple'">
-                    <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
-                        <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
-                    </button>
-                </div>
-                <div class="error" *ngIf="error" (click)="showError()">
-                    <mat-icon>error</mat-icon>
+                <div class="legend-wrapper">
+                    <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
+                        <img src="/assets/spinner-26x26.gif" />
+                    </div>
+                    <div class="snapshot" *ngIf="data.type === 'simple'">
+                        <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
+                            <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+                        </button>
+                    </div>
+                    <div class="error" *ngIf="error" (click)="showError()">
+                        <mat-icon>error</mat-icon>
+                    </div>
+                    <div class="legend">
+                        <ng-container *ngFor="let query of queries; let qindex=index">
+                            <ng-container *ngFor="let metric of query.metrics; let mindex = index">
+                                <div *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === suppressConfig.metricId" class="metric-name" (click)="toggleQueryMetric(metric.id)">
+                                    <span class="label">
+                                        <mat-icon fontSet="denali" 
+                                            [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
+                                        <span>{{ metric.name  || utils.getExpressionLabel(qindex, mindex, queries) }}</span>
+                                    </span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
                 </div>
             </div>
             <event-list *ngIf="data && data.type === 'event'"
                 [events]="events" [timezone]="'local'" [startTime]="startTime" [endTime]="endTime" style="overflow: scroll" [loading]="loadingEvents()">
             </event-list>
-
             <alert-details-metric-period-over-period-preview *ngIf="data && data.type === 'simple' && data.threshold && data.threshold.subType === 'periodOverPeriod'"
                 [chartData]="chartData"
-                [size]="{'width': size.width, 'height': size.height - 50}"
+                [size]="{'width': size.width - 50 , 'height': size.height - 50}"
                 [options]="options"
                 [nQueryDataLoading]="nQueryDataLoading"
                 [thresholdConfig]="periodOverPeriodConfig"
@@ -166,6 +181,8 @@
                                     #periodOverPeriodForm
                                     [queries]="queries"
                                     (configChange)="periodOverPeriodChanged($event)"
+                                    [suppressConfig] = "suppressConfig"
+                                    [tags]="tags"
                                     [config]= "periodOverPeriodConfig">
                                 </alert-details-metric-period-over-period>
                                 <span *ngIf="data && data.type === 'simple' && data.threshold.subType !== 'periodOverPeriod'">
@@ -281,7 +298,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced}">
+                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': !showThresholdAdvanced}">
                                             <div class="toggle-wrap">
                                                 <a class="toggle-action" (click)="showThresholdAdvanced = !showThresholdAdvanced;">
                                                     <mat-icon fontSet="denali" [fontIcon]="showThresholdAdvanced ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
@@ -326,6 +343,16 @@
                                                     </mat-hint>
                                                 </div>
                                             </div>
+                                            <div class="form-group suppress-alert">
+                                                <div class="form-label vertical-center"><strong>Suppress alert if</strong></div>
+                                                <alert-details-suppress-config
+                                                    [data]="data"
+                                                    [queries]="queries"
+                                                    [config]="suppressConfig" 
+                                                    [tags]="tags"
+                                                    (configChange)="updateSuppressConfig($event)">
+                                                </alert-details-suppress-config>
+                                            </div>
                                             <div class="form-group alert-auto-recovery-interval">
                                                     <div class="form-label vertical-center"><strong>Automatically recover from bad/warn state</strong></div>
                                                     <div>
@@ -357,7 +384,7 @@
                                                 <mat-hint class="info-hint">mins</mat-hint>
                                             </div>
                                         </div>
-                                    </span>
+                                </span>
                             </div>
                         </span>
                     </div>
@@ -635,6 +662,26 @@
                                         <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
+                                <div class="form-group alert-opsgenie-tags">
+                                    <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                            <mat-chip-list class="filter-values-list" #tagChipList>
+                                                <mat-chip
+                                                    *ngFor="let val of alertForm.get('notification').get('opsgenieTags')['controls']; let n=index"
+                                                    (removed)="removeOpsgenieTagValue(n)">
+                                                    <span>{{val.value}}</span>
+                                                    <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                                </mat-chip>
+                                                <input
+                                                    placeholder="Enter value(s) seperated by commas"
+                                                    [matChipInputFor]="tagChipList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="true"
+                                                    (matChipInputTokenEnd)="addOpsgenieTagValue($event)"
+                                                    autocomplete="off">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -833,6 +880,26 @@
                                     <mat-checkbox formControlName="opsgenieAutoClose" value="true"></mat-checkbox>
                                     <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
                                 </div>
+                            </div>
+                            <div class="form-group alert-opsgenie-tags">
+                                <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                        <mat-chip-list class="filter-values-list" #tagChipList>
+                                            <mat-chip
+                                                *ngFor="let val of alertForm.get('notification').get('opsgenieTags')['controls']; let n=index"
+                                                (removed)="removeOpsgenieTagValue(n)">
+                                                <span>{{val.value}}</span>
+                                                <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                            </mat-chip>
+                                            <input
+                                                placeholder="Enter value(s) seperated by commas"
+                                                [matChipInputFor]="tagChipList"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="true"
+                                                (matChipInputTokenEnd)="addOpsgenieTagValue($event)"
+                                                autocomplete="off">
+                                        </mat-chip-list>
+                                    </mat-form-field>
                             </div>
                         </div>
                     </div>
@@ -1076,6 +1143,12 @@
                                     <div class="opsgenie-autoclose-flag">
                                         <span>{{ data.notification.opsgenieAutoClose === true ? 'Yes' : 'No' }}</span>
                                         <mat-hint class="info-hint" *ngIf="data.notification.opsgenieAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for OpsGenie. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
+                                <div class="form-group alert-opsgenie-tags" >
+                                    <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
+                                    <div class="opsgenie-tags" *ngIf="data.notification.opsgenieTags">
+                                        {{ data.notification.opsgenieTags.join(', ') }}
                                     </div>
                                 </div>
                             </div>
