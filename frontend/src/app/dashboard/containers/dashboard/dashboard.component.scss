@@ -266,6 +266,8 @@
             }
         }
     }
+
+
 }
 
 @mixin dashboard-component-theme($theme-config) {
@@ -385,5 +387,14 @@
     .app-navbar .inline-editable,
     .app-navbar .mat-toolbar .inline-editable {
         @extend %inline-editable-app-navbar-override;
+    }
+
+    $success-bg: map-get($status, success);
+    $success-txt: map-get($status, success-contrast);
+
+    .mat-snack-bar-container.success-notification {
+        color: $success-txt;
+        background: $success-bg;
+        box-shadow: 2px 2px 6px $black;
     }
 }
