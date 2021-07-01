@@ -51,7 +51,6 @@ export class DashboardService {
     settings: {
       title: 'my widget',
       component_type: 'PlaceholderWidgetComponent',
-      data_source: 'openTSDB',
       visual: {},
         axes: {},
         legend: {},

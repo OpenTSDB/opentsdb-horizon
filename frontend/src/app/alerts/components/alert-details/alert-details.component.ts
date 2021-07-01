@@ -1806,7 +1806,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     id: 'aaa',
                     settings: {
                         title: this.data.name || 'Untitled Alert',
-                        data_source: 'openTSDB',
                         component_type: 'LinechartWidgetComponent',
                         visual: {
                             showEvents: false
