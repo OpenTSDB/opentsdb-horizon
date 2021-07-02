@@ -437,11 +437,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     let batchGridPosOffset: any = 0;
+
+                    // get existing Ids
+                    let excludedIds: any[] = this.utilService.getIDs(this.widgets);
+
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
                         // generate new widget id
-                        clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
+                        let id: any = this.utilService.generateId(6, excludedIds);
+                        clipboardWidgets[i].id = id;
+                        excludedIds.push(id);
                         // need better way to position... just drop them at top for now
                         clipboardWidgets[i].gridPos.y = 0;
                         clipboardWidgets[i].gridPos.ySm = 0;
@@ -780,7 +786,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'newFromClipboard':
                     this.newFromClipboard = true;
-                    this.newFromClipboardItems = JSON.parse(JSON.stringify(message.payload));
+                    let cbWidgetItems = JSON.parse(JSON.stringify(message.payload));
+
+                    // need to generate Unique Widget Ids
+                    // BEFORE we navigate to _new_
+                    let excludeIds: any[] = [];
+
+                    for (let i = 0; i < cbWidgetItems.length; i++) {
+                        let item: any = cbWidgetItems[i];
+                        let id = this.utilService.generateId(6, excludeIds);
+                        item.id = id;
+                        excludeIds.push(id);
+                    }
+
+                    this.newFromClipboardItems= cbWidgetItems;
                     this.router.navigate(['d', '_new_']);
                     break;
                 default:
