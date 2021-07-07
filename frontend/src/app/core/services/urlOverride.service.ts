@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { Subscription, Observable } from 'rxjs';
 import { Router,  NavigationEnd } from '@angular/router';
-import { AppConfigService } from '../../core/services/config.service';
-import { UtilsService} from '../../core/services/utils.service';
-import { DateUtilsService } from '../../core/services/dateutils.service';
+import { AppConfigService } from './config.service';
+import { UtilsService} from './utils.service';
+import { DateUtilsService } from './dateutils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -124,6 +124,10 @@ export class URLOverrideService {
         private dateUtil: DateUtilsService,
         private appConfig: AppConfigService
     ) {
+        
+    }
+
+    initialize() {
         const url = this.getLocationURLandQueryParams();
         let otherParams = {};
         for (const k in url['queryParams']) {
