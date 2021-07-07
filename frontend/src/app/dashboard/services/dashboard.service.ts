@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from '../../core/services/utils.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
-import { URLOverrideService } from './urlOverride.service';
+import { URLOverrideService } from '../../core/services/urlOverride.service';
 import { HttpService } from '../../core/http/http.service';
 import { Observable, forkJoin, of } from 'rxjs';
 

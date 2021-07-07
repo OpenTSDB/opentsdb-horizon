@@ -82,7 +82,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
-import { URLOverrideService } from '../../services/urlOverride.service';
+import { URLOverrideService } from '../../../core/services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
@@ -307,6 +307,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
+        this.urlOverrideService.initialize();
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
