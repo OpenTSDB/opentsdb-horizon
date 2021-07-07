@@ -22,7 +22,7 @@ import { WidgetsRawdataState, ClearWidgetsData } from './widgets-data.state';
 import { ClientSizeState } from './clientsize.state';
 import { HttpService } from '../../core/http/http.service';
 import { DashboardService } from '../services/dashboard.service';
-import { URLOverrideService } from '../services/urlOverride.service';
+import { URLOverrideService } from '../../core/services/urlOverride.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { map, catchError } from 'rxjs/operators';
 import { ConsoleService } from '../../core/services/console.service';
