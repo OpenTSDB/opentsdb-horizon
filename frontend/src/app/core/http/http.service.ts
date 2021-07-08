@@ -22,7 +22,6 @@ import { AppConfigService } from '../services/config.service';
 import { MetaService } from '../services/meta.service';
 import { YamasService } from '../services/yamas.service';
 import { UtilsService } from '../services/utils.service';
-import { ConsoleService } from '../services/console.service';
 
 @Injectable({
     providedIn: 'root'
@@ -44,7 +43,6 @@ export class HttpService {
         private metaService: MetaService,
         private utils: UtilsService,
         private appConfig: AppConfigService,
-        private console: ConsoleService,
         private yamasService: YamasService) { }
 
     getDashoard(id: string): Observable<any> {
@@ -59,7 +57,13 @@ export class HttpService {
     handleError(error: HttpErrorResponse) {
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            console.log('An error occured:', error.error.message);
+            console.group(
+                '%cERROR %cHttpService',
+                'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            );
+            console.log('%cErrorMsg', 'font-weight: bold;', error.message);
+            console.groupEnd();
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -230,7 +234,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
           });
-        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries'; 
+        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
                             .pipe(
@@ -439,7 +443,6 @@ export class HttpService {
     }
 
     saveAlert(namespace, payload: any): Observable<any> {
-        this.console.api('saveAlert', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -453,7 +456,6 @@ export class HttpService {
     }
 
     getAlertDetailsById(id: number): Observable<any> {
-        this.console.api('getAlertDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -462,7 +464,6 @@ export class HttpService {
     }
 
     getAlerts(options): Observable<any> {
-        // this.console.api('getAlerts', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -501,7 +502,6 @@ export class HttpService {
     }
 
     deleteAlerts(namespace, payload): Observable<any> {
-        this.console.api('deleteAlerts', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -511,7 +511,6 @@ export class HttpService {
 
     /** snooze */
     saveSnooze(namespace, payload: any): Observable<any> {
-        this.console.api('saveSnooze', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -525,7 +524,6 @@ export class HttpService {
     }
 
     getSnoozeDetailsById(id: number): Observable<any> {
-        this.console.api('getSnoozeDetailsById', {id});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
@@ -534,7 +532,6 @@ export class HttpService {
     }
 
     getSnoozes(options): Observable<any> {
-        this.console.api('getSnoozes', {options});
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
@@ -543,7 +540,6 @@ export class HttpService {
     }
 
     deleteSnoozes(namespace, payload): Observable<any> {
-        this.console.api('deleteSnoozes', {namespace, payload});
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });

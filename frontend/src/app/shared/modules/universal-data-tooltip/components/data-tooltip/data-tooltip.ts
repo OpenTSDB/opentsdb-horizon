@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
+import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2, Injectable } from '@angular/core';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 import { Subscription, Observable } from 'rxjs';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
+@Injectable()
 export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.data-tooltip') private _baseClass = true;
@@ -80,8 +80,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     constructor(
         public ttDataSvc: TooltipDataService,
         public renderer: Renderer2,
-        public sanitizer: DomSanitizer,
-        public console: ConsoleService,
+        public sanitizer: DomSanitizer
     ) {}
 
     ngOnInit() {
@@ -168,7 +167,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                //this.console.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior

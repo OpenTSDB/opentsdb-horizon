@@ -47,7 +47,6 @@ import {
     transition,
     trigger
 } from '@angular/animations';
-import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
     deleteQuery?: boolean;
@@ -550,7 +549,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private console: ConsoleService,
         private multiService: MultigraphService
     ) {
         /*

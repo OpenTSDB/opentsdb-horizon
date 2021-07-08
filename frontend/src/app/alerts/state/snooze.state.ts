@@ -21,11 +21,8 @@ import {
     Selector
 } from '@ngxs/store';
 
-
-
 import { HttpService } from '../../core/http/http.service';
 import { AlertConverterService } from '../services/alert-converter.service';
-import { ConsoleService } from '../../core/services/console.service';
 
 export interface SnoozeStateModel {
     status: string;
@@ -59,8 +56,7 @@ export class GetSnoozeDetailsById {
 export class SnoozeState {
     constructor(
         private httpService: HttpService,
-        private alertConverter: AlertConverterService,
-        private console: ConsoleService
+        private alertConverter: AlertConverterService
     ) { }
 
     @Selector() static getSnoozeDetails(state: SnoozeStateModel) {
@@ -69,15 +65,12 @@ export class SnoozeState {
 
     @Action(GetSnoozeDetailsById)
     getSnoozeDetailsById(ctx: StateContext<SnoozeStateModel>, { id: id }: GetSnoozeDetailsById) {
-        this.console.action('Snooze::getSnoozeDetailsById', {id});
         ctx.patchState({ status: 'loading', loaded: false, error: {} });
         this.httpService.getSnoozeDetailsById(id).subscribe(
             data => {
-                this.console.success('Snooze::getSnoozeDetailsById', {data});
                 ctx.patchState({data: data, status: 'success', loaded: true, error: {}});
             },
             err => {
-                this.console.error('Snooze::getSnoozeDetailsById', {error: err});
                 ctx.patchState({ data: {}, status: 'failed', loaded: false, error: err });
             }
         );

@@ -37,7 +37,6 @@ import {
 import { Subscription, Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
-import { ConsoleService } from '../../../core/services/console.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { HttpService } from '../../../core/http/http.service';
 
@@ -78,8 +77,7 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
     constructor(
         private store: Store,
         private localStorage: LocalStorageService,
-        private http: HttpService,
-        private console: ConsoleService,
+        private http: HttpService
     ) {
         if (!localStorage.hasKey('globalNotifications')) {
             // initialize global notifications dismissal cache
@@ -175,17 +173,24 @@ export class GlobalNotificationBannerComponent implements OnInit, OnDestroy, Aft
     }
 
     private loadNotificationFile() {
-        // this.console.action('LOAD NOTIFICATION FILE');
+
         const files = this.store.selectSnapshot(DbfsResourcesState.getFileResources);
         const resource = files[this.rootPath + '/_notifications_'];
 
         this.http.getDashboardById(resource.id)
             .subscribe(
                 (res: any) => {
-                    // this.console.success('LOAD NOTIFICATION FILE', res);
                     this.checkForActiveNotification(res.body.content.widgets);
                 },
-                err => { this.console.error('LOAD NOTIFICATION FILE', err); }
+                err => {
+                    console.group(
+                        '%cERROR%cLOAD NOTIFICATION FILE',
+                        'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                        'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                    );
+                    console.log('%cErrorMsg', 'font-weight: bold;', err);
+                    console.groupEnd();
+                }
             );
     }
 

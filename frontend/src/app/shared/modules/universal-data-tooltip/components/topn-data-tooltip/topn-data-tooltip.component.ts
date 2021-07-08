@@ -18,8 +18,6 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { ConsoleService } from '../../../../../core/services/console.service';
-
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
 @Component({
@@ -37,14 +35,12 @@ export class TopnDataTooltipComponent extends DataTooltipComponent implements On
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
-        sanitizer: DomSanitizer,
-        console: ConsoleService
+        sanitizer: DomSanitizer
     ) {
         super(
             ttDataSvc,
             renderer,
-            sanitizer,
-            console
+            sanitizer
         );
     }
 

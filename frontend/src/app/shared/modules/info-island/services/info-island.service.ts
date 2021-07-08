@@ -25,8 +25,6 @@ import {
 import { ComponentPortal, PortalInjector, Portal, TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef, OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 
-import { ConsoleService } from '../../../../core/services/console.service';
-
 /** Island Wrapper */
 import { InfoIslandComponent } from '../containers/info-island.component';
 import { InfoIslandOptions } from './info-island-options';
@@ -62,7 +60,6 @@ export class InfoIslandService {
     constructor(
         private injector: Injector,
         private overlay: Overlay,
-        private console: ConsoleService,
         private interCom: IntercomService
     ) {}
 

@@ -36,7 +36,6 @@ import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConfigService } from '../../../../../core/services/config.service';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -206,7 +205,6 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private utilService: UtilsService,
         private elRef: ElementRef,
         private unit: UnitConverterService,
-        private console: ConsoleService,
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
@@ -220,7 +218,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         // to make sure the multigraph conf and query groupBy in sync
         const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
         this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
-        
+
         this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
         this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -739,7 +737,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 this.utilService.createNewReference(this.widget.queries, [qindex]);
                 this.widget = { ...this.widget };
                 this.refreshData(false);
-                this.cdRef.detectChanges();               
+                this.cdRef.detectChanges();
                 break;
             case 'SetShowEvents':
                 this.setShowEvents(message.payload.showEvents);

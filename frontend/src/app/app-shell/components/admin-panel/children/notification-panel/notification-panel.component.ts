@@ -17,7 +17,6 @@
 import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { DbfsResourcesState, DbfsLoadTopFolder } from '../../../../../shared/modules/dashboard-filesystem/state';
 
@@ -67,7 +66,6 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
     constructor(
         private store: Store,
         private notificationService: NotificationService,
-        private console: ConsoleService,
         private http: HttpService,
         private utils: UtilsService
     ) { }
@@ -163,7 +161,6 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
         data.settings.notification = Object.assign(this.notificationService.getNewUpdateValues(), data.settings.notification);
         // replace widget in store
         this.notificationStore.content.widgets[index] = data;
-        this.console.ng('notificationStore', this.notificationStore);
         // save store
         this.saveNotificationStore();
     }
@@ -187,21 +184,25 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
         data.settings.notification.enabled = enabled;
         // replace widget in store
         this.notificationStore.content.widgets[index] = data;
-        this.console.ng('notificationStore', this.notificationStore);
         // save store
         this.saveNotificationStore();
     }
 
     private saveNotificationStore() {
-        // this.console.action('SAVE NOTIFICATION STORE', this.notificationStore);
         // save notificationStore dashboard
         this.notificationService.saveNotificationStore(this.notificationStore)
             .subscribe(
                 res => {
-                    // this.console.success('SAVE NOTIFICATION STORE', res);
+                    // success
                 },
                 err => {
-                    this.console.error('SAVE NOTIFICATION STORE', err);
+                    console.group(
+                        '%cERROR%cSAVE NOTIFICATION STORE',
+                        'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                        'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                    );
+                    console.log('%cErrorMsg', 'font-weight: bold;', err);
+                    console.groupEnd();
                 }
             );
     }
@@ -220,12 +221,9 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     /* Create the notification storage dashboard */
     private createNotificationFile() {
-        this.console.action('CREATE NOTIFICATION FILE');
-
         this.notificationService.createNotificationStore()
             .subscribe(
                 res => {
-                    // this.console.success('SAVED NOTIFICATION FILE!!', res);
                     const ymsFolder = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/yamas'));
                     this.store.dispatch(new DbfsLoadTopFolder('namespace', ymsFolder.namespace, {}))
                         .subscribe(
@@ -236,24 +234,38 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                             }
                         );
                 },
-                err => { this.console.error('SAVE NOTIFICATION FILE', err); }
+                err => {
+                    console.group(
+                        '%cERROR%cSAVE NOTIFICATION FILE',
+                        'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                        'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                    );
+                    console.log('%cErrorMsg', 'font-weight: bold;', err);
+                    console.groupEnd();
+                }
             );
     }
 
     /* Loads the notification "dashboard" that has notification "widgets" */
     private loadNotificationFile() {
-        // this.console.action('LOAD NOTIFICATION FILE');
         const files = this.store.selectSnapshot(DbfsResourcesState.getFileResources);
         const resource = files[this.rootPath + '/_notifications_'];
 
         this.http.getDashboardById(resource.id)
             .subscribe(
                 res => {
-                    // this.console.success('LOAD NOTIFICATION FILE', res);
                     this.notificationStore = res.body;
                     this.panelReady = true;
                 },
-                err => { this.console.error('LOAD NOTIFICATION FILE', err); }
+                err => {
+                    console.group(
+                        '%cERROR%cLOAD NOTIFICATION FILE',
+                        'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                        'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                    );
+                    console.log('%cErrorMsg', 'font-weight: bold;', err);
+                    console.groupEnd();
+                }
             );
     }
 

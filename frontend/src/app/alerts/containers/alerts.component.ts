@@ -79,7 +79,7 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
-import { ConsoleService } from '../../core/services/console.service';
+
 import { UtilsService } from '../../core/services/utils.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
@@ -293,7 +293,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private domSanitizer: DomSanitizer,
         private cdkService: CdkService,
         private interCom: IntercomService,
-        private console: ConsoleService,
         private utils: UtilsService,
         private localStorageService: LocalStorageService,
         private dataShare: DataShareService,

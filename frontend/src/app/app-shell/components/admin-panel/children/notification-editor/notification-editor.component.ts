@@ -18,7 +18,6 @@ import { Component, OnInit, HostBinding, OnDestroy, Input, Output, EventEmitter 
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
@@ -49,7 +48,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     formChangeSub: Subscription;
 
     constructor(
-        private console: ConsoleService,
         private fb: FormBuilder,
         private utils: UtilsService
     ) {}

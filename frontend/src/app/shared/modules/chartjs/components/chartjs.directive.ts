@@ -21,12 +21,10 @@ import customTooltip from '../../../chart.js/tooltip/custom-tooltip';
 import * as thresholdPlugin from '../../../chartjs-threshold-plugin/src/index';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
-import { ConsoleService } from '../../../../core/services/console.service';
 
 Chart.defaults.global.defaultFontColor = '#000000';
 // Chart.defaults.global.defaultFontFamily = 'Monaco, monospace';
 // Chart.defaults.global.defaultFontSize = 14;
-
 
 @Directive({
   selector: '[chartjs]'

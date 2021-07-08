@@ -16,8 +16,6 @@
  */
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
 
-import { ConsoleService } from '../../../../../core/services/console.service';
-
 @Component({
     selector: 'app-notification-list',
     templateUrl: './notification-list.component.html'
@@ -34,9 +32,7 @@ export class NotificationListComponent implements OnInit {
     panelExpanded: any = 'active';
     deleteConfirm: any = -1; // if confirming, it will be index of Notification, otherwise -1
 
-    constructor(
-        private console: ConsoleService
-    ) { }
+    constructor() { }
 
     ngOnInit() {
         if (!this.active) {

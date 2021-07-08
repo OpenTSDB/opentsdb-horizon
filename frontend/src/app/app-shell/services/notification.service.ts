@@ -21,7 +21,6 @@ import { DashboardService } from '../../dashboard/services/dashboard.service';
 import { Store } from '@ngxs/store';
 import { DbfsState, DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state';
 import { HttpService } from '../../core/http/http.service';
-import { ConsoleService } from '../../core/services/console.service';
 
 @Injectable({
     providedIn: 'root'
@@ -33,8 +32,7 @@ export class NotificationService {
         private dbService: DashboardService,
         private dbConverterService: DashboardConverterService,
         private store: Store,
-        private http: HttpService,
-        private console: ConsoleService
+        private http: HttpService
     ) { }
 
     // create the "_notifications_" dashboard
@@ -59,7 +57,7 @@ export class NotificationService {
             id: data.id,
             content: data.content
         };
-        this.console.api('saveNotificationStore', payload);
+
         return this.http.saveDashboard(payload.id, payload);
     }
 

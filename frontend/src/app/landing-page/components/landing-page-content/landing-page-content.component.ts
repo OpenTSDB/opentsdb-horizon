@@ -29,9 +29,6 @@ import {
 import {
     DbfsState
 } from '../../../shared/modules/dashboard-filesystem/state';
-import { ConsoleService } from '../../../core/services/console.service';
-
-// import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -128,8 +125,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private router: Router,
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
-        private store: Store,
-        private console: ConsoleService
+        private store: Store
     ) { }
 
     ngOnInit() {

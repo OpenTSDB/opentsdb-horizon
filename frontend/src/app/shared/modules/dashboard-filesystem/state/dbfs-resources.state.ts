@@ -16,7 +16,6 @@
  */
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
-import { ConsoleService } from '../../../../core/services/console.service';
 import { map, tap, catchError, reduce } from 'rxjs/operators';
 
 import { DbfsService } from '../services/dbfs.service';
@@ -317,7 +316,6 @@ export class DbfsLoadUserRecentsSuccess {
 export class DbfsResourcesState {
     constructor(
         private utils: UtilsService,
-        private console: ConsoleService,
         private store: Store,
         private service: DbfsService,
         private dbfsUtils: DbfsUtilsService
@@ -493,7 +491,6 @@ export class DbfsResourcesState {
     /** Actions */
     @Action(DbfsResetResourceAction)
     resetResourceAction(ctx: StateContext<DbfsResourcesModel>, { }: DbfsResetResourceAction) {
-        this.console.action('State :: Reset Resource Action');
         ctx.patchState({
             resourceAction: {}
         });
@@ -502,7 +499,6 @@ export class DbfsResourcesState {
     /** loading resources */
     @Action(DbfsLoadResources)
     loadResources(ctx: StateContext<DbfsResourcesModel>, { }: DbfsLoadResources) {
-        this.console.action('State :: Load Navigation Resource List');
         const state = ctx.getState();
 
         return this.service.loadResources().pipe(
@@ -515,8 +511,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadResourcesSuccess)
     loadResourcesSuccess(ctx: StateContext<DbfsResourcesModel>, { response }: DbfsLoadResourcesSuccess) {
-        this.console.success('State :: Load Navigation Resource List', response);
-
         // in case the user doesn't have any member namespaces
         // fixes issue when user doesn't belong to namespace, the sidebar throws error
         // just ensures there is an empty array at least
@@ -816,7 +810,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadSubfolder)
     loadSubfolder(ctx: StateContext<DbfsResourcesModel>, { path, resourceAction }: DbfsLoadSubfolder) {
-        this.console.action('State :: Load SubFolder', { path, resourceAction });
         const state = ctx.getState();
 
         const folder = state.folders[path];
@@ -840,8 +833,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadSubfolderSuccess)
     loadSubfolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadSubfolderSuccess) {
-        this.console.success('State :: Load SubFolder', response);
-
         const state = ctx.getState();
 
         const folders = JSON.parse(JSON.stringify(state.folders));
@@ -892,8 +883,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadUsersList)
     loadUsersList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadUsersList) {
-        this.console.action('State :: Load Users');
-
         return this.service.getUsersList().pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsLoadUsersListSuccess(payload, resourceAction));
@@ -904,7 +893,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadUsersListSuccess)
     loadUsersListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadUsersListSuccess) {
-        this.console.success('State :: Load Users', response);
         const state = ctx.getState();
 
         const dynamicLoaded = JSON.parse(JSON.stringify({ ...state.dynamicLoaded }));
@@ -939,7 +927,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadNamespacesList)
     loadNamespacesList(ctx: StateContext<DbfsResourcesModel>, { resourceAction }: DbfsLoadNamespacesList) {
-        // this.console.action('State :: Load Namespaces', { resourceAction });
         return this.service.getNamespacesList().pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsLoadNamespacesListSuccess(payload, resourceAction));
@@ -950,7 +937,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadNamespacesListSuccess)
     loadNamespacesListSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resourceAction }: DbfsLoadNamespacesListSuccess) {
-        // this.console.success('State :: Load Namespaces', response);
         const state = ctx.getState();
         const dynamicLoaded = JSON.parse(JSON.stringify({ ...state.dynamicLoaded }));
 
@@ -981,8 +967,6 @@ export class DbfsResourcesState {
     // LOAD TOP FOLDER
     @Action(DbfsLoadTopFolder)
     loadTopFolder(ctx: StateContext<DbfsResourcesModel>, { type, key, resourceAction }: DbfsLoadTopFolder) {
-        this.console.action('State :: Load Top Folder', { type, key, resourceAction });
-
         const path = '/' + type + '/' + key;
         const topFolder: any = { type };
         topFolder.value = (type === 'user') ? 'user.' + key : key;
@@ -997,7 +981,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadTopFolderSuccess)
     loadTopFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsLoadTopFolderSuccess) {
-        this.console.success('State :: Load Top Folder', { response, args });
         const state = ctx.getState();
 
         const resourceAction = args.resourceAction;
@@ -1075,8 +1058,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsCreateFolder)
     createFolder(ctx: StateContext<DbfsResourcesModel>, { folder, resourceAction }: DbfsCreateFolder) {
-        this.console.action('State :: Create Folder', { folder, resourceAction });
-
         return this.service.createFolder(folder).pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsCreateFolderSuccess(payload, { folder, resourceAction }));
@@ -1087,8 +1068,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsCreateFolderSuccess)
     createFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsCreateFolderSuccess) {
-        this.console.success('State :: Create Folder', { response, args });
-
         const state = ctx.getState();
 
         const folders = JSON.parse(JSON.stringify({ ...state.folders }));
@@ -1124,7 +1103,6 @@ export class DbfsResourcesState {
         const state = ctx.getState();
 
         if (folders.length > 0) {
-            this.console.action('State :: Delete Folder', { folders, resourceAction });
             const folderPath = folders.shift();
             const source = state.folders[folderPath];
             const details = this.dbfsUtils.detailsByFullPath(folderPath);
@@ -1141,8 +1119,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsDeleteFolderSuccess)
     deleteFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsDeleteFolderSuccess) {
-        this.console.success('State :: Delete Folder', { response, args });
-
         ctx.dispatch(new DbfsUpdateFolderSuccess(response, { originDetails: args.originDetails, resourceAction: {} }));
 
         // see if you need to run it some more (batch mode)
@@ -1160,7 +1136,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsUpdateFolder)
     updateFolder(ctx: StateContext<DbfsResourcesModel>, { folder, originPath, resourceAction }: DbfsUpdateFolder) {
-        this.console.action('State :: Update Folder', { folder, originPath, resourceAction });
         const args = {
             originDetails: this.dbfsUtils.detailsByFullPath(originPath),
             resourceAction
@@ -1176,8 +1151,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsUpdateFolderSuccess)
     updateFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsUpdateFolderSuccess) {
-        this.console.success('State :: Update Folder', { response, args });
-
         const state = ctx.getState();
 
         const folders = JSON.parse(JSON.stringify({ ...state.folders }));
@@ -1240,7 +1213,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsUpdateFile)
     updateFile(ctx: StateContext<DbfsResourcesModel>, { file, originPath, resourceAction }: DbfsUpdateFile) {
-        this.console.action('State :: Update Folder', { file, originPath, resourceAction });
         const args = {
             originDetails: this.dbfsUtils.detailsByFullPath(originPath),
             resourceAction
@@ -1256,8 +1228,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsUpdateFileSuccess)
     updateFileSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsUpdateFileSuccess) {
-        this.console.success('State :: Update File', { response, args });
-
         const state = ctx.getState();
 
         const folders = JSON.parse(JSON.stringify({ ...state.folders }));
@@ -1300,7 +1270,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsDeleteDashboard)
     deleteDashboard(ctx: StateContext<DbfsResourcesModel>, { file, resourceAction }: DbfsDeleteDashboard) {
-        this.console.action('State :: Delete Dashboard', { file, resourceAction });
         const state = ctx.getState();
         const originDetails = this.dbfsUtils.detailsByFullPath(file);
         const source = state.files[file];
@@ -1318,8 +1287,6 @@ export class DbfsResourcesState {
     // generic Resource action
     @Action(DbfsMoveResource)
     moveResource(ctx: StateContext<DbfsResourcesModel>, { sourceId, destinationId, originPath, resourceAction }: DbfsMoveResource) {
-        this.console.action('State :: Move Folder', { sourceId, destinationId, originPath, resourceAction });
-
         const state = ctx.getState();
 
         const args = {
@@ -1343,7 +1310,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsAddPlaceholderFolder)
     addPlaceholderFolder(ctx: StateContext<DbfsResourcesModel>, { path, resourceAction }: DbfsAddPlaceholderFolder) {
-        this.console.action('State :: Add Placeholder Folder', { path, resourceAction });
         const state = ctx.getState();
 
         const folders = JSON.parse(JSON.stringify({ ...state.folders }));
@@ -1376,7 +1342,6 @@ export class DbfsResourcesState {
         const state = ctx.getState();
         const favorites = state.userFavorites;
         const recents = state.userRecents;
-        this.console.action('State :: Setup Favorites Placeholders', { favorites, recents });
         const files = this.utils.deepClone(state.files);
         // const folders = state.folders; // might allow folders to be favorited in the future
 
@@ -1409,7 +1374,6 @@ export class DbfsResourcesState {
     /* Load Favorites */
     @Action(DbfsLoadUserFavorites)
     loadUserFavorites(ctx: StateContext<DbfsResourcesModel>, { userid, resourceAction }: DbfsLoadUserFavorites) {
-        this.console.action('State :: Load User Favorites', { userid, resourceAction });
         const curState = ctx.getState();
 
         userid = (userid) ? curState.users[userid].userid : curState.users[curState.activeUser].userid;
@@ -1425,7 +1389,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsLoadUserFavoritesSuccess)
     loadUserFavoritesSuccess(ctx: StateContext<DbfsResourcesModel>, {response, resourceAction }: DbfsLoadUserFavoritesSuccess) {
-        this.console.success('State :: Load User Favorites', { response, resourceAction });
         const state = ctx.getState();
         const userFavorites: any = response.favorites;
 
@@ -1439,8 +1402,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsAddUserFav)
     addUserFav(ctx: StateContext<DbfsResourcesModel>, { resource, resourceAction }: DbfsAddUserFav) {
-        this.console.action('State :: Add User Fav', { resource, resourceAction });
-
         return this.service.addUserFavorite(resource.id).pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsAddUserFavSuccess(payload, resource, resourceAction));
@@ -1451,7 +1412,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsAddUserFavSuccess)
     addUserFavSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resource, resourceAction }: DbfsAddUserFavSuccess) {
-        this.console.success('State :: Add User Fav', { response, resourceAction });
         const state = ctx.getState();
 
         const userFavorites: any[] = this.utils.deepClone(state.userFavorites);
@@ -1469,8 +1429,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsRemoveUserFav)
     removeUserFav(ctx: StateContext<DbfsResourcesModel>, { resource, resourceAction }: DbfsRemoveUserFav) {
-        this.console.action('State :: Remove User Fav', { resource, resourceAction });
-
         return this.service.removeUserFavorite(resource.id).pipe(
             map((payload: any) => {
                 return ctx.dispatch(new DbfsRemoveUserFavSuccess(payload, resource, resourceAction));
@@ -1481,7 +1439,6 @@ export class DbfsResourcesState {
 
     @Action(DbfsRemoveUserFavSuccess)
     removeUserFavSuccess(ctx: StateContext<DbfsResourcesModel>, { response, resource, resourceAction }: DbfsRemoveUserFavSuccess) {
-        this.console.success('State :: Remove User Fav', { response, resourceAction });
         const state = ctx.getState();
 
         const userFavorites: any[] = this.utils.deepClone(state.userFavorites);
@@ -1525,7 +1482,14 @@ export class DbfsResourcesState {
     /* General Error Action */
     @Action(DbfsResourcesError)
     resourcesError(ctx: StateContext<DbfsResourcesModel>, { error, label }: DbfsResourcesError) {
-        this.console.error('State :: ' + label, error);
+        console.group(
+            '%cERROR%cState :: ' + label,
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+        );
+        console.log('%cErrorMsg', 'font-weight: bold;', error);
+        console.groupEnd();
+
         ctx.dispatch({ error });
     }
 
