@@ -1,7 +1,22 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler, Injectable } from '@angular/core';
+import { NgModule, ErrorHandler, Injectable, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from '../environments/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
 
@@ -22,6 +37,7 @@ import { AdminModule } from './admin/admin.module';
 import { AdhocModule } from './adhoc/adhoc.module';
 import { UniversalDataTooltipModule } from './shared/modules/universal-data-tooltip/universal-data-tooltip.module';
 
+import { AppConfigService } from './core/services/config.service';
 import { AuthInterceptor } from './core/http/auth.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { AuthState } from './shared/state/auth.state';
@@ -39,6 +55,11 @@ export class CustomHammerConfig extends HammerGestureConfig {
     return mconf;
   }
 }
+const appInitializerFn = (appConfig: AppConfigService) => {
+  return () => {
+    return appConfig.loadAppConfig();
+  };
+};
 
 export class CustomUrlSerializer implements UrlSerializer {
   private _defaultUrlSerializer: DefaultUrlSerializer = new DefaultUrlSerializer();
@@ -64,9 +85,9 @@ export class CustomUrlSerializer implements UrlSerializer {
     BrowserAnimationsModule,
     CoreModule,
     MaterialModule,
-    // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: false }),
     AppRoutingModule,
-    NgxsModule.forRoot([AuthState], { developmentMode: !environment.production }),
+    NgxsModule.forRoot([AuthState], { developmentMode: false }),
     NgxsLoggerPluginModule.forRoot(),
     AdminModule,
     AdhocModule,
@@ -80,6 +101,12 @@ export class CustomUrlSerializer implements UrlSerializer {
       useClass: CredentialsInterceptor,
       multi: true
     }*/
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFn,
+      multi: true,
+      deps: [AppConfigService]
+    },
     {
       provide: UrlSerializer,
       useClass: CustomUrlSerializer

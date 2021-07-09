@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     HostBinding,
@@ -34,6 +50,7 @@ import {
 import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
+    enableNamespace?: boolean;
     deleteQuery?: boolean;
     toggleQuery?: boolean;
     cloneQuery?: boolean;
@@ -817,8 +834,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             this.query.metrics[index].groupByTags = tags;
             // this is in edit widget mode, if they make change to groupby
             // we need also update the the multigraph conf
-            const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-            this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            if ( this.widget.settings ) {
+                const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+                this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            }
             this.queryChanges$.next(true);
         }
     }
@@ -949,7 +968,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const expression = e.srcElement.value.trim();
         let index = this.query.metrics.findIndex(d => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
-            const expConfig = this.getExpressionConfig(expression);
+            const expConfig: any = this.getExpressionConfig(expression);
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
@@ -958,6 +977,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             } else {
                 expConfig.id = id;
                 expConfig.settings.visual = this.query.metrics[index].settings.visual;
+                expConfig.functions = this.query.metrics[index].functions;
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }

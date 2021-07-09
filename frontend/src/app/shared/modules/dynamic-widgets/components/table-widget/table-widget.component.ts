@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, HostBinding, Input,
     OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit
@@ -16,7 +32,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
+
 
 
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
@@ -87,7 +104,8 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         private util: UtilsService,
         private elRef: ElementRef,
         private unit: UnitConverterService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() 
@@ -162,15 +180,15 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                         } else {
                             this.error = null;
                         }
-                        if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                             this.debugData = message.payload.rawdata.log; // debug log
                         }
 
                             this.setTimezone(message.payload.timezone);
                             const rawdata = message.payload.rawdata;
-                            this.data = this.dataTransformer.yamasToTable(this.widget, this.options, rawdata); 
+                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata); 
                             this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
                             this.dataSource = new MatTableDataSource(this.data);
                             this.displayedColumns = this.util.deepClone(this.options.displayColumns); 

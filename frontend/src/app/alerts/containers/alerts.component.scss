@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @mixin alerts-container-component-base() {
 
     $status-labels: ('bad', 'warn', 'good', 'unknown', 'missing', 'snoozed');
@@ -160,7 +176,7 @@
             border-radius: 4px;
             font-size: 10px;
             padding: 0 6px;
-            margin-right: 4px;
+            margin: 2px 4px;
             outline: none;
         }
 
@@ -298,6 +314,7 @@
                     }
                 }
             }
+
             .cdk-column-select,
             .cdk-column-bad,
             .cdk-column-warn,
@@ -320,6 +337,7 @@
                 .count-empty {
                     margin-right: 24px;
                 }
+
                 // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
                 .count-amount {
                     margin-right: 24px;
@@ -332,6 +350,17 @@
                     padding: 3px 6px;
                     outline: none;
                 }
+            }
+
+            .cdk-column-alertGroupingRules {
+                .mat-chip-list-wrapper {
+                    margin: initial;
+                }
+            }
+
+            .mat-cell.cdk-column-alertGroupingRules {
+                padding-top: 2px;
+                padding-bottom: 2px;
             }
 
             /*
@@ -397,7 +426,8 @@
                 position: relative;
 
                 span.alert-name {
-                    line-height: 48px;
+                    display: inline-block;
+                    margin: 12px 0;
                 }
 
                 .edit-actions-wrapper {
@@ -1010,6 +1040,21 @@
                 .contact-icon-strip {
                     //background-color: rgba($brand-color, .15);
                     color: if($is-dark, $brand-color-inverse, $brand-color);
+                }
+            }
+
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed {
+                .count-empty {
+                    color: if(
+                        $is-dark,
+                        rgba($white, .25),
+                        rgba($black, .25)
+                    );
                 }
             }
 
