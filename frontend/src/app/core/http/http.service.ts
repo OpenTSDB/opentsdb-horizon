@@ -1,10 +1,26 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, forkJoin, BehaviorSubject } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { AppConfigService } from '../services/config.service';
 import { MetaService } from '../services/meta.service';
-import { YamasService } from '../services/yamas.service';
+import { OpenTSDBService } from '../services/opentsdb.service';
 import { UtilsService } from '../services/utils.service';
 import { ConsoleService } from '../services/console.service';
 
@@ -27,11 +43,12 @@ export class HttpService {
         private http: HttpClient,
         private metaService: MetaService,
         private utils: UtilsService,
+        private appConfig: AppConfigService,
         private console: ConsoleService,
-        private yamasService: YamasService) { }
+        private openTSDBService: OpenTSDBService) { }
 
     getDashoard(id: string): Observable<any> {
-        const apiUrl = environment.configdb + '/object/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/object/' + id;
         return this.http.get(apiUrl, { withCredentials: true })
             .pipe(
                 map((data: any) => JSON.parse(data.content))
@@ -56,24 +73,24 @@ export class HttpService {
         );
     }
     /* will refactor later */
-    getYamasData(payload: any): Observable<any> {
+    getOpenTSDBData(payload: any): Observable<any> {
         var headers = new HttpHeaders(
             { 'Content-Type': 'application/json' });
         headers = headers.set('X-Horizon-DSHBID', String(payload.dbid))
                          .set('X-Horizon-WID', String(payload.wid));
         // simple random from 0 to length of hosts - 1
-        // const metricsUrl = environment.tsdb_host + '/api/query/graph';
-         // const metricsUrl = environment.tsdb_hosts[Math.floor(Math.random() * (environment.tsdb_hosts.length - 1))] + '/api/query/graph';
+        // const metricsUrl = this.appConfig.getConfig().tsdb_host + '/api/query/graph';
+         // const metricsUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
         if (this.assigned_tsdb_host === '') {
-            this.assigned_tsdb_host = environment.tsdb_hosts[Math.floor(Math.random() * (environment.tsdb_hosts.length - 1))] + '/api/query/graph';
+            this.assigned_tsdb_host = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
         }
         return this.http.post(this.assigned_tsdb_host, payload.query, { headers, withCredentials: true });
     }
 
     getAlertCount(options: any): Observable<any> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const statusApiUrl = environment.tsdb_hosts[Math.floor(Math.random() * (environment.tsdb_hosts.length - 1))] + '/api/query/graph';
-        const statusQuery = this.yamasService.buildStatusQuery(options);
+        const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
+        const statusQuery = this.openTSDBService.buildStatusQuery(options);
 
         return this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
             .pipe(catchError(error => of( { error : error } ) ));
@@ -94,7 +111,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const apiUrl = environment.metaApi + '/search/timeseries';
+        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'NAMESPACES', queryObj);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
@@ -103,7 +120,6 @@ export class HttpService {
     }
     // to get all tagkeys by namespaces
     // can pass a list of namespace and optional a list of metrics
-    // queryObj = { namespaces: ['ssp', 'yamas'] }
     getTagKeys(queryObj: any): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -126,7 +142,7 @@ export class HttpService {
             }
             newQueryParams[namespace].metrics.push(metric);
         }
-        const apiUrl = environment.metaApi + '/search/timeseries';
+        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS', Object.values(newQueryParams));
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
@@ -147,7 +163,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const apiUrl = environment.metaApi + '/search/timeseries';
+        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'METRICS', queryObj);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
@@ -178,7 +194,7 @@ export class HttpService {
         }
         if ( newQueries.length ) {
             const query = this.metaService.getQuery('meta', 'TAG_KEYS', newQueries);
-            const apiUrl = environment.metaApi + '/search/timeseries';
+            const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
             return this.http.post(apiUrl, query, { headers, withCredentials: true });
         } else {
             return of({ 'results': [] });
@@ -188,7 +204,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        const apiUrl =  environment.metaApi + '/search/timeseries';
+        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'TAG_KEYS', queryObj);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
@@ -200,7 +216,7 @@ export class HttpService {
       const headers = new HttpHeaders({
         'Content-Type': 'application/json'
       });
-      const apiUrl =  environment.metaApi + '/search/timeseries';
+      const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
       const query = this.metaService.getQuery(source, 'TAG_KEYS_AND_VALUES', queryObj, false);
       return this.http.post(apiUrl, query, { headers, withCredentials: true })
                         .pipe(
@@ -213,7 +229,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
           });
-        const apiUrl =  environment.metaApi + '/search/timeseries';
+        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries'; 
         const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
                             .pipe(
@@ -254,7 +270,7 @@ export class HttpService {
             }
             newQueryParams[namespace].metrics.push(metric);
         }
-        const apiUrl = environment.metaApi + '/search/timeseries';
+        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'TAG_KEYS_AND_VALUES', Object.values(newQueryParams), false);
         return this.http.post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
@@ -273,7 +289,7 @@ export class HttpService {
     }
 
     getDashboardByPath(path: string) {
-        const apiUrl = environment.configdb + '/dashboard/' + path;
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + path;
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -283,7 +299,7 @@ export class HttpService {
     }
 
     getDashboardById(id: string) {
-        const apiUrl = environment.configdb + '/dashboard/file/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id;
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -293,7 +309,7 @@ export class HttpService {
     }
 
     getDashboards() {
-        const apiUrl = environment.configdb + '/object';
+        const apiUrl = this.appConfig.getConfig().configdb + '/object';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
@@ -303,7 +319,7 @@ export class HttpService {
 
     // id is not use for now, but just carry it here
     saveDashboard(id, data) {
-        const apiUrl = environment.configdb + '/dashboard/file';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -314,12 +330,12 @@ export class HttpService {
 
     deleteDashboard(id) {
         /* This API call is an invalid endpoint */
-        const apiUrl = environment.configdb + '/object/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/object/' + id;
         return this.http.delete(apiUrl, { withCredentials: true });
     }
 
     getSnapshotById(id: string) {
-        const apiUrl = environment.configdb + '/snapshot/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/snapshot/' + id;
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -329,7 +345,7 @@ export class HttpService {
     }
 
     saveSnapshot(id, data) {
-        const apiUrl = environment.configdb + '/snapshot';
+        const apiUrl = this.appConfig.getConfig().configdb + '/snapshot';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -343,7 +359,7 @@ export class HttpService {
     }
 
     userNamespaces() {
-        const apiUrl = environment.configdb + '/namespace/member';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/member';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -353,7 +369,7 @@ export class HttpService {
     }
 
     getUserFolderData() {
-        const apiUrl = environment.configdb + '/dashboard/topFolders';
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -363,7 +379,7 @@ export class HttpService {
     }
 
     getRecipients(namespace: string) {
-        const apiUrl = environment.configdb + '/namespace/' + namespace + '/contact';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -373,7 +389,7 @@ export class HttpService {
     }
 
     postRecipient(data: any) {
-        const apiUrl = environment.configdb + '/namespace/' + data.namespace + '/contact';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -390,7 +406,7 @@ export class HttpService {
     }
 
     updateRecipient(data: any) {
-        const apiUrl = environment.configdb + '/namespace/' + data.namespace + '/contact';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
@@ -407,7 +423,7 @@ export class HttpService {
     }
 
     deleteRecipient(data: any) {
-        const apiUrl = environment.configdb + '/namespace/' + data.namespace + '/contact/delete';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact/delete';
         // tslint:disable-next-line:prefer-const
         let httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -426,7 +442,7 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/namespace/' + namespace + '/alert';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/alert';
         if ( !payload.data[0].id  ) {
             return this.http.post(apiUrl, payload.data, { headers, withCredentials: true });
         } else {
@@ -440,7 +456,7 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/alert/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/alert/' + id;
         return this.http.get(apiUrl, { headers, withCredentials: true });
     }
 
@@ -450,9 +466,9 @@ export class HttpService {
             'Content-Type': 'application/json',
           });
 
-        const statusQuery = this.yamasService.buildStatusQuery(options);
-        const apiUrl = environment.configdb + '/namespace/' + options.namespace + '/alert';
-        const statusApiUrl = environment.tsdb_hosts[Math.floor(Math.random() * (environment.tsdb_hosts.length - 1))] + '/api/query/graph';
+        const statusQuery = this.openTSDBService.buildStatusQuery(options);
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/alert';
+        const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
             return forkJoin([
                     this.http.get(apiUrl, { headers, withCredentials: true })
                             .pipe(catchError(error => of( { error : error } ) )),
@@ -488,7 +504,7 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/namespace/' + namespace + '/alert/delete';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/alert/delete';
         return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
     }
 
@@ -498,7 +514,7 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/namespace/' + namespace + '/snooze';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/snooze';
         if ( !payload.data[0].id  ) {
             return this.http.post(apiUrl, payload.data, { headers, withCredentials: true });
         } else {
@@ -512,7 +528,7 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/snooze/' + id;
+        const apiUrl = this.appConfig.getConfig().configdb + '/snooze/' + id;
         return this.http.get(apiUrl, { headers, withCredentials: true });
     }
 
@@ -521,7 +537,7 @@ export class HttpService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
           });
-        const apiUrl = environment.configdb + '/namespace/' + options.namespace + '/snooze';
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/snooze';
         return this.http.get(apiUrl, { headers, withCredentials: true });
     }
 
@@ -530,18 +546,18 @@ export class HttpService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });
-        const apiUrl = environment.configdb + '/snooze/delete';
+        const apiUrl = this.appConfig.getConfig().configdb + '/snooze/delete';
         return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
     }
     /** snooze */
 
     getEvents(wid: string, time: any, eventQueries: any[], limit) {
-        let query = this.yamasService.buildEventsQuery(time, eventQueries, limit);
+        let query = this.openTSDBService.buildEventsQuery(time, eventQueries, limit);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
 
-        const apiUrl = environment.tsdb_hosts[Math.floor(Math.random() * (environment.tsdb_hosts.length - 1))] + '/api/query/graph';
+        const apiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
 
         return this.http.post(apiUrl, query, { headers, withCredentials: true }).pipe(
             map((res: any) => {

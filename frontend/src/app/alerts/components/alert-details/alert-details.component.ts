@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     OnInit,
@@ -46,7 +62,7 @@ import { DataShareService } from '../../../core/services/data-share.service';
 import { DashboardConverterService } from '../../../core/services/dashboard-converter.service';
 import { Router } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
-import { environment } from "../../../../environments/environment";
+import { AppConfigService } from "../../../core/services/config.service";
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
@@ -142,7 +158,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         height: 180
     };
 
-    recipients = {'slack' : [{'name': 'yamas_dev'}], 'oc': [{'name': 'oc red'}]};
 
     thresholds: any = { };
     thresholdType: String = '';
@@ -315,7 +330,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         private location: LocationStrategy,
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
-        private dbConverterSrv: DashboardConverterService
+        private dbConverterSrv: DashboardConverterService,
+        private appConfig: AppConfigService
     ) {
         // this.data = dialogData;
         if (this.data.name) {
@@ -540,7 +556,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
-                // opsgenieTags: data.notification.opsgenieTags || '',
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
@@ -726,7 +742,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
-                // opsgenieTags: data.notification.opsgenieTags || '',
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
@@ -807,6 +823,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 body: data.notification.body || '',
                 opsgeniePriority:  data.notification.opsgeniePriority || this.defaultOpsGeniePriority,
                 opsgenieAutoClose:  data.notification.opsgenieAutoClose || false,
+                opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
                 ocTier: data.notification.ocTier || this.defaultOCTier
@@ -839,6 +856,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.suppressConfig.metricId = this.data.threshold.suppress.metricId ? this.utils.getMetricDropdownValue(this.data.queries.raw, this.data.threshold.suppress.metricId) : '';
             this.suppressConfig.reportingInterval = this.data.threshold.suppress.reportingInterval || 60;
             this.suppressConfig.comparisonOperator = this.data.threshold.suppress.comparisonOperator || 'missing';
+            this.suppressConfig.timeSampler = this.data.threshold.suppress.timeSampler || 'all_of_the_times';
             this.suppressConfig.threshold = this.data.threshold.suppress.threshold || 0;
             this.suppressConfig = {...this.suppressConfig};
             this.suppressConfig.disabled = false;
@@ -938,7 +956,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                 };
                 this.options.labels = ['x'];
-                const data = this.dataTransformer.yamasToDygraph(config, this.options, [[0]], res.counts);
+                const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], res.counts);
                 // we are expecting one series. the max logic needs to changed when we support group by
                 let max = 0, min = Infinity;
                 if ( res.counts.results.length && res.counts.results[0].data.length) {
@@ -1250,7 +1268,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const mid = this.thresholdSingleMetricControls.metricId.value;
         const settings: any = {
             settings: {
-                data_source: 'yamas',
+                data_source: 'openTSDB',
                 component_type: 'LinechartWidgetComponent'
             }
         };
@@ -1290,7 +1308,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( Object.keys(queries).length ) {
             const query = this.queryService.buildQuery(settings, this.queryTime, queries, options);
             // this.cdRef.detectChanges();
-            this.getYamasData({query: query});
+            this.getOpenTSDBData({query: query});
         } else {
             this.nQueryDataLoading = 0;
             this.options.labels = ['x'];
@@ -1302,7 +1320,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     getTsdbQuery(mid) {
         const settings: any = {
             settings: {
-                data_source: 'yamas',
+                data_source: 'openTSDB',
                 component_type: 'LinechartWidgetComponent'
             }
         };
@@ -1337,11 +1355,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     // to get query for selected metrics, my rebuild to keep time sync 1h-ago
-    getYamasData(query) {
+    getOpenTSDBData(query) {
         if (this.sub) {
             this.sub.unsubscribe();
         }
-        const queryObserver = this.httpService.getYamasData(query);
+        const queryObserver = this.httpService.getOpenTSDBData(query);
         this.sub = queryObserver.subscribe(
             result => {
                 this.nQueryDataLoading = 0;
@@ -1411,7 +1429,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         config.queries = queries;
         this.options.labels = ['x'];
-        const data = this.dataTransformer.yamasToDygraph(config, this.options, [[0]], this.queryData);
+        const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], this.queryData);
         this.setChartYMax();
         this.chartData = { ts: data };
     }
@@ -1804,7 +1822,6 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     id: 'aaa',
                     settings: {
                         title: this.data.name || 'Untitled Alert',
-                        data_source: 'yamas',
                         component_type: 'LinechartWidgetComponent',
                         visual: {
                             showEvents: false
@@ -1890,6 +1907,25 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
     }
 
+    removeOpsgenieTagValue(i: number) {
+        const control = <FormArray>this.alertForm.get('notification').get('opsgenieTags');
+        control.removeAt(i);
+    }
+
+    addOpsgenieTagValue(event: MatChipInputEvent) {
+        const input = event.input;
+        const value = event.value ? event.value.trim() : '';
+
+        if ( value ) {
+            const control = <FormArray>this.alertForm.get('notification').get('opsgenieTags');
+            control.push(new FormControl(value));
+        }
+
+        if (input) {
+            input.value = '';
+        }
+    }
+
     trimRecipientName(name) {
         return name.replace(/^\#/, '');
     }
@@ -1950,6 +1986,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( this.notificationRecipients.value.opsgenie && !event.opsgenie) {
             this.alertForm['controls'].notification.get('opsgeniePriority').setValue('');
             this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
+            this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]); 
         }
         this.notificationRecipients.setValue(event);
 
@@ -2039,7 +2076,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         return types[type];
     }
     setAlertEvaluationLink() {
-        let url = environment.alert_history_url + this.data.id;
+        let url = this.appConfig.getConfig().alert_history_url + this.data.id;
         this.alertEvaluationLink = url;
     }
 

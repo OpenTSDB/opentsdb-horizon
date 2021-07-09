@@ -1,7 +1,23 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // tslint:disable:max-line-length
 import { Injectable } from '@angular/core';
 import { UtilsService } from './utils.service';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './config.service';
 
 interface IQuery {
     id: string;
@@ -23,7 +39,7 @@ interface IEventQuery {
 @Injectable({
   providedIn: 'root'
 })
-export class YamasService {
+export class OpenTSDBService {
     queries: any = [];
     downsample: any;
     time: any;
@@ -36,7 +52,7 @@ export class YamasService {
     ratioPrefix = 'ratio-';
     egadsSlidingWindowPrefix = 'egads-sliding-window-';
 
-    constructor( private utils: UtilsService ) { }
+    constructor( private utils: UtilsService, private appConfig: AppConfigService ) { }
 
     buildQuery( time, queries, downsample: any = {} , summaryOnly= false, sorting, options) {
 
@@ -239,9 +255,9 @@ export class YamasService {
             id: 'JsonV3QuerySerdes',
             filter: serdesConfigsFilter
         }];
-        this.transformedQuery.logLevel = environment.debugLevel.toUpperCase();
-        this.transformedQuery.cacheMode = environment.tsdbCacheMode ?
-            environment.tsdbCacheMode.toUpperCase() : null;
+        this.transformedQuery.logLevel = this.appConfig.getConfig().debugLevel.toUpperCase();
+        this.transformedQuery.cacheMode = this.appConfig.getConfig().tsdbCacheMode ?
+                                            this.appConfig.getConfig().tsdbCacheMode.toUpperCase() : null;
         // make this a bit more readable/identifiable in the console
         console.log('%cTSDB QUERY%c' + JSON.stringify(this.transformedQuery),
                     'padding: 4px 32px 0 6px; font-weight: bold; color: #ffffff; background: #008080; clear: both; border-radius: 40% 60% 100% 0% / 30% 100% 0% 70%;',
@@ -269,9 +285,9 @@ export class YamasService {
             type: 'TimeSeriesDataSource',
             metric: {
                 type: 'MetricLiteral',
-                metric:  this.queries[qindex].namespace + '.' + this.queries[qindex].metrics[mindex].name
+                metric:  ( this.queries[qindex].namespace ?  this.queries[qindex].namespace + '.' : '' ) + this.queries[qindex].metrics[mindex].name
             },
-            sourceId: environment.tsdbSource ? environment.tsdbSource : null,
+            sourceId: this.appConfig.getConfig().tsdbSource ? this.appConfig.getConfig().tsdbSource : null,
             fetchLast: false,
         };
 

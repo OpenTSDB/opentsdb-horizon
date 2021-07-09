@@ -1,10 +1,27 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { Subscription, Observable } from 'rxjs';
 import { Router,  NavigationEnd } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { UtilsService} from '../../core/services/utils.service';
-import { DateUtilsService } from '../../core/services/dateutils.service';
+import { AppConfigService } from './config.service';
+import { UtilsService} from './utils.service';
+import { DateUtilsService } from './dateutils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -121,31 +138,36 @@ export class URLOverrideService {
         private location: Location,
         private router: Router,
         private utils: UtilsService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) {
+        
+    }
+
+    initialize() {
         const url = this.getLocationURLandQueryParams();
         let otherParams = {};
         for (const k in url['queryParams']) {
             const v = url['queryParams'][k];
             switch (k.toLowerCase()) {
                 case '__tsdb_host':
-                    environment.tsdb_host = decodeURIComponent(v);
-                    environment.tsdb_hosts = [decodeURIComponent(v)];
+                    this.appConfig.setConfig('tsdb_host', decodeURIComponent(v));
+                    this.appConfig.setConfig('tsdb_hosts', [decodeURIComponent(v)]);
                     break;
                 case '__config_host':
-                    environment.configdb = decodeURIComponent(v);
+                    this.appConfig.setConfig('configdb', decodeURIComponent(v));
                     break;
                 case '__meta_host':
-                    environment.metaApi = decodeURIComponent(v);
+                    this.appConfig.setConfig('metaApi', decodeURIComponent(v));
                     break;
                 case '__debug_level':
-                    environment.debugLevel = v;
+                    this.appConfig.setConfig('debugLevel', v);
                     break;
                     case '__tsdb_source':
-                    environment.tsdbSource = decodeURIComponent(v);
+                    this.appConfig.setConfig('tsdbSource', decodeURIComponent(v));
                     break;
                 case '__tsdb_cache':
-                    environment.tsdbCacheMode = v;
+                    this.appConfig.setConfig('tsdbCacheMode', v);
                     break;
                 default:
                     otherParams[k] = v;
