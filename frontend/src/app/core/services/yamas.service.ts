@@ -285,7 +285,7 @@ export class YamasService {
             type: 'TimeSeriesDataSource',
             metric: {
                 type: 'MetricLiteral',
-                metric:  this.queries[qindex].namespace + '.' + this.queries[qindex].metrics[mindex].name
+                metric:  ( this.queries[qindex].namespace ?  this.queries[qindex].namespace + '.' : '' ) + this.queries[qindex].metrics[mindex].name
             },
             sourceId: this.appConfig.getConfig().tsdbSource ? this.appConfig.getConfig().tsdbSource : null,
             fetchLast: false,

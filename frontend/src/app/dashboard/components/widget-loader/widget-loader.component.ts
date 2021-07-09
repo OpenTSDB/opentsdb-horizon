@@ -30,6 +30,7 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
 import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
+import { AppConfigService } from '../../../core/services/config.service';
 
 import domtoimage from 'dom-to-image-more';
 
@@ -106,6 +107,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     widgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
     multiLimitMessage = '';
     userHasWriteAccessToNamespace = false;
+    canOverrideTime = true;
 
     private subscription: Subscription = new Subscription();
 
@@ -123,7 +125,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private infoIslandService: InfoIslandService,
         private hostElRef: ElementRef,
         private utils: UtilsService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -197,6 +200,9 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 }
             }
         }));
+        const config = this.appConfig.getConfig();
+        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
+        
     }
 
     ngOnChanges(changes: SimpleChanges) {

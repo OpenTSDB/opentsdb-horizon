@@ -1,4 +1,3 @@
-
 {
     "production": true,
     "queryParams": null,
@@ -37,5 +36,20 @@
         }
       }
     },
-    "alert_history_url": "<% alert log history url %>"
+    "alert_history_url": "<% alert log history url %>",
+    "helpLinks": [
+        { "label": "User guide", "href": "#" },
+        { "label": "File a ticket", "href": "#" },
+        { "label": "Talk to us", "icon": "d-slack", "href": "#" }
+    ],
+    "modules": {
+        "dashboard": {
+            "widget": {
+                "overrideTime": true
+            }
+        }
+    },
+    "namespace": {
+        "enabled": false
+    }
 }
