@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, OnDestroy, HostBinding, ViewChild,
     TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
@@ -67,7 +83,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
-import { URLOverrideService } from '../../services/urlOverride.service';
+import { URLOverrideService } from '../../../core/services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
@@ -293,6 +309,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
+        this.urlOverrideService.initialize();
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
@@ -439,11 +456,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     let batchGridPosOffset: any = 0;
+
+                    // get existing Ids
+                    let excludedIds: any[] = this.utilService.getIDs(this.widgets);
+
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
                         // generate new widget id
-                        clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
+                        let id: any = this.utilService.generateId(6, excludedIds);
+                        clipboardWidgets[i].id = id;
+                        excludedIds.push(id);
                         // need better way to position... just drop them at top for now
                         clipboardWidgets[i].gridPos.y = 0;
                         clipboardWidgets[i].gridPos.ySm = 0;
@@ -782,7 +805,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'newFromClipboard':
                     this.newFromClipboard = true;
-                    this.newFromClipboardItems = JSON.parse(JSON.stringify(message.payload));
+                    let cbWidgetItems = JSON.parse(JSON.stringify(message.payload));
+
+                    // need to generate Unique Widget Ids
+                    // BEFORE we navigate to _new_
+                    let excludeIds: any[] = [];
+
+                    for (let i = 0; i < cbWidgetItems.length; i++) {
+                        let item: any = cbWidgetItems[i];
+                        let id = this.utilService.generateId(6, excludeIds);
+                        item.id = id;
+                        excludeIds.push(id);
+                    }
+
+                    this.newFromClipboardItems= cbWidgetItems;
                     this.router.navigate(['d', '_new_']);
                     break;
                 default:
@@ -2266,15 +2302,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                         filter.customFilter = [];
 
-                        // check if there is a set values
+                        let filterValue: any[] = (Array.isArray(filter.filter)) ? filter.filter : [];
+
+                        // check if there is set values
                         if (fval && fval.length > 0) {
-                            filter.filter = filter.filter.push(fval).filter((v, i, a) => a.indexOf(v) === i);
+                            filterValue = [fval];
+                            filter.filter = filterValue;
                         // no value, so check for scoped values
                         } else if(fvalScope && fvalScope.length > 0) {
-                            filter.filter = filter.filter.push(fvalScope).filter((v, i, a) => a.indexOf(v) === i);
+                            filterValue = fvalScope;
+                            filter.filter = filterValue;
                         // else, just make it empty array
                         } else {
-                            filter.filter = filter.filter || [];
+                            filter.filter = filterValue;
                         }
                     }
                 }
