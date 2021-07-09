@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     ElementRef,
@@ -26,7 +42,8 @@ import {
 import { Observable, Subscription, Subject } from 'rxjs';
 import { delayWhen, filter, skip, distinctUntilChanged, debounce, debounceTime } from 'rxjs/operators';
 import { HttpService } from '../../core/http/http.service';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from "../../core/services/config.service";
+
 
 import { Select, Store } from '@ngxs/store';
 
@@ -244,7 +261,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // tslint:disable-next-line:no-inferrable-types
     namespaceDropMenuOpen: boolean = false;
     configLoaded$ = new Subject();
-    auraUrl = environment.auraUI + '/#/aura/newquery';
+    auraUrl = '';
 
     error: any = false;
 
@@ -259,7 +276,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     whitelistKeys: string[] = ['name', 'type', 'labels', 'recipients', 'updatedTime', 'updatedBy'];
     nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
     booleanConditionalKeys: string[] = ['enabled'];
-
+    showNamespace = true;
     // where to navigate on save
     dashboardId = -1;
 
@@ -280,7 +297,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private utils: UtilsService,
         private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
-        private infoIslandService: InfoIslandService
+        private infoIslandService: InfoIslandService,
+        private appConfig: AppConfigService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
@@ -298,8 +316,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     ngOnInit() {
 
+        this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
+        const config = this.appConfig.getConfig();
+        this.showNamespace = config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true;
 
         this.subscription.add(this.alertSearch.valueChanges.pipe(
             debounceTime(this.alertSearchDebounceTime)

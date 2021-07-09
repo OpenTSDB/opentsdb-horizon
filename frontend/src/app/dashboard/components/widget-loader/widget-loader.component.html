@@ -1,3 +1,19 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
 
 <mat-card fxLayout="column" fxFlexFill>
     <mat-card-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" class="panel-body">
@@ -22,7 +38,7 @@
                     </button>-->
                     <!-- overide time button -->
                     <button mat-icon-button class="time-lock"
-                        *ngIf="widget.settings.time && widget.settings.time.overrideTime"
+                        *ngIf="canOverrideTime && widget.settings.time && widget.settings.time.overrideTime"
                         matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
                         <mat-icon fontSet="denali" fontIcon="d-time-lock"></mat-icon>
                     </button>

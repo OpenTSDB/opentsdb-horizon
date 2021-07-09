@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, OnInit, OnChanges, AfterViewInit, ChangeDetectorRef,
     SimpleChanges, HostBinding, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
@@ -12,7 +28,7 @@ import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state'
 import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
   selector: 'app-barchart-widget',
@@ -101,7 +117,8 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
         private unit: UnitConverterService,
         private elRef: ElementRef,
         private cdRef: ChangeDetectorRef,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -196,13 +213,13 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                         } else {
                             this.error = null;
                         }
-                        if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                 this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.data = this.dataTransformer
-                            .yamasToChartJS(this.type, this.options, this.widget, this.data, message.payload.rawdata, this.isStackedGraph);
+                            .openTSDBToChartJS(this.type, this.options, this.widget, this.data, message.payload.rawdata, this.isStackedGraph);
                         this.detectChanges();
                         break;
                     case 'getUpdatedWidgetConfig':

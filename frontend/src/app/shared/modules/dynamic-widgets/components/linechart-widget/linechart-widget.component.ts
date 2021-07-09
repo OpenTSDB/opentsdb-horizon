@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, HostBinding, Input, EventEmitter,
     OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output
@@ -19,8 +35,8 @@ import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { ConsoleService } from '../../../../../core/services/console.service';
-import { environment } from '../../../../../../environments/environment';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../../../app-shell/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -194,11 +210,17 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         private multiService: MultigraphService,
         private iiService: InfoIslandService,
         private themeService: ThemeService,
-        private dateUtil: DateUtilsService
+        private dateUtil: DateUtilsService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
         this.checkMultigraphEnabled();
+        // on-fly to remove previous multigraph tag that users add in
+        // to make sure the multigraph conf and query groupBy in sync
+        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+        
         this.multiConf = this.multiService.buildMultiConf(this.widget.settings.multigraph);
         this.displayMultigraph = (this.multiConf.x || this.multiConf.y) ? true : false;
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -441,7 +463,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                     }
                                                 }
 
-                                                limitGraphs[ykey][xkey].ts = this.dataTransformer.yamasToDygraph(
+                                                limitGraphs[ykey][xkey].ts = this.dataTransformer.openTSDBToDygraph(
                                                     this.widget, options, limitGraphs[ykey][xkey].ts, limitGraphs[ykey][xkey]
                                                 );
                                                 limitGraphs[ykey][xkey].options = options;
@@ -451,7 +473,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                             } else {
                                 let graphs: any = {};
-                                this.data.ts = this.dataTransformer.yamasToDygraph(this.widget, this.options, this.data.ts, rawdata);
+                                this.data.ts = this.dataTransformer.openTSDBToDygraph(this.widget, this.options, this.data.ts, rawdata);
                                 if (this.widget.settings.legend.display) {
                                     this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
                                 }
@@ -462,11 +484,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 limitGraphs = graphs;
                             }
                             this.setMultigraphColumns(limitGraphs);
-                            this.graphData = { ...limitGraphs };
-                            if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                                environment.debugLevel.toUpperCase() === 'DEBUG' ||
-                                environment.debugLevel.toUpperCase() === 'INFO') {
-                                this.debugData = rawdata.log; // debug log
+                            this.graphData = {...limitGraphs};
+                            if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'DEBUG' ||
+                                this.appConfig.getConfig().debugLevel.toUpperCase() === 'INFO') {
+                                    this.debugData = rawdata.log; // debug log
                             }
                             // we should not call setLegendDiv here as it's taken care in getUpdatedWidgetConfig
                             this.setLegendDiv();
@@ -1772,6 +1794,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.multigraphEnabled = false;
         } else if (this.widget.settings.multigraph && !this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = true;
+            this.widget.settings.multigraph.enabled = true;
         } else if (this.widget.settings.multigraph && this.widget.settings.multigraph.hasOwnProperty('enabled')) {
             this.multigraphEnabled = this.widget.settings.multigraph.enabled;
         }

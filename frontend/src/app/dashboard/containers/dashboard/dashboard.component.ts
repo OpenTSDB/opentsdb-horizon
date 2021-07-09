@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, OnDestroy, HostBinding, ViewChild,
     TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
@@ -18,6 +34,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
+import { AppConfigService } from '../../../core/services/config.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -66,7 +83,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
-import { URLOverrideService } from '../../services/urlOverride.service';
+import { URLOverrideService } from '../../../core/services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
@@ -284,13 +301,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
         private iiService: InfoIslandService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
+        this.urlOverrideService.initialize();
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
@@ -437,11 +456,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     let batchGridPosOffset: any = 0;
+
+                    // get existing Ids
+                    let excludedIds: any[] = this.utilService.getIDs(this.widgets);
+
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
                         // generate new widget id
-                        clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
+                        let id: any = this.utilService.generateId(6, excludedIds);
+                        clipboardWidgets[i].id = id;
+                        excludedIds.push(id);
                         // need better way to position... just drop them at top for now
                         clipboardWidgets[i].gridPos.y = 0;
                         clipboardWidgets[i].gridPos.ySm = 0;
@@ -780,7 +805,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'newFromClipboard':
                     this.newFromClipboard = true;
-                    this.newFromClipboardItems = JSON.parse(JSON.stringify(message.payload));
+                    let cbWidgetItems = JSON.parse(JSON.stringify(message.payload));
+
+                    // need to generate Unique Widget Ids
+                    // BEFORE we navigate to _new_
+                    let excludeIds: any[] = [];
+
+                    for (let i = 0; i < cbWidgetItems.length; i++) {
+                        let item: any = cbWidgetItems[i];
+                        let id = this.utilService.generateId(6, excludeIds);
+                        item.id = id;
+                        excludeIds.push(id);
+                    }
+
+                    this.newFromClipboardItems= cbWidgetItems;
                     this.router.navigate(['d', '_new_']);
                     break;
                 default:
@@ -897,7 +935,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.dbStatus$.subscribe(status => {
             switch (status) {
                 case 'save-success':
-                    this.snackBar.open('Dashboard has been saved.', '', {
+                case 'save-snapshot-success':
+                    this.snackBar.open( ( status === 'save-success' ? 'Dashboard' : 'Snapshot' )  + ' has been saved.', '', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         duration: 5000,
@@ -952,6 +991,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }
                         }
                     } else {
+                        this.oldWidgets = [...this.widgets];
                         this.newWidget = this.widgets[0];
                         this.setSnapshotMeta();
                     }
@@ -1522,15 +1562,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.variablePanelMode = {...mode};
     }
 
+    canWidgetOverrideTime() {
+
+        const config = this.appConfig.getConfig();
+        const canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
+        return canOverrideTime;
+    }
+
     getQuery(message: any) {
         let groupid = '';
         let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
+        payload.settings.data_source = 'openTSDB';
         // set groupby if multigraph is enabled
         const groupby = (payload.settings.multigraph && payload.settings.multigraph.enabled) ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];
-        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
+        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : this.canWidgetOverrideTime() ? payload.settings.time.overrideTime : null;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if ( this.viewEditMode || this.snapshot ) {
@@ -1554,7 +1602,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             for (let i = 0; i < payload.queries.length; i++) {
                 let query: any = JSON.parse(JSON.stringify(payload.queries[i]));
                 groupid = query.id;
-                if (query.namespace && query.settings.visual.visible && query.metrics.length) {
+                if (query.settings.visual.visible && query.metrics.length) {
                     // filter only visible metrics, disable it now since it will break the expression
                     // query = this.dbService.filterMetrics(query);
                     // here we need to resolve template variables
@@ -1615,7 +1663,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleEventQueryPayload(message: any) {
         if ( message.payload.eventQueries[0].namespace) {
-            const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
+            const overrideTime = this.canWidgetOverrideTime() && message.payload.settings ? message.payload.settings.time.overrideTime : null;
             const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
             message.payload.eventQueries[0].search = this.applyTplVarsToEventQuery(message.payload.eventQueries[0].search);
             this.store.dispatch(new GetEvents(
@@ -2249,19 +2297,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // check if there is a custom filter
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
+
                         const fval = dbTplVarLookup[fkey].filter ? dbTplVarLookup[fkey].filter : undefined;
                         const fvalScope = dbTplVarLookup[fkey].scope ? dbTplVarLookup[fkey].scope : undefined;
+
                         filter.customFilter = [];
 
-                        // check if there is a set values
+                        let filterValue: any[] = (Array.isArray(filter.filter)) ? filter.filter : [];
+
+                        // check if there is set values
                         if (fval && fval.length > 0) {
-                            filter.filter[0] = dbTplVarLookup[fkey].filter;
+                            filterValue = [fval];
+                            filter.filter = filterValue;
                         // no value, so check for scoped values
                         } else if(fvalScope && fvalScope.length > 0) {
-                            filter.filter = fvalScope;
+                            filterValue = fvalScope;
+                            filter.filter = filterValue;
                         // else, just make it empty array
                         } else {
-                            filter.filter = [];
+                            filter.filter = filterValue;
                         }
                     }
                 }
