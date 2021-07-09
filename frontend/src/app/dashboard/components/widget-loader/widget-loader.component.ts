@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Type, Component, OnInit, Input, Output, ViewChild,
     ComponentFactoryResolver, EventEmitter,
@@ -14,9 +30,9 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
 import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
+import { AppConfigService } from '../../../core/services/config.service';
 
 import domtoimage from 'dom-to-image-more';
-import { ConsoleService } from '../../../core/services/console.service';
 
 @Component({
     selector: 'app-widget-loader',
@@ -91,6 +107,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     widgetDeleteDialog: MatDialogRef<WidgetDeleteDialogComponent> | null;
     multiLimitMessage = '';
     userHasWriteAccessToNamespace = false;
+    canOverrideTime = true;
 
     private subscription: Subscription = new Subscription();
 
@@ -109,7 +126,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         private hostElRef: ElementRef,
         private utils: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private console: ConsoleService
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -183,6 +200,9 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 }
             }
         }));
+        const config = this.appConfig.getConfig();
+        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
+        
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -404,6 +424,8 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         // adding white to background so it is easier to see graph when capturing image
         componentEl.style.backgroundColor = '#ffffff';
 
+        let widget = JSON.parse(JSON.stringify(this.widget));
+
         domtoimage.toJpeg(componentEl)
             .then((dataUrl: any) => {
                 // remove the background style
@@ -412,9 +434,9 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
                 // send the package through intercom so dashboard finish the request
                 this.interCom.requestSend(<IMessage> {
                     action: 'copyWidgetToClipboard',
-                    id: this.widget.id,
+                    id: widget.id,
                     payload: {
-                        widget: this.widget,
+                        widget: widget,
                         preview: dataUrl
                     }
                 });

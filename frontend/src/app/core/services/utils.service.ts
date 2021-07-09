@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as _moment from 'moment';
@@ -93,9 +109,10 @@ export class UtilsService {
             const qid = queries[i].id;
             for (let j = 0; j < queries[i].metrics.length; j++) {
                 const mid = queries[i].metrics[j].id;
-                if (queries[i].metrics[j].settings.visual.visible === true) {
+                if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.visible === true ) {
                     metricsVisibleLen++;
-                    if (queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
+                    // tslint:disable:max-line-length
+                    if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
                         metricsVisibleAutoColorLen++;
                         metricsVisibleAutoColorIds.push(qid + '-' + mid);
                     }
@@ -707,6 +724,10 @@ export class UtilsService {
         return obj;
     }
 
+    isArraySubset(arr1, arr2) {
+        return arr2.every( v => arr1.includes(v) );
+    }
+
     transformTagMapToArray(map: Map<any, any>): any[] {
         const ret = [];
 
@@ -1091,6 +1112,18 @@ export class UtilsService {
                 items[i] = {...items[i]};
             }
         }
+    }
+
+    deepmerge(target, source) {
+        for (const key of Object.keys(source)) {
+            if (source[key] instanceof Object && key in target) {
+                Object.assign(source[key], this.deepmerge(target[key], source[key]));
+            }
+        }
+      
+        // Join `target` and modified `source`
+        Object.assign(target || {}, source)
+        return target;
     }
 
     regExpEscSpecialChars(value, replaceChars) {

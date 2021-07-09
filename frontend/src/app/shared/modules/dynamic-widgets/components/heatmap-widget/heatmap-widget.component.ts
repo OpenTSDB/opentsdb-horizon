@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
   Component, OnInit, HostBinding, Input,
   OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, ViewEncapsulation, AfterViewInit
@@ -18,7 +34,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 
@@ -128,7 +144,8 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
       private elRef: ElementRef,
       private iiService: InfoIslandService,
       private unit: UnitConverterService,
-      private dateUtil: DateUtilsService
+      private dateUtil: DateUtilsService,
+      private appConfig: AppConfigService
   ) { }
 
   ngOnInit() {
@@ -218,9 +235,9 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                           this.setTimezone(message.payload.timezone);
                           this.data.ts = this.dataTransformer.openTSDBToHeatmap(this.widget, this.options, this.data.ts, rawdata);
                           this.data = { ...this.data };
-                          if (environment.debugLevel.toUpperCase() === 'TRACE' ||
-                            environment.debugLevel.toUpperCase() == 'DEBUG' ||
-                            environment.debugLevel.toUpperCase() == 'INFO') {
+                          if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
+                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                                 this.debugData = rawdata.log; // debug log
                             }
                           setTimeout(() => this.setSize());

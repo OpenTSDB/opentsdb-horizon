@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges,
     ChangeDetectorRef, ViewChild
@@ -13,9 +29,11 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { FormControl } from '@angular/forms';
 
 interface IMetricQueriesConfigOptions {
+    enableNamespace?: boolean;
     enableMultipleQueries?: boolean;
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
@@ -72,7 +90,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         private interCom: IntercomService,
         private util: UtilsService,
         private elRef: ElementRef,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -89,7 +108,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     }
 
     initOptions() {
+        const config = this.appConfig.getConfig();
         const defaultOptions = {
+            'enableNamespace': config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true,
             'enableAlias': true,
             'enableGroupBy': true,
             'enableSummarizer': false,
@@ -105,7 +126,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     getNewQueryConfig() {
         // const gconfig = this.util.getObjectByKey(this.widget.query.groups, 'id', gid);
         const infectiousNan = this.widget.queries.length && this.widget.queries[0].settings.infectiousNan ? true : false;
-        const query: any = { namespace: '' , metrics: [], filters: [] };
+        const query: any = { metrics: [], filters: [] };
         switch (this.widget.settings.component_type) {
             case 'LinechartWidgetComponent':
             case 'HeatmapWidgetComponent':

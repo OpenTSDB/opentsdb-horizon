@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, OnInit, HostBinding, ElementRef, HostListener,
     Input, Output, EventEmitter, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { MatChipInputEvent, MatMenuTrigger, MatInput } from '@angular/material';
@@ -9,7 +25,7 @@ import { Store, Select } from '@ngxs/store';
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
-import { environment } from '../../../../../../environments/environment';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
     // tslint:disable:no-inferrable-types
@@ -22,7 +38,7 @@ import { environment } from '../../../../../../environments/environment';
 
 export class AlertConfigurationContactsComponent implements OnInit, OnChanges, OnDestroy {
     @HostBinding('class.alert-configuration-contacts-component') private _hostClass = true;
-    constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService) { }
+    constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService, private appConfig: AppConfigService ) { }
 
     @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger }) private megaPanelTrigger: MatMenuTrigger;
     @ViewChild('recipientInput', { read: MatInput }) private recipientInput: MatInput;
@@ -46,7 +62,6 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         //   apiKey: 'abcdefghijklmnopqrstuvwzyzzzzzzzzzzz',
         // },
     ];
-    environment = environment;
     slackWebhookMaxLength = 200;
     opsGenieApiKeyMaxLength = 200;
 
@@ -114,15 +129,17 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
     }
 
-    get types(): Array<string> {
-        return Object.keys(RecipientType)
-            .filter(t => environment.alert.recipient[t])
-            .filter(t => environment.alert.recipient[t].enable);
-    }
+    types = [];
+    config: any = {};
 
     /** ANGULAR INTERFACE METHODS */
 
     ngOnInit() {
+        this.config = this.appConfig.getConfig();
+        this.types = Object.keys(RecipientType)
+            .filter(t => this.config.alert.recipient[t])
+            .filter(t => this.config.alert.recipient[t].enable);
+        
         this.populateEmptyRecipients();
         if (!this.alertRecipients) {
             this.alertRecipients = [];

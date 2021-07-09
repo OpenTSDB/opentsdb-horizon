@@ -1,3 +1,19 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
 <mat-form-field class="contact-list" appearance="fill" (click)="showMegaPanel()" floatLabel="never" [ngClass]="{'mat-form-field-invalid': formHasError}">
     <mat-chip-list #chipList>
 
@@ -112,7 +128,7 @@
                             <div class="form-group">
                                 <div class="form-label"></div>
                                 <span>
-                                    Follow steps outlined in <a href="{{environment.alert.recipient.opsgenie.guideUrl}}" target="_blank">the user-guide</a> to create an API key.
+                                    Follow steps outlined in <a href="{{config.alert.recipient.opsgenie.guideUrl}}" target="_blank">the user-guide</a> to create an API key.
                                 </span>
                             </div>
                         </div>
@@ -143,7 +159,7 @@
                             <div class="form-group">
                                 <div class="form-label"></div>
                                 <span>
-                                    Follow steps <a href="{{environment.alert.recipient.slack.guideUrl}}" target="_blank"> one and two of the user-guide </a> to create a webhook url.
+                                    Follow steps <a href="{{config.alert.recipient.slack.guideUrl}}" target="_blank"> one and two of the user-guide </a> to create a webhook url.
                                 </span>
                             </div>
                         </div>
@@ -195,8 +211,8 @@
                             </div>
                             <div class="form-group">
                                 <div>
-                                    <a href="{{environment.alert.recipient.oc.onboardUrl}}" target="_blank">Onboard</a> to use the OC.
-                                    For more information, refer to the <a href="{{environment.alert.recipient.oc.guideUrl}}" target="_blank"> user-guide</a>
+                                    <a href="{{config.alert.recipient.oc.onboardUrl}}" target="_blank">Onboard</a> to use the OC.
+                                    For more information, refer to the <a href="{{config.alert.recipient.oc.guideUrl}}" target="_blank"> user-guide</a>
                                 </div>
                             </div>
                         </div>
