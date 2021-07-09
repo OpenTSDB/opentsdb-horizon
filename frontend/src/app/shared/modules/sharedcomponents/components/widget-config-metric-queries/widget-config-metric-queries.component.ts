@@ -13,9 +13,11 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 
 import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { AppConfigService } from '../../../../../core/services/config.service';
 import { FormControl } from '@angular/forms';
 
 interface IMetricQueriesConfigOptions {
+    enableNamespace?: boolean;
     enableMultipleQueries?: boolean;
     enableGroupBy?: boolean;
     enableSummarizer?: boolean;
@@ -72,7 +74,8 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
         private interCom: IntercomService,
         private util: UtilsService,
         private elRef: ElementRef,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
@@ -89,7 +92,9 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     }
 
     initOptions() {
+        const config = this.appConfig.getConfig();
         const defaultOptions = {
+            'enableNamespace': config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true,
             'enableAlias': true,
             'enableGroupBy': true,
             'enableSummarizer': false,
@@ -105,7 +110,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     getNewQueryConfig() {
         // const gconfig = this.util.getObjectByKey(this.widget.query.groups, 'id', gid);
         const infectiousNan = this.widget.queries.length && this.widget.queries[0].settings.infectiousNan ? true : false;
-        const query: any = { namespace: '' , metrics: [], filters: [] };
+        const query: any = { metrics: [], filters: [] };
         switch (this.widget.settings.component_type) {
             case 'LinechartWidgetComponent':
             case 'HeatmapWidgetComponent':

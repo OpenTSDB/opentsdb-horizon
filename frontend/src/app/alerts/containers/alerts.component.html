@@ -5,7 +5,7 @@
 
 <ng-template [ngIf]="!detailsView && (list === 'alerts' || list === 'snooze')">
     <div class="alerts-main-controls" fxFlex="1 1 60px" fxFlex.xs="1 1 190px" fxLayoutAlign="stretch stretch" fxLayout="row" fxLayout.xs="column">
-        <div class="control-item namespace-selector">
+        <div class="control-item namespace-selector" *ngIf="showNamespace">
             <button mat-button
                 [matMenuTriggerFor]="namespaceDropMenu"
                 [ngClass]="{'menu-open': namespaceDropMenuOpen}"

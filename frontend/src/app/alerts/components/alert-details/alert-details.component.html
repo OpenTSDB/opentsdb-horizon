@@ -78,7 +78,7 @@
     <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail flex-spacer">
-                    <span class="namespace">Namespace: <strong>{{data.namespace}}</strong></span>
+                    <span class="namespace" *ngIf="data.namespace!== 'default'">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable  *ngIf="!readOnly" class="navbar-item"
                             [fieldValue]="data.name"

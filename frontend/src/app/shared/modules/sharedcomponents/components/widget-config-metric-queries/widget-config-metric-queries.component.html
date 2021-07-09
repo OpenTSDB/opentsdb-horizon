@@ -7,7 +7,9 @@
             class="query-group-item mat-elevation-z0" [hideToggle]="true" [disabled]="true" [expanded]="true">
                 <div class="query-metric-row"  *ngFor="let query of widget.queries; let index=index" previewClass="cdk-drag-preview" cdkDrag (cdkDragStarted)="dragStart($event)" (cdkDragEnded)="dragEnd($event)">
                     <query-editor-proto  [label]="'Q' + (index + 1)" [query]="query" [queries]="widget.queries" [widget]="widget"
-                    [options]="{toggleQuery: options.enableMultipleQueries,
+                    [options]="{
+                        toggleQuery: options.enableMultipleQueries,
+                        enableNamespace: options.enableNamespace,
                         enableAlias: options.enableAlias,
                         cloneQuery: options.enableMultipleQueries,
                         deleteQuery: options.enableMultipleQueries,

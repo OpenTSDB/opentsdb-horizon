@@ -34,6 +34,7 @@ import {
 import { ConsoleService } from '../../../../../core/services/console.service';
 
 interface IQueryEditorOptions {
+    enableNamespace?: boolean;
     deleteQuery?: boolean;
     toggleQuery?: boolean;
     cloneQuery?: boolean;

@@ -50,7 +50,7 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         let showFullList = true;
-        this.namespaceControl = new FormControl(this.value);
+        this.namespaceControl = new FormControl(this.value || '');
         this.namespaceControl.valueChanges
             .pipe(
                 debounceTime(100),
