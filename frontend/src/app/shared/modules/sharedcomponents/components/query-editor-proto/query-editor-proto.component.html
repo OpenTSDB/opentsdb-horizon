@@ -35,25 +35,25 @@
             <button mat-button color="secondary" (click)="toggleQueryAliasEditForm()">Cancel</button>
         </div>
         <!-- normal query namespace -->
-        <ng-template #queryNamespaceBlock>
-        <div class="toolbar-item">
-            <span class="title"> Namespace:</span>
-        </div>
-        <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace && query.namespace.length > 0" (click)="editNamespace=true;">
-            <span class="namespace-value">
-                {{ query.namespace }}
-            </span>
-            <div class="mat-select-arrow-wrapper">
-                <div class="mat-select-arrow"></div>
+        <ng-container *ngIf="options.enableNamespace" #queryNamespaceBlock>
+            <div class="toolbar-item">
+                <span class="title"> Namespace:</span>
             </div>
-        </div>
-        <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace.trim() ">
-            <span class="value">
-                <namespace-autocomplete [value]="query.namespace" [options]="options" [initFocus]="editNamespace" (nschange)="saveNamespace($event)"
-                    (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
-            </span>
-        </div>
-        </ng-template>
+            <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace && query.namespace && query.namespace.length > 0" (click)="editNamespace=true;">
+                <span class="namespace-value">
+                    {{ query.namespace }}
+                </span>
+                <div class="mat-select-arrow-wrapper">
+                    <div class="mat-select-arrow"></div>
+                </div>
+            </div>
+            <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace || !query.namespace.trim() ">
+                <span class="value">
+                    <namespace-autocomplete [value]="query.namespace" [options]="options" [initFocus]="editNamespace" (nschange)="saveNamespace($event)"
+                        (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
+                </span>
+            </div>
+        </ng-container>
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
             <mat-icon style="cursor: move;">reorder</mat-icon>
@@ -84,7 +84,7 @@
     </mat-toolbar>
 </div>
 <div class="metric-wrapper" [formGroup]="fg"
-    *ngIf="query.namespace || query.metrics.length || query.filters.length">
+    *ngIf="!options.enableNamespace || query.namespace || query.metrics.length || query.filters.length">
     <!-- CONTAINER FOR THE COMMON TAGS-->
     <div class="common-tags">
         <div class="common-tags-wrapper">
@@ -427,7 +427,7 @@
 
     <!-- ADD EXPRESSION - ENDS -->
     <div class="metric-action-buttons"
-        *ngIf="options.enableMetric && (query.namespace || query.metrics.length || query.filters.length)">
+        *ngIf="options.enableMetric && (!options.enableNamespace || query.namespace || query.metrics.length || query.filters.length)">
         <button mat-button color="primary" class="add-metric-button"
             *ngIf="!isAddMetricProgress || !query.metrics.length "
             (click)="addQueryItemProgress('metric')">
@@ -497,7 +497,7 @@
 <mat-menu class="tag-filters-menu-wrapper" yPosition="below" #tagFilterMenu="matMenu">
     <ng-template matMenuContent let-query="query">
         <div class="filter" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
-            *ngIf="query.namespace">
+            *ngIf="!options.enableNamespace || query.namespace">
             <inline-filter-editor [query]="query" [options]="options"
                 (filterOutput)="updateFilters($event);"
                 (closeModalOutput)="closeTagFilterModal($event)"

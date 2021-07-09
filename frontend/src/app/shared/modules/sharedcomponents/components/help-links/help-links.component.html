@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<button  class="help-links-button" mat-raised-button
+<button  class="help-links-button" mat-raised-button *ngIf="links.length"
   [matMenuTriggerFor]="helpMenu">
   <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
 </button>

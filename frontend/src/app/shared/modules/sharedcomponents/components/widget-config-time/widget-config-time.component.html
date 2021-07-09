@@ -121,9 +121,9 @@
                 </div>
             </div>
         </div>
-        <div class="columned-controls">
+        <div class="columned-controls" *ngIf="canOverrideTime">
             <div class="config-control override-time-controls">
-                <label class="label">Override Time</label>
+                <label class="label">Override Dashboard Time</label>
                 <div class="form-field-group">
                     <time-range-picker
                     (timeSelected)="setOverrideTime($event)"
