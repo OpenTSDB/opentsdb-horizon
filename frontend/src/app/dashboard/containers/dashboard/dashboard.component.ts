@@ -1574,6 +1574,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
+        payload.settings.data_source = 'openTSDB';
         // set groupby if multigraph is enabled
         const groupby = (payload.settings.multigraph && payload.settings.multigraph.enabled) ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];

@@ -39,7 +39,7 @@ interface IEventQuery {
 @Injectable({
   providedIn: 'root'
 })
-export class YamasService {
+export class OpenTSDBService {
     queries: any = [];
     downsample: any;
     time: any;

@@ -67,7 +67,6 @@ export class DashboardService {
     settings: {
       title: 'my widget',
       component_type: 'PlaceholderWidgetComponent',
-      data_source: 'yamas',
       visual: {},
         axes: {},
         legend: {},

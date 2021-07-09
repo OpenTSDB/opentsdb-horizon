@@ -463,7 +463,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                                     }
                                                 }
 
-                                                limitGraphs[ykey][xkey].ts = this.dataTransformer.yamasToDygraph(
+                                                limitGraphs[ykey][xkey].ts = this.dataTransformer.openTSDBToDygraph(
                                                     this.widget, options, limitGraphs[ykey][xkey].ts, limitGraphs[ykey][xkey]
                                                 );
                                                 limitGraphs[ykey][xkey].options = options;
@@ -473,7 +473,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                             } else {
                                 let graphs: any = {};
-                                this.data.ts = this.dataTransformer.yamasToDygraph(this.widget, this.options, this.data.ts, rawdata);
+                                this.data.ts = this.dataTransformer.openTSDBToDygraph(this.widget, this.options, this.data.ts, rawdata);
                                 if (this.widget.settings.legend.display) {
                                     this.widget.settings.chartOptions.visbilityHash = this.options.visibilityHash;
                                 }

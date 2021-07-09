@@ -169,7 +169,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                                 this.debugData = message.payload.rawdata.log; // debug log
                         }
                         this.setOptions();
-                        this.options = this.dataTransformer.yamasToD3Bar(this.options, this.widget, message.payload.rawdata);
+                        this.options = this.dataTransformer.openTSDBToD3Bar(this.options, this.widget, message.payload.rawdata);
                         this.cdRef.detectChanges();
                         break;
                     case 'getUpdatedWidgetConfig':
