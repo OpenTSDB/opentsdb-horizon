@@ -252,7 +252,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         this.startTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.start : '';
         this.endTime = this.widget.settings.time.overrideTime ? this.widget.settings.time.overrideTime.end : '';
         const config = this.appConfig.getConfig();
-        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime;
+        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime !== undefined ? config.modules.dashboard.widget.overrideTime : true;
         this.setDefaultOptionsValues();
         this.createForm();
 

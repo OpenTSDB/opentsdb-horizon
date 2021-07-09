@@ -185,7 +185,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
             }
         }));
         const config = this.appConfig.getConfig();
-        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime;
+        this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
         
     }
 

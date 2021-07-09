@@ -1529,7 +1529,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     canWidgetOverrideTime() {
 
         const config = this.appConfig.getConfig();
-        const canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime;
+        const canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
         return canOverrideTime;
     }
 
