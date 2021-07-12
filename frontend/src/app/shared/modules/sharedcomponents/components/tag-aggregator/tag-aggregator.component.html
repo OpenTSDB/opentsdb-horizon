@@ -21,6 +21,25 @@
     </div>
 </button>
 <mat-menu class="tag-aggregator-cdk-menu" #aggregatorMenu="matMenu" yPosition="below">
-    <button mat-menu-item *ngFor="let option of aggregatorOptions"
-        (click)="selectOption(option.value)">{{option.icon}}</button>
+    <ng-template matMenuContent>
+        <div class="aggregator-list">
+            <button mat-menu-item *ngFor="let option of aggregatorOptions; let i = index"
+                (click)="selectOption(option.value)" (mouseover)="$event.stopPropagation(); setSelectedAggregatorHelpIndex(i)">{{option.icon}}</button>
+        </div>
+        <ng-container *ngIf="selectedAggregatorHelpIndex >= 0">
+            <ng-container *ngTemplateOutlet="aggregatorHelpLayout; context: aggregatorOptions[selectedAggregatorHelpIndex]"></ng-container>
+        </ng-container>
+    </ng-template>
 </mat-menu>
+
+<ng-template #aggregatorHelpLayout let-help="help">
+    <div class="aggregator-help">
+        <div class="help-title">
+            <span>
+                <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
+            </span>
+            <span [innerHtml]="help.label | safe:'html'"></span>
+        </div>
+        <div class="help-description" [innerHtml]="help.description | safe:'html'"></div>
+    </div>
+</ng-template>
