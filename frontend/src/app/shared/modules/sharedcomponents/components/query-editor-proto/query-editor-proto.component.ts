@@ -166,6 +166,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     // FUNCTIONS SELECTOR STUFF
     selectedFunctionCategoryIndex: any = -1; // -1 for none selected, otherwise index
+    selectedFunctionHelpIndex: any = -1; // -1 for none selected, otherwise index
     currentFunctionMenuTriggerIdx: number;
 
     // store metric fx temporary here
@@ -176,57 +177,142 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Moving Average 3 Samples',
                     fxCall: 'EWMA',
-                    val: '3,0.0'
+                    val: '3,0.0',
+                    help: {
+                        label: 'EWMA Samples (3 samples)',
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 3, 0.0</code>, where <code>3</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 5 Samples',
                     fxCall: 'EWMA',
-                    val: '5,0.0'
+                    val: '5,0.0',
+                    help: {
+                        label: 'EWMA Samples (5 samples)',
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 5, 0.0</code>, where <code>5</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 10 Samples',
                     fxCall: 'EWMA',
-                    val: '10,0.0'
+                    val: '10,0.0',
+                    help: {
+                        label: 'EWMA Samples (10 Samples)',
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 10, 0.0</code>, where <code>10</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 20 Samples',
                     fxCall: 'EWMA',
-                    val: '20,0.0'
+                    val: '20,0.0',
+                    help: {
+                        label: 'EWMA Samples (20 Samples)',
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range <code>[0,1]</code>. For a sample count of N, the current sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 20, 0.0<code>, where <code>20</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 1m Window',
                     fxCall: 'EWMA',
-                    val: '1m,0.0'
+                    val: '1m,0.0',
+                    help: {
+                        label: 'EWMA Interval (1m Window)',
+                        description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 1m, 0.0</code>, where <code>1m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 5m Window',
                     fxCall: 'EWMA',
-                    val: '5m,0.0'
+                    val: '5m,0.0',
+                    help: {
+                        label: 'EWMA Interval (5m Window)',
+                        description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 5m, 0.0</code>, where <code>5m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Average 15m Window',
                     fxCall: 'EWMA',
-                    val: '15m,0.0'
+                    val: '15m,0.0',
+                    help: {
+                        label: 'EWMA Interval (15m Window)',
+                        description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>EWMA 15m, 0.0</code>, where <code>15m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
+                    }
                 },
                 {
                     label: 'Moving Median 3 Samples',
                     fxCall: 'Median',
-                    val: '3'
+                    val: '3',
+                    help: {
+                        label: 'Median (3 samples)',
+                        description: `<p>This moving median is calculated over a window defined by a positive-integer number of samples.
+                        For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
+                        The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Median 3</code>, where <code>3</code> is the sample count.</p>`
+                    }
                 },
                 {
                     label: 'Moving Median 5 Samples',
                     fxCall: 'Median',
-                    val: '5'
+                    val: '5',
+                    help: {
+                        label: 'Median (5 samples)',
+                        description: `<p>This moving median is calculated over a window defined by a positive-integer number of samples.
+                        For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
+                        The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Median 5</code>, where <code>5</code> is the sample count.</p>`
+                    }
                 },
                 {
                     label: 'Moving Median 7 Samples',
                     fxCall: 'Median',
-                    val: '7'
+                    val: '7',
+                    help: {
+                        label: 'Median (7 samples)',
+                        description: `<p>This moving median is calculated over a window defined by a positive-integer number of samples.
+                        For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
+                        The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Median 7</code>, where <code>7</code> is the sample count.</p>`
+                    }
                 },
                 {
                     label: 'Moving Median 9 Samples',
                     fxCall: 'Median',
-                    val: '9'
+                    val: '9',
+                    help: {
+                        label: 'Median (9 samples)',
+                        description: `<p>This moving median is calculated over a window defined by a positive-integer number of samples.
+                        For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
+                        The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Median 9</code>, where <code>9</code> is the sample count.</p>`
+                    }
                 }
             ]
         },
@@ -236,12 +322,30 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Value Difference',
                     fxCall: 'ValueDiff',
-                    val: 'auto'
+                    val: 'auto',
+                    help: {
+                        label: 'ValueDiff',
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+
+                        <p>This function ignores the time at which each data point was measured and instead calculates a simple difference between successive values of a gauge metric.</p>
+
+                        <p>At the UI, this will appear as <code>ValueDiff</code> with no interval parameter.</p>`
+                    }
                 },
                 {
                     label: 'Counter Value Difference',
                     fxCall: 'CounterValueDiff',
-                    val: 'auto'
+                    val: 'auto',
+                    help: {
+                        label: 'CounterValueDiff',
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+
+                        <p>This function ignores the time at which each point was measured and instead calculates a simple difference between successive values of a counter metric.
+                        Thus, unlike the counter-to-rate conversion given by <code>CntrRate</code>, this is not a derivative with respect to time, because time is ignored. Furthermore, if your
+                        metric is not a counter, then this function will give you nonsensical results. You must know that your metric is, in fact, a counter.</p>
+
+                        <p>At the UI, this will appear as <code>CounterValueDiff</code> with no interval parameter.</p>`
+                    }
                 }
             ]
         },
@@ -251,12 +355,44 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Total Using Base Interval - Second',
                     fxCall: 'TotalUsingBaseInterval',
-                    val: '1s,10s'
+                    val: '1s,10s',
+                    help: {
+                        label: 'TotalUsingBaseInterval (Second)',
+                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic DataDog's <code>as_count</code> function.
+                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it into a series of counts.</p>
+
+                        <p>TotalUsingBaseInterval requires the following two parameters:</p>
+                        <ol>
+                            <li>the rate interval, which is the time dimension of the metric (e.g., per second or per minute); and</li>
+                            <li>the data interval, which is how often the metric value itself is reported.</li>
+                        </ol>
+                        <p>In effect, the ratio of data interval over rate interval is used to scale query data, which will be downsampled later.
+                        Generally, <code>TotalUsingBaseInterval = (data_interval / rate_interval) * value</code>.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
+                        You may click on these arguments to edit them.</p>`
+                    }
                 },
                 {
                     label: 'Total Using Base Interval - Minute',
                     fxCall: 'TotalUsingBaseInterval',
-                    val: '1m,1m'
+                    val: '1m,1m',
+                    help: {
+                        label: 'TotalUsingBaseInterval (Minute)',
+                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic DataDog's <code>as_count</code> function.
+                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it into a series of counts.</p>
+
+                        <p>TotalUsingBaseInterval requires the following two parameters:</p>
+                        <ol>
+                            <li>the rate interval, which is the time dimension of the metric (e.g., per second or per minute); and</li>
+                            <li>the data interval, which is how often the metric value itself is reported.</li>
+                        </ol>
+                        <p>In effect, the ratio of data interval over rate interval is used to scale query data, which will be downsampled later.
+                        Generally, <code>TotalUsingBaseInterval = (data_interval / rate_interval) * value</code>.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
+                        You may click on these arguments to edit them.</p>`
+                    }
                 }
             ]
         },
@@ -266,32 +402,80 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Per Second',
                     fxCall: 'Rate',
-                    val: '1s'
+                    val: '1s',
+                    help: {
+                        label: 'Rate (Per Second)',
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+
+                        <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
+                        In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
+                    }
                 },
                 {
                     label: 'Per Minute',
                     fxCall: 'Rate',
-                    val: '1m'
+                    val: '1m',
+                    help: {
+                        label: 'Rate (Per Minute)',
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+
+                        <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
+                        In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
+                    }
                 },
                 {
                     label: 'Per Hour',
                     fxCall: 'Rate',
-                    val: '1h'
+                    val: '1h',
+                    help: {
+                        label: 'Rate  (Per Hour)',
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+
+                        <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
+                        In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
+                    }
                 },
                 {
                     label: 'Counter Per Second',
                     fxCall: 'CntrRate',
-                    val: '1s'
+                    val: '1s',
+                    help: {
+                        label: 'CntrRate (Counter Per Second)',
+                        description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1s</code>, where <code>1s</code> is the rate interval.</p>`
+                    }
                 },
                 {
                     label: 'Counter Per Minute',
                     fxCall: 'CntrRate',
-                    val: '1m'
+                    val: '1m',
+                    help: {
+                        label: 'CntrRate (Counter Per Minute)',
+                        description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1m</code>, where <code>1m</code> is the rate interval.</p>`
+                    }
                 },
                 {
                     label: 'Counter Per Hour',
                     fxCall: 'CntrRate',
-                    val: '1h'
+                    val: '1h',
+                    help: {
+                        label: 'CntrRate (Counter Per Hour)',
+                        description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1h</code>, where <code>1h</code> is the rate interval.</p>`
+                    }
                 }
             ]
         },
@@ -301,22 +485,46 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Average',
                     fxCall: 'Rollup',
-                    val: 'avg,auto'
+                    val: 'avg,auto',
+                    help: {
+                        label: 'Rollup (Average)',
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rollup avg,auto</code>, where <code>avg</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
+                    }
                 },
                 {
                     label: 'Minimum',
                     fxCall: 'Rollup',
-                    val: 'min,auto'
+                    val: 'min,auto',
+                    help: {
+                        label: 'Rollup (Minimum)',
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rollup min,auto</code>, where <code>min</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
+                    }
                 },
                 {
                     label: 'Maximum',
                     fxCall: 'Rollup',
-                    val: 'max,auto'
+                    val: 'max,auto',
+                    help: {
+                        label: 'Rollup (Maximum)',
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rollup max,auto</code>, where <code>max</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
+                    }
                 },
                 {
                     label: 'Sum',
                     fxCall: 'Rollup',
-                    val: 'sum,auto'
+                    val: 'sum,auto',
+                    help: {
+                        label: 'Rollup (Sum)',
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Rollup sum,auto</code>, where <code>sum</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
+                    }
                 }
             ]
         },
@@ -326,22 +534,46 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Hour Before',
                     fxCall: 'Timeshift',
-                    val: '1h'
+                    val: '1h',
+                    help: {
+                        label: 'Timeshift (Hour Before)',
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1h</code>, where <code>1h</code> is the offset interval.</p>`
+                    }
                 },
                 {
                     label: 'Day Before',
                     fxCall: 'Timeshift',
-                    val: '1d'
+                    val: '1d',
+                    help: {
+                        label: 'Timeshift (Day Before)',
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1d</code>, where <code>1d</code> is the offset interval.</p>`
+                    }
                 },
                 {
                     label: 'Week Before',
                     fxCall: 'Timeshift',
-                    val: '1w'
+                    val: '1w',
+                    help: {
+                        label: 'Timeshift (Week Before)',
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1w</code>, where <code>1w</code> is the offset interval.</p>`
+                    }
                 },
                 {
                     label: 'Month Before',
                     fxCall: 'Timeshift',
-                    val: '4w'
+                    val: '4w',
+                    help: {
+                        label: 'Timeshift (Month Before)',
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 4w</code>, where <code>4w</code> is the offset interval.</p>`
+                    }
                 }
             ]
         },
@@ -383,12 +615,22 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Ratio',
                     fxCall: 'Ratio',
-                    val: null
+                    val: null,
+                    help: {
+                        label: 'Ratio',
+                        description: `<p>At the UI, this will appear as (for example) <code>Ratio foo</code>, where <code>foo</code> is the
+                        alias you want the resulting ratio values to receive.</p>`
+                    }
                 },
                 {
                     label: 'Percentage',
                     fxCall: 'Percentage',
-                    val: null
+                    val: null,
+                    help: {
+                        label: 'Percentage',
+                        description: `<p>At the UI, this will appear as (for example) <code>Percentage</code> foo, where <code>foo</code> is
+                        the alias you want the resulting percentage values to receive.</p>`
+                    }
                 }
             ]
         },
@@ -398,41 +640,97 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Sliding Sum 5m',
                     fxCall: 'SlidingWindow',
-                    val: "sum,5m"
+                    val: "sum,5m",
+                    help: {
+                        label: 'SlidingWindow (Sum 5m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,5m</code>, where
+                        <code>sum</code> is the aggregator, and <code>5m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Sum 15m',
                     fxCall: 'SlidingWindow',
-                    val: "sum,15m"
+                    val: "sum,15m",
+                    help: {
+                        label: 'SlidingWindow (Sum 15m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,15m</code>, where
+                        <code>sum</code> is the aggregator, and <code>15m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },{
                     label: 'Sliding Count 5m',
                     fxCall: 'SlidingWindow',
-                    val: "count,5m"
+                    val: "count,5m",
+                    help: {
+                        label: 'SlidingWindow (Count 5m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,5m</code>, where
+                        <code>count</code> is the aggregator, and <code>5m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Count 15m',
                     fxCall: 'SlidingWindow',
-                    val: "count,15m"
+                    val: "count,15m",
+                    help: {
+                        label: 'SlidingWindow (Count 15m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,15m</code>, where
+                        <code>count</code> is the aggregator, and <code>15m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Min 5m',
                     fxCall: 'SlidingWindow',
-                    val: "min,5m"
+                    val: "min,5m",
+                    help: {
+                        label: 'SlidingWindow (Min 5m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,5m</code>, where
+                        <code>min</code> is the aggregator, and <code>5m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Min 15m',
                     fxCall: 'SlidingWindow',
-                    val: "min,15m"
+                    val: "min,15m",
+                    help: {
+                        label: 'SlidingWindow (Min 15m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,15m</code>, where
+                        <code>min</code> is the aggregator, and <code>15m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Max 5m',
                     fxCall: 'SlidingWindow',
-                    val: "max,5m"
+                    val: "max,5m",
+                    help: {
+                        label: 'SlidingWindow (Max 5m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,5m</code>, where
+                        <code>max</code> is the aggregator, and <code>5m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 },
                 {
                     label: 'Sliding Max 15m',
                     fxCall: 'SlidingWindow',
-                    val: "max,15m"
+                    val: "max,15m",
+                    help: {
+                        label: 'SlidingWindow (Max 15m)',
+                        description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,15m</code>, where
+                        <code>max</code> is the aggregator, and <code>15m</code> is the window size.</p>
+
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
+                    }
                 }
             ]
         },
@@ -442,12 +740,26 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Delta in Minutes',
                     fxCall: 'TimeDiff',
-                    val: 'MINUTES'
+                    val: 'MINUTES',
+                    help: {
+                        label: 'TimeDiff (Delta in Minutes)',
+                        description: `<p>At the UI, this will appear as (for example) <code>TimeDiff MINUTES</code>, where <code>MINUTES</code>
+                        is the resolution.</p>
+
+                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>`
+                    }
                 },
                 {
                     label: 'Delta in Seconds',
                     fxCall: 'TimeDiff',
-                    val: 'SECONDS'
+                    val: 'SECONDS',
+                    help: {
+                        label: 'TimeDiff (Delta in Seconds)',
+                        description: `<p>At the UI, this will appear as (for example) <code>TimeDiff SECONDS</code>, where <code>SECONDS</code>
+                        is the resolution.</p>
+
+                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>s`
+                    }
                 }
             ]
         }
@@ -521,6 +833,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             regexValidator: /^SECONDS|MINUTES|HOURS$/
         }
     };
+
+    functionHelpVisible: boolean = false;
 
     // MAT-TABLE DEFAULT COLUMNS
     metricTableDisplayColumns: string[] = [
@@ -1123,6 +1437,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     selectFunctionCategory($event, catIdx) {
+        if (catIdx !== this.selectedFunctionCategoryIndex) {
+            // reset function help index
+            this.selectedFunctionHelpIndex = -1;
+        }
         this.selectedFunctionCategoryIndex = catIdx;
     }
 
@@ -1376,6 +1694,18 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.query.settings.visual.label = value;
         this.queryAliasEdit = false;
         this.requestChanges('UpdateQueryAlias', { visual: { label: value } } );
+    }
+
+    functionHelpVisibleToggle(visible: boolean) {
+        this.functionHelpVisible = visible;
+    }
+
+    selectFunctionHelp($event: any, funcIdx: number) {
+        this.selectedFunctionHelpIndex = funcIdx;
+        this.console.log('CHECK CHECK', {
+            cat: this.selectedFunctionCategoryIndex,
+            help: this.selectedFunctionHelpIndex
+        });
     }
 
 
