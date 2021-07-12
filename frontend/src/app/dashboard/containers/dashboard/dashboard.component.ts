@@ -940,7 +940,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         duration: 5000,
-                        panelClass: 'info'
+                        panelClass: 'success-notification'
                     });
                     // reset state for save pop-up
                     this.oldMeta = {...this.meta};
@@ -951,7 +951,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                       horizontalPosition: 'center',
                       verticalPosition: 'top',
                       duration: 5000,
-                      panelClass: 'info'
+                      panelClass: 'success-notification'
                     });
                     break;
             }
