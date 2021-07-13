@@ -860,20 +860,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private elRef: ElementRef,
         private utils: UtilsService,
         private fb: FormBuilder,
-        private matIconRegistry: MatIconRegistry,
-        private domSanitizer: DomSanitizer,
         private dialog: MatDialog,
         private interCom: IntercomService,
         private multiService: MultigraphService
-    ) {
-        /*
-        // add function (f(x)) icon to registry... url has to be trusted
-        matIconRegistry.addSvgIcon(
-            'function_icon',
-            domSanitizer.bypassSecurityTrustResourceUrl('assets/function-icon.svg')
-        ); */
-
-    }
+    ) {}
 
     ngOnChanges(changes: SimpleChanges) {
         // @Input tplVariables only for widget not alert
@@ -1700,10 +1690,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     selectFunctionHelp($event: any, funcIdx: number) {
         this.selectedFunctionHelpIndex = funcIdx;
-        this.console.log('CHECK CHECK', {
-            cat: this.selectedFunctionCategoryIndex,
-            help: this.selectedFunctionHelpIndex
-        });
     }
 
 
