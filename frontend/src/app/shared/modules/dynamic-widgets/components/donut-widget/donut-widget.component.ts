@@ -184,7 +184,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                             this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
                             this.debugData = message.payload.rawdata.log; // debug log
                         }
-                        this.options = this.dataTransformer.yamasToD3Donut(this.options, this.widget, message.payload.rawdata);
+                        this.options = this.dataTransformer.openTSDBToD3Donut(this.options, this.widget, message.payload.rawdata);
                         this.cdRef.detectChanges();
                         break;
                     case 'getUpdatedWidgetConfig':

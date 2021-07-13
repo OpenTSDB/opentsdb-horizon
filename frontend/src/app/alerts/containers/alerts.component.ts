@@ -276,7 +276,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     whitelistKeys: string[] = ['name', 'type', 'labels', 'recipients', 'updatedTime', 'updatedBy'];
     nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
     booleanConditionalKeys: string[] = ['enabled'];
-
+    showNamespace = true;
     // where to navigate on save
     dashboardId = -1;
 
@@ -318,6 +318,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
+        const config = this.appConfig.getConfig();
+        this.showNamespace = config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true;
 
         this.subscription.add(this.alertSearch.valueChanges.pipe(
             debounceTime(this.alertSearchDebounceTime)

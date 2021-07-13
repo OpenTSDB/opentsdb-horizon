@@ -20,6 +20,7 @@ import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material';
+import { AppConfigService } from '../../../core/services/config.service';
 
 import {
     Select,
@@ -118,6 +119,8 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     /** Form Group */
     searchFormGroup: FormGroup;
 
+    appName;
+
     constructor(
         // private dbService: DashboardService,
         private interCom: IntercomService,
@@ -125,10 +128,12 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private router: Router,
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
-        private store: Store
+        private store: Store,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
+        this.appName = this.appConfig.getConfig().name;
         this.createSearchForm();
         this.subscription.add(this.route.queryParams.subscribe(params => {
             if (params['db-delete']) {

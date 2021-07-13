@@ -20,7 +20,7 @@ import { Observable, of, throwError, forkJoin, BehaviorSubject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { AppConfigService } from '../services/config.service';
 import { MetaService } from '../services/meta.service';
-import { YamasService } from '../services/yamas.service';
+import { OpenTSDBService } from '../services/opentsdb.service';
 import { UtilsService } from '../services/utils.service';
 
 @Injectable({
@@ -43,7 +43,7 @@ export class HttpService {
         private metaService: MetaService,
         private utils: UtilsService,
         private appConfig: AppConfigService,
-        private yamasService: YamasService) { }
+        private openTSDBService: OpenTSDBService) { }
 
     getDashoard(id: string): Observable<any> {
         const apiUrl = this.appConfig.getConfig().configdb + '/object/' + id;
@@ -77,7 +77,7 @@ export class HttpService {
         );
     }
     /* will refactor later */
-    getYamasData(payload: any): Observable<any> {
+    getOpenTSDBData(payload: any): Observable<any> {
         var headers = new HttpHeaders(
             { 'Content-Type': 'application/json' });
         headers = headers.set('X-Horizon-DSHBID', String(payload.dbid))
@@ -94,7 +94,7 @@ export class HttpService {
     getAlertCount(options: any): Observable<any> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
-        const statusQuery = this.yamasService.buildStatusQuery(options);
+        const statusQuery = this.openTSDBService.buildStatusQuery(options);
 
         return this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
             .pipe(catchError(error => of( { error : error } ) ));
@@ -124,7 +124,6 @@ export class HttpService {
     }
     // to get all tagkeys by namespaces
     // can pass a list of namespace and optional a list of metrics
-    // queryObj = { namespaces: ['ssp', 'yamas'] }
     getTagKeys(queryObj: any): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -468,7 +467,7 @@ export class HttpService {
             'Content-Type': 'application/json',
           });
 
-        const statusQuery = this.yamasService.buildStatusQuery(options);
+        const statusQuery = this.openTSDBService.buildStatusQuery(options);
         const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/alert';
         const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
             return forkJoin([
@@ -549,7 +548,7 @@ export class HttpService {
     /** snooze */
 
     getEvents(wid: string, time: any, eventQueries: any[], limit) {
-        let query = this.yamasService.buildEventsQuery(time, eventQueries, limit);
+        let query = this.openTSDBService.buildEventsQuery(time, eventQueries, limit);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });

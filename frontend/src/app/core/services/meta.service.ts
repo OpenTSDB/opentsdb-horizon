@@ -42,7 +42,7 @@ export class MetaService {
       let filters = [];
       const query: any = {};
       query.id = params[i].id || 'id-' + i;
-      query.namespace =  type !== 'NAMESPACES' ? params[i].namespace : this.utilsService.convertPatternTSDBCompat(params[i].search);
+      query.namespace =  type !== 'NAMESPACES' ? ( params[i].namespace || 'default' ) : this.utilsService.convertPatternTSDBCompat(params[i].search);
       if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
         filters.push({

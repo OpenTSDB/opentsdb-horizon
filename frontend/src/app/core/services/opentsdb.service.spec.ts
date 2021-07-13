@@ -16,13 +16,13 @@
  */
 import { TestBed } from '@angular/core/testing';
 
-import { YamasService } from './yamas.service';
+import { OpenTSDBService } from './opentsdb.service';
 
-describe('YamasService', () => {
+describe('OpenTSDBService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: YamasService = TestBed.get(YamasService);
+    const service: OpenTSDBService = TestBed.get(OpenTSDBService);
     expect(service).toBeTruthy();
   });
 });

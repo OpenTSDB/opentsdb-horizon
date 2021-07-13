@@ -188,7 +188,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
                             this.setTimezone(message.payload.timezone);
                             const rawdata = message.payload.rawdata;
-                            this.data = this.dataTransformer.yamasToTable(this.widget, this.options, rawdata); 
+                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata); 
                             this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
                             this.dataSource = new MatTableDataSource(this.data);
                             this.displayedColumns = this.util.deepClone(this.options.displayColumns); 
