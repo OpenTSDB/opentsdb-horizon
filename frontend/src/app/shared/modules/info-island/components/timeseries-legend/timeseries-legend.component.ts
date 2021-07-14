@@ -22,7 +22,6 @@ import { IntercomService } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -94,7 +93,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     private tableListen;
 
     constructor(
-        private console: ConsoleService,
         private interCom: IntercomService,
         private renderer: Renderer2,
         private utilsService: UtilsService,

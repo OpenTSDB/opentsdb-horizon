@@ -25,7 +25,6 @@ import {
     ComponentFactory,
     EmbeddedViewRef
 } from '@angular/core';
-import { ConsoleService } from '../../../../core/services/console.service';
 
 import {
     HeatmapDataTooltipComponent,
@@ -65,8 +64,7 @@ export class TooltipComponentService {
         private appRef: ApplicationRef,
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
-        private rendererFactory: RendererFactory2,
-        private console: ConsoleService
+        private rendererFactory: RendererFactory2
     ) { }
 
     /*

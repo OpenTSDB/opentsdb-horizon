@@ -24,7 +24,6 @@ import {
     ElementRef
 } from '@angular/core';
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { TooltipDataService, TooltipData } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -48,14 +47,12 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
-            sanitizer,
-            console
+            sanitizer
         );
         this.utils = _utils;
     }

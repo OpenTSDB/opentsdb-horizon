@@ -18,7 +18,6 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -41,14 +40,12 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
-            sanitizer,
-            console
+            sanitizer
         );
         this.utils = _utils;
     }
@@ -165,7 +162,6 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
             return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
         }
     }
-
 
     /* Last */
     ngOnDestroy() {

@@ -19,7 +19,6 @@ import {
     ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { MatFormField, MatInput } from '@angular/material';
 
 @Component({
@@ -53,8 +52,7 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
 
     constructor(
         private renderer: Renderer2,
-        private eRef: ElementRef,
-        private console: ConsoleService
+        private eRef: ElementRef
     ) { }
 
     ngOnInit() {

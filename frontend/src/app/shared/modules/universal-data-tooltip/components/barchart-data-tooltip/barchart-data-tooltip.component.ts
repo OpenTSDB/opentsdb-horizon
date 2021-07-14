@@ -18,7 +18,6 @@ import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDes
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { ConsoleService } from '../../../../../core/services/console.service';
 
 import { TooltipDataService } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -41,14 +40,12 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
-            sanitizer,
-            console
+            sanitizer
         );
         this.utils = _utils;
     }

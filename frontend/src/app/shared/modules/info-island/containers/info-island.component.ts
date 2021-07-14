@@ -20,7 +20,6 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 
 import { Subject, Observable, Subscription } from 'rxjs';
 import { InfoIslandOptions } from '../services/info-island-options';
-import { ConsoleService } from '../../../../core/services/console.service';
 import { CdkDrag} from '@angular/cdk/drag-drop';
 import { Portal } from '@angular/cdk/portal';
 import { IntercomService } from '../../../../core/services/intercom.service';
@@ -53,7 +52,6 @@ import { IntercomService } from '../../../../core/services/intercom.service';
 export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     constructor(
-        private console: ConsoleService,
         private hostEl: ElementRef,
         private interCom: IntercomService
     ) {}

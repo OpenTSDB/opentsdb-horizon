@@ -27,7 +27,6 @@ import { HttpService } from '../../core/http/http.service';
 import { AlertsService } from '../services/alerts.service';
 import { forkJoin } from 'rxjs';
 
-import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
 import { map } from 'rxjs/operators';
@@ -155,7 +154,6 @@ export class ClearNamespace {
 
 export class AlertsState {
     constructor(
-        private console: ConsoleService,
         private httpService: HttpService,
         private alertsService: AlertsService,
         private utils: UtilsService,
