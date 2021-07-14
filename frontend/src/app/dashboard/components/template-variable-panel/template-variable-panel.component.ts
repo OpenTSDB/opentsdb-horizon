@@ -88,7 +88,6 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     useDBFScope = false;
     doSearch = false;
     scopeModify = false;
-
     scopeMenuNavSelection = 'tagscope';
 
     constructor(

@@ -45,9 +45,10 @@ export class MetaService {
       query.namespace =  type !== 'NAMESPACES' ? ( params[i].namespace || 'default' ) : this.utilsService.convertPatternTSDBCompat(params[i].search);
       if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
+        const librange = params[i].search.match(/librange\((.*)\)/);
         filters.push({
-          type: 'TagValueRegex',
-          filter: this.utilsService.convertPattern(params[i].search),
+          type: librange ? 'TagValueLibrange' : 'TagValueRegex',
+          filter: librange ? librange[1] : this.utilsService.convertPattern(params[i].search),
           tagKey: params[i].tagkey
         });
       } else if ( type === 'BASIC' ) {
@@ -119,17 +120,29 @@ export class MetaService {
   }
 
   getFilter(key, v) {
-    const filterTypes = { 'literalor': 'TagValueLiteralOr', 'wildcard': 'TagValueWildCard', 'regexp': 'TagValueRegex'};
+    const filterTypes = {
+      'literalor': 'TagValueLiteralOr',
+      'wildcard': 'TagValueWildCard',
+      'regexp': 'TagValueRegex',
+      'librange': 'TagValueLibrange' };
     let hasNotOp = false;
     if ( v[0] === '!' ) {
         hasNotOp = true;
         v = v.substr(1);
     }
+    let filtertype = 'literalor';
     const regexp = v.match(/regexp\((.*)\)/);
-    v = regexp ? regexp[1] : v;
-    const type = regexp  ? 'regexp' : 'literalor';
+    const librange = v.match(/librange\((.*)\)/);
+
+    if (regexp) {
+      filtertype = 'regexp';
+      v = regexp[1];
+    } else if (librange) {
+      filtertype = 'librange';
+      v = librange[1];
+    }
     const filter = {
-        type: filterTypes[type],
+        type: filterTypes[filtertype],
         filter: v,
         tagKey: key
     };
@@ -151,8 +164,14 @@ export class MetaService {
         filters[operator] = [];
       }
       const regexp = v.match(/regexp\((.*)\)/);
-      const type = regexp  ? 'regexp' : 'literalor';
-      if ( type === 'regexp') {
+      const librange = v.match(/librange\((.*)\)/);
+      let type = 'literalor';
+      if (regexp) {
+        type = 'regexp';
+      } else if (librange) {
+        type = 'librange'
+      }
+      if ( type === 'regexp' || type === 'librange') {
         filters[operator].push(this.getFilter(key, v));
       } else {
         if ( !literalorV[operator] ) {

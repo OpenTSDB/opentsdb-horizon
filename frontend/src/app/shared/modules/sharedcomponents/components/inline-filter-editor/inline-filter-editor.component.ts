@@ -90,6 +90,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     bsTagValSearch = '';
     showDashboardFilters = false;
 
+    tagValueFilterType: string = 'regexp'; // regexp || librange
+
     constructor(
         private elRef: ElementRef,
         private httpService: HttpService,
@@ -147,8 +149,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 }
                 this.cdRef.detectChanges();
             });
-
-        // this.setTagValueSearch();
     }
 
     toggleExplictTagMatch(event: any) {
@@ -181,6 +181,11 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    setTagFilterType(type: string) {
+        this.tagValueFilterType = type;
+        this.tagValueSearchControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     }
 
     setTagKeys() {
@@ -300,8 +305,8 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     metrics: []
                 };
                 query.search = value ? value : '';
-
-                // filter by metrics
+                query.search = this.tagValueFilterType === 'librange' ? 'librange(@' + query.search + ')' : query.search;
+                 // filter by metrics
                 if (this.metrics) {
                     for (let i = 0, len = this.metrics.length; i < len; i++) {
                         if (!this.metrics[i].expression) {
@@ -310,7 +315,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     }
                     query.metrics = query.metrics.filter((x, i, a) => a.indexOf(x) === i);
                 }
-                if (this.selectedTag && this.tagValueTypeControl.value === 'literalor') {
+                if (this.selectedTag) {
                     query.tagkey = this.selectedTag;
                     this.message['tagValueControl'] = {};
                     if (this.tagValueSub) {
@@ -437,15 +442,6 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
             return -1;
         } else {
             return 0;
-        }
-    }
-
-    addTagValueRegexp() {
-        let v = this.tagValueSearchControl.value.trim();
-        if (this.tagValueTypeControl.value === 'regexp' && v) {
-            v = 'regexp(' + v + ')';
-            this.updateTagValueSelection(this.selectedTag, v, 'add');
-            this.tagValueSearchControl.setValue(null);
         }
     }
 
