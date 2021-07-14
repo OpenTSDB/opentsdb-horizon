@@ -240,10 +240,10 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .attr("y", (d, i) => y(i))
                 .attr("x", 5)
                 .attr("height", barHeight)
-                /*.attr("width", (d: any) => {
+                .attr("width", (d: any) => {
                     let txtWidth = this.utils.calculateTextWidth(d.label, '12px', 'Helvetica Neue');
-                    return txtWidth + 10;
-                })*/
+                    return txtWidth + 100;
+                })
                 .style("position","relative")
                 .style("width","100%")
               .append("xhtml:div")
