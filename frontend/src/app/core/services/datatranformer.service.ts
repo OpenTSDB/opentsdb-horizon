@@ -354,7 +354,7 @@ export class DatatranformerService {
                 const n = queryResults[i].data.length;
 
                 if ( vConfig.color && vConfig.color !== 'auto' ) {
-                    colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT] ).reverse();
+                    colors[midExToT] = midExToTNSeries[midExToT] === 1 ? [vConfig.color] : this.util.getColorsHSV( vConfig.color , midExToTNSeries[midExToT], options.theme === 'dark' ? 'light' : 'dark' ).reverse();
                 } else if ( vConfig.scheme && vConfig.scheme !== 'auto' ) {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;

@@ -49,6 +49,7 @@ export interface IDygraphOptions {
     fillAlpha?: number;
     hideOverlayOnMouseOut?: boolean;
     isCustomZoomed?: boolean;
+    theme?: string;
     file?: any;
     legend?: "follow" | "always" | "never" | "onmouseover";
     logscale?: boolean;
