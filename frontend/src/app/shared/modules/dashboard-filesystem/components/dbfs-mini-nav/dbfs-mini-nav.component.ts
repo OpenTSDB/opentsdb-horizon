@@ -41,7 +41,6 @@ import {
     Select,
     Store
 } from '@ngxs/store';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { DbfsUtilsService } from '../../services/dbfs-utils.service';
 import { DbfsService } from '../../services/dbfs.service';
 import { catchError } from 'rxjs/operators';
@@ -137,7 +136,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private store: Store,
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
-        private console: ConsoleService,
         private service: DbfsService,
         private cdref: ChangeDetectorRef
     ) { }

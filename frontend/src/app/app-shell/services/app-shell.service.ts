@@ -21,14 +21,11 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { UtilsService } from '../../core/services/utils.service';
 import { AppConfigService } from '../../core/services/config.service';
 
-import { ConsoleService } from '../../core/services/console.service';
-
 @Injectable()
 export class AppShellService {
 
     constructor(
         private appConfig: AppConfigService,
-        private console: ConsoleService,
         private http: HttpClient
     ) {}
 
@@ -38,7 +35,13 @@ export class AppShellService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.console.error('AppShellService :: An API error occurred', error.error.message);
+            console.group(
+                '%cERROR%cAppShellService :: An API error occurred',
+                'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            );
+            console.log('%cErrorMsg', 'font-weight: bold;', error.error.message);
+            console.groupEnd();
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -59,10 +62,6 @@ export class AppShellService {
             'Content-Type': 'application/json'
         });
 
-        this.console.api('AppShellService :: Get User Profile', {
-            apiUrl
-        });
-
         // put will get or create based on existing of user
         return this.http.put(apiUrl, null, {
             headers: headers,
@@ -77,10 +76,6 @@ export class AppShellService {
         const apiUrl = this.appConfig.getConfig().configdb + '/user';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
-        });
-
-        this.console.api('AppShellService :: Create User', {
-            apiUrl
         });
 
         return this.http.post(apiUrl, {}, {

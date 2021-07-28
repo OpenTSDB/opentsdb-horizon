@@ -948,6 +948,42 @@
             min-width: 250px;
         }
 
+        .function-category-help {
+            min-width: 250px;
+            max-width: 250px;
+        }
+
+        .function-category-help {
+            display: flex;
+            flex-direction: column;
+
+            .help-title {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 4px 8px;
+
+                span:not(:last-child) {
+                    margin-right: 6px;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(12px);
+                }
+            }
+
+            .help-description {
+                flex: 1;
+                overflow: auto;
+                padding: 4px 8px;
+                font-size: 12px;
+
+                p {
+                    margin-bottom: 8px;
+                }
+            }
+        }
+
         .mat-list-base .mat-list-item {
             height: 32px;
             line-height: 32px;
@@ -1709,6 +1745,19 @@
                 .mat-list-item.is-active {
                     background-color: rgba(map-get($primary, default), 0.06);
                 }
+            }
+        }
+
+        .function-category-help {
+            background: if(
+                $is-dark,
+                rgba(map-get($denali-brand-5, 100), .2),
+                rgba(map-get($denali-brand-5, 100), .5)
+            );
+            border-left: 1px solid $divider;
+
+            .help-title {
+               border-bottom: 1px solid $divider;
             }
         }
     }

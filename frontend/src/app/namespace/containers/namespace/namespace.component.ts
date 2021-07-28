@@ -22,7 +22,6 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { DbfsLoadNamespacesList, DbfsLoadTopFolder, DbfsResourcesState } from '../../../shared/modules/dashboard-filesystem/state';
 import { CdkService } from '../../../core/services/cdk.service';
-import { ConsoleService } from '../../../core/services/console.service';
 import { IntercomService } from '../../../core/services/intercom.service';
 
 @Component({
@@ -64,7 +63,6 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
         private store: Store,
-        private console: ConsoleService,
         private interCom: IntercomService
     ) {
         const namespaceList = false;

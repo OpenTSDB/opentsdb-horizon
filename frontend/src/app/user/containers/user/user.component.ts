@@ -21,7 +21,6 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { CdkService } from '../../../core/services/cdk.service';
-import { ConsoleService } from '../../../core/services/console.service';
 import { IntercomService } from '../../../core/services/intercom.service';
 import { DbfsLoadTopFolder, DbfsLoadUsersList, DbfsResourcesState, DbfsState } from '../../../shared/modules/dashboard-filesystem/state';
 
@@ -59,7 +58,6 @@ export class UserComponent implements OnInit, OnDestroy {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
-        private console: ConsoleService,
         private interCom: IntercomService,
         private store: Store
     ) {

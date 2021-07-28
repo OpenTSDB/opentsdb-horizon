@@ -28,7 +28,6 @@ import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { MatTableDataSource } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -51,7 +50,6 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
 
     constructor(
         private store: Store,
-        private console: ConsoleService,
         private router: Router
     ) { }
 

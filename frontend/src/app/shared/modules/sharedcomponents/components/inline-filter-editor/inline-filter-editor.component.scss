@@ -563,6 +563,15 @@
             }
         }
 
+        .filter-type-toggle {
+            width: 100%;
+
+            .mat-tab-link {
+                font-size: 12px;
+                height: 26px;
+            }
+        }
+
         .error {
             color: red;
             font-size: 0.75em;

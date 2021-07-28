@@ -57,10 +57,8 @@ import {
 } from '../state/navigator.state';
 
 import { filter, map } from 'rxjs/operators';
-import { ConsoleService } from '../../core/services/console.service';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
-import { flattenStyles } from '@angular/platform-browser/src/dom/dom_renderer';
 
 @Component({
     selector: 'app-shell',
@@ -128,7 +126,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     constructor(
         private interCom: IntercomService,
-        private console: ConsoleService,
         private store: Store,
         private router: Router,
         private activatedRoute: ActivatedRoute,

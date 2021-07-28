@@ -18,8 +18,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { ConsoleService } from '../../../../core/services/console.service';
-
 import {
     DbfsPanelFolderModel,
     DbfsFileModel,
@@ -34,7 +32,6 @@ import { UtilsService } from '../../../../core/services/utils.service';
 export class DbfsUtilsService {
 
     constructor(
-        private console: ConsoleService,
         private utils: UtilsService
     ) { }
 
