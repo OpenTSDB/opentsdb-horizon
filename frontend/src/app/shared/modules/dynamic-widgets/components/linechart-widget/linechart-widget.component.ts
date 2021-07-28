@@ -98,6 +98,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         isZoomedIgnoreProgrammaticZoom: true,
         hideOverlayOnMouseOut: true,
         isCustomZoomed: false,
+        theme: '',
         highlightSeriesOpts: {
             strokeWidth: 2,
             highlightCircleSize: 5
@@ -241,7 +242,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 ...this.options,
                 highlightSeriesBackgroundColor: (themeType === 'light') ? 'rgb(255,255,255)' : 'rgb(60,75,90)'
             };
+            this.options.theme = themeType;
             this.cdRef.markForCheck();
+            this.refreshData(false);
         }));
 
         // subscribe to event stream

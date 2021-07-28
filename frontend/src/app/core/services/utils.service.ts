@@ -398,20 +398,29 @@ export class UtilsService {
         return colors;
     }
 
-    getColorsHSV(color = null, n = 1) {
+    getColorsHSV(color = null, n = 1, shades = null ) {
         const colors = [];
         let hue;
+        let hsv = [];
         if (color) {
             const r = parseInt(color.substring(1, 3), 16);
             const g = parseInt(color.substring(3, 5), 16);
             const b = parseInt(color.substring(5, 7), 16);
-            hue = this.rgbToHsv(r, g, b)[0];
+            hsv = this.rgbToHsv(r, g, b);
+            hue = hsv[0];
+
         } else {
             hue = 0;
         }
 
         // saturation & value/brightness ranges
-        const srange = [0.9, 0.2], vrange = [0.9, 0.2];
+        const srange = [1, 0.1], vrange = [0.9, 0.1];
+        const contrast = this.findContrastColor(color);
+        if ( shades && shades === 'dark' && contrast.type === 'black' ) { // light theme => dark shades +  
+            srange[1] = 0.4;
+        } else if (shades && shades === 'light' && contrast.type === 'white' ) { // dark theme => light shades + light color
+            srange[0] = 0.6;
+        }
 
         // no. of colors on light to bright (sBand) and no. of bright to dark (vBand)
         const sBand = Math.ceil(n * 1), vBand = Math.floor(n * 0);
@@ -420,7 +429,7 @@ export class UtilsService {
 
         // if random color set SV to 0.8
         let s = color ? srange[0] - sStep : 1;
-        let v = color ? vrange[0] : 0.9;
+        let v = color ? hsv[2] : 0.9;
         const hueOffset = 1 / (6 * Math.ceil(n / 6));
         for (let i = 0; i < n; i++) {
             if (color) {
