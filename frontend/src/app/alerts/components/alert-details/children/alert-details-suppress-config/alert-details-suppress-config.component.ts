@@ -77,7 +77,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
       if ( formval.comparisonOperator !== 'missing' && formval.threshold === null ) {
           this.suppressForm.get('threshold').setErrors({ 'required': true });
       }
-      if ( formval.reportingInterval <= 0 ) {
+      if ( formval.timeSampler === 'all_of_the_times' && formval.reportingInterval <= 0 ) {
           this.suppressForm.get('reportingInterval').setErrors({ 'invalid': true });
       }
     }

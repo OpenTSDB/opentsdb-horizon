@@ -72,7 +72,7 @@
             </mat-hint>
         </div>
     </div>
-    <div class="sentence-chain-form">
+    <div class="sentence-chain-form" *ngIf="suppressForm.get('timeSampler').value === 'all_of_the_times'">
             <div class="sentence-item">
                 <span>The metric is reported every</span>
             </div>
