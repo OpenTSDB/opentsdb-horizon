@@ -85,8 +85,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
 
-    // if the active user is a member of yamas
-    isYamasMember: boolean = false;
+    // if the active user is admin
+    isAdminMember: boolean = false;
 
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
@@ -304,7 +304,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
             if (resourcesLoaded) {
                 const user = this.store.selectSnapshot(DbfsState.getUser());
-                this.isYamasMember = user.memberNamespaces.includes('yamas');
+                this.isAdminMember = user.memberNamespaces.includes('admin');
             }
         }));
     }

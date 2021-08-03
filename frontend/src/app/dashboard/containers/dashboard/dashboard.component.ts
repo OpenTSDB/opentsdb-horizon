@@ -260,8 +260,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     oldWidgets = [];
 
     // used to determine db write access (and display popup for unsaved changes)
-    dbOwner: string = ''; // /namespace/yamas
-    user: string = '';    // /user/zb
+    dbOwner: string = ''; // /namespace/admin
+    user: string = '';    // /user/admin
     writeSpaces: string[] = [];
 
     isUserFavorited: boolean = false;
@@ -1848,12 +1848,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getOwnerFromPath(fullPath: string) {
-        // ex path: /user/zb || /namespace/yamas/save-test2
+        // ex path: /user/admin || /namespace/admin/save-test2
         if (fullPath && fullPath.length) {
             const split = fullPath.split('/');
             if (split.length >= 3 && split[0] === '') {
                 return '/' + split[1].toLowerCase() + '/' + split[2].toLowerCase();
-                // return /user/zb || /namespace/yamas
+                // return /user/admin || /namespace/admin
             }
         }
         return '';
