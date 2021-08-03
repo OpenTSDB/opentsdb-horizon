@@ -759,6 +759,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             this.isDBZoomed = false;
                             const dbSettings = this.store.selectSnapshot(DBSettingsState);
                             this.dbTime = {...dbSettings.time};
+                            this.dbTime.start = isNaN(dbSettings.time.start) ? this.dbTime.start : this.dateUtil.timestampToTime(dbSettings.time.start, this.dbTime.zone);
+                            this.dbTime.end = isNaN(dbSettings.time.start) ? this.dbTime.end : this.dateUtil.timestampToTime(dbSettings.time.end, this.dbTime.zone);
                     } else {
                         overrideOnly = true;
                     }
@@ -1768,7 +1770,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     setDateRange(e: any) {
         this.isDBZoomed = false;
-        if ( this.viewEditMode ) {
+        if ( this.viewEditMode && !this.snapshot ) {
             this.dbTime = { ...this.dbTime, start: e.startTimeDisplay, end: e.endTimeDisplay } ;
             this.refresh();
         } else {

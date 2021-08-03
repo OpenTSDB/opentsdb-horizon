@@ -68,6 +68,8 @@ export interface WidgetModel {
             position: string;
             columns?: string[];
             tags?: string[];
+            sortBy?: string;
+            sortDir?: string;
         };
         thresholds?: ThresholdConfig[];
         multigraph?: any;

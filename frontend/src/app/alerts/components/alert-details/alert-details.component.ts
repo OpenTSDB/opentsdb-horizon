@@ -1659,8 +1659,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                         const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
                         const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
                         if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) ) 
-                                    || this.suppressConfig.reportingInterval <= 0 
-                                    || (this.suppressConfig.comparisonOperator !== 'missing' && this.suppressConfig.threshold === null)) {
+                                    || (this.suppressConfig.comparisonOperator !== 'missing' && 
+                                        (this.suppressConfig.threshold === null || this.suppressConfig.timeSampler === 'all_of_the_times' && this.suppressConfig.reportingInterval <= 0))) {
                             this.suppressConfig.checkValidation = true;
                             this.alertForm.setErrors({ 'invalid': true });
                         }
@@ -1749,9 +1749,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                         comparisonOperator : this.suppressConfig.comparisonOperator,
                         threshold : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.threshold,
                         timeSampler : this.suppressConfig.comparisonOperator === 'missing' ? null : this.suppressConfig.timeSampler,
-                        reportingInterval: this.suppressConfig.reportingInterval,
                         metricId: dsId
                     }
+                    data.threshold.suppress.reportingInterval = data.threshold.suppress.timeSampler !== 'all_of_the_times' ? null : this.suppressConfig.reportingInterval;
                 }
                 // tslint:disable-next-line: max-line-length
                 data.threshold.autoRecoveryInterval = data.threshold.autoRecoveryInterval !== 'null' ? data.threshold.autoRecoveryInterval : null;
