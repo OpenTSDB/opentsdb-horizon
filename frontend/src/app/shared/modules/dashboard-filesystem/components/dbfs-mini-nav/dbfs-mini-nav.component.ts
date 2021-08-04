@@ -78,6 +78,8 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
 
+    resourceLoadedSub: Subscription;
+
     @Select(DbfsState.getUser()) user$: Observable<any>;
     user: any = {};
 
@@ -146,14 +148,17 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.user = user;
         }));
 
-        this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
+        this.resourceLoadedSub = this.resourcesLoaded$.subscribe( loaded => {
             if (loaded === false) {
                 this.store.dispatch(new DbfsLoadResources());
             }
             if (loaded === true) {
                 this.miniNavInit();
+                if (this.resourceLoadedSub) {
+                    this.resourceLoadedSub.unsubscribe();
+                }
             }
-        }));
+        });
 
 
     }
@@ -263,7 +268,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             }
         }
 
-
         // now lets traverse the rest of the opening path to get the parts
         if (pathParts.length > 0) {
 
@@ -293,15 +297,11 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             }
         }
 
-
-
         if (this.mode === 'save' && resetToRoot) {
             // there was no initial path, so we need to reset panels
             // to the panel root now that we have loaded necessary data
             this.panels.splice(1, this.panels.length);
         }
-
-        console.log('PANEL CONTEXT', this.folders);
 
         this.panelIndex = this.panels.length - 1;
 
@@ -372,7 +372,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     folderAction(action: any, folder: any, event: any) {
-        event.stopPropagation();
+
         switch (action) {
             case 'gotoFolder':
                 if (folder.loaded) {
@@ -463,10 +463,6 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             this.folders[folderPanel.fullPath] = folderPanel;
             this.addPanel(folderPanel.fullPath);
 
-            console.log('PANEL CONTEXT', folderPanel);
-
-            // tell DBFS about this as well so the cache is in sync
-            this.store.dispatch(new DbfsLoadSubfolderSuccess(resource, {}));
         });
     }
 }

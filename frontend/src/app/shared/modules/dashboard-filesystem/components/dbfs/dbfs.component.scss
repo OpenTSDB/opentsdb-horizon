@@ -364,6 +364,7 @@
 
                 .cdk-virtual-scroll-viewport {
                     min-height: 100%;
+                    overflow: overlay;
                 }
             }
         }
