@@ -314,7 +314,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': !showThresholdAdvanced}">
+                                        <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced}">
                                             <div class="toggle-wrap">
                                                 <a class="toggle-action" (click)="showThresholdAdvanced = !showThresholdAdvanced;">
                                                     <mat-icon fontSet="denali" [fontIcon]="showThresholdAdvanced ? 'd-arrowhead-up' : 'd-arrowhead-down'"></mat-icon>
@@ -1100,9 +1100,14 @@
                                 <div class="form-control-wrap">
                                     <div *ngFor="let type of getRecipientTypeKeys()" class="recipient-type-output">
                                         <strong>{{typeToDisplayName(type)}}</strong>
-                                        <ul>
+                                        <ul *ngIf="type !== 'oc'">
                                             <li *ngFor="let recipient of data.notification.recipients[type]">
                                                 {{type === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}
+                                            </li>
+                                        </ul>
+                                        <ul *ngIf="type === 'oc'">
+                                            <li *ngFor="let recipient of data.notification.recipients[type]">
+                                                {{ 'Name: ' + recipient.name + ', Context: ' + recipient.context + ', Property: ' + recipient.opsdbproperty }}
                                             </li>
                                         </ul>
                                     </div>

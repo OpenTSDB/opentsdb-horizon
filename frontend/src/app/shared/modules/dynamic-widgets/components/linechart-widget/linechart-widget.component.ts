@@ -628,6 +628,16 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         return table;
     }
 
+    setSortOrder(sort) {
+        const sortBy = this.widget.settings.legend.sortBy;
+        const sortDir = this.widget.settings.legend.sortDir;
+        this.widget.settings.legend.sortBy = sort.active;
+        this.widget.settings.legend.sortDir = sort.direction;
+        if ( this.mode === 'view' && (sortBy != sort.active ||  sortDir !== sort.direction )) {
+            this.applyConfig();
+        }
+    }
+
     setOptions() {
         this.setLegendDiv();
         this.setAxesOption();
@@ -1546,7 +1556,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // apply config from editing
     applyConfig() {
-        this.closeViewEditMode();
+        if ( this.mode === 'edit' ) {
+            this.closeViewEditMode();
+        }
         this.widget.settings.chartOptions = {};
         const cloneWidget = JSON.parse(JSON.stringify(this.widget));
         cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');

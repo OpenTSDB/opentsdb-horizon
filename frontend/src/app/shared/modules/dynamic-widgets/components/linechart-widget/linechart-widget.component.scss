@@ -261,6 +261,11 @@
         .disabled-message {
             padding: 10px;
         }
+
+        // fixes the initial sort arrow  
+        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   { 
+            opacity: 1 !important; 
+        }
     }
 
      // when we are in edit view

@@ -125,7 +125,12 @@
                                     [style.flex]="(widget.settings.legend.display && (widget.settings.legend.position=='top' || widget.settings.legend.position=='bottom')) ? '1 1 ' + legendHeight : '1 1 ' + legendWidth"
                                     *ngIf="!displayMultigraph">
                                     <ng-container *ngIf="widget.settings.legend.display">
-                                        <table mat-table matSort [dataSource]="legendDataSource">
+                                        <table mat-table matSort [dataSource]="legendDataSource"
+                                        matSort
+                                        [matSortActive]="widget.settings.legend.sortBy"
+                                        [matSortDirection]="widget.settings.legend.sortDir"
+                                        matSortDisableClear="true"
+                                        (matSortChange)="setSortOrder($event)">
                                             <ng-container matColumnDef="color">
                                                     <th mat-header-cell *matHeaderCellDef></th>
                                                     <td mat-cell *matCellDef="let element"><div class="line-series"  [style.backgroundColor]= "element.color"></div></td>
