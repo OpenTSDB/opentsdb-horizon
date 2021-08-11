@@ -19,13 +19,13 @@
 </div>
 
 <div *ngIf="!isViewMode" class="edit-mode">
-  <button mat-button class="time-button" (click)="menuOpened()" [matMenuTriggerFor]="menu">{{secondsToLabel(timeInSecondsAsNumber)}} 
+  <button mat-button class="time-button" (click)="menuOpened()" [matMenuTriggerFor]="menu">{{ timeInSecondsAsNumber !== null ? secondsToLabel(timeInSecondsAsNumber): '&nbsp;' }} 
     <div class="mat-select-arrow-wrapper">
       <div class="mat-select-arrow"></div>
     </div>
   </button>
-  
   <mat-menu #menu="matMenu" class="cdk-time-menu">
+    <button *ngIf="empty" mat-menu-item (click)="selectedPreset(null)">None</button>
     <button *ngFor="let preset of presets" mat-menu-item (click)="selectedPreset(preset)">{{secondsToLabel(preset)}}</button>
     <div mat-menu-item class="cdk-custom-time" (click)="$event.stopPropagation();">
       <mat-form-field class="has-right-items">

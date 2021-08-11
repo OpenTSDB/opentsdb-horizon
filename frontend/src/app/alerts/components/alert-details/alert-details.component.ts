@@ -453,6 +453,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.data.threshold.singleMetric.slidingWindow = timeInSeconds;
     }
 
+    setSingleMetricReportingInterval(timeInSeconds: string) {
+        this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['reportingInterval'].setValue(timeInSeconds);
+        this.data.threshold.singleMetric.reportingInterval = timeInSeconds;
+    }
+
     periodOverPeriodChanged(periodOverPeriodConfig) {
         if (periodOverPeriodConfig.thresholdChanged) {
             this.determineEnabledTransitions(periodOverPeriodConfig.config.periodOverPeriod);
@@ -646,10 +651,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }));
 
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['timeSampler'].valueChanges.subscribe(val => {
-            if ( val !== null && val === 'all_of_the_times' ) {
-                this.thresholdSingleMetricControls['requiresFullWindow'].setValue(true);
-                this.thresholdSingleMetricControls['reportingInterval'].setValue(60);
-            }
+
             if ( (['at_least_once', 'all_of_the_times'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ||
                     (['at_least_once', 'all_of_the_times'].includes(val) && ['on_avg', 'in_total'].includes(this.prevTimeSampler)) ||
                     (['on_avg', 'in_total'].includes(this.prevTimeSampler) && ['on_avg', 'in_total'].includes(val)) ) {
@@ -1021,12 +1023,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.alertForm['controls'].threshold.setErrors({ 'required': true });
         }
 
-        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value === null ) {
-            this.thresholdSingleMetricControls['reportingInterval'].setErrors({ 'required': true });
-        }
 
         slidingWindowCntrl.setErrors(null);
-        if ( timeSampler === 'all_of_the_times' && requiresFullWindowCntrl.value === true && reportingIntervalCntrl.value && slidingWindowCntrl.value < reportingIntervalCntrl.value ) {
+        if ( timeSampler === 'all_of_the_times' && reportingIntervalCntrl.value !== null  && parseInt(reportingIntervalCntrl.value) > parseInt(slidingWindowCntrl.value) ) {
             slidingWindowCntrl.setErrors({ 'invalid': true });
         }
 
@@ -1756,9 +1755,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 // tslint:disable-next-line: max-line-length
                 data.threshold.autoRecoveryInterval = data.threshold.autoRecoveryInterval !== 'null' ? data.threshold.autoRecoveryInterval : null;
                 // tslint:disable-next-line: max-line-length
-                data.threshold.singleMetric.requiresFullWindow = data.threshold.singleMetric.timeSampler === 'all_of_the_times' ? data.threshold.singleMetric.requiresFullWindow : false;
+                data.threshold.singleMetric.reportingInterval = data.threshold.singleMetric.timeSampler === 'all_of_the_times' && data.threshold.singleMetric.reportingInterval !== null ? data.threshold.singleMetric.reportingInterval : null;
                 // tslint:disable-next-line: max-line-length
-                data.threshold.singleMetric.reportingInterval = data.threshold.singleMetric.requiresFullWindow === true ? data.threshold.singleMetric.reportingInterval : null;
+                data.threshold.singleMetric.requiresFullWindow = data.threshold.singleMetric.reportingInterval ? true : false;
                 if (this.data.threshold.subType === 'periodOverPeriod') {
                     const dataThresholdCopy = {...data.threshold};
                     data.notification.transitionsToNotify = [...this.periodOverPeriodTransitionsSelected];
