@@ -109,8 +109,32 @@
             flex-direction: column;
         }
 
+        .alert-status-bar {
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+
+            .snapshot {
+                margin-right: 10px;
+                display: inline-flex;
+
+                .mat-flat-button {
+                    line-height: 24px;
+                    font-size: 12px;
+                    padding: 0;
+                    min-width: 24px;
+                    margin: auto 6px;
+
+                    .mat-icon {
+                        margin: 0px;
+                    }
+                }
+            }
+        }
+
         .alert-status {
             height: 46px;
+
             .mat-slide-toggle {
                 display: inline-flex;
                 height: inherit;
@@ -184,22 +208,7 @@
                     }
                 }
 
-                .snapshot {
-                    width: 24px;
-                    height: 24px;
-                    display: inline-flex;
-                    .mat-flat-button {
-                        line-height: 24px;
-                        font-size: 12px;
-                        padding: 0;
-                        min-width: 24px;
-                        margin: auto 6px;
 
-                        .mat-icon {
-                            margin: 0px;
-                        }
-                    }
-                }
 
                 .loading-spinner {
                     position: absolute;
@@ -838,8 +847,11 @@
             }
         }
 
-        .alert-status {
+        .alert-status-bar {
             background-color: $card;
+        }
+
+        .alert-status {
             .messaging-bar {
                 .mat-slide-toggle {
                     background-color: rgba(255, 255, 255, 0.8);

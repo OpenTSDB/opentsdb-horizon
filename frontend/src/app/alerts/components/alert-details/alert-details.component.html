@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,25 +16,33 @@
  -->
 <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
-        <div class="alert-status" *ngIf="data.id">
-            <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess">
-                <span class="mat-caption" *ngIf="enabled">This alert is enabled</span>
-            </mat-slide-toggle>
-            <div *ngIf="!enabled" class="messaging-bar is-warning-type">
-                <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess"></mat-slide-toggle>
-                <div class="message-icon">
-                    <mat-icon fontSet="denali" fontIcon="d-warning-solid"></mat-icon>
+        <div class="alert-status-bar" style="display: flex; align-items: stretch; justify-content: stretch;">
+            <div class="alert-status flex-spacer" *ngIf="data.id">
+                <mat-slide-toggle *ngIf="enabled" [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess">
+                    <span class="mat-caption" *ngIf="enabled">This alert is enabled</span>
+                </mat-slide-toggle>
+                <div *ngIf="!enabled" class="messaging-bar is-warning-type">
+                    <mat-slide-toggle  [checked]="enabled" (change)="toggleAlert()" [disabled]="readOnly || !hasWriteAccess"></mat-slide-toggle>
+                    <div class="message-icon">
+                        <mat-icon fontSet="denali" fontIcon="d-warning-solid"></mat-icon>
+                    </div>
+                    <div class="message-text">
+                        This alert is disabled
+                    </div>
                 </div>
-                <div class="message-text">
-                    This alert is disabled
-                </div>
+            </div>
+            <div class="flex-spacer" style="min-width: 10px;"></div>
+            <div class="snapshot" *ngIf="data.type === 'simple'" style="display: flex; align-items: center;">
+                <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
+                    <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+                </button>
             </div>
         </div>
 
         <div class="preview-wrapper" #graphOutput appResizable resize="true"  [ngClass]="{'is-visible': data.type !== 'healthcheck' }">
             <div class="graph-wrapper" ttMouseListener ttType="linechart" [style.display]="data.type === 'event' || data.type === 'simple' && data.threshold.subType !=='periodOverPeriod' ? 'flex':'none'">
                 <div #graphOutput class="graph-output" >
-                    
+
                     <div #dygraph class="chart"
                         dygraphsChart
                         [chartType]="'line'"
@@ -52,11 +60,11 @@
                     <div class="gif-spinner" *ngIf="nQueryDataLoading > 0">
                         <img src="/assets/spinner-26x26.gif" />
                     </div>
-                    <div class="snapshot" *ngIf="data.type === 'simple'">
+                    <!--<div class="snapshot" *ngIf="data.type === 'simple'">
                         <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
                             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
                         </button>
-                    </div>
+                    </div>-->
                     <div class="error" *ngIf="error" (click)="showError()">
                         <mat-icon>error</mat-icon>
                     </div>
@@ -65,7 +73,7 @@
                             <ng-container *ngFor="let metric of query.metrics; let mindex = index">
                                 <div *ngIf="!alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === alertForm.get('threshold').get('singleMetric').get('metricId').value || metric.id === suppressConfig.metricId" class="metric-name" (click)="toggleQueryMetric(metric.id)">
                                     <span class="label">
-                                        <mat-icon fontSet="denali" 
+                                        <mat-icon fontSet="denali"
                                             [fontIcon]="!chartInvisibleMetrics.includes(metric.id) ? 'd-check-square' : 'd-minus-square'"></mat-icon>
                                         <span>{{ metric.name  || utils.getExpressionLabel(qindex, mindex, queries) }}</span>
                                     </span>
@@ -364,7 +372,7 @@
                                                 <alert-details-suppress-config
                                                     [data]="data"
                                                     [queries]="queries"
-                                                    [config]="suppressConfig" 
+                                                    [config]="suppressConfig"
                                                     [tags]="tags"
                                                     (configChange)="updateSuppressConfig($event)">
                                                 </alert-details-suppress-config>
