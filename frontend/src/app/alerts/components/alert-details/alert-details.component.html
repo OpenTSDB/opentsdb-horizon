@@ -94,7 +94,7 @@
     <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail flex-spacer">
-                    <span class="namespace" *ngIf="data.namespace!== 'default'">Namespace: <strong>{{data.namespace}}</strong></span>
+                    <span class="namespace" *ngIf="data.namespace !== defaultNamespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable  *ngIf="!readOnly" class="navbar-item"
                             [fieldValue]="data.name"
@@ -227,6 +227,8 @@
                                                                 <mat-option value="above_or_equal_to">&gt;=</mat-option>
                                                                 <mat-option value="below">&lt;</mat-option>
                                                                 <mat-option value="below_or_equal_to">&lt;=</mat-option>
+                                                                <!--<mat-option value="equal_to">=</mat-option>
+                                                                <mat-option value="no_equal_to">!=</mat-option>-->
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>

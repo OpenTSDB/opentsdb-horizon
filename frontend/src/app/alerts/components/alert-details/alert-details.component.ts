@@ -198,6 +198,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         { label: 'P5', value: 'P5' }
     ];
 
+    defaultNamespace = '';
     defaultOpsGeniePriority = 'P5';
     defaultOCSeverity = '5';
     defaultOCTier = '1';
@@ -349,6 +350,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     ngOnInit() {
         this.alertspageNavbarPortal = new TemplatePortal(this.alertDateTimeNavbarItemTmpl, undefined, {});
         this.cdkService.setNavbarPortal(this.alertspageNavbarPortal);
+        this.defaultNamespace = this.appConfig.getDefaultNamespace();
 
         this.subscription.add(this.themeService.getThemeType().subscribe( themeType => {
             this.options = {...this.options,

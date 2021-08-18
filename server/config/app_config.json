@@ -51,6 +51,7 @@
         }
     },
     "namespace": {
-        "enabled": false
+        "enabled": false,
+        "default": "_default"
     }
 }
