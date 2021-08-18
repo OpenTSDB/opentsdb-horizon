@@ -16,6 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { UtilsService } from '../services/utils.service';
+import { AppConfigService } from '../services/config.service';
 
 
 @Injectable({
@@ -23,7 +24,8 @@ import { UtilsService } from '../services/utils.service';
 })
 export class MetaService {
 
-  constructor(private utilsService: UtilsService) { }
+  constructor(private utilsService: UtilsService, 
+              private appConfig: AppConfigService ) { }
 
   getQuery(source, type, params, andOp = true) {
     const [ mSource, fType ] = source.split(':');
@@ -42,7 +44,7 @@ export class MetaService {
       let filters = [];
       const query: any = {};
       query.id = params[i].id || 'id-' + i;
-      query.namespace =  type !== 'NAMESPACES' ? ( params[i].namespace || 'default' ) : this.utilsService.convertPatternTSDBCompat(params[i].search);
+      query.namespace =  type !== 'NAMESPACES' ? ( params[i].namespace || this.appConfig.getDefaultNamespace() ) : this.utilsService.convertPatternTSDBCompat(params[i].search);
       if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
         const librange = params[i].search.match(/librange\((.*)\)/);

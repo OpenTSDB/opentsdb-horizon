@@ -475,6 +475,11 @@
                                 white-space: nowrap;
                             }
                         }
+                        &.comparison-operator {
+                            .mat-form-field-infix {
+                                width: 70px;
+                            }
+                        }
                     }
                     .is-fullwindow {
                         margin: 8px 0px;

@@ -102,7 +102,7 @@
     <div class="controls-wrapper" [ngClass]="{ 'read-only-mode' : readOnly }">
             <mat-toolbar class="config-toolbar">
                 <div class="toolbar-item alert-name-detail flex-spacer">
-                    <span class="namespace" *ngIf="data.namespace!== 'default'">Namespace: <strong>{{data.namespace}}</strong></span>
+                    <span class="namespace" *ngIf="data.namespace !== defaultNamespace">Namespace: <strong>{{data.namespace}}</strong></span>
                     <div class="alert-name">
                         <inline-editable  *ngIf="!readOnly" class="navbar-item"
                             [fieldValue]="data.name"
@@ -185,8 +185,7 @@
 
                         <span>
                             <div class="step-section-content">
-                                <!-- select query -->
-                                <div class="form-group select-query" formGroupName="singleMetric">
+                                <div class="form-group select-query" formGroupName="singleMetric" *ngIf="data.threshold && data.threshold.subType === 'periodOverPeriod'">
                                     <div class="form-label vertical-center"><strong>Select Metric</strong></div>
                                     <div class="form-control-wrap auto-width">
                                         <mat-form-field appearance="fill">
@@ -211,61 +210,35 @@
                                 </alert-details-metric-period-over-period>
                                 <span *ngIf="data && data.type === 'simple' && data.threshold.subType !== 'periodOverPeriod'">
                                     <div class="form-group sliding-window" formGroupName="singleMetric">
-                                            <div class="form-label vertical-center"><strong>Sliding Window</strong></div>
+                                            <div class="form-label vertical-center"><strong>Condition</strong></div>
                                             <div>
                                                 <!-- sentence-like form -->
                                                 <div class="sentence-chain-form">
                                                     <div class="sentence-item">
-                                                        <span>Trigger when the metric is</span>
+                                                        <div class="form-control-wrap auto-width">
+                                                            <mat-form-field appearance="fill">
+                                                                <mat-select placeholder="Select Metric" formControlName="metricId" disableOptionCentering>
+                                                                    <mat-option>None</mat-option>
+                                                                    <mat-optgroup  *ngFor="let query of queries; let qindex=index" label="Q{{qindex + 1}}">
+                                                                        <mat-option *ngFor="let metric of query.metrics; let mindex = index" [value]="metric.id">{{ metric.name || utils.getExpressionLabel(qindex, mindex, queries)}}</mat-option>
+                                                                    </mat-optgroup>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                            <mat-error *ngIf="alertForm.touched && thresholdSingleMetricControls.metricId.errors && thresholdSingleMetricControls.metricId.errors.required">Please select a metric</mat-error>
+                                                        </div>
                                                     </div>
-                                                    <div class="sentence-item">
-                                                        <mat-form-field appearance="fill">
+                                                    <div class="sentence-item comparison-operator">
+                                                        <mat-form-field  appearance="fill">
                                                             <mat-label></mat-label>
                                                             <mat-select placeholder="Select" formControlName="comparisonOperator" disableOptionCentering>
-                                                                <mat-option value="above">above</mat-option>
-                                                                <mat-option value="above_or_equal_to">above or equal to</mat-option>
-                                                                <mat-option value="below">below</mat-option>
-                                                                <mat-option value="below_or_equal_to">below or equal to</mat-option>
+                                                                <mat-option value="above">&gt;</mat-option>
+                                                                <mat-option value="above_or_equal_to">&gt;=</mat-option>
+                                                                <mat-option value="below">&lt;</mat-option>
+                                                                <mat-option value="below_or_equal_to">&lt;=</mat-option>
+                                                                <!--<mat-option value="equal_to">=</mat-option>
+                                                                <mat-option value="no_equal_to">!=</mat-option>-->
                                                             </mat-select>
                                                         </mat-form-field>
-                                                    </div>
-                                                    <div class="sentence-item">
-                                                        <span>the threshold</span>
-                                                    </div>
-                                                    <div class="sentence-item">
-                                                        <mat-form-field appearance="fill">
-                                                            <mat-label></mat-label>
-                                                            <mat-select placeholder="Select" formControlName="timeSampler" disableOptionCentering>
-                                                                <mat-option value='at_least_once'>at least once</mat-option>
-                                                                <mat-option value='all_of_the_times'>at all times</mat-option>
-                                                                <mat-option value='on_avg'>on average</mat-option>
-                                                                <mat-option value='in_total'>in total</mat-option>
-                                                            </mat-select>
-                                                        </mat-form-field>
-                                                    </div>
-                                                    <div class="sentence-item">
-                                                        <span>during the last</span>
-                                                    </div>
-                                                    <div class="sentence-item">
-                                                        <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
-                                                    </div>
-                                                    <mat-error style="text-align: right;" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">Sliding window size should be greater than or equal to the reporting interval</mat-error>
-                                                </div>
-                                                <div *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
-                                                    <div class="is-fullwindow">
-                                                        <mat-checkbox formControlName="requiresFullWindow">
-                                                            Require full window for evaluation
-                                                        </mat-checkbox>
-                                                    </div>
-                                                    <div class="reporting-interval">
-                                                        <span>Reporting interval </span>
-                                                        <mat-form-field appearance="fill" floatLabel="never" [ngClass]="{'mat-form-field-invalid': thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required}">
-                                                            <input matInput type="number" autocomplete="off" placeholder="Enter value" formControlName="reportingInterval">
-                                                        </mat-form-field>
-                                                        <mat-hint class="info-hint">
-                                                            <span>secs</span>
-                                                        </mat-hint>
-                                                        <mat-error *ngIf="thresholdSingleMetricControls['reportingInterval'].errors && thresholdSingleMetricControls['reportingInterval'].errors.required">Reporting interval should not be empty</mat-error>
                                                     </div>
                                                 </div>
                                             </div>
@@ -320,6 +293,36 @@
 
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="form-group sliding-window" formGroupName="singleMetric">
+                                            <div class="form-label vertical-center"><strong>Window</strong></div>
+                                            <div class="sentence-item">
+                                                <mat-form-field appearance="fill">
+                                                    <mat-label></mat-label>
+                                                    <mat-select placeholder="Select" formControlName="timeSampler" disableOptionCentering>
+                                                        <mat-option value='at_least_once'>any value</mat-option>
+                                                        <mat-option value='all_of_the_times'>all values</mat-option>
+                                                        <mat-option value='on_avg'>average</mat-option>
+                                                        <mat-option value='in_total'>sum</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="sentence-item">
+                                                <span>{{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? 'in' :  'over' }} last</span>
+                                            </div>
+                                            <div class="sentence-item">
+                                                    <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
+                                                    <div>breach(s) the above thresholds {{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? ' and a value is reported every' : ''}}</div>
+                                            </div>
+
+                                            <div class="sentence-item" *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
+                                                <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.reportingInterval" empty="true" (newTimeInSeconds)="setSingleMetricReportingInterval($event)"></time-selector>
+                                                <span>&nbsp;arbitrarily</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" *ngIf="thresholdSingleMetricControls['slidingWindow'].errors && thresholdSingleMetricControls['slidingWindow'].errors.invalid">
+                                            <div class="form-label vertical-center"></div>
+                                            <mat-error style="margin-left: 225px;">Sliding window size should be greater than or equal to the reporting interval</mat-error>
                                         </div>
 
                                         <div class="show-advanced-threshold-toggle" [ngClass]="{'is-open': showThresholdAdvanced}">

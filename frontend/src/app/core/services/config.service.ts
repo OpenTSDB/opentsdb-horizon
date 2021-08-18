@@ -61,4 +61,8 @@ export class AppConfigService {
   getConfig() {
     return this.appConfig;
   }
+
+  getDefaultNamespace() {
+    return this.appConfig.namespace && this.appConfig.namespace.default ? this.appConfig.namespace.default : '_default';
+  }
 }
