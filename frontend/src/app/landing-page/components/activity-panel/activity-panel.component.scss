@@ -18,138 +18,132 @@
  * ACTIVITY PANEL COMPONENT
  */
 
-@mixin activity-panel-component-base() {
-    .activity-panel {
-        display: flex;
-        flex-direction: column;
+ @import 'loader-base';
 
-        .panel-header {
+ :host.activity-panel {
+    display: flex;
+    flex-direction: column;
 
-        }
+    .panel-content {
+        .no-data {
+            .no-activity {
+                margin: 15px 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
 
-        .panel-content {
+                .illustration {
+                    width: 120px;
+                    height: 120px;
+                    position: relative;
+                    border-radius: 50%;
+                    background-color: rgba(0,0,0,0.06); // NOTE: theme??
+                    margin-bottom: 15px;
 
-
-            .no-data {
-                .no-activity {
-                    margin: 15px 0;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    width: 100%;
-
-                    .illustration {
-                        width: 120px;
-                        height: 120px;
-                        position: relative;
-                        border-radius: 50%;
-                        background-color: rgba(0,0,0,0.06);
-                        margin-bottom: 15px;
-
-                        &::after {
-                            content: 'Illustration';
-                            font-size: 14px;
-                            font-weight: 500;
-                            display: block;
-                            line-height: 120px;
-                            text-align: center;
-                        }
+                    &::after {
+                        content: 'Illustration';
+                        font-size: 14px;
+                        font-weight: 500;
+                        display: block;
+                        line-height: 120px;
+                        text-align: center;
                     }
                 }
             }
         }
+    }
 
-        .activity-lists {
+    .activity-lists {
+        font-size: 12px;
+
+        .day-header {
+            text-transform: uppercase;
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0 18px 12px;
+        }
+
+        // shows hour header
+        .mat-expansion-panel-header {
+            padding: 0 18px;
+
+            .mat-expansion-panel-header-title {
+                font-size: 12px;
+                flex-grow: initial;
+            }
+
+            .icon-array {
+                .mat-chip {
+                    margin-right: 4px;
+                    opacity: .3;
+                }
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 10px;
+                    padding: 2px;
+                    border-radius: initial;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+
+                }
+            }
+
+            .event-count {
+                .mat-chip {
+                    font-size: 10px;
+                    padding: 2px 6px;
+                    opacity: .3;
+                }
+            }
+        }
+
+        // hour-level events
+        .mat-list {
+            padding-top: 0;
             font-size: 12px;
 
-            .day-header {
-                text-transform: uppercase;
-            }
-
-            .mat-expansion-panel-body {
-                padding: 0 18px 12px;
-            }
-
-            // shows hour header
-            .mat-expansion-panel-header {
-                padding: 0 18px;
-
-                .mat-expansion-panel-header-title {
-                    font-size: 12px;
-                    flex-grow: initial;
-                }
-
-                .icon-array {
-                    .mat-chip {
-                        margin-right: 4px;
-                        opacity: .3;
-                    }
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 10px;
-                        padding: 2px;
-                        border-radius: initial;
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        
-                    }
-                }
-
-                .event-count {
-                    .mat-chip {
-                        font-size: 10px;
-                        padding: 2px 6px;
-                        opacity: .3;
-                    }
-                }
-            }
-
-            // hour-level events
-            .mat-list {
-                padding-top: 0;
+            .mat-list-item {
+                height: auto;
+                max-width: initial;
                 font-size: 12px;
 
-                .mat-list-item {
-                    height: auto;
-                    max-width: initial;
+                &:not(:last-child) {
+                    margin-bottom: 12px;
+                }
+
+                .mat-list-item-content {
+                    padding: 0;
+                    align-items: flex-start;
+                }
+
+                .mat-line {
+                    white-space: initial;
                     font-size: 12px;
+                }
 
-                    &:not(:last-child) {
-                        margin-bottom: 12px;
-                    }
-
-                    .mat-list-item-content {
-                        padding: 0;
-                        align-items: flex-start;
-                    }
-
-                    .mat-line {
-                        white-space: initial;
-                        font-size: 12px;
-                    }
-
-                    .mat-icon {
-                        width: 18px;
-                        height: 18px;
-                        font-size: 16px;
-                        padding: 2px;
-                        border-radius: initial;
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
+                .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 16px;
+                    padding: 2px;
+                    border-radius: initial;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
                 }
             }
-
-
         }
     }
 }
 
-@mixin activity-panel-component-theme($theme-config) {
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
@@ -179,18 +173,22 @@
         alert: ($d-orange, $d-orange-accent)
     );
 
-    .activity-panel {
-        .activity-lists {
-            .mat-list {
-                .mat-icon {
+    /* [[  THEME  ]] (#{$theme-name}) - activity panel component  */
+    @at-root [theme='#{$theme-name}'] {
 
-                    @each $key, $value in $activityTypes {
-                        $color: nth($value, 1);
-                        $accent: nth($value, 2);
+        :host.activity-panel {
+            .activity-lists {
+                .mat-list {
+                    .mat-icon {
 
-                        &.for-#{$key} {
-                            color: $color;
-                            background-color: $accent;
+                        @each $key, $value in $activityTypes {
+                            $color: nth($value, 1);
+                            $accent: nth($value, 2);
+
+                            &.for-#{$key} {
+                                color: $color;
+                                background-color: $accent;
+                            }
                         }
                     }
                 }

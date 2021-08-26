@@ -29,43 +29,22 @@
                                                                                                  °°°°°°
 */
 
-@import 'scss/denali';
-@import 'scss/mixins';
+@import 'scss/colors.scss';
+@import 'scss/mixins.scss';
 
 // IMPORT MATERIAL THEMING SUPPORT
 @import '~@angular/material/theming';
 
-// Typography
-//$type-config: mat-typography-config();
-@import 'scss/typography/typography-mixins';
-@import 'scss/typography/roboto-mono';
-@import 'scss/typography/helvetica-neue-sans';
-@import 'scss/typography/ubuntu-sans';
-
-/* TYPOGRAPHY CONFIG */
-//@include debug-map($type-config);
-$app-fontface-config: (
-    mono: generate-material-compatible-typography-config($roboto-mono-typeface-config),
-    sans: generate-material-compatible-typography-config($ubuntu-sans-typeface-config)
-);
+// IMPORT TYPOGRAPHY MAPS
+@import 'scss/typography.scss';
 
 @each $typeface, $type-config in $app-fontface-config {
     /**** [ FONTFACE CONFIG: #{$typeface} ] ****/
     @include debug-map($type-config);
 }
 
-
 // IMPORT THEME CONFIGS
-@import 'scss/themes/dark-theme';
-@import 'scss/themes/light-theme';
-@import 'scss/themes/developing-theme';
-
-// DEFINE THEME MAP
-$app-available-themes: (
-    developing: $developing-theme,
-    light: $light-theme,
-    dark: $dark-theme
-);
+@import 'scss/theming.scss';
 
 // OUTPUT EACH PROPERTY OF THE THEME CONFIG MAP
 @each $theme-name, $theme-config in $app-available-themes {

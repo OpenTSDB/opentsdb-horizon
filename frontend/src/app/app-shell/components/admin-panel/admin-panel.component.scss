@@ -15,132 +15,68 @@
  * limitations under the License.
  */
 
-@mixin admin-panel-component-base() {
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
-    $admin-panel-min-width: 600px;
+ @import 'loader-base';
 
-    .admin-navigator {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
+$admin-panel-min-width: 600px;
+
+:host.admin-navigator {
+    width: $admin-panel-min-width;
+
+    .admin-panel {
         flex: 1;
-        font-weight: 300;
-        font-size: 12px;
-        width: $admin-panel-min-width;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+    }
 
-        .mat-icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
+    .admin-function-tabs {
+        flex: 1;
+    }
 
-            .mat-button-wrapper {
-                line-height: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+    .admin-function-tabs.mat-tab-group ::ng-deep {
+
+        .mat-tab-header {
+            .mat-tab-label {
+                height: 32px;
+                padding: 0 16px;
+                font-size: 12px;
             }
 
             .mat-icon {
-                line-height: 1;
-                width: 24px;
-                height: 24px;
-                font-size: 18px;
-                display: flex;
-                align-items: center;
+                @include sizeDenaliIcon(14px);
+                margin-right: 4px;
             }
         }
 
-        .panel-toolbar {
-            @include mat-elevation(0);
-            @include unselectable;
-
-            .nav-item {
-                display: flex;
-                align-items: center;
-            }
-
-            .panel-label {
-                cursor: pointer;
-
-                strong {
-                    font-weight: 400;
-                    font-size: 14px;
-                    text-transform: uppercase;
-                }
-            }
-
-            &.is-master-panel {
-
-                .panel-label {
-                    cursor: default;
-
-                    strong {
-                        text-transform: capitalize;
-                    }
-                }
-            }
-
-            &.mat-toolbar-multiple-rows,
-            &.mat-toolbar-single-row {
-                min-height: $navbar-height !important;
-                height: $navbar-height;
-            }
-        }
-
-        .admin-panel {
+        .mat-tab-body-wrapper {
             flex: 1;
-            position: relative;
-            overflow: hidden;
+            height: 100%;
+        }
+
+        .mat-tab-body {
+            padding: 0;
+        }
+
+        .mat-tab-body-content {
+            padding: 16px;
             display: flex;
-        }
-
-        .admin-function-tabs {
-            flex: 1;
-
-            .mat-tab-header {
-                .mat-tab-label {
-                    height: 32px;
-                    padding: 0 16px;
-                    font-size: 12px;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                    margin-right: 4px;
-                }
-            }
-
-            .mat-tab-body-wrapper {
-                flex: 1;
-                height: 100%;
-            }
-
-            .mat-tab-body {
-                padding: 0;
-            }
-
-            .mat-tab-body-content {
-                padding: 16px;
-                display: flex;
-            }
         }
     }
 }
 
-@mixin admin-panel-component-theme($theme-config) {
-    /* Theme config parts */
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);
     $foreground: map-get($theme-config, foreground);
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
-    $status: map-get($theme-config, status);
 
-    /* navbar config */
     $sn-light: map-get($navbar-config, sn-light);
     $sn-dark: map-get($navbar-config, sn-dark);
     $sn-light-text: map-get($navbar-config, sn-light-text);
@@ -160,27 +96,31 @@
 
     $navbar-text-color: map-get($foreground, navbar-text);
 
-    .admin-navigator {
+    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
+    @at-root [theme='#{$theme-name}'] {
 
-        .admin-function-tabs.mat-tab-group {
-            .mat-tab-header {
-                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+        :host.admin-navigator {
+            .admin-function-tabs.mat-tab-group ::ng-deep {
+                .mat-tab-header {
+                    background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
 
-                .mat-tab-label {
-                    color: if($is-dark-theme, $navbar-text, $text-color);
-
-                    &.mat-tab-label-active {
-                        opacity: 1;
+                    .mat-tab-label {
                         color: if($is-dark-theme, $navbar-text, $text-color);
+
+                        &.mat-tab-label-active {
+                            opacity: 1;
+                            color: if($is-dark-theme, $navbar-text, $text-color);
+                        }
                     }
                 }
-            }
 
-            &.mat-primary {
-                .mat-ink-bar {
-                    background: $text-color;
+                &.mat-primary {
+                    .mat-ink-bar {
+                        background: $text-color;
+                    }
                 }
             }
         }
     }
 }
+

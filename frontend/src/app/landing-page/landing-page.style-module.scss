@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 /**
  * This file is part of OpenTSDB.
  * Copyright (C) 2021  Yahoo.
@@ -33,13 +35,13 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // containers
-@import 'containers/landing-page/landing-page.component';
+//@import 'containers/landing-page/landing-page.component';
 
 // components
 // @import 'components/home/home.component.scss';
-@import 'components/activity-panel/activity-panel.component';
-@import 'components/pin-panel/pin-panel.component';
-@import 'components/landing-page-content/landing-page-content.component';
+//@import 'components/activity-panel/activity-panel.component';
+//@import 'components/pin-panel/pin-panel.component';
+//@import 'components/landing-page-content/landing-page-content.component';
 
 // widgets
 
@@ -49,13 +51,13 @@
   // example: @include componentName-component-core();
 
   // containers
-    @include landing-page-container-component-base();
+    //@include landing-page-container-component-base();
 
   // components
   //  @include landing-page-home-component-base();
-    @include activity-panel-component-base();
-    @include pin-panel-component-base();
-    @include landing-page-content-component-base();
+    //@include activity-panel-component-base();
+    //@include pin-panel-component-base();
+    //@include landing-page-content-component-base();
 
   // widgets
 }
@@ -66,13 +68,13 @@
   // example: @include componentName-component-theme($theme-config);
 
   // container
-    @include landing-page-container-component-theme($theme-config);
+    //@include landing-page-container-component-theme($theme-config);
 
   // components
   //  @include landing-page-home-component-theme($theme-config);
-    @include activity-panel-component-theme($theme-config);
-    @include pin-panel-component-theme($theme-config);
-    @include landing-page-content-component-theme($theme-config);
+    //@include activity-panel-component-theme($theme-config);
+    //@include pin-panel-component-theme($theme-config);
+    //@include landing-page-content-component-theme($theme-config);
 
   // widgets
 }

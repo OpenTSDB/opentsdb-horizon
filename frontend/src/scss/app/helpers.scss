@@ -46,13 +46,21 @@
     flex-direction: row-reverse;
 }
 
-
-
 .can-truncate {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     display: block;
+}
+
+// hides out of dom
+.is-hidden {
+    display: none !important;
+}
+
+// hides, but still takes space in dom
+.is-hidden-block {
+    visibility: hidden !important;
 }
 
 // * Scroller
@@ -98,4 +106,10 @@
         background-color: $color;
         color: $color-invert;
     }
+}
+
+/* see https://github.com/swiety85/angular2gridster/issues/104 */
+.prevent-animation {
+    -webkit-transition: none !important;
+    transition: none !important;
 }

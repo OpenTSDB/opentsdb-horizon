@@ -423,7 +423,7 @@
 @mixin sizeDenaliIcon($size: 24px) {
     width: $size;
     height: $size;
-    line-height: $size;
+    line-height: 1;
     font-size: $size;
 }
 

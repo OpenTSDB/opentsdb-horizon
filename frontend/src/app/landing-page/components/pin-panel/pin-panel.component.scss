@@ -18,43 +18,37 @@
  * PIN PANEL COMPONENT
  */
 
- @mixin pin-panel-component-base() {
-    .pin-panel {
-        display: flex;
-        flex-direction: column;
+ @import 'loader-base';
 
-        .panel-header {
+:host.pin-panel {
+    display: flex;
+    flex-direction: column;
 
-        }
+    .panel-content {
+        .no-data {
+            .no-activity {
+                margin: 15px 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
 
-        .panel-content {
+                .illustration {
+                    width: 120px;
+                    height: 120px;
+                    position: relative;
+                    border-radius: 50%;
+                    background-color: rgba(0,0,0,0.06); // NOTE: theme??
+                    margin-bottom: 15px;
 
-
-            .no-data {
-                .no-activity {
-                    margin: 15px 0;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    width: 100%;
-
-                    .illustration {
-                        width: 120px;
-                        height: 120px;
-                        position: relative;
-                        border-radius: 50%;
-                        background-color: rgba(0,0,0,0.06);
-                        margin-bottom: 15px;
-
-                        &::after {
-                            content: 'Illustration';
-                            font-size: 14px;
-                            font-weight: 500;
-                            display: block;
-                            line-height: 120px;
-                            text-align: center;
-                        }
+                    &::after {
+                        content: 'Illustration';
+                        font-size: 14px;
+                        font-weight: 500;
+                        display: block;
+                        line-height: 120px;
+                        text-align: center;
                     }
                 }
             }
@@ -62,7 +56,10 @@
     }
 }
 
-@mixin pin-panel-component-theme($theme-config) {
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
     /* Theme config parts */
    $primary: map-get($theme-config, primary);
    $accent: map-get($theme-config, accent);
@@ -71,4 +68,9 @@
    $foreground: map-get($theme-config, foreground);
    $background: map-get($theme-config, background);
    $is-dark-theme: map-get($theme-config, is-dark);
+
+   /* [[  THEME  ]] (#{$theme-name}) - pin panel component  */
+   @at-root [theme='#{$theme-name}'] {
+        :host.pin-panel { }
+   }
 }

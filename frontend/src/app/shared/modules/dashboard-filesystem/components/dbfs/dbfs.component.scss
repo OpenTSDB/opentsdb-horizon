@@ -14,1019 +14,464 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin dbfs-component-base() {
+ @import 'loader-base';
 
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
 
-    .dashboard-navigator {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        font-weight: 300;
-        font-size: 12px;
+:host.dashboard-navigator {
+    // Overrides for material elements specific to this component
+    .mat-nav-list {
+        padding-top: 0;
 
-        // Overrides for material elements specific to this component
-        .mat-nav-list {
-            padding-top: 0;
+        .mat-list-item {
+            height: 36px;
+            font-weight: 300;
+            font-size: 12px;
 
-            .mat-list-item {
-                height: 36px;
-                font-weight: 300;
-                font-size: 12px;
-
-                .path-icon,
-                .folder-icon,
-                .dashboard-icon {
-                    margin-right: 8px;
-                }
-            }
-
-            &.dashboard-list,
-            &.folder-list,
-            &.favorites-list,
-            &.recents-list {
-                .mat-list-item-content {
-                    padding: 0;
-                    margin-left: 0;
-                }
+            .folder-icon,
+            .dashboard-icon {
+                margin-right: 8px;
             }
         }
 
-        .mat-list .mat-list-item,
-        .mat-nav-list .mat-list-item {
-            &.no-item-message {
-                .mat-list-item-content {
-                    justify-content: center;
-                }
+        &.dashboard-list,
+        &.folder-list,
+        &.favorites-list,
+        &.recents-list {
+            ::ng-deep .mat-list-item-content {
+                padding: 0;
+                margin-left: 0;
             }
+        }
+    }
+
+    .mat-list .mat-list-item,
+    .mat-nav-list .mat-list-item {
+        &.no-item-message {
+            ::ng-deep .mat-list-item-content {
+                justify-content: center;
+            }
+        }
+    }
+
+    // dashboard toolbar at top of panel
+    .panel-toolbar {
+        // we remove padding because in DBFS, the top is just icon buttons that have their own padding
+        .mat-toolbar-row {
+            padding: 0;
+        }
+    }
+
+    .block-header {
+        @include unselectable;
+        display: flex;
+        padding: 0 16px;
+        display: flex;
+        justify-content: stretch;
+        align-items: center;
+        height: 32px;
+
+        .header-label {
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .mat-icon-button {
+            width: 24px;
+            height: 24px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .mat-icon {
+            @include sizeDenaliIcon(18px);
+        }
+    }
+
+    .breadcrumb-path {
+        padding: 5px 4px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .mat-chip {
+            @include unselectable();
+            font-weight: 400;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 14px;
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 2px;
+
+            &:focus {
+                outline: 0;
+            }
+
+            &:first-child {
+                .mat-icon {
+                    margin-right: 4px;
+                }
+            }
+
+            &:last-child {
+                pointer-events: none;
+            }
+
+            &.is-active {
+                font-weight: 500;
+            }
+        }
+
+        .path-seperator {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(18px);
+        }
+    }
+
+    // create dashboard button
+    .create-dashboard {
+        padding: 4px 16px;
+        margin: 8px 0;
+
+        .mat-flat-button {
+            width: 100%;
+            font-size: 14px;
+            line-height: 36px;
+        }
+
+        .mat-icon {
+            margin-right: 6px;
             height: 12px;
             width: 12px;
             font-size: 100%;
         }
+    }
+
+    // pill counters
+    .counter {
+        @include unselectable;
+        padding: 0 6px;
+
+        .chip-count {
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 10px;
+            font-weight: 300;
+        }
+    }
+
+    // FILTER INPUT CONTROL
+    .filter-list-control {
+        padding: 4px;
+
+        .mat-form-field {
+            width: 100%;
+
+            .mat-icon {
+                @include sizeDenaliIcon(12px);
+                margin-left: 6px;
+            }
+        }
+    }
+
+    // COMMON STYLES
+    .dnav-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dnav-item {
+        flex: 1;
+        display: flex;
+        justify-content: stretch;
+        align-items: stretch;
+        height: 36px;
+        padding-left: 12px;
 
         .mat-icon-button {
+            width: 24px;
+            height: 24px;
+            line-height: 1;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(12px);
+        }
+
+        .mat-icon-button,
+        .mat-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
-
-            .mat-button-wrapper {
-                line-height: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .mat-icon {
-                line-height: 1;
-                width: 24px;
-                height: 24px;
-                font-size: 18px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
         }
 
-        // dashboard toolbar at top of panel
-        .panel-toolbar {
-            @include mat-elevation(0);
-            @include unselectable;
+        .dnav-menu {
+            opacity: 0;
+            transition: opacity 200ms ease-in;
 
-            .nav-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                &.icon-nav {
-                    // width: 40px;
-                    flex: 1 1 100%;
-                }
-            }
-
-            .back-to-master {
-                width: 24px;
-                transform: translateX(0);
-                transition: all 200ms ease-in-out;
-            }
-
-            .panel-label {
-                cursor: pointer;
-
-                strong {
-                    font-weight: 400;
-                    font-size: 14px;
-                    text-transform: uppercase;
-                }
-            }
-
-            /* animation of the top - removing
-            &.is-master-panel {
-
-                .back-to-master {
-                    width: 0px;
-                    transform: translateX(-50px);
-                }
-
-                .panel-label {
-                    cursor: default;
-
-                    strong {
-                        text-transform: capitalize;
-                    }
-                }
-            }*/
-
-            .mat-toolbar-row {
-                padding: 0;
-            }
-
-            &.mat-toolbar-multiple-rows,
-            &.mat-toolbar-single-row {
-                min-height: $navbar-height !important;
-                height: $navbar-height;
-            }
-        }
-
-        .block-header {
-            @include unselectable;
-            display: flex;
-            padding: 0 16px;
-            display: flex;
-            justify-content: stretch;
-            align-items: center;
-            height: 32px;
-            // margin-top: 16px;
-
-            .header-label {
-                text-transform: uppercase;
-                font-weight: 400;
-            }
-        }
-
-        // nested path tree at top
-        .path-tree {
-            .path-tree-item {
+            .mat-icon-button {
                 .mat-icon {
-                    margin-right: 8px;
-                }
-
-                &.is-active {
-                    font-weight: 400;
-                }
-            }
-
-            @for $i from 1 to 10 {
-                $check: $i - 1;
-                $val: $check * 20px;
-                .leaf-#{$i} {
-                    padding-left: $val;
+                    justify-content: center;
+                    margin-left: -2px;
                 }
             }
         }
 
-        .breadcrumb-path {
-            padding: 5px 4px;
-            display: flex;
-            flex-wrap: wrap;
+        .dnav-menu-trigger {
+            width: 1px;
 
-            .mat-chip {
-                @include unselectable();
-                font-weight: 400;
-                font-size: 12px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                line-height: 14px;
-                cursor: pointer;
-                padding: 3px;
-                border-radius: 2px;
-
-                &:focus {
-                    outline: 0;
-                }
-
-                &:first-child {
-                    .mat-icon {
-                        margin-right: 4px;
-                    }
-                }
-
-                &:last-child {
-                    pointer-events: none;
-                }
-
-                &.is-active {
-                    font-weight: 500;
-                }
-            }
-
-            .path-seperator {
-                margin-top: 3px;
-                margin-bottom: 3px;
+            &.last-child {
+                margin-right: 15px;
             }
         }
 
-        // create dashboard button
-        .create-dashboard {
-            padding: 4px 16px;
-            margin: 8px 0;
-
-            .mat-flat-button {
-                width: 100%;
-                font-size: 14px;
-                line-height: 36px;
-            }
-
-            .mat-icon {
-                margin-right: 6px;
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
-
+        &:hover {
+            .dnav-menu {
+                opacity: 1;
             }
         }
 
-        // pill counters
-        .counter {
-            @include unselectable;
-            padding: 0 6px;
+        &.dnav-menu-opened {
+            position: relative;
 
-            .chip-count {
-                border-radius: 4px;
-                padding: 2px 4px;
-                font-size: 10px;
-                font-weight: 300;
-            }
-        }
-
-        // FILTER INPUT CONTROL
-        .filter-list-control {
-            padding: 4px;
-
-            .mat-form-field {
-                width: 100%;
-
-                .mat-icon {
-                    @include sizeDenaliIcon(12px);
-                    margin-left: 6px;
-                }
-            }
-        }
-
-
-        // FOLDERS
-        .dnav-folders {
-            display: flex;
-            flex-direction: column;
-
-            .block-header.folders-header {
-                align-items: stretch;
-                justify-content: stretch;
-
-                .block-header-label,
-                .edit-actions,
-                .create-actions,
-                .display-actions {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .edit-actions,
-                .create-actions {
-                    display: none;
-                }
-
-                .edit-actions,
-                .create-actions,
-                .display-actions {
-                    .mat-button {
-                        min-width: initial;
-                        line-height: 30px;
-                        padding: 0 8px;
-                    }
-                }
-
-                .edit-actions {
-                    .remove-folders-button {
-                        margin-left: -8px;
-                    }
-                }
-
-                &.has-create-actions {
-                    .display-actions,
-                    .edit-actions {
-                        display: none;
-                    }
-
-                    .create-actions {
-                        display: flex;
-                    }
-                }
-
-                &.has-edit-actions {
-                    .block-header-label,
-                    .display-actions,
-                    .create-actions {
-                        display: none;
-                    }
-
-                    .edit-actions {
-                        display: flex;
-                    }
-                }
-
+            .dnav-menu {
+                opacity: 0;
+                pointer-events: none;
             }
 
-            &:first-of-type {
-
-                .block-header.folders-header {
-                    margin-top: 0;
-                }
-            }
-        }
-
-        .dynamic-scroller {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-
-            .folder-list,
-            .favorites-list,
-            .recents-list {
-                flex: 1;
-
+            &::after {
+                content: '';
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 9px 9px 9px 0;
+                position: absolute;
+                top: 9px;
+                right: 0;
                 .cdk-virtual-scroll-viewport {
                     min-height: 100%;
                     overflow: overlay;
                 }
             }
         }
+    }
 
-        // FOLDER ITEM
-        .dnav-folder-item {
-            flex: 1;
+    // FOLDERS
+    .block-header.folders-header {
+        align-items: stretch;
+        justify-content: stretch;
+
+        .block-header-label,
+        .edit-actions,
+        .create-actions,
+        .display-actions {
             display: flex;
-            justify-content: stretch;
-            align-items: stretch;
-            height: 36px;
-            font-weight: 300;
-            font-size: 12px;
-            padding-left: 12px;
+            align-items: center;
+        }
 
-            &.is-editing {
-                //margin-left: 12px;
-                margin-right: 12px;
-            }
+        .edit-actions,
+        .create-actions {
+            display: none;
+        }
 
-            .mat-icon {
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
-            }
-
-            .folder-icon {
-                margin-right: 8px;
-            }
-
-            .list-item {
-                display: flex;
-                align-items: center;
-
-                &.edit-form {
-                    &,
-                    .mat-form-field {
-                        flex: 1;
-                    }
-                    .mat-form-field-prefix {
-                        margin-left: 6px;
-                    }
-                }
-
-                &.goto-next-folder {
-                    margin-right: 8px;
-                }
-            }
-
-            .mat-checkbox {
-                margin-right: 8px;
-            }
-
-            .folder-name {
-                span {
-                    max-width: 198px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-            }
-
-            .dnav-folder-menu {
-                opacity: 0;
-                transition: opacity 200ms ease-in;
-
-                .mat-icon-button {
-                    .mat-icon {
-                        justify-content: center;
-                        margin-left: -2px;
-                    }
-                }
-            }
-
-            .dnav-menu-trigger {
-                width: 1px;
-
-                &.last-child {
-                    margin-right: 15px;
-                }
-            }
-
-            &:hover {
-                .dnav-folder-menu {
-                    opacity: 1;
-                }
-            }
-
-            &.dnav-menu-opened {
-                position: relative;
-
-                .dnav-folder-menu {
-                    opacity: 0;
-                    pointer-events: none;
-                }
-
-                &::after {
-                    content: '';
-                    width: 0;
-                    height: 0;
-                    border-style: solid;
-                    border-width: 9px 9px 9px 0;
-                    position: absolute;
-                    top: 9px;
-                    right: 0;
-                }
+        .edit-actions,
+        .create-actions,
+        .display-actions {
+            .mat-button {
+                min-width: initial;
+                line-height: 30px;
+                padding: 0 8px;
             }
         }
 
-        // DASHBOARD LIST
-        .dnav-dashboards {
-            display: flex;
-            flex-direction: column;
-        }
-
-        // DASHBOARD ITEM
-        .dnav-dashboard-item {
-            flex: 1;
-            display: flex;
-            justify-content: stretch;
-            align-items: stretch;
-            height: 36px;
-            padding-left: 12px;
-
-            .mat-icon {
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
-            }
-
-            .dnav-dashboard-link,
-            .dnav-dashboard-menu {
-                display: flex;
-                align-items: center;
-            }
-
-            .dnav-dashboard-link {
-                overflow: hidden;
-            }
-
-            .dnav-dashboard-icon {
-                margin-right: 8px;
-            }
-
-            .dnav-dashboard-menu {
-                opacity: 0;
-                transition: opacity 200ms ease-in;
-
-                .mat-icon-button {
-                    .mat-icon {
-                        justify-content: center;
-                        margin-left: -2px;
-                    }
-                }
-            }
-
-            .dnav-menu-trigger {
-                width: 1px;
-
-                &.last-child {
-                    margin-right: 15px;
-                }
-            }
-
-            &:hover {
-                .dnav-dashboard-menu {
-                    opacity: 1;
-                }
-            }
-
-            &.dnav-menu-opened {
-                position: relative;
-
-                .dnav-dashboard-menu {
-                    opacity: 0;
-                    pointer-events: none;
-                }
-
-                &::after {
-                    content: '';
-                    width: 0;
-                    height: 0;
-                    border-style: solid;
-                    border-width: 9px 9px 9px 0;
-                    position: absolute;
-                    top: 9px;
-                    right: 0;
-                }
+        .edit-actions {
+            .remove-folders-button {
+                margin-left: -8px;
             }
         }
 
-        // FAVORITE/RECENT ITEM
-        .mat-nav-list.favorites-list,
-        .mat-nav-list.recents-list {
-            .mat-list-item {
-                height: 48px;
+        &.has-create-actions {
+            .display-actions,
+            .edit-actions {
+                display: none;
+            }
+
+            .create-actions {
+                display: flex;
             }
         }
 
-        .dnav-favorite-item,
-        .dnav-recent-item {
-            flex: 1;
-            display: flex;
-            justify-content: stretch;
-            align-items: stretch;
-            height: 48px;
-            padding-left: 12px;
-            padding-right: 8px;
-
-            .mat-icon {
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
+        &.has-edit-actions {
+            .block-header-label,
+            .display-actions,
+            .create-actions {
+                display: none;
             }
 
-            .dnav-favorite-detail,
-            .dnav-recent-detail {
+            .edit-actions {
                 display: flex;
-                flex: 1;
-                justify-content: stretch;
-                align-items: stretch;
-                flex-direction: column;
-
-                .root-path,
-                .favorite-date,
-                .recent-date {
-                    font-size: 8px;
-                    line-height: 10px;
-                }
-            }
-
-            .dnav-favorite-link,
-            .dnav-recent-link,
-            .dnav-favorite-menu {
-                display: flex;
-                align-items: center;
-            }
-
-            .dnav-favorite-link,
-            .dnav-recent-link {
-                overflow: hidden;
-            }
-
-            .dnav-dashboard-icon {
-                margin-right: 8px;
-            }
-
-            // only favorites will have a menu
-            .dnav-favorite-menu {
-                opacity: 0;
-                transition: opacity 200ms ease-in;
-
-                .mat-icon-button {
-                    .mat-icon {
-                        justify-content: center;
-                        margin-left: -2px;
-                    }
-                }
-            }
-
-            .dnav-menu-trigger {
-                width: 1px;
-
-                &.last-child {
-                    margin-right: 15px;
-                }
-            }
-
-            &:hover {
-                .dnav-favorite-menu {
-                    opacity: 1;
-                }
-            }
-
-            &.dnav-menu-opened {
-                position: relative;
-
-                .dnav-favorite-menu {
-                    opacity: 0;
-                    pointer-events: none;
-                }
-
-                &::after {
-                    content: '';
-                    width: 0;
-                    height: 0;
-                    border-style: solid;
-                    border-width: 9px 9px 9px 0;
-                    position: absolute;
-                    top: 9px;
-                    right: 0;
-                }
-            }
-        }
-
-        // navigator-panel-inner
-        .navigator-panel-inner {
-            min-height: 100%;
-
-            .navigator-panel-item {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .dnav-folders.dynamic-scroller {
-                flex: 1;
-                display: flex;
-
-                .folder-list {
-                    flex: 1;
-
-                    .cdk-virtual-scroll-viewport {
-                        min-height: 100%;
-                    }
-                }
             }
         }
     }
 
-    // CDK Items
-    .dnav-cdk-mini-navigator.mat-menu-panel,
-    .dnav-cdk-folder-menu.mat-menu-panel,
-    .dnav-cdk-dashboard-menu.mat-menu-panel,
-    .dnav-cdk-favorite-menu.mat-menu-panel  {
-        margin-top: -36px;
-        margin-left: 16px;
-        border-top-left-radius: 0;
-    }
-
-    .dnav-cdk-favorite-menu.mat-menu-panel  {
-        margin-top: -48px;
-        margin-left: 10px;
-        border-top-left-radius: 0;
-    }
-
-    .dnav-cdk-folder-menu,
-    .dnav-cdk-dashboard-menu,
-    .dnav-cdk-favorite-menu  {
-
-        .mat-menu-content:not(:empty) {
-            padding: 8px;
-        }
-
-        .mat-menu-item {
-            font-size: 12px;
-            font-weight: 300;
-            height: 24px;
-            line-height: 24px;
-
-            .mat-icon {
-                height: 12px;
-                width: 12px;
-                font-size: 100%;
-            }
-        }
-    }
-
-    .dnav-cdk-dashboard-menu,
-    .dnav-cdk-favorite-menu {
-        border-top-left-radius: 0;
-     }
-
-}
-
-@mixin dbfs-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
-    $status: map-get($theme-config, status);
-
-    /* navbar config */
-    $sn-light: map-get($navbar-config, sn-light);
-    $sn-dark: map-get($navbar-config, sn-dark);
-    $sn-light-text: map-get($navbar-config, sn-light-text);
-    $sn-dark-text: map-get($navbar-config, sn-dark-text);
-    $sn-seperator: map-get($navbar-config, sn-seperator);
-    $sn-active: map-get($navbar-config, sn-active);
-
-    $text-color: map-get($background, navbar);
-    $navbar-text-color: map-get($foreground, navbar-text);
-
-    $divider: map-get($foreground, divider);
-
-    $navbar-background: map-get($background, navbar);
-    $navbar-text: find-color-invert($navbar-background);
-
-    $menu-background: map-get($background, card);
-    $menu-background-hover: find-color-invert($menu-background);
-
-    $link: map-get($foreground, link);
-    $link-inverse: find-color-invert($link);
-
-    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
-    $icon-color: $item-text;
-
-    .dashboard-navigator {
-
-        .panel-toolbar {
-            // background: rgba($text-color, .5);
-            border-bottom: 1px solid rgba($divider,.07);
-            color: if($is-dark-theme, $navbar-text, $text-color);
-
-            .nav-item.icon-nav {
-                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
-            }
-
-            .nav-item.icon-nav:not(:last-child) {
-                border-right: 1px solid rgba($divider,.07);
-            }
-
-            .nav-item:hover {
-                background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
-                cursor: pointer;
-            }
-
-            .nav-item.icon-nav.is-active {
-                background: transparent;
-                color: if($is-dark-theme, $navbar-text, $text-color);
-            }
-
-            &.is-master-panel {
-                .header-label {
-                    color: rgba($text-color,.85);
-                }
-            }
-        }
-
-        .navigator-panel-item,
-        .mat-list .mat-list-item,
-        .mat-nav-list .mat-list-item {
-            color: $item-text;
-        }
-
-        .mat-list .mat-list-item,
-        .mat-nav-list .mat-list-item {
-            //color: rgba($text-color,.65);
-            color: $item-text;
-
-            .path-icon,
-            .folder-icon,
-            .dashboard-icon {
-                margin-right: 8px;
-                //color: rgba($text-color,.5);
-                color: $icon-color;
-            }
-
-            &.is-active {
-                color: rgba($item-text,.85);
-            }
-        }
-
-        .mat-nav-list:not(.path-tree) .mat-list-item:not(:last-child),
-        .path-tree,
-        .breadcrumb-path {
-            border-bottom: 1px solid rgba($divider,.07);
-        }
-
-        .breadcrumb-path {
-
-            .mat-chip {
-                &:hover {
-                    background: $link;
-                    color: $link-inverse;
-                }
-            }
-        }
-
-        .counter {
-            .chip-count {
-                color: white;
-                background-color: rgba($item-text, .4);
-            }
-        }
-
-        .block-header {
-            background-color: rgba($item-text, .1);
-
-            .counter {
-                .chip-count {
-                    background-color: rgba($item-text,.3);
-                }
-            }
-        }
-
-        .create-dashboard {
-            .mat-flat-button {
-                background-color: $navbar-background;
-                color: find-color-invert($navbar-background);
-            }
-        }
-
-        .filter-list-control {
-            border-bottom: 1px solid rgba($divider,.07);
-        }
-
-        // FOLDERS
-        .dnav-folders {
-
+    .dnav-folders {
+        &:first-of-type {
             .block-header.folders-header {
-                .edit-actions,
-                .create-actions,
-                .display-actions {
-                    .mat-button:hover {
-                        background-color: rgba(255,255,255,0.08);
-                    }
-                }
-            }
-            .remove-folders-button.mat-button[disabled] {
-                color: inherit;
-                opacity: .5;
-            }
-            .remove-folders-button.is-active {
-                color: map-get($status, error);
-            }
-        }
-
-        // FOLDER ITEM
-        .dnav-folder-item {
-            .save-folder-name {
-                color: map-get($status, success);
-            }
-
-            .mat-checkbox {
-
-                .mat-checkbox-frame {
-                    border-color: if($is-dark-theme, rgba($item-text,.54) ,rgba($navbar-background,.54));
-                }
-
-                &.mat-checkbox-checked {
-                    .mat-checkbox-frame {
-                        border-color: map-get($status, error);
-                    }
-
-                    .mat-checkbox-background {
-                        background-color: map-get($status, error);
-                    }
-                }
-            }
-
-            .list-item.edit-form {
-                .mat-form-field {
-                    .mat-input-element::placeholder {
-                        color: if($is-dark-theme, rgba($navbar-text, .25), rgba($navbar-background, .25));
-                    }
-                }
-            }
-
-            .dnav-folder-menu {
-                .mat-icon-button {
-                    background: rgba(0, 0, 0, .1);
-                }
-            }
-
-            &.dnav-menu-opened {
-                background: if($is-dark-theme, rgba($navbar-background, .20), rgba($navbar-background, .05));
-                box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
-
-                &::after {
-                    border-color: transparent if($is-dark-theme, rgba($navbar-background, .80), rgba($navbar-background, .15)) transparent transparent;
-                }
-            }
-        }
-
-        // DASHBOARD ITEM
-        .dnav-dashboard-item {
-            .dnav-dashboard-menu {
-                .mat-icon-button {
-                    background: rgba(0, 0, 0, .1);
-                }
-            }
-
-            &.dnav-menu-opened {
-                background: if($is-dark-theme, rgba($navbar-background, .20), rgba($navbar-background, .05));
-                box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
-
-                &::after {
-                    border-color: transparent rgba($navbar-background, .15) transparent transparent;
-                }
-            }
-
-            &.matched-dashboard {
-                background: rgba(map-get($primary, default), .15);
-                box-shadow: inset 3px 0 0 rgb(34,122,236);
-            }
-        }
-
-        // favorite/recent
-        .dnav-favorite-item,
-        .dnav-recent-item {
-            .dnav-favorite-menu {
-                .mat-icon-button {
-                    background: rgba(0, 0, 0, .1);
-                }
-            }
-
-            &.dnav-menu-opened {
-                background: rgba($navbar-background, .05);
-                box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
-
-                &::after {
-                    border-color: transparent if($is-dark-theme, rgba($navbar-background, .80), rgba($navbar-background, .15)) transparent transparent;
-                }
-            }
-
-            &.matched-dashboard {
-                background: rgba(map-get($primary, default), .15);
-                box-shadow: inset 3px 0 0 rgb(34,122,236);
+                margin-top: 0;
             }
         }
     }
 
-    // CDK
-    //$menu-background: if($is-dark-theme, lighten(map-get($primary, default), 5%), lighten(map-get($background, navbar), 5%) );
-
-    .dnav-cdk-folder-menu,
-    .dnav-cdk-dashboard-menu,
-    .dnav-cdk-favorite-menu {
-        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-        border: 1px solid rgba($navbar-background, .15);
-
-       $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
-        .mat-menu-item {
-            color: rgba($menu-item-text,.85);
-
-
-            .mat-icon {
-                color: rgba($menu-item-text, .5);
-            }
-
-            &:hover {
-                background-color: if($is-dark-theme, rgba($menu-background-hover, .12), rgba($menu-background-hover, .08));
-            }
-        }
-    }
-
-
-}
-
-/*
-:host {
-    min-height: 100%;
-
-    .dnav-folders.dynamic-scroller {
+    .dynamic-scroller {
         flex: 1;
         display: flex;
+        flex-direction: column;
 
-        .folder-list {
+        .folder-list,
+        .favorites-list,
+        .recents-list {
             flex: 1;
 
-            .cdk-virtual-scroll-viewport {
+            ::ng-deep .cdk-virtual-scroll-viewport {
                 min-height: 100%;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                ::ng-deep .cdk-virtual-scroll-viewport {
+                    overflow: auto;
+                }
             }
         }
     }
-}
 
-:host-context(.dashboard-navigator) {
+    // FOLDER ITEM
+    .dnav-folder-item.dnav-item {
+        font-weight: 300;
+        font-size: 12px;
 
+        &.is-editing {
+            margin-right: 12px;
+        }
+
+        .folder-icon {
+            margin-right: 8px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+
+            &.edit-form {
+                &,
+                .mat-form-field {
+                    flex: 1;
+                }
+
+                .mat-form-field-prefix {
+                    margin-left: 6px;
+                }
+            }
+
+            &.goto-next-folder {
+                margin-right: 8px;
+            }
+        }
+
+        .mat-checkbox {
+            margin-right: 8px;
+        }
+
+        .folder-name {
+            span {
+                max-width: 198px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    // DASHBOARD LIST
+    .dnav-dashboards {
+        display: flex;
+        flex-direction: column;
+    }
+
+    // DASHBOARD ITEM
+    .dnav-dashboard-item.dnav-item {
+        .dnav-dashboard-link,
+        .dnav-dashboard-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .dnav-dashboard-link {
+            overflow: hidden;
+        }
+
+        .dnav-dashboard-icon {
+            margin-right: 8px;
+        }
+    }
+
+    // FAVORITE/RECENT ITEM
+    .mat-nav-list.favorites-list,
+    .mat-nav-list.recents-list {
+        .mat-list-item {
+            height: 48px;
+        }
+    }
+
+    .dnav-favorite-item.dnav-item,
+    .dnav-recent-item.dnav-item {
+        height: 48px;
+        padding-left: 12px;
+        padding-right: 8px;
+
+        .dnav-favorite-detail,
+        .dnav-recent-detail {
+            display: flex;
+            flex: 1;
+            justify-content: stretch;
+            align-items: stretch;
+            flex-direction: column;
+
+            .root-path,
+            .favorite-date,
+            .recent-date {
+                font-size: 8px;
+                line-height: 10px;
+            }
+        }
+
+        .dnav-favorite-link,
+        .dnav-recent-link,
+        .dnav-favorite-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .dnav-favorite-link,
+        .dnav-recent-link {
+            overflow: hidden;
+        }
+
+        .dnav-dashboard-icon {
+            margin-right: 8px;
+        }
+    }
+
+    // navigator-panel-inner
     .navigator-panel-inner {
         min-height: 100%;
 
@@ -1050,24 +495,295 @@
     }
 }
 
-.navigator-panel-inner {
-    min-height: 100%;
+// CDK Items
+@at-root ::ng-deep {
 
-    .navigator-panel-item {
-        display: flex;
-        flex-direction: column;
+    .dnav-cdk-mini-navigator.mat-menu-panel,
+    .dnav-cdk-folder-menu.mat-menu-panel,
+    .dnav-cdk-dashboard-menu.mat-menu-panel,
+    .dnav-cdk-favorite-menu.mat-menu-panel  {
+        margin-top: -36px;
+        margin-left: 16px;
+        border-top-left-radius: 0;
     }
 
-    .dnav-folders.dynamic-scroller {
-        flex: 1;
-        display: flex;
+    .dnav-cdk-favorite-menu.mat-menu-panel  {
+        margin-top: -48px;
+        margin-left: 10px;
+        border-top-left-radius: 0;
+    }
 
-        .folder-list {
-            flex: 1;
+    .dnav-cdk-folder-menu,
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu  {
+        .mat-menu-content:not(:empty) {
+            padding: 8px;
+        }
 
-            .cdk-virtual-scroll-viewport {
-                min-height: 100%;
+        .mat-menu-item {
+            font-size: 12px;
+            font-weight: 300;
+            height: 24px;
+            line-height: 24px;
+
+            .mat-icon {
+                height: 12px;
+                width: 12px;
+                font-size: 100%;
             }
         }
     }
-}*/
+
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu {
+        border-top-left-radius: 0;
+    }
+
+}
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+    $status-success: map-get($status, success);
+    $status-error: map-get($status, error);
+
+    $sn-light: map-get($navbar-config, sn-light);
+    $sn-dark: map-get($navbar-config, sn-dark);
+    $sn-light-text: map-get($navbar-config, sn-light-text);
+    $sn-dark-text: map-get($navbar-config, sn-dark-text);
+    $sn-seperator: map-get($navbar-config, sn-seperator);
+    $sn-active: map-get($navbar-config, sn-active);
+
+    $text-color: map-get($background, navbar);
+    $navbar-text-color: map-get($foreground, navbar-text);
+
+    $divider: map-get($foreground, divider);
+
+    $navbar-background: map-get($background, navbar);
+    $navbar-text: find-color-invert($navbar-background);
+
+    $menu-background: map-get($background, card);
+    $menu-background-hover: find-color-invert($menu-background);
+    $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
+
+    $link: map-get($foreground, link);
+    $link-inverse: find-color-invert($link);
+
+    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
+    $icon-color: $item-text;
+
+    /* [[  THEME  ]] (#{$theme-name}) - DBFS component  */
+    @at-root [theme='#{$theme-name}'] {
+
+        :host.dashboard-navigator {
+            .panel-toolbar {
+                border-bottom: 1px solid rgba($divider,.07);
+                color: if($is-dark-theme, $navbar-text, $text-color);
+
+                .nav-item.icon-nav {
+                    background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+                }
+
+                .nav-item.icon-nav:not(:last-child) {
+                    border-right: 1px solid rgba($divider,.07);
+                }
+
+                .nav-item:hover {
+                    background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
+                    cursor: pointer;
+                }
+
+                .nav-item.icon-nav.is-active {
+                    background: transparent;
+                    color: if($is-dark-theme, $navbar-text, $text-color);
+                }
+
+                &.is-master-panel {
+                    .header-label {
+                        color: rgba($text-color,.85);
+                    }
+                }
+            }
+
+            .navigator-panel-item,
+            .mat-list .mat-list-item,
+            .mat-nav-list .mat-list-item {
+                color: $item-text;
+            }
+
+            .mat-list .mat-list-item,
+            .mat-nav-list .mat-list-item {
+
+                .folder-icon,
+                .dashboard-icon {
+                    margin-right: 8px;
+                    color: $icon-color;
+                }
+
+                &.is-active {
+                    color: rgba($item-text,.85);
+                }
+            }
+
+            .breadcrumb-path {
+                border-bottom: 1px solid rgba($divider,.07);
+
+                .mat-chip:hover {
+                    background: $link;
+                    color: $link-inverse;
+                }
+            }
+
+            .counter {
+                .chip-count {
+                    color: $white;
+                    background-color: rgba($item-text, .4);
+                }
+            }
+
+            .block-header {
+                background-color: rgba($item-text, .1);
+
+                .counter {
+                    .chip-count {
+                        background-color: rgba($item-text,.3);
+                    }
+                }
+            }
+
+            .create-dashboard {
+                .mat-flat-button {
+                    background-color: $navbar-background;
+                    color: find-color-invert($navbar-background);
+                }
+            }
+
+            .filter-list-control {
+                border-bottom: 1px solid rgba($divider,.07);
+            }
+
+            // COMMON STYLES
+            .dnav-item {
+                .dnav-menu {
+                    .mat-icon-button {
+                        background: rgba($black, .1);
+                    }
+                }
+
+                &.dnav-menu-opened {
+                    background: if($is-dark-theme, rgba($navbar-background, .20), rgba($navbar-background, .05));
+                    box-shadow: inset 0 1px 0 0 rgba($navbar-background, .15), inset 0 -1px 0 0 rgba($navbar-background, .15);
+
+                    &::after {
+                        border-color: transparent if($is-dark-theme, rgba($navbar-background, .80), rgba($navbar-background, .15)) transparent transparent;
+                    }
+                }
+            }
+
+
+             // FOLDERS
+             .dnav-folders {
+                .remove-folders-button.mat-button[disabled] {
+                    color: inherit;
+                    opacity: .5;
+                }
+
+                .remove-folders-button.is-active {
+                    color: $status-error;
+                }
+            }
+
+            .block-header.folders-header {
+                .edit-actions,
+                .create-actions,
+                .display-actions {
+                    .mat-button:hover {
+                        background-color: rgba($white, 0.08);
+                    }
+                }
+            }
+
+            // FOLDER ITEM
+            .dnav-folder-item {
+                .save-folder-name {
+                    color: $status-success;
+                }
+
+                .mat-checkbox ::ng-deep {
+                    .mat-checkbox-frame {
+                        border-color: if($is-dark-theme, rgba($item-text,.54) ,rgba($navbar-background,.54));
+                    }
+
+                    &.mat-checkbox-checked {
+                        .mat-checkbox-frame {
+                            border-color: $status-error;
+                        }
+
+                        .mat-checkbox-background {
+                            background-color: $status-error;
+                        }
+                    }
+                }
+
+                .list-item.edit-form {
+                    .mat-form-field ::ng-deep {
+                        .mat-input-element::placeholder {
+                            color: if($is-dark-theme, rgba($navbar-text, .25), rgba($navbar-background, .25));
+                        }
+                    }
+                }
+
+            }
+
+            // DASHBOARD ITEM
+            .dnav-dashboard-item {
+                &.matched-dashboard {
+                    background: rgba(map-get($primary, default), .15);
+                    box-shadow: inset 3px 0 0 rgb(34,122,236);
+                }
+            }
+
+            // favorite/recent
+            .dnav-favorite-item,
+            .dnav-recent-item {
+                &.matched-dashboard {
+                    background: rgba(map-get($primary, default), .15);
+                    box-shadow: inset 3px 0 0 rgb(34,122,236);
+                }
+            }
+        }
+
+        // cdk items
+        ::ng-deep {
+            .dnav-cdk-folder-menu,
+            .dnav-cdk-dashboard-menu,
+            .dnav-cdk-favorite-menu {
+                background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+                border: 1px solid rgba($navbar-background, .15);
+
+                .mat-menu-item {
+                    color: rgba($menu-item-text,.85);
+
+                    .mat-icon {
+                        color: rgba($menu-item-text, .5);
+                    }
+
+                    &:hover {
+                        background-color: if($is-dark-theme, rgba($menu-background-hover, .12), rgba($menu-background-hover, .08));
+                    }
+                }
+            }
+        }
+    }
+
+
+}

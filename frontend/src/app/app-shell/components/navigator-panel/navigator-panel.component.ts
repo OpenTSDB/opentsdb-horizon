@@ -22,9 +22,7 @@ import {
     ElementRef,
     HostBinding,
     Input,
-    OnInit,
     QueryList,
-    TemplateRef,
     ViewChild,
     ViewChildren
 } from '@angular/core';
@@ -80,7 +78,7 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     goNext(isDone?: any) {
-         if (this.currentSlide + 1 === this.items.length) { return; }
+        if (this.currentSlide + 1 === this.items.length) { return; }
 
         this.currentSlide = (this.currentSlide + 1) % this.items.length;
 

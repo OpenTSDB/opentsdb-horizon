@@ -17,56 +17,56 @@
 /**
  * LANDING PAGE CONTAINER COMPONENT
  */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
 
-@mixin landing-page-container-component-base() {
-    .landing-page-main {
+@import 'loader-base';
+
+:host.landing-page-main {
+    display: flex;
+    flex: 1 1 100%;
+
+    router-outlet + * {
         display: flex;
         flex: 1 1 100%;
-        
-        router-outlet + * {
-            display: flex;
-            flex: 1 1 100%;
+    }
+
+    .main-content{
+        padding: 8px 16px;
+    }
+
+    .sidebar {
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+
+        .mat-tab-group {
+            flex: 1;
         }
 
-        .main-content{
-        // .sidebar {
-            padding: 8px 16px;
-        }
-
-        .sidebar {
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-
-            .mat-tab-group {
-                flex: 1;
-            }
-
-            .mat-tab-label {
-                .mat-tab-label-content {
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        margin-right: 8px;
-                        font-size: 100%;
-                    }
+        .mat-tab-label {
+            .mat-tab-label-content {
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    margin-right: 8px;
+                    font-size: 100%;
                 }
             }
+        }
 
-            .mat-tab-body-wrapper {
-                flex: 1;
-                width: 320px;
-            }
+        .mat-tab-body-wrapper {
+            flex: 1;
+            width: 320px;
+        }
 
-            .mat-tab-body-content {
-                padding: 8px 16px;
-            }
+        .mat-tab-body-content {
+            padding: 8px 16px;
         }
     }
 }
 
-@mixin landing-page-container-component-theme($theme-config) {
+
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
 
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
@@ -77,10 +77,12 @@
     $background: map-get($theme-config, background);
     $is-dark-theme: map-get($theme-config, is-dark);
 
-    
-    .landing-page-main {
-        .sidebar {
-            background-color: map-get($background, card);
+    /* [[  THEME  ]] (#{$theme-name}) - landing page container component  */
+    @at-root [theme='#{$theme-name}'] {
+        :host.landing-page-main {
+            .sidebar {
+                background-color: map-get($background, card);
+            }
         }
     }
 }

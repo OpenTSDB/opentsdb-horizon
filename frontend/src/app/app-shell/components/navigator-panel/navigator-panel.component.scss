@@ -14,45 +14,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin navigator-panel-component-base() {
-    .navigator-panel {
+
+@import 'loader-base';
+
+:host.navigator-panel {
+    display: flex;
+    flex: 1;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 6000px;
+
+        li {
+            width: 300px;
+        }
+    }
+
+    .navigator-panel-wrapper {
+        overflow: hidden;
+    }
+
+    .navigator-panel-inner,
+    .navigator-panel-item {
         display: flex;
-        flex: 1;
-        
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            width: 6000px;
-            
-            li {
-                width: 300px;
-            }
-        }
+        min-height: 100%;
+    }
 
-        .navigator-panel-wrapper {
-            overflow: hidden;
-        }
-
-        .navigator-panel-inner {
-            display: flex;
-            min-height: 100%;
-        }
-
-        .navigator-panel-item {
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+    .navigator-panel-item {
+        flex-direction: column;
     }
 }
 
-@mixin navigator-panel-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
-}
+//* THEMING **/
+//@each $theme-name, $theme-config in $app-available-themes {
+
+    //* Theme config parts */
+    //$primary: map-get($theme-config, primary);
+    //$accent: map-get($theme-config, accent);
+    //$warn: map-get($theme-config, warn);
+    //$foreground: map-get($theme-config, foreground);
+    //$background: map-get($theme-config, background);
+    //$is-dark: map-get($theme-config, is-dark);
+
+    //* [[  THEME  ]] (#{$theme-name}) - navigator-panel component  */
+    //@at-root [theme='#{$theme-name}'] {
+    //    :host.navigator-panel {
+    //    }
+    //}
+//}

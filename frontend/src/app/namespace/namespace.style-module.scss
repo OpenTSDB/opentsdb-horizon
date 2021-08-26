@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 /**
  * This file is part of OpenTSDB.
  * Copyright (C) 2021  Yahoo.
@@ -46,7 +48,7 @@
     // example: @include componentName-component-core();
 
     // containers
-    @include app-namespace-component-base();
+    //@include app-namespace-component-base();
 
     // components
 
@@ -58,7 +60,7 @@
     // example: @include componentName-component-theme($theme-config);
 
     // container
-    @include app-namespace-component-theme($theme-config);
+    //@include app-namespace-component-theme($theme-config);
 
     // components
 

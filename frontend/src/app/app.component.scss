@@ -14,25 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* APP COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
-// core (aka structure)
-@mixin app-root-base() {
+//** APP COMPONENT*/
+ @import 'loader-base';
 
-    .app-root {
-        display: flex;
-        flex: 1 1 100%;
-        flex-direction: column;
-        overflow: hidden;
-    }
+ :host.app-root {
+     display: flex;
+     flex: 1 1 100%;
+     flex-direction: column;
+     overflow: hidden;
 
-    .message {
+     .message {
         font-weight: 500;
         font-size: 2em;
         height: 30px;
         text-align:center;
         padding-top: 20%;
     }
+
     .error-list {
         display: flex;
         flex-direction: column;
@@ -43,21 +41,27 @@
             font-size: 1.25em;
         }
     }
-}
+ }
 
-@mixin app-root-theme($theme-config) {
+ //** THEMING **/
+ @each $theme-name, $theme-config in $app-available-themes {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+     //* Theme config parts
+     $primary: map-get($theme-config, primary);
+     $accent: map-get($theme-config, accent);
+     $warn: map-get($theme-config, warn);
+     $foreground: map-get($theme-config, foreground);
+     $background: map-get($theme-config, background);
+     $is-dark: map-get($theme-config, is-dark);
 
-    // App background on body
-    &.mat-app-background {
-        background-color: map-get($background, background);
-    }
+     $divider: map-get($foreground, divider);
 
-}
+     /* [[  THEME  ]] (#{$theme-name}) - app root component */
+     @at-root [theme='#{$theme-name}'] {
+         :host.app-root {
+            // styles here
+         }
+     }
+ }
+
+

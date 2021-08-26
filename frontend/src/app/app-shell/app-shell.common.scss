@@ -1,3 +1,4 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
 /**
  * This file is part of OpenTSDB.
  * Copyright (C) 2021  Yahoo.
@@ -17,66 +18,6 @@
 // common styles shared across app-shell
 
 @mixin app-shell-common-base() {
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
-
-    .panel-toolbar {
-        @include mat-elevation(0);
-        @include unselectable;
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-        }
-
-        .back-to-master {
-            width: 24px;
-            transform: translateX(0);
-            transition: all 200ms ease-in-out;
-        }
-
-        .panel-label {
-            cursor: pointer;
-
-            strong {
-                font-weight: 400;
-                font-size: 14px;
-                text-transform: uppercase;
-            }
-        }
-
-        &.is-master-panel {
-
-            .back-to-master {
-                width: 0px;
-                transform: translateX(-50px);
-            }
-
-            .panel-label {
-                cursor: default;
-
-                strong {
-                    text-transform: capitalize;
-                }
-            }
-        }
-
-        &.mat-toolbar-multiple-rows,
-        &.mat-toolbar-single-row {
-            min-height: $navbar-height !important;
-            height: $navbar-height;
-        }
-    }
-
-    .test-navigator {
-        .navigator-panel {
-            .navigator-panel-wrapper {
-                .navigator-panel-item {
-                    padding: 16px;
-                }
-            }
-        }
-    }
 }
 
 @mixin app-shell-common-theme($theme-config) {
@@ -93,15 +34,5 @@
 
     $panel-toolbar-text-color: if($is-dark, map-get($foreground, navbar-text), map-get($background, navbar));
 
-    .panel-toolbar {
-        background: transparent;
-        border-bottom: 1px solid map-get($foreground, divider);
-        color: $panel-toolbar-text-color;
 
-        &.is-master-panel {
-            .header-label {
-                color: rgba(map-get($background, navbar),.85);
-            }
-        }
-    }
 }

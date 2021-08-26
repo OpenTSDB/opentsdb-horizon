@@ -14,57 +14,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin clipboard-drawer-component-base() {
+@import "loader-base";
 
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
+$navbar-height: map-get($navbar-config, "navbar-height");
+$logo-height: map-get($navbar-config, "logo-height");
 
-    .clipboard-drawer {
-        @include mat-elevation(3);
-        overflow: hidden;
-        position: relative;
-        z-index: 10;
-        max-width: 300px;
-        width: 100%;
+:host.clipboard-drawer {
+    @include mat-elevation(3);
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    max-width: 300px;
+    width: 100%;
 
-        .selection-checkbox {
-            margin-right: 8px;
+    .selection-checkbox {
+        margin-right: 8px;
+    }
+
+    .clipboard-drawer-wrap {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+
+        .gif-spinner {
+            margin-right: 6px;
         }
+    }
 
-        .clipboard-drawer-wrap {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            width: 300px;
+    .progress-indicator {
+        padding: 8px 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
 
-            .gif-spinner {
-                margin-right: 6px;
-            }
-        }
+    .clipboard-header.mat-toolbar {
+        @include mat-elevation(0);
+        @include unselectable;
+        background: transparent;
 
-        .progress-indicator {
-            padding: 8px 4px;
+        .nav-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
         }
 
-        .clipboard-header.mat-toolbar {
-            @include mat-elevation(0);
-            @include unselectable;
-            background: transparent;
-
-            .nav-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
+        ::ng-deep {
             .mat-toolbar-row {
                 padding: 0;
             }
@@ -74,16 +75,18 @@
                 min-height: $navbar-height !important;
                 height: $navbar-height;
             }
+        }
+    }
 
-            .clipboard-selector {
-                padding: 0 10px;
-                font-size: 12px;
+    .clipboard-selector {
+        padding: 0 10px;
+        font-size: 12px;
 
-                .mat-form-field {
-                    width: 100%;
-                }
+        .mat-form-field {
+            width: 100%;
 
-                .mat-form-field .mat-form-field-wrapper {
+            ::ng-deep {
+                .mat-form-field-wrapper {
                     padding-bottom: 0;
                 }
 
@@ -92,20 +95,22 @@
                 }
             }
         }
+    }
 
-        .mat-icon {
-            height: 12px;
-            width: 12px;
-            font-size: 100%;
-        }
+    .mat-icon {
+        height: 12px;
+        width: 12px;
+        font-size: 100%;
+    }
 
-        .mat-icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
+    .mat-icon-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
 
+        ::ng-deep {
             .mat-button-wrapper {
                 line-height: 1;
                 display: flex;
@@ -123,229 +128,227 @@
                 justify-content: center;
             }
         }
+    }
 
-        .clipboard-content-batch-controls {
-            padding: 6px;
-            display: flex;
+    .clipboard-content-batch-controls {
+        padding: 6px;
+        display: flex;
 
-            .flex-spacer {
-                display: inline-flex;
-                justify-content: center;
-                opacity: .6;
-                font-size: 10px;
-            }
-        }
-
-        .clipboard-content {
-            flex: 1;
-            display: flex;
-        }
-
-        .clipboard-item-list {
-            flex: 1;
-            padding-top: 0;
-
-            .clipboard-item-list-viewport {
-                min-height: 100%;
-            }
-        }
-
-        .clipboard-content-scroller {
-            display: flex;
-            flex: 1;
-        }
-
-        .create-clipboard-form {
-            padding: 16px;
-
-            .title {
-                margin-bottom: 16px;
-            }
-
-            .actions {
-                margin-top: 20px;
-
-                .mat-flat-button,
-                .mat-stroked-button {
-                    &:not(:first-child) {
-                        margin-left: 6px;
-                    }
-                }
-            }
-
-            .input-control .mat-form-field {
-                width: 100%;
-
-                .mat-form-field-subscript-wrapper {
-                    top: 100%;
-                }
-
-            }
-        }
-
-        .clipboard-item.mat-expansion-panel {
-            border-radius: 0;
-
-            &:first-of-type {
-                border-top-right-radius: 0;
-                border-top-left-radius: 0;
-            }
-
-            &:last-of-type {
-                border-bottom-right-radius: 0;
-                border-bottom-left-radius: 0;
-            }
-
-            .mat-expansion-panel-header {
-                padding: 0 6px;
-
-                .mat-content {
-                    font-size: 10px;
-                }
-
-                .widget-type-icon {
-                    margin-right: 4px;
-                }
-
-                .clipboard-item-menu-trigger.mat-icon-button {
-                    opacity: 0;
-                    transition: opacity 200ms ease-in;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(12px);
-                        justify-content: center;
-                        margin-left: -2px;
-                    }
-                }
-
-                &:hover {
-                    .clipboard-item-menu-trigger.mat-icon-button {
-                        opacity: 1;
-                    }
-                }
-            }
-
-
-
-            .mat-expansion-panel-content {
-                .mat-expansion-panel-body {
-                    // padding: 0 12px 6px;
-                    padding: 0;
-                    font-size: 10px;
-
-                    .preview {
-                        img {
-                            width: 100%;
-                            height: 80px;
-                        }
-                    }
-
-                    .item-detail {
-                        padding: 0 12px;
-
-                        &:last-child {
-                            padding-bottom: 6px;
-                        }
-                    }
-                }
-
-                .mat-action-row {
-                    justify-content: flex-start;
-                    font-size: 10px;
-                    padding: 4px 2px;
-
-                    .mat-button {
-                        font-size: 10px;
-                        min-width: 32px;
-                        line-height: 18px;
-                        padding: 0 4px;
-                    }
-                }
-            }
-
-            .mat-expansion-panel-header-title {
-                margin-right: 0;
-
-                .item-select-control,
-                .widget-type-icon,
-                .widget-title {
-                    display: inline-flex;
-                    align-items: center;
-                }
-
-            }
-        }
-
-
-        $widgetSize: 25px;
-        .widget-type-icon {
-            display: flex;
-            align-items: center;
+        .flex-spacer {
+            display: inline-flex;
             justify-content: center;
-            text-align: center;
+            opacity: 0.6;
+            font-size: 10px;
+        }
+    }
 
-            &::after {
-                content: '';
-                display: block;
-                overflow: hidden;
-                width: $widgetSize;
-                height: $widgetSize;
-                background-repeat: no-repeat;
-                background-size: ($widgetSize * 4); // four columns of icons * 50px = 200px
-                background-image: url(/assets/widget-icon-sprite.png);
+    .clipboard-content {
+        flex: 1;
+        display: flex;
+    }
+
+    .clipboard-item-list {
+        flex: 1;
+        padding-top: 0;
+
+        .clipboard-item-list-viewport {
+            min-height: 100%;
+        }
+    }
+
+    .clipboard-content-scroller {
+        display: flex;
+        flex: 1;
+    }
+
+    .create-clipboard-form {
+        padding: 16px;
+
+        .title {
+            margin-bottom: 16px;
+        }
+
+        .actions {
+            margin-top: 20px;
+
+            .mat-flat-button,
+            .mat-stroked-button {
+                &:not(:first-child) {
+                    margin-left: 6px;
+                }
             }
+        }
 
-            &.widget-icon-bar-graph::after {
-                background-position: (-($widgetSize)) 0px;
-            }
+        .input-control .mat-form-field {
+            width: 100%;
 
-            &.widget-icon-area-graph::after {
-                background-position: 0px 0px;
-            }
-
-            &.widget-icon-line-chart::after {
-                background-position: (-($widgetSize * 2)) (-($widgetSize))
-            }
-
-            &.widget-icon-heatmap::after {
-                background-position: (-($widgetSize)) (-($widgetSize))
-            }
-
-            &.widget-icon-topn-chart::after {
-                background-position: (-($widgetSize * 3)) (-($widgetSize))
-            }
-
-            &.widget-icon-big-number::after {
-                background-position: (-($widgetSize * 2)) 0px;
-            }
-
-            &.widget-icon-donut-chart::after {
-                background-position: 0px (-($widgetSize));
-            }
-
-            &.widget-icon-statuses::after {
-                background-position: (-($widgetSize * 3)) 0px;
-            }
-
-            &.widget-icon-notes::after {
-                background-position: 0px (-($widgetSize * 2));
-            }
-
-            &.widget-icon-events::after {
-                background-position: (-($widgetSize)) (-($widgetSize * 2));
-            }
-
-            &.widget-icon-table::after {
-                background-position: (-($widgetSize * 3)) (-($widgetSize * 2));
+            ::ng-deep .mat-form-field-subscript-wrapper {
+                top: 100%;
             }
         }
     }
 
-    // CDK items
-    .confirmation-menu.mat-menu-panel {
+    .clipboard-item.mat-expansion-panel {
+        border-radius: 0;
 
+        &:first-of-type {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        &:last-of-type {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        ::ng-deep .mat-expansion-panel-header {
+            padding: 0 6px;
+
+            .mat-content {
+                font-size: 10px;
+            }
+
+            .widget-type-icon {
+                margin-right: 4px;
+            }
+
+            .clipboard-item-menu-trigger.mat-icon-button {
+                opacity: 0;
+                transition: opacity 200ms ease-in;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(12px);
+                    justify-content: center;
+                    margin-left: -2px;
+                }
+            }
+
+            &:hover {
+                .clipboard-item-menu-trigger.mat-icon-button {
+                    opacity: 1;
+                }
+            }
+        }
+
+        ::ng-deep .mat-expansion-panel-content {
+            .mat-expansion-panel-body {
+                // padding: 0 12px 6px;
+                padding: 0;
+                font-size: 10px;
+
+                .preview {
+                    img {
+                        width: 100%;
+                        height: 80px;
+                    }
+                }
+
+                .item-detail {
+                    padding: 0 12px;
+
+                    &:last-child {
+                        padding-bottom: 6px;
+                    }
+                }
+            }
+
+            .mat-action-row {
+                justify-content: flex-start;
+                font-size: 10px;
+                padding: 4px 2px;
+
+                .mat-button {
+                    font-size: 10px;
+                    min-width: 32px;
+                    line-height: 18px;
+                    padding: 0 4px;
+                }
+            }
+        }
+
+        ::ng-deep .mat-expansion-panel-header-title {
+            margin-right: 0;
+
+            .item-select-control,
+            .widget-type-icon,
+            .widget-title {
+                display: inline-flex;
+                align-items: center;
+            }
+        }
+    }
+
+    $widgetSize: 25px;
+    .widget-type-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        &::after {
+            content: "";
+            display: block;
+            overflow: hidden;
+            width: $widgetSize;
+            height: $widgetSize;
+            background-repeat: no-repeat;
+            background-size: (
+                $widgetSize * 4
+            ); // four columns of icons * 50px = 200px
+            background-image: url(/assets/widget-icon-sprite.png);
+        }
+
+        &.widget-icon-bar-graph::after {
+            background-position: (-($widgetSize)) 0px;
+        }
+
+        &.widget-icon-area-graph::after {
+            background-position: 0px 0px;
+        }
+
+        &.widget-icon-line-chart::after {
+            background-position: (-($widgetSize * 2)) (-($widgetSize));
+        }
+
+        &.widget-icon-heatmap::after {
+            background-position: (-($widgetSize)) (-($widgetSize));
+        }
+
+        &.widget-icon-topn-chart::after {
+            background-position: (-($widgetSize * 3)) (-($widgetSize));
+        }
+
+        &.widget-icon-big-number::after {
+            background-position: (-($widgetSize * 2)) 0px;
+        }
+
+        &.widget-icon-donut-chart::after {
+            background-position: 0px (-($widgetSize));
+        }
+
+        &.widget-icon-statuses::after {
+            background-position: (-($widgetSize * 3)) 0px;
+        }
+
+        &.widget-icon-notes::after {
+            background-position: 0px (-($widgetSize * 2));
+        }
+
+        &.widget-icon-events::after {
+            background-position: (-($widgetSize)) (-($widgetSize * 2));
+        }
+
+        &.widget-icon-table::after {
+            background-position: (-($widgetSize * 3)) (-($widgetSize * 2));
+        }
+    }
+}
+
+// CDK ITEMS (these are at document root level)
+@at-root ::ng-deep {
+    .confirmation-menu.mat-menu-panel {
         .mat-menu-content,
-        .confirmation-card.mat-card  {
+        .confirmation-card.mat-card {
             padding: 0;
             font-size: 12px;
             font-weight: 300;
@@ -395,7 +398,8 @@
     }
 }
 
-@mixin clipboard-drawer-component-theme($theme-config) {
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
     /* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
@@ -432,106 +436,129 @@
     $link: map-get($foreground, link);
     $link-inverse: find-color-invert($link);
 
-    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
+    $item-text: if(
+        $is-dark-theme,
+        rgba($navbar-text-color, 0.6),
+        rgba($text-color, 0.85)
+    );
     $icon-color: $item-text;
 
-    .clipboard-drawer {
-        background: $bg;
+    /* [[  THEME  ]] (#{$theme-name}) - clipboard drawer component  */
+    @at-root [theme="#{$theme-name}"] {
+        .clipboard-drawer {
+            background: $bg;
 
-        .progress-indicator {
-            color: rgba($white, .85);
-            background:  $success-color;
-            border-bottom: 1px solid $divider;
-            border-top: 1px solid $divider;
-        }
-
-        .clipboard-header.mat-toolbar {
-            // background: rgba($text-color, .5);
-            border-bottom: 1px solid rgba($divider,.07);
-            color: if($is-dark-theme, $navbar-text, $text-color);
-
-            .nav-item.icon-nav {
-                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
-            }
-
-            .nav-item.icon-nav:not(:last-child) {
-                border-right: 1px solid rgba($divider,.07);
-            }
-
-            .nav-item:hover {
-                background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
-                cursor: pointer;
-            }
-
-            .nav-item.icon-nav.is-active {
-                background: transparent;
-                color: if($is-dark-theme, $navbar-text, $text-color);
-            }
-
-            &.is-master-panel {
-                .header-label {
-                    color: rgba($text-color,.85);
-                }
-            }
-        }
-
-        .clipboard-item-list {
-            border-top: 1px solid $divider;
-        }
-
-        .clipboard-item.mat-expansion-panel {
-            .mat-expansion-panel-header {
-                .clipboard-item-menu-trigger {
-                    background: rgba(0, 0, 0, .1);
-                }
-            }
-        }
-    }
-
-    // CDK items
-    .confirmation-menu.mat-menu-panel {
-
-        .confirmation-card.mat-card {
-            box-shadow: none;
-
-            .mat-card-actions {
+            .progress-indicator {
+                color: rgba($white, 0.85);
+                background: $success-color;
+                border-bottom: 1px solid $divider;
                 border-top: 1px solid $divider;
+            }
 
-                .mat-button:not(:last-child) {
-                    border-right: 1px solid $divider;
+            .clipboard-header.mat-toolbar {
+                // background: rgba($text-color, .5);
+                border-bottom: 1px solid rgba($divider, 0.07);
+                color: if($is-dark-theme, $navbar-text, $text-color);
+
+                .nav-item.icon-nav {
+                    background: if(
+                        $is-dark-theme,
+                        rgba($text-color, 0.5),
+                        rgba($text-color, 0.1)
+                    );
                 }
 
-                .mat-button.confirm-button {
-                    .mat-icon {
-                        color: $success-color;
+                .nav-item.icon-nav:not(:last-child) {
+                    border-right: 1px solid rgba($divider, 0.07);
+                }
+
+                .nav-item:hover {
+                    background: if(
+                        $is-dark-theme,
+                        rgba($navbar-text, 0.1),
+                        rgba($text-color, 0.2)
+                    );
+                    cursor: pointer;
+                }
+
+                .nav-item.icon-nav.is-active {
+                    background: transparent;
+                    color: if($is-dark-theme, $navbar-text, $text-color);
+                }
+
+                &.is-master-panel {
+                    .header-label {
+                        color: rgba($text-color, 0.85);
                     }
                 }
+            }
 
-                .mat-button.cancel-button {
-                    .mat-icon {
-                        color: $cancel-color;
+            .clipboard-item-list {
+                border-top: 1px solid $divider;
+            }
+
+            .clipboard-item.mat-expansion-panel {
+                ::ng-deep .mat-expansion-panel-header {
+                    .clipboard-item-menu-trigger {
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
             }
         }
     }
 
-    .clipboard-action-menu,
-    .clipboard-item-action-menu {
-        background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-        border: 1px solid rgba($navbar-background, .15);
+    // cdk items
+    ::ng-deep {
+        .confirmation-menu.mat-menu-panel {
+            .confirmation-card.mat-card {
+                box-shadow: none;
 
-        $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
-        .mat-menu-item {
-            color: rgba($menu-item-text,.85);
+                .mat-card-actions {
+                    border-top: 1px solid $divider;
 
+                    .mat-button:not(:last-child) {
+                        border-right: 1px solid $divider;
+                    }
 
-            .mat-icon {
-                color: rgba($menu-item-text, .5);
+                    .mat-button.confirm-button {
+                        .mat-icon {
+                            color: $success-color;
+                        }
+                    }
+
+                    .mat-button.cancel-button {
+                        .mat-icon {
+                            color: $cancel-color;
+                        }
+                    }
+                }
             }
+        }
 
-            &:hover {
-                background-color: if($is-dark-theme, rgba($menu-background-hover, .12), rgba($menu-background-hover, .08));
+        .clipboard-action-menu,
+        .clipboard-item-action-menu {
+            background-color: if(
+                $is-dark-theme,
+                lighten($menu-background, 15%),
+                $menu-background
+            );
+            border: 1px solid rgba($navbar-background, 0.15);
+
+            $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
+            .mat-menu-item {
+                color: rgba($menu-item-text, 0.85);
+
+                .mat-icon {
+                    color: rgba($menu-item-text, 0.5);
+                }
+
+                &:hover {
+                    background-color: if(
+                        $is-dark-theme,
+                        rgba($menu-background-hover, 0.12),
+                        rgba($menu-background-hover, 0.08)
+                    );
+                }
             }
         }
     }

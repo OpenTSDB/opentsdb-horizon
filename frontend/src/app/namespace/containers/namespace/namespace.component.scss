@@ -14,49 +14,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin app-namespace-component-base() {
-    .app-namespace {
+@import 'loader-base';
+
+:host.app-namespace {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .dynamic-scroller {
         flex: 1;
-        height: 100%;
         display: flex;
         flex-direction: column;
 
-        .dynamic-scroller {
+        .namespace-list {
             flex: 1;
-            display: flex;
-            flex-direction: column;
 
-            .namespace-list {
-                flex: 1;
-
-                .cdk-virtual-scroll-viewport {
-                    min-height: 100%;
-                }
+            .cdk-virtual-scroll-viewport {
+                min-height: 100%;
             }
         }
+    }
 
-        .namespace-contents {
-            display: flex;
-            flex-direction: columns;
+    .namespace-contents {
+        display: flex;
+        flex-direction: columns;
+        flex: 1;
+        position: relative;
+
+        .namespace-content-list {
             flex: 1;
-            position: relative;
 
-            .namespace-content-list {
-                flex: 1;
-
-                .cdk-virtual-scroll-viewport {
-                    min-height: 100%;
-                }
+            .cdk-virtual-scroll-viewport {
+                min-height: 100%;
             }
         }
+    }
 
-        .simple-list-item {
-            display: flex;
-        }
+    .simple-list-item {
+        display: flex;
     }
 }
 
-@mixin app-namespace-component-theme($theme-config) {
+//* THEMING **/
+@each $theme-name, $theme-config in $app-available-themes {
     /* Theme config parts */
     $tname: map-get($theme-config, theme-name);
 
@@ -74,7 +75,10 @@
 
     $navbar-text: map-get($foreground, navbar-text);
 
-    .nav-namespace-title {
-        color: $navbar-text;
+    /* [[  THEME  ]] (#{$theme-name}) - namespace container component  */
+    @at-root [theme='#{$theme-name}'] {
+        :host.nav-namespace-title {
+            color: $navbar-text;
+        }
     }
 }
