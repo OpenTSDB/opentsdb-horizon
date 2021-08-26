@@ -40,8 +40,8 @@
 // @import './containers/alerts.component'; // nothing to style yet
 
 // components
-//@import  './components/snooze-details/snooze-details.component';
-//@import './components/alert-details/alert-details.component';
+@import  './components/snooze-details/snooze-details.component';
+@import './components/alert-details/alert-details.component';
 @import './components/name-alert-dialog/name-alert-dialog.component';
 @import './components/alert-details/children/recipients-manager/recipients-manager.component';
 @import './components/alert-details/children/alert-details-metric-period-over-period-preview/alert-details-metric-period-over-period-preview.component';
@@ -62,8 +62,8 @@
     //@include alerts-container-component-base(); // nothing to style yet
 
     // components
-    //@include snooze-details-component-base();
-    //@include alert-details-component-base();
+    @include snooze-details-component-base();
+    @include alert-details-component-base();
     @include name-alert-dialog-component-base();
     @include alert-configuration-contacts-component-base();
     @include alert-details-metric-period-over-period-component-base();

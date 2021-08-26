@@ -943,7 +943,7 @@ $header-chip-size: 8px;
             .cdk-column-snoozed {
                 .count-empty {
                     color: if(
-                        $is-dark,
+                        $is-dark-theme,
                         rgba($white, .25),
                         rgba($black, .25)
                     );
