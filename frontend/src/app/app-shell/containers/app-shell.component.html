@@ -1,4 +1,19 @@
-<!--<global-notification-banner (globalNotificationVisible)="globalMessageVisibility($event)"></global-notification-banner>-->
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
 <generic-message-bar></generic-message-bar>
 <div class="app-shell-wrapper" fxLayout="column" fxFlexFill>
     <!-- topmost navigation bar of the application -->
@@ -17,7 +32,7 @@
                 [activeNav]="{'section': activeNavSection}"
                 [drawerOpen]="drawerOpened"
                 [mediaQuery]="activeMediaQuery"
-                [yamasMember]="isYamasMember"></app-navigator-sidenav>
+                [adminMember]="isAdminMember"></app-navigator-sidenav>
         </mat-sidenav>
         <!-- where the rest of the app gets output -->
         <mat-sidenav-content class="app-navigator-output" fxFlex="1 1 100%" fxLayout fxLayoutAlign="stretch stretch">
@@ -42,14 +57,14 @@
                         (toggleDrawer)="toggleDrawerMode($event)"
                         ></settings-panel>
                     <admin-panel
-                        *ngIf="activeNavSection === 'admin' && isYamasMember"
+                        *ngIf="activeNavSection === 'admin' && isAdminMember"
                         [activeNavSection]="activeNavSection"
                         [drawerMode]="drawerMode"
                         (toggleDrawer)="toggleDrawerMode($event)"
-                        [yamasMember]="isYamasMember"
+                        [adminMember]="isAdminMember"
                         ></admin-panel>
                     <test-navigator
-                        *ngIf="activeNavSection === 'admin' && !isYamasMember"
+                        *ngIf="activeNavSection === 'admin' && !isAdminMember"
                         panelTitle="Admin Panel"
                         panelText="Sorry... you do not have access to this panel"
                         [activeNavSection]="activeNavSection"

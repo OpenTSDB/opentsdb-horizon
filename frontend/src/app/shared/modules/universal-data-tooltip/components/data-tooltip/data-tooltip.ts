@@ -1,9 +1,25 @@
-import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2, Injectable } from '@angular/core';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 import { Subscription, Observable } from 'rxjs';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
+@Injectable()
 export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.data-tooltip') private _baseClass = true;
@@ -64,8 +80,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
     constructor(
         public ttDataSvc: TooltipDataService,
         public renderer: Renderer2,
-        public sanitizer: DomSanitizer,
-        public console: ConsoleService,
+        public sanitizer: DomSanitizer
     ) {}
 
     ngOnInit() {
@@ -152,7 +167,6 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
             // if strategy is sticky, check if we need large widget override
             if (this.largeWidgetOverride === undefined && this.positionStrategy === 'sticky') {
 
-                //this.console.action('CHECK FOR LARGE WIDGET');
                 // check if widget is fairly large in comparison to window
                 // if too large, skip sticky position strategy (if it is set)
                 // and revert to normal tooltip behavior

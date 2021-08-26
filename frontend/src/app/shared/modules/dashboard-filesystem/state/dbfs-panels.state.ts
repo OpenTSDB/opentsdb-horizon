@@ -1,6 +1,21 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
-import { ConsoleService } from '../../../../core/services/console.service';
 
 /** INTERFACES */
 
@@ -113,8 +128,7 @@ export class DbfsChangePanelTab {
 
 export class DbfsPanelsState {
     constructor(
-        private utils: UtilsService,
-        private console: ConsoleService
+        private utils: UtilsService
     ) {}
 
     /** Selectors */
@@ -143,7 +157,6 @@ export class DbfsPanelsState {
 
     @Action(DbfsResetPanelAction)
     resetPanelAction(ctx: StateContext<DbfsPanelsModel>, { }: DbfsResetPanelAction) {
-        this.console.action('State :: Reset Resource Action');
         ctx.patchState({
             panelAction: {}
         });
@@ -151,12 +164,17 @@ export class DbfsPanelsState {
 
     @Action(DbfsPanelsError)
     panelsError(ctx: StateContext<DbfsPanelsModel>, {error}: DbfsPanelsError) {
-        this.console.error('State :: Panels Error', error);
+        console.group(
+            '%cERROR%cState :: Panels Error',
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+        );
+        console.log('%cErrorMsg', 'font-weight: bold;', error);
+        console.groupEnd();
     }
 
     @Action(DbfsPanelsInitialize)
     panelsInitialize(ctx: StateContext<DbfsPanelsModel>, {}: DbfsPanelsInitialize) {
-        this.console.success('State :: Panels Initialize');
         const state = ctx.getState();
 
         if (!state.initialized) {
@@ -242,7 +260,6 @@ export class DbfsPanelsState {
 
     @Action(DbfsAddPanel)
     addPanel(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsAddPanel) {
-        this.console.action('State :: Add Panels', payload);
         const state = ctx.getState();
         const curTab = state.panelTab + 'Tab';
 
@@ -274,7 +291,6 @@ export class DbfsPanelsState {
 
     @Action(DbfsUpdatePanels)
     updatePanels(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsUpdatePanels) {
-        this.console.action('State :: Update Panels', payload);
         const state = ctx.getState();
         const curTab = state.panelTab + 'Tab';
 
@@ -295,7 +311,6 @@ export class DbfsPanelsState {
 
     @Action(DbfsChangePanelTab)
     changePanelTab(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsChangePanelTab) {
-        this.console.action('State :: Change Panel Tab', payload);
         const state = ctx.getState();
 
         const panelAction = payload.panelAction;

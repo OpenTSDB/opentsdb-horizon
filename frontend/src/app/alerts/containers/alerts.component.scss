@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @import 'loader-base';
 
 $status-labels: ('bad', 'warn', 'good', 'unknown', 'missing', 'snoozed');
@@ -146,6 +162,13 @@ $header-chip-size: 8px;
         text-align:center;
         padding: 2px;
     }
+        .group-label-chip {
+            border-radius: 4px;
+            font-size: 10px;
+            padding: 0 6px;
+            margin: 2px 4px;
+            outline: none;
+        }
 
     // common wrapper styles
     .common-results {
@@ -275,11 +298,131 @@ $header-chip-size: 8px;
                 position: relative;
             }
 
+            .cdk-column-contacts {
+
+                .contacts-menu-trigger {
+                    .mat-icon {
+                        margin-right: 6px;
+                        width: 18px;
+                        height: 18px;
+                        font-size: 18px;
+                    }
+                }
+            }
+
+            .cdk-column-select,
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed,
+            .cdk-column-sparkline {
+                width: 1%;
+            }
+
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed {
+                text-align: right;
+
+                .count-empty {
+                    margin-right: 24px;
+                }
+
+                // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
+                .count-amount {
+                    margin-right: 24px;
+                    padding: 2px;
+                    cursor: pointer;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    padding: 3px 6px;
+                    outline: none;
+                }
+            }
+
+            .cdk-column-alertGroupingRules {
+                .mat-chip-list-wrapper {
+                    margin: initial;
+                }
+            }
+
+            .mat-cell.cdk-column-alertGroupingRules {
+                padding-top: 2px;
+                padding-bottom: 2px;
+            }
+
+            /*
+            .cdk-column-sparkline {
+                text-align: right;
+
+                .sparkline-wrapper {
+                    width: 100px;
+                    background: #eee;
+                    display: block;
+                    padding: 4px;
+                    text-align: center;
+                }
+
+                .sparkline-display-menu-trigger.mat-button {
+                    min-width: initial;
+                    padding: 0 6px;
+                }
+            }*/
+
+            .cdk-column-type {
+                width: 125px;
+            }
+
+            .cdk-column-contacts {
+                width: 100px;
+                text-align: center;
+                padding-left: 16px;
+                padding-right: 16px;
+
+                .contact-icon-strip {
+                    display: inline-flex;
+                    padding: 4px 4px 6px;
+                    cursor: pointer;
+
+                    .mat-icon {
+                        width: 12px;
+                        height: 12px;
+
+                        &:not(:last-child) {
+                            margin-right: 4px;
+                        }
+                    }
+                }
+            }
+
+            .cdk-column-modified {
+                width: 130px;
+            }
+
+            .cdk-column-actions {
+                width: 176px;
+
+                .mat-icon-button .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 18px;
+                    line-height: 18px;
+                }
+            }
+
             .cdk-column-name {
                 position: relative;
 
                 span.alert-name {
-                    line-height: 48px;
+                    display: inline-block;
+                    margin: 12px 0;
                 }
             }
 
@@ -790,6 +933,26 @@ $header-chip-size: 8px;
                         color: if($is-dark-theme, $brand-color-inverse, $brand-color);
                     }
                 }
+            }
+
+            .cdk-column-bad,
+            .cdk-column-warn,
+            .cdk-column-good,
+            .cdk-column-unknown,
+            .cdk-column-missing,
+            .cdk-column-snoozed {
+                .count-empty {
+                    color: if(
+                        $is-dark,
+                        rgba($white, .25),
+                        rgba($black, .25)
+                    );
+                }
+            }
+
+            // disabled state
+            .mat-row.is-disabled {
+                background-color: rgba(map-get($foreground, divider), .05);
 
                 // disabled state
                 .mat-row.is-disabled {

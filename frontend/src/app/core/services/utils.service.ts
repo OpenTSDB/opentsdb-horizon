@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as _moment from 'moment';
@@ -93,9 +109,10 @@ export class UtilsService {
             const qid = queries[i].id;
             for (let j = 0; j < queries[i].metrics.length; j++) {
                 const mid = queries[i].metrics[j].id;
-                if (queries[i].metrics[j].settings.visual.visible === true) {
+                if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.visible === true ) {
                     metricsVisibleLen++;
-                    if (queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
+                    // tslint:disable:max-line-length
+                    if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
                         metricsVisibleAutoColorLen++;
                         metricsVisibleAutoColorIds.push(qid + '-' + mid);
                     }
@@ -381,20 +398,29 @@ export class UtilsService {
         return colors;
     }
 
-    getColorsHSV(color = null, n = 1) {
+    getColorsHSV(color = null, n = 1, shades = null ) {
         const colors = [];
         let hue;
+        let hsv = [];
         if (color) {
             const r = parseInt(color.substring(1, 3), 16);
             const g = parseInt(color.substring(3, 5), 16);
             const b = parseInt(color.substring(5, 7), 16);
-            hue = this.rgbToHsv(r, g, b)[0];
+            hsv = this.rgbToHsv(r, g, b);
+            hue = hsv[0];
+
         } else {
             hue = 0;
         }
 
         // saturation & value/brightness ranges
-        const srange = [0.9, 0.2], vrange = [0.9, 0.2];
+        const srange = [1, 0.1], vrange = [0.9, 0.1];
+        const contrast = this.findContrastColor(color);
+        if ( shades && shades === 'dark' && contrast.type === 'black' ) { // light theme => dark shades +  
+            srange[1] = 0.4;
+        } else if (shades && shades === 'light' && contrast.type === 'white' ) { // dark theme => light shades + light color
+            srange[0] = 0.6;
+        }
 
         // no. of colors on light to bright (sBand) and no. of bright to dark (vBand)
         const sBand = Math.ceil(n * 1), vBand = Math.floor(n * 0);
@@ -403,7 +429,7 @@ export class UtilsService {
 
         // if random color set SV to 0.8
         let s = color ? srange[0] - sStep : 1;
-        let v = color ? vrange[0] : 0.9;
+        let v = color ? hsv[2] : 0.9;
         const hueOffset = 1 / (6 * Math.ceil(n / 6));
         for (let i = 0; i < n; i++) {
             if (color) {
@@ -705,6 +731,10 @@ export class UtilsService {
             obj[i] = arr[i];
         }
         return obj;
+    }
+
+    isArraySubset(arr1, arr2) {
+        return arr2.every( v => arr1.includes(v) );
     }
 
     transformTagMapToArray(map: Map<any, any>): any[] {
@@ -1091,6 +1121,18 @@ export class UtilsService {
                 items[i] = {...items[i]};
             }
         }
+    }
+
+    deepmerge(target, source) {
+        for (const key of Object.keys(source)) {
+            if (source[key] instanceof Object && key in target) {
+                Object.assign(source[key], this.deepmerge(target[key], source[key]));
+            }
+        }
+      
+        // Join `target` and modified `source`
+        Object.assign(target || {}, source)
+        return target;
     }
 
     regExpEscSpecialChars(value, replaceChars) {

@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, OnInit, ElementRef, ViewChild, Input, Output, EventEmitter, HostBinding } from '@angular/core';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material';
@@ -20,12 +36,13 @@ export class TimeSelectorComponent implements OnInit {
   timeInSecondsAsNumber: number;
 
   @Input() set timeInSeconds(time: string) {
-    this.timeInSecondsAsNumber =  parseInt(time, 10);
+    this.timeInSecondsAsNumber =  time !== null ? parseInt(time, 10) : null;
   }
   @Input() isViewMode: boolean;
   @Input() presets: number[] = []; // in seconds  // optional
   @Input() maxSeconds: number;  // optional
   @Input() minSeconds: number;  // optional
+  @Input() empty: boolean = false;
 
   @Output() newTimeInSeconds = new EventEmitter();
 
@@ -46,7 +63,7 @@ export class TimeSelectorComponent implements OnInit {
       this.minSeconds = 60; // 1 minute
     }
 
-    if (this.timeInSecondsAsNumber === undefined || this.timeInSecondsAsNumber < 0 || !Number.isInteger(this.timeInSecondsAsNumber)) {
+    if ( !this.empty && (this.timeInSecondsAsNumber === undefined || this.timeInSecondsAsNumber < 0 || !Number.isInteger(this.timeInSecondsAsNumber)) ) {
       this.timeInSecondsAsNumber = 300;
     }
     this.inputVal = new FormControl();
@@ -62,7 +79,7 @@ export class TimeSelectorComponent implements OnInit {
 
   selectedPreset(num: number) {
     this.timeInSecondsAsNumber = num;
-    this.newTimeInSeconds.emit(this.timeInSecondsAsNumber.toString());
+    this.newTimeInSeconds.emit(num !== null ? this.timeInSecondsAsNumber.toString() : null);
   }
 
   validateTimeWindow(input) {
@@ -89,7 +106,9 @@ export class TimeSelectorComponent implements OnInit {
     const minute = 60;
     const hour = 60 * 60;
     const day = 60 * 60 * 24;
-    if (numInSeconds % day === 0 && numInSeconds !== day) {
+    if ( numInSeconds === null ) {
+      return '';
+    } else if (numInSeconds % day === 0 && numInSeconds !== day) {
         return (numInSeconds / day) + ' d';
     } else if (numInSeconds % hour === 0) {
         return (numInSeconds / hour) + ' h';

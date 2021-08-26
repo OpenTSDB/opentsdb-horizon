@@ -1,9 +1,22 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { State , Action, Selector, StateContext, Store} from '@ngxs/store';
 import { map, catchError } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
-
-import { ConsoleService } from '../../core/services/console.service';
 
 import {
     AppShellService
@@ -89,7 +102,6 @@ export class AppShellState {
     mediaWatcher$: Subscription;
 
     constructor (
-        private console: ConsoleService,
         private service: AppShellService,
         private store: Store,
         private mediaObserver: MediaObserver
@@ -142,7 +154,7 @@ export class AppShellState {
 
     @Action(SSGetUserProfile)
     GetUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSGetUserProfile) {
-        this.console.state('AppShellState :: Get user profile');
+        // AppShellState :: Get user profile
         const state = ctx.getState();
         return this.service.getUserProfile().pipe(
             map( (payload: any) => {
@@ -158,56 +170,25 @@ export class AppShellState {
         const userProfile = response.body;
         userProfile.loaded = true;
 
-        this.console.success('AppShellState :: Get user profile', response);
+        // AppShellState :: Get user profile - response
 
         ctx.setState({
             ...state,
             userProfile
         });
-
     }
 
     @Action(SSGetUserProfileFail)
     GetUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSGetUserProfileFail) {
         // throw error since previous call should create user if not there.
-        this.console.error('AppShellState :: Get user profile', error);
-        /* if ( error.status === 404 ) {
-            ctx.dispatch(new SSCreateUserProfile()); // 404 means the profile does not exist
-        } */
-        ctx.dispatch({error: error});
-    }
-
-    /* remove later after test for new user provision
-    @Action(SSCreateUserProfile)
-    CreateUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSCreateUserProfile) {
-        this.console.state('AppShellState :: Create user profile');
-        const state = ctx.getState();
-        return this.service.createUser().pipe(
-            map( (payload: any) => {
-                // console.log('resourceList', payload);
-                ctx.dispatch(new SSCreateUserProfileSuccess(payload));
-            }),
-            catchError( error => ctx.dispatch(new SSCreateUserProfileFail(error)))
+        console.group(
+            '%cERROR%cAppShellState :: Get user profile',
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
         );
-    }
-    @Action(SSCreateUserProfileSuccess)
-    CreateUserProfileSuccess(ctx: StateContext<AppShellStateModel>, { response }: SSCreateUserProfileSuccess) {
-        const state = ctx.getState();
-        const userProfile = response.body;
-        userProfile.loaded = true;
+        console.log('%cErrorMsg', 'font-weight: bold;', error);
+        console.groupEnd();
 
-        this.console.success('AppShellState :: Create user profile', response);
-
-        ctx.setState({
-            ...state,
-            userProfile
-        });
-    }
-
-    @Action(SSCreateUserProfileFail)
-    CreateUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSCreateUserProfileFail) {
-        this.console.error('AppShellState :: Create user profile', error);
         ctx.dispatch({error: error});
     }
-    */
 }

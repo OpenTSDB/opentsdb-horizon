@@ -1,7 +1,22 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
-import { ConsoleService } from '../../core/services/console.service';
 import { Observable } from 'rxjs';
 
 export interface EventsModel {
@@ -125,8 +140,7 @@ export class EventsState {
     subs: any = {};
     queryObserver: Observable<any>;
     constructor(
-        private httpService: HttpService,
-        private console: ConsoleService
+        private httpService: HttpService
     ) { }
 
     @Selector()
@@ -157,7 +171,6 @@ export class EventsState {
     @Action(GetEvents)
     getEvents(ctx: StateContext<EventsStateModel>, { time, eventQueries, wid, limit }: GetEvents) {
 
-        this.console.action(GetEvents.type, { time, eventQueries, wid });
         ctx.patchState({loading: true});
 
         if (  this.subs[wid] ) {
@@ -177,7 +190,6 @@ export class EventsState {
 
     @Action(GetEventsSuccess)
     getEventsSucess(ctx: StateContext<EventsStateModel>, { response, origParams }: GetEventsSuccess) {
-        this.console.success(GetEventsSuccess.type, { response, origParams });
 
         const state = ctx.getState();
 
@@ -199,7 +211,14 @@ export class EventsState {
 
     @Action(GetEventsFailed)
     getEventsFailed(ctx: StateContext<EventsStateModel>, { response, wid }: GetEventsFailed) {
-        this.console.error(GetEventsFailed.type, { response });
+        console.group(
+            '%cERROR%c' + GetEventsFailed.type,
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+        );
+        console.log('%cErrorMsg', 'font-weight: bold;', { response });
+        console.groupEnd();
+
         const state = ctx.getState();
         const events: any = { events: [], wid, error: response.error.error.message};
         ctx.setState({ ...state, loading: false, error: response.error.error.message, events});
@@ -231,7 +250,13 @@ export class EventsState {
 
     @Action(EventsGenericError)
     eventsGenericError(ctx: StateContext<EventsStateModel>, { error, label }: EventsGenericError) {
-        this.console.error('State :: ' + label, error);
+        console.group(
+            '%cERROR%c' + label,
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+        );
+        console.log('%cErrorMsg', 'font-weight: bold;', error);
+        console.groupEnd();
         ctx.patchState({ error });
     }
 

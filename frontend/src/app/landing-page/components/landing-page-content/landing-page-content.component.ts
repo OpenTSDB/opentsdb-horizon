@@ -1,9 +1,26 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material';
+import { AppConfigService } from '../../../core/services/config.service';
 
 import {
     Select,
@@ -13,9 +30,6 @@ import {
 import {
     DbfsState
 } from '../../../shared/modules/dashboard-filesystem/state';
-import { ConsoleService } from '../../../core/services/console.service';
-
-// import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -105,6 +119,8 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     /** Form Group */
     searchFormGroup: FormGroup;
 
+    appName;
+
     constructor(
         // private dbService: DashboardService,
         private interCom: IntercomService,
@@ -113,10 +129,11 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
         private store: Store,
-        private console: ConsoleService
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
+        this.appName = this.appConfig.getConfig().name;
         this.createSearchForm();
         this.subscription.add(this.route.queryParams.subscribe(params => {
             if (params['db-delete']) {
@@ -150,9 +167,9 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         this.router.navigate(['d', '_new_']);
     }
 
-    // TODO: Get this link to yamas guide to work
-    gotoYamasGuide() {
-        alert('TODO: get link to yamas/horion guide');
+    // TODO: Get this link to opentsdb guide to work
+    gotoOpenTSDBGuide() {
+        alert('TODO: get link to opentsdb/horion guide');
     }
 
     /** AUTO SUGGESTION */

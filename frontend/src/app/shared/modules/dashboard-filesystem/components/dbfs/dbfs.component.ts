@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     EventEmitter,
@@ -60,7 +76,6 @@ import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import {
     MatTableDataSource
 } from '@angular/material';
-import { ConsoleService } from '../../../../../core/services/console.service';
 
 @Component({
 // tslint:disable-next-line: component-selector
@@ -199,7 +214,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
-        private console: ConsoleService,
         private fb: FormBuilder,
         @Inject('WINDOW') private window: any
     ) {
@@ -484,7 +498,13 @@ export class DbfsComponent implements OnInit, OnDestroy {
         if (mTrigger) {
             mTrigger.toggleMenu();
         } else {
-            this.console.error('clickMoreMenu', 'CANT FIND TRIGGER');
+            console.group(
+                '%cERROR%cclickMoreMenu',
+                'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            );
+            console.log('%cErrorMsg', 'font-weight: bold;', 'CANT FIND TRIGGER');
+            console.groupEnd();
         }
     }
 
@@ -496,7 +516,13 @@ export class DbfsComponent implements OnInit, OnDestroy {
             // close the more menu
             this.clickMoreMenu(id, type, event);
         } else {
-            this.console.error('clickFolderMove', 'CANT FIND TRIGGER');
+            console.group(
+                '%cERROR%cclickFolderMove',
+                'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            );
+            console.log('%cErrorMsg', 'font-weight: bold;', 'CANT FIND TRIGGER');
+            console.groupEnd();
         }
     }
 
@@ -946,7 +972,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
 
     // privates
     private changeToSpecificNamespaceView(nsAlias: string) {
-        //this.console.ng('CHANGE TO SPECIFIC NAMESPACE VIEW', {nsAlias});
         this.navtoPanelTab('namespaces').subscribe(() => {
             if (nsAlias !== 'namespaceList') {
                 setTimeout(() => {
@@ -957,7 +982,6 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     private changeToSpecificUserView(userAlias: string) {
-        //this.console.ng('CHANGE TO SPECIFIC USER VIEW', {userAlias});
         this.navtoPanelTab('users').subscribe(() => {
             if (userAlias !== 'userList') {
                 setTimeout(() => {

@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     HostBinding,
@@ -41,10 +57,8 @@ import {
 } from '../state/navigator.state';
 
 import { filter, map } from 'rxjs/operators';
-import { ConsoleService } from '../../core/services/console.service';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
-import { flattenStyles } from '@angular/platform-browser/src/dom/dom_renderer';
 
 @Component({
     selector: 'app-shell',
@@ -72,8 +86,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
 
-    // if the active user is a member of yamas
-    isYamasMember: boolean = false;
+    // if the active user is admin
+    isAdminMember: boolean = false;
 
     // View Children
     @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
@@ -113,7 +127,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     constructor(
         private interCom: IntercomService,
-        private console: ConsoleService,
         private store: Store,
         private router: Router,
         private activatedRoute: ActivatedRoute,
@@ -292,7 +305,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
             if (resourcesLoaded) {
                 const user = this.store.selectSnapshot(DbfsState.getUser());
-                this.isYamasMember = user.memberNamespaces.includes('yamas');
+                this.isAdminMember = user.memberNamespaces.includes('admin');
             }
         }));
     }

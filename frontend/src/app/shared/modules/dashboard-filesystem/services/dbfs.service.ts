@@ -1,10 +1,24 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from  '../../../../core/services/config.service';
 import { catchError} from 'rxjs/operators';
-
-import { ConsoleService } from '../../../../core/services/console.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +26,7 @@ import { ConsoleService } from '../../../../core/services/console.service';
 export class DbfsService {
 
     constructor(
-        private console: ConsoleService,
+        private appConfig: AppConfigService,
         private http: HttpClient
     ) { }
 
@@ -26,7 +40,13 @@ export class DbfsService {
 
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
-            this.console.error('DbfsService :: An API error occurred', error.error.message);
+            console.group(
+                '%cERROR%cDbfsService :: An API error occurred',
+                'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            );
+            console.log('%cErrorMsg', 'font-weight: bold;', error.error.message);
+            console.groupEnd();
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
@@ -41,9 +61,7 @@ export class DbfsService {
     }
 
     loadResources() {
-        const apiUrl = environment.configdb + '/dashboard/topFolders';
-
-        this.console.api('DbfsService :: Load Resources', { apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -64,13 +82,11 @@ export class DbfsService {
 
         if (topFolder && topFolder.type && topFolder.value) {
             const tokenType = (topFolder.type === 'user') ? 'userId' : 'namespace';
-            apiUrl = environment.configdb + '/dashboard/topFolders';
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
             params[tokenType] = topFolder.value;
         } else {
-            apiUrl = environment.configdb + '/dashboard' + path;
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard' + path;
         }
-
-        this.console.api('DbfsService :: Get Folder By Path', { path, topFolder, apiUrl, params });
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -88,9 +104,7 @@ export class DbfsService {
     }
 
     getUsersList() {
-        const apiUrl = environment.configdb + '/user/list';
-
-        this.console.api('DbfsService :: Get Users List', { apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/user/list';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -107,9 +121,7 @@ export class DbfsService {
     }
 
     getNamespacesList() {
-        const apiUrl = environment.configdb + '/namespace';
-
-        this.console.api('DbfsService :: Get Namespaces List', { apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/namespace';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -126,9 +138,7 @@ export class DbfsService {
     }
 
     getUserFavoritesList(userid: string) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
-
-        this.console.api('DbfsService :: Get User Favorites List', { apiUrl, userid });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         const params: any = {
             userId : userid
@@ -149,9 +159,7 @@ export class DbfsService {
     }
 
     addUserFavorite(dbid: any) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
-
-        this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -174,9 +182,7 @@ export class DbfsService {
     }
 
     removeUserFavorite(dbid: any) {
-        const apiUrl = environment.configdb + '/dashboard/favorite';
-
-        this.console.api('DbfsService :: Add User Favorite', { dbid, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/favorite';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -199,7 +205,7 @@ export class DbfsService {
     }
 
     getUserFrequentList(userid?: string): Observable<any> {
-        this.console.api('DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]');
+        // DbfsService :: Get User Frequently Visited List [NOT IMPLEMENTED YET]
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -213,9 +219,7 @@ export class DbfsService {
 
     getUserRecentList(userId: string, limit: number) {
 
-        const apiUrl = environment.configdb + '/dashboard/recent';
-
-        this.console.api('DbfsService :: Get User Recently Visited List', {userId, limit});
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/recent';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -239,9 +243,7 @@ export class DbfsService {
     }
 
     createFolder(folder: any) {
-        const apiUrl = environment.configdb + '/dashboard/folder';
-
-        this.console.api('DashboardNavigatorService :: Create Dashboard Folder', { folder, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/folder';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -271,10 +273,7 @@ export class DbfsService {
     moveFolder(sourceId: number, destinationId: number, trashFolder?: boolean) {
         const body = { 'sourceId': sourceId, 'destinationId': destinationId };
 
-        const apiUrl = environment.configdb + '/dashboard/folder/move';
-
-        // tslint:disable-next-line:max-line-length
-        this.console.api('DashboardNavigatorService :: ' + ((trashFolder) ? 'Trash' : 'Move') + ' Dashboard Folder', { body, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/folder/move';
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -292,9 +291,7 @@ export class DbfsService {
     }
 
     updateResource(type: string, payload: any) {
-        const apiUrl = environment.configdb + '/dashboard/' + type;
-
-        this.console.api('DashboardNavigatorService :: Update Dashboard ' + type.toUpperCase(), { id: payload.id, payload, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + type;
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
@@ -320,9 +317,7 @@ export class DbfsService {
     }
 
     getResourceById(id: any) {
-        const apiUrl = environment.configdb + '/dashboard/' + id;
-
-        this.console.api('DashboardNavigatorService :: Get Dashboard By Id ', { id, apiUrl });
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + id;
 
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'

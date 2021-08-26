@@ -1,7 +1,23 @@
-@import 'loader-base';
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "loader-base";
 
-$navbar-height: map-get($navbar-config, 'navbar-height');
-$logo-height: map-get($navbar-config, 'logo-height');
+$navbar-height: map-get($navbar-config, "navbar-height");
+$logo-height: map-get($navbar-config, "logo-height");
 
 :host.clipboard-drawer {
     @include mat-elevation(3);
@@ -23,6 +39,19 @@ $logo-height: map-get($navbar-config, 'logo-height');
         display: flex;
         flex-direction: column;
         width: 300px;
+
+        .gif-spinner {
+            margin-right: 6px;
+        }
+    }
+
+    .progress-indicator {
+        padding: 8px 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
     }
 
     .clipboard-header.mat-toolbar {
@@ -108,7 +137,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
         .flex-spacer {
             display: inline-flex;
             justify-content: center;
-            opacity: .6;
+            opacity: 0.6;
             font-size: 10px;
         }
     }
@@ -156,7 +185,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
             ::ng-deep .mat-form-field-subscript-wrapper {
                 top: 100%;
             }
-
         }
     }
 
@@ -172,7 +200,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
-
 
         ::ng-deep .mat-expansion-panel-header {
             padding: 0 6px;
@@ -202,8 +229,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
                 }
             }
         }
-
-
 
         ::ng-deep .mat-expansion-panel-content {
             .mat-expansion-panel-body {
@@ -250,10 +275,8 @@ $logo-height: map-get($navbar-config, 'logo-height');
                 display: inline-flex;
                 align-items: center;
             }
-
         }
     }
-
 
     $widgetSize: 25px;
     .widget-type-icon {
@@ -263,13 +286,15 @@ $logo-height: map-get($navbar-config, 'logo-height');
         text-align: center;
 
         &::after {
-            content: '';
+            content: "";
             display: block;
             overflow: hidden;
             width: $widgetSize;
             height: $widgetSize;
             background-repeat: no-repeat;
-            background-size: ($widgetSize * 4); // four columns of icons * 50px = 200px
+            background-size: (
+                $widgetSize * 4
+            ); // four columns of icons * 50px = 200px
             background-image: url(/assets/widget-icon-sprite.png);
         }
 
@@ -282,15 +307,15 @@ $logo-height: map-get($navbar-config, 'logo-height');
         }
 
         &.widget-icon-line-chart::after {
-            background-position: (-($widgetSize * 2)) (-($widgetSize))
+            background-position: (-($widgetSize * 2)) (-($widgetSize));
         }
 
         &.widget-icon-heatmap::after {
-            background-position: (-($widgetSize)) (-($widgetSize))
+            background-position: (-($widgetSize)) (-($widgetSize));
         }
 
         &.widget-icon-topn-chart::after {
-            background-position: (-($widgetSize * 3)) (-($widgetSize))
+            background-position: (-($widgetSize * 3)) (-($widgetSize));
         }
 
         &.widget-icon-big-number::after {
@@ -322,9 +347,8 @@ $logo-height: map-get($navbar-config, 'logo-height');
 // CDK ITEMS (these are at document root level)
 @at-root ::ng-deep {
     .confirmation-menu.mat-menu-panel {
-
         .mat-menu-content,
-        .confirmation-card.mat-card  {
+        .confirmation-card.mat-card {
             padding: 0;
             font-size: 12px;
             font-weight: 300;
@@ -412,30 +436,48 @@ $logo-height: map-get($navbar-config, 'logo-height');
     $link: map-get($foreground, link);
     $link-inverse: find-color-invert($link);
 
-    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
+    $item-text: if(
+        $is-dark-theme,
+        rgba($navbar-text-color, 0.6),
+        rgba($text-color, 0.85)
+    );
     $icon-color: $item-text;
 
     /* [[  THEME  ]] (#{$theme-name}) - clipboard drawer component  */
-    @at-root [theme='#{$theme-name}'] {
-
+    @at-root [theme="#{$theme-name}"] {
         .clipboard-drawer {
             background: $bg;
 
+            .progress-indicator {
+                color: rgba($white, 0.85);
+                background: $success-color;
+                border-bottom: 1px solid $divider;
+                border-top: 1px solid $divider;
+            }
+
             .clipboard-header.mat-toolbar {
                 // background: rgba($text-color, .5);
-                border-bottom: 1px solid rgba($divider,.07);
+                border-bottom: 1px solid rgba($divider, 0.07);
                 color: if($is-dark-theme, $navbar-text, $text-color);
 
                 .nav-item.icon-nav {
-                    background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+                    background: if(
+                        $is-dark-theme,
+                        rgba($text-color, 0.5),
+                        rgba($text-color, 0.1)
+                    );
                 }
 
                 .nav-item.icon-nav:not(:last-child) {
-                    border-right: 1px solid rgba($divider,.07);
+                    border-right: 1px solid rgba($divider, 0.07);
                 }
 
                 .nav-item:hover {
-                    background: if($is-dark-theme, rgba($navbar-text, .1), rgba($text-color, .2));
+                    background: if(
+                        $is-dark-theme,
+                        rgba($navbar-text, 0.1),
+                        rgba($text-color, 0.2)
+                    );
                     cursor: pointer;
                 }
 
@@ -446,7 +488,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
 
                 &.is-master-panel {
                     .header-label {
-                        color: rgba($text-color,.85);
+                        color: rgba($text-color, 0.85);
                     }
                 }
             }
@@ -458,7 +500,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
             .clipboard-item.mat-expansion-panel {
                 ::ng-deep .mat-expansion-panel-header {
                     .clipboard-item-menu-trigger {
-                        background: rgba(0, 0, 0, .1);
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
             }
@@ -467,9 +509,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
 
     // cdk items
     ::ng-deep {
-
         .confirmation-menu.mat-menu-panel {
-
             .confirmation-card.mat-card {
                 box-shadow: none;
 
@@ -497,20 +537,27 @@ $logo-height: map-get($navbar-config, 'logo-height');
 
         .clipboard-action-menu,
         .clipboard-item-action-menu {
-            background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-            border: 1px solid rgba($navbar-background, .15);
+            background-color: if(
+                $is-dark-theme,
+                lighten($menu-background, 15%),
+                $menu-background
+            );
+            border: 1px solid rgba($navbar-background, 0.15);
 
             $menu-item-text: if($is-dark-theme, $item-text, $navbar-background);
             .mat-menu-item {
-                color: rgba($menu-item-text,.85);
-
+                color: rgba($menu-item-text, 0.85);
 
                 .mat-icon {
-                    color: rgba($menu-item-text, .5);
+                    color: rgba($menu-item-text, 0.5);
                 }
 
                 &:hover {
-                    background-color: if($is-dark-theme, rgba($menu-background-hover, .12), rgba($menu-background-hover, .08));
+                    background-color: if(
+                        $is-dark-theme,
+                        rgba($menu-background-hover, 0.12),
+                        rgba($menu-background-hover, 0.08)
+                    );
                 }
             }
         }

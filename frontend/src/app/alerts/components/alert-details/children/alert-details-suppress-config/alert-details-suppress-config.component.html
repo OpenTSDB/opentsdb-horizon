@@ -1,0 +1,87 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="suppress-alert" [ngClass]="{'read-only' : config.disabled }" [formGroup]="suppressForm">
+    <div class="sentence-chain-form">
+        <div class="sentence-item metric">
+            <div class="form-control-wrap auto-width">
+                <mat-form-field appearance="fill">
+                    <mat-select placeholder="Select Metric" formControlName="metricId" disableOptionCentering>
+                        <mat-option>None</mat-option>
+                        <mat-optgroup  *ngFor="let query of queries; let qindex=index" label="Q{{qindex + 1}}">
+                            <mat-option *ngFor="let metric of query.metrics; let mindex = index" [value]="metric.id">{{ metric.name || utils.getExpressionLabel(qindex, mindex, queries)}}</mat-option>
+                        </mat-optgroup>
+                    </mat-select>
+                </mat-form-field>
+                <mat-error *ngIf="suppressForm.get('metricId').errors && suppressForm.get('metricId').errors.tagRequired">Please select suppress metric's groupby tag(s)</mat-error>
+                <mat-error *ngIf="suppressForm.get('metricId').errors && suppressForm.get('metricId').errors.tagSubset">Suppress metric's groupby tag(s) should be the subset of alert metric's groupby tag(s)</mat-error>
+            </div>
+        </div>
+        <div class="sentence-item">
+            <span>is</span>
+        </div>
+        <div class="sentence-item">
+            <mat-form-field appearance="fill">
+                <mat-label></mat-label>
+                <mat-select placeholder="Select" formControlName="comparisonOperator" disableOptionCentering>
+                    <mat-option value="missing">missing</mat-option>
+                    <mat-option value="above">above</mat-option>
+                    <mat-option value="above_or_equal_to">above or equal to</mat-option>
+                    <mat-option value="below">below</mat-option>
+                    <mat-option value="below_or_equal_to">below or equal to</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="sentence-item threshold" *ngIf="suppressForm.get('comparisonOperator').value !== 'missing'">
+            <span>the threshold</span>
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput type="number" onkeypress="return event.charCode >= 48" formControlName="threshold" autocomplete="off" placeholder="Enter value">
+            </mat-form-field>
+            <mat-error *ngIf="suppressForm.get('threshold').errors && suppressForm.get('threshold').errors.required">Threshold should not be empty</mat-error>
+        </div>
+        <div class="sentence-item timeSampler" *ngIf="suppressForm.get('comparisonOperator').value !== 'missing'">
+            <mat-form-field appearance="fill">
+                <mat-label></mat-label>
+                <mat-select placeholder="Select" formControlName="timeSampler" disableOptionCentering>
+                    <mat-option value='at_least_once'>at least once</mat-option>
+                    <mat-option value='all_of_the_times'>at all times</mat-option>
+                    <mat-option value='on_avg'>on average</mat-option>
+                    <mat-option value='in_total'>in total</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="sentence-item threshold">
+            <span>for the last &nbsp;</span>
+            <time-selector [timeInSeconds]="data.threshold.singleMetric.slidingWindow" [isViewMode]="true"></time-selector>
+            <mat-hint class="info-hint">
+                <mat-icon fontSet="denali" fontIcon="d-information-circle"></mat-icon>
+                <span>sliding window is same as the one above</span>
+            </mat-hint>
+        </div>
+    </div>
+    <div class="sentence-chain-form" *ngIf="suppressForm.get('timeSampler').value === 'all_of_the_times'">
+            <div class="sentence-item">
+                <span>The metric is reported every</span>
+            </div>
+            <div class="sentence-item reporting-interval">
+                <mat-form-field appearance="fill" floatLabel="never">
+                    <input matInput type="number" min="0" onkeypress="return event.charCode >= 48" formControlName="reportingInterval" autocomplete="off" placeholder="Enter value">
+                </mat-form-field>
+                <mat-hint class="info-hint">seconds</mat-hint>
+            </div>
+            <mat-error *ngIf="suppressForm.get('reportingInterval').errors && suppressForm.get('reportingInterval').errors.invalid">Reporting interval should be > 0</mat-error>
+        </div>
+</div>

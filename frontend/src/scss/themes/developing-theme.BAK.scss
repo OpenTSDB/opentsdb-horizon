@@ -1,0 +1,93 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//**************************************
+//* DEVELOPING THEME CONFIGURATION
+//**************************************/
+
+$developing-theme: (
+  theme-name: 'developing',
+  primary:  mat-palette($denali-brand-6, 800, 300, 900),
+  accent:   mat-palette($denali-pink),
+  warn:     mat-palette($mat-amber, 600),
+  success:  mat-palette($mat-light-green, A400, A200, A700),
+  danger:   mat-palette($mat-deep-orange, A400, A100, A700),
+  is-dark:  false,
+  foreground: (
+    base:              #000000,
+    divider:           $dark-dividers,
+    dividers:          $dark-dividers,
+    disabled:          $dark-disabled-text,
+    disabled-button:   rgba(#000000, 0.26),
+    disabled-text:     $dark-disabled-text,
+    hint-text:         $dark-disabled-text,
+    secondary-text:    $dark-secondary-text,
+    icon:              rgba(#000000, 0.54),
+    icons:             rgba(#000000, 0.54),
+    link:              map-get($mat-blue, A200),
+    navbar-icons:      #ffffff,
+    navbar-text:       #ffffff,
+    text:              rgba(#000000, 0.87),
+    slider-min:        rgba(#000000, 0.87),
+    slider-off:        rgba(#000000, 0.26),
+    slider-off-active: rgba(#000000, 0.38),
+  ),
+  background: (
+    status-bar:               map_get($mat-grey, 300),
+    ink-bar:                  map_get($denali-brand-6, 500),
+    app-bar:                  map_get($mat-grey, 100),
+    navbar:                   #172F33,
+    background:               lighten(map_get($denali-cool-grey, 50), 4%),
+    header:                   rgba(map_get($mat-blue, 900), 0.08),
+    hover:                    rgba(#000000, 0.04), 
+    card:                     #ffffff,
+    card-header-hover:        rgba(map-get($mat-blue, 900), 0.08),
+    dialog:                   #ffffff,
+    disabled-button:          rgba(#000000, 0.12),
+    raised-button:            #ffffff,
+    focused-button:           $dark-focused,
+    selected-button:          map_get($mat-grey, 300),
+    selected-disabled-button: map_get($mat-grey, 400),
+    disabled-button-toggle:   map_get($mat-grey, 200),
+    unselected-chip:          map_get($mat-grey, 300),
+    disabled-list-option:     map_get($mat-grey, 200),
+    menu:                     map_get($mat-grey, 50),
+    gridster-highlight:       rgba(map_get($mat-blue, 900), .15)
+  ),
+  widgets: (
+    widget-icons-background: #F5F8FE,
+    widget-icons-background-hover: rgba(map_get($denali-brand-6, 500), .26),
+    query-editor-marker: map_get($denali-brand-6, 500),
+    query-editor-marker-text: #ffffff,
+    query-editor-block-bg: lighten(map-get($denali-cool-grey, A100), 15%),
+    query-editor-selected-border: map-get($denali-cool-grey, A100)
+  ),
+  ks: (
+    sidenav-background: map_get($mat-blue-grey, 800),
+    sidenav-panel: map_get($mat-blue-grey, 50),
+    sidenav-text: rgba(map_get($mat-grey,900), .85)
+  ),
+  status: (
+        success: map_get($denali-lime, A400),
+        success-contrast: #000000,
+        error: map_get($denali-red, A400),
+        error-contrast: #ffffff,
+        warning: map_get($denali-yellow, A700),
+        warning-contrast: #000000,
+        info: map_get($denali-sky, A700),
+        info-contrast: #ffffff
+    )
+);

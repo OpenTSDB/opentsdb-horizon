@@ -1,14 +1,101 @@
-@import 'loader-base';
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* NAVBAR COMPONENT */
+@import "loader-base";
 
-$navbar-height: map-get($navbar-config, 'navbar-height');
-$logo-height: map-get($navbar-config, 'logo-height');
+$navbar-height: map-get($navbar-config, "navbar-height");
+$logo-height: map-get($navbar-config, "logo-height");
 
 :host.app-navbar {
     z-index: 2;
     position: relative;
 
+    .app-home-link {
+        min-width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .app-opentsdb-logo {
+        height: $logo-height;
+        //margin: 0 4px 3px 0;
+        vertical-align: middle;
+    }
+
+    .dashboard-name {
+        @include mat-typography-level-to-styles(
+            map-get($app-fontface-config, sans),
+            title
+        );
+    }
+
+    .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .mat-toolbar .mat-toolbar-row {
         padding-left: initial;
+        .navbar-sliding-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 0 !important;
+            padding: 0 2px;
+            display: inline-block;
+
+            .sliding-toggle-group {
+                padding: 0 2px;
+
+                .mat-tab-link {
+                    font-size: mat-font-size(
+                        map-get($app-fontface-config, sans),
+                        caption
+                    );
+                    height: 24px;
+                    padding: 0 4px;
+                    min-width: 50px;
+                    opacity: 1;
+                    z-index: 1;
+                    background-color: transparent;
+                    user-select: none;
+
+                    &.mat-tab-label-active,
+                    &:not(.mat-tab-disabled):not(.mat-tab-label-active) {
+                        &,
+                        &:focus {
+                            background-color: transparent !important;
+                        }
+                    }
+
+                    &:not(.mat-tab-disabled):focus {
+                        background-color: transparent !important;
+                    }
+                }
+
+                .mat-ink-bar {
+                    height: 20px;
+                    bottom: 2px;
+                    border-radius: 4px;
+                }
+            }
+        }
     }
 
     .mat-toolbar-multiple-rows,
@@ -20,7 +107,6 @@ $logo-height: map-get($navbar-config, 'logo-height');
 
 //* THEMING **/
 @each $theme-name, $theme-config in $app-available-themes {
-
     //* Theme config parts */
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
@@ -37,7 +123,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
     $navbar-icons-color: map-get($foreground, navbar-icons);
 
     /* [[  THEME  ]] (#{$theme-name}) - app-navbar component  */
-    @at-root [theme='#{$theme-name}'] {
+    @at-root [theme="#{$theme-name}"] {
         :host.app-navbar {
             .mat-toolbar {
                 background: $navbar-bg;
@@ -45,12 +131,14 @@ $logo-height: map-get($navbar-config, 'logo-height');
 
                 .mat-icon-button {
                     .mat-icon {
-                        color: map-get($foreground, navbar-icons)
+                        color: map-get($foreground, navbar-icons);
                     }
                 }
+
                 &.snapshot {
                     background: #135588;
                 }
+
                 &.explore {
                     background: lightsteelblue;
                 }
@@ -61,15 +149,17 @@ $logo-height: map-get($navbar-config, 'logo-height');
                         border-bottom-left-radius: 0;
                         border-bottom-right-radius: 0;
                     }
-
                     .menu-trigger-highlight {
-                        background-color: rgba(map-get($accent, default), .1);
+                        background-color: rgba(map-get($accent, default), 0.1);
                     }
                 }
 
                 .navbar-sliding-toggle {
                     .sliding-toggle-group {
-                        background-color: darken(map-get($background, navbar), 4%);
+                        background-color: darken(
+                            map-get($background, navbar),
+                            4%
+                        );
 
                         .mat-tab-link {
                             &,
@@ -79,10 +169,21 @@ $logo-height: map-get($navbar-config, 'logo-height');
                         }
 
                         .mat-ink-bar {
-                            background-color: rgba(map-get($foreground, navbar-text), .25);
+                            background-color: rgba(
+                                map-get($foreground, navbar-text),
+                                0.25
+                            );
                         }
                     }
                 }
+            }
+        }
+
+        // CDK ITEMS (these are at document root level)
+        ::ng-deep {
+            // cdk items
+            .mat-menu-panel.nav-bar-dropmenu {
+                @include mat-elevation(5);
             }
         }
     }

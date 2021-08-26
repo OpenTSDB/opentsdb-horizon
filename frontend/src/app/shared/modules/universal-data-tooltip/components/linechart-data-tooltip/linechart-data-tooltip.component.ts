@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component,
     OnInit,
@@ -8,7 +24,6 @@ import {
     ElementRef
 } from '@angular/core';
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { TooltipDataService, TooltipData } from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -32,14 +47,12 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        console: ConsoleService,
         _utils: UtilsService
     ) {
         super(
             ttDataSvc,
             renderer,
-            sanitizer,
-            console
+            sanitizer
         );
         this.utils = _utils;
     }

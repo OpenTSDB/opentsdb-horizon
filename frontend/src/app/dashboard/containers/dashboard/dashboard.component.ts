@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, OnDestroy, HostBinding, ViewChild,
     TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
@@ -18,6 +34,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
+import { AppConfigService } from '../../../core/services/config.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -63,16 +80,15 @@ import { DashboardDeleteDialogComponent } from '../../components/dashboard-delet
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 
-import { ConsoleService } from '../../../core/services/console.service';
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
 import { EventsState, GetEvents } from '../../../dashboard/state/events.state';
-import { URLOverrideService } from '../../services/urlOverride.service';
+import { URLOverrideService } from '../../../core/services/urlOverride.service';
 import * as deepEqual from 'fast-deep-equal';
 import { TemplateVariablePanelComponent } from '../../components/template-variable-panel/template-variable-panel.component';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
-import { ClipboardAddItems } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
+import { ClipboardAddItems, SetHideProgress, SetShowProgress } from '../../../shared/modules/universal-clipboard/state/clipboard.state';
 import { WidgetDeleteDialogComponent } from '../../components/widget-delete-dialog/widget-delete-dialog.component';
 import { DboardContentComponent } from '../../components/dboard-content/dboard-content.component';
 
@@ -244,8 +260,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     oldWidgets = [];
 
     // used to determine db write access (and display popup for unsaved changes)
-    dbOwner: string = ''; // /namespace/yamas
-    user: string = '';    // /user/zb
+    dbOwner: string = ''; // /namespace/admin
+    user: string = '';    // /user/admin
     writeSpaces: string[] = [];
 
     isUserFavorited: boolean = false;
@@ -279,20 +295,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private snackBar: MatSnackBar,
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
-        private console: ConsoleService,
         private httpService: HttpService,
         private wdService: WidgetService,
         private dbfsUtils: DbfsUtilsService,
         private urlOverrideService: URLOverrideService,
         private dataShare: DataShareService,
         private iiService: InfoIslandService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private appConfig: AppConfigService
     ) { }
 
     ngOnInit() {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
+        this.urlOverrideService.initialize();
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
@@ -439,11 +456,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // widgets = this.widgets;
                     const clipboardWidgets = JSON.parse(JSON.stringify(message.payload));
                     let batchGridPosOffset: any = 0;
+
+                    // get existing Ids
+                    let excludedIds: any[] = this.utilService.getIDs(this.widgets);
+
                     for(let i = 0; i < clipboardWidgets.length; i++) {
                         // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
                         // generate new widget id
-                        clipboardWidgets[i].id = this.utilService.generateId(6, this.utilService.getIDs(this.widgets));
+                        let id: any = this.utilService.generateId(6, excludedIds);
+                        clipboardWidgets[i].id = id;
+                        excludedIds.push(id);
                         // need better way to position... just drop them at top for now
                         clipboardWidgets[i].gridPos.y = 0;
                         clipboardWidgets[i].gridPos.ySm = 0;
@@ -736,6 +759,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             this.isDBZoomed = false;
                             const dbSettings = this.store.selectSnapshot(DBSettingsState);
                             this.dbTime = {...dbSettings.time};
+                            this.dbTime.start = isNaN(dbSettings.time.start) ? this.dbTime.start : this.dateUtil.timestampToTime(dbSettings.time.start, this.dbTime.zone);
+                            this.dbTime.end = isNaN(dbSettings.time.start) ? this.dbTime.end : this.dateUtil.timestampToTime(dbSettings.time.end, this.dbTime.zone);
                     } else {
                         overrideOnly = true;
                     }
@@ -748,27 +773,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.updateURLParams(this.dbTime);
                     break;
                 case 'copyWidgetToClipboard':
-                    const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
-                    const widgetCopy: any = {...message.payload.widget};
-                    widgetCopy.settings.clipboardMeta = {
-                        dashboard: {
-                            id: dbData.id,
-                            path: dbData.path,
-                            fullPath: dbData.fullPath,
-                            name: dbData.name
-                        },
-                        copyDate: Date.now(),
-                        referencePath: dbData.path + '@' + widgetCopy.id,
-                        preview: message.payload.preview
-                    };
+                    this.clipboardMenu.setDrawerOpen();
+                    this.store.dispatch(new SetShowProgress());
 
-                    let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
+                    setTimeout(() => {
+                        const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
+                        const widgetCopy: any = {...message.payload.widget};
 
-                    if (this.clipboardMenu.getDrawerState() === 'closed') {
-                        this.clipboardMenu.toggleDrawerState({});
-                    }
+                        widgetCopy.settings.clipboardMeta = {
+                            dashboard: {
+                                id: dbData.id,
+                                path: dbData.path,
+                                fullPath: dbData.fullPath,
+                                name: dbData.name
+                            },
+                            copyDate: Date.now(),
+                            referencePath: dbData.path + '@' + widgetCopy.id,
+                            preview: message.payload.preview
+                        };
 
-                    this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                        let resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard([widgetCopy]);
+
+                        if (this.clipboardMenu.getDrawerState() === 'closed') {
+                            this.clipboardMenu.toggleDrawerState({});
+                        }
+
+                        this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                    }, 50);
                     break;
                 case 'batchItemUpdated':
                     this.batchSelectedItems[message.id] = message.payload.selected;
@@ -776,7 +807,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     break;
                 case 'newFromClipboard':
                     this.newFromClipboard = true;
-                    this.newFromClipboardItems = JSON.parse(JSON.stringify(message.payload));
+                    let cbWidgetItems = JSON.parse(JSON.stringify(message.payload));
+
+                    // need to generate Unique Widget Ids
+                    // BEFORE we navigate to _new_
+                    let excludeIds: any[] = [];
+
+                    for (let i = 0; i < cbWidgetItems.length; i++) {
+                        let item: any = cbWidgetItems[i];
+                        let id = this.utilService.generateId(6, excludeIds);
+                        item.id = id;
+                        excludeIds.push(id);
+                    }
+
+                    this.newFromClipboardItems= cbWidgetItems;
                     this.router.navigate(['d', '_new_']);
                     break;
                 default:
@@ -893,11 +937,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription.add(this.dbStatus$.subscribe(status => {
             switch (status) {
                 case 'save-success':
-                    this.snackBar.open('Dashboard has been saved.', '', {
+                case 'save-snapshot-success':
+                    this.snackBar.open( ( status === 'save-success' ? 'Dashboard' : 'Snapshot' )  + ' has been saved.', '', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         duration: 5000,
-                        panelClass: 'info'
+                        panelClass: 'success-notification'
                     });
                     // reset state for save pop-up
                     this.oldMeta = {...this.meta};
@@ -908,7 +953,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                       horizontalPosition: 'center',
                       verticalPosition: 'top',
                       duration: 5000,
-                      panelClass: 'info'
+                      panelClass: 'success-notification'
                     });
                     break;
             }
@@ -948,6 +993,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             }
                         }
                     } else {
+                        this.oldWidgets = [...this.widgets];
                         this.newWidget = this.widgets[0];
                         this.setSnapshotMeta();
                     }
@@ -1518,15 +1564,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.variablePanelMode = {...mode};
     }
 
+    canWidgetOverrideTime() {
+
+        const config = this.appConfig.getConfig();
+        const canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
+        return canOverrideTime;
+    }
+
     getQuery(message: any) {
         let groupid = '';
         let query = null;
         // make sure we modify the copy for tsdb query
         const payload = this.utilService.deepClone(message.payload);
+        payload.settings.data_source = 'openTSDB';
         // set groupby if multigraph is enabled
         const groupby = (payload.settings.multigraph && payload.settings.multigraph.enabled) ?
             payload.settings.multigraph.chart.filter(d => d.key !== 'metric_group' && d.key !== 'query_group').map(d => d.key) : [];
-        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : payload.settings.time.overrideTime;
+        const overrideTime = this.isDBZoomed ? payload.settings.time.zoomTime : this.canWidgetOverrideTime() ? payload.settings.time.overrideTime : null;
 
         const dt =  overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
         if ( this.viewEditMode || this.snapshot ) {
@@ -1550,7 +1604,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             for (let i = 0; i < payload.queries.length; i++) {
                 let query: any = JSON.parse(JSON.stringify(payload.queries[i]));
                 groupid = query.id;
-                if (query.namespace && query.settings.visual.visible && query.metrics.length) {
+                if (query.settings.visual.visible && query.metrics.length) {
                     // filter only visible metrics, disable it now since it will break the expression
                     // query = this.dbService.filterMetrics(query);
                     // here we need to resolve template variables
@@ -1611,7 +1665,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleEventQueryPayload(message: any) {
         if ( message.payload.eventQueries[0].namespace) {
-            const overrideTime = message.payload.settings ? message.payload.settings.time.overrideTime : null;
+            const overrideTime = this.canWidgetOverrideTime() && message.payload.settings ? message.payload.settings.time.overrideTime : null;
             const dt = overrideTime ? this.getDateRange( {...this.dbTime, ...overrideTime} ) : this.getDashboardDateRange();
             message.payload.eventQueries[0].search = this.applyTplVarsToEventQuery(message.payload.eventQueries[0].search);
             this.store.dispatch(new GetEvents(
@@ -1716,7 +1770,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     setDateRange(e: any) {
         this.isDBZoomed = false;
-        if ( this.viewEditMode ) {
+        if ( this.viewEditMode && !this.snapshot ) {
             this.dbTime = { ...this.dbTime, start: e.startTimeDisplay, end: e.endTimeDisplay } ;
             this.refresh();
         } else {
@@ -1794,12 +1848,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     getOwnerFromPath(fullPath: string) {
-        // ex path: /user/zb || /namespace/yamas/save-test2
+        // ex path: /user/admin || /namespace/admin/save-test2
         if (fullPath && fullPath.length) {
             const split = fullPath.split('/');
             if (split.length >= 3 && split[0] === '') {
                 return '/' + split[1].toLowerCase() + '/' + split[2].toLowerCase();
-                // return /user/zb || /namespace/yamas
+                // return /user/admin || /namespace/admin
             }
         }
         return '';
@@ -2027,89 +2081,95 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     batchCopyToClipboard() {
-        const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
+        // show progress in drawer
+        this.clipboardMenu.setDrawerOpen();
+        this.store.dispatch(new SetShowProgress());
 
-        let widgets: any[] = this.getBatchSelectedItems();
+        setTimeout(() => {
+            const dbData = this.store.selectSnapshot(DBState.getLoadedDB);
 
-        let widgetLoaders = this.dbContent.widgetLoaders;
+            let widgets: any[] = this.getBatchSelectedItems();
 
-        let promises: any[] = [];
+            let widgetLoaders = this.dbContent.widgetLoaders;
 
-        // we have to get the widgetLoaders so we can locate the visualization element to take a snapshot image
-        for(let i = 0; i < widgets.length; i++) {
-            let loader = widgetLoaders.find((item: any) => {
-                return item.widget.id === widgets[i].id
-            });
+            let promises: any[] = [];
 
-            const widgetCopy: any = JSON.parse(JSON.stringify(widgets[i]));
+            // we have to get the widgetLoaders so we can locate the visualization element to take a snapshot image
+            for(let i = 0; i < widgets.length; i++) {
+                let loader = widgetLoaders.find((item: any) => {
+                    return item.widget.id === widgets[i].id
+                });
 
-            widgetCopy.settings.clipboardMeta = {
-                dashboard: {
-                    id: dbData.id,
-                    path: dbData.path,
-                    fullPath: dbData.fullPath,
-                    name: dbData.name
-                },
-                copyDate: Date.now(),
-                referencePath: dbData.path + '@' + widgetCopy.id
-            };
+                const widgetCopy: any = JSON.parse(JSON.stringify(widgets[i]));
 
-            // create preview
-            let componentEl: any = loader._component.instance.elRef.nativeElement;
-            componentEl.style.backgroundColor = '#ffffff';
-            let p = domtoimage.toJpeg(componentEl)
-                        .then((dataUrl: any) => {
-                            delete componentEl.style.backgroundColor;
-                            widgetCopy.settings.clipboardMeta.preview = dataUrl;
-                            return widgetCopy;
-                        });
-            // because preview generation is a promise,
-            // we push to array to wait for all promises to resolve with Promise.all
-            promises.push(p);
+                widgetCopy.settings.clipboardMeta = {
+                    dashboard: {
+                        id: dbData.id,
+                        path: dbData.path,
+                        fullPath: dbData.fullPath,
+                        name: dbData.name
+                    },
+                    copyDate: Date.now(),
+                    referencePath: dbData.path + '@' + widgetCopy.id
+                };
 
-        }
+                // create preview
+                let componentEl: any = loader._component.instance.elRef.nativeElement;
+                componentEl.style.backgroundColor = '#ffffff';
+                let p = domtoimage.toJpeg(componentEl)
+                            .then((dataUrl: any) => {
+                                delete componentEl.style.backgroundColor;
+                                widgetCopy.settings.clipboardMeta.preview = dataUrl;
+                                return widgetCopy;
+                            });
+                // because preview generation is a promise,
+                // we push to array to wait for all promises to resolve with Promise.all
+                promises.push(p);
 
-        // allow all promises to resolve before anything else can be done
-        Promise.all(promises)
-           .then((results) => {
+            }
 
-                // resolve dashboard template variables
-                const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
+            // allow all promises to resolve before anything else can be done
+            Promise.all(promises)
+            .then((results) => {
 
-                // copy them to clipboard
-                this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
+                    // resolve dashboard template variables
+                    const resolvedWidgets: any[] = this.resolveDbTplVariablesForClipboard(results);
 
-                // cleanup and resets
-                if (this.clipboardMenu.getDrawerState() === 'closed') {
-                    this.clipboardMenu.toggleDrawerState({});
-                }
-                // deselect
-                let keys = Object.keys(this.batchSelectedItems);
-                let selectedItems = {};
-                this.batchSelectAll = false;
-                this.batchSelectAllIndeterminate = false;
-                for(let i = 0; i < keys.length; i++) {
-                    selectedItems[keys[i]] = false;
-                }
-                this.batchSelectedCount = 0;
-                this.batchSelectedItems = selectedItems
-           })
-           .catch((e) => {
-                // Handle errors here?
-                console.error(e);
+                    // copy them to clipboard
+                    this.store.dispatch(new ClipboardAddItems(resolvedWidgets));
 
-                // reset batchSelectItems
-                let keys = Object.keys(this.batchSelectedItems);
-                let selectedItems = {};
+                    // cleanup and resets
+                    if (this.clipboardMenu.getDrawerState() === 'closed') {
+                        this.clipboardMenu.toggleDrawerState({});
+                    }
+                    // deselect
+                    let keys = Object.keys(this.batchSelectedItems);
+                    let selectedItems = {};
+                    this.batchSelectAll = false;
+                    this.batchSelectAllIndeterminate = false;
+                    for(let i = 0; i < keys.length; i++) {
+                        selectedItems[keys[i]] = false;
+                    }
+                    this.batchSelectedCount = 0;
+                    this.batchSelectedItems = selectedItems
+            })
+            .catch((e) => {
+                    this.store.dispatch(new SetHideProgress());
+                    // Handle errors here?
+                    console.error(e);
 
-                for(let i = 0; i < keys.length; i++) {
-                    selectedItems[keys[i]] = false;
-                }
+                    // reset batchSelectItems
+                    let keys = Object.keys(this.batchSelectedItems);
+                    let selectedItems = {};
 
-                this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
-                this.batchSelectedItems = selectedItems
-            });
+                    for(let i = 0; i < keys.length; i++) {
+                        selectedItems[keys[i]] = false;
+                    }
 
+                    this.batchSelectedCount = (this.batchSelectAll) ? keys.length : 0;
+                    this.batchSelectedItems = selectedItems
+                });
+        }, 100)
     }
 
     openBatchDeleteDialog() {
@@ -2210,7 +2270,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // util function to generate lookup map to dashboard variables
     private getTplVariablesKeyLookup(): any {
-        //this.console.log('TPL VARIABLES', this.tplVariables);
         const rawVariables: any[] = this.tplVariables.viewTplVariables.tvars;
         const variableLookup: any = {};
         for(let i = 0; i < rawVariables.length; i++) {
@@ -2224,7 +2283,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // util to resolve dashboard variables for widgets being moved to clipboard
     private resolveDbTplVariablesForClipboard(widgets: any[]): any[] {
         let dbTplVarLookup = this.getTplVariablesKeyLookup();
-        //this.console.log('DBTPLVARMAP', dbTplVarLookup);
 
         // loop through widgets
         for(let i = 0; i < widgets.length; i++) {
@@ -2241,19 +2299,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // check if there is a custom filter
                     if (filter.customFilter && filter.customFilter.length > 0) {
                         const fkey = filter.customFilter[0];
-                        const fval = dbTplVarLookup[fkey].filter;
+
+                        const fval = dbTplVarLookup[fkey].filter ? dbTplVarLookup[fkey].filter : undefined;
+                        const fvalScope = dbTplVarLookup[fkey].scope ? dbTplVarLookup[fkey].scope : undefined;
+
                         filter.customFilter = [];
-                        if (fval.length > 0) {
-                            filter.filter[0] = dbTplVarLookup[fkey].filter;
+
+                        let filterValue: any[] = (Array.isArray(filter.filter)) ? filter.filter : [];
+
+                        // check if there is set values
+                        if (fval && fval.length > 0) {
+                            filterValue = [fval];
+                            filter.filter = filterValue;
+                        // no value, so check for scoped values
+                        } else if(fvalScope && fvalScope.length > 0) {
+                            filterValue = fvalScope;
+                            filter.filter = filterValue;
+                        // else, just make it empty array
                         } else {
-                            filter.filter = []
+                            filter.filter = filterValue;
                         }
                     }
                 }
             }
         }
-
-        //this.console.log('WIDGET', widgets);
 
         return widgets;
     }

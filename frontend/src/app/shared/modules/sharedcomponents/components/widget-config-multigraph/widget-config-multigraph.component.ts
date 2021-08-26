@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
     Component, OnInit, OnDestroy, OnChanges, SimpleChanges,
     HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef
@@ -11,7 +27,6 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
@@ -104,8 +119,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private fb: FormBuilder,
         private httpService: HttpService,
         private utilService: UtilsService,
-        private multiService: MultigraphService,
-        private console: ConsoleService
+        private multiService: MultigraphService
     ) { }
 
     ngOnInit() { }
@@ -124,10 +138,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     multiModeChange(event: any) {
         this.multigraphMode = event.value;
         if (this.multigraphMode === 'query_group') {
-            this.multigraph.chart[0].key = 'query_group';   
+            this.multigraph.chart[0].key = 'query_group';
         } else {
-            this.multigraph.chart[0].key = 'metric_group';            
-        }       
+            this.multigraph.chart[0].key = 'metric_group';
+        }
         this.widgetChange.emit({
             action: 'UpdateMultigraph',
             payload: {
@@ -135,7 +149,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 changes: this.multigraph
             }
         });
-        this.createForm(this.multigraph);     
+        this.createForm(this.multigraph);
     }
 
     checkAvailableQuery(queries: any[]): boolean {
@@ -155,7 +169,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             // since we only support custom not auto for now
             if (this.multigraph.gridOptions.viewportDisplay === 'fit') {
                 this.multigraph.gridOptions.viewportDisplay = 'custom';
-            }    
+            }
         } else {
           this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
           if (this.multigraphMode === 'query_group') {

@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @mixin tag-aggregator-component-base() {
     .tag-aggregator-component {
         display: flex;
@@ -21,13 +37,53 @@
     // cdk items
     .tag-aggregator-cdk-menu.mat-menu-panel {
         min-width: initial;
+        max-width: initial;
+        display: flex;
 
         .mat-menu-content {
             padding: 0;
 
+            > div {
+                display: flex;
+            }
+
             .mat-menu-item {
                 height: 32px;
                 line-height: 32px;
+            }
+
+            .aggregator-help {
+                display: flex;
+                flex-direction: column;
+                min-width: 250px;
+                max-width: 250px;
+                max-height: 160px;
+
+                .help-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    padding: 4px 8px;
+
+                    span:not(:last-child) {
+                        margin-right: 6px;
+                    }
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(12px);
+                    }
+                }
+
+                .help-description {
+                    flex: 1;
+                    overflow: auto;
+                    padding: 4px 8px;
+                    font-size: 12px;
+
+                    p {
+                        margin-bottom: 8px;
+                    }
+                }
             }
         }
     }
@@ -59,12 +115,32 @@
 
     $brand-color: map-get($background, navbar);
     $brand-color-inverse: map-get($foreground, navbar-text);
-    
+
     $lighter-divider: rgba(0,0,0,0.04);
 
     .tag-aggregator-component {
         .mat-button {
             color: map-get($foreground, link);
+        }
+    }
+
+    // cdk items
+    .tag-aggregator-cdk-menu.mat-menu-panel {
+
+        .mat-menu-content {
+
+            .aggregator-help {
+                background: if(
+                    $is-dark,
+                    rgba(map-get($denali-brand-5, 100), .2),
+                    rgba(map-get($denali-brand-5, 100), .5)
+                );
+                border-left: 1px solid $divider;
+
+                .help-title {
+                   border-bottom: 1px solid $divider;
+                }
+            }
         }
     }
 }

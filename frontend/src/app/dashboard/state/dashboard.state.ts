@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { State , Action, Selector, StateContext, createSelector, Store } from '@ngxs/store';
 import { UserSettingsState } from './user.settings.state';
 import { DBSettingsState, UpdateMeta } from './settings.state';
@@ -6,10 +22,9 @@ import { WidgetsRawdataState, ClearWidgetsData } from './widgets-data.state';
 import { ClientSizeState } from './clientsize.state';
 import { HttpService } from '../../core/http/http.service';
 import { DashboardService } from '../services/dashboard.service';
-import { URLOverrideService } from '../services/urlOverride.service';
+import { URLOverrideService } from '../../core/services/urlOverride.service';
 import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 import { map, catchError } from 'rxjs/operators';
-import { ConsoleService } from '../../core/services/console.service';
 import { UtilsService } from '../../core/services/utils.service';
 
 export interface DBStateModel {
@@ -151,7 +166,6 @@ export class DBState {
         private dbService: DashboardService,
         private urlOverrideService: URLOverrideService,
         private dbConverterService: DashboardConverterService,
-        private console: ConsoleService,
         private store: Store,
         private utils: UtilsService
     ) {}
@@ -197,7 +211,6 @@ export class DBState {
 
     @Action(LoadDashboard)
     loadDashboard(ctx: StateContext<DBStateModel>, { id, clipboardItems }: LoadDashboard) {
-        this.console.action('State :: Load Dashboard', { id });
         // id is the path
         if ( id !== '_new_' ) {
             ctx.patchState({ loading: true});
@@ -239,25 +252,24 @@ export class DBState {
 
     @Action(MigrateAndLoadDashboard)
     migrateAndLoadDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadDashboard) {
-            this.console.action('State :: Migrate and Load Dashboard', { id, payload });
-            this.dbConverterService.convert(payload).subscribe((res) => {
-                this.dbService.updateTplVariablesFromURL(res);
-                ctx.dispatch(new LoadDashboardSuccess(res));
-            });
-            // we dont want to save after conversion but return the conversion version
-            // since user might have no permission to save
-            /*return this.httpService.saveDashboard(id, payload).pipe(
-                map( (res: any) => {
-                    ctx.dispatch(new LoadDashboardSuccess(payload));
-                }),
-                catchError( error => ctx.dispatch(new LoadDashboardFail(error)))
-            );
-            */
+
+        this.dbConverterService.convert(payload).subscribe((res) => {
+            this.dbService.updateTplVariablesFromURL(res);
+            ctx.dispatch(new LoadDashboardSuccess(res));
+        });
+        // we dont want to save after conversion but return the conversion version
+        // since user might have no permission to save
+        /*return this.httpService.saveDashboard(id, payload).pipe(
+            map( (res: any) => {
+                ctx.dispatch(new LoadDashboardSuccess(payload));
+            }),
+            catchError( error => ctx.dispatch(new LoadDashboardFail(error)))
+        );
+        */
     }
 
     @Action(LoadDashboardSuccess)
     loadDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadDashboardSuccess) {
-        this.console.success('State :: Load Dashboard [SUCCESS]', { payload });
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -278,7 +290,6 @@ export class DBState {
     @Action(SaveDashboard)
     saveDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveDashboard) {
             ctx.patchState({ status: 'save-progress', error: {} });
-            this.console.action('State :: Save Dashboard', { id, payload });
             return this.httpService.saveDashboard(id, payload).pipe(
                 map( (res: any) => {
                     ctx.dispatch(new SaveDashboardSuccess(res.body));
@@ -290,7 +301,6 @@ export class DBState {
     @Action(SaveDashboardSuccess)
     saveDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveDashboardSuccess) {
         const state = ctx.getState();
-        this.console.success('State :: Save Dashboard [SUCCESS]', payload);
         // we dont need to upload loadedDB here, do that will cause its state updated.
         ctx.patchState({...state,
             id: payload.id,
@@ -308,7 +318,6 @@ export class DBState {
 
     @Action(LoadSnapshot)
     loadSnapshot(ctx: StateContext<DBStateModel>, { id }: LoadSnapshot) {
-        this.console.action('State :: Load Snapshot', { id });
         ctx.patchState({ loading: true});
         return this.httpService.getSnapshotById(id).pipe(
             map(res => {
@@ -327,16 +336,14 @@ export class DBState {
 
     @Action(MigrateAndLoadSnapshot)
     migrateAndLoadSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadSnapshot) {
-            this.console.action('State :: Migrate and Load Snapshot', { id, payload });
-            this.dbConverterService.convert(payload).subscribe((res) => {
-                this.dbService.updateTplVariablesFromURL(res);
-                ctx.dispatch(new LoadSnapshotSuccess(res));
-            });
+        this.dbConverterService.convert(payload).subscribe((res) => {
+            this.dbService.updateTplVariablesFromURL(res);
+            ctx.dispatch(new LoadSnapshotSuccess(res));
+        });
     }
 
     @Action(LoadSnapshotSuccess)
     loadSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadSnapshotSuccess) {
-        this.console.success('State :: Load Snapshot [SUCCESS]', { payload });
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -356,20 +363,18 @@ export class DBState {
 
     @Action(SaveSnapshot)
     saveSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveSnapshot) {
-            ctx.patchState({ status: 'save-progress', error: {} });
-            this.console.action('State :: Save Snapshot', { id, payload });
-            return this.httpService.saveSnapshot(id, payload).pipe(
-                map( (res: any) => {
-                    ctx.dispatch(new SaveSnapshotSuccess(res.body));
-                }),
-                catchError( error => ctx.dispatch(new SaveSnapshotFail(error)))
-            );
+        ctx.patchState({ status: 'save-progress', error: {} });
+        return this.httpService.saveSnapshot(id, payload).pipe(
+            map( (res: any) => {
+                ctx.dispatch(new SaveSnapshotSuccess(res.body));
+            }),
+            catchError( error => ctx.dispatch(new SaveSnapshotFail(error)))
+        );
     }
 
     @Action(SaveSnapshotSuccess)
     saveSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveSnapshotSuccess) {
         const state = ctx.getState();
-        this.console.success('State :: Save Snapshot [SUCCESS]', payload);
         ctx.patchState({...state,
             lastSnapshotId: payload.id,
             status: 'save-snapshot-success'
@@ -384,14 +389,13 @@ export class DBState {
 
     @Action(DeleteDashboard)
     deleteDashboard(ctx: StateContext<DBStateModel>, { id: id }: DeleteDashboard) {
-            ctx.patchState({ status: 'delete-progress', error: {} });
-            return this.httpService.deleteDashboard(id).pipe(
-                map( (dashboard: any) => {
-                    ctx.dispatch(new DeleteDashboardSuccess(dashboard));
-                }),
-                catchError( error => ctx.dispatch(new DeleteDashboardFail(error)))
-            );
-
+        ctx.patchState({ status: 'delete-progress', error: {} });
+        return this.httpService.deleteDashboard(id).pipe(
+            map( (dashboard: any) => {
+                ctx.dispatch(new DeleteDashboardSuccess(dashboard));
+            }),
+            catchError( error => ctx.dispatch(new DeleteDashboardFail(error)))
+        );
     }
 
     @Action(DeleteDashboardSuccess)

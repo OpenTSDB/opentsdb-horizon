@@ -1,3 +1,19 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, OnInit, Input, Output, EventEmitter, HostBinding } from '@angular/core';
 import { FormGroup , FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl} from '@angular/forms';
 
@@ -21,6 +37,7 @@ export class WidgetConfigSortingComponent implements OnInit {
   searchField: FormControl;
   order: string;
   limit: number;
+  decimals: number;
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -40,7 +57,8 @@ export class WidgetConfigSortingComponent implements OnInit {
       this.limitForm.setValue( {limitInput: this.limit});
     }
 
-  }
+    this.decimals = this.widget.settings.visual.decimals !== undefined ? this.widget.settings.visual.decimals : 2; 
+}
 
   // convenience getter for easy access to form fields
   get formFields() { return this.limitForm.controls; }
@@ -50,6 +68,10 @@ export class WidgetConfigSortingComponent implements OnInit {
       this.limit = this.limitForm.value.limitInput;
       this.widgetChange.emit( {action: 'SetSorting', payload: {order: this.order, limit: this.limit} } );
     }
+  }
+
+  setDecimals(v) {
+    this.widgetChange.emit( { action: 'UpdateQueryMetricVisual', payload: { visual: { 'decimals': v } } } );
   }
 
   integerValidator(): ValidatorFn {

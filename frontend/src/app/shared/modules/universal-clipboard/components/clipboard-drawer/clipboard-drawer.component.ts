@@ -1,12 +1,27 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
-import { ConsoleService } from '../../../../../core/services/console.service';
 import { HttpService } from '../../../../../core/http/http.service';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { ClipboardCreate, ClipboardLoad, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, UniversalClipboardState } from '../../state/clipboard.state';
+import { ClipboardCreate, ClipboardError, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, SetHideProgress, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
@@ -60,6 +75,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
     @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<boolean>;
     @Select(UniversalClipboardState.getClipboardResourceLoaded) cbResourcesLoaded$: Observable<boolean>
     cbResourcesLoaded: boolean = false;
+
+    @Select(UniversalClipboardState.getShowProgress) showProgress$: Observable<boolean>;
+    showProgress: boolean = false;
 
     // list of available clipboards
     @Select(UniversalClipboardState.getClipboards) clipboardList$: Observable<any[]>;
@@ -157,8 +175,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         private http: HttpService,
         private cbService: ClipboardService,
         private dbService: DashboardService,
-        private interCom: IntercomService,
-        private console: ConsoleService
+        private interCom: IntercomService
     ) {
         this.widgetTypes.forEach((item: any, i: any) => {
             this.widgetTypesMap[item.type] = i;
@@ -183,6 +200,10 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
             }
         }));
 
+        this.subscription.add(this.showProgress$.subscribe(showProgress => {
+            this.showProgress = showProgress;
+        }));
+
         // list of available clipboards
         this.subscription.add(this.clipboardList$.subscribe(clipboards => {
             this.clipboardList = clipboards;
@@ -197,6 +218,9 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
                 }
             }
             this.clipboardItems = items;
+            if (this.showProgress) {
+                this.store.dispatch(new SetHideProgress());
+            }
         }));
 
         // active index === index of currently selected clipboard
@@ -225,9 +249,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         }));
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        this.console.log('SIMPLE CHANGES', changes);
-    }
+    ngOnChanges(changes: SimpleChanges) {}
 
      /**
      * DRAWER ACTIONS
@@ -304,6 +326,14 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         } else {
             this.removeClipboardMenuTrigger.closeMenu();
         }
+    }
+
+    removeActiveClipboard() {
+
+        // current index
+        let cbIndex = this.activeIndex;
+
+        this.store.dispatch(new ClipboardRemove(cbIndex));
     }
 
      /**
@@ -441,7 +471,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
                 mTrigger.closeMenu();
             }
         } else {
-            this.console.error('clipboardItemMoreMenu', 'CANT FIND TRIGGER');
+            this.store.dispatch(new ClipboardError('clipboardItemMoreMenu', 'CANT FIND TRIGGER'));
         }
     }
 
@@ -456,7 +486,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
                 mTrigger.closeMenu();
             }
         } else {
-            this.console.error('clipboardItemRemoveMenu', 'CANT FIND TRIGGER');
+            this.store.dispatch(new ClipboardError('clipboardItemRemoveMenu', 'CANT FIND TRIGGER'))
         }
 
     }

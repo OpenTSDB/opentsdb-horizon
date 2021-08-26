@@ -1,5 +1,22 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Injectable } from '@angular/core';
 import { UtilsService } from '../services/utils.service';
+import { AppConfigService } from '../services/config.service';
 
 
 @Injectable({
@@ -7,7 +24,8 @@ import { UtilsService } from '../services/utils.service';
 })
 export class MetaService {
 
-  constructor(private utilsService: UtilsService) { }
+  constructor(private utilsService: UtilsService, 
+              private appConfig: AppConfigService ) { }
 
   getQuery(source, type, params, andOp = true) {
     const [ mSource, fType ] = source.split(':');
@@ -26,12 +44,13 @@ export class MetaService {
       let filters = [];
       const query: any = {};
       query.id = params[i].id || 'id-' + i;
-      query.namespace =  type !== 'NAMESPACES' ? params[i].namespace : this.utilsService.convertPatternTSDBCompat(params[i].search);
+      query.namespace =  type !== 'NAMESPACES' ? ( params[i].namespace || this.appConfig.getDefaultNamespace() ) : this.utilsService.convertPatternTSDBCompat(params[i].search);
       if ( type === 'TAG_KEYS_AND_VALUES' && params[i].tagkey ) {
         metaQuery.aggregationField =  params[i].tagkey;
+        const librange = params[i].search.match(/librange\((.*)\)/);
         filters.push({
-          type: 'TagValueRegex',
-          filter: this.utilsService.convertPattern(params[i].search),
+          type: librange ? 'TagValueLibrange' : 'TagValueRegex',
+          filter: librange ? librange[1] : this.utilsService.convertPattern(params[i].search),
           tagKey: params[i].tagkey
         });
       } else if ( type === 'BASIC' ) {
@@ -75,6 +94,7 @@ export class MetaService {
         }
       }
 
+
       if ( mSource === 'aurastatus' && (type === 'BASIC' || type === 'TAG_KEYS' || type === 'TAG_KEYS_AND_VALUES') ) {
         filters.unshift({
           'type': 'FieldLiteralOr',
@@ -102,17 +122,29 @@ export class MetaService {
   }
 
   getFilter(key, v) {
-    const filterTypes = { 'literalor': 'TagValueLiteralOr', 'wildcard': 'TagValueWildCard', 'regexp': 'TagValueRegex'};
+    const filterTypes = {
+      'literalor': 'TagValueLiteralOr',
+      'wildcard': 'TagValueWildCard',
+      'regexp': 'TagValueRegex',
+      'librange': 'TagValueLibrange' };
     let hasNotOp = false;
     if ( v[0] === '!' ) {
         hasNotOp = true;
         v = v.substr(1);
     }
+    let filtertype = 'literalor';
     const regexp = v.match(/regexp\((.*)\)/);
-    v = regexp ? regexp[1] : v;
-    const type = regexp  ? 'regexp' : 'literalor';
+    const librange = v.match(/librange\((.*)\)/);
+
+    if (regexp) {
+      filtertype = 'regexp';
+      v = regexp[1];
+    } else if (librange) {
+      filtertype = 'librange';
+      v = librange[1];
+    }
     const filter = {
-        type: filterTypes[type],
+        type: filterTypes[filtertype],
         filter: v,
         tagKey: key
     };
@@ -134,8 +166,14 @@ export class MetaService {
         filters[operator] = [];
       }
       const regexp = v.match(/regexp\((.*)\)/);
-      const type = regexp  ? 'regexp' : 'literalor';
-      if ( type === 'regexp') {
+      const librange = v.match(/librange\((.*)\)/);
+      let type = 'literalor';
+      if (regexp) {
+        type = 'regexp';
+      } else if (librange) {
+        type = 'librange'
+      }
+      if ( type === 'regexp' || type === 'librange') {
         filters[operator].push(this.getFilter(key, v));
       } else {
         if ( !literalorV[operator] ) {

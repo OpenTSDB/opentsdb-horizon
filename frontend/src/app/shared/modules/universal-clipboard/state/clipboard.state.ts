@@ -1,12 +1,29 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { catchError, map} from 'rxjs/operators';
 
 import {
     DbfsCreateFolder,
     DbfsResourcesState, DbfsState,
-    DbfsFolderModel
+    DbfsFolderModel,
+    DbfsDeleteDashboard
 } from '../../dashboard-filesystem/state';
-import { ConsoleService } from '../../../../core/services/console.service';
+
 import { UtilsService } from '../../../../core/services/utils.service';
 import { ClipboardService } from '../services/clipboard.service';
 import { DbfsService } from '../../dashboard-filesystem/services/dbfs.service';
@@ -14,17 +31,6 @@ import { DbfsLoadSubfolder } from '../../dashboard-filesystem/state/dbfs-resourc
 import { HttpService } from '../../../../core/http/http.service';
 
 // MODEL INTERFACES
-
-// this is basically a modified widget model
-/*export interface ClipboardItemModel {
-    dashboard: {
-        id: any;
-        fullPath: any;
-        path: any;
-        name: any;
-    };
-    widget: WidgetModel;
-}*/
 
 // this.is basially a DBFS file/dashboard
 export interface ClipboardModel {
@@ -35,6 +41,7 @@ export interface ClipboardModel {
 // this is basically loads and transforms a DBFS folder '/user/[user.namer]/_clipboard_'
 export interface ClipboardResourceModel {
     loaded: boolean;
+    showProgress: boolean;
     resource: any; // pointer to DBFS folder resource <DbfsFolderModel>
     clipboardsList: ClipboardModel[];  // list of clipboards ClipboardModel[]
     clipboard: any; // active clipboard
@@ -82,7 +89,6 @@ export class ClipboardCreateSuccess {
 export class ClipboardRemove {
     public static type = '[Clipboard] Remove';
     constructor(
-        public readonly clipboard: any,
         public readonly index: any
     ) {}
 }
@@ -184,6 +190,16 @@ export class SetClipboardActiveSuccess {
     constructor() {}
 }
 
+export class SetShowProgress {
+    public static type = '[Clipboard] Show Progress';
+    constructor() {}
+}
+
+export class SetHideProgress {
+    public static type = '[Clipboard] Hide Progress';
+    constructor() {}
+}
+
 
 // state
 @State<ClipboardResourceModel>({
@@ -191,6 +207,7 @@ export class SetClipboardActiveSuccess {
     defaults: {
         loaded: false,
         resource: false,
+        showProgress: false,
         clipboardsList: [],
         clipboard: false,
         clipboardAction: {}
@@ -205,14 +222,17 @@ export class UniversalClipboardState {
         private utils:      UtilsService,
         private service:    ClipboardService,
         private dbfs:       DbfsService,
-        private http:       HttpService,
-        private console:    ConsoleService
+        private http:       HttpService
     ) { }
 
     // SELECTORS
 
     @Selector() static getClipboardResourceLoaded(state: ClipboardResourceModel) {
         return state.loaded;
+    }
+
+    @Selector() static getShowProgress(state: ClipboardResourceModel) {
+        return state.showProgress;
     }
 
     @Selector() static getClipboards(state: ClipboardResourceModel) {
@@ -248,7 +268,6 @@ export class UniversalClipboardState {
     // ACTIONS
     @Action(ClipboardResourceInitialize)
     clipboardResourceInitialization(ctx: StateContext<ClipboardResourceModel>, {}: ClipboardResourceInitialize) {
-        this.console.action('State :: Initialize Clipboard Resource');
         // cb resource check
         const cbResource = this.service.clipboardFolderResource();
 
@@ -319,7 +338,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardResourceInitializeSuccess)
     clipboardResourceInitializationSuccess(ctx: StateContext<ClipboardResourceModel>, {}: ClipboardResourceInitializeSuccess) {
-        this.console.success('State :: Initialize Clipboard Resource SUCCESS');
         // get resource
         const resource: DbfsFolderModel = this.service.clipboardFolderResource();
         const files: any[] = resource.files;
@@ -358,7 +376,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardLoad)
     clipboardLoad(ctx: StateContext<ClipboardResourceModel>, { }: ClipboardLoad) {
-        this.console.action('State :: Load Clipboard');
 
         const state = ctx.getState();
         const active: any[] = state.clipboardsList.filter(item => item.active);
@@ -380,7 +397,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardLoadSuccess)
     clipboardLoadSuccess(ctx: StateContext<ClipboardResourceModel>, { response }: ClipboardLoadSuccess) {
-        this.console.action('State :: Load Clipboard SUCCESS');
 
         const state = ctx.getState();
 
@@ -399,7 +415,6 @@ export class UniversalClipboardState {
     // create Clipboard
     @Action(ClipboardCreate)
     clipboardCreate(ctx: StateContext<ClipboardResourceModel>, { title }: ClipboardCreate) {
-        this.console.action('State :: Create clipboard');
         this.service.createClipboardResource(title)
             .subscribe(
                 (res: any) => {
@@ -411,7 +426,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardCreateSuccess)
     clipboardCreateSuccess(ctx: StateContext<ClipboardResourceModel>, { response }: ClipboardCreateSuccess) {
-        this.console.success('State :: Create clipboard SUCCESS', {response});
         const cbResource = this.service.clipboardFolderResource();
         this.store.dispatch(new DbfsLoadSubfolder(cbResource.fullPath, {})).pipe(
             map(() => {
@@ -441,23 +455,46 @@ export class UniversalClipboardState {
     // modify clipboard
     @Action(ClipboardModify)
     clipboardModify(ctx: StateContext<ClipboardResourceModel>, { clipboard, index }: ClipboardModify) {
-        this.console.action('State :: Modify clipboard');
+        // TODO
     }
 
     @Action(ClipboardModifySuccess)
     clipboardModifySuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardModifySuccess) {
-        this.console.success('State :: Modify clipboard SUCCESS');
+        // TODO
     }
 
     // remove clipboard - basically move to trash
     @Action(ClipboardRemove)
-    clipboardRemove(ctx: StateContext<ClipboardResourceModel>, { clipboard, index }: ClipboardRemove) {
-        this.console.action('State :: Remove clipboard');
+    clipboardRemove(ctx: StateContext<ClipboardResourceModel>, { index }: ClipboardRemove) {
+        let state = ctx.getState();
+        if (index === 0) {
+            // can't delete default
+            ctx.dispatch(new ClipboardError({message: 'Can not delete Default'}, 'clipboardRemove :: error in clipboard removal'));
+        } else {
+            let cbList = state.clipboardsList
+            // get the cb "dashboard"
+            let cbDB = cbList[index];
+
+
+            ctx.dispatch([
+                new SetClipboardActive(0), // set active to default
+                new DbfsDeleteDashboard(cbDB.resource.fullPath, {})
+            ]).subscribe(
+                (resp: any) => {
+                    // good
+                    ctx.dispatch(new ClipboardRemoveSuccess(resp, index));
+                },
+                (error: any) => {
+                    // error
+                    ctx.dispatch(new ClipboardError(error, 'Clipboard Removal [Clipboard Remove]'));
+                }
+            );
+        }
     }
 
     @Action(ClipboardRemoveSuccess)
     clipboardRemoveSuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardRemoveSuccess) {
-        this.console.success('State :: Remove clipboard SUCCESS');
+        ctx.dispatch(new ClipboardResourceInitialize());
     }
 
     /** CLIPBOARD ITEMS (aka widgets) */
@@ -465,7 +502,6 @@ export class UniversalClipboardState {
     // add Clipboard Item - Will add to the active clipboard widgets
     @Action(ClipboardAddItems)
     clipboardAddItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardAddItems) {
-        this.console.action('State :: Add clipboard item');
 
         if (this.timeoutTries > 2) {
             ctx.dispatch(new ClipboardError(new Error('Action Timed Out'), 'Clipboard Add Items'));
@@ -477,9 +513,6 @@ export class UniversalClipboardState {
                 },
                 (error: any) => {
                     ctx.dispatch(new ClipboardError(error, 'Clipboard Add Items [Clipboard Load] - FINAL TRY'));
-                },
-                () => {
-                    // its complete... maybe do something?
                 }
             );
             return;
@@ -527,7 +560,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardAddItemsSuccess)
     clipboardAddItemsSuccess(ctx: StateContext<ClipboardResourceModel>, { response, args }: ClipboardAddItemsSuccess) {
-        this.console.success('State :: Add clipboard items SUCCESS', {response, args});
         const state = ctx.getState();
 
         ctx.setState({
@@ -539,18 +571,17 @@ export class UniversalClipboardState {
     // modify clipboard item from active clipboard
     @Action(ClipboardModifyItem)
     clipboardModifyItem(ctx: StateContext<ClipboardResourceModel>, { item, index }: ClipboardModifyItem) {
-        this.console.action('State :: Modify clipboard item');
+        // TODO
     }
 
     @Action(ClipboardModifyItemSuccess)
     clipboardModifyItemSuccess(ctx: StateContext<ClipboardResourceModel>, { response, index }: ClipboardModifyItemSuccess) {
-        this.console.success('State :: Modify clipboard item SUCCESS');
+        // TODO
     }
 
     // remove clipboard item from active clipboard
     @Action(ClipboardRemoveItems)
     clipboardRemoveItems(ctx: StateContext<ClipboardResourceModel>, { items }: ClipboardRemoveItems) {
-        this.console.action('State :: Remove clipboard items');
 
         const state = ctx.getState();
 
@@ -576,7 +607,6 @@ export class UniversalClipboardState {
 
     @Action(ClipboardRemoveItemsSuccess)
     clipboardRemoveItemSuccess(ctx: StateContext<ClipboardResourceModel>, { response }: ClipboardRemoveItemsSuccess) {
-        this.console.action('State :: Remove clipboard item SUCCESS', response);
         var state = ctx.getState();
 
         ctx.setState({...state,
@@ -587,8 +617,6 @@ export class UniversalClipboardState {
     // activate clipboard
     @Action(SetClipboardActive)
     setClipboardActive(ctx: StateContext<ClipboardResourceModel>, { index }: SetClipboardActive) {
-        this.console.action('State :: Set clipboard active', {index});
-
         const state = ctx.getState();
         let clipboardsList: any[] = this.utils.deepClone(state.clipboardsList);
 
@@ -611,21 +639,43 @@ export class UniversalClipboardState {
         catch(error) {
             ctx.dispatch(new ClipboardError(error, 'Set clipboard active Failed'));
         }
-        ctx.dispatch(new SetClipboardActiveSuccess());
 
+        ctx.dispatch(new SetClipboardActiveSuccess());
     }
 
     @Action(SetClipboardActiveSuccess)
     setClipboardActiveSuccess(ctx: StateContext<ClipboardResourceModel>, {}: SetClipboardActiveSuccess) {
-        this.console.action('State :: Set clipboard active SUCCESS');
         ctx.dispatch(new ClipboardLoad());
+    }
+
+    /** Progress */
+    @Action(SetShowProgress)
+    setShowProgress(ctx: StateContext<ClipboardResourceModel>, {}: SetShowProgress) {
+        let state = ctx.getState();
+        ctx.setState({
+            ...state,
+            showProgress: true
+        });
+    }
+
+    @Action(SetHideProgress)
+    setHideProgress(ctx: StateContext<ClipboardResourceModel>, {}: SetHideProgress) {
+        let state = ctx.getState();
+        ctx.setState({
+            ...state,
+            showProgress: false
+        });
     }
 
     /** General Error Action */
     @Action(ClipboardError)
     clipboardError(ctx: StateContext<ClipboardResourceModel>, { error, label }: ClipboardError) {
-        this.console.error('State :: ' + label, error);
+        console.group(
+            '%cERROR%c' + label,
+            'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
+            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+        );
+        console.log('%cErrorMsg', 'font-weight: bold;', error);
+        console.groupEnd();
     }
-
-
 }
