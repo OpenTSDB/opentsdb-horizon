@@ -304,6 +304,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
             if (resourcesLoaded) {
                 const user = this.store.selectSnapshot(DbfsState.getUser());
+                console.log('USER', user);
+                // NOTE: this user admin thing needs to be more robust
+                // possibly set in the config
                 this.isAdminMember = user.memberNamespaces.includes('admin');
             }
         }));

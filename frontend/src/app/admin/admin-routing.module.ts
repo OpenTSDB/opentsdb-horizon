@@ -17,7 +17,71 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [];
+import { AdminComponent } from './containers/admin/admin.component';
+import { AdminConfigComponent } from './components/admin-config/admin-config.component';
+import { AdminDefaultComponent } from './components/admin-default/admin-default.component';
+import { AdminNamespacesComponent } from './components/admin-namespaces/admin-namespaces.component';
+import { AdminThemesComponent } from './components/admin-themes/admin-themes.component';
+import { AdminUsersComponent } from './components/admin-users/admin-users.component';
+
+const routes: Routes = [
+    {
+        path: '',
+        component: AdminComponent,
+        children: [
+            {
+                path: 'config',
+                component: AdminConfigComponent
+            },
+            {
+                path: 'themes',
+                component: AdminThemesComponent
+            },
+            {
+                path: 'themes/:themeid',
+                component: AdminThemesComponent
+            },
+            {
+                path: 'theme',
+                redirectTo: 'themes',
+                pathMatch: 'full'
+            },
+            {
+                path: 'users',
+                component: AdminUsersComponent
+            },
+            {
+                path: 'user/:userid',
+                component: AdminUsersComponent
+            },
+            {
+                path: 'user',
+                redirectTo: 'users',
+                pathMatch: 'full'
+            },
+            {
+                path: 'namespaces',
+                component: AdminNamespacesComponent
+            },
+            {
+                path: 'namespace/:nsalias',
+                component: AdminNamespacesComponent
+            },
+            {
+                path: 'namespace',
+                redirectTo: 'namespaces',
+                pathMatch: 'full'
+            },
+            {
+                path: '',
+                component: AdminDefaultComponent
+            }
+        ]
+    }
+];
+
+// NOTE: not sure how yet, but we need to put a check here to see if user is actually an admin
+// TODO: AUTHCHECK NEEDED
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

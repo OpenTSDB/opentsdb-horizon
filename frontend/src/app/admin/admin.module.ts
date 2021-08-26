@@ -18,12 +18,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
+import { AdminComponent } from './containers/admin/admin.component';
+import { AdminUsersComponent } from './components/admin-users/admin-users.component';
+import { AdminNamespacesComponent } from './components/admin-namespaces/admin-namespaces.component';
+import { AdminConfigComponent } from './components/admin-config/admin-config.component';
+import { AdminDefaultComponent } from './components/admin-default/admin-default.component';
+import { AdminThemesComponent } from './components/admin-themes/admin-themes.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    AdminRoutingModule
-  ],
-  declarations: []
+    imports: [
+        CommonModule,
+        AdminRoutingModule
+    ],
+    declarations: [
+        AdminComponent,
+        AdminUsersComponent,
+        AdminNamespacesComponent,
+        AdminConfigComponent,
+        AdminDefaultComponent,
+        AdminThemesComponent
+    ]
 })
 export class AdminModule { }
