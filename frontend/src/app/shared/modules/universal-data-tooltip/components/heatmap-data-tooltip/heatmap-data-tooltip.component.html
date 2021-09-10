@@ -1,0 +1,33 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="tooltip-output shift-{{yShift}} shift-{{xShift}}" *ngIf="_ttData" #tooltipOutput>
+    <div class="value-marker">
+        <span class="value" [style.color]="_ttData.colorContrast" [style.background]="_ttData.color">{{_ttData.affectedSeries}}</span>
+        <span class="time">{{_ttData.timestampFormatted}}</span>
+    </div>
+    <div class="other-data">
+        <p>Bucket Range: {{_ttData.bucketRange}}</p>
+        <ng-container *ngIf="_ttData.bucketValues && _ttData.bucketValues.length > 0">
+            <table>
+                <tr *ngFor="let tt of _ttData.bucketValues">
+                    <td>{{tt.value}} &nbsp;&nbsp;</td>
+                    <td>{{tt.label}}</td>
+                </tr>
+            </table>
+        </ng-container>
+    </div>
+</div>

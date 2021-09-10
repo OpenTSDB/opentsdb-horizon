@@ -1,0 +1,288 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin timeseries-legend-component-base() {
+    .timeseries-legend-component {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 100%;
+
+        .ts-data-wrapper {
+            flex: 1;
+        }
+
+        .ts-legend-toolbar {
+            font-size: 12px;
+
+            &.mat-toolbar-multiple-rows {
+                min-height: initial;
+            }
+
+            .mat-toolbar-row {
+                padding: 0 6px;
+            }
+
+            .mat-toolbar-row.detail-brief {
+                font-weight: normal;
+                height: 24px;
+                font-size: 10px;
+            }
+        }
+
+        .ts-legend-table {
+            min-width: 100%;
+
+            .mat-header-row .mat-header-cell {
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .mat-row .mat-cell {
+                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                font-size: 12px;
+            }
+
+            .mat-header-row,
+            .mat-row {
+                height: auto;
+
+                .mat-header-cell,
+                .mat-cell {
+                    &:first-child {
+                        flex: initial;
+                        max-width: 35px;
+                        width: 35px;
+                    }
+                }
+
+            }
+
+            .mat-header-row .mat-header-cell,
+            .mat-row .mat-cell {
+                padding-top: 4px;
+                padding-bottom: 4px;
+                padding-left: 4px;
+                padding-right: 4px;
+                white-space: nowrap;
+
+                &:first-of-type {
+                    padding-left: 8px;
+                }
+
+                &:last-of-type {
+                    padding-right: 8px;
+                }
+
+                // value column is right aligned
+                &.mat-column-value {
+                    text-align: right;
+                }
+            }
+
+            .mat-header-cell.mat-column-value .mat-sort-header-container {
+                justify-content: flex-end;
+            }
+
+            .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow{ opacity: 1 !important; }
+
+            .mat-cell.tag-highlight {
+                cursor: pointer;
+            }
+
+            .mat-header-cell.mat-column-checkbox,
+            .mat-cell.mat-column-checkbox {
+                .mat-icon-button {
+                    width: 24px;
+                    height: 24px;
+                    line-height: 24px;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(18px);
+                }
+            }
+        }
+
+        .color-chip {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            display: inline-block;
+            margin-right: 4px;
+        }
+    }
+
+    // island toolbar
+    .info-island-toolbar.timeseries-legend-toolbar {
+        .toolbar-item {
+            &:not(:last-child) {
+                margin-right: 6px;
+            }
+
+            &.show-limit-types {
+                > span {
+                    margin-right: 6px;
+                }
+
+                .mat-flat-button {
+                    padding: 0 0 0 8px;
+                    line-height: 18px;
+                    font-size: 12px;
+
+                    .mat-button-wrapper {
+                        display: flex;
+                        text-align: left;
+
+                        > span {
+                            flex: 1;
+                        }
+                    }
+                }
+            }
+
+            &.show-amount-controls {
+                input {
+                    font-size: 12px;
+                    max-width: 50px;
+                }
+            }
+
+            &.logscale-controls {
+                > span {
+                    margin-right: 6px;
+                }
+
+                .mat-checkbox {
+                    margin-right: 8px;
+                }
+            }
+        }
+
+        .mat-select-arrow-wrapper {
+            width: 24px;
+            display: flex;
+            align-items: center;
+
+            .mat-select-arrow {
+                width: 0;
+                height: 0;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid;
+                margin: 0 4px;
+                //color: rgba(0, 0, 0, .54);
+            }
+        }
+    }
+
+    // cdk items
+    .show-limit-type-cdk-menu.mat-menu-panel {
+        .mat-menu-item {
+            height: 24px;
+            line-height: 24px;
+        }
+
+        .mat-divider {
+            margin: 8px 0;
+        }
+    }
+}
+
+@mixin timeseries-legend-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+
+    $menu-bg: if($is-dark, lighten(map-get($background, menu), 6%), map-get($background, menu));
+
+    $cdk-window-bg: $menu-bg;
+    $cdk-window-border: $divider;
+
+    $header-bg: if($is-dark, map-get($background, menu), map-get($background, navbar));
+    $text: map-get($foreground, navbar-text);
+
+    $brief-dark: #3a87ad;
+    $brief-light: #ddeff9;
+
+    .timeseries-legend-component {
+        .ts-legend-toolbar {
+            color: white;
+            background-color: black;
+
+            .mat-toolbar-row.detail-brief {
+                color: if($is-dark, $brief-light, $brief-dark);
+                background-color: if($is-dark, $brief-dark, $brief-light);
+            }
+        }
+
+        .ts-legend-table {
+            background: $cdk-window-bg;
+
+            .mat-sort-header-container.mat-sort-header-sorted {
+                color: #c09853;
+
+                .mat-sort-header-arrow {
+                    color: darken(#c09853, 15%);
+                }
+            }
+
+            .mat-row:hover,
+            .mat-row.tag-highlight {
+                background-color: rgba(map-get($primary, default), .04);
+            }
+            .mat-cell:hover,
+            .mat-cell.tag-highlight {
+                background-color: rgba(map-get($primary, default), .15);
+            }
+        }
+    }
+
+    // island toolbar
+    .info-island-toolbar.timeseries-legend-toolbar {
+
+        @if $is-dark {
+            .mat-select-arrow-wrapper .mat-select-arrow {
+                color: white;
+            }
+        }
+
+        .mat-checkbox:not(.mat-checkbox-checked) {
+            .mat-checkbox-background {
+                background-color: white;
+            }
+        }
+    }
+
+    @if $is-dark {
+        .mat-menu-panel.show-limit-type-cdk-menu {
+            background: lighten($menu-bg, 6%);
+        }
+    }
+
+    // cdk items
+    .namespace-selector-menu.mat-menu-panel {
+        border: 1px solid map-get($foreground, divider);
+    }
+}

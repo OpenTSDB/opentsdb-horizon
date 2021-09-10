@@ -1,0 +1,74 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * PIN PANEL COMPONENT
+ */
+
+ @mixin pin-panel-component-base() {
+    .pin-panel {
+        display: flex;
+        flex-direction: column;
+
+        .panel-header {
+
+        }
+
+        .panel-content {
+
+
+            .no-data {
+                .no-activity {
+                    margin: 15px 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+
+                    .illustration {
+                        width: 120px;
+                        height: 120px;
+                        position: relative;
+                        border-radius: 50%;
+                        background-color: rgba(0,0,0,0.06);
+                        margin-bottom: 15px;
+
+                        &::after {
+                            content: 'Illustration';
+                            font-size: 14px;
+                            font-weight: 500;
+                            display: block;
+                            line-height: 120px;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin pin-panel-component-theme($theme-config) {
+    /* Theme config parts */
+   $primary: map-get($theme-config, primary);
+   $accent: map-get($theme-config, accent);
+   $warn: map-get($theme-config, warn);
+   $success: map-get($theme-config, success);
+   $foreground: map-get($theme-config, foreground);
+   $background: map-get($theme-config, background);
+   $is-dark-theme: map-get($theme-config, is-dark);
+}

@@ -1,0 +1,49 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="edit-view-container" [ngClass]="{'is-active': viewEditMode}">
+    <span widget-view-container></span>
+</div>
+
+<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
+    <div class="is-scroller">
+        <ngx-gridster #gridster class="dashboard"
+            [options]="gridsterOptions"
+            (optionsChange)="breakpointChange($event)"
+            (reflow)="gridsterFlow($event)"
+            [draggableOptions]="{ handlerClass: 'panel-heading' }">
+
+            <ngx-gridster-item #itemComp class="gridster-item prevent-animation" id="{{widget.id}}"
+                *ngFor="let widget of widgets; let idx = index; trackBy: trackByWidget"
+                [(x)]="widget.gridPos.x"
+                [(y)]="widget.gridPos.y"
+                [(xMd)]="widget.gridPos.xMd" [(xSm)]="widget.gridPos.xSm"
+                [(yMd)]="widget.gridPos.yMd" [(ySm)]="widget.gridPos.ySm"
+                [(wMd)]="widget.gridPos.wMd" [wSm]="widget.gridPos.wSm"
+                [(hMd)]="widget.gridPos.hMd" [hSm]="widget.gridPos.hSm"
+                [(w)]="widget.gridPos.w"
+                [(h)]="widget.gridPos.h"
+                (end)="gridEventEnd($event)">
+              <app-widget-loader
+                (editComponent)="editComponent($event)"
+                [batchSelector]="batchControlsToggle"
+                [batchSelected]="batchSelectedItems[widget.id]"
+                [widget]="widget"
+                [isNewDb]="dbid === '_new_'"></app-widget-loader>
+            </ngx-gridster-item>
+        </ngx-gridster>
+    </div>
+</div>

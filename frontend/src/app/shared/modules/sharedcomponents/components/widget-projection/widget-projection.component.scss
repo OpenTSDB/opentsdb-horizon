@@ -1,0 +1,152 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin widget-projection-component-base() {
+    .widget-projection {
+        display: flex;
+        flex: 1 1 100%;
+
+        .mat-card {
+            padding: initial;
+        }
+
+        .panel-heading {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+            top: 0;
+            cursor: move;
+            max-height: 24px;
+            flex: 1 1 24px;
+            min-height: 24px;
+
+            .panel-title {
+                display: inline-block;
+                padding: 2px;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 12px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                padding: 0 10px;
+                font-weight: 500;
+            }
+        }
+
+        .mat-toolbar,
+        .mat-toolbar-row {
+            font-size: 1.1em;
+            height: 24px;
+            min-height: 24px !important;
+            //border-bottom: 1px solid #dfdfdf;
+            font-weight: 500;
+        }
+
+        .mat-toolbar {
+            -webkit-transition: background 500ms;
+            transition: background 500ms;
+        }
+
+        .mat-toolbar-row {
+            //@include mat-elevation(1);
+            padding: initial;
+        }
+
+        .mat-icon-button {
+            &,
+            .mat-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            &,
+            .mat-button-wrapper {
+                line-height: 28px;
+            }
+
+            .mat-icon {
+                font-size: 18px;
+                line-height: 24px;
+            }
+        }
+
+
+
+        // .mat-card-content.panel-body
+        .panel-body {
+            // padding: 0 10px 10px;
+            display: flex;
+
+            .panel-heading {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 9;
+            }
+        }
+    }
+
+}
+
+@mixin widget-projection-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .widget-projection {
+        .mat-card {
+            box-shadow: none;
+            background-color: map-get($background, card);
+            border: 1px solid rgba(0, 0, 0, .08);
+
+            .panel-body .panel-heading {
+                background-color: transparent;
+                display: none;
+
+                & {
+                    @include transition(background-color 0.2s ease-in-out);
+                }
+
+
+
+                .mat-toolbar {
+                    @include transition(none);
+                    background: transparent;
+
+                    .mat-icon-button {
+                        @include opacity(.5);
+                    }
+                }
+
+                &:hover {
+                    //background-color: rgba(map-get($accent, A700), .1);
+                    background-color: map-get($background, card-header-hover);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

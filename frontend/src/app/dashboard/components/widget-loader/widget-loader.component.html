@@ -1,0 +1,129 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+<mat-card fxLayout="column" fxFlexFill>
+    <mat-card-content fxFlex="1 1 100%" fxLayout="column" fxLayoutAlign="stretch stretch" class="panel-body">
+        <div fxFlex="1 1 18px" fxLayout="row" fxLayoutAlign="stretch stretch" class="panel-heading">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <span class="batch-selector"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && batchSelector">
+                        <mat-checkbox [checked]="batchSelected"
+                            (change)="toggleSelectItem($event)"></mat-checkbox>
+                    </span>
+                    <span class="panel-title"
+                        matTooltip="{{widget.settings.title}}"
+                        [matTooltipClass]="{'cdk-widget-title-tooltip':true}"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'BignumberWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'
+                                && widget.settings.component_type !== 'EventsWidgetComponent'">{{widget.settings.title}}</span>
+                    <span class="flex-spacer"></span>
+                    <!--<button mat-icon-button (click)="openIsland();">
+                        <mat-icon fontSet="denali" fontIcon="d-memory-chip"></mat-icon>
+                    </button>-->
+                    <!-- overide time button -->
+                    <button mat-icon-button class="time-lock"
+                        *ngIf="canOverrideTime && widget.settings.time && widget.settings.time.overrideTime"
+                        matTooltip="{{widget.settings.time.overrideTime.start}} - {{widget.settings.time.overrideTime.end}}">
+                        <mat-icon fontSet="denali" fontIcon="d-time-lock"></mat-icon>
+                    </button>
+                    <!-- snapshot button -->
+                    <button mat-icon-button class="snapshot-icon"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
+                        (click)="saveSnapshot()"
+                        matTooltip="Snapshot">
+                        <mat-icon fontSet="denali" fontIcon="d-camera" ></mat-icon>
+                    </button>
+                    <!-- explore more button -->
+                    <button mat-icon-button class="expand-trigger"
+                        matTooltip="Explore"
+                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
+                        (click)="loadWidget('explore')">
+                        <mat-icon fontSet="denali" fontIcon="d-expand-fullscreen" ></mat-icon>
+                    </button>
+                    <!-- 3-dot menu button-->
+                    <button mat-icon-button class="widget-menu-trigger"
+                        [matMenuTriggerFor]="widgetMenu"
+                        matTooltip="More options">
+                        <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>
+                    </button>
+                    <mat-menu #widgetMenu="matMenu" xPosition="before" class="widget-menu">
+                        <ng-container *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'">
+                            <button mat-menu-item (click)="loadWidget('edit')">
+                                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                <span>Edit view</span>
+                            </button>
+                            <button mat-menu-item (click)="widgetClone()">
+                                <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
+                                <span>Clone</span>
+                            </button>
+                            <button mat-menu-item (click)="widgetCopy()" *ngIf="!isNewDb && widget.settings.component_type !== 'PlaceholderWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-copy-file"></mat-icon>
+                                <span>Copy Widget</span>
+                            </button>
+                            <button mat-menu-item (click)="createAlert()" *ngIf="userHasWriteAccessToNamespace && widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-notification"></mat-icon>
+                                <span>Create Alert</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadJSON()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                                <span>JSON data</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadDataQuery()" *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent'
+                                && widget.settings.component_type !== 'MarkdownWidgetComponent'">
+                                <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                                <span>Data query</span>
+                            </button>
+                            <!--<button mat-menu-item (click)="widgetShare()">
+                                <mat-icon fontSet="denali" fontIcon="d-share"></mat-icon>
+                                <span>Share</span>
+                            </button>
+                            <button mat-menu-item [matMenuTriggerFor]="subMenu">
+                                <mat-icon></mat-icon>
+                                <span>Export</span>
+                            </button>-->
+                            <span class="menu-seperator"></span>
+                        </ng-container>
+                        <button mat-menu-item (click)="widgetRemove()">
+                            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                            <span>Remove</span>
+                        </button>
+                    </mat-menu>
+                    <!--<mat-menu #subMenu="matMenu" class="widget-submenu">
+                        <button mat-menu-item (click)="widgetExportJSON()">
+                            <mat-icon fontSet="denali" fontIcon="d-upload"></mat-icon>
+                            <span>Export JSON</span>
+                        </button>
+                        <button mat-menu-item (click)="widgetExportImage()">
+                            <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                            <span>Download Image</span>
+                        </button>
+                    </mat-menu>-->
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <div widget-container></div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #islandPortalTest>
+    <strong>Info Island Template Portal Example (w/context)</strong> <br />
+    {{widget|json}}
+</ng-template>

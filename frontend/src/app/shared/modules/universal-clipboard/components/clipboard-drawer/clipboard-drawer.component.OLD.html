@@ -1,0 +1,96 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="clipboard-drawer-wrap">
+    <div class="clipboard-header">
+        <div class="clipboard-header-close-control">
+            <button mat-icon-button color="primary" (click)="close()">
+                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+            </button>
+        </div>
+        <div class="clipboard-header-label">
+            <span>Clipboard</span>
+        </div>
+    </div>
+    <div class="clipboard-selector">
+        <mat-form-field>
+            <mat-label>Selected clipboard</mat-label>
+            <mat-select [value]="activeIndex">
+                <mat-option *ngFor="let cb of clipboardList; let idx = index" [value]="idx">
+                    {{cb.resource.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!--<div class="clipboard-selector">
+        state: {{getToggleDrawer}}<br />
+        clipboard items: {{cbItems.selectedOptions.selected.length}}/{{cbItems.options.length}}<br />
+    </div>-->
+    <div class="clipboard-content">
+        <div class="clipboard-content-scroller has-scroller">
+            <div class="clipboard-item-list is-scroller">
+
+
+
+
+
+                <mat-accordion multi="true">
+                    <!-- if no items -->
+                    <mat-expansion-panel class="clipboard-item" *ngIf="clipboardItems.length === 0" expanded="true"
+                        hideToggle="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                No clipboard items
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="clipboard-item-detail">
+                            Please add items to this clipboard
+                        </div>
+                    </mat-expansion-panel>
+                    <!-- has items -->
+                    <mat-expansion-panel class="clipboard-item"
+                        *ngFor="let data of clipboardItems; let i = index;"
+                        (click)="toggleDetail(data.id)">
+                        <mat-expansion-panel-header
+                        expandedHeight="32px" collapsedHeight="32px">
+                            <mat-panel-title>
+                                <span class="widget-type-icon {{ widgetTypes[widgetTypesMap[data.settings.component_type]].iconClass }}"></span>
+                                <span>{{data.settings.title}}</span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="clipboard-item-detail" (click)="$event.stopPropagation()">
+                            <div class="item-detail item-label">
+                                <strong>Widget type:</strong> <span>{{widgetTypes[widgetTypesMap[data.settings.component_type]].label}}</span>
+                            </div>
+                            <div class="item-detail item-label">
+                                <strong>Dashboard origin:</strong> <span>{{data.settings.clipboardMeta.dashboard.name}}</span>
+                            </div>
+                            <div class="item-detail copy-date">
+                                <strong>Copied on:</strong> <span>{{data.settings.clipboardMeta.copyDate | date:'medium'}}</span>
+                            </div>
+                        </div>
+
+                        <mat-action-row (click)="$event.stopPropagation()">
+                            <button mat-button color="primary" (click)="pasteToDashboard(data, i)">Paste to dashboard</button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+
+            </div>
+        </div>
+    </div>
+</div>

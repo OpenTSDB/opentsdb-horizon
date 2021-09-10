@@ -1,0 +1,38 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import './containers/info-island.component';
+@import './components/info-island-toolbar/info-island-toolbar.component';
+
+@import './components/event-stream/event-stream.component';
+@import './components/timeseries-legend/timeseries-legend.component';
+@import './components/heatmap-bucket-detail/heatmap-bucket-detail.component';
+
+@mixin info-island-module-core() {
+    @include info-island-component-base();
+    @include info-island-toolbar-component-base();
+    @include event-stream-component-base();
+    @include timeseries-legend-component-base();
+    @include heatmap-bucket-detail-component-base();
+}
+
+@mixin info-island-module-theme($theme-config) {
+    @include info-island-component-theme($theme-config);
+    @include info-island-toolbar-component-theme($theme-config);
+    @include event-stream-component-theme($theme-config);
+    @include timeseries-legend-component-theme($theme-config);
+    @include heatmap-bucket-detail-component-theme($theme-config);
+}

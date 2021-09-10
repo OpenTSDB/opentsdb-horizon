@@ -1,0 +1,93 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin dashboard-to-alert-dialog-component-base() {
+    .dashboard-to-alert-dialog {
+
+        .header {
+            text-align: center;
+            position: sticky;
+            top: 0;
+            left: 0;
+            font-size: 16px;
+            z-index: 1;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .namespace-list {
+            &.mat-nav-list {
+                width: 500px;
+                height: 300px;
+                overflow-y: scroll;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+            padding: 0px;
+
+        }
+
+        .mat-nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            padding: 0px;
+
+            .ns-item {
+                &.mat-list-item {
+                    height: 32px
+                }
+            }
+        }   
+    }
+}
+
+@mixin dashboard-to-alert-dialog-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $close-button-background: map-get($accent, A400);
+    $close-button-text: map-get($foreground, navbar-text);
+
+    $bg: map-get($background, background);
+    $fg: map-get($foreground, foreground);
+
+    .dashboard-to-alert-dialog  {
+
+        .header {
+            background: if($is-dark, #3E4955, #E1E5E5);
+        }
+
+        .footer {
+            border-top: 1px solid if($is-dark, black, #3E4955);
+            background: if($is-dark, $bg, white);
+        }
+    }
+}

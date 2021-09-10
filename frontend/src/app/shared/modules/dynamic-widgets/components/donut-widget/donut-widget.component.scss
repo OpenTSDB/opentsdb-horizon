@@ -1,0 +1,212 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin donut-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    // .widget-panel-content.donut-widget { }
+
+    // when we are in edit view
+    // .edit-view-container.is-active {
+    //    .widget-panel-content.donut-widget { }
+    // }
+
+    .widget-panel-content.donutchart-widget {
+        flex: 1;
+        display: flex;
+        max-height: 100%;
+
+        .widget-output {
+            padding: 5px 0px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+
+            .loading-spinner,
+            .gif-spinner {
+                position: absolute;
+                left: 5px;
+                bottom: 5px;
+                z-index: 1;
+                /*width: 24px;
+                height: 24px;
+                background-image: url(/assets/denali-loader.svg);
+                background-color: transparent;*/
+            }
+
+            .apply-tpl-status {
+                position: absolute;
+                right: -5px;
+                top: 0px;
+                z-index: 1;
+                .mat-icon {
+                    font-size: 16px;
+                    color: rgb(216, 216, 215);
+                }
+            }
+
+            .error{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: red;
+            }
+
+            .debug{
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 1;
+                width: 30px;
+                height: 30px;
+                color: rgb(75, 9, 228);
+            }
+        }
+
+        #container {
+            margin: 20px 0px 0px 0px;
+            display:flex;
+            justify-content: center;
+            &.display-legend-right {
+                flex-direction: row;
+                align-items: center;
+            }
+            &.display-legend-left {
+                flex-direction: row-reverse;
+                align-items: center;
+            }
+            text {
+                font-family: 'Ubuntu';
+            }
+            rect {
+                cursor: pointer;
+                stroke-width: 1;
+            }
+            rect.disabled {
+                fill: transparent !important;
+            }
+
+            /* tooltip */
+            .tooltip{
+                background: #eee;
+                box-shadow: 0 0 5px #999999;
+                color: #333;
+                display: none;
+                font-size: 12px;
+                padding: 5px;
+                position: absolute;
+                min-width: 100px;
+                z-index: 10;
+                top:10px;
+                left: 10px;
+		    }
+
+            .chart {
+                display: inline-block;
+                position: relative;
+            }
+            .chart svg {
+                width: 100%;
+            }
+
+            .legend {
+                display: inline-block;
+                min-width: 80px;
+                height: 100%;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                .legend {
+                    overflow: auto;
+                }
+            }
+
+            .legend svg {
+                position: relative!important;
+            }
+
+            .legend text {
+                cursor: pointer;
+                fill: slategray;
+            }
+
+        }
+    }
+
+
+    // when we are in edit view
+    .edit-view-container.is-active {
+        .widget-panel-content.donutchart-widget {
+            /*
+            .widget-output-container {
+                // background: yellowgreen;
+                display: block;
+                // flex: 1 1 auto;
+                height: 250px;
+                // max-height: calc(100% - 200px);
+            }
+    
+            .widget-controls-container {
+                display: flex;
+                padding: 0;
+                // background: lightblue;
+                overflow: hidden;
+                // flex: 1 1 auto;
+                min-height: 200px;
+                // max-height: 100%;
+                flex-grow: 1;
+            }
+            
+            .widget-output {
+                //top: 30px;
+                padding: 8px 0px;
+                //display: block;
+                position: relative;
+                height: 0px;
+                display: block;
+                
+            }
+            */
+            #container {
+                margin: 0px 0px 0px 0px;
+                align-items: flex-end;
+                justify-content: start;
+            }
+        }
+    }
+}
+
+@mixin donut-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    // .widget-panel-content.donut-widget { }
+
+}
+

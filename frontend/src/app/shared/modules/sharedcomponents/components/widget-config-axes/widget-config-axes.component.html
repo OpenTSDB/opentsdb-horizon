@@ -1,0 +1,121 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<form [formGroup]="widgetConfigAxes">
+    <!-- Y1 Axis -->
+    <div class="y1-axis-container column" *ngIf="widgetConfigAxes.controls.y1" formGroupName="y1" [ngClass]="{'y1-axis-disabled': y1AxisEnabled_label !== 'enabled'}">
+        <div class="config-control with-enable-label">
+            <span class="mat-label mat-body-strong">Y1 Axis</span>
+            <mat-slide-toggle *ngIf="y1AxisEnabledToggleDisplay" formControlName="enabled">
+                <span class="mat-caption" [ngClass]="{'is-enabled': y1AxisEnabled_label === 'enabled'}">{{y1AxisEnabled_label}}</span>
+            </mat-slide-toggle>
+        </div>
+        <div class="config-control unit-control" >
+            <span class="mat-label">Unit</span>
+            <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.axes.y1 && widget.settings.axes.y1.unit ? widget.settings.axes.y1.unit : 'auto'" (onUnitChange)="setUnit('y1', $event)"></dropdown-unit-type>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control scale-control">
+            <span class="mat-label">Scale</span>
+            <mat-form-field appearance="fill">
+                <mat-select formControlName="scale">
+                    <mat-option *ngFor="let option of yAxisScaleOptions" [value]="option.value">
+                    {{ option.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control values-control">
+            <span class="mat-label">Values</span>
+            <mat-form-field class="inline-hint y1-min" appearance="fill" color="primary">
+                <input matInput formControlName="min">
+                <mat-hint>Y1 Min</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="inline-hint y1-max" appearance="fill" color="primary">
+                <input matInput formControlName="max">
+                <mat-hint>Y1 Max</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control decimals-control">
+            <span class="mat-label">Decimals</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput formControlName="decimals">
+                <mat-hint>Number of decimals</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control decimals-control">
+            <span class="mat-label">Label</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput formControlName="label">
+                <mat-hint>Enter label for Y1 axis</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+    </div>
+    <!-- Y2 Axis -->
+    <div class="y2-axis-container column" *ngIf="widgetConfigAxes.controls.y2" formGroupName="y2" [ngClass]="{'y2-axis-disabled': y2AxisEnabled_label !== 'enabled'}">
+        <div class="config-control with-enable-label">
+            <span class="mat-label mat-body-strong">Y2 Axis</span>
+        </div>
+        <div class="config-control unit-control" >
+            <span class="mat-label">Unit</span>
+            <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="widget.settings.axes.y2 && widget.settings.axes.y2.unit ? widget.settings.axes.y2.unit : 'auto'" (onUnitChange)="setUnit('y2', $event)"></dropdown-unit-type>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control scale-control" >
+            <span class="mat-label">Scale</span>
+            <mat-form-field appearance="fill">
+                <mat-select formControlName="scale">
+                    <mat-option *ngFor="let option of yAxisScaleOptions" [value]="option.value">
+                    {{ option.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control values-control">
+            <span class="mat-label">Values</span>
+            <mat-form-field class="inline-hint y2-min" appearance="fill" color="primary">
+                <input matInput formControlName="min">
+                <mat-hint>Y2 Min</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="inline-hint y2-max" appearance="fill" color="primary">
+                <input matInput formControlName="max">
+                <mat-hint>Y2 Max</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control decimals-control">
+            <span class="mat-label">Decimals</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput formControlName="decimals">
+                <mat-hint>Number of decimals</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control decimals-control">
+            <span class="mat-label">Label</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput formControlName="label">
+                <mat-hint>Enter label for Y2 axis</mat-hint>
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,171 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin dashboard-save-dialog-component-base() {
+    .dashboard-save-dialog {
+        display: flex;
+        flex-direction: column;
+        min-width: 320px;
+        width: 100%;
+
+        .mat-dialog-title,
+        .mat-dialog-content {
+            padding: 12px 24px;
+        }
+
+        .mat-dialog-content,
+        .mat-dialog-actions {
+            margin: 0;
+        }
+
+        .mat-dialog-title {
+            display: flex;
+            align-items: center;
+            margin: 0;
+
+            .mat-icon {
+                margin-right: 6px;
+            }
+        }
+
+        .mat-dialog-content {
+            max-height: initial;
+        }
+
+        .mat-dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 24px;
+
+            .mat-flat-button,
+            .mat-stroked-button {
+                &:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        .save-control {
+            width: 100%;
+            margin-bottom: 24px;
+            .mat-radio-button {
+                display: block;
+            }
+
+            .mat-form-field.dashboard-title {
+                width: 100%;
+            }
+        }
+
+        .dashboard-save-location {
+            .mini-nav-trigger {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 1px;
+            }
+        }
+
+        .use-namespace {
+            &.is-disabled {
+                opacity: .3;
+                pointer-events: none;
+            }
+
+            &.mat-caption {
+                font-style: italic;
+            }
+
+            .mat-label {
+                font-weight: 300;
+                margin-right: 8px;
+            }
+
+            .mat-form-field {
+                width: 100%;
+            }
+        }
+
+    }
+
+    // CDK Items
+
+    // backdrop
+    .dashboard-save-dialog-backdrop {
+
+    }
+
+    // panel
+    .dashboard-save-dialog-panel {
+        // width: 100%;
+        // height: 100%;
+        .mat-dialog-container {
+            padding: 0;
+        }
+    }
+
+    .dnav-cdk-mini-navigator.db-save-location-selector.mat-menu-panel {
+        margin-top: 0;
+        margin-left: 0;
+    }
+
+
+}
+
+@mixin dashboard-save-dialog-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+
+    $divider: map-get($foreground, divider);
+
+    .dashboard-save-dialog {
+        .mat-dialog-title {
+            background-color: map-get($status, success);
+            color: map-get($status, success-contrast);
+        }
+    }
+
+    // CDK Items
+
+    // backdrop
+    .dashboard-save-dialog-backdrop {
+        background-color: map-get($foreground, disabled);
+    }
+
+    // panel
+    .dashboard-save-dialog-panel {
+
+        .mat-dialog-title {
+            border-bottom: 1px solid $divider;
+        }
+
+        .mat-dialog-actions {
+            background-color: $divider;
+        }
+
+    }
+}

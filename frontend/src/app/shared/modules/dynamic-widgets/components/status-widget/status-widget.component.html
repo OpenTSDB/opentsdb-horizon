@@ -1,0 +1,82 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="widget-output-container">
+    <div class="widget-title" *ngIf="editMode" fxLayout="row">
+        <span fxFlex="1 1 100%">{{ widget.config.title }}</span>
+        <span>
+            <button mat-button color="primary" class="close-edit-view-btn" (click)="closeViewEditMode()">
+                <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+            </button>
+        </span>
+    </div>
+    <div class="widget-output">
+        <!-- Where the graph, or whatever lives -->
+        <strong>THIS IS A STATUS WIDGET PLACEHOLDER.</strong>
+    </div>
+</div>
+<!-- NOTE: This needs to move to other component -->
+<div class="widget-controls-container" *ngIf="editMode">
+    <!-- tabs with config content -->
+    <mat-tab-group class="widget-configs" [@.disabled]="'true'">
+        <mat-tab label="Queries">
+            <!-- ng-template is to lazy-load tab content (see: https://material.angular.io/components/tabs/overview#lazy-loading ) -->
+            <ng-template matTabContent>
+                <widget-config-metric-queries [widget]="widget"></widget-config-metric-queries>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="General">
+            <ng-template matTabContent>
+                <widget-config-general [widget]="widget"></widget-config-general>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Time Configuration">
+            <ng-template matTabContent>
+                <widget-config-time [widget]="widget"></widget-config-time>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Axes">
+            <ng-template matTabContent>
+                <widget-config-axes [widget]="widget"></widget-config-axes>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Visual Appearance">
+            <ng-template matTabContent>
+                <widget-config-visual-appearance [widget]="widget"></widget-config-visual-appearance>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Legend">
+            <ng-template matTabContent>
+                <widget-config-legend [widget]="widget"></widget-config-legend>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <!-- custom tab label. (see: https://material.angular.io/components/tabs/overview#labels) -->
+            <!-- <ng-template mat-tab-label>
+                &lt;/&gt; Query Editor
+            </ng-template> -->
+            <ng-template matTabContent>
+                <widget-config-query-inspector [widget]="widget"></widget-config-query-inspector>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="widget-actions">
+        <!-- controls to save/cancel -->
+        <button mat-raised-button color="primary" class="mat-elevation-z0">Apply to Dashboard</button>
+        <button mat-stroked-button color="primary" class="mat-elevation-z0">Cancel</button>
+    </div>
+</div>
+    

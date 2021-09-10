@@ -1,0 +1,57 @@
+{
+    "name"  : "OpenTSDB",
+    "production": true,
+    "queryParams": null,
+    "debugLevel": "ERROR",
+    "tsdbCacheMode": null,
+    "tsdbSource": null,
+    "tsdb_host": "<%tsdb endpoint%>",
+    "tsdb_hosts": [
+        "<%tsdb endpoint a%>",
+        "<%tsdb endpoint b%>",
+        "<%tsdb endpoint c%>"
+    ],
+    "configdb": "<% configdb endpoint %>",
+    "metaApi": "<% meta endpoint %>",
+    "auraUI": "<% Aura UI endpoint %>",
+    "alert": {
+        "recipient": {
+            "opsgenie": {
+                "enable": false,
+                "guideUrl": "<% opsgenie guide url %>"
+        },
+        "slack": {
+            "enable": false,
+            "guideUrl": "<% slack guide url %>"
+        },
+        "oc": {
+            "enable": false,
+            "onboardUrl": "<% OC onboad url %>",
+            "guideUrl": "<% OC guide url %>"
+        },
+        "http": {
+            "enable": false
+        },
+        "email": {
+            "enable": true
+        }
+      }
+    },
+    "alert_history_url": "<% alert log history url %>",
+    "helpLinks": [
+        { "label": "User guide", "href": "#" },
+        { "label": "File a ticket", "href": "#" },
+        { "label": "Talk to us", "icon": "d-slack", "href": "#" }
+    ],
+    "modules": {
+        "dashboard": {
+            "widget": {
+                "overrideTime": true
+            }
+        }
+    },
+    "namespace": {
+        "enabled": false,
+        "default": "_default"
+    }
+}

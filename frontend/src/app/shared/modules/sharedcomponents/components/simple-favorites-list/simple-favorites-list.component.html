@@ -1,0 +1,53 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="has-scroller">
+    <div class="is-scroller">
+        <table mat-table [dataSource]="userFavoritesDataSource" class="mat-elevation-z8">
+
+                <ng-container matColumnDef="star">
+                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <td mat-cell *matCellDef="let element; let i = index;">
+                        <button mat-icon-button>
+                            <mat-icon fontSet="denali" fontIcon="d-star-solid"></mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="dashboard">
+                    <th mat-header-cell *matHeaderCellDef> Dashboard </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="fav-labels">
+                            <a routerLink="/d/{{element.id}}{{element.fullPath}}" class="dashboard-name">{{element.name}}</a>
+                            <span class="root-path">{{element.rootPath}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="favorited">
+                    <th mat-header-cell *matHeaderCellDef> Favorited </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="fav-labels">
+                            <span class="fav-date">{{element.favoritedTime | date: 'mediumDate'}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['star','dashboard', 'favorited']; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['star', 'dashboard', 'favorited'];"></tr>
+        </table>
+    </div>
+</div>

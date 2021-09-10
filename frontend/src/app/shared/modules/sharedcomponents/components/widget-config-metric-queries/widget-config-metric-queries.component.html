@@ -1,0 +1,52 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="query-metrics-section">
+    <div class="query-metrics-wrap" [ngClass]="{'is-editing-metric': queryEditMode}">
+        <mat-accordion class="query-group-list mat-elevation-z0" #queriesContainer [ngClass]="{'items-selected': selectAllToggle !== 'none'}" displayMode="flat" [multi]="true" [hideToggle]="false">
+            <mat-expansion-panel
+            cdkDropList
+            (cdkDropListDropped)="reorderQuery($event)"
+            class="query-group-item mat-elevation-z0" [hideToggle]="true" [disabled]="true" [expanded]="true">
+                <div class="query-metric-row"  *ngFor="let query of widget.queries; let index=index" previewClass="cdk-drag-preview" cdkDrag (cdkDragStarted)="dragStart($event)" (cdkDragEnded)="dragEnd($event)">
+                    <query-editor-proto  [label]="'Q' + (index + 1)" [query]="query" [queries]="widget.queries" [widget]="widget"
+                    [options]="{
+                        toggleQuery: options.enableMultipleQueries,
+                        enableNamespace: options.enableNamespace,
+                        enableAlias: options.enableAlias,
+                        cloneQuery: options.enableMultipleQueries,
+                        deleteQuery: options.enableMultipleQueries,
+                        enableSummarizer: options.enableSummarizer,
+                        enableMultiMetricSelection: options.enableMultiMetricSelection,
+                        enableGroupBy: options.enableGroupBy }"
+                        (queryOutput)="handleQueryRequest($event);"
+                        [tplVariables]="tplVariables"
+                        [type]="widget.settings.component_type"></query-editor-proto>
+                    <div cdkDragHandle class="metric-query-drag-handle"></div>
+                </div>
+                <div class="query-metric-row" *ngIf="hasExpression">
+                    <span class="infectious-nan"><mat-checkbox (click)="$event.stopPropagation();" [checked]="widget.queries[0].settings.infectiousNan" (change)="toggleInfectiousNan($event.checked)">Do not evaluate expressions if a value is missing</mat-checkbox></span>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="query-metric-row" *ngIf="widget.queries.length && widget.queries[widget.queries.length-1].metrics.length && !queryEditMode && options.enableMultipleQueries" style="margin-top:25p;">
+            <button class="add-new-query-button" mat-button mat-primary color="primary" (click)="addNewQuery()">
+                <mat-icon fontSet="denali" fontIcon="d-add-square-solid"></mat-icon>
+                <span>Query</span>
+            </button>
+        </div>
+    </div>
+</div>

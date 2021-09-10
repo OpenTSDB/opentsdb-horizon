@@ -1,0 +1,127 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<mat-toolbar class="ts-legend-toolbar">
+    <mat-toolbar-row class="detail-brief">
+        <span>Total Series: showing {{visibleDataCount}} of {{data.series.length}}</span>
+        <span class="flex-spacer"></span>
+        <span class="detail-when">{{data.when}}</span>
+        <span class="flex-spacer"></span>
+        <span>Sort by {{sortActiveText}} {{(sort && sort.direction === 'asc') ? 'ascending' : 'descending'}}</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="ts-data-wrapper has-scroller" #tsDataWrapper>
+    <!--<div class="is-scroller" >-->
+        <!--
+            NOTE: Maybe build as normal table so we can use lazy loading
+        -->
+        <cdk-virtual-scroll-viewport tvsItemSize="33" headerHeight="32" [style.height.px]="virtualScrollHeight">
+        <table #legendTable class="ts-legend-table"
+            mat-table
+            [dataSource]="tableDataSource"
+            matSort
+            matSortActive="value"
+            matSortDirection="desc"
+            matSortDisableClear="true"
+            (matSortChange)="onMatSortChange($event)"
+            (cdkObserveContent)="tableContentChanged($event)">
+
+            <!-- Selection Column -->
+            <ng-container matColumnDef="checkbox">
+                <th mat-header-cell *matHeaderCellDef >
+                    <!--<mat-checkbox value="" color="primary"
+                        [checked]="masterChecked"
+                        [indeterminate]="masterIndeterminate"
+                        (click)="$event.stopPropagation(); masterCheckboxClick($event)"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="masterCheckboxClick($event); $event.stopPropagation(); ">
+                        <mat-icon>{{masterIndeterminate ? 'indeterminate_check_box' : masterChecked ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <!--<mat-checkbox value="" color="primary"
+                        [checked]="currentWidgetOptions.visibility[element.srcIndex]"
+                        (change)="timeSeriesVisibilityToggle(element.srcIndex, $event);"></mat-checkbox>-->
+                    <button mat-icon-button color="primary" (click)="timeSeriesVisibilityToggle(element.srcIndex, currentWidgetOptions.visibility[element.srcIndex], $event);">
+                        <mat-icon>{{currentWidgetOptions.visibility[element.srcIndex] ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Metric Name Column -->
+            <ng-container matColumnDef="metric">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header >metric</th>
+                <td mat-cell *matCellDef="let element; let i = index"
+                    (click)="timeseriesVisibilityBy('row', element, $event)">
+                    <span class="color-chip" [style.color]="element.series.color"></span>
+                    <span [matTooltip]="element.series.hash">{{formattedMetricLabel(element)}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Tag Columns (dynamic) -->
+            <ng-container *ngFor="let resultTag of resultTagKeys" [matColumnDef]="resultTag">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header >{{resultTag}}</th>
+                <td mat-cell *matCellDef="let element"
+                    [ngClass]="{'tag-highlight': !multigraph && highlightTag.key === resultTag && highlightTag.value === element.series.tags[resultTag]}"
+                    (click)="timeseriesVisibilityBy('tag', {'tag': resultTag, 'value': element.series.tags[resultTag], srcIndex: element.srcIndex}, $event)"
+                    (mouseover)="tableHighlightTag(resultTag, element.series.tags[resultTag]);"
+                    (mouseleave)="tableHighlightTag('', '')">
+                    <span>{{element.series.tags[resultTag] || 'n/a'}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Value Column -->
+            <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header > Value </th>
+                <td mat-cell *matCellDef="let element">
+                    <span>{{element.formattedValue}}</span>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true" class="mat-elevation-z1"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;"
+                [ngClass]="{'tag-highlight': !multigraph && row.series.tags[highlightTag.key] === highlightTag.value}"></tr>
+        </table>
+        </cdk-virtual-scroll-viewport>
+    <!--</div> -->
+</div>
+
+<!-- this gets injected into the island window header bar
+     but context remains with this component -->
+<info-island-toolbar customClass="timeseries-legend-toolbar">
+    <div class="toolbar-item show-limit-types">
+        <span>Show:</span>
+        <button mat-flat-button [matMenuTriggerFor]="limitTypeMenu">
+            <span>{{dataLimitType}}</span>
+            <div class="mat-select-arrow-wrapper"><div class="mat-select-arrow"></div></div>
+        </button>
+        <mat-menu #limitTypeMenu="matMenu" class="show-limit-type-cdk-menu">
+            <button mat-menu-item *ngFor="let type of dataLimitTypes;" (click)="dataLimitTypeChange(type)">{{type}}</button>
+        </mat-menu>
+    </div>
+    <div class="toolbar-item show-amount-controls" *ngIf="dataLimitType !== 'All'">
+        <input type="number" [formControl]="showAmount" max-length="3" autocomplete="off" (mousedown)="$event.stopPropagation()" (mousemove)="$event.stopPropagation()">
+    </div>
+    <div class="toolbar-item logscale-controls" *ngIf="options.showLogscaleToggle">
+        <span>Logscale:</span>
+        <mat-checkbox (change)="logscaleCheckboxChange('y1',$event.checked)" [checked]="logScaleY1">Y1</mat-checkbox>
+        <mat-checkbox (change)="logscaleCheckboxChange('y2',$event.checked)" [checked]="logScaleY2">Y2</mat-checkbox>
+    </div>
+    <span class="flex-spacer" style="min-width: 30px;"></span>
+    <div class="toolbar-item">
+        <mat-checkbox (change)="trackmouseCheckboxChange($event)" [checked]="options.trackMouse" labelPosition="before">Track Mouse</mat-checkbox>
+    </div>
+</info-island-toolbar>

@@ -1,0 +1,75 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="headers">
+    <span>
+        <span>Query Preview</span>
+        <div class="snapshot">
+            <button mat-flat-button   matTooltip="Snapshot" matTooltipPosition="below" (click)="saveSnapshot()">
+                <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
+            </button>
+        </div>
+    </span>
+
+    <span>
+        Threshold Preview
+    </span>
+</div>
+
+<div class="graphs">
+    <div #queryPreview class="graph-output query-preview"
+        *ngIf="!nQueryDataLoading"
+        ttMouseListener ttType="linechart">
+        <div #dygraph class="chart" dygraphsChart
+            [chartType]="'line'"
+            [data]="observedData"
+            [size]="{'width': size.width/2, 'height': size.height - 10}"
+            [options]="observedOptions"
+            (lastTimeseriesHighlighted)="timeSeriesClicked($event)"
+            (zoomed)="handleZoomQuery($event)"
+            [timeseriesLegend]="tsLegendOptions"
+            (currentTickEvent)="timeseriesTickListener(i, j, yKey, xKey, $event)">
+        </div>
+    </div>
+
+    <div class="graph-output threshold-preview"
+        *ngIf="thresholdData && thresholdData.ts && !nQueryDataLoading && observedIndex !== -1"
+        ttMouseListener ttType="linechart">
+        <div #dygraph class="chart" dygraphsChart
+            [chartType]="'line'"
+            [data]="thresholdData"
+            [size]="{'width': size.width/2, 'height': size.height - 10}"
+            [options]="thresholdOptions"
+            (zoomed)="handleZoomThreshold($event)">
+        </div>
+    </div>
+
+    <div *ngIf="nQueryDataLoading" class="preview-placeholder">
+        <span>
+            Fetching query...
+        </span>
+        <span>
+            <div class="gif-spinner">
+                <img src="/assets/spinner-26x26.gif" />
+            </div>
+        </span>
+
+    </div>
+
+    <div *ngIf="observedIndex === -1 && !nQueryDataLoading">
+        ← Please click a line
+    </div>
+</div>

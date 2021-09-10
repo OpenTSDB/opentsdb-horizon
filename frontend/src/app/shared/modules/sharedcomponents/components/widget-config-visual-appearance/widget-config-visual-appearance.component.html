@@ -1,0 +1,105 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<!-- LINE CHART COMPONENT -->
+<ng-template [ngIf]="widget.settings.component_type==='LinechartWidgetComponent'">
+    <!-- Hiding for now
+        <div class="stack-order-container">
+        <div class="config-control">
+            <span class="mat-label mat-body-strong">Stack Order </span>
+            <mat-form-field  [floatLabel]="'never'" appearance="fill">
+                <mat-select placeholder="Stack Order" [formControl]="stackOrderControl">
+                        <mat-option *ngFor="let option of stackOrderOptions" [value]="option.value">
+                        <span>{{ option.label }}</span>
+                        </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>-->
+</ng-template>
+<!-- BAR CHART COMPONENT -->
+<ng-template [ngIf]="widget.settings.component_type==='BarchartWidgetComponent'">
+    <div class="bar-chart-visual-container">
+        <div class="mat-label">Direction</div>
+        <div class="config-control">
+            <mat-radio-group  [formControl]="displayControl">
+                <mat-radio-button value="vertical">
+                    <mat-icon fontSet="denali" fontIcon="d-chart-bar-vertical"></mat-icon>
+                    <span>Vertical</span>
+                </mat-radio-button>
+                <mat-radio-button value="horizontal">
+                    <mat-icon fontSet="denali" fontIcon="d-chart-bar-horizontal"></mat-icon>
+                    <span>Horizontal</span>
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+</ng-template>
+<!-- DONUT CHART COMPONENT -->
+<ng-template [ngIf]="widget.settings.component_type==='DonutWidgetComponent'">
+    <div class="donut-chart-visual-container">
+        <div class="mat-label">Style</div>
+        <div class="config-control">
+            <mat-radio-group [formControl]="displayControl">
+                <mat-radio-button value="pie">
+                    <mat-icon fontSet="denali" fontIcon="d-chart-pie"></mat-icon>
+                    <span>Pie Chart</span>
+                </mat-radio-button>
+                <mat-radio-button value="doughnut">
+                    <mat-icon fontSet="denali" fontIcon="d-chart-donut"></mat-icon>
+                    <span>Donut Chart</span>
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+</ng-template>
+<ng-template [ngIf]="widget.settings.component_type==='TableWidgetComponent'">
+    <div class="table-widget-visual-container" [formGroup]="gForms">
+        <div class="form-group unit-control" >
+            <span class="form-label">Layout</span>
+            <div class="table-type-selector">
+                <button mat-button class="table-time-metrics-tags {{ gForms['controls']['layout'].value === 'time:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('time:metrics')"></button>
+                <button mat-button class="table-metrics-tags {{ gForms['controls']['layout'].value === 'metrics:tags' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('metrics:tags')"></button>
+                <button mat-button class="table-tags-metrics {{ gForms['controls']['layout'].value === 'tags:metrics' ? 'selected-table-type' : ''}} mat-button" (click)="changeLayout('tags:metrics')"></button>
+            </div>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Font Size</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput type="number" formControlName="fontSize">
+            </mat-form-field>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Cell padding</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput type="number" formControlName="padding">
+            </mat-form-field>
+        </div>
+        <div class="form-group decimals-control">
+            <span class="form-label">Decimals</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput  formControlName="decimals">
+                <mat-hint>Number of decimals</mat-hint>
+            </mat-form-field>
+        </div>
+        <div class="form-group font-size-control">
+            <span class="form-label">Column width</span>
+            <mat-form-field appearance="fill" color="primary">
+                <input matInput  formControlName="colWidth">
+            </mat-form-field>
+        </div>
+    </div>
+</ng-template>

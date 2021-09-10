@@ -1,0 +1,463 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<ng-template [ngIf]="detailsView">
+    <alert-details *ngIf="list === 'alerts'" [data]="configurationEditData" [viewMode]="detailsMode" [enabled]="isAlertEnabled" [hasWriteAccess]="hasNamespaceWriteAccess" (configChange)="configurationEdit_change($event)"></alert-details>
+    <snooze-details *ngIf="list === 'snooze'" [data]="configurationEditData" [alertListMeta]="alertListMeta" [viewMode]="detailsMode" [hasWriteAccess]="hasNamespaceWriteAccess" (configChange)="configurationEdit_change($event)"></snooze-details>
+</ng-template>
+
+<ng-template [ngIf]="!detailsView && (list === 'alerts' || list === 'snooze')">
+    <div class="alerts-main-controls" fxFlex="1 1 60px" fxFlex.xs="1 1 190px" fxLayoutAlign="stretch stretch" fxLayout="row" fxLayout.xs="column">
+        <div class="control-item namespace-selector" *ngIf="showNamespace">
+            <button mat-button
+                [matMenuTriggerFor]="namespaceDropMenu"
+                [ngClass]="{'menu-open': namespaceDropMenuOpen}"
+                (menuOpened)="setNamespaceMenuOpened(true); ensureNamespaceMenuWidth()"
+                (menuClosed)="setNamespaceMenuOpened(false)"
+                #namespaceDropMenuTrigger>
+                <span class="control-label">Namespace:</span>
+                <span class="selected-namespace">{{ selectedNamespace ? selectedNamespace : 'NAMESPACE' }}</span>
+                <mat-icon fontSet="denali" fontIcon="d-arrowhead-down"></mat-icon>
+            </button>
+        </div>
+        <div class="control-item alert-filter-input">
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput placeholder="Filter alerts by name, recipients, bad, disabled, etc."
+                    *ngIf="list === 'alerts'"
+                    autocomplete="off"
+                    [formControl] = "alertSearch">
+                <input matInput placeholder="Filter snooze"
+                    *ngIf="list === 'snooze'"
+                    autocomplete="off"
+                    [formControl] = "snoozeSearch">
+                <mat-icon matSuffix fontSet="denali" fontIcon="d-search"></mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="control-item create-alert-control" *ngIf="hasNamespaceWriteAccess">
+            <button mat-flat-button color="primary" *ngIf="list === 'alerts'" [matMenuTriggerFor]="createAlertMenu">Create alert</button>
+            <button mat-flat-button color="primary" *ngIf="list === 'snooze'" (click)="createSnooze()">Create snooze</button>
+        </div>
+        <span class="flex-spacer"></span>
+        <div class="control-item list-counts">
+            <span *ngIf="list === 'alerts'">Displaying {{alertsDataSource ? alertsDataSource.filteredData.length : '0'}} of {{alerts.length}}</span>
+            <span *ngIf="list === 'snooze'">Displaying {{snoozesDataSource ? snoozesDataSource.filteredData.length : '0'}} of {{snoozes.length}}</span>
+        </div>
+    </div>
+    <div *ngIf="error" class="error">
+        {{ error.message }}
+    </div>
+    <div *ngIf="list === 'alerts'" class="alert-results" fxFlex="1 1 100%" fxLayout="column">
+        <div class="alert-results-wrapper">
+            <div class="alert-results-body has-scroller">
+                <div class="is-scroller">
+                    <table class="alerts-result-table" mat-table [dataSource]="alertsDataSource" matSort matSortStart="desc" matSortActive="updatedTime" matSortDirection="desc">
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    color="primary">
+                                </mat-checkbox>
+                                <div class="bulk-actions-anchor" *ngIf="selection.hasValue()">
+                                    <div class="bulk-actions-wrapper" *ngIf="selection.hasValue()">
+                                        <button mat-button color="primary" (click)="bulkDisableAlerts()">
+                                            <mat-icon fontSet="denali" fontIcon="d-notification-disable"></mat-icon>
+                                            <span>Disable</span>
+                                        </button>
+                                        <button mat-button color="primary" (click)="bulkDeleteAlerts()">
+                                            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(element) : null"
+                                    [checked]="selection.isSelected(element)"
+                                    color="primary">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span mat-sort-header>Alert Name</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="alert-name">{{element.name}}</span>
+                                <div class="edit-actions-wrapper" *ngIf="hasNamespaceWriteAccess">
+                                    <a  [routerLink]="[ '/a', element.id, element.namespace, element.slug, 'edit']" (click)="detailsMode='edit'">
+                                        <button mat-button color="primary">
+                                            <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                            <span>edit</span>
+                                        </button>
+                                    </a>
+                                    <button mat-button color="primary" (click)="createAlertSnooze(element.id)">
+                                        <mat-icon fontSet="denali" fontIcon="d-notification-snooze"></mat-icon>
+                                        <span>Snooze</span>
+                                    </button>
+                                    <button mat-button color="primary" (click)="toggleAlert(element)">
+                                        <mat-icon fontSet="denali" [fontIcon]="element.enabled ? 'd-notification-disable' : 'd-notification'"></mat-icon>
+                                        <span>{{element.enabled ? 'Disable' : 'Enable'}}</span>
+                                    </button>
+                                    <button mat-button color="primary" (click)="cloneAlert(element)">
+                                        <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
+                                        <span>Clone</span>
+                                    </button>
+                                    <button mat-button color="primary" (click)="deleteItem(element)">
+                                        <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                                <div class="edit-actions-wrapper" *ngIf="!hasNamespaceWriteAccess">
+                                    <button mat-button color="primary" (click)="viewAlert(element)">
+                                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                        <span>view alert details</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="type">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span>Type</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{alertTypeToDisplayName(element.type)}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="alertGroupingRules">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span>Labels</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-chip-list>
+                                    <mat-basic-chip class="group-label-chip" *ngFor="let label of element.labels;">{{label}}</mat-basic-chip>
+                                </mat-chip-list>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="contacts">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span>Recipients</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <ng-container *ngIf="getRecipientKeys(element).length > 0">
+                                    <div class="contact-icon-strip" [matMenuTriggerFor]="contactsMenu" [matMenuTriggerData]="{element: element}">
+                                        <mat-icon *ngFor="let contactType of getRecipientKeys(element)" [svgIcon]="contactType + '_contact'"></mat-icon>
+                                    </div>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="updatedTime">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span>Last Modified</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{formatAlertTimeModified(element)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="updatedBy">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span>Modified By</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.updatedBy.replace('user.', '')}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="bad">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span class="header-chip is-error">Bad</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="count-empty" *ngIf="!element.bad">-</span>
+                                <a *ngIf="element.bad" class="count-amount" (click)="showAuraDialog(element.id, { status: 1 })"> {{ element.bad }}</a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="warn">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span class="header-chip is-warning">Warn</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="count-empty" *ngIf="!element.warn">-</span>
+                                <a *ngIf="element.warn" class="count-amount" (click)="showAuraDialog(element.id, { status: 2 } )">{{ element.warn }}</a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="good">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span class="header-chip is-good">Good</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="count-empty" *ngIf="!element.good">-</span>
+                                <a *ngIf="element.good" class="count-amount" (click)="showAuraDialog(element.id, { status: 0 } )">{{ element.good }}</a>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="unknown">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span class="header-chip is-unknown">Unknown</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="count-empty" *ngIf="!element.unknown">-</span>
+                                <a *ngIf="element.unknown" class="count-amount" (click)="showAuraDialog(element.id, { status: 3 } )">{{ element.unknown }}</a>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="missing">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span class="header-chip is-missing">Missing</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="count-empty" *ngIf="!element.missing">-</span>
+                                <a *ngIf="element.missing" class="count-amount" (click)="showAuraDialog(element.id, { status: 4 } )">{{ element.missing }}</a>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" [ngClass]="{'is-batch-editing': selection.hasValue()}"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'is-disabled': (row.enabled === undefined) ? true : !row.enabled}"></tr>
+                    </table>
+                    <div class="message" *ngIf="stateLoaded.alerts && alerts.length === 0">No alerts found</div>
+                    <div class="message" *ngIf="!stateLoaded.alerts">Loading...</div>
+                </div>
+            </div>
+            <mat-paginator #alertsPaginator
+                [pageSizeOptions]="[25, 50, 100]"
+                [showFirstLastButtons]="alerts.length > 25"></mat-paginator>
+        </div>
+    </div>
+    <div *ngIf="list === 'snooze'" class="snooze-results" fxFlex="1 1 100%" fxLayout="column">
+        <div class="snooze-results-wrapper">
+            <div class="snooze-results-body">
+                <table class="snooze-results-table" mat-table [dataSource]="snoozesDataSource" matSort matSortStart="desc">
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                color="primary">
+                            </mat-checkbox>
+                            <div class="bulk-actions-anchor" *ngIf="selection.hasValue()">
+                                <div class="bulk-actions-wrapper" *ngIf="selection.hasValue()">
+                                    <button mat-button color="primary" (click)="bulkDeleteAlerts()">
+                                        <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? selection.toggle(element) : null"
+                                [checked]="selection.isSelected(element)"
+                                color="primary">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="createdBy">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span>Created By</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span>End Time</span>
+
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                            <span class="alert-name">{{formatTime(element.endTime)}} </span>
+                            <div class="edit-actions-wrapper" *ngIf="hasNamespaceWriteAccess">
+                                <button mat-button color="primary" (click)="editSnooze(element)">
+                                    <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                                    <span>edit</span>
+                                </button>
+                                <button mat-button color="primary" (click)="deleteItem(element)">
+                                    <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="scope">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <span>Scope</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-list class="alerts-filters-list" role="list">
+                                <mat-list-item class="alerts-filters-list-item" role="listitem" *ngIf="element.alertIds.length">
+                                    <div class="alerts-filters-list-item-detail">
+                                        <strong>Alerts:</strong>
+                                        <span>{{ getAlertNamesByIds(element.alertIds).join(', ')}}</span>
+                                    </div>
+                                </mat-list-item>
+                                <mat-list-item class="alerts-filters-list-item" role="listitem" *ngIf="element.labels.length">
+                                    <div class="alerts-filters-list-item-detail">
+                                        <strong>Labels:</strong>
+                                        <span>{{ element.labels.join(', ')}}</span>
+                                    </div>
+                                </mat-list-item>
+                                <mat-list-item class="alerts-filters-list-item" role="listitem" *ngFor="let filter of element.rawFilters; let index=index">
+                                    <div class="alerts-filters-list-item-detail" *ngIf="filter.filter.length">
+                                        <strong>{{ filter.tagk }}:</strong>
+                                        <span>{{ filter.filter.join(', ')}}</span>
+                                    </div>
+                                </mat-list-item>
+                            </mat-list>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reason">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <span  mat-sort-header="reason">Message</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                            <span class="alert-name">{{element.reason}}</span>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="snoozeDisplayedColumns; sticky: true" [ngClass]="{'is-batch-editing': selection.hasValue()}"></tr>
+                    <tr mat-row *matRowDef="let row; columns: snoozeDisplayedColumns;"></tr>
+                </table>
+                <div class="message" *ngIf="stateLoaded.snooze && snoozes.length === 0">No snoozes found</div>
+                <div class="message" *ngIf="!stateLoaded.snooze">Loading...</div>
+            </div>
+            <mat-paginator #snoozePaginator
+                [pageSizeOptions]="[10, 20, 30]"
+                showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+
+
+    <mat-menu #namespaceDropMenu="matMenu" class="namespace-selector-cdk-menu">
+        <button mat-menu-item *ngFor="let namespace of userNamespaces; trackBy: index" (click)="handleNamespaceChange(namespace.name);">{{namespace.name}}</button>
+        <!--<button mat-menu-item>Settings</button>-->
+        <mat-divider></mat-divider>
+        <button mat-menu-item [matMenuTriggerFor]="namespaceMenu" >View More</button>
+        <span class="menu-shim" style="display: block; height: 1px;" [style.width]="namespaceDropMenuTriggerWidth"></span>
+    </mat-menu>
+
+    <mat-menu #namespaceMenu="matMenu" class="namespace-selector-cdk-menu submenu" [style.maxHeight.px]="500">
+        <div class="filter-all-namespaces" (click)="$event.stopPropagation()">
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput placeholder="Filter namespaces" autocomplete="off" (keyup)="applyAllNamespaceDataFilter($event.target.value, $event)" #allNamespaceFilterInput>
+                <mat-icon matSuffix fontSet="denali" fontIcon="d-search"></mat-icon>
+            </mat-form-field>
+        </div>
+        <button mat-menu-item *ngFor="let ns of allNamespacesDS.filteredData; let i = index; trackBy: index" (click)="handleNamespaceChange(ns.name);">
+            {{ns.name}}
+        </button>
+    </mat-menu>
+
+    <mat-menu #contactsMenu="matMenu" class="alert-contacts-menu" (keydown.escape)="contactMenuEsc($event)">
+        <ng-template matMenuContent let-element="element">
+            <div class="contacts-wrapper">
+                <div class="contact-list-type" *ngFor="let contactType of getRecipientKeys(element)">
+                    <div class="contact-list-type-descriptor">
+                        <mat-icon [svgIcon]="contactType + '_contact'"></mat-icon>
+                        <span>{{typeToDisplayName(contactType)}}</span>
+                    </div>
+                    <div class="contact-list-type-wrapper">
+                        <mat-list dense disableRipple="false">
+                            <mat-list-item *ngFor="let recipient of element.recipients[contactType]">
+                                <span class="recipient-label">{{contactType === 'slack' ? '#' + trimRecipientName(recipient.name) : recipient.name}}</span>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu #createAlertMenu="matMenu" class="create-alert-menu">
+        <ng-template matMenuContent>
+            <button mat-menu-item class="alert-type-option" (click)="createAlert('simple')">
+                <div class="alert-type-detail">
+                    <span class="alert-type-label" color="primary">Metric</span>
+                    <span class="alert-type-desc mat-caption">Alert on a single metric or expression</span>
+                </div>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="alert-type-option" (click)="createAlert('healthcheck')">
+                <div class="alert-type-detail">
+                    <span class="alert-type-label" color="primary">Health Check</span>
+                    <span class="alert-type-desc mat-caption">Alert on statuses generated by user-defined checks</span>
+                </div>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="alert-type-option" (click)="createAlert('event')">
+                    <div class="alert-type-detail">
+                        <span class="alert-type-label" color="primary">Event</span>
+                        <span class="alert-type-desc mat-caption">Alert on Events</span>
+                    </div>
+            </button>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu class="sparkline-display-cdk-menu" #sparklineDisplayMenu="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item
+                class="sparkline-display-option"
+                *ngFor="let option of sparklineDisplayMenuOptions"
+                (click)="selectSparklineDisplayOption(option)">
+                <span>{{option.label}}</span>
+            </button>
+        </ng-template>
+    </mat-menu>
+</ng-template>
+
+<ng-template #confirmDeleteDialog let-data let-batch>
+    <h2 matDialogTitle>Delete {{list === 'alerts' ? 'Alert' : 'Snooze'}} Confirmation</h2>
+    <mat-dialog-content>
+        <p *ngIf="!data.bulk"><em>Are you sure you want to delete the {{list === 'alerts' ? 'alert' : 'snooze'}} <strong *ngIf="list === 'alerts'">"{{ data.name }}"</strong></em></p>
+        <p *ngIf="data.bulk"><em>Are you sure you want to delete <strong>{{data.items.length}} {{(list === 'alerts' ? 'alert' : 'snooze')+(data.items.length > 1 ? 's':'')}}</strong></em></p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button color="primary" (click)="confirmDelete(data)">Yes</button>
+        <button mat-button matDialogClose color="primary">No</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<!-- PORTAL TEMPLATE FOR HEADER BAR -->
+<ng-template #alertspageNavbarTmpl>
+    <div class="navbar-item" style="margin-left: 10px;">
+        <span class="dashboard-name">Alerts Management</span>
+    </div>
+
+    <span class="flex-spacer"></span>
+
+    <!-- list mode toggle ( alerts or snoozes )-->
+    <div class="navbar-item" *ngIf="!detailsView">
+        <div class="navbar-sliding-toggle">
+            <nav mat-tab-nav-bar class="sliding-toggle-group">
+                <a mat-tab-link
+                    [active]="list === 'alerts'"
+                    (click)="switchType('alerts')">
+                    Alerts
+                </a>
+                <a mat-tab-link
+                    [active]="list === 'snooze'"
+                    (click)="switchType('snooze')">
+                    Snooze
+                </a>
+            </nav>
+        </div>
+    </div>
+    <div class="navbar-item">
+        <help-links></help-links>
+    </div>
+
+
+</ng-template>

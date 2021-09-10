@@ -1,0 +1,29 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<!-- Navbar Theme -->
+<mat-toolbar fxFlex="1 1 100%" [ngClass]="{'snapshot': snapshot, 'explore': cdkService.navbarClass === 'explore'}">
+    <mat-toolbar-row fxLayout fxLayoutAlign="start stretch">
+        <!-- Hamburger menu -->
+        <div class="navbar-item navbar-icon-item" *ngIf="mediaQuery === 'xs'">
+            <button mat-icon-button (click)="toggleSidenav()">
+                <mat-icon fontSet="denali" fontIcon="d-menu-hamburger"></mat-icon>
+            </button>
+        </div>
+        <!-- portal for custom navbar per module -->
+        <ng-container [cdkPortalOutlet]="cdkService.navbarPortal$ | async"></ng-container>
+    </mat-toolbar-row>
+</mat-toolbar>

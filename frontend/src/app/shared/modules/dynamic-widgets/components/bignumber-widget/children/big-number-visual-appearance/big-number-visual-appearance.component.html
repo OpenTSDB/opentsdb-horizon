@@ -1,0 +1,122 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="labels-container" *ngIf="widget.settings.visual">
+        <div class="config-control prefix-control">
+            <span class="mat-label">Prefix</span>
+            <mat-form-field class="has-right-items" appearance="fill" floatLabel="never">
+                <input matInput #prefixBox placeholder="Enter Prefix" value="{{widget.settings.visual.prefix}}" (keyup)="KeyedOnPrefixInputBox(prefixBox.value)" autocomplete="off">
+            </mat-form-field>
+            <mat-button-toggle-group #prefixSizeGroup="matButtonToggleGroup"
+                [value]="widget.settings.visual.prefixSize"
+                (change)="selectedPrefixSize(prefixSizeGroup.value)">
+                <mat-button-toggle value="s" [disabled]="!widget.settings.visual.prefix">S</mat-button-toggle>
+                <mat-button-toggle value="m" [disabled]="!widget.settings.visual.prefix">M</mat-button-toggle>
+                <mat-button-toggle value="l" [disabled]="!widget.settings.visual.prefix">L</mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-button-toggle-group #prefixAlignmentGroup="matButtonToggleGroup"
+                [value]="widget.settings.visual.prefixAlignment"
+                (change)="selectedPrefixAlignment(prefixAlignmentGroup.value)">
+                <mat-button-toggle value="bottom" [disabled]="!widget.settings.visual.prefix">
+                    <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="middle" [disabled]="!widget.settings.visual.prefix">
+                    <mat-icon fontSet="denali" fontIcon="d-collapse-vertical"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="top" [disabled]="!widget.settings.visual.prefix">
+                    <mat-icon fontSet="denali" fontIcon="d-page-top"></mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <span class="flex-spacer"></span>
+        </div>
+        <!--
+        <div class="config-control postfix-control">
+            <span class="mat-label">Postfix</span>
+            <mat-form-field class="has-right-items" appearance="fill" floatLabel="never">
+                <input matInput #postfixBox placeholder="Enter Postfix" value="{{widget.settings.visual.postfix}}" (keyup)="KeyedOnPostfixInputBox(postfixBox.value)">
+            </mat-form-field>
+            <mat-button-toggle-group #postfixSizeGroup="matButtonToggleGroup" [value]="widget.settings.visual.postfixSize"
+                (change)="selectedPostfixSize(postfixSizeGroup.value)">
+                <mat-button-toggle value="s" [disabled]="!widget.settings.visual.postfix">S</mat-button-toggle>
+                <mat-button-toggle value="m" [disabled]="!widget.settings.visual.postfix">M</mat-button-toggle>
+                <mat-button-toggle value="l" [disabled]="!widget.settings.visual.postfix">L</mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-button-toggle-group #postfixAlignmentGroup="matButtonToggleGroup" [value]="widget.settings.visual.postfixAlignment"
+                (change)="selectedPostfixAlignment(postfixAlignmentGroup.value)">
+                <mat-button-toggle value="bottom" [disabled]="!widget.settings.visual.postfix">
+                    <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="middle" [disabled]="!widget.settings.visual.postfix">
+                    <mat-icon fontSet="denali" fontIcon="d-collapse-vertical"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="top" [disabled]="!widget.settings.visual.postfix">
+                    <mat-icon fontSet="denali" fontIcon="d-page-top"></mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        -->
+        <div class="config-control unit-control">
+            <span class="mat-label">Unit</span>
+            <dropdown-unit-type [unit]="widget.settings.visual.unit" (onUnitChange)="setUnit($event)"></dropdown-unit-type>
+            <mat-button-toggle-group #unitSizeGroup="matButtonToggleGroup" [value]="widget.settings.visual.unitSize" (change)="selectedUnitSize(unitSizeGroup.value)">
+                <mat-button-toggle value="s" [disabled]="!widget.settings.visual.unit">S</mat-button-toggle>
+                <mat-button-toggle value="m" [disabled]="!widget.settings.visual.unit">M</mat-button-toggle>
+                <mat-button-toggle value="l" [disabled]="!widget.settings.visual.unit">L</mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-button-toggle-group #unitAlignmentGroup="matButtonToggleGroup" [value]="widget.settings.visual.unitAlignment"
+                (change)="selectedUnitAlignment(unitAlignmentGroup.value)">
+                <mat-button-toggle value="bottom" [disabled]="!widget.settings.visual.unit">
+                    <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="middle" [disabled]="!widget.settings.visual.unit">
+                    <mat-icon fontSet="denali" fontIcon="d-collapse-vertical"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="top" [disabled]="!widget.settings.visual.unit">
+                    <mat-icon fontSet="denali" fontIcon="d-page-top"></mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control caption-control">
+            <span class="mat-label">Caption</span>
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput #captionBox placeholder="{{captionPlaceholder}}" value="{{widget.settings.visual.caption}}"
+                    (keyup)="KeyedOnCaptionInputBox(captionBox.value)" autocomplete="off">
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+        <div class="config-control precision-control">
+            <span class="mat-label">Decimals</span>
+            <mat-form-field appearance="fill" floatLabel="never">
+                <input matInput #precisionBox placeholder="Enter Number of Decimals to Display [0-9]" [value]="widget.settings.visual.precision"
+                    (keyup)="KeyedOnPrecisionInputBox(precisionBox.value)" autocomplete="off">
+            </mat-form-field>
+            <span class="flex-spacer"></span>
+        </div>
+    </div>
+    
+    <!-- <div class="options-container column" *ngIf="widget.settings.visual">
+        <span class="mat-body-strong">Options</span>
+        <div class="config-control">
+            <mat-slide-toggle><span class="mat-caption">Sparkline</span></mat-slide-toggle>
+        </div>
+        <div class="config-control">
+            <mat-slide-toggle (change)="indicatorToggleChange()" [checked]="widget.settings.visual.changedIndicatorEnabled">
+                <span class="mat-caption">Change Indicator</span>
+            </mat-slide-toggle>
+        </div>
+    </div> -->
+    

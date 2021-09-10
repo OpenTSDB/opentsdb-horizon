@@ -1,0 +1,58 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<form [formGroup]="gForm">
+    <div class="config-control with-enable-label">
+        <label class="fixed-label">Visibility</label>
+        <div class="form-field-group">
+            <!--<mat-slide-toggle formControlName="display"><span class="mat-caption" [ngClass]="{'is-enabled': widgetConfigLegend.controls.display.value }">Legend is <strong>{{widgetConfigLegend.controls.display.value ? 'visible' : 'hidden'}}</strong></span></mat-slide-toggle>-->
+            <mat-radio-group formControlName="display">
+                <mat-radio-button
+                    *ngFor="let option of visibilityOptions"
+                    [value]="option.value">{{option.label}}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="config-control inline-controls">
+        <label class="fixed-label">Position</label>
+        <div class="form-field-group">
+            <mat-radio-group formControlName="position">
+                <mat-radio-button *ngFor="let option of positionOptions" [value]="option.value">{{option.label}}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="config-control with-enable-label">
+            <label class="fixed-label">Percentages</label>
+            <div class="form-field-group">
+                <!--<mat-slide-toggle formControlName="showPercentages"><span class="mat-caption" [ngClass]="{'is-enabled': gForm.controls['showPercentages'].value }">Show Percentages</span></mat-slide-toggle>-->
+                <mat-radio-group (change)="setPercentage($event.value)" [value]="gForm.controls['showPercentages'].value">
+                    <mat-radio-button
+                        *ngFor="let option of percentagesOptions"
+                        [value]="option.value">{{option.label}}</mat-radio-button>
+                </mat-radio-group>
+            </div>
+    </div>
+    <div class="config-control with-enable-label">
+        <label class="fixed-label">Value</label>
+        <div class="form-field-group">
+            <mat-radio-group (change)="setValue($event.value)" [value]="gForm.controls['showValue'].value">
+                <mat-radio-button
+                    *ngFor="let option of valueOptions"
+                    [value]="option.value">{{option.label}}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+</form>

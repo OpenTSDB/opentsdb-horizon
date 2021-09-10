@@ -1,0 +1,154 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin events-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.events-widget {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-top: 0px;
+        overflow: hidden;
+
+        .flex {
+            display: flex;
+        }
+
+        .main-container {
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .widget-output-container {
+            height: 100%;
+            .event-stream-title {
+                border-bottom: 1px solid lightgray;
+                line-height: 21px;
+                text-transform: uppercase;
+                font-size: 12px;
+            }
+
+            .widget-title .readonly {
+                display: inline-block;
+                padding: 2px;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 12px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        .widget-output {
+            overflow: overlay;
+            align-items: flex-start;
+            padding: 0;
+
+            .widget-container {
+                width: 100%;
+            }
+
+            .event-result-title {
+                font-weight: bold;
+                padding-left: 10px;
+            }
+        }
+
+        @-moz-document url-prefix() {
+            .widget-output {
+                overflow: auto;
+            }
+        }
+
+        .query-container {
+            display: flex;
+            padding: 10px;
+            padding-top: 15px;
+            flex-direction: row;
+        }
+    }
+
+    // EDIT MODE
+    .edit-view-container.is-active {
+        .widget-panel-content.events-widget {
+
+            .widget-title {
+                margin-bottom: 0;
+            }
+
+            .widget-output-container {
+                flex: 1;
+                max-height: initial;
+                height: 50px;
+            }
+
+            .widget-output {
+                height: initial;
+                max-height: initial;
+                //margin-bottom: 12px;
+                align-items: flex-start;
+                flex: 1 1 100%;
+                position: relative;
+
+                .widget-container {
+                    overflow: hidden;
+                    height: 100%;
+                    max-height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    display: flex;
+                    flex-direction: column;
+
+                    .event-list {
+                        flex: 1;
+                        overflow: auto;
+                    }
+                }
+            }
+
+            .widget-controls-container {
+                margin: 12px 0;
+                background-color: white;
+                min-height: 240px;
+            }
+
+            .widget-configs .mat-tab-header .mat-tab-label:last-child {
+                margin-left: initial;
+            }
+        }
+    }
+}
+
+@mixin events-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    .events-widget {}
+
+}

@@ -1,0 +1,82 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin dropdown-visual-type-component-base() {
+    .dropdown-visual-type {
+        display: inline-block;
+
+        .mat-button-toggle-group.mat-button-toggle-group-horizontal.mat-button-toggle-group-appearance-standard {
+            line-height: 16px;
+
+            .mat-button-toggle-label-content {
+                line-height: 24px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(16px);
+                    margin-right: 4px;
+                }
+            }
+        }
+
+        .mat-form-field {
+            .mat-form-field-infix {
+                width: initial;
+                display: flex;
+            }
+        }
+
+        .mat-select {
+            display: flex;
+
+            .mat-select-trigger {
+                .mat-select-value-text {
+                    display: flex;
+                    flex: 1;
+
+                    .trigger-value-display {
+                        display: flex;
+                    }
+
+                    .mat-icon {
+                        width: 14px;
+                        height: 14px;
+                        font-size: 14px;
+                        margin-right: 8px;
+                    }
+                }
+
+                .mat-select-arrow-wrapper {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+}
+
+@mixin dropdown-visual-type-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    .dropdown-visual-type {
+
+    }
+}

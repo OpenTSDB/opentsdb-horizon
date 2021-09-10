@@ -1,0 +1,43 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div [formGroup]="metaForm">
+    <div class="settings-control dashboard-title-control">
+        <span class="mat-label">Dashboard name</span>
+        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <input matInput formControlName="title">
+        </mat-form-field>
+    </div>
+    <div class="settings-control dashboard-description-control">
+        <span class="mat-label">Description</span>
+        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <textarea matInput matTextareaAutosize matAutosizeMinRows=4 matAutosizeMaxRows=8 placeholder="Add a description for your dashboard" formControlName="description"></textarea>
+        </mat-form-field>
+    </div>
+    <div class="settings-control dashboard-labels-control">
+        <span class="mat-label">Labels</span>
+        <mat-form-field appearance="fill" floatLabel="never">
+            <input matInput placeholder="Add new label" #newLabelInput (keyup.enter)="addNewLabel(newLabelInput.value)">
+            <mat-icon fontSet="denali" fontIcon="d-add" (click)="addNewLabel($event)" matSuffix></mat-icon>
+        </mat-form-field>
+        <mat-chip-list class="dashboard-labels-list" formArrayName="labels">
+            <mat-chip *ngFor="let item of metaForm['controls'].labels['controls']; let i=index" (removed)="removeDbLabel(i)">
+                <span>{{item.get('label').value}}</span>
+                <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin generic-message-bar-component-base() {
+    .generic-message-bar {
+        display: none;
+        width: 100%;
+
+        &.show-message {
+            display: flex;
+            flex: 1 1 48px;
+            min-height: 48px;
+        }
+
+        .generic-message-bar-wrapper {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .generic-message-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            padding: 8px 16px;
+
+            .message-type {
+                text-transform: uppercase;
+                font-weight: 500;
+                margin-right: 8px;
+            }
+
+            .mat-icon {
+                font-weight: 400;
+                margin-right: 8px;
+            }
+        }
+
+        .close-action {
+            margin-left: 8px;
+        }
+    }
+}
+
+@mixin generic-message-bar-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $success: map-get($theme-config, success);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+
+    .generic-message-bar {
+        .generic-message-item {
+            color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(255, 255, 255, .9);
+        }
+
+        &.is-error {
+            background-color: map-get($status, error);
+            color: map-get($status, error-contrast);
+
+            .generic-message-item {
+                .mat-icon,
+                .message-type {
+                    color: map-get($status, error);
+                }
+            }
+        }
+
+        &.is-warning {
+            background-color: map-get($status, warning);
+            color: map-get($status, warning-contrast);
+
+            .generic-message-item {
+                .mat-icon,
+                .message-type {
+                    color: map-get($status, warning);
+                }
+            }
+        }
+
+        &.is-success {
+            background-color: map-get($status, success);
+            color: map-get($status, success-contrast);
+
+            .generic-message-item {
+                .mat-icon,
+                .message-type {
+                    color: map-get($status, success);
+                }
+            }
+        }
+
+        &.is-info {
+            background-color: map-get($status, info);
+            color: map-get($status, info-contrast);
+
+            .generic-message-item {
+                .mat-icon,
+                .message-type {
+                    color: map-get($status, info);
+                }
+            }
+        }     
+    }
+}

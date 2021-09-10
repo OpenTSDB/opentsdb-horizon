@@ -1,0 +1,72 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="panel-header">
+    <h3 class="mat-subheading-2"><strong>My Activity</strong></h3>
+</div>
+<div class="panel-content">
+    <div class="no-data" *ngIf="fakeActivityData.length === 0">
+        <p>Alerts, annotations, widget creation, and more &mdash; all activity related to you and your dashboards will be displayed here.</p>
+        
+        <div class="no-activity">
+            <span class="illustration"></span>
+            <strong>There's no activity yet</strong>
+        </div>
+
+        
+    </div>
+    <div class="activity-lists" *ngIf="fakeActivityData.length > 0">
+        <div class="day" *ngFor="let dayItem of fakeActivityData; let idx = index;">
+            <div class="day-header">
+                {{dayItem.day}}
+            </div>
+            <mat-accordion [hideToggle]="true" [multi]="true" >
+                <mat-expansion-panel *ngFor="let hourItem of dayItem.hours; let idh = index;" [hideToggle]="true" class="mat-elevation-z0" [expanded]="idx === 0 && idh === 0">
+                    <mat-expansion-panel-header [collapsedHeight]="'32px'" [expandedHeight]="'32px'">
+                        <mat-panel-title>
+                            <strong>{{hourItem.hour}}</strong>
+                        </mat-panel-title>
+                        <mat-panel-description class="icon-array">
+                            <mat-chip *ngFor="let item of hourEventTypes(hourItem.events)">
+                                <mat-icon fontSet="denali" fontIcon="d-briefcase" *ngIf="item === 'namespace'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-dashboard-tile" *ngIf="item === 'dashboard'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-bug" *ngIf="item === 'bug'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-security-verified" *ngIf="item === 'admin'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-notification" *ngIf="item === 'alert'"></mat-icon>
+                            </mat-chip>
+                        </mat-panel-description>
+                        <div class="event-count">
+                             <mat-chip>{{hourItem.events.length}}</mat-chip>
+                        </div>
+                    </mat-expansion-panel-header>
+                    <div class="activity-items">
+                        <mat-list>
+                            <mat-list-item *ngFor="let item of hourItem.events" style="max-width: 240px;">
+                                <mat-icon fontSet="denali" fontIcon="d-briefcase" class="for-namespace" matListIcon *ngIf="item.type === 'namespace'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-dashboard-tile" class="for-dashboard" matListIcon *ngIf="item.type === 'dashboard'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-bug" class="for-bug" matListIcon *ngIf="item.type === 'bug'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-security-verified" class="for-admin" matListIcon *ngIf="item.type === 'admin'"></mat-icon>
+                                <mat-icon fontSet="denali" fontIcon="d-notification" class="for-alert" matListIcon *ngIf="item.type === 'alert'"></mat-icon>
+                                <h4 matLine><strong>{{item.time}}</strong></h4>
+                                <p matLine class="demo-2"> {{item.message}} </p>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</div>

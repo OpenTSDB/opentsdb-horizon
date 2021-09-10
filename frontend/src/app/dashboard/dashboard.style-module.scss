@@ -1,0 +1,94 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//* DASHBOARD MODULE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// NOTE: First time only after creating this file,
+// after you have completed the three steps below
+// be sure to add this file to src/app/app.style-module.scss
+// and follow the steps in that file
+
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+// containers
+@import './containers/dashboard/dashboard.component'; // nothing to style yet
+
+// components
+@import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
+@import './components/dashboard-save-dialog/dashboard-save-dialog.component';
+@import './components/dashboard-delete-dialog/dashboard-delete-dialog.component';
+@import './components/widget-delete-dialog/widget-delete-dialog.component';
+@import './components/dashboard-settings-toggle/dashboard-settings-toggle.component';
+@import './components/dashboard-settings-dialog/dashboard-settings-dialog.component';
+@import './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
+@import './components/dboard-content/dboard-content.component';
+@import './components/widget-loader/widget-loader.component';
+@import './components/template-variable-panel/template-variable-panel.component';
+
+// widget specific styles are in shared/modules/dynamic-widgets
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin dashboard-module-core() {
+    // include your core mixins
+    // example: @include componentName-component-core();
+
+    // containers
+    @include dashboard-component-base(); // nothing to style yet
+
+    // components
+    @include navbar-dashboard-actions-menu-component-base();
+    @include dashboard-save-dialog-component-base();
+    @include dashboard-delete-dialog-component-base();
+    @include widget-delete-dialog-component-base();
+    @include dashboard-settings-toggle-component-base();
+    @include dashboard-settings-dialog-component-base();
+    @include dashboard-to-alert-dialog-component-base();
+    @include dboard-content-component-base();
+    @include widget-loader-component-base();
+    @include template-variable-panel-component-base();
+
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin dashboard-module-theme($theme-config) {
+    // include your theme mixins, passing along the $theme-config
+    // example: @include componentName-component-theme($theme-config);
+
+    // container
+    @include dashboard-component-theme($theme-config); //nothing to style yet
+
+    // components
+    @include navbar-dashboard-actions-menu-component-theme($theme-config);
+    @include dashboard-save-dialog-component-theme($theme-config);
+    @include dashboard-delete-dialog-component-theme($theme-config);
+    @include widget-delete-dialog-component-theme($theme-config);
+    @include dashboard-settings-toggle-component-theme($theme-config);
+    @include dashboard-settings-dialog-component-theme($theme-config);
+    @include dashboard-to-alert-dialog-component-theme($theme-config);
+    @include dboard-content-component-theme($theme-config);
+    @include widget-loader-component-theme($theme-config);
+    @include template-variable-panel-component-theme($theme-config);
+
+}

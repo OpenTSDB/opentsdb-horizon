@@ -1,0 +1,321 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<ng-template [ngIf]="mode.view" [ngIfElse]="variableEditMode">
+    <div [formGroup]="listForm" class="variable-list-wrapper">
+        <button mat-button color="primary" class="configure-variables-button" *ngIf="!tplVariables.viewTplVariables.tvars || tplVariables.viewTplVariables.tvars.length === 0" (click)="doEdit()">
+            <mat-icon fontSet="denali" fontIcon="d-setting"></mat-icon>
+            <span>Configure dashboard tag filters</span>
+        </button>
+        <div *ngIf="tplVariables.viewTplVariables.tvars.length > 0">
+            <ul class="varlist" formArrayName="listVariables">
+                <li *ngFor="let vartpl of listVariables.controls; let i = index" [formGroupName]="i">
+                    <mat-form-field appearance="fill" color="primary" floatLabel="never" class="dashboard-template-variable" [ngStyle]="{width: calculateVariableDisplayWidth(vartpl)}" [attr.id]="'filter-tpl-'+i">
+                        <input matInput formControlName="display" placeholder="" [matAutocomplete]="filterVarValues"
+                            (blur)="onVariableBlur($event, i)" (keydown.enter)="onVariableBlur($event, i)" (focus)="onVariableFocus(i)">
+                        <span matPrefix class="automode {{vartpl.get('mode').value === 'auto' ? 'auto-mode' : 'manual-mode'}}">{{vartpl.get('alias').value}}</span>
+                        <span matPrefix class="regexp" *ngIf="checkRegexp(vartpl.get('filter').value)">regexp</span>
+                        <mat-autocomplete #filterVarValues="matAutocomplete" (optionSelected)="selectVarValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
+                            <div class="option-list">
+                                <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                    {{option}}
+                                </mat-option>
+                                <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                    <img src="/assets/spinner-26x26.gif" />
+                                </div>
+                                <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                    No matches found
+                                </mat-option>
+                            </div>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </li>
+                <li>
+                    <button mat-button color="primary" class="edit-variables-button" (click)="doEdit()">
+                        <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+                        <span>Edit</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</ng-template>
+<!-- NEW EDIT MODE -->
+<ng-template #variableEditMode>
+    <div [formGroup]="editForm" class="variable-edit-wrapper">
+        <div class="variable-form-wrapper">
+            <div class="namespace-column">
+                <div class="column-title">Namespaces</div>
+                <div class="namespace-input">
+                    <namespace-autocomplete  [options]="{ resetOnBlur: true }" (nschange)="addNamespace($event)"></namespace-autocomplete>
+                </div>
+                <mat-chip-list>
+                    <mat-chip *ngFor="let namespace of selectedNamespaces"
+                        [removable]="!dbNamespaces.includes(namespace)"
+                        (removed)="removeNamespace(namespace)">{{ namespace }}
+                        <mat-icon matChipRemove *ngIf="!dbNamespaces.includes(namespace)">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="filters-column">
+                <div class="column-title">Dashboard filters</div>
+                <!-- table here -->
+                <table formArrayName="formTplVariables" *ngIf="selectedNamespaces.length > 0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mode
+                                <info-tooltip>
+                                    <p>
+                                        <strong>Automatic: </strong> On your behalf, tag is added to all queries where the tag key is applicable. Overrides non-dashboard tags when value is set. OR'd with other dashboard tags.
+                                    </p>
+                                    <br/>
+                                    <p>
+                                        <strong>Manual: </strong> Additional action must be taken to add tag to desired queries. OR'd with other dashboard tags and non-dashboard tags.
+                                    </p>
+                                </info-tooltip>
+                            </th>
+                            <th>Tag Key <sup>*</sup></th>
+                            <th>Alias Name <sup>*</sup></th>
+                            <th>Default value (optional)</th>
+                            <th style="white-space: nowrap;">
+                                <span>Applied</span>
+                                <info-tooltip>
+                                    <p> # of widgets using dashboard tag.</p>
+                                </info-tooltip>
+                            </th>
+                            <th>Actions</th>
+                            <th><!--empty for trash--></th>
+                            <th>Reorder</th>
+                            <!-- <th>empty for error messages</th> -->
+                        </tr>
+                    </thead>
+                    <tbody cdkDropList [cdkDropListData]="formTplVariables['controls']" [cdkDropListDisabled]="formTplVariables.controls.length < 2" (cdkDropListDropped)="dropTable($event)">
+                        <tr class="variable-edit-controls" *ngFor="let tpl of formTplVariables.controls; let i = index" [formGroupName]="i" cdkDrag [cdkDragData]="tpl"
+                            (cdkDragStarted)="dragStart($event, i)">
+                            <!-- auto/manu toggle (TODO: still have to style) -->
+                            <td>
+                                <div class="settings-control filter-mode-control">
+                                    <nav mat-tab-nav-bar class="sliding-toggle-group" [ngClass]="{'auto-mode': tpl.get('mode').value === 'auto', 'manual-mode': tpl.get('mode').value !== 'auto'}">
+                                        <a mat-tab-link
+                                            [active]="tpl.get('mode').value === 'auto'"
+                                            (click)="switchFilterMode('auto', i)">
+                                            Auto
+                                        </a>
+                                        <a mat-tab-link
+                                            [active]="tpl.get('mode').value === 'manual'"
+                                            (click)="switchFilterMode('manual', i)">
+                                            Manual
+                                        </a>
+                                    </nav>
+                                </div>
+                            </td>
+                            <!-- tag key -->
+                            <td>
+                                <div class="settings-control tag-key-control">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                        <input matInput placeholder="Enter tag key" formControlName="tagk"
+                                            [matAutocomplete]="filterKeyAuto" (focus)="onInputFocus('tagk', i)"
+                                            (blur)="onInputBlur('tagk', i)" (keydown.enter) ="onInputBlur('tagk', i)" autocomplete="off">
+                                        <mat-autocomplete #filterKeyAuto="matAutocomplete" (optionSelected)="selectTagKeyOption($event, i)" panelWidth="auto">
+                                            <mat-option *ngFor="let option of filteredKeyOptions | async" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="tpl.invalid">Tag Key is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                            <!-- filter alias/name -->
+                            <td>
+                                <div class="settings-control alias-control" style="min-width: 100px; width: 100%;">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never" style="width: 100%;" >
+                                        <input matInput placeholder="Enter name/alias" formControlName="alias" (blur)="onInputBlur('alias', i)" (focus)="onInputFocus('alias', i)" autocomplete="off">
+                                        <mat-error *ngIf="tpl.get('alias').hasError('unique'); else requiredMesg">Filter Name must be unique.</mat-error>
+                                        <ng-template #requiredMesg>
+                                            <mat-error *ngIf="tpl.invalid">Filter Name is required</mat-error>
+                                        </ng-template>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                            <!-- default value -->
+                            <td>
+                                <div class="settings-control values-control">
+                                    <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                        <input matInput placeholder="Enter default value" formControlName="display"
+                                            (focus)="onInputFocus('display', i)" (blur)="onInputBlur('display', i)" (keydown.enter) ="onInputBlur('display', i)" [matAutocomplete]="filterValueAuto">
+                                        <span matPrefix class="regexp" *ngIf="checkRegexp(tpl.get('filter').value)">regexp</span>
+                                        <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event, i)" panelWidth="auto" class="default-value-autocomplete">
+                                            <div class="option-list">
+                                                <mat-option *ngFor="let option of filteredValueOptions[i]" [value]="option">
+                                                    {{option}}
+                                                </mat-option>
+                                                <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                                    <img src="/assets/spinner-26x26.gif" />
+                                                </div>
+                                                <mat-option disabled *ngIf="!filterValLoading && !filterValLoadingErr && filteredValueOptions[i] && filteredValueOptions[i].length === 1 ">
+                                                    No matches found
+                                                </mat-option>
+                                            </div>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <span [matMenuTriggerFor]="filterScope" (menuClosed)="scopeClose(i)" (menuOpened)="scopeOpen(i)" [matMenuTriggerData]="{index: i, alias: tpl.get('alias').value}">
+                                        [...more]
+                                    </span>
+                                </div>
+                            </td>
+                            <!-- counts -->
+                            <td>
+                                <div class="settings-control counts-control">
+                                    <span>{{tpl.get('applied').value}}/{{widgets.length}}</span>
+                                </div>
+                            </td>
+                            <!-- filter actions -->
+                            <td>
+                                <div class="settings-control actions-control">
+                                    <div class="auto-message" *ngIf="tpl.get('mode').value === 'auto'">
+                                        <span>Automatically applied to queries</span>
+                                    </div>
+                                    <div class="actions" *ngIf="tpl.get('mode').value === 'manual'">
+                                        <button mat-button class="add-to-button" color="primary" (click)="addFilterToAll(i)">
+                                            <span>Add to all</span>
+                                        </button>
+                                        <button mat-button class="remove-from-button" color="primary" (click)="removeFilterFromAll(i)" [disabled]="tpl.get('applied').value === 0">
+                                            <span>Remove from all</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- trash filter -->
+                            <td>
+                                <div class="settings-control actions-control">
+                                    <div class="actions">
+                                        <button mat-icon-button class="delete-variable-button" color="primary" (click)="deleteTemplateVariable(i)">
+                                            <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- drag handle for reordering -->
+                            <td>
+                                <div class="settings-control actions-control" style="justify-content: initial; padding-left: 4px;">
+                                    <div class="actions" style="cursor: grab;">
+                                        <!-- icon is drag handle for the row -->
+                                        <mat-icon *ngIf="formTplVariables.controls && formTplVariables.controls.length > 1" fontSet="denali" fontIcon="d-drag-handle" cdkDragHandle></mat-icon>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- drag-drop placeholder -->
+                            <div [ngStyle]="placeholderStyles" class="custom-tr-drag-placeholder" *cdkDragPlaceholder></div>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="new-tag-filter" *ngIf="selectedNamespaces.length > 0">
+                    <button mat-button [disabled]="formTplVariables.invalid" class="add-template-button" color="primary" (click)="addVariableTemplate()">
+                        <mat-icon fontSet="denali" fontIcon="d-add-circle"></mat-icon>
+                        <span>Add additional dashboard filter</span>
+                    </button>
+                </div>
+                <div class="namespace-required-message" *ngIf="selectedNamespaces.length === 0">
+                    <strong>Add a namespace to enable dashboard filters</strong>
+                </div>
+            </div>
+        </div>
+        <div class="variable-action-controls">
+            <div class="edit-actions">
+                <button mat-stroked-button color="primary" [disabled]="formTplVariables.invalid"
+                    class="editing-done-button" (click)="done()">
+                    <span>Done</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- mat-menu for scope editing-->
+    <mat-menu class="filter-scope-cdk-menu" #filterScope="matMenu" (closed)="scopeMenuClosed($event)">
+        <ng-template matMenuContent let-index="index" let-alias="alias">
+
+        <mat-nav-list #scopeTabNav class="filter-tab-nav"(click)="$event.stopPropagation()">
+            <mat-list-item (click)="scopeMenuNavChange('tagscope')" [ngClass]="{selected: scopeMenuNavSelection === 'tagscope'}">
+                <mat-icon fontSet="denali" fontIcon="d-tag-filter"></mat-icon>
+            </mat-list-item>
+            <!--
+            <mat-list-item (click)="scopeMenuNavChange('otherscope')" [ngClass]="{selected: scopeMenuNavSelection === 'otherscope'}">
+                <mat-icon fontSet="denali" fontIcon="d-filter-funnel"></mat-icon>
+            </mat-list-item>
+            -->
+        </mat-nav-list>
+        <!-- tagscope -->
+        <div class="filter-scope-columns"
+            fxLayout="column"
+            fxLayoutAlign="stretch stretch"
+            (click)="$event.stopPropagation()"
+            (keydown.tab)="$event.stopPropagation()">
+            <div class="filter-scope-type">
+                <span>Tag Scopes</span>
+            </div>
+            <div class="scope-columns-wrap">
+                <div class="scope-column col-left " fxFlex="1 1 100%">
+                    <div class="header-column">
+                        <span>Available tag values</span>
+                    </div>
+                    <div class="list-filter">
+                        <!-- input field for filtering -->
+                        <mat-form-field class="tag-search-input-field noticeable-field" appearance="fill" color="primary"
+                            floatLabel="never">
+                            <input matInput placeholder="filter tag values" [formControl]="tagValueSearchInputControl" autocomplete="off">
+                        </mat-form-field>
+                    </div>
+                    <div class="list-items has-scroller">
+                        <div class="is-scroller">
+                            <!-- loop of filtered items-->
+                            <div *ngFor="let item of tagValueSearch" class="list-item" (click)="addToScope(item, index)" title="{{item}}">
+                                <mat-icon fontSet="denali" fontIcon="d-add-circle" color="primary"></mat-icon>
+                                <span>{{item}}</span>
+                            </div>
+                            <div class="gif-spinner" *ngIf="filterValLoading" style="text-align: center;width: 100%;">
+                                <img src="/assets/spinner-26x26.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scope-column col-right" fxFlex="1 1 100%">
+                    <div class="header-column">
+                        <span>Scoped values for "<b>{{alias}}</b>"</span>
+                    </div>
+                    <div class="list-items has-scroller">
+                        <div class="is-scroller">
+                            <!-- loop of items -->
+                            <!--<div *ngFor="let val of tagScope" class="list-item" (click)="removeFromScope(val, index)">
+                                <mat-icon fontSet="denali" fontIcon="d-minus-circle" color="primary"></mat-icon>
+                                <span>{{val}}</span>
+                            </div>-->
+                            <mat-chip *ngFor="let val of tagScope" class="list-item" color="primary" removable="false" [ngClass]="{ 'exclude': val[0] === '!'}" title="{{val}}">
+                                <mat-icon fontSet="denali" [fontIcon]="val[0] !== '!' ? 'd-decline' : 'd-decline-solid'"
+                                    class="exclude"
+                                    (click)="toggleExcludeFromScope(val, index);"
+                                    [matTooltip]="val[0] === '!' ? 'Include' : 'Exclude'"></mat-icon>
+                                <span class="scope-value">{{ val[0] === '!' ? val.substr(1) : val }}</span>
+                                <mat-icon (click)="removeFromScope(val, index);">clear</mat-icon>
+                            </mat-chip>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </ng-template>
+    </mat-menu>
+</ng-template>
+<input type=text #focusEl class="hidden-focus">

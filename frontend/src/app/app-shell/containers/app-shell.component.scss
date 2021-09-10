@@ -1,0 +1,202 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin app-shell-component-base() {
+    $drawer-min-width: 301px;
+
+    .app-shell {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+
+        // .app-navigator contains:
+        // the icon bar (.app-sidenav)
+        // the sliding drawer (.app-navigation-drawer)
+        // the app content passed through ng-content (.router-outlet)
+
+        .app-navigator {
+            display: flex;
+            flex: 1;
+        }
+
+        .app-sidenav {
+            width: 60px;
+            overflow: hidden;
+            display: flex;
+
+            .mat-drawer-inner-container {
+                display: flex;
+            }
+        }
+
+        // this contains the sliding drawer & the router-outlet
+        .app-navigator-outlet-container {
+            // when drawer is shown, and is "over", we make the dimming basically invisible
+            // but you can still click on it / esc it
+            .mat-drawer-backdrop.mat-drawer-shown {
+                background-color: rgba(0, 0, 0, .01); // TODO: move to theme
+            }
+
+            .cdk-visually-hidden.cdk-focus-trap-anchor {
+                display: none;
+            }
+        }
+
+        .app-navigator-drawer {
+            display: flex;
+            min-width: $drawer-min-width;
+            // inner shaddow
+            // first inset is the right shadow
+            // second inset is the left shadow (slightly less opacity to compensate for the sidenav shadow layering
+            /*box-shadow:
+                inset -20px 0 20px -15px hsla(0,0%,0%,.55),
+                inset 20px 0 20px -15px hsla(0,0%,0%,.25) !important;*/
+        }
+
+        .messaging-bar {
+            display: flex;
+            align-items: stretch;
+            padding: 3px;
+
+            &.is-hidden {
+                display: none;
+            }
+
+            .message-icon {
+                width: 32px;
+                padding: 8px;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+                display: flex;
+            }
+
+            .message-text {
+                flex: 1;
+                padding: 4px 8px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        //.router-outlet {}
+    }
+}
+
+@mixin app-shell-component-theme($theme-config) {
+    /* Theme config parts */
+    $tname: map-get($theme-config, theme-name);
+
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $widget: map-get($theme-config, widgets);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $status: map-get($theme-config, status);
+
+    $sn-light: #374a5a;
+    $sn-dark: #233244;
+
+    $sn-light-text: #86929c;
+    $sn-dark-text: #c1c5ca;
+
+    $sn-seperator: #4b5c6a;
+
+    $sn-active: #2974d8;
+
+    $drawer-bg: if($is-dark, lighten(map-get($background, card), 10%), map-get($background, card));
+    $drawer-text: if($is-dark, map-get($foreground, navbar-text), map-get($background, navbar));
+
+    .app-shell {
+        //.app-navigator {}
+
+        .app-sidenav.mat-drawer-side {
+            border-right: 0;
+        }
+
+        .app-navigator-drawer {
+            background-color: $drawer-bg;
+            border-top: 1px solid transparent;
+            color: $drawer-text;
+        }
+
+        .messaging-bar {
+            &.is-error-type {
+                background-color: map-get($status, error);
+                color: map-get($status, error-contrast);
+
+                .message-icon {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($status, error);
+                }
+
+                .message-text {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($foreground, text);
+                }
+            }
+
+            &.is-info-type {
+                background-color: map-get($status, info);
+                color: map-get($status, info-contrast);
+
+                .message-icon {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($status, info);
+                }
+
+                .message-text {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($foreground, text);
+                }
+            }
+
+            &.is-success-type {
+                background-color: map-get($status, success);
+                color: map-get($status, success-contrast);
+
+                .message-icon {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($status, success);
+                }
+
+                .message-text {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($foreground, text);
+                }
+            }
+
+            &.is-warning-type {
+                background-color: map-get($status, warning);
+                color: map-get($status, warning-contrast);
+
+                .message-icon {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($status, warning);
+                }
+
+                .message-text {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    color: map-get($foreground, text);
+                }
+            }
+        }
+    }
+}

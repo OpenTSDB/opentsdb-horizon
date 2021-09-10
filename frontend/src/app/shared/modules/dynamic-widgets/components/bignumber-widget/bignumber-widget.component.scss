@@ -1,0 +1,291 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin bignumber-widget-component-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-view-padding: map-get($widgets-common-config, edit-padding);
+    $tab-width: map-get($widgets-common-config, tab-width);
+    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+    .widget-panel-content.bignumber-widget {
+        // reset margin top on big number because it should be edge to edge
+        padding-top: 0;
+        flex: 1;
+        display: flex;
+
+        .widget-output {
+            // reset padding to zero because in widget mode needs to be edge to edge
+            // return padding when in edit mode (see end of mixin)
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .widget-output-container {
+            height: 100%;
+
+            .widget-container {
+                height: 100%;
+                position: relative;
+
+                .big-num-container {
+                    height: 100%;
+                }
+
+                .loading-spinner,
+                .gif-spinner {
+                    position: absolute;
+                    left: 5px;
+                    bottom: 5px;
+                    z-index: 1;
+                    /*width: 24px;
+                    height: 24px;
+                    background-image: url(/assets/denali-loader.svg);
+                    background-color: transparent;*/
+                }
+                .apply-tpl-status {
+                    position: absolute;
+                    right: -5px;
+                    top: 20px;
+                    z-index: 1;
+                    .mat-icon {
+                        font-size: 16px;
+                        color: rgb(216, 216, 215);
+                    }
+                }
+                .error{
+                    position: absolute;
+                    left: 0px;
+                    top: 0px;
+                    z-index: 1;
+                    width: 30px;
+                    height: 30px;
+                    color: red;
+                }
+
+                .debug{
+                    position: absolute;
+                    left: 0px;
+                    top: 15px;
+                    z-index: 1;
+                    width: 30px;
+                    height: 30px;
+                    color: rgb(75, 9, 228);
+                }
+            }
+        }
+
+        .widget-container {
+            display: flex;
+            flex: 1;
+        }
+
+        // just a container
+        .metric-container {
+            // height: 3em;
+            // line-height: 3em;
+            display: flex;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .prefix, .unit, .big-number, .aggregator {
+            line-height: normal;
+            text-align: center;
+            &.top {
+                align-self: flex-start;
+                .small {
+                    padding-top: 0.4em;
+                }
+                .medium {
+                    padding-top: 0.1em;
+                }
+            }
+            &.middle {
+                align-self: center;
+            }
+            &.bottom {
+                align-self: flex-end;
+                .small {
+                    padding-bottom: 0.4em;
+                }
+                .medium {
+                    padding-bottom: 0.1em;
+                }
+            }
+        }
+
+        .prefix {
+            margin-right: 0.3em;
+        }
+
+        .left-unit {
+            margin-right: 0.1em;
+        }
+
+        .right-unit, .aggregator {
+            margin-left: 0.3em;
+        }
+
+        // modifiers
+        // used for the prefixes/suffixes
+
+        .small {
+            font-size: 1em;         // If modified, change corresponding variable setting in .ts
+        }
+
+        .medium {
+            font-size: 2em;         // If modified, change corresponding variable setting in .ts
+        }
+
+        .large {
+            font-size: 3em;         // If modified, change corresponding variable setting in .ts
+        }
+
+        // Big Number wrapper
+        .big-num-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        // the actual big number
+        .big-number {
+            font-size: 3em;         // If modified, change corresponding variable setting in .ts
+            font-weight: 600;       // If modified, change corresponding variable setting in .ts
+        }
+
+        // caption below big number (if any)
+        .caption {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            font-size: 1.2em;       // If modified, change corresponding variable setting in .ts
+            font-weight: 500;       // If modified, change corresponding variable setting in .ts
+            padding-top: 0.3em;     // If modified, change corresponding variable setting in .ts
+        }
+
+        .change-indicator {
+            font-size: 1em;
+        }
+
+        .aggregator {
+            font-size: 1em;
+        }
+
+
+
+        // In widget mode, don't display this.
+        // This is displayed only in edit mode
+        .fully-qualified-metric {
+            display: none;
+        }
+    }
+
+    // when we are in edit view
+    .edit-view-container.is-active {
+        .widget-panel-content.bignumber-widget {
+            // in edit mode, give the output some padding
+            .widget-output {
+                padding: 16px;
+            }
+
+            // in edit mode, give big number a fixed width
+            // close to something people might use
+            .big-num-container {
+                flex: 1 0 300px;
+                padding: 0 25px;
+            }
+
+            // in edit mode, show the metric representing the big number
+            .fully-qualified-metric {
+                display: block;
+                flex: 1 1 100%;
+                padding-left: 30px;
+
+                .metric-details {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+                }
+
+                .metric-tag {
+                    font-size: 10px;
+                    display: inline-flex;
+                    margin-right: 10px;
+                    margin-bottom: 8px;
+
+                    .tag-key {
+                        margin-right: 2px;
+                    }
+                }
+            }
+            /*
+            .widget-output-container {
+                // background: yellowgreen;
+                display: block;
+                // flex: 1 1 auto;
+                height: 250px;
+                // max-height: calc(100% - 200px);
+            }
+    
+            .widget-controls-container {
+                display: flex;
+                padding: 0;
+                // background: lightblue;
+                overflow: hidden;
+                // flex: 1 1 auto;
+                min-height: 200px;
+                // max-height: 100%;
+                flex-grow: 1;
+            }
+            
+            */
+            .widget-output {
+                //top: 30px;
+                // padding: 8px 0px;
+                //display: block;
+                // position: relative;
+                height: 0px;
+                display: inline-block;
+                
+            }
+            #container {
+                margin: 0px 0px 0px 0px;
+                align-items: flex-end;
+                justify-content: start;
+            }
+        }
+    }
+}
+
+@mixin bignumber-widget-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+
+    // .widget-panel-content.bignumber-widget { }
+
+}

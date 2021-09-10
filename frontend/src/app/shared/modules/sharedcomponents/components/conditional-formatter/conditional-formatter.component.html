@@ -1,0 +1,57 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<table class="mat-table {{type.toLowerCase().replace('component','')}}-type">
+    <thead>
+        <tr class="mat-header-row">
+            <th class="mat-header-cell mat-column-condition">Condition</th>
+            <th class="mat-header-cell mat-column-color">Color</th>
+            <th class="mat-header-cell mat-column-action"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="mat-row" *ngFor="let condition of conditions; let index=index">
+            <td style="white-space: nowrap; max-width:300px;">
+                <span class="text">Value is </span>
+                <mat-form-field appearance="fill" class="operator">
+                    <mat-select class="operator-select" [value]="condition.operator"
+                        (selectionChange)="setOperator($event, index)" disableOptionCentering="true">
+                        <mat-option *ngFor="let operator of operators" [value]="operator.value">{{ operator.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span class="text">than</span>
+                <mat-form-field appearance="fill" class="value">
+                    <input type="text" matInput pattern=“^[0–9]$” autocomplete="off" (input)="setValue($event, index)" [value]="condition.value">
+                </mat-form-field>
+            </td>
+            <td>
+                <color-picker (newColor)="selectColor($event, index)" [color]="condition.color"></color-picker>
+            </td>
+            <td width="100%">
+                <button mat-button (click)="removeCondition(index)" class="trash-button">
+                    <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="action">
+    <button mat-stroked-button color="primary" (click)="addCondition()">
+        <mat-icon class="mat-12" fontSet="denali" fontIcon="d-add"></mat-icon>
+        <span>Condition</span>
+    </button>
+</div>

@@ -1,0 +1,348 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+COMMON STYLES FOR WIDGET CONFIG PANELS
+**/
+
+// NOTE: These styles cover ALL of the widget config panels generic classes.
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+@mixin widget-config-common-base() {
+    $default-padding: map-get($widgets-common-config, default-padding);
+    $edit-padding: map-get($widgets-common-config, edit-padding);
+    $edit-toolbar-height: map-get($widgets-common-config, edit-toolbar-height);
+
+    $action-bar-height: 30px;
+    $flex-gap: 10px;
+
+    // ** Config tab CONTENT ** //
+    .widget-config-tab {
+        // position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 0 0;
+        flex: 1 1 100%;
+
+        > form {
+            flex: 1 1 100%;
+            display: flex;
+        }
+
+        // possibly re-usable within a widget-config-tab
+        .config-toolbar {
+            height: auto;
+            padding: 0 $edit-padding;
+            flex: 1 0 $edit-toolbar-height;
+            align-items: stretch;
+            justify-content: stretch;
+
+            &.mat-toolbar-multiple-rows {
+                min-height: auto;
+            }
+
+            .mat-toolbar-row {
+                height: 100%;
+                align-items: inherit;
+                padding: 0;
+            }
+
+            .toolbar-item {
+                display: inline-flex;
+                align-items: center;
+                font-size: 14px;
+
+                &:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
+
+            .mat-stroked-button,
+            .mat-raised-button,
+            .mat-button {
+                font-size: 12px;
+                line-height: 24px;
+
+                .mat-icon {
+                    width: 18px;
+                    height: 18px;
+                    line-height: 18px;
+                    font-size: 16px;
+                }
+
+                .mat-icon:first-child {
+                    margin-left: -5px;
+                    margin-right: 5px;
+                }
+
+                .mat-icon:last-child {
+                    margin-left: 5px;
+                    margin-right: -5px;
+                }
+
+                &.has-icon {
+                    padding-left: 8px;
+                }
+            }
+        }
+
+        // should be on an element that wraps a form element, like a <p> tag
+        .config-control {
+            &:not(:last-child) {
+                margin-bottom: 30px;
+            }
+        }
+
+        // columns
+        &.has-columns {
+            display: flex;
+            padding: $flex-gap/2;
+
+            .column {
+                margin: $flex-gap/2;
+                flex: 1 1 calc(100% - #{$flex-gap});
+                // debugging
+                //background-color: rgba(255,255,255,.15);
+            }
+        }
+        // NOTE: specific tab overrides are in their own component style sheet
+
+    }
+
+    // CUSTOM ELEMENT STYLES
+    .button-group {
+        display: flex;
+
+        .mat-button,
+        .mat-raised-button,
+        .mat-stroked-button,
+        .mat-icon-button {
+            border-radius: 0;
+
+            &:first-child {
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+            }
+
+            &:not(:first-child) {
+                margin-left: -1px;
+            }
+        }
+    }
+
+    .mat-button-toggle-group-vertical,
+    .mat-button-toggle-group-horizontal {
+
+        &.mat-button-toggle-group {
+            &.mat-button-toggle-group-appearance-standard {
+                border: 0px;
+                border-radius: 0px;
+
+                .mat-button-toggle-label-content {
+                    line-height: 30px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .mat-button-toggle + .mat-button-toggle {
+                    border: none;
+                }
+
+                .mat-button-toggle {
+                    border-radius: 2px;
+                    margin: 3px 0px;
+
+                    &.mat-button-toggle-checked  {
+                        border-radius: 4px;
+                    }
+                }
+            }
+        }
+    }
+
+    .mat-button-toggle-group-horizontal {
+        &.mat-button-toggle-group {
+            height: 34px;
+
+            .mat-button-toggle-button {
+                font-size: 12px;
+                display: flex;
+                align: center;
+
+                .mat-button-toggle-label-content {
+                    line-height: 24px;
+                }
+            }
+        }
+    }
+
+    .mat-button-toggle-group-vertical {
+        &.mat-button-toggle-group, .mat-button-toggle-standalone {
+            flex-direction: column;
+        }
+    }
+
+    // this hacks the material tab-nav-bar so it behaves somewhat like a button-group
+    // but the ink-bar is now full height and slides underneath to the selected item
+    // kind of a cooler button-group
+    .sliding-button-group.mat-tab-nav-bar {
+        border-bottom: 0 !important;
+        padding: 0 2px;
+        display: inline-block;
+
+        .mat-tab-link {
+            height: 32px;
+            padding: 0 4px;
+            min-width: 50px;
+            opacity: 1;
+            z-index: 1;
+            background-color: transparent;
+            user-select: none;
+
+            &.mat-tab-label-active,
+            &:not(.mat-tab-disabled):not(.mat-tab-label-active) {
+                &,
+                &:focus {
+                    background-color: transparent !important;
+                }
+            }
+
+            &:not(.mat-tab-disabled):focus {
+                background-color: transparent !important;
+            }
+        }
+
+        .mat-ink-bar {
+            height: 28px;
+            bottom: 2px;
+            border-radius: 4px;
+        }
+    }
+}
+
+@mixin widget-config-common-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+
+    $divider: rgba(map-get($foreground, divider), .05);
+
+    $link: map-get($foreground, link);
+
+    $edit-toolbar-border-width: map-get($widgets-common-config, edit-toolbar-border-width);
+
+    // ** Config tab CONTENT ** //
+    .widget-config-tab {
+
+        // possibly re-usable within a widget-config-tab
+        .config-toolbar,
+        .query-item-toolbar {
+            background: transparent;
+        }
+
+        .config-toolbar {
+            border-bottom: $edit-toolbar-border-width solid $divider;
+        }
+
+        .query-item:not(:last-child) {
+            border-bottom: 1px solid $divider;
+        }
+
+        // specific tab overrides are in their own component style sheet
+    }
+
+    // CUSTOM ELEMENT STYLES
+    $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
+
+    .button-group {
+        .mat-raised-button {
+            &.mat-primary:not(:last-child) {
+                border-right: 1px solid lighten(map-get($primary,default), 3%);
+            }
+
+            &.mat-accent:not(:last-child) {
+                border-right: 1px solid lighten(map-get($accent,default), 3%);
+            }
+
+            &.mat-warn:not(:last-child) {
+                border-right: 1px solid lighten(map-get($warn,default), 3%);
+            }
+        }
+
+    }
+
+    .sliding-button-group.mat-tab-nav-bar {
+        background-color: if($is-dark, rgba(map-get($foreground, base), .1), lighten(map-get($primary, 50), 2%));
+
+        .mat-tab-link {
+            color: map-get($primary, default);
+
+            &.mat-tab-label-active {
+                color: map-get($foreground, base);
+            }
+        }
+
+        .mat-ink-bar {
+            background-color: map-get($background, card);
+        }
+    }
+
+    .mat-button-toggle-group-vertical,
+    .mat-button-toggle-group-horizontal {
+
+        &.mat-button-toggle-group {
+            &.mat-button-toggle-group-appearance-standard {
+
+                .mat-button-toggle {
+                    background: if($is-dark, rgba($black, .4), rgba($white, .8));
+                    color: $link;
+
+                    &.mat-button-toggle-checked  {
+                        background: if($is-dark, rgba($link, .2), rgba($white, .8));
+                        color: if($is-dark, $white, $black);
+                        border: 2px solid $link;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin vertical-button-toggle-override($text, $color) {
+    .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        .mat-button-toggle {
+            color: $text;
+            border: 0;
+            background: transparent;
+        }
+
+        .mat-button-toggle.mat-button-toggle-checked {
+           color: $color;
+           border: 0;
+           background-color: rgba($color, .1);
+        }
+    }
+}

@@ -1,0 +1,27 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<button mat-icon-button [matMenuTriggerFor]="themeMenu" class="menu-trigger">
+    <!--<mat-icon aria-label="Select Theme">format_color_fill</mat-icon>-->
+    <mat-icon fontSet="denali" fontIcon="d-palette"></mat-icon>
+</button>
+<mat-menu #themeMenu="matMenu" [overlapTrigger]="false" class="nav-bar-dropmenu nav-bar-themepicker-menu">
+  <button mat-menu-item *ngFor="let option of themeOptions" [ngClass]="{ 'is-active': option.value === theme }" (click)="selectTheme(option)">
+      <mat-icon *ngIf="option.value === theme">check</mat-icon>
+      <mat-icon *ngIf="option.value !== theme"></mat-icon>
+      <span>{{option.label}}</span>
+  </button>
+</mat-menu>

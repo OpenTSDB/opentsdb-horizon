@@ -1,0 +1,290 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* DBOARD-CONTEMT COMPONENT */
+// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+
+@mixin widget-loader-component-base() {
+    .widget-loader {
+        display: flex;
+        flex: 1 1 auto;
+
+        .widget-menu-trigger,
+        .snapshot-icon,
+        .expand-trigger {
+            visibility: hidden;
+        }
+
+        &:hover {
+            .widget-menu-trigger,
+            .expand-trigger,
+            .snapshot-icon {
+                visibility: visible;
+            }
+        }
+
+        .mat-card {
+            padding: initial;
+        }
+
+        .panel-heading {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+            top: 0;
+            cursor: move;
+
+            .panel-title {
+                display: inline-block;
+                padding: 2px;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 12px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        .mat-toolbar,
+        .mat-toolbar-row {
+            font-size: 1.1em;
+            height: 18px;
+            min-height: 18px !important;
+            //border-bottom: 1px solid #dfdfdf;
+            font-weight: 300;
+        }
+
+        .mat-toolbar {
+            -webkit-transition: background 500ms;
+            transition: background 500ms;
+        }
+
+        .mat-toolbar-row {
+            //@include mat-elevation(1);
+            padding: initial;
+        }
+
+        .batch-selector {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            height: 24px;
+            padding: 0 3px;
+            transform: scale(.8);
+
+            .mat-checkbox-layout {
+                margin-top: -14px;
+            }
+
+            + .panel-title::before {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                position: relative;
+            }
+        }
+
+        .mat-icon.time-lock
+        //.snapshot-icon,
+        //.expand-trigger
+        {
+            cursor: pointer;
+            margin: 0px 6px;
+            font-size: 12px;
+            width: 12px;
+            height: 12px;
+        }
+
+        .mat-icon-button {
+            &,
+            .mat-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            &,
+            .mat-button-wrapper {
+                line-height: 28px;
+            }
+
+            .mat-icon {
+                font-size: 18px;
+                line-height: 24px;
+            }
+
+           &.expand-trigger,
+           &.snapshot-icon {
+               .mat-icon {
+                   font-size: 12px;
+               }
+           }
+        }
+
+        &.inverse-menu-color {
+            .mat-toolbar .mat-icon-button {
+                color: rgba($white, .87);
+            }
+        }
+
+
+
+        // .mat-card-content.panel-body
+        .panel-body {
+            // padding: 0 10px 10px;
+            position: absolute;
+            //top: 28px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            .panel-heading {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 9;
+            }
+        }
+
+
+    }
+
+    // CDK items are outside of the component namespace class
+    .widget-menu,
+    .widget-submenu {
+
+        .mat-menu-item {
+            font-size: 12px;
+            height: 26px;
+            line-height: 26px;
+
+            .mat-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .menu-seperator {
+            display: block;
+            height: 1px;
+            width: 100%;
+            margin: 8px auto;
+        }
+    }
+
+    .mat-tooltip.cdk-widget-title-tooltip {
+        margin-top: -6px !important;
+    }
+}
+
+@mixin widget-loader-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark-theme: map-get($theme-config, is-dark);
+
+    $divider: map-get($foreground, divider);
+    $card: map-get($background, card);
+
+    .widget-loader {
+        .mat-card {
+            box-shadow: none;
+            background-color: map-get($background, card);
+            border: 1px solid rgba(0, 0, 0, .08);
+
+            .panel-body .panel-heading {
+                background-color: transparent;
+                display: none;
+
+                & {
+                    @include transition(background-color 0.2s ease-in-out);
+                }
+
+                .panel-title {
+                    padding: 0 10px;
+                    font-weight: 300;
+                }
+
+                .mat-toolbar {
+                    @include transition(none);
+                    background: transparent;
+
+                    .mat-icon-button {
+                        @include opacity(.5);
+                    }
+                }
+
+                &:hover {
+                    //background-color: rgba(map-get($accent, A700), .1);
+                    background-color: map-get($background, card-header-hover);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+
+        /*&.inverse-menu-color {
+            .batch-selector {
+                .mat-checkbox-frame {
+                    border-color: rgba($white, .54);
+                }
+            }
+        }*/
+
+        .batch-selector {
+            // border: 1px solid rgba(if($is-dark-theme, $white, $black), .8);
+            background: $card;
+        }
+    }
+
+    // Gridster
+    .gridster-item.is-dragging {
+        .gridster-item-inner {
+            .widget-loader {
+                .mat-card-header {
+                    background-color: map-get($background, card-header-hover);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // CDK items are outside of the component namespace class - be sure to give them a unique class name
+    .widget-menu,
+    .widget-submenu {
+        .menu-seperator {
+            background-color: rgba(map-get($foreground, divider), .1);
+        }
+    }
+
+}

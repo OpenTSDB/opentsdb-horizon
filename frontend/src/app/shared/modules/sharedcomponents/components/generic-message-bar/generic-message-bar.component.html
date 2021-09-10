@@ -1,0 +1,34 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<div class="generic-message-bar-wrapper" *ngIf="isVisible">
+    <div class="generic-message-item">
+        <mat-icon fontSet="denali" [fontIcon]="fontIcon"></mat-icon>
+        <strong class="message-type">{{messageType}}:</strong>
+        <span class="message-text">{{data.message}} </span>
+        <!-- tools to check what the various types look like
+        <a mat-button (click)="setTypeClass('error')">error</a>
+        <a mat-button (click)="setTypeClass('warning')">warning</a>
+        <a mat-button (click)="setTypeClass('success')">success</a>
+        <a mat-button (click)="setTypeClass('info')">info</a>
+        -->
+    </div>
+    <div class="close-action">
+        <button mat-icon-button (click)="hideMessage()">
+            <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
+        </button>
+    </div>
+</div>

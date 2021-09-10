@@ -1,0 +1,270 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin metric-visual-panel-component-base() {
+
+    .metric-visual-panel {
+
+        .metric-visual-panel-card {
+            min-width: 640px;
+
+            .mat-card-header,
+            .mat-card-footer {
+                padding: 8px 16px;
+            }
+
+            .mat-card-header {
+                margin: -16px -16px 0 -16px;
+                align-items: center;
+
+                .mat-card-header-text {
+                    display: none;
+                }
+            }
+
+            .mat-card-header,
+            .mat-card-footer,
+            .visual-style-type {
+                display: flex;
+                align-items: center;
+            }
+
+            .visual-style-type {
+                > :first-child {
+                    margin-right: 6px;
+                }
+            }
+
+            .mat-card-content {
+                display: flex;
+            }
+
+            .vis-conf-col {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                margin: 5px 8px;
+                white-space: nowrap;
+
+                &:first-of-type {
+                    margin-left: 0;
+                }
+
+                &:last-of-type {
+                    margin-right: 0;
+                }
+
+                &.has-columns {
+                    flex-direction: row;
+                    align-items: stretch;
+                }
+
+                &.is-bn-or-tn {
+
+                    .column:not(:last-child) {
+                        margin-right: 12px;
+                    }
+
+                    .column:not(:first-child) {
+                        flex: 1;
+                    }
+
+                    .column:first-of-type {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                }
+            }
+            .sort-toggle {
+                height: 30px;
+                margin: 5px 0px 0px 10px;
+                .mat-button-toggle-label-content {
+                    height: 20px;
+                }
+            }
+        }
+
+        .vertical-radio-group.mat-radio-group {
+            flex-direction: column;
+            display: flex;
+
+            .mat-radio-button {
+                margin: 4px 0;
+
+                &:first-child {
+                    margin-top: 8px;
+                }
+            }
+        }
+
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            //border: none;
+            align-items: stretch;
+
+            .mat-button-toggle {
+                flex: 1;
+            }
+
+            .mat-button-toggle-label-content {
+                line-height: 30px;
+                // padding: 0px;
+            }
+            .mat-button-toggle + .mat-button-toggle {
+                border-left: none;
+            }
+        }
+
+        /*.color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            border: none;
+
+            .mat-button-toggle {
+                color: #227aec;
+                background: transparent;
+            }
+
+            .mat-button-toggle-checked {
+                color: #000;
+            }
+
+            .mat-button-toggle-label-content {
+                line-height: 30px;
+                // padding: 0px;
+            }
+            .mat-button-toggle + .mat-button-toggle {
+                border-left: none;
+            }
+        }
+
+        .table-visual-settings{
+            .has-columns {
+                display: flex;
+                // padding: $flex-gap/2;
+
+                .column:not(:last-child) {
+                    flex: 1;
+                    padding-right: 10px;
+                    border-right: 1px solid #dfdfdf;
+                }
+                .column:last-child {
+                    padding-left: 10px;
+                }
+            }
+        }*/
+    }
+
+    .mat-menu-panel.metric-visual-panel-wrapper {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+}
+
+@mixin metric-visual-panel-component-theme($theme-config) {
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $is-dark: map-get($theme-config, is-dark);
+    $dbfilter: map-get($theme-config, dashboard-filters);
+
+    $chip-bg: rgba(map-get($primary, default), .1);
+    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
+    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+
+    $link: map-get($foreground, link);
+
+    $widgets: map-get($theme-config, widgets);
+
+    $card-background: map-get($background, card);
+    $divider: map-get($foreground, divider);
+
+    $query-marker-bg: map-get($widgets, query-editor-marker);
+    $query-marker-text: map-get($widgets, query-editor-marker-text);
+    $query-block-bg: map-get($widgets, query-editor-block-bg);
+    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+
+    $brand-color: if($is-dark, lighten(map-get($background, navbar), 15%), map-get($background, navbar));
+    $brand-color-inverse: find-color-invert($brand-color);
+
+    $lighter-divider: rgba(0,0,0,0.04);
+
+    $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
+    $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
+    $new-bg: #edeff4; // needs to be moved to theme (ALSO, needs dark version)
+
+    $label-color: rgba(0, 0, 0, 0.5); // label color for query function keys (NOT the values)
+
+    $link: map-get($foreground, link);
+
+    .metric-visual-panel {
+        .metric-visual-panel-card {
+            .mat-card-header {
+                border-bottom: 1px solid $divider;
+            }
+
+            .mat-card-footer {
+                border-top: 1px solid $divider;
+            }
+
+            .mat-stroked-button[color="primary"] {
+                border-color: $link;
+            }
+
+            // reset the color picker border and background
+            .color-picker-component {
+                .color-picker-component-control.card {
+                    background: transparent;
+                    border-top: 0;
+                }
+            }
+
+            .vertical-radio-group.mat-radio-group {
+                .mat-radio-button {
+                    .mat-radio-container {
+                        .mat-radio-outer-circle {
+                            border-color: $link
+                        }
+
+                        .mat-radio-inner-circle {
+                            background-color: $link;
+                        }
+                    }
+                }
+            }
+        }
+
+        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+            border-color: map-get($primary, default);
+
+            .mat-button {
+                color: map-get($primary, default);
+            }
+
+            .mat-button-toggle.mat-button-toggle-checked {
+                .mat-button {
+                    background-color: map-get($primary, default);
+                    color: mapt-get($primary, default-contrast);
+                }
+            }
+        }
+    }
+
+    .mat-menu-panel.metric-visual-panel-wrapper {
+        border-top: 2px solid rgba($link, .25);
+    }
+
+}

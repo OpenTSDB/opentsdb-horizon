@@ -1,0 +1,78 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//* LANDING PAGE STYLE MODULE LOADER */
+//*
+//* NOTE: Why are there two different mixins?
+//*
+//* Structure mixins are included only once in app-core(),
+//* whereas theme mixins get included as many times
+//* as there are themes in the themeloop.
+//* Primarily it is just to help reduce code duplication
+
+// NOTE: First time only after creating this file,
+// after you have completed the three steps below
+// be sure to add this file to src/app/app.style-module.scss
+// and follow the steps in that file
+
+// [ STEP 1 ] - IMPORT MODULE COMPONENT SCSS FILES
+// import your component scss
+// example: @import './components/componentName/componentName.component.scss';
+
+// containers
+@import 'containers/landing-page/landing-page.component';
+
+// components
+// @import 'components/home/home.component.scss';
+@import 'components/activity-panel/activity-panel.component';
+@import 'components/pin-panel/pin-panel.component';
+@import 'components/landing-page-content/landing-page-content.component';
+
+// widgets
+
+// [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
+@mixin landing-page-module-core() {
+  // include your core mixins
+  // example: @include componentName-component-core();
+
+  // containers
+    @include landing-page-container-component-base();
+
+  // components
+  //  @include landing-page-home-component-base();
+    @include activity-panel-component-base();
+    @include pin-panel-component-base();
+    @include landing-page-content-component-base();
+
+  // widgets
+}
+
+// [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
+@mixin landing-page-module-theme($theme-config) {
+  // include your theme mixins, passing along the $theme-config
+  // example: @include componentName-component-theme($theme-config);
+
+  // container
+    @include landing-page-container-component-theme($theme-config);
+
+  // components
+  //  @include landing-page-home-component-theme($theme-config);
+    @include activity-panel-component-theme($theme-config);
+    @include pin-panel-component-theme($theme-config);
+    @include landing-page-content-component-theme($theme-config);
+
+  // widgets
+}

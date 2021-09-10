@@ -1,0 +1,73 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+    <div class="settings-control tag-key-control">
+        <div class="mat-label">Tag Key</div>
+        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <input matInput placeholder="Enter tag key" [formControl]="tagk" [matAutocomplete]="filterKeyAuto">
+            <mat-autocomplete #filterKeyAuto="matAutocomplete" (optionSelected)="selectFilterKeyOption($event)">
+                <mat-option *ngFor="let option of filteredKeyOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div class="settings-control alias-control">
+        <div class="mat-label">Tag Key Alias</div>
+        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <input matInput placeholder="Enter alias (optional)" [formControl]="alias">
+        </mat-form-field>
+    </div>
+    <div class="settings-control values-control">
+        <div class="mat-label">Allowed Tag Values</div>
+        <!--<mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <input matInput placeholder="Enter value(s) seperated by commas" [formControl]="values">
+        </mat-form-field>-->
+        <mat-form-field appearance="fill" color="primary" floatLabel="never">
+            <mat-chip-list class="filter-values-list" #chipList>
+                <mat-chip
+                    *ngFor="let val of chipValues; let n=index"
+                    (removed)="removeValue(n)">
+                    <span>{{val.value}}</span>
+                    <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                </mat-chip>
+                    <input
+                    placeholder="Enter value(s) seperated by commas"
+                    #filterValueInput
+                    [formControl]="allowedValuesInput"
+                    [matAutocomplete]="filterValueAuto"
+                    [matChipInputFor]="chipList"
+                    (focus)="onValueInputFocus()">
+            </mat-chip-list>
+            <mat-autocomplete #filterValueAuto="matAutocomplete" (optionSelected)="selectFilterValueOption($event)">
+                <mat-option *ngFor="let option of filteredValueOptions" [value]="option">
+                {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div class="settings-control actions-control">
+        <div class="mat-label">Actions</div>
+        <div class="actions">
+            <button mat-button (click)="removeItem()">
+                <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
+            </button>
+            <mat-slide-toggle [formControl]="enabled" [checked]="enabled.value">
+                <span class="mat-caption" [ngClass]="{'is-enabled': enabled.value }">{{enabled.value ? 'Enabled' : 'Disabled'}}</span>
+            </mat-slide-toggle>
+        </div>
+    </div>

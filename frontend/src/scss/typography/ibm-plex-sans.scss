@@ -1,0 +1,70 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+$ibm-sans-typeface-config: (
+    family: 'IBM Plex Sans',
+    font-family: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+    path: '/assets/fonts/IBM-Plex/sans',
+    fontweight-map: ( 
+        light: 300,
+        medium: 500, 
+        regular: 400
+    ),
+    fonts: (
+        light: (
+            local: "IBM Plex Sans Light",
+            local2: "IBMPlexSans-Light",
+            weight: 300,
+            style: normal,
+            file-prefix: 'IBMPlexSans-Light'
+        ),
+        light-italic: (
+            local: "IBM Plex Sans Light Italic",
+            local2: "IBMPlexSans-LightItalic",
+            weight: 300,
+            style: italic,
+            file-prefix: 'IBMPlexSans-LightItalic'
+        ),
+        medium: (
+            local: "IBM Plex Sans Medium",
+            local2: "IBMPlexSans-Medium",
+            weight: 500,
+            style: normal,
+            file-prefix: 'IBMPlexSans-Medium'
+        ),
+        medium-italic: (
+            local: "IBM Plex Sans Medium Italic",
+            local2: "IBMPlexSans-MediumItalic",
+            weight: 500,
+            style: italic,
+            file-prefix: 'IBMPlexSans-MediumItalic'
+        ),
+        regular: (
+            local: "IBM Plex Sans",
+            local2: "IBMPlexSans",
+            weight: 400,
+            style: normal,
+            file-prefix: 'IBMPlexSans-Regular'
+        ),
+        regular-italic: (
+            local: "IBM Plex Sans Italic",
+            local2: "IBMPlexSans-Italic",
+            weight: 400,
+            style: italic,
+            file-prefix: 'IBMPlexSans-Italic'
+        )
+    )
+);

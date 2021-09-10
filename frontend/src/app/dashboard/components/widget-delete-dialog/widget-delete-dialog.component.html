@@ -1,0 +1,31 @@
+<!--
+  This file is part of OpenTSDB.
+  Copyright (C) 2021  Yahoo.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<h1 mat-dialog-title>Delete {{(dbData.batch && dbData.selectedCount > 1) ? 'Widgets' : 'Widget'}}</h1>
+<div mat-dialog-content>
+
+  <p *ngIf="dbData.batch && dbData.selectedCount > 1; else singleConfirm">
+    Do you want to delete the selected {{dbData.selectedCount}} widgets?
+  </p>
+
+  <ng-template #singleConfirm>
+    <p>Do you want to delete the widget?</p>
+  </ng-template>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="confirm()" >Ok</button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Cancel</button>
+</div>

@@ -1,0 +1,78 @@
+/**
+ * This file is part of OpenTSDB.
+ * Copyright (C) 2021  Yahoo.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@mixin widget-config-events-component-base() {
+
+    .widget-config-events {
+        padding: 10px;
+        width: 100%;
+
+        .namespace {
+            margin-top: 10px;
+        }
+
+        .search {
+            margin-top: 10px;
+            width: 100%;
+
+            .search-input {
+                display: block;
+                width: 100%;
+                padding-left: 5px;
+            }
+
+            .info-hint {
+                height: 32px;
+                display: inline-flex;
+                align-items: center;
+                font-size: 10px;
+                margin-left: 8px;
+
+                .mat-icon {
+                    font-size: 10px;
+                    width: 8px;
+                    height: 10px;
+
+                    &:first-child {
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin widget-config-events-component-theme($theme-config) {
+
+    /* Theme config parts */
+    $primary: map-get($theme-config, primary);
+    $accent: map-get($theme-config, accent);
+    $warn: map-get($theme-config, warn);
+    $foreground: map-get($theme-config, foreground);
+    $background: map-get($theme-config, background);
+    $chip-bg: rgba(map-get($primary, default), .1);
+
+    .widget-config-events {
+
+        .search {
+            .search-input {
+                background: $chip-bg;
+
+            }
+        }
+    }
+
+}
