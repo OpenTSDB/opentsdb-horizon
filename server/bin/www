@@ -10,7 +10,7 @@ var https = require('https');
 var fs = require('fs');
 var path = require('path');
 
-var sslPath = '.ssh/yamas/';
+var sslPath = '.ssh/opentsdb/';
 
 /**
  * Get port from environment and store in Express.
@@ -22,8 +22,8 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.yamas.key'), 'utf8');
-var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.yamas.crt'), 'utf8');
+var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.key'), 'utf8');
+var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.crt'), 'utf8');
 
 var credentials = { key: privateKey, cert: certificate };
 
