@@ -141,29 +141,20 @@
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    $d-blue: mat-color($denali-blue, 500);
+    $d-purple: mat-color($denali-purple, 500);
+    $d-red: mat-color($denali-red, 500);
+    $d-green: mat-color($denali-green, 500);
+    $d-orange: mat-color($denali-orange, 500);
 
-    $d-blue: map-get($denali-blue, 500);
-    $d-purple: map-get($denali-purple, 500);
-    $d-red: map-get($denali-red, 500);
-    $d-green: map-get($denali-green, 500);
-    $d-orange: map-get($denali-orange, 500);
-
-    $d-blue-accent: map-get($denali-blue, 'A100');
-    $d-purple-accent: map-get($denali-purple, 'A100');
-    $d-red-accent: map-get($denali-red, 'A100');
-    $d-green-accent: map-get($denali-green, 'A100');
-    $d-orange-accent: map-get($denali-orange, 'A100');
+    $d-blue-accent: mat-color($denali-blue, 'A100');
+    $d-purple-accent: mat-color($denali-purple, 'A100');
+    $d-red-accent: mat-color($denali-red, 'A100');
+    $d-green-accent: mat-color($denali-green, 'A100');
+    $d-orange-accent: mat-color($denali-orange, 'A100');
 
     $activityTypes: (
         namespace: ($d-blue, $d-blue-accent),
@@ -173,26 +164,23 @@
         alert: ($d-orange, $d-orange-accent)
     );
 
-    /* [[  THEME  ]] (#{$theme-name}) - activity panel component  */
-    @at-root [theme='#{$theme-name}'] {
+    :host.activity-panel {
+        .activity-lists {
+            .mat-list {
+                .mat-icon {
 
-        :host.activity-panel {
-            .activity-lists {
-                .mat-list {
-                    .mat-icon {
+                    @each $key, $value in $activityTypes {
+                        $color: nth($value, 1);
+                        $accent: nth($value, 2);
 
-                        @each $key, $value in $activityTypes {
-                            $color: nth($value, 1);
-                            $accent: nth($value, 2);
-
-                            &.for-#{$key} {
-                                color: $color;
-                                background-color: $accent;
-                            }
+                        &.for-#{$key} {
+                            color: $color;
+                            background-color: $accent;
                         }
                     }
                 }
             }
         }
     }
+
 }

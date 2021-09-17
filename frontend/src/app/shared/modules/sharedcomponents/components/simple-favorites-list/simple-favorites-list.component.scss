@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin simple-favorites-list-component-base() {
     .widget-panel-content.simple-favorites-list {
         .has-scroller {
@@ -69,57 +70,44 @@
 }
 
 @mixin simple-favorites-list-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    $text: map-get($foreground, text);
-    $link: map-get($foreground, link);
+        $row-hover-bg: if(
+            $is-dark,
+            mat-color($primary, 50, .05),
+            mat-color($primary, 50)
+        );
 
-    $primary-default: map-get($primary, default);
-    $primary-light: map-get($primary, 50);
+        $table-header-bg: if(
+            $is-dark,
+            mat-color($foreground, divider, .15),
+            mat-color($foreground, divider)
+        );
 
-    $row-hover-bg: if(
-        $is-dark,
-        rgba($primary-light, .05),
-        $primary-light
-    );
-    $table-header-bg: if(
-        $is-dark,
-        lighten(map-get($background, card), 10%),
-        darken(map-get($background, card), 5%)
-    );
-    //$header-bg: #f7f7f7;
-    //if($is-dark, lighten(map-get($background, card), 10%), map-get($background, card))
-
-    .widget-panel-content.simple-favorites-list {
-        .mat-table {
-            tr.mat-header-row {
-                background: $table-header-bg;
-            }
-
-            tr.mat-row {
-                &:hover {
-                    background-color: $row-hover-bg;
+        .widget-panel-content.simple-favorites-list {
+            .mat-table {
+                tr.mat-header-row {
+                    background: $table-header-bg;
                 }
-            }
 
-            td.mat-cell {
-
-                .fav-labels {
-
-                    .dashboard-name {
-                        color: $link;
+                tr.mat-row {
+                    &:hover {
+                        background-color: $row-hover-bg;
                     }
+                }
 
-                    .root-path,
-                    .fav-date {
-                        color: lighten($text, 50%);
+                td.mat-cell {
+
+                    .fav-labels {
+
+                        .dashboard-name {
+                            color: mat-color($foreground, link);
+                        }
+
+                        .root-path,
+                        .fav-date {
+                            color: mat-color($foreground, text, .7);
+                        }
                     }
                 }
             }

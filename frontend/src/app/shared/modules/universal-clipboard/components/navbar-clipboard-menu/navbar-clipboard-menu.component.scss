@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @import 'loader-base';
 
 :host.navbar-clipboard-menu.navbar-item {
@@ -47,39 +48,22 @@
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+// * THEME VARIANTS
+@include init-component-variants() {
+    :host.navbar-clipboard-menu {
+        &.is-open {
+            background: rgba($white, .2);
+            color: mat-color($foreground, navbar-text);
 
-    $text-color: map-get($background, navbar);
-    $navbar-text-color: map-get($foreground, navbar-text);
+            box-shadow:
+                inset 0 -3px 0 -1px mat-color($foreground, navbar-text),
+                inset 3px 0px 0 -1px mat-color($foreground, navbar-text),
+                inset 0 1px 0 1px mat-color($foreground, navbar-text);
 
-    $divider: map-get($foreground, divider);
-
-    $navbar-background: map-get($background, navbar);
-    $navbar-text: find-color-invert($navbar-background);
-
-
-    /* [[  THEME  ]] (#{$theme-name}) - admin panel component  */
-    @at-root [theme='#{$theme-name}'] {
-
-        :host.navbar-clipboard-menu {
-            &.is-open {
-                background: rgba($white, .2);
-                color: $navbar-text;
-
-                box-shadow: inset 0 -3px 0 -1px $navbar-text, inset 3px 0px 0 -1px $navbar-text, inset 0 1px 0 1px $navbar-text;
-
-                &:hover {
-                    background: rgba($white, .28);
-                }
+            &:hover {
+                background: rgba($white, .28);
             }
         }
     }
+
 }

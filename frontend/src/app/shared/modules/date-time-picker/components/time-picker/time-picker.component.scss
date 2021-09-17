@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin time-picker-component-base() {
 
     .dtp-time-picker {
@@ -74,32 +75,28 @@
 }
 
 @mixin time-picker-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
-    
-    // tooltip color
-    .dtp-tooltip-text {
-        background-color: map-get($accent, default);
-    }
 
-    // dropdown menu container
-    .timerange-picker-menu.mat-menu-panel {
-        &::after {
-            border-color: rgba(255, 255, 255, 0);
-            border-bottom-color: map-get($background, menu); // actual color of arrow
+    @include variables-compatibility($theme-config) {
+
+        // tooltip color
+        .dtp-tooltip-text {
+            background-color: mat-color($accent, default);
         }
-    }
 
-    .timerange-picker-menu {
-        .mat-menu-content {
-            .timerange-picker-container {
-                &.mat-menu-item {
-                    background-color: transparent;
+        // dropdown menu container
+        .timerange-picker-menu.mat-menu-panel {
+            &::after {
+                border-color: rgba($white, 0);
+                border-bottom-color: mat-color($background, menu); // actual color of arrow
+            }
+        }
+
+        .timerange-picker-menu {
+            .mat-menu-content {
+                .timerange-picker-container {
+                    &.mat-menu-item {
+                        background-color: transparent;
+                    }
                 }
             }
         }

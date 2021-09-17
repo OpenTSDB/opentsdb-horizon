@@ -1,20 +1,21 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- @import 'loader-base';
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+ @import 'loader-component';
 
 $mini-nav-dimension: 300px;
 $mini-nav-font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
@@ -268,128 +269,170 @@ $dnav-height: $mini-nav-dimension + 6px;
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    //* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    $cssVarMap: get-theme-css-variables($theme-name);
+    $cssText: get-theme-css-text($theme-name);
 
-    $status: map-get($theme-config, status);
-    $status-success: map-get($status, success);
+    $status-success: mat-color($other, status-success);
 
-    $sn-light: map-get($navbar-config, sn-light);
+    // TODO: Need to add navbar-config to theme
+    /*$sn-light: map-get($navbar-config, sn-light);
     $sn-dark: map-get($navbar-config, sn-dark);
     $sn-light-text: map-get($navbar-config, sn-light-text);
     $sn-dark-text: map-get($navbar-config, sn-dark-text);
     $sn-seperator: map-get($navbar-config, sn-seperator);
-    $sn-active: map-get($navbar-config, sn-active);
+    $sn-active: map-get($navbar-config, sn-active);*/
 
-    $divider: map-get($foreground, divider);
+    $divider: mat-color($foreground, divider);
 
-    $navbar-background: map-get($background, navbar);
-    $navbar-text: find-color-invert($navbar-background);
+    $navbar-background: mat-color($background, navbar);
+    $navbar-text: mat-color($foreground, navbar-text);
 
-    $text-color: map-get($background, navbar);
-    $navbar-text-color: map-get($foreground, navbar-text);
+    $text-color: mat-color($background, navbar);
+    $navbar-text-color: mat-color($foreground, navbar-text);
 
-    $menu-background: map-get($background, card);
-    $menu-background-hover: find-color-invert($menu-background);
+    $menu-background: mat-color($background, card);
+    // TODO: need to have preprocessed colors in the theme-config
+    $menu-background-raw-value: _mat-convert-variable-to-color(map-get($background, card), $cssVarMap);
+    $menu-background-hover: find-color-invert($menu-background-raw-value);
 
-    $item-text: if($is-dark-theme, rgba($navbar-text-color,.6), rgba($text-color,.85));
+    $item-text: if(
+        $is-dark,
+        mat-color($foreground, navbar-text, .6),
+        mat-color($background, navbar, .85)
+    );
     $icon-color: $item-text;
 
-    $menu-divider: if($is-dark-theme, $divider, $navbar-background);
+    $menu-divider: if(
+        $is-dark,
+        $divider,
+        $navbar-background
+    );
 
-    /* [[  THEME  ]] (#{$theme-name}) - DBFS Mini Nav component  */
-    //:host-context([theme='#{$theme-name}']) {
-    @at-root [theme='#{$theme-name}'] {
-        :host.mini-navigator-component {
-            background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
+    :host.mini-navigator-component {
+        background-color: if(
+            $is-dark,
+            lighten($menu-background-raw-value, 15%),
+            $menu-background
+        );
 
-            .mini-navigator-toolbar {
-                background: transparent;
-                color: $item-text;
-                box-shadow: inset 0 -1px 0 0 rgba($menu-divider, .12);
-            }
-
-            .mini-navigator-actions {
-                color: $item-text;
-                box-shadow: inset 0 1px 0 0 rgba($menu-divider,.12);
-            }
-
-            // FOLDERS LIST
-            .mini-navigator-folders {
-                // content here
-
-                .mat-list .mat-list-item,
-                .mat-nav-list .mat-list-item {
-                    color: rgba($item-text,.65);
-
-                    &.is-active,
-                    &.is-selected {
-                        color: rgba(find-color-invert($navbar-background),.85);
-                    }
-
-                    &.is-selected {
-                        background-color: $navbar-background;
-                    }
-
-                    &:not(:last-child) {
-                        border-bottom: 1px solid rgba($menu-divider,.07);
-                    }
-
-                    &:first-child {
-                        border-top: 1px solid transparent;
-                    }
-                }
-
-            }
-
-            // FOLDER ITEM
-            .mini-navigator-folder-item {
-                .save-folder-name {
-                    color: $status-success;
-                }
-
-                .list-item.edit-form {
-                    .mat-form-field {
-                        .mat-input-element::placeholder {
-                            color: rgba($navbar-text, .25);
-                        }
-                    }
-                }
-
-                .dnav-folder-menu {
-                    .mat-icon-button {
-                        background: rgba($black, .2);
-                    }
-                }
-            }
+        .mini-navigator-toolbar {
+            background: transparent;
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .6),
+                mat-color($background, navbar, .85)
+            );
+            box-shadow: inset 0 -1px 0 0 if(
+                $is-dark,
+                mat-color($foreground, divider, .12),
+                mat-color($background, navbar, .12)
+            );
         }
 
-        // cdk items
-        ::ng-deep {
-            .dnav-cdk-mini-navigator.mat-menu-panel {
-                background-color: if($is-dark-theme, lighten($menu-background, 15%), $menu-background);
-                border: 1px solid rgba($navbar-background, .15);
+        .mini-navigator-actions {
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .6),
+                mat-color($background, navbar, .85)
+            );
+            box-shadow: inset 0 1px 0 0 if(
+                $is-dark,
+                mat-color($foreground, divider, .12),
+                mat-color($background, navbar, .12)
+            );
+        }
 
-                .mat-menu-item {
-                    color: rgba($item-text,.85);
+        // FOLDERS LIST
+        .mini-navigator-folders {
+            // content here
 
-                    .mat-icon {
-                        color: $item-text;
+            .mat-list .mat-list-item,
+            .mat-nav-list .mat-list-item {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .65),
+                    mat-color($background, navbar, .65)
+                );
+
+                &.is-active,
+                &.is-selected {
+                    color:  mat-color($foreground, navbar-text, .85);
+                }
+
+                &.is-selected {
+                    background-color: mat-color($background, navbar);
+                }
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid if(
+                        $is-dark,
+                        mat-color($foreground, divider, .07),
+                        mat-color($background, navbar, .07)
+                    );
+                }
+
+                &:first-child {
+                    border-top: 1px solid transparent;
+                }
+            }
+
+        }
+
+        // FOLDER ITEM
+        .mini-navigator-folder-item {
+            .save-folder-name {
+                color: mat-color($other, status-success);
+            }
+
+            .list-item.edit-form {
+                .mat-form-field {
+                    .mat-input-element::placeholder {
+                        color:  mat-color($foreground, navbar-text, .25);
                     }
+                }
+            }
 
-                    &:hover {
-                        background-color: rgba($menu-background-hover, .08);
-                    }
+            .dnav-folder-menu {
+                .mat-icon-button {
+                    background: rgba($black, .2);
                 }
             }
         }
     }
+
+    // cdk items
+    ::ng-deep {
+        .dnav-cdk-mini-navigator.mat-menu-panel {
+            background-color: if(
+                $is-dark,
+                lighten($menu-background-raw-value, 15%),
+                mat-color($background, card)
+            );
+            border: 1px solid mat-color($background, navbar, .15);
+
+            .mat-menu-item {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .85),
+                    mat-color($background, navbar, .85)
+                );
+
+                .mat-icon {
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text, .6),
+                        mat-color($background, navbar, .85)
+                    );
+                }
+
+                &:hover {
+                    background-color: rgba($menu-background-hover, .08);
+                }
+            }
+        }
+    }
+
 }

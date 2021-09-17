@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin alert-details-metric-period-over-period-component-base() {
 
     .period-over-period {
@@ -30,7 +31,7 @@
                 display:inline;
                 margin-right: 5px;
             }
-            
+
         }
 
         .lookbacks {
@@ -52,7 +53,7 @@
         .threshold {
             display: flex;
             align-items: center;
-            
+
             .threshold-type,
             .warning-title {
                 margin-left: 25px;
@@ -67,7 +68,7 @@
             }
 
             .threshold-input {
-                display: flex; 
+                display: flex;
                 justify-content: space-between;
                 width: 100%;
                 // height: 32px;
@@ -100,7 +101,7 @@
             .outliers {
                 display: flex;
                 align-items: center;
-                
+
                 .outlier-input {
                     width: 38px;
                     margin-left: 10px;
@@ -114,31 +115,29 @@
 }
 
 @mixin alert-details-metric-period-over-period-component-theme($theme-config) {
-    /* Theme config parts */
+    // * Theme config parts
     $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $widget: map-get($theme-config, widgets);
-    $is-dark: map-get($theme-config, is-dark);
+    //$accent: map-get($theme-config, accent);
+    //$warn: map-get($theme-config, warn);
+    //$foreground: map-get($theme-config, foreground);
+    //$background: map-get($theme-config, background);
+    //$other: map-get($theme-config, other);
+    //$is-dark: map-get($theme-config, is-dark);
 
-    $divider: map-get($foreground, divider);
-
-    .period-over-period { 
+    .period-over-period {
 
         .blue-background {
-            background: rgba(map-get($primary, default), 0.08);
+            background: mat-color($primary, default, 0.08);
         }
 
         .threshold-type {
 
             .mat-button-toggle {
-                background: rgba(map-get($primary, default), 0.08);
+                background: mat-color($primary, default, 0.08);
             }
 
             .mat-button-toggle-checked {
-                border: 2px solid blue;
+                border: 2px solid blue; // TODO: plug into theme
                 border-radius: 3px;
                 background: white;
             }

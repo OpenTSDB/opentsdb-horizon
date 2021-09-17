@@ -57,7 +57,7 @@ import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 import * as d3 from 'd3';
-import { ThemeService } from '../../../app-shell/services/theme.service';
+import { ThemeService } from '../../../shared/modules/theme/services/theme.service';
 import { DataShareService } from '../../../core/services/data-share.service';
 import { DashboardConverterService } from '../../../core/services/dashboard-converter.service';
 import { Router } from '@angular/router';

@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin timeseries-legend-component-base() {
     .timeseries-legend-component {
         display: flex;
@@ -97,7 +98,9 @@
                 justify-content: flex-end;
             }
 
-            .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow{ opacity: 1 !important; }
+            .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+                opacity: 1 !important;
+            }
 
             .mat-cell.tag-highlight {
                 cursor: pointer;
@@ -185,7 +188,6 @@
                 border-right: 5px solid transparent;
                 border-top: 5px solid;
                 margin: 0 4px;
-                //color: rgba(0, 0, 0, .54);
             }
         }
     }
@@ -204,85 +206,80 @@
 }
 
 @mixin timeseries-legend-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    $divider: map-get($foreground, divider);
+        $divider: mat-color($foreground, divider);
 
-    $menu-bg: if($is-dark, lighten(map-get($background, menu), 6%), map-get($background, menu));
+        $menu-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
+        $menu-bg-lighter: if($is-dark, mat-color($background, menu, .85), mat-color($background, menu));
 
-    $cdk-window-bg: $menu-bg;
-    $cdk-window-border: $divider;
+        $cdk-window-bg: $menu-bg;
+        $cdk-window-border: $divider;
 
-    $header-bg: if($is-dark, map-get($background, menu), map-get($background, navbar));
-    $text: map-get($foreground, navbar-text);
+        $header-bg: if($is-dark, mat-color($background, menu), mat-color($background, navbar));
+        $text: mat-color($foreground, navbar-text);
 
-    $brief-dark: #3a87ad;
-    $brief-light: #ddeff9;
+        $brief-dark: #3a87ad; // TODO: plug into theme
+        $brief-light: #ddeff9; // TODO: plug into theme
 
-    .timeseries-legend-component {
-        .ts-legend-toolbar {
-            color: white;
-            background-color: black;
+        .timeseries-legend-component {
+            .ts-legend-toolbar {
+                color: white;
+                background-color: black;
 
-            .mat-toolbar-row.detail-brief {
-                color: if($is-dark, $brief-light, $brief-dark);
-                background-color: if($is-dark, $brief-dark, $brief-light);
-            }
-        }
-
-        .ts-legend-table {
-            background: $cdk-window-bg;
-
-            .mat-sort-header-container.mat-sort-header-sorted {
-                color: #c09853;
-
-                .mat-sort-header-arrow {
-                    color: darken(#c09853, 15%);
+                .mat-toolbar-row.detail-brief {
+                    color: if($is-dark, $brief-light, $brief-dark);
+                    background-color: if($is-dark, $brief-dark, $brief-light);
                 }
             }
 
-            .mat-row:hover,
-            .mat-row.tag-highlight {
-                background-color: rgba(map-get($primary, default), .04);
-            }
-            .mat-cell:hover,
-            .mat-cell.tag-highlight {
-                background-color: rgba(map-get($primary, default), .15);
+            .ts-legend-table {
+                background: $cdk-window-bg;
+
+                .mat-sort-header-container.mat-sort-header-sorted {
+                    color: #c09853; // TODO: plug into theme
+
+                    .mat-sort-header-arrow {
+                        color: darken(#c09853, 15%); // TODO: plug into theme
+                    }
+                }
+
+                .mat-row:hover,
+                .mat-row.tag-highlight {
+                    background-color: mat-color($primary, default, .04);
+                }
+                .mat-cell:hover,
+                .mat-cell.tag-highlight {
+                    background-color: mat-color($primary, default, .15);
+                }
             }
         }
-    }
 
-    // island toolbar
-    .info-island-toolbar.timeseries-legend-toolbar {
+        // island toolbar
+        .info-island-toolbar.timeseries-legend-toolbar {
+
+            @if $is-dark {
+                .mat-select-arrow-wrapper .mat-select-arrow {
+                    color: $white;
+                }
+            }
+
+            .mat-checkbox:not(.mat-checkbox-checked) {
+                .mat-checkbox-background {
+                    background-color: $white;
+                }
+            }
+        }
 
         @if $is-dark {
-            .mat-select-arrow-wrapper .mat-select-arrow {
-                color: white;
+            .mat-menu-panel.show-limit-type-cdk-menu {
+                background: $menu-bg-lighter;
             }
         }
 
-        .mat-checkbox:not(.mat-checkbox-checked) {
-            .mat-checkbox-background {
-                background-color: white;
-            }
+        // cdk items
+        .namespace-selector-menu.mat-menu-panel {
+            border: 1px solid mat-color($foreground, divider);
         }
-    }
-
-    @if $is-dark {
-        .mat-menu-panel.show-limit-type-cdk-menu {
-            background: lighten($menu-bg, 6%);
-        }
-    }
-
-    // cdk items
-    .namespace-selector-menu.mat-menu-panel {
-        border: 1px solid map-get($foreground, divider);
     }
 }

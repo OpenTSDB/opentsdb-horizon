@@ -93,53 +93,42 @@
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    //* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    $divider: mat-color($foreground, divider);
 
-    $divider: map-get($foreground, divider);
     $default-color: if($is-dark, #ffffff, #000000);
 
-    /* [[  THEME  ]] (#{$theme-name}) - spinner  */
-    @at-root [theme='#{$theme-name}'] {
-        .loading-spinner {
-            border-top-color: rgba($default-color, 0.2);
-            border-right-color: rgba($default-color, 0.2);
-            border-bottom-color: rgba($default-color, 0.2);
-            border-left-color: $default-color;
+    .loading-spinner {
+        border-top-color: rgba($default-color, 0.2);
+        border-right-color: rgba($default-color, 0.2);
+        border-bottom-color: rgba($default-color, 0.2);
+        border-left-color: $default-color;
 
-            &.color-primary {
-                border-top-color: rgba(map-get($primary, default), 0.2);
-                border-right-color: rgba(map-get($primary, default), 0.2);
-                border-bottom-color: rgba(map-get($primary, default), 0.2);
-                border-left-color: map-get($primary, default);
-            }
-
-            &.color-accent {
-                border-top-color: rgba(map-get($accent, default), 0.2);
-                border-right-color: rgba(map-get($accent, default), 0.2);
-                border-bottom-color: rgba(map-get($accent, default), 0.2);
-                border-left-color: map-get($accent, default);
-            }
-
-            &.color-warn {
-                border-top-color: rgba(map-get($warn, default), 0.2);
-                border-right-color: rgba(map-get($warn, default), 0.2);
-                border-bottom-color: rgba(map-get($warn, default), 0.2);
-                border-left-color: map-get($warn, default);
-            }
+        &.color-primary {
+            border-top-color: mat-color($primary, default, 0.2);
+            border-right-color: mat-color($primary, default, 0.2);
+            border-bottom-color: mat-color($primary, default, 0.2);
+            border-left-color: mat-color($primary, default);
         }
 
-        .gif-spinner {
-            background-color: rgba(map-get($background, card), .8);
+        &.color-accent {
+            border-top-color: mat-color($accent, default, 0.2);
+            border-right-color: mat-color($accent, default, 0.2);
+            border-bottom-color: mat-color($accent, default, 0.2);
+            border-left-color: mat-color($accent, default);
+        }
+
+        &.color-warn {
+            border-top-color: mat-color($warn, default, 0.2);
+            border-right-color: mat-color($warn, default, 0.2);
+            border-bottom-color: mat-color($warn, default, 0.2);
+            border-left-color: mat-color($warn, default);
         }
     }
 
+    .gif-spinner {
+        background-color: mat-color($background, card, .8);
+    }
 }

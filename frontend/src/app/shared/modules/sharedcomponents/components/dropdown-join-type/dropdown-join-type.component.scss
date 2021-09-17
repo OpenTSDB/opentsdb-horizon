@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin dropdown-join-type-component-base() {
     .dropdown-join-type {
         display: flex;
@@ -50,37 +51,11 @@
 }
 
 @mixin dropdown-join-type-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
-
-    $link: map-get($foreground, link);
-
-    $widgets: map-get($theme-config, widgets);
-
-    $card-background: map-get($background, card);
-    $divider: map-get($foreground, divider);
-
-    $query-marker-bg: map-get($widgets, query-editor-marker);
-    $query-marker-text: map-get($widgets, query-editor-marker-text);
-    $query-block-bg: map-get($widgets, query-editor-block-bg);
-    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
-
-    $brand-color: map-get($background, navbar);
-    $brand-color-inverse: map-get($foreground, navbar-text);
-    
-    $lighter-divider: rgba(0,0,0,0.04);
-
-    .dropdown-join-type {
-        .mat-button {
-            color: map-get($foreground, link);
+    @include variables-compatibility($theme-config) {
+        .dropdown-join-type {
+            .mat-button {
+                color: mat-color($foreground, link);
+            }
         }
     }
 }

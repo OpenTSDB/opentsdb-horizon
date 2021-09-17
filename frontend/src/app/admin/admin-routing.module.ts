@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -38,8 +39,12 @@ const routes: Routes = [
                 component: AdminThemesComponent
             },
             {
-                path: 'themes/:themeid',
+                path: 'theme/:themeid',
                 component: AdminThemesComponent
+            },
+            {
+                path: 'themes/:themeid',
+                redirectTo: 'theme/:themeid'
             },
             {
                 path: 'theme',
@@ -55,6 +60,10 @@ const routes: Routes = [
                 component: AdminUsersComponent
             },
             {
+                path: 'users/:userid',
+                redirectTo: 'user/:userid'
+            },
+            {
                 path: 'user',
                 redirectTo: 'users',
                 pathMatch: 'full'
@@ -66,6 +75,10 @@ const routes: Routes = [
             {
                 path: 'namespace/:nsalias',
                 component: AdminNamespacesComponent
+            },
+            {
+                path: 'namespaces/:nsalias',
+                redirectTo: 'namespace/:nsalias',
             },
             {
                 path: 'namespace',

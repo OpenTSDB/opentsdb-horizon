@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
  @mixin alert-details-component-base() {
 
     .alert-details-component {
@@ -30,7 +31,7 @@
 
         .dygraph-label,
         .dygraph-axis-label {
-            color: slategrey;
+            color: slategrey; // TODO: plug into theme
             font-size: 12px;
             // font-family: Monaco, monospace;
             font-family: Helvetica Neue, Helvetica;
@@ -96,7 +97,7 @@
             }
 
             .error {
-                color:red; // why is color here??
+                color:red; // TODO: plug into theme
                 height: 30px;
                 text-align:center;
                 padding: 2px;
@@ -228,7 +229,7 @@
                     z-index: 1;
                     width: 30px;
                     height: 30px;
-                    color: red; // why is color here??
+                    color: red; // TODO: plug into theme
                 }
             }
 
@@ -358,12 +359,12 @@
                 display: none;
 
                 .step-section-label {
-                    border-top: 1px solid #E0E0E0; // why is color here??
+                    border-top: 1px solid #E0E0E0; // TODO: Plug into theme
 
                     .step-section-label-text {
                         display: inline-block;
                         padding: 2px 24px 2px 8px;
-                        background-color: #E0E0E0; // why is color here???
+                        background-color: #E0E0E0; // TODO: Plug into theme
                         border-bottom-right-radius: 20px 24px;
                     }
                 }
@@ -377,7 +378,6 @@
                 .updated-by {
                     margin: 5px 15px;
                     font-size: 10px;
-                    // color: #333333; /// WHY IS THERE COLORS HERE??????????
                 }
 
                 &.is-visible {
@@ -555,7 +555,7 @@
                                 flex: 1;
                                 div:first-child {
                                     display: inline-flex;
-                                    color: rgba(0, 0, 0, 0.87); // why is color here??
+                                    color: rgba(0, 0, 0, 0.87); // TODO: Plug into theme
                                     font-weight: 400;
                                     flex: 1;
                                     justify-content: flex-start;
@@ -797,205 +797,211 @@
 }
 
 @mixin alert-details-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $widget: map-get($theme-config, widgets);
-    $status: map-get($theme-config, status);
-    $is-dark: map-get($theme-config, is-dark);
 
-    $link-color: map-get($foreground, link);
-    $divider-color: map-get($foreground, divider);
+    @include variables-compatibility($theme-config) {
 
-    $brand-color: map-get($background, navbar);
-    $brand-color-inverse: map-get($foreground, navbar-text);
+        $theme-name: map-get($theme-config, theme-name);
+        $cssVarMap: get-theme-css-variables($theme-name);
 
-    $card: map-get($background, card);
+        .alert-details-component {
 
-    $dygraph-tooltip-bg: if($is-dark, map-get($background, menu), #f0f0f0);
-    $dygraph-tooltip-border: if($is-dark, lighten(map-get($background, menu), 10%) , #cccccc);
+            .alert-configuration-wrapper {
 
-    $text-color: map-get($foreground, text);
+                .mat-card-header {
+                    .mat-toolbar {
 
-    .alert-details-component {
-
-        .alert-configuration-wrapper {
-
-            .mat-card-header {
-                .mat-toolbar {
-
-                    .close-dialog-wrapper {
-                        border-left: 1px solid rgba($card, 0.5);
-                    }
-
-                    .close-dialog {
-                        color: $card;
-                    }
-                }
-            }
-
-            .mat-card-content {
-                background-color: map-get($background, background);
-
-                 // white background for alert preview
-                 /* NO
-                 >.ng-star-inserted {
-                    background: white;
-                }*/
-            }
-
-            .mat-card-actions {
-                border-top: 1px solid $divider-color;
-            }
-        }
-
-        .alert-status-bar {
-            background-color: $card;
-        }
-
-        .alert-status {
-            .messaging-bar {
-                .mat-slide-toggle {
-                    background-color: rgba(255, 255, 255, 0.8);
-                }
-            }
-        }
-
-        .preview-wrapper {
-            .graph-wrapper {
-                background-color: $card;
-                border: 1px solid $divider-color;
-
-                //.graph-output { }
-            }
-
-            .legend-wrapper {
-                border-left: 1px solid $divider-color;
-            }
-        }
-
-        .edit-link {
-            color:#448aff;
-            background: none;
-        }
-
-        .config-toolbar.mat-toolbar {
-            background: transparent;
-            border-bottom: 1px solid $divider-color;
-
-            .alert-history-link a {
-                color: map-get($foreground, link);
-            }
-        }
-
-        .controls-wrapper {
-            background-color: $card;
-            border-top: 1px solid $divider-color;
-            //border-top-left-radius: 16px;
-            //border-top-right-radius: 16px;
-
-            .form-group {
-                .form-label {
-                    .indicator-square {
-                        &.is-bad {
-                            background-color: map-get($status, error);
+                        .close-dialog-wrapper {
+                            border-left: 1px solid mat-color($background, card, 0.5);
                         }
-                        &.is-warning {
-                            background-color: map-get($status, warning);
-                        }
-                        &.is-good {
-                            background-color: map-get($status, success);
+
+                        .close-dialog {
+                            color: $card;
                         }
                     }
                 }
+
+                .mat-card-content {
+                    background-color: mat-color($background, background);
+
+                    // white background for alert preview
+                    /* NO
+                    >.ng-star-inserted {
+                        background: white;
+                    }*/
+                }
+
+                .mat-card-actions {
+                    border-top: 1px solid mat-color($foreground, divider);
+                }
             }
 
-            .step-section {
-                .step-section-label {
-                    border-top: 1px solid $divider-color;
+            .alert-status-bar {
+                background-color: mat-color($background, card);
+            }
 
-                    .step-section-label-text {
-                        color: if($is-dark, $brand-color-inverse, $brand-color);
-                        background-color: if($is-dark, rgba($brand-color-inverse, 0.15), rgba($brand-color, 0.15));
-                        border-bottom-right-radius: 20px 24px;
+            .alert-status {
+                .messaging-bar {
+                    .mat-slide-toggle {
+                        background-color: rgba($white, 0.8);
+                    }
+                }
+            }
+
+            .preview-wrapper {
+                .graph-wrapper {
+                    background-color: mat-color($background, card);
+                    border: 1px solid mat-color($foreground, divider);
+
+                    //.graph-output { }
+                }
+
+                .legend-wrapper {
+                    border-left: 1px solid mat-color($foreground, divider);
+                }
+            }
+
+            .edit-link {
+                color: mat-color($foreground, link);
+                background: none;
+            }
+
+            .config-toolbar.mat-toolbar {
+                background: transparent;
+                border-bottom: 1px solid mat-color($foreground, divider);
+
+                .alert-history-link a {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .controls-wrapper {
+                background-color: mat-color($background, card);
+                border-top: 1px solid mat-color($foreground, divider);
+                //border-top-left-radius: 16px;
+                //border-top-right-radius: 16px;
+
+                .form-group {
+                    .form-label {
+                        .indicator-square {
+                            &.is-bad {
+                                background-color: mat-color($other, status-error);
+                            }
+                            &.is-warning {
+                                background-color: mat-color($other, status-warning);
+                            }
+                            &.is-good {
+                                background-color: mat-color($other, status-success);
+                            }
+                        }
                     }
                 }
 
-                .created-by,
-                .updated-by {
-                    color: $text-color;
-                }
-            }
-        }
+                .step-section {
+                    .step-section-label {
+                        border-top: 1px solid mat-color($foreground, divider);
 
-        .threshold-type-toggle-options {
+                        .step-section-label-text {
+                            color: if($is-dark, mat-color($foreground, navbar-text), mat-color($background, navbar));
+                            background-color: if($is-dark, mat-color($foreground, navbar-text, 0.15), mat-color($background, navbar, 0.15));
+                            border-bottom-right-radius: 20px 24px;
+                        }
+                    }
 
-            &.mat-tab-nav-bar {
-                a.mat-tab-link.mat-tab-label-active {
-                    color: #ffffff;
-                }
-
-                .mat-ink-bar {
-                    background-color: $link-color;
-                }
-            }
-
-        }
-
-        .show-advanced-threshold-toggle {
-
-            a.toggle-action {
-                color: $link-color;
-
-                .mat-icon {
-                    color: $link-color;
+                    .created-by,
+                    .updated-by {
+                        color: mat-color($foreground, text);
+                    }
                 }
             }
 
-            .form-group:first-of-type {
-                margin-top: 16px;
-            }
-        }
+            .threshold-type-toggle-options {
 
-        .notify-when-options {
-            flex-wrap: wrap;
-            .mat-pseudo-checkbox {
-                color: map-get($primary, default);
-            }
+                &.mat-tab-nav-bar {
+                    a.mat-tab-link.mat-tab-label-active {
+                        color: $white;
+                    }
 
-            .mat-pseudo-checkbox-checked {
-                background: map-get($primary, default);
-            }
-        }
-
-        dropdown-metric-tags {
-            background: rgba(map-get($primary, default), 0.08);
-        }
-
-        // dygraph tooltip
-        .dygraph-legend {
-
-            background: $dygraph-tooltip-bg;
-            border: 1px solid $dygraph-tooltip-border;
-
-        }
-
-        .app-resizeable {
-
-            &::after {
-                // content is denali icon drag-handle
-                content: '\ebab';
-
-                background-color: if($is-dark, rgba(0, 191, 255, 0.3), $card);
-                color: $text-color;
-                border: 1px solid rgba($text-color, .3);
+                    .mat-ink-bar {
+                        background-color: mat-color($foreground, link);
+                    }
+                }
 
             }
 
-            box-shadow: inset 0px -2px 1px -1px rgba($text-color, .3);
+            .show-advanced-threshold-toggle {
+
+                a.toggle-action {
+                    color: mat-color($foreground, link);
+
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+                }
+
+                .form-group:first-of-type {
+                    margin-top: 16px;
+                }
+            }
+
+            .notify-when-options {
+                flex-wrap: wrap;
+                .mat-pseudo-checkbox {
+                    color: mat-color($primary, default);
+                }
+
+                .mat-pseudo-checkbox-checked {
+                    background: mat-color($primary, default);
+                }
+            }
+
+            dropdown-metric-tags {
+                background: mat-color($primary, default, 0.08);
+            }
+
+            // dygraph tooltip
+
+            // hacky way to get the current theming to work with variables
+            // TODO: rework all this color manipulation into the theme
+            $dygraph-tooltip-bg: if(
+                $is-dark,
+                mat-color($background, menu),
+                #f0f0f0 // TODO: plug into theme
+            );
+
+            $menu-color: _mat-convert-variable-to-color(map-get($background, menu), $cssVarMap);
+
+            $dygraph-tooltip-border: if(
+                $is-dark,
+                lighten($menu-color, 10%),
+                #cccccc
+            );
+
+            .dygraph-legend {
+
+                background: $dygraph-tooltip-bg;
+                border: 1px solid $dygraph-tooltip-border;
+
+            }
+
+            .app-resizeable {
+
+                &::after {
+                    // content is denali icon drag-handle
+                    content: '\ebab';
+
+                    background-color: if(
+                        $is-dark,
+                        rgba(0, 191, 255, 0.3), // TODO: plug this into theme
+                        mat-color($background, card)
+                    );
+
+                    color: mat-color($foreground, text);
+                    border: 1px solid mat-color($foreground, text, .3);
+
+                }
+
+                box-shadow: inset 0px -2px 1px -1px mat-color($foreground, text, .3);
+            }
         }
     }
 }

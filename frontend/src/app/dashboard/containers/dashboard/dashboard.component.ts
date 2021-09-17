@@ -1017,7 +1017,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.cdkService.setNavbarClass( mode === 'explore' ? 'explore' : '');
 
             // close the clipboard
-            if (mode === 'explore') {
+            if (mode === 'explore' || mode === 'edit') {
                 if (this.clipboardMenu.getDrawerState() === 'opened') {
                     this.clipboardMenu.toggleDrawerState({});
                 }

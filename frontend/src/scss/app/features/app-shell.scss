@@ -106,32 +106,3 @@ $logo-height: map-get($navbar-config, 'logo-height');
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
-
-    //* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
-
-    $panel-toolbar-text-color: if($is-dark, map-get($foreground, navbar-text), map-get($background, navbar));
-
-    /* [[  THEME  ]] (#{$theme-name}) - app-shell common  */
-    [theme='#{$theme-name}'] {
-
-        .panel-toolbar {
-            background: transparent;
-            border-bottom: 1px solid map-get($foreground, divider);
-            color: $panel-toolbar-text-color;
-
-            &.is-master-panel {
-                .header-label {
-                    color: rgba(map-get($background, navbar),.85);
-                }
-            }
-        }
-    }
-}

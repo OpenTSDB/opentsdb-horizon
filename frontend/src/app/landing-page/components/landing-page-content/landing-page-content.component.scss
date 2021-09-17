@@ -1,22 +1,23 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * LANDING PAGE CONTENT COMPONENT
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * LANDING PAGE CONTENT COMPONENT
+// *
 
  @import 'loader-base';
 
@@ -249,51 +250,39 @@
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-     /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    :host.landing-page-content {
+        border-right: 2px solid mat-color($foreground, divider);
 
-    /* [[  THEME  ]] (#{$theme-name}) - landing page content component  */
-    @at-root [theme='#{$theme-name}'] {
+        .landing-page-hero {
+            background-color: mat-color($background, card);
+        }
 
-        :host.landing-page-content {
-            border-right: 2px solid map-get($foreground, divider);
+        .landing-page-utilities {
 
-            .landing-page-hero {
-                background-color: map-get($background, card);
+            .mat-toolbar {
+                background: transparent;
             }
 
-            .landing-page-utilities {
+            .search-utility {
+                background-color: mat-color($background, card);
 
-                .mat-toolbar {
-                    background: transparent;
-                }
+                .search-query-form-field {
+                    .mat-icon {
+                        color: mat-color($primary, default);
+                    }
 
-                .search-utility {
-                    background-color: map-get($background, card);
+                    .mat-form-field-underline {
 
-                    .search-query-form-field {
-                        .mat-icon {
-                            color: map-get($primary, default);
-                        }
-
-                        .mat-form-field-underline {
-
-                            .mat-form-field-ripple {
-                                background-color: map-get($primary, default);
-                            }
+                        .mat-form-field-ripple {
+                            background-color: mat-color($primary, default);
                         }
                     }
                 }
             }
         }
     }
+
  }

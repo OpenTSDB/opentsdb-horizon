@@ -80,45 +80,30 @@
     transition: unset !important;
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    //* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    .gridster-item-prototype {
+        background-color: mat-color($primary, darker);
+    }
 
-    $divider: map-get($foreground, divider);
-    $primary-default: map-get($primary, default);
-    $text: map-get($foreground, text);
-
-    /* [[  THEME  ]] (#{$theme-name}) - gridster overrides  */
-    [theme='#{$theme-name}'] {
-
-        .gridster-item-prototype {
-            background-color: map-get($primary, darker);
-        }
-
-        .gridster-container {
-            .position-highlight {
-                .inner {
-                    @include mat-elevation(3);
-                    background-color: map-get($background, gridster-highlight);
-                    border: 1px solid transparent;
-                }
-            }
-        }
-
-        .gridster-item {
-
-            &.is-dragging {
-                .gridster-item-inner {
-                    @include mat-elevation(10);
-                }
+    .gridster-container {
+        .position-highlight {
+            .inner {
+                @include mat-elevation(3);
+                background-color: mat-color($other, gridster-highlight);
+                border: 1px solid transparent;
             }
         }
     }
+
+    .gridster-item {
+
+        &.is-dragging {
+            .gridster-item-inner {
+                @include mat-elevation(10);
+            }
+        }
+    }
+
 }

@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin donut-widget-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -58,7 +59,7 @@
                 z-index: 1;
                 .mat-icon {
                     font-size: 16px;
-                    color: rgb(216, 216, 215);
+                    color: rgb(216, 216, 215); // TODO: Plug into theme
                 }
             }
 
@@ -69,7 +70,7 @@
                 z-index: 1;
                 width: 30px;
                 height: 30px;
-                color: red;
+                color: red; // TODO: Plug into theme
             }
 
             .debug{
@@ -79,7 +80,7 @@
                 z-index: 1;
                 width: 30px;
                 height: 30px;
-                color: rgb(75, 9, 228);
+                color: rgb(75, 9, 228); // TODO: Plug into theme
             }
         }
 
@@ -108,9 +109,9 @@
 
             /* tooltip */
             .tooltip{
-                background: #eee;
-                box-shadow: 0 0 5px #999999;
-                color: #333;
+                background: #eee; // TODO: Plug into theme
+                box-shadow: 0 0 5px #999999; // TODO: Plug into theme
+                color: #333; // TODO: Plug into theme
                 display: none;
                 font-size: 12px;
                 padding: 5px;
@@ -148,7 +149,7 @@
 
             .legend text {
                 cursor: pointer;
-                fill: slategray;
+                fill: slategray; // TODO: Plug into theme
             }
 
         }
@@ -166,7 +167,7 @@
                 height: 250px;
                 // max-height: calc(100% - 200px);
             }
-    
+
             .widget-controls-container {
                 display: flex;
                 padding: 0;
@@ -177,7 +178,7 @@
                 // max-height: 100%;
                 flex-grow: 1;
             }
-            
+
             .widget-output {
                 //top: 30px;
                 padding: 8px 0px;
@@ -185,7 +186,7 @@
                 position: relative;
                 height: 0px;
                 display: block;
-                
+
             }
             */
             #container {
@@ -199,14 +200,9 @@
 
 @mixin donut-widget-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-
-    // .widget-panel-content.donut-widget { }
+    @include variables-compatibility($theme-config) {
+        //.widget-panel-content.donut-widget { }
+    }
 
 }
 

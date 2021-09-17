@@ -38,10 +38,6 @@
             ],
             "styles": [
                 {
-                    "input": "src/debug.scss",
-                    "bundleName": "debug"
-                },
-                {
                     "input": "src/styles.scss",
                     "bundleName": "styles"
                 },
@@ -111,10 +107,6 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-                {
-                    "input": "src/debug.scss",
-                    "bundleName": "debug"
-                },
                 {
                     "input": "src/styles.scss",
                     "bundleName": "styles"

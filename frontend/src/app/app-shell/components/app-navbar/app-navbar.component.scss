@@ -1,21 +1,23 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* NAVBAR COMPONENT */
-@import "loader-base";
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// * NAVBAR COMPONENT
+
+@import "loader-component";
 
 $navbar-height: map-get($navbar-config, "navbar-height");
 $logo-height: map-get($navbar-config, "logo-height");
@@ -105,86 +107,72 @@ $logo-height: map-get($navbar-config, "logo-height");
     }
 }
 
-//* THEMING **/
-@each $theme-name, $theme-config in $app-available-themes {
-    //* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+// * THEME VARIANTS
+@include init-component-variants() {
 
     $accent-default: map-get($accent, default);
 
-    $navbar-bg: map-get($background, navbar);
-    $navbar-text: map-get($foreground, navbar-text);
+    $navbar-bg: mat-color($background, navbar);
+    $navbar-text: mat-color($foreground, navbar-text);
 
-    $navbar-icons-color: map-get($foreground, navbar-icons);
+    $navbar-icons-color:mat-color($foreground, navbar-icons);
 
-    /* [[  THEME  ]] (#{$theme-name}) - app-navbar component  */
-    @at-root [theme="#{$theme-name}"] {
-        :host.app-navbar {
-            .mat-toolbar {
-                background: $navbar-bg;
-                color: $navbar-text;
+    :host.app-navbar {
+        .mat-toolbar {
+            background: $navbar-bg;
+            color: $navbar-text;
 
-                .mat-icon-button {
-                    .mat-icon {
-                        color: map-get($foreground, navbar-icons);
-                    }
-                }
-
-                &.snapshot {
-                    background: #135588;
-                }
-
-                &.explore {
-                    background: lightsteelblue;
-                }
-
-                .navbar-item {
-                    .menu-trigger-underline {
-                        box-shadow: inset 0 -3px 0 map-get($accent, default);
-                        border-bottom-left-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-                    .menu-trigger-highlight {
-                        background-color: rgba(map-get($accent, default), 0.1);
-                    }
-                }
-
-                .navbar-sliding-toggle {
-                    .sliding-toggle-group {
-                        background-color: darken(
-                            map-get($background, navbar),
-                            4%
-                        );
-
-                        .mat-tab-link {
-                            &,
-                            &.mat-tab-label-active {
-                                color: map-get($foreground, navbar-text);
-                            }
-                        }
-
-                        .mat-ink-bar {
-                            background-color: rgba(
-                                map-get($foreground, navbar-text),
-                                0.25
-                            );
-                        }
-                    }
+            .mat-icon-button {
+                .mat-icon {
+                    color: mat-color($foreground, navbar-icons);
                 }
             }
-        }
 
-        // CDK ITEMS (these are at document root level)
-        ::ng-deep {
-            // cdk items
-            .mat-menu-panel.nav-bar-dropmenu {
-                @include mat-elevation(5);
+            &.snapshot {
+                background: #135588; // TODO: plug into theme
+            }
+
+            &.explore {
+                background: lightsteelblue; // TODO: plug into theme
+            }
+
+            .navbar-item {
+                .menu-trigger-underline {
+                    box-shadow: inset 0 -3px 0 mat-color($accent, default);
+                    border-bottom-left-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+                .menu-trigger-highlight {
+                    background-color: mat-color($accent, default, 0.1);
+                }
+            }
+
+            .navbar-sliding-toggle {
+                .sliding-toggle-group {
+                    background-color: mat-color($background, navbar-button);
+
+                    .mat-tab-link {
+                        &,
+                        &.mat-tab-label-active {
+                            color: mat-color($foreground, navbar-text);
+                        }
+                    }
+
+                    .mat-ink-bar {
+                        background-color: mat-color($foreground, navbar-text, 0.25);
+                    }
+                }
             }
         }
     }
+
+    // CDK ITEMS (these are at document root level)
+    ::ng-deep {
+        // cdk items
+        .mat-menu-panel.nav-bar-dropmenu {
+            @include mat-elevation(5);
+        }
+    }
 }
+
+
