@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, OnDestroy} from '@angular/core';
+
+import { Component, OnInit, HostBinding, OnDestroy, ViewEncapsulation} from '@angular/core';
 import { AuthState } from './shared/state/auth.state';
 import { Observable, interval, Subscription } from 'rxjs';
 import { MatDialog} from '@angular/material';

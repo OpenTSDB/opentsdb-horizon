@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin color-picker-selector-component-base() {
 
     .color-picker-selector-component {
@@ -84,7 +85,7 @@
                 width: 110px;
                 //height: 35px;
                 //margin-top: -88px;
-                // margin-right: -5px; 
+                // margin-right: -5px;
                 //margin-left: 40px;
                 z-index: 1;
                 background: url('data:image/gif;base64,R0lGODdhHgAIALMAAAAAADU1NTk5OUJCQkpKSlZWVltbW2pqaoCAgP///wAAAAAAAAAAAAAAAAAAAAAAACH5BAkAAAoALAAAAAAeAAgAAAQw0BhFq734yjJm/p8xFEVAeGCqGERACmahgkUrvPH81cFdnjoQy8VBBTOiguSokkQAADs=') no-repeat;
@@ -96,7 +97,7 @@
                 margin: 17px 15px 0px;
                 position: relative;
                 width: 100%;
-                
+
 
                 .saturation-vibrance-block {
                     width: 156px;
@@ -109,7 +110,7 @@
                     background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
                                 linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
                 }
-                
+
                 .picker {
                     width: 10px;
                     height: 10px;
@@ -140,9 +141,9 @@
                     width: 156px;
                     height: 35px;
                     display: block;
-                    
 
-                    background: -moz-linear-gradient(left, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%, 
+
+                    background: -moz-linear-gradient(left, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%,
                                 #00ffff 50%, #0000ff 66.66%, #ff00ff 83.33%, #ff0000 100%); /* FF3.6-15 */
                     background: -webkit-linear-gradient(left, #ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,
                                 #00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%); /* Chrome10-25,Safari5.1-6 */
@@ -195,7 +196,7 @@
 
                     .mat-form-field {
                         display: flex;
-                        
+
 
                         .mat-form-field-infix {
                             width: 100%;
@@ -220,7 +221,7 @@
             }
 
 
-                            
+
             .preset-color {
                 padding: 0px 15px;
                 margin-bottom: 6px;
@@ -243,7 +244,7 @@
                     }
                 }
             }
-            
+
             .button-options {
                 text-align: right;
                 height: 32px;
@@ -270,25 +271,19 @@
 
 @mixin color-picker-selector-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, menu);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
+        .color-picker-selector-compponent {
 
-    .color-picker-selector-compponent {
+            ////// OLD STYLES //////
+            .cps {
 
-        ////// OLD STYLES //////
-        .cps {
+                /*input {
+                    background: if($is-dark, transparent, #F3F6FE);
+                }*/
 
-            /*input {
-                background: if($is-dark, transparent, #F3F6FE); 
-            }*/
-
-            .mat-button {
-                color: map-get($primary, default);
+                .mat-button {
+                    color: mat-color($primary, default);
+                }
             }
         }
     }

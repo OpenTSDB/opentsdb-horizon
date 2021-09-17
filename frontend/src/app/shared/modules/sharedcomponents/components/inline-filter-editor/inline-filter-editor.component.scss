@@ -1,21 +1,19 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* WIDGET CONFIG COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
 
 @mixin inline-filter-editor-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
@@ -615,288 +613,251 @@
 }
 
 @mixin inline-filter-editor-component-theme($theme-config) {
+    @include variables-compatibility($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $status: map-get($theme-config, status);
-    $is-dark: map-get($theme-config, is-dark);
-    $dbfilter: map-get($theme-config, dashboard-filters);
+        .inline-filter-editor {
 
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
-
-    $widgets: map-get($theme-config, widgets);
-
-    $card-background: map-get($background, card);
-    $divider: map-get($foreground, divider);
-
-    $query-marker-bg: map-get($widgets, query-editor-marker);
-    $query-marker-text: map-get($widgets, query-editor-marker-text);
-    $query-block-bg: map-get($widgets, query-editor-block-bg);
-    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
-
-    $cdk-menu-bg: map-get($background, menu);
-    $cdk-menu-border: map-get($denali-grey, 50);
-
-    $option-highlight-text: map-get($foreground, link);
-    $option-highlight-bg: rgba($option-highlight-text, 0.5);
-    $option-highlight-bg-hover: rgba($option-highlight-text, 0.65);
-
-    $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
-    $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
-    $primary-default: map-get($primary, default);
-
-    $link: map-get($foreground, link);
-
-    .inline-filter-editor {
-
-        .seperator,
-        .tag-values-selected-header {
-            border-bottom: 2px solid $divider;
-        }
-
-        .automode {
-            color: rgba($black,.8);
-
-            &.auto-mode {
-                background-color: $dbf-automode-bg;
-                border: 1px solid darken($dbf-automode-bg, 15%);
+            .seperator,
+            .tag-values-selected-header {
+                border-bottom: 2px solid mat-color($foreground, divider);
             }
 
-            &.manual-mode {
-                background-color: $dbf-manualmode-bg;
-                border: 1px solid darken($dbf-manualmode-bg, 15%);
+            .automode {
+                color: rgba($black, .8);
+
+                &.auto-mode {
+                    background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                    border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                }
+
+                &.manual-mode {
+                    background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                    border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                }
             }
-        }
 
-        .highlight-text {
-            background: rgba($link, .2);
-        }
-
-        .tag-values-search-input,
-        .tag-search-input-field {
-            .mat-form-field-flex {
-                background-color: rgba($primary-default, 0.08);
+            .highlight-text {
+                background: mat-color($foreground, link, .2);
             }
-            .search-clear-btn {
-                background: if($is-dark, rgba($black, .4), #e8e8e8);
+
+            .tag-values-search-input,
+            .tag-search-input-field {
+                .mat-form-field-flex {
+                    background-color: mat-color($primary, default, 0.08);
+                }
+                .search-clear-btn {
+                    background: if(
+                        $is-dark,
+                        rgba($black, .4),
+                        #e8e8e8 // TODO: plug into theme
+                    );
+                }
             }
-        }
-
-        .mat-icon {
-            color: $option-highlight-text;
-        }
-
-        .option-item {
 
             .mat-icon {
-                color: $option-highlight-text;
+                color: mat-color($foreground, link);
             }
 
-            // modifiers
-            &.expression {
+            .option-item {
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+
+                // modifiers
+                &.expression {
+                    .link {
+                        color: mat-color($foreground, link);
+                    }
+                }
+
+                &:hover {
+                    background:  mat-color($foreground, link, 0.65);
+                }
+
+
+                &.selected {
+                    background:  mat-color($foreground, link, 0.5);
+                }
+            }
+
+
+            .tag-filters {
+
+                .header,
+                .container {
+                    border: 1px solid mat-color($foreground, divider);
+                    background-color: mat-color($background, menu);
+                }
+
+                .container {
+                    @include mat-elevation(2);
+
+                    .tag-filter-caption,
+                    .tag-filter-hint {
+                        color: map-get($foreground, hint-text);
+                    }
+                }
+
                 .link {
-                    color: $option-highlight-text;
+                    cursor: pointer;
+                    padding: 2px 2px;
+                    color: mat-color($foreground, link);
                 }
             }
 
-            &:hover {
-                background: $option-highlight-bg-hover;
-            }
+            .tag-filters-modal-actions {
+                display: flex;
+                align-items: center;
+                padding: 8px;
 
-
-            &.selected {
-                background: $option-highlight-bg;
-            }
-        }
-
-
-        .tag-filters {
-
-            .header,
-            .container {
-                border: 1px solid $divider;
-                background-color: $cdk-menu-bg;
-            }
-
-            .container {
-                @include mat-elevation(2);
-
-                .tag-filter-caption,
-                .tag-filter-hint {
-                    color: map-get($foreground, hint-text);
+                .mat-stroked-button {
+                    line-height: 24px;
                 }
             }
 
-            .link {
-                cursor: pointer;
-                padding: 2px 2px;
-                color: $option-highlight-text;
+            .tag-filters .tag {
+                background:  mat-color($foreground, link, 0.5);
             }
-        }
 
-        .tag-filters-modal-actions {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-
-            .mat-stroked-button {
-                line-height: 24px;
+            .tag-filters-modal-actions {
+                border-top: 1px solid mat-color($foreground, divider);
             }
-        }
 
-        .tag-filters .tag {
-            background: $option-highlight-bg;
-        }
+            .tag-filters {
+                .tag-filter-options {
+                    .tag-filter-options-column:not(:last-child) {
+                        border-right: 1px solid mat-color($foreground, divider);
 
-        .tag-filters-modal-actions {
-            border-top: 1px solid $divider;
-        }
-
-        .tag-filters {
-            .tag-filter-options {
-                .tag-filter-options-column:not(:last-child) {
-                    border-right: 1px solid $divider;
-
-                    .tag-value-list-item:not(:last-of-type) {
-                        border-bottom: 1px solid $divider;
-                    }
-                }
-
-                .tag-filter-options-column:last-child {
-                    .mat-standard-chip {
-                        background-color: rgba($option-highlight-text, 0.15);
-                        // #016eff hover
-                        // exclude #e8e8e8
-
-                        &.automode {
-                            color: rgba($black,.8);
-
-                            &.auto-mode {
-                                background-color: $dbf-automode-bg;
-                                border: 1px solid darken($dbf-automode-bg, 15%);
-                            }
-
-                            &.manual-mode {
-                                background-color: $dbf-manualmode-bg;
-                                border: 1px solid darken($dbf-manualmode-bg, 15%);
-                            }
+                        .tag-value-list-item:not(:last-of-type) {
+                            border-bottom: 1px solid mat-color($foreground, divider);
                         }
                     }
 
-                    .mat-standard-chip:hover {
-                        background-color: #016eff;
-                        color: $white;
+                    .tag-filter-options-column:last-child {
+                        .mat-standard-chip {
+                            background-color: mat-color($foreground, link, 0.15);
+                            // #016eff hover
+                            // exclude #e8e8e8
 
-                        &.automode {
-                            &.auto-mode {
-                                color: find-color-invert($dbf-automode-bg);
+                            &.automode {
+                                color: rgba($black,.8);
+
+                                &.auto-mode {
+                                    background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                                    border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                                }
+
+                                &.manual-mode {
+                                    background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                                    border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                                }
                             }
+                        }
 
-                            &.manual-mode {
-                                color: find-color-invert($dbf-manualmode-bg);
+                        .mat-standard-chip:hover {
+                            background-color: #016eff; // TODO: plug this into theme
+                            color: $white;
+
+                            &.automode {
+                                &.auto-mode {
+                                    color: mat-color($other, dashboard-filter-auto-mode-text);
+                                }
+
+                                &.manual-mode {
+                                    color: mat-color($other, dashboard-filter-manual-mode-text);;
+                                }
                             }
-                        }
-
-                        .mat-icon {
-                            color: currentColor;
-                        }
-                    }
-
-                    .mat-standard-chip {
-                        &.exclude {
-                            background-color: #e8e8e8;
-                            color: rgba($black, .6);
-                        }
-
-                        &.exclude:hover {
-                            background-color: darken(#e8e8e8, 15%);
-                            color: $black;
 
                             .mat-icon {
+                                color: currentColor;
+                            }
+                        }
+
+                        .mat-standard-chip {
+                            &.exclude {
+                                background-color: #e8e8e8; // TODO: plug into theme
+                                color: rgba($black, .6);
+                            }
+
+                            &.exclude:hover {
+                                background-color: darken(#e8e8e8, 15%); // TODO: plug into theme
                                 color: $black;
+
+                                .mat-icon {
+                                    color: $black;
+                                }
+                                .mat-icon.exclude {
+                                    color: mat-color($other, status-error);
+                                }
                             }
-                            .mat-icon.exclude {
-                                color: map-get($status, error);
-                            }
+                        }
+
+                        .prefix.mat-icon{
+                            color: mat-color($foreground, link);
                         }
                     }
 
-                    .prefix.mat-icon{
-                        color: $option-highlight-text;
-                    }
-                }
+                    .tag-values-search {
+                        .tag-values-type {
 
-                .tag-values-search {
-                    .tag-values-type {
-
-                        .mat-button-toggle {
-                            border: 1px solid rgba(map-get($primary, default), 0);
-                            border-bottom: 0;
-                            color: map-get($primary, default);
-                            background-color: rgba(map-get($primary, default), .12);
-
-                            &.mat-button-toggle-checked {
-                                border: 1px solid rgba(map-get($primary, default), 0.60);
+                            .mat-button-toggle {
+                                border: 1px solid mat-color($primary, default, 0);
                                 border-bottom: 0;
-                                color: map-get($foreground, text);
-                                background-color: $cdk-menu-bg;
-                                position: relative;
+                                color: mat-color($primary, default);
+                                background-color: mat-color($primary, default, .12);
 
-                                &::after {
-                                    content: '';
-                                    position: absolute;
-                                    background-color: $cdk-menu-bg;
-                                    height: 3px;
-                                    left: 0;
-                                    right: 0;
-                                    top: 100%;
-                                    z-index: 1;
+                                &.mat-button-toggle-checked {
+                                    border: 1px solid mat-color($primary, default, 0.60);
+                                    border-bottom: 0;
+                                    color: mat-color($foreground, text);
+                                    background-color: mat-color($background, menu);
+                                    position: relative;
+
+                                    &::after {
+                                        content: '';
+                                        position: absolute;
+                                        background-color: mat-color($background, menu);
+                                        height: 3px;
+                                        left: 0;
+                                        right: 0;
+                                        top: 100%;
+                                        z-index: 1;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+
             }
 
+            .tag-key-search-results {
+                .option-item.added.last-added-key {
+                    box-shadow: inset 0 -2px 0 mat-color($foreground, divider);
+                }
+            }
+
+            .tag-values-search-results {
+
+                .option-item.added {
+                    background-color:  mat-color($foreground, link, 0.5);
+                }
+            }
 
         }
 
-        .tag-key-search-results {
-            .option-item.added.last-added-key {
-                box-shadow: inset 0 -2px 0 $divider;
-            }
+        // cdk items
+        .mat-menu-panel.tag-filters-menu-wrapper {
+            box-shadow: none;
+            border: 0;
+            overflow: initial;
         }
 
-        .tag-values-search-results {
-
-            .option-item.added {
-                background-color: $option-highlight-bg;
-            }
+        .mat-menu-panel.filter-action-cdk-menu {
+            background-color: if($is-dark, mat-color($background, menu), mat-color($background, card));
+            border: 1px solid if($is-dark, mat-color($background, menu-border, .6), mat-color($background, menu-border));
         }
-
-    }
-
-    // cdk items
-    .mat-menu-panel.tag-filters-menu-wrapper {
-        /*border: 1px solid $cdk-menu-border;
-        background-color: $cdk-menu-bg;*/
-        // remove default mat-menu-panel styles
-        // background: transparent;
-        // background-color: transparent;
-        box-shadow: none;
-        border: 0;
-        overflow: initial;
-    }
-
-    .mat-menu-panel.filter-action-cdk-menu {
-        //background-color: if($is-dark, lighten($cdk-menu-bg, 8%), darken($cdk-menu-border, 8%));
-        background-color: if($is-dark, lighten($cdk-menu-bg, 8%), map-get($background, card));
-        border: 1px solid if($is-dark, rgba($cdk-menu-border, .6), $cdk-menu-border);
     }
 }

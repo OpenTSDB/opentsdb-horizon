@@ -27,15 +27,6 @@
             [opened]="sideNavOpen"
             disableClose
             #sidenav>
-            <!--<mat-nav-list>
-                <ng-container *ngFor="let nav of navItems">
-                    <a mat-list-item (click)="navigationAction(nav)" [ngClass]="{'is-active': activeNav.section === nav.section}">
-                        <mat-icon fontSet="denali" [fontIcon]="nav.icon"></mat-icon>
-                        <span class="nav-label">{{nav.label}}</span>
-                    </a>
-                    <span class="flex-spacer" *ngIf="nav.spacerAfter"></span>
-                </ng-container>
-            </mat-nav-list>-->
             <app-navigator-sidenav
                 (activeNavChange)="navigationAction($event)"
                 [activeNav]="{'section': activeNavSection}"
@@ -54,13 +45,6 @@
                     [autoFocus]="false"
                     #drawer>
                     <!-- DRAWER CONTENTS -->
-                    <!--<dashboard-navigator
-                        *ngIf="activeNavSection === 'dashboard'"
-                        [activeNavSection]="activeNavSection"
-                        [activeMediaQuery]="activeMediaQuery"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></dashboard-navigator>-->
                     <dbfs *ngIf="activeNavSection === 'dashboard'"
                         [activeNavSection]="activeNavSection"
                         [activeMediaQuery]="activeMediaQuery"
@@ -89,71 +73,7 @@
                         (toggleDrawer)="toggleDrawerMode($event)"
                         ></test-navigator>
                     <!-- placeholders -->
-                    <test-navigator
-                        *ngIf="activeNavSection === 'metric-explorer'"
-                        panelTitle="Metric Explorer Panel"
-                        panelText="Metric explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                   <!-- <test-navigator
-                        *ngIf="activeNavSection === 'alerts'"
-                        panelTitle="Alerts Panel"
-                        panelText="Alerts explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                   -->
-                    <test-navigator
-                        *ngIf="activeNavSection === 'status'"
-                        panelTitle="Status Panel"
-                        panelText="Status explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                    <test-navigator
-                        *ngIf="activeNavSection === 'annotations'"
-                        panelTitle="Anotations Panel"
-                        panelText="Anotations explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                    <!--<test-navigator
-                        *ngIf="activeNavSection === 'admin'"
-                        panelTitle="Admin Panel"
-                        panelText="Admin panel is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>-->
-                    <test-navigator
-                        *ngIf="activeNavSection === 'favorites'"
-                        panelTitle="Favorites Panel"
-                        panelText="Favorites explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                    <test-navigator
-                        *ngIf="activeNavSection === 'namespaces'"
-                        panelTitle="Namespaces Panel"
-                        panelText="Namespaces explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
-                    <test-navigator
-                        *ngIf="activeNavSection === 'resources'"
-                        panelTitle="Resources Panel"
-                        panelText="Resources explorer is coming soon to a Horizon near you."
-                        [activeNavSection]="activeNavSection"
-                        [drawerMode]="drawerMode"
-                        (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
+                    <!--
                     <test-navigator
                         *ngIf="activeNavSection === 'test'"
                         panelTitle="Test Panel"
@@ -161,7 +81,7 @@
                         [activeNavSection]="activeNavSection"
                         [drawerMode]="drawerMode"
                         (toggleDrawer)="toggleDrawerMode($event)"
-                        ></test-navigator>
+                        ></test-navigator>-->
                 </mat-drawer>
                 <mat-drawer-content class="router-outlet" fxLayout="row" fxFlex="1 1 100%" fxFlexFill>
                     <div class="app-content-wrap" fxLayout="column" fxFlex="1 1 100%" fxFlexFill>

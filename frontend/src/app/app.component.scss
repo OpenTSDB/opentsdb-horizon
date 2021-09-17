@@ -1,38 +1,37 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* APP COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
-// core (aka structure)
-@mixin app-root-base() {
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
 
-    .app-root {
-        display: flex;
-        flex: 1 1 100%;
-        flex-direction: column;
-        overflow: hidden;
-    }
+// ** APP COMPONENT*/
+ @import 'loader-base';
 
-    .message {
+ :host.app-root {
+     display: flex;
+     flex: 1 1 100%;
+     flex-direction: column;
+     overflow: hidden;
+
+     .message {
         font-weight: 500;
         font-size: 2em;
         height: 30px;
         text-align:center;
         padding-top: 20%;
     }
+
     .error-list {
         display: flex;
         flex-direction: column;
@@ -43,21 +42,14 @@
             font-size: 1.25em;
         }
     }
-}
+ }
 
-@mixin app-root-theme($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    $divider: map-get($foreground, divider);
 
-    // App background on body
-    &.mat-app-background {
-        background-color: map-get($background, background);
-    }
-
-}
+    //:host.app-root {
+    // styles here
+    //}
+ }
