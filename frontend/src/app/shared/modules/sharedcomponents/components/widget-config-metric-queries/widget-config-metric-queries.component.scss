@@ -1,21 +1,21 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* WIDGET CONFIG COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// * WIDGET CONFIG COMPONENT */
 
 @mixin widget-config-metric-queries-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
@@ -275,126 +275,120 @@
 
 @mixin widget-config-metric-queries-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+    @include variables-compatibility($theme-config) {
 
+        $chip-bg: mat-color($primary, default, .1);
+        $alias-bg: if($is-dark, rgba($white, .2), rgba($black, .2));
+        $alias-text: if($is-dark, rgba($white, .5), rgba($black, .5));
 
+        .widget-config-tab.metric-queries-configuration {
+            // style rules here
 
-    .widget-config-tab.metric-queries-configuration {
-        // style rules here
-
-        .dbfilter-panel {
-            background-color: rgb(250, 249, 249);
-            margin-bottom: 5px;
-            padding: 0px;
-            .mat-button-toggle-group {
-                margin: 6px 6px 6px 0px;
-                span {
-                    margin-left: 4px;
+            .dbfilter-panel {
+                background-color: rgb(250, 249, 249);
+                margin-bottom: 5px;
+                padding: 0px;
+                .mat-button-toggle-group {
+                    margin: 6px 6px 6px 0px;
+                    span {
+                        margin-left: 4px;
+                    }
+                    .mat-button-toggle-label-content {
+                        line-height: 24px;
+                        .mat-icon {
+                            height: 18px;
+                            font-size: 16px;
+                        }
+                    }
                 }
-                .mat-button-toggle-label-content {
+                .mat-button-toggle-checked {
+                    background-color: mat-color($primary);
+                    color: mat-color($primary, default-contrast);
+                }
+            }
+
+            /*
+            .mat-expansion-panel.query-group-item {
+                border: 1px solid #d5d5d5;
+            }
+            */
+
+            .query-metric-row {
+                position: relative;
+
+                .cdk-drag-handle.metric-query-drag-handle {
+                    width: 20px;
+                    height: 20px;
+                    position: absolute;
+                    right: 97px;
+                    top: 10px;
+                }
+
+                .add-new-query-button {
                     line-height: 24px;
+
                     .mat-icon {
-                        height: 18px;
-                        font-size: 16px;
+                        @include sizeDenaliIcon(14px);
+                        margin-right: 8px;
                     }
                 }
-            }
-            .mat-button-toggle-checked {
-                background-color: mat-color($primary);
-                color: mat-color($primary, default-contrast);
-            }
-        }
 
-        /*
-        .mat-expansion-panel.query-group-item {
-            border: 1px solid #d5d5d5;
-        }
-        */
+                .metric-tags {
+                    .mat-basic-chip {
+                        background-color: $chip-bg;
 
-        .query-metric-row {
-            position: relative;
-
-            .cdk-drag-handle.metric-query-drag-handle {
-                width: 20px;
-                height: 20px;
-                position: absolute;
-                right: 97px;
-                top: 10px;
-            }
-
-            .add-new-query-button {
-                line-height: 24px;
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                    margin-right: 8px;
-                }
-            }
-
-            .metric-tags {
-                .mat-basic-chip {
-                    background-color: $chip-bg;
-
-                    // first-child should be the tag-key
-                    :first-child {
-                        color: rgba(map-get($foreground, text), .65);
+                        // first-child should be the tag-key
+                        :first-child {
+                            color: mat-color($foreground, text, .65);
+                        }
                     }
                 }
-            }
-            .query-metric-item {
-                .expression-metrics {
-                    .metric {
-                        display: flex;
-                        flex-direction: row;
-                        margin-bottom: 3px;
-                        align-items: center;
-                        padding: 5px 0px 5px 0px;
-                        border-bottom: 1px solid #f0f0f0;
-                        .metric-alias {
-                            display: inline-flex;
+                .query-metric-item {
+                    .expression-metrics {
+                        .metric {
+                            display: flex;
+                            flex-direction: row;
+                            margin-bottom: 3px;
+                            align-items: center;
+                            padding: 5px 0px 5px 0px;
+                            border-bottom: 1px solid #f0f0f0;
+                            .metric-alias {
+                                display: inline-flex;
 
-                            width: 30px;
-                            margin-right: 10px;
-                            span {
-                                background-color: $alias-bg;
-                                color: $alias-text;
-                                font-size: 10px;
-                                padding: 0px 5px;
-                                border-radius: 4px;
-                                font-weight: bold;
+                                width: 30px;
+                                margin-right: 10px;
+                                span {
+                                    background-color: $alias-bg;
+                                    color: $alias-text;
+                                    font-size: 10px;
+                                    padding: 0px 5px;
+                                    border-radius: 4px;
+                                    font-weight: bold;
+                                }
+                            }
+                            .metric-label {
+                                font-size: 12px;
+                                display: inline-flex;
                             }
                         }
-                        .metric-label {
-                            font-size: 12px;
-                            display: inline-flex;
+                        .metric:last-child {
+                            border-bottom: none;
                         }
-                    }
-                    .metric:last-child {
-                        border-bottom: none;
                     }
                 }
             }
-        }
 
-        .group-item-toolbar {
-            background-color: white;
-        }
-
-        .value-options {
-            mat-select {
-                background-color: $chip-bg;
+            .group-item-toolbar {
+                background-color: $white;
             }
-            .mat-form-field-underline {
-                background-color: transparent;
+
+            .value-options {
+                mat-select {
+                    background-color: $chip-bg;
+                }
+                .mat-form-field-underline {
+                    background-color: transparent;
+                }
             }
         }
     }

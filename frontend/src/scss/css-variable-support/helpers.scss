@@ -1,0 +1,107 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// SOME HELPER FUNCTIONS TO GET THE --variables INTO MATERIAL
+@function get-theme-config($theme-name, $item-key) {
+    $theme-config: map-get($app-themes, $theme-name);
+    $config-item: map-get($theme-config, $item-key);
+    @return $config-item;
+}
+
+@function get-theme-light-variant($theme-name) {
+    //@debug 'GET THEME LIGHT VARIANT - ' + #{$theme-name};
+    @return get-theme-config($theme-name, light);
+}
+
+@function get-theme-dark-variant($theme-name) {
+    //@debug 'GET THEME DARK VARIANT - ' + #{$theme-name};
+    @return get-theme-config($theme-name, dark);
+}
+
+@function get-theme-css-variables($theme-name) {
+    //@debug 'GET THEME CSS VARIABLES - ' + #{$theme-name};
+    @return get-theme-config($theme-name, css-variables);
+}
+
+@function get-theme-css-text($theme-name) {
+    //@debug 'GET THEME CSS TEXT - ' + #{$theme-name};
+    @return get-theme-config($theme-name, css-text);
+}
+
+// utility to generate material compatible theme map
+@function generate-theme-variant-configs($theme-config, $theme-name: 'default') {
+    $palette-primary: map-get($theme-config, palette-primary);
+    $palette-accent: map-get($theme-config, palette-accent);
+    $palette-warn: map-get($theme-config, palette-warn);
+    $palette-success: map-get($theme-config, palette-success);
+    $palette-danger: map-get($theme-config, palette-danger);
+
+    $palette-background: map-get($theme-config, palette-background);
+    $palette-background-dark: map-get($theme-config, palette-background-dark);
+    $palette-foreground: map-get($theme-config, palette-foreground);
+    $palette-foreground-dark: map-get($theme-config, palette-foreground-dark);
+    $palette-scrollbar: map-get($theme-config, palette-scrollbar);
+    $palette-scrollbar-dark: map-get($theme-config, palette-scrollbar-dark);
+    $palette-other: map-get($theme-config, palette-other);
+    $palette-other-dark: map-get($theme-config, palette-other-dark);
+
+    $primary: mat-palette($palette-primary);
+    $accent: mat-palette($palette-accent);
+    $warn: mat-palette($palette-warn);
+    $success: mat-palette($palette-success);
+    $danger: mat-palette($palette-danger);
+
+    $css-variables: map-get($theme-config, css-variables);
+    $css-text: map-get($theme-config, css-text);
+
+    // light variant
+    $light-theme: map_merge(
+        mat-light-theme($primary, $accent, $warn),
+        (
+            theme-name: $theme-name,
+            success: $success,
+            danger: $danger,
+            background: $palette-background,
+            foreground: $palette-foreground,
+            scrollbar: $palette-scrollbar,
+            other: $palette-other
+        )
+    );
+
+    // dark variant
+    $dark-theme: map_merge(
+        mat-dark-theme($primary, $accent, $warn),
+        (
+            theme-name: $theme-name,
+            success: $success,
+            danger: $danger,
+            background: $palette-background-dark,
+            foreground: $palette-foreground-dark,
+            scrollbar: $palette-scrollbar-dark,
+            other: $palette-other-dark
+        )
+    );
+
+    // return map
+    @return (
+        light: $light-theme,
+        dark: $dark-theme,
+        css-variables: $css-variables,
+        css-text: $css-text
+    );
+
+}
