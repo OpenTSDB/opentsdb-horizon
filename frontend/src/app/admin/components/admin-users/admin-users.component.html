@@ -1,0 +1,11 @@
+<p>
+  admin-users works!
+</p>
+
+<mat-nav-list>
+    <a mat-list-item
+        [routerLink]="'/admin/user/'+link.path"
+        *ngFor="let link of testSubLinks; let i = index;">
+        {{ link.label }} [{{i}}]
+    </a>
+ </mat-nav-list>

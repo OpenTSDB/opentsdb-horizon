@@ -1,28 +1,95 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 // **************************************
 // * FUNCTIONS & MIXINS
 // * Functions at top
 // * Mixins at bottom
 // **************************************
 
-// *
-// * Functions
-// *
+//
+// Functions
+//
+
+// strings
+// see: https://stackoverflow.com/questions/32376461/how-to-split-a-string-into-two-lists-of-numbers-in-sass
+@function str-split($string, $separator) {
+    // empty array/list
+    $split-arr: ();
+    // first index of separator in string
+    $index: str-index($string, $separator);
+    // loop through string
+    @while $index != null {
+        // get the substring from the first character to the separator
+        $item: str-slice($string, 1, $index - 1);
+        // push item to array
+        $split-arr: append($split-arr, $item);
+        // remove item and separator from string
+        $string: str-slice($string, $index + 1);
+        // find new index of separator
+        $index: str-index($string, $separator);
+    }
+    // add the remaining string to list (the last item)
+    $split-arr: append($split-arr, $string);
+
+    @return $split-arr;
+}
+
+// convert string to number
+@function to-number($value) {
+    @if type-of($value) == "number" {
+        @return $value;
+    } @else if type-of($value) != "string" {
+        @error 'Value for `to-number` should be a number or a string.';
+    }
+
+    $result: 0;
+    $digits: 0;
+    $minus: str-slice($value, 1, 1) == "-";
+    $numbers: (
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+    );
+
+    @for $i from if($minus, 2, 1) through str-length($value) {
+        $character: str-slice($value, $i, $i);
+
+        @if (index(map-keys($numbers), $character) or $character == ".") {
+            @if $character == "." {
+                $digits: 1;
+            } @else if $digits == 0 {
+                $result: $result * 10 + map-get($numbers, $character);
+            } @else {
+                $digits: $digits * 10;
+                $result: $result + map-get($numbers, $character) / $digits;
+            }
+        }
+    }
+
+    @return if($minus, -$result, $result);
+}
 
 // Math
 @function power-number($number, $exp) {
@@ -41,6 +108,38 @@
 
 @function round-to-even-number($number) {
     @return floor($number / 2) * 2;
+}
+
+@function decimal-round($number, $digits: 0, $mode: round) {
+    $n: 1;
+    // $number must be a number
+    @if type-of($number) != number {
+        @warn '#{ $number } is not a number.';
+        @return $number;
+    }
+    // $digits must be a unitless number
+    @if type-of($digits) != number {
+        @warn '#{ $digits } is not a number.';
+        @return $number;
+    } @else if not unitless($digits) {
+        @warn '#{ $digits } has a unit.';
+        @return $number;
+    }
+    @if $digits > 0 {
+        @for $i from 1 through $digits {
+            $n: $n * 10;
+        }
+    }
+    @if $mode == round {
+        @return round($number * $n) / $n;
+    } @else if $mode == ceil {
+        @return ceil($number * $n) / $n;
+    } @else if $mode == floor {
+        @return floor($number * $n) / $n;
+    } @else {
+        @warn '#{ $mode } is undefined keyword.';
+        @return $number;
+    }
 }
 
 // * Units
@@ -68,35 +167,177 @@
     $colors: (
         "red": red($color),
         "green": green($color),
-        "blue": blue($color)
+        "blue": blue($color),
     );
 
     @each $name, $value in $colors {
         $adjusted: 0;
         $value: $value / 255;
 
-        @if $value < .03928 {
+        @if $value < 0.03928 {
             $value: $value / 12.92;
         } @else {
-            $value: ($value + .055) / 1.055;
+            $value: ($value + 0.055) / 1.055;
             $value: power-number($value, 2.4);
         }
-        $colors: map-merge($colors, ($name: $value));
+        $colors: map-merge(
+            $colors,
+            (
+                $name: $value,
+            )
+        );
     }
-    @return (map-get($colors, "red") * .2126) + (map-get($colors, "green") * .7152) + (map-get($colors, "blue") * .0722);
+    @return (map-get($colors, "red") * 0.2126) +
+        (map-get($colors, "green") * 0.7152) +
+        (map-get($colors, "blue") * 0.0722);
 }
 
 @function find-color-invert($color) {
-    @if (color-luminance($color) > .55) {
-        @return rgba($black, .95);
+    @if (color-luminance($color) > 0.55) {
+        @return rgba($black, 0.95);
     } @else {
-        @return rgba($white, .95);
+        @return rgba($white, 0.95);
     }
 }
 
-// *
-// * Mixins
-// *
+@function rgba-to-hex($rgba, $clearAlpha: false) {
+    $colorCode: (
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+    );
+
+    // 255 / 100 = 2.55
+    // 10 / 16 = 0.625
+
+    $alpha: alpha($rgba);
+
+    // ============================================= RED ================================
+    $redStr: ""+ (red($rgba) / 16);
+
+    $index: str-index($redStr, ".");
+    // add decimal number incase it does not have and update index
+    @if $index == null {
+        $redStr: $redStr + ".0";
+        $index: str-index($redStr, ".");
+    }
+
+    // @debug $redStr '========================================================';
+
+    $redInteger: to-number(str-slice($redStr, 0, $index - 1));
+    $redDecimal: decimal-round(
+        to-number(str-slice($redStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // ============================================= GREEN ============================
+    $greenStr: ""+ (green($rgba) / 16);
+
+    $index: str-index($greenStr, ".");
+    // add decimal number incase it does not have and
+    @if $index == null {
+        $greenStr: $greenStr + ".0";
+        $index: str-index($greenStr, ".");
+    }
+
+    $greenInteger: to-number(str-slice($greenStr, 0, $index - 1));
+    $greenDecimal: decimal-round(
+        to-number(str-slice($greenStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // ============================================= BLUE ============================
+    $blueStr: ""+ (blue($rgba) / 16);
+
+    $index: str-index($blueStr, ".");
+    // add decimal number incase it does not have and
+    @if $index == null {
+        $blueStr: $blueStr + ".0";
+        $index: str-index($blueStr, ".");
+    }
+
+    $blueInteger: to-number(str-slice($blueStr, 0, $index - 1));
+    $blueDecimal: decimal-round(
+        to-number(str-slice($blueStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // if interger is 16 sent decimal should be 0
+
+    //@debug 'blue: '+ $blueStr +'  interter: '+ $blueInteger +' decimal: '+ $blueDecimal;
+    // $blue:  blue($rgba) / 2.55;
+
+    // ============================================= ALPHA ============================
+    $alphaStr: "" + decimal-round((($alpha * 100) * 2.55) /16);
+
+    $index: str-index($alphaStr, ".");
+
+    @if $index == null {
+        $alphaStr: $alphaStr + ".0";
+        $index: str-index($alphaStr, ".");
+    }
+
+    //@debug 'alphaStr: '+ decimal-round(to-number($alphaStr))  ;
+
+    $alphaInteger: "" + to-number(str-slice($alphaStr, 0, $index - 1));
+
+    $index: str-index($alphaInteger, ".");
+    @if $index == null {
+        $alphaInteger: $alphaInteger + ".0";
+        $index: str-index($alphaInteger, ".");
+    }
+    $alphaInteger: to-number(str-slice($alphaStr, 0, $index - 1));
+
+    $alphaDecimal: to-number(
+        str-slice(
+            "" +
+                to-number(
+                    str-slice($alphaStr, $index + 1, str-length($alphaStr))
+                ) / 0.625,
+            0,
+            2
+        )
+    );
+
+    // @debug 'Integer: ==== '+$alphaInteger;
+    // @debug 'Decimal: ==== '+$alphaDecimal;
+
+    @if $clearAlpha == false {
+        @return unquote(
+            "#" + nth($colorCode, $redInteger + 1) +
+                nth($colorCode, $redDecimal + 1) +
+                nth($colorCode, $greenInteger + 1) +
+                nth($colorCode, $greenDecimal + 1) +
+                nth($colorCode, $blueInteger + 1) +
+                nth($colorCode, $blueDecimal + 1) +
+                nth($colorCode, $alphaInteger + 1) +
+                nth($colorCode, $alphaDecimal + 1)
+        );
+    } @else {
+        @return unquote(
+            "#" + nth($colorCode, $redInteger + 1) +
+                nth($colorCode, $redDecimal + 1) +
+                nth($colorCode, $greenInteger + 1) +
+                nth($colorCode, $greenDecimal + 1) +
+                nth($colorCode, $blueInteger + 1) +
+                nth($colorCode, $blueDecimal + 1)
+        );
+    }
+}
+
+//
+// Mixins
+//
 
 @mixin md-icon-size($size: 24px) {
     font-size: $size;
@@ -112,7 +353,7 @@
     top: 0;
 }
 
-@mixin overlay($offset: 0){
+@mixin overlay($offset: 0) {
     @extend %overlay;
     @if $offset != 0 {
         bottom: $offset;
@@ -131,7 +372,7 @@
 }
 
 @mixin unselectable() {
-  @extend %unselectable;
+    @extend %unselectable;
 }
 
 @mixin mat-input-as-dropdown() {
@@ -147,10 +388,10 @@
 }
 
 @mixin clearfix() {
-     &::after{
-         clear: both;
-         content: " ";
-         display: table;
+    &::after {
+        clear: both;
+        content: " ";
+        display: table;
     }
 }
 
@@ -169,16 +410,16 @@
     overflow: hidden;
 }
 
-@mixin is-scroller(){
+@mixin is-scroller() {
     @include overlay;
     overflow: overlay;
 }
 
 @mixin overflow-touch() {
-    -webkit-overflow-scrolling: touch
+    -webkit-overflow-scrolling: touch;
 }
 
- @mixin opacity ($trans) {
+@mixin opacity($trans) {
     filter: alpha(opactiy=($trans * 100));
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$trans * 100})";
     -moz-opacity: $trans;
@@ -186,13 +427,13 @@
     opacity: $trans;
 }
 
-@mixin base-effects () {
+@mixin base-effects() {
     @include opacity(1);
-    @include transition(all .18s ease-out .18s);
+    @include transition(all 0.18s ease-out 0.18s);
 }
 
 // * Transitions
-@mixin transition ($args...) {
+@mixin transition($args...) {
     -webkit-transition: $args;
     -moz-transition: $args;
     -ms-transition: $args;
@@ -200,7 +441,7 @@
     transition: $args;
 }
 
-@mixin transition-property($args...){
+@mixin transition-property($args...) {
     -webkit-transition-property: $args;
     -moz-transition-property: $args;
     -ms-transition-property: $args;
@@ -224,14 +465,14 @@
     transition-timing-function: $args;
 }
 
-@mixin transform ($val) {
+@mixin transform($val) {
     -webkit-transform: $val;
     -moz-transform: $val;
     -ms-transform: $val;
     transform: $val;
 }
 
-@mixin transform-origin ($val) {
+@mixin transform-origin($val) {
     -webkit-transform-origin: $val;
     -moz-transform-origin: $val;
     -ms-transform-origin: $val;
@@ -244,10 +485,27 @@
 //
 // Creates two color stops, start and end, by specifying a color and position for each color stop.
 // Color stops are not available in IE9 and below.
-@mixin gradient-horizontal($start-color: #555, $end-color: #333, $start-percent: 0%, $end-percent: 100%) {
-    background-image: -webkit-linear-gradient(left, $start-color $start-percent, $end-color $end-percent); // Safari 5.1-6, Chrome 10+
-    background-image: -o-linear-gradient(left, $start-color $start-percent, $end-color $end-percent); // Opera 12
-    background-image: linear-gradient(to right, $start-color $start-percent, $end-color $end-percent); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+@mixin gradient-horizontal(
+    $start-color: #555,
+    $end-color: #333,
+    $start-percent: 0%,
+    $end-percent: 100%
+) {
+    background-image: -webkit-linear-gradient(
+        left,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        left,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Opera 12
+    background-image: linear-gradient(
+        to right,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
     background-repeat: repeat-x;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=1); // IE9 and down
 }
@@ -256,10 +514,27 @@
 //
 // Creates two color stops, start and end, by specifying a color and position for each color stop.
 // Color stops are not available in IE9 and below.
-@mixin gradient-vertical($start-color: #555, $end-color: #333, $start-percent: 0%, $end-percent: 100%) {
-    background-image: -webkit-linear-gradient(top, $start-color $start-percent, $end-color $end-percent);  // Safari 5.1-6, Chrome 10+
-    background-image: -o-linear-gradient(top, $start-color $start-percent, $end-color $end-percent);  // Opera 12
-    background-image: linear-gradient(to bottom, $start-color $start-percent, $end-color $end-percent); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+@mixin gradient-vertical(
+    $start-color: #555,
+    $end-color: #333,
+    $start-percent: 0%,
+    $end-percent: 100%
+) {
+    background-image: -webkit-linear-gradient(
+        top,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        top,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Opera 12
+    background-image: linear-gradient(
+        to bottom,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
     background-repeat: repeat-x;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down
 }
@@ -269,43 +544,127 @@
 // Creates two color stops
 @mixin gradient-directional($start-color: #555, $end-color: #333, $deg: 45deg) {
     background-repeat: repeat-x;
-    background-image: -webkit-linear-gradient($deg, $start-color, $end-color); // Safari 5.1-6, Chrome 10+
-    background-image: -o-linear-gradient($deg, $start-color, $end-color); // Opera 12
-    background-image: linear-gradient($deg, $start-color, $end-color); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+    background-image: -webkit-linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Opera 12
+    background-image: linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
 }
 
-@mixin gradient-horizontal-three-colors($start-color: #00b3ee, $mid-color: #7a43b6, $color-stop: 50%, $end-color: #c3325f) {
-    background-image: -webkit-linear-gradient(left, $start-color, $mid-color $color-stop, $end-color);
-    background-image: -o-linear-gradient(left, $start-color, $mid-color $color-stop, $end-color);
-    background-image: linear-gradient(to right, $start-color, $mid-color $color-stop, $end-color);
+@mixin gradient-horizontal-three-colors(
+    $start-color: #00b3ee,
+    $mid-color: #7a43b6,
+    $color-stop: 50%,
+    $end-color: #c3325f
+) {
+    background-image: -webkit-linear-gradient(
+        left,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: -o-linear-gradient(
+        left,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: linear-gradient(
+        to right,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
     background-repeat: no-repeat;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=1); // IE9 and down, gets no color-stop at all for proper fallback
 }
 
-@mixin gradient-vertical-three-colors($start-color: #00b3ee, $mid-color: #7a43b6, $color-stop: 50%, $end-color: #c3325f) {
-    background-image: -webkit-linear-gradient($start-color, $mid-color $color-stop, $end-color);
-    background-image: -o-linear-gradient($start-color, $mid-color $color-stop, $end-color);
-    background-image: linear-gradient($start-color, $mid-color $color-stop, $end-color);
+@mixin gradient-vertical-three-colors(
+    $start-color: #00b3ee,
+    $mid-color: #7a43b6,
+    $color-stop: 50%,
+    $end-color: #c3325f
+) {
+    background-image: -webkit-linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: -o-linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
     background-repeat: no-repeat;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down, gets no color-stop at all for proper fallback
 }
 
 @mixin gradient-radial($inner-color: #555, $outer-color: #333) {
-    background-image: -webkit-radial-gradient(circle, $inner-color, $outer-color);
+    background-image: -webkit-radial-gradient(
+        circle,
+        $inner-color,
+        $outer-color
+    );
     background-image: radial-gradient(circle, $inner-color, $outer-color);
     background-repeat: no-repeat;
 }
 
-@mixin gradient-striped($color: rgba(255,255,255,.15), $angle: 45deg) {
-    background-image: -webkit-linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
-    background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+@mixin gradient-striped($color: rgba(255, 255, 255, 0.15), $angle: 45deg) {
+    background-image: -webkit-linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
+    background-image: -o-linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
+    background-image: linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
 }
 
 // * custom scrollbars
 // NOTE: this works primarily in webkit browsers
-@mixin scrollbars($track-color: rgba(0, 0, 0, .1), $thumb-color: rgba(0, 0, 0, .4), $width: 10px , $thumb-radius: 4px) {
-
+@mixin scrollbars(
+    $track-color: rgba(0, 0, 0, 0.1),
+    $thumb-color: rgba(0, 0, 0, 0.4),
+    $width: 10px,
+    $thumb-radius: 4px
+) {
     &::-webkit-scrollbar {
         &:vertical {
             width: $width;
@@ -423,7 +782,7 @@
 @mixin sizeDenaliIcon($size: 24px) {
     width: $size;
     height: $size;
-    line-height: $size;
+    line-height: 1;
     font-size: $size;
 }
 
@@ -431,7 +790,7 @@
 @mixin debug-map($map) {
     @at-root {
         @debug-map {
-            __toString__: inspect($map);
+            __tostring__: inspect($map);
             __length__: length($map);
             __depth__: depth($map);
             __keys__: map-keys($map);

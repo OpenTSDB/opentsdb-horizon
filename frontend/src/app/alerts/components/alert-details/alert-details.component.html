@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
+ <mat-card class="alert-configuration-wrapper mat-elevation-z0" [formGroup]="alertForm">
     <mat-card-content ttBoundaryListener>
         <div class="alert-status-bar" style="display: flex; align-items: stretch; justify-content: stretch;">
             <div class="alert-status flex-spacer" *ngIf="data.id">
@@ -144,7 +144,6 @@
                                 <query-editor-proto [label]="'Q' + (index + 1)" [query]="query" [queries]="queries"
                                     [widget]="{queries: queries}"
                                     [options]="{
-                                        enableNamespace: enableNamespace,
                                         metaSource: data.type === 'healthcheck' ? 'aurastatus:check' : 'meta',
                                         enableMultipleQueries: data.type === 'simple',
                                         enableMetric: data.type === 'simple',

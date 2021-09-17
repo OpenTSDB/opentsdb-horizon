@@ -158,36 +158,27 @@
                 flex: 1 1 50%;
             }
         }
-    }    
+    }
 }
 
 @mixin markdown-widget-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
+    @include variables-compatibility($theme-config) {
 
-    $is-dark: map-get($theme-config, is-dark);
+        textarea {
+            background: if($is-dark, $black, $white);
+            color: if($is-dark, $white, $black);
+        }
 
-    $bg: map-get($background, background);
-    $fg: map-get($foreground, foreground);
+        .markdown-note {
+            background: mat-color($background, background);
+            color: if($is-dark, $white, $black);
+            border: none;
 
-    textarea {
-        background: if($is-dark, $fg, white);
-        color: if($is-dark, white, $fg);
-    }
-
-    .markdown-note {
-        background: $bg;
-        color: if($is-dark, white, black);
-        border: none;
-
-        a:visited {
-            color: if($is-dark, white, black);
-          }
+            a:visited {
+                color: if($is-dark, $white, $black);
+            }
+        }
     }
 
 }

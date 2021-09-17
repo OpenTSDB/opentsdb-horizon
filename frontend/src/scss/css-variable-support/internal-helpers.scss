@@ -1,0 +1,96 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// see: https://github.com/zbirizdo/material-css-vars
+// used to circumvent node sass issue: https://github.com/sass/node-sass/issues/2251
+@function _mat-css-rgb($r, $g: null, $b: null) {
+    @if ($g == null) {
+        @return unquote("rgb(#{$r})");
+    }
+
+    @if ($g and $b) {
+        @return unquote("rgb(#{$r}, #{$g}, #{$b})");
+    }
+
+    @error "wrong number of arguments";
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+// used to circumvent node sass issue: https://github.com/sass/node-sass/issues/2251
+@function _mat-css-rgba($r, $g, $b: null, $a: null) {
+    @if ($b == null) {
+        @return unquote("rgba(#{$r}, #{$g})");
+    }
+
+    @if ($b and $a) {
+        @return unquote("rgba(#{$r}, #{$g}, #{$b}, #{$a})");
+    }
+
+    @error "wrong number of arguments";
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+@function _mat-css-str-replace($string, $search, $replace: "") {
+    $index: str-index($string, $search);
+
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace +
+            _mat-css-str-replace(
+                str-slice($string, $index + str-length($search)),
+                $search,
+                $replace
+            );
+    }
+
+    @return $string;
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+@function _mat-css-hex-to-rgb($color) {
+    @if ($color == null) {
+        @return null;
+    }
+    @return (red($color), green($color), blue($color));
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+@mixin _mat-css-root($varMap: null) {
+    @at-root :root {
+        @each $varName, $varValue in $varMap {
+            @if (type_of($varValue) ==string) {
+                #{$varName}: $varValue; // to prevent quotes interpolation
+            } @else {
+                #{$varName}: #{$varValue};
+            }
+        }
+    }
+}
+
+// ** NEW STUFF FOR HORIZON
+@function _mat-var-unwrap($string) {
+    @return str-slice($string, 5, str-length($string) - 1);
+}
+
+@function _mat-list-to-color-type($rgb-list) {
+    @return rgb(nth($rgb-list, 1),nth($rgb-list, 2),nth($rgb-list, 3));
+}
+
+@function _mat-convert-variable-to-color($variable, $cssVarMap) {
+    $unwrapped-variable: _mat-var-unwrap($variable);
+    $raw-value: map-get($cssVarMap, $unwrapped-variable);
+    @return _mat-list-to-color-type($raw-value);
+}
