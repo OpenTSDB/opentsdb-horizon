@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin topn-widget-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -44,10 +45,6 @@
                 left: 5px;
                 bottom: 5px;
                 z-index: 1;
-                /*width: 24px;
-                height: 24px;
-                background-image: url(/assets/denali-loader.svg);
-                background-color: transparent;*/
             }
 
             .apply-tpl-status {
@@ -100,8 +97,6 @@
                 cursor: pointer;
             }
 
-            // .axisLabel { }
-
             .yaxis {
                 font-size: 1em;
                 font-family: ubuntu;
@@ -119,7 +114,6 @@
             }
 
             .chart {
-                // display: flex;
                 flex: 1;
                 position: relative;
                 overflow: overlay;
@@ -148,39 +142,6 @@
     // when we are in edit view
     .edit-view-container.is-active {
         .widget-panel-content.topnchart-widget {
-            /*
-            .widget-output-container {
-                // background: yellowgreen;
-                display: block;
-                // flex: 1 1 auto;
-                height: 250px;
-                // max-height: calc(100% - 200px);
-            }
-    
-            .widget-controls-container {
-                display: flex;
-                padding: 0;
-                // background: lightblue;
-                overflow: hidden;
-                // flex: 1 1 auto;
-                min-height: 200px;
-                // max-height: 100%;
-                flex-grow: 1;
-            }
-            .widget-output {
-                //top: 30px;
-                padding: 4px 0px;
-                //display: block;
-                position: relative;
-                height: 0px;
-                display: block;
-                #container {
-                    margin: 0px 0px 0px 0px;
-                    align-items: flex-end;
-                    justify-content: start;
-                }
-            }
-            */
             #container {
                 margin: 0px 0px 0px 0px;
                 align-items: flex-end;
@@ -192,55 +153,71 @@
 
 @mixin topn-widget-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    $bar-default-fill: if($is-dark-theme, map-get($denali-sky, 200), #dff0ff);
+        $theme-name: map-get($theme-config, theme-name);
+        $cssText: get-theme-css-text($theme-name);
 
-    $tooltip-bg: if($is-dark-theme, map-get($background, menu), #f0f0f0);
-    $tooltip-border: if($is-dark-theme, lighten(map-get($background, menu), 10%) , #cccccc);
-    $tooltip-text: find-color-invert($tooltip-bg);
+        $bar-default-fill: if(
+            $is-dark,
+            map-get($denali-sky, 200), // TODO: plug into theme
+            #dff0ff // TODO: plug into theme
+        );
 
-    .widget-panel-content.topnchart-widget {
+        $tooltip-bg: if(
+            $is-dark,
+            mat-color($background, menu),
+            #f0f0f0 // TODO: plug into theme
+        );
 
-        .widget-output {
+        $tooltip-border: if(
+            $is-dark,
+            mat-color($background, menu-border),
+            #cccccc // TODO: plug into theme
+        );
 
-            .apply-tpl-status {
-                .mat-icon {
-                    color: rgb(216, 216, 215);
+        $tooltip-text: if(
+            $is-dark,
+            map-get($cssText, --dark-primary-text),
+            map-get($cssText, --light-primary-text)
+        );
+
+        .widget-panel-content.topnchart-widget {
+
+            .widget-output {
+
+                .apply-tpl-status {
+                    .mat-icon {
+                        color: rgb(216, 216, 215); // TODO: plug into theme
+                    }
+                }
+
+                .error{
+                    color: red; // TODO: plug into theme
+                }
+
+                .debug{
+                    color: rgb(75, 9, 228); // TODO: plug into theme
+                }
+
+                /* tooltip */
+                .tooltip{
+                    background: $tooltip-bg;
+                    box-shadow: 0 0 5px rgba(0,0,0,.6); // TODO: plug into theme
+                    color: $tooltip-text;
+                    border: 1px solid $tooltip-border;
                 }
             }
 
-            .error{
-                color: red;
-            }
+            #container {
 
-            .debug{
-                color: rgb(75, 9, 228);
-            }
+                .bar {
+                    fill: $bar-default-fill;
+                }
 
-            /* tooltip */
-            .tooltip{
-                background: $tooltip-bg;
-                box-shadow: 0 0 5px rgba(0,0,0,.6);
-                color: $tooltip-text;
-                border: 1px solid $tooltip-border;
-            }
-        }
-
-        #container {
-
-            .bar {
-                fill: $bar-default-fill;
-            }
-
-            .label {
-                fill: #333;
+                .label {
+                    fill: #333; // TODO: plug into theme
+                }
             }
         }
     }

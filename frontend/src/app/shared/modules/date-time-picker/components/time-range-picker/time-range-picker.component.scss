@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin time-range-picker-component-base() {
 
     .preset-picker-menu {
@@ -163,48 +164,43 @@
 
 @mixin time-range-picker-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    .dtp-time-range-picker {
+        .dtp-time-range-picker {
 
-        .wrapper {
-            //background: map-get($background, background);
-            background: transparent;
-        }
+            .wrapper {
+                //background: map-get($background, background);
+                background: transparent;
+            }
 
-        .is-selected {
-            background-color: map-get($accent, default);
-        }
+            .is-selected {
+                background-color: mat-color($accent, default);
+            }
 
-        .dtp-action-controls {
-            border-top: 1px solid map-get($foreground, divider);
-        }
+            .dtp-action-controls {
+                border-top: 1px solid mat-color($foreground, divider);
+            }
 
-        .time-preset-button {
-            // background-color: map-get($primary, 100);
-            background-color: rgba(map-get($primary, default), 0.15);
-            // color: map-get($primary, '100-contrast');
-            color: map-get($foreground, link);
+            .time-preset-button {
+                // background-color: mat-color($primary, 100);
+                background-color: mat-color($primary, default, 0.15);
+                // color: mat-color($primary, '100-contrast');
+                color: mat-color($foreground, link);
 
-            &.is-selected {
-                background-color: map-get($primary, default);
-                color: map-get($primary, 'default-contrast')
+                &.is-selected {
+                    background-color: mat-color($primary, default);
+                    color: mat-color($primary, 'default-contrast')
+                }
             }
         }
-    }
 
-    .preset-picker-menu {
-        border: 1px solid map-get($primary, default);
+        .preset-picker-menu {
+            border: 1px solid mat-color($primary, default);
 
-        &::after {
-            border-color: rgba(255, 255, 255, 0);
-            border-bottom-color: map-get($background, menu); // actual color of arrow
+            &::after {
+                border-color: rgba($white, 0);
+                border-bottom-color: mat-color($background, menu); // actual color of arrow
+            }
         }
     }
 }

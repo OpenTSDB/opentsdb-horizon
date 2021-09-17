@@ -1,19 +1,24 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * COMMON STYLES FOR WDATE TIME
+// **/
+
 @mixin event-stream-component-base() {
 
     $mono-fontface: map-get($app-fontface-config, mono);
@@ -239,97 +244,71 @@
 }
 
 @mixin event-stream-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
 
-    $card: map-get($background, card);
-    $divider: map-get($foreground, divider);
+    @include variables-compatibility($theme-config) {
 
-    $header-bg: lighten($divider, 50%);
+        .event-stream {
+            .event-stream-list {
+                background: mat-color($background, card);
 
-    $is-dark: map-get($theme-config, is-dark);
-    $bg: map-get($background, background);
-    $fg: map-get($foreground, foreground);
-
-    .event-stream {
-        .event-stream-list {
-            background: $card;
-
-            .event-panel.mat-expansion-panel {
-
-                .mat-expansion-panel-header {
-                    // border-bottom: 1px solid $divider;
-                    // background: $header-bg;
-
-                    &:hover {
-                        background: darken($divider, 5%);
-                    }
-
-                    //.mat-expansion-indicator { }
-
-                }
-
-                .mat-expansion-panel-body {
-                    .event-summary {
-
-                        border-top: if($is-dark, 1px solid black, 1px solid #e0e0e0);
-
-                        &:not(:last-child) {
-                            border-bottom: 1px solid $header-bg;
-                        }
-
-                        &:hover {
-                            background: rgba(map-get($primary, default), .10);
-                        }
-
-                        .event-details {
-                            border: 1px solid $divider;
-                            background: $header-bg;
-                        }
-
-                        fieldset {
-                            background: if($is-dark, $bg, white);
-                            border: if($is-dark, 1px solid black, 1px solid #e0e0e0);
-                        }
-
-                        .event-summary {
-                            background: $header-bg;
-
-                            &:not(:last-child) {
-                                border-bottom: 1px solid $header-bg;
-                            }
-                        }
-
-                        .event-tag {
-                            background: $header-bg;
-                            border-radius: 5px;
-                        }
-
-                        .event-property {
-                            background: $header-bg;
-                            border-radius: 5px;
-                        }
-                    }
-                }
-
-                // when event-panel (accordion item) is open
-                &.mat-expanded {
+                .event-panel.mat-expansion-panel {
                     .mat-expansion-panel-header {
-                    //    .mat-expansion-indicator { }
-                        background: $header-bg;
+                        &:hover {
+                            background: mat-color($foreground, darker-divider);
+                        }
                     }
 
                     .mat-expansion-panel-body {
-                        border-bottom: 1px solid $divider;
-
                         .event-summary {
+                            border-top: if($is-dark, 1px solid $black, 1px solid #e0e0e0);
 
+                            &:not(:last-child) {
+                                border-bottom: 1px solid mat-color($foreground, lighter-divider);
+                            }
+
+                            &:hover {
+                                background: mat-color($primary, default, .10);
+                            }
+
+                            .event-details {
+                                border: 1px solid mat-color($foreground, divider);
+                                background: mat-color($foreground, lighter-divider);
+                            }
+
+                            fieldset {
+                                background: if($is-dark, mat-color($background, background), $white);
+                                border: if($is-dark, 1px solid $black, 1px solid #e0e0e0);
+                            }
+
+                            .event-summary {
+                                background: mat-color($foreground, lighter-divider);
+
+                                &:not(:last-child) {
+                                    border-bottom: 1px solid mat-color($foreground, lighter-divider);
+                                }
+                            }
+
+                            .event-tag {
+                                background: mat-color($foreground, lighter-divider);
+                                border-radius: 5px;
+                            }
+
+                            .event-property {
+                                background: mat-color($foreground, lighter-divider);
+                                border-radius: 5px;
+                            }
+                        }
+                    }
+
+                    // when event-panel (accordion item) is open
+                    &.mat-expanded {
+                        .mat-expansion-panel-header {
+                        //    .mat-expansion-indicator { }
+                            background: mat-color($foreground, lighter-divider);
+                        }
+
+                        .mat-expansion-panel-body {
+                            border-bottom: 1px solid mat-color($foreground, divider);
                         }
                     }
                 }

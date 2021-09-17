@@ -1,0 +1,22 @@
+/* Chart.js Overrides */
+// NOTE: may not need this anymore because of new tooltip
+#chartjs-tooltip {
+    opacity: 1;
+    position: absolute;
+    background: #f0f0f0;
+    border: 1px solid #cccccc;
+    padding: 4px;
+    color: black;
+    border-radius: 5px;
+    pointer-events: none;
+    -webkit-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    z-index:1;
+}
+
+.chartjs-tooltip-key {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+}

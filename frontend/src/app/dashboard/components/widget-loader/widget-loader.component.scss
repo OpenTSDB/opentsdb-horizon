@@ -195,96 +195,81 @@
 
 @mixin widget-loader-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    $divider: map-get($foreground, divider);
-    $card: map-get($background, card);
+        $divider: mat-color($foreground, divider);
+        $card: mat-color($background, card);
 
-    .widget-loader {
-        .mat-card {
-            box-shadow: none;
-            background-color: map-get($background, card);
-            border: 1px solid rgba(0, 0, 0, .08);
+        .widget-loader {
+            .mat-card {
+                box-shadow: none;
+                background-color: mat-color($background, card);
+                border: 1px solid rgba($black, .08);
 
-            .panel-body .panel-heading {
-                background-color: transparent;
-                display: none;
+                .panel-body .panel-heading {
+                    background-color: transparent;
+                    display: none;
 
-                & {
-                    @include transition(background-color 0.2s ease-in-out);
-                }
-
-                .panel-title {
-                    padding: 0 10px;
-                    font-weight: 300;
-                }
-
-                .mat-toolbar {
-                    @include transition(none);
-                    background: transparent;
-
-                    .mat-icon-button {
-                        @include opacity(.5);
+                    & {
+                        @include transition(background-color 0.2s ease-in-out);
                     }
-                }
 
-                &:hover {
-                    //background-color: rgba(map-get($accent, A700), .1);
-                    background-color: map-get($background, card-header-hover);
+                    .panel-title {
+                        padding: 0 10px;
+                        font-weight: 300;
+                    }
 
                     .mat-toolbar {
+                        @include transition(none);
+                        background: transparent;
+
                         .mat-icon-button {
-                            @include opacity(1);
+                            @include opacity(.5);
+                        }
+                    }
+
+                    &:hover {
+
+                        background-color: mat-color($background, card-header);
+
+                        .mat-toolbar {
+                            .mat-icon-button {
+                                @include opacity(1);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        /*&.inverse-menu-color {
             .batch-selector {
-                .mat-checkbox-frame {
-                    border-color: rgba($white, .54);
-                }
+                background: $card;
             }
-        }*/
-
-        .batch-selector {
-            // border: 1px solid rgba(if($is-dark-theme, $white, $black), .8);
-            background: $card;
         }
-    }
 
-    // Gridster
-    .gridster-item.is-dragging {
-        .gridster-item-inner {
-            .widget-loader {
-                .mat-card-header {
-                    background-color: map-get($background, card-header-hover);
+        // Gridster
+        .gridster-item.is-dragging {
+            .gridster-item-inner {
+                .widget-loader {
+                    .mat-card-header {
+                        background-color: mat-color($background, card-header);
 
-                    .mat-toolbar {
-                        .mat-icon-button {
-                            @include opacity(1);
+                        .mat-toolbar {
+                            .mat-icon-button {
+                                @include opacity(1);
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
 
-    // CDK items are outside of the component namespace class - be sure to give them a unique class name
-    .widget-menu,
-    .widget-submenu {
-        .menu-seperator {
-            background-color: rgba(map-get($foreground, divider), .1);
+        // CDK items are outside of the component namespace class - be sure to give them a unique class name
+        .widget-menu,
+        .widget-submenu {
+            .menu-seperator {
+                background-color: mat-color($foreground, divider, .1);
+            }
         }
     }
-
 }

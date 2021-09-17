@@ -1,0 +1,134 @@
+//* loading spinner */
+//* NOTE: Loading spinner may be going away in favor of .gif-spinner for performance reasons */
+.loading-spinner,
+.loading-spinner:after {
+    border-radius: 50%;
+    width: 10em;
+    height: 10em;
+}
+
+.loading-spinner {
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+
+    border-top-width: 1.1em;
+    border-right-width: 1.1em;
+    border-bottom-width: 1.1em;
+    border-left-width: 1.1em;
+
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 .6s infinite linear;
+    animation: loading-spinner-anim .6s infinite linear;
+
+    &.size-s {
+        &,
+        &:after {
+            width: 4em;
+            height: 4em;
+        }
+
+        font-size: 4px;
+
+        border-top-width: .8em;
+        border-right-width: .8em;
+        border-bottom-width: .8em;
+        border-left-width: .8em;
+    }
+
+    &.size-xs {
+        &,
+        &:after {
+            width: 5em;
+            height: 5em;
+        }
+
+        font-size: 2px;
+    }
+}
+
+@-webkit-keyframes loading-spinner-anim {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes loading-spinner-anim {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+//* animated spinner */
+.gif-spinner {
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 12px;
+        min-width: 12px;
+        height: 12px;
+        min-height: 12px;
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $divider: mat-color($foreground, divider);
+
+    $default-color: if($is-dark, #ffffff, #000000);
+
+    .loading-spinner {
+        border-top-color: rgba($default-color, 0.2);
+        border-right-color: rgba($default-color, 0.2);
+        border-bottom-color: rgba($default-color, 0.2);
+        border-left-color: $default-color;
+
+        &.color-primary {
+            border-top-color: mat-color($primary, default, 0.2);
+            border-right-color: mat-color($primary, default, 0.2);
+            border-bottom-color: mat-color($primary, default, 0.2);
+            border-left-color: mat-color($primary, default);
+        }
+
+        &.color-accent {
+            border-top-color: mat-color($accent, default, 0.2);
+            border-right-color: mat-color($accent, default, 0.2);
+            border-bottom-color: mat-color($accent, default, 0.2);
+            border-left-color: mat-color($accent, default);
+        }
+
+        &.color-warn {
+            border-top-color: mat-color($warn, default, 0.2);
+            border-right-color: mat-color($warn, default, 0.2);
+            border-bottom-color: mat-color($warn, default, 0.2);
+            border-left-color: mat-color($warn, default);
+        }
+    }
+
+    .gif-spinner {
+        background-color: mat-color($background, card, .8);
+    }
+}

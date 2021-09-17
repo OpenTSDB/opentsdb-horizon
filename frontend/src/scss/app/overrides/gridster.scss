@@ -1,0 +1,109 @@
+/* GRIDSTER OVERRIDES */
+
+.gridster-container {
+    min-height: 100%;
+
+    .position-highlight {
+        z-index: 0;
+
+        .inner {
+            position: absolute;
+            top: 5px;
+            bottom: 5px;
+            left: 5px;
+            right: 5px;
+            border-radius: 3px;
+        }
+    }
+}
+
+// not sure this block is still needed since the gridster upgrade
+.gridster-item-prototype {
+    display: block;
+    position: relative;
+    float: left;
+    z-index: 99;
+    text-align: center;
+    font-weight: bold;
+    margin: 5px;
+    width: 80px;
+    height: 60px;
+
+    &.is-over {
+        .gridster-item-inner {
+            visibility: visible;
+        }
+    }
+
+    .gridster-item-inner {
+        position: absolute;
+        top:0;
+        left: 0;
+        overflow: auto;
+        width: 80px;
+        height: 60px;
+        visibility: hidden;
+    }
+}
+
+.gridster-item {
+    .gridster-item-inner {
+        position: absolute;
+        border: 1px solid transparent;
+        top: 0px;
+        bottom: 5px;
+        left: 0px;
+        right: 5px;
+        border-radius: 3px;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    &.is-dragging {
+        .gridster-item-inner {
+            top: -3px;
+            bottom: 13px;
+        }
+    }
+    &:hover {
+        z-index: 2;
+    }
+}
+
+/* see https://github.com/tiberiuzuld/angular-gridster2/issues/127 */
+.gridster .gridster-column,
+.gridster .gridster-row,
+.gridster-item,
+.gridster-item.gridster-item-resizing,
+.gridster-item.gridster-item-moving {
+    transition: unset !important;
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    .gridster-item-prototype {
+        background-color: mat-color($primary, darker);
+    }
+
+    .gridster-container {
+        .position-highlight {
+            .inner {
+                @include mat-elevation(3);
+                background-color: mat-color($other, gridster-highlight);
+                border: 1px solid transparent;
+            }
+        }
+    }
+
+    .gridster-item {
+
+        &.is-dragging {
+            .gridster-item-inner {
+                @include mat-elevation(10);
+            }
+        }
+    }
+
+}
