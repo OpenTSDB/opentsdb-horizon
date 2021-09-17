@@ -1,22 +1,23 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
-COMMON STYLES FOR WIDGET CONFIG PANELS
-**/
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * COMMON STYLES FOR WIDGET CONFIG PANELS
+// **/
 
 // NOTE: These styles cover ALL of the widget config panels generic classes.
 // TODO: Describe how this is setup & why there are two mixins (at a minimum)
@@ -237,93 +238,127 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
             border-radius: 4px;
         }
     }
+
+    .app-navbar .navbar-item {
+        .sliding-button-group.mat-tab-nav-bar {
+            .mat-tab-link {
+                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                height: 24px;
+                line-height: 24px;
+            }
+
+            .mat-ink-bar {
+                height: 20px;
+            }
+        }
+    }
 }
 
 @mixin widget-config-common-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
 
-    $divider: rgba(map-get($foreground, divider), .05);
 
-    $link: map-get($foreground, link);
+    @include variables-compatibility($theme-config) {
 
-    $edit-toolbar-border-width: map-get($widgets-common-config, edit-toolbar-border-width);
+        $theme-name: map-get($theme-config, theme-name);
+        $cssVarMap: get-theme-css-variables($theme-name);
 
-    // ** Config tab CONTENT ** //
-    .widget-config-tab {
+        //$divider: mat-color($foreground, divider, .05);
 
-        // possibly re-usable within a widget-config-tab
-        .config-toolbar,
-        .query-item-toolbar {
-            background: transparent;
-        }
+        //$link: mat-color($foreground, link);
 
-        .config-toolbar {
-            border-bottom: $edit-toolbar-border-width solid $divider;
-        }
+        // TODO: this widgets common map should move into theme?
+        $edit-toolbar-border-width: map-get($widgets-common-config, edit-toolbar-border-width);
 
-        .query-item:not(:last-child) {
-            border-bottom: 1px solid $divider;
-        }
+        // ** Config tab CONTENT ** //
+        .widget-config-tab {
 
-        // specific tab overrides are in their own component style sheet
-    }
-
-    // CUSTOM ELEMENT STYLES
-    $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
-
-    .button-group {
-        .mat-raised-button {
-            &.mat-primary:not(:last-child) {
-                border-right: 1px solid lighten(map-get($primary,default), 3%);
+            // possibly re-usable within a widget-config-tab
+            .config-toolbar,
+            .query-item-toolbar {
+                background: transparent;
             }
 
-            &.mat-accent:not(:last-child) {
-                border-right: 1px solid lighten(map-get($accent,default), 3%);
+            .config-toolbar {
+                border-bottom: $edit-toolbar-border-width solid mat-color($foreground, divider, .05);
             }
 
-            &.mat-warn:not(:last-child) {
-                border-right: 1px solid lighten(map-get($warn,default), 3%);
+            .query-item:not(:last-child) {
+                border-bottom: 1px solid mat-color($foreground, divider, .05);
+            }
+
+            // specific tab overrides are in their own component style sheet
+        }
+
+        // CUSTOM ELEMENT STYLES
+        $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
+
+        .button-group {
+            .mat-raised-button {
+                &.mat-primary:not(:last-child) {
+                    border-right: 1px solid mat-color($primary, 400);
+                }
+
+                &.mat-accent:not(:last-child) {
+                    border-right: 1px solid mat-color($accent, 400);
+                }
+
+                &.mat-warn:not(:last-child) {
+                    border-right: 1px solid mat-color($warn, 400);
+                }
+            }
+
+        }
+
+        .sliding-button-group.mat-tab-nav-bar {
+            $sbg-bg: if($is-dark, mat-color($foreground, base, .1), mat-color($primary, 50));
+
+            background-color: $sbg-bg;
+
+            .mat-tab-link {
+                color: mat-color($primary, default);
+
+                &.mat-tab-label-active {
+                    color: mat-color($foreground, base);
+                }
+            }
+
+            .mat-ink-bar {
+                background: mat-color($background, card);
             }
         }
 
-    }
+        .app-navbar .navbar-item {
+            .sliding-button-group.mat-tab-nav-bar {
+                background-color: mat-color($background, navbar-button);
 
-    .sliding-button-group.mat-tab-nav-bar {
-        background-color: if($is-dark, rgba(map-get($foreground, base), .1), lighten(map-get($primary, 50), 2%));
+                .mat-tab-link {
+                    &,
+                    &.mat-tab-label-active {
+                        color: mat-color($foreground, navbar-text);
+                    }
+                }
 
-        .mat-tab-link {
-            color: map-get($primary, default);
-
-            &.mat-tab-label-active {
-                color: map-get($foreground, base);
+                .mat-ink-bar {
+                    background: mat-color($foreground, navbar-text, .25);
+                }
             }
         }
 
-        .mat-ink-bar {
-            background-color: map-get($background, card);
-        }
-    }
+        .mat-button-toggle-group-vertical,
+        .mat-button-toggle-group-horizontal {
 
-    .mat-button-toggle-group-vertical,
-    .mat-button-toggle-group-horizontal {
+            &.mat-button-toggle-group {
+                &.mat-button-toggle-group-appearance-standard {
 
-        &.mat-button-toggle-group {
-            &.mat-button-toggle-group-appearance-standard {
+                    .mat-button-toggle {
+                        background: if($is-dark, rgba($black, .4), rgba($white, .8));
+                        color: mat-color($foreground, link);
 
-                .mat-button-toggle {
-                    background: if($is-dark, rgba($black, .4), rgba($white, .8));
-                    color: $link;
-
-                    &.mat-button-toggle-checked  {
-                        background: if($is-dark, rgba($link, .2), rgba($white, .8));
-                        color: if($is-dark, $white, $black);
-                        border: 2px solid $link;
+                        &.mat-button-toggle-checked  {
+                            background: if($is-dark, mat-color($foreground, link, .2), rgba($white, .8));
+                            color: if($is-dark, $white, $black);
+                            border: 2px solid mat-color($foreground, link);
+                        }
                     }
                 }
             }
@@ -332,6 +367,7 @@ COMMON STYLES FOR WIDGET CONFIG PANELS
 }
 
 @mixin vertical-button-toggle-override($text, $color) {
+
     .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
         .mat-button-toggle {
             color: $text;

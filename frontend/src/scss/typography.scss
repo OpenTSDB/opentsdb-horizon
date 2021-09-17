@@ -1,0 +1,26 @@
+// Typography
+// NOTE: Will pair these down to one family after testing a few
+@import "typography/typography-mixins";
+// monospace/sans-serif font faces
+@import "typography/ubuntu-mono";
+@import "typography/ubuntu-sans";
+@import "typography/helvetica-neue-sans";
+
+$app-available-typefaces: (
+    ubuntu-mono: $ubuntu-mono-typeface-config,
+    ubuntu-sans: $ubuntu-sans-typeface-config,
+    helvetica-neue: $helvetica-neue-sans-typeface-config,
+);
+
+// Primary font used
+// material compatible font-map
+$app-fontface-config: (
+    mono:
+        generate-material-compatible-typography-config(
+            map-get($app-available-typefaces, ubuntu-mono)
+        ),
+    sans:
+        generate-material-compatible-typography-config(
+            map-get($app-available-typefaces, ubuntu-sans)
+        ),
+);

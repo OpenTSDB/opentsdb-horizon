@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin table-widget-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -205,45 +206,41 @@
 
 }
 
-@mixin table-widget-component-theme($theme-config)
-{
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $card-background: map-get($background, card);
-    $ink-bar-color: map-get($background, ink-bar);
-    $is-dark: map-get($theme-config, is-dark);
+@mixin table-widget-component-theme($theme-config) {
 
-    .mat-button-toggle-group{
-        .mat-button-toggle-appearance-standard {
-            &.mat-button-toggle-checked {
-                background: $card-background;
-                position: relative;
+    @include variables-compatibility($theme-config) {
 
-                &::after {
-                    content: '';
-                    display: block;
-                    height: 2px;
-                    background-color: $ink-bar-color;
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    right: 0;
+        $card-background: mat-color($background, card);
+        $ink-bar-color: mat-color($background, ink-bar);
+
+        .mat-button-toggle-group{
+            .mat-button-toggle-appearance-standard {
+                &.mat-button-toggle-checked {
+                    background: $card-background;
+                    position: relative;
+
+                    &::after {
+                        content: '';
+                        display: block;
+                        height: 2px;
+                        background-color: $ink-bar-color;
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        right: 0;
+                    }
                 }
             }
         }
-    }
 
-    .widget-output {
-        background-color: map-get($background, card);
-    }
+        .widget-output {
+            background-color: mat-color($background, card);
+        }
 
-    .mat-cell {
-        &.mat-table-sticky {
-            border-right: 1px solid if($is-dark, find-color-invert(#e0e0e0), #e0e0e0);
+        .mat-cell {
+            &.mat-table-sticky {
+                border-right: 1px solid if($is-dark, find-color-invert(#e0e0e0), #e0e0e0); // TODO: plulg into theme
+            }
         }
     }
 }

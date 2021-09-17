@@ -91,7 +91,7 @@ const moment = _moment;
 @Component({
     selector: 'app-alerts',
     templateUrl: './alerts.component.html',
-    styleUrls: []
+    styleUrls: ['./alerts.component.scss']
 })
 export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 

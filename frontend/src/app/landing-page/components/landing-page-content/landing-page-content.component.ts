@@ -35,7 +35,7 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'landing-page-content',
     templateUrl: './landing-page-content.component.html',
-    styleUrls: []
+    styleUrls: ['./landing-page-content.component.scss']
 })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
