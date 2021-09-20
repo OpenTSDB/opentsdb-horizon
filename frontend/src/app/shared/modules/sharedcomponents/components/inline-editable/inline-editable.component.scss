@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin inline-editable-component-base() {
     .inline-editable {
         .mat-form-field-infix {
@@ -209,72 +210,59 @@
 }
 
 @mixin inline-editable-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    $primary-default: map-get($primary, default);
-
-    $text: map-get($foreground, text);
-    $link: map-get($foreground, link);
-
-    $status: map-get($theme-config, status);
-
-    %inline-editable {
-        .mat-form-field-underline {
-            background-color: transparent;
-        }
-
-        .mat-form-field {
-
-            .save-button.mat-mini-fab {
-                background-color: darken(map-get($status, success), 10%);
+        %inline-editable {
+            .mat-form-field-underline {
+                background-color: transparent;
             }
 
-            .edit-button {
-                color: $link;
-            }
+            .mat-form-field {
 
-            &.readonly-mode {
-                .mat-form-field-underline {
-                    background-color: transparent;
+                .save-button.mat-mini-fab {
+                    background-color: mat-color($success, default);
                 }
 
-                &:hover {
-                    background-color: rgba($primary-default, 0.08);
+                .edit-button {
+                    color: mat-color($foreground, link);
+                }
+
+                &.readonly-mode {
+                    .mat-form-field-underline {
+                        background-color: transparent;
+                    }
+
+                    &:hover {
+                        background-color: mat-color($primary, default, 0.08);
+
+                        .mat-form-field-underline {
+                            background-color: mat-color($foreground, link);
+                            color: mat-color($foreground, link);
+                        }
+                    }
+                }
+
+                &.editing-mode {
+                    background-color: mat-color($primary, default, 0.08);
 
                     .mat-form-field-underline {
-                        background-color: $link;
-                        color: $link;
+                        background-color: mat-color($foreground, link);
+                        color: mat-color($foreground, link);
+                    }
+                }
+
+                &.mat-focused {
+                    .mat-form-field-ripple {
+                        background-color: mat-color($foreground, link);
+                        color: mat-color($foreground, link);
                     }
                 }
             }
+        }
 
-            &.editing-mode {
-                background-color: rgba($primary-default, 0.08);
-
-                .mat-form-field-underline {
-                    background-color: $link;
-                    color: $link;
-                }
-            }
-
-            &.mat-focused {
-                .mat-form-field-ripple {
-                    background-color: $link;
-                    color: $link;
-                }
-            }
+        .inline-editable,
+        .mat-toolbar .inline-editable {
+            @extend %inline-editable;
         }
     }
-
-    .inline-editable, .mat-toolbar .inline-editable {
-        @extend %inline-editable;
-    }
-
 }

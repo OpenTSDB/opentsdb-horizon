@@ -21,7 +21,8 @@ import { ClipboardService } from '../../services/clipboard.service';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'navbar-clipboard-menu',
-    templateUrl: './navbar-clipboard-menu.component.html'
+    templateUrl: './navbar-clipboard-menu.component.html',
+    styleUrls: ['./navbar-clipboard-menu.component.scss']
 })
 export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
 

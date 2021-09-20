@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 @mixin alerts-common-base() {
 
 }
 
 @mixin alerts-common-theme($theme-config) {
-    /* Theme config parts */
+    // * Theme config parts
     $primary: map-get($theme-config, primary);
     $accent: map-get($theme-config, accent);
     $warn: map-get($theme-config, warn);

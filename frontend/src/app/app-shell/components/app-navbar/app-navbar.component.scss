@@ -1,77 +1,59 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* NAVBAR COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
-// core (aka structure)
-@mixin app-navbar-component-base() {
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
 
-    .app-navbar {
-        //@include mat-elevation(2);
-        z-index: 2;
-        position: relative;
+// * NAVBAR COMPONENT
 
-        .app-home-link {
-            min-width: auto;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+@import "loader-component";
 
-        .app-opentsdb-logo {
-            height: $logo-height;
-            //margin: 0 4px 3px 0;
-            vertical-align: middle;
-        }
+$navbar-height: map-get($navbar-config, "navbar-height");
+$logo-height: map-get($navbar-config, "logo-height");
 
-        .dashboard-name {
-            @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), title);
-        }
+:host.app-navbar {
+    z-index: 2;
+    position: relative;
 
-        .icon-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .app-home-link {
+        min-width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .mat-toolbar {
-            .mat-toolbar-row {
-                padding-left: initial;
-            }
-        }
+    .app-opentsdb-logo {
+        height: $logo-height;
+        //margin: 0 4px 3px 0;
+        vertical-align: middle;
+    }
 
-        .mat-toolbar-multiple-rows,
-        .mat-toolbar-single-row {
-            min-height: $navbar-height !important;
-            height: $navbar-height;
-        }
+    .dashboard-name {
+        @include mat-typography-level-to-styles(
+            map-get($app-fontface-config, sans),
+            title
+        );
+    }
 
-        .navbar-item {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto 5px;
+    .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-            &.navbar-icon-item {
-                margin: auto 10px;
-            }
-        }
-
+    .mat-toolbar .mat-toolbar-row {
+        padding-left: initial;
         .navbar-sliding-toggle {
             display: inline-flex;
             align-items: center;
@@ -84,7 +66,10 @@
                 padding: 0 2px;
 
                 .mat-tab-link {
-                    font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                    font-size: mat-font-size(
+                        map-get($app-fontface-config, sans),
+                        caption
+                    );
                     height: 24px;
                     padding: 0 4px;
                     min-width: 50px;
@@ -112,79 +97,82 @@
                     border-radius: 4px;
                 }
             }
-
         }
     }
 
-    // cdk items
-    .mat-menu-panel.nav-bar-dropmenu {
-        margin-top: 3px;
+    .mat-toolbar-multiple-rows,
+    .mat-toolbar-single-row {
+        min-height: $navbar-height !important;
+        height: $navbar-height;
     }
 }
-// theme (aka look-n-feel)
-@mixin app-navbar-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    .app-navbar {
+    $accent-default: map-get($accent, default);
 
+    $navbar-bg: mat-color($background, navbar);
+    $navbar-text: mat-color($foreground, navbar-text);
+
+    $navbar-icons-color:mat-color($foreground, navbar-icons);
+
+    :host.app-navbar {
         .mat-toolbar {
-            background: map-get($background, navbar);
-            color: map-get($foreground, navbar-text);
+            background: $navbar-bg;
+            color: $navbar-text;
 
             .mat-icon-button {
                 .mat-icon {
-                    color: map-get($foreground, navbar-icons)
+                    color: mat-color($foreground, navbar-icons);
                 }
             }
+
             &.snapshot {
-                background: #135588;
+                background: #135588; // TODO: plug into theme
             }
+
             &.explore {
-                background: lightsteelblue;
-            }
-        }
-
-
-        .navbar-item {
-            .menu-trigger-underline {
-                box-shadow: inset 0 -3px 0 map-get($accent, default);
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
+                background: lightsteelblue; // TODO: plug into theme
             }
 
-            .menu-trigger-highlight {
-                background-color: rgba(map-get($accent, default), .1);
+            .navbar-item {
+                .menu-trigger-underline {
+                    box-shadow: inset 0 -3px 0 mat-color($accent, default);
+                    border-bottom-left-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+                .menu-trigger-highlight {
+                    background-color: mat-color($accent, default, 0.1);
+                }
             }
-        }
 
-        .navbar-sliding-toggle {
-            .sliding-toggle-group {
-                background-color: darken(map-get($background, navbar), 4%);
+            .navbar-sliding-toggle {
+                .sliding-toggle-group {
+                    background-color: mat-color($background, navbar-button);
 
-                .mat-tab-link {
-                    &,
-                    &.mat-tab-label-active {
-                        color: map-get($foreground, navbar-text);
+                    .mat-tab-link {
+                        &,
+                        &.mat-tab-label-active {
+                            color: mat-color($foreground, navbar-text);
+                        }
+                    }
+
+                    .mat-ink-bar {
+                        background-color: mat-color($foreground, navbar-text, 0.25);
                     }
                 }
-
-                .mat-ink-bar {
-                    background-color: rgba(map-get($foreground, navbar-text), .25);
-                }
             }
         }
     }
 
-    // cdk items
-    .mat-menu-panel.nav-bar-dropmenu {
-        @include mat-elevation(5);
+    // CDK ITEMS (these are at document root level)
+    ::ng-deep {
+        // cdk items
+        .mat-menu-panel.nav-bar-dropmenu {
+            @include mat-elevation(5);
+        }
     }
-
 }
+
+
