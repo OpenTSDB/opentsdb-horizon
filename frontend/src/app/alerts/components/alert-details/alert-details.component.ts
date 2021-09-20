@@ -198,6 +198,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         { label: 'P5', value: 'P5' }
     ];
 
+    enableNamespace = true;
     defaultNamespace = '';
     defaultOpsGeniePriority = 'P5';
     defaultOCSeverity = '5';
@@ -348,8 +349,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     }
 
     ngOnInit() {
+        const config = this.appConfig.getConfig();
         this.alertspageNavbarPortal = new TemplatePortal(this.alertDateTimeNavbarItemTmpl, undefined, {});
         this.cdkService.setNavbarPortal(this.alertspageNavbarPortal);
+        this.enableNamespace = config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true;
         this.defaultNamespace = this.appConfig.getDefaultNamespace();
 
         this.subscription.add(this.themeService.getThemeType().subscribe( themeType => {
@@ -686,7 +689,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         this.alertForm['controls'].threshold.get('notifyOnMissing').setValue( notifyOnMissing, { emitEvent: true});
         if (!this.data.threshold) {
-            this.data.threshold = { 
+            this.data.threshold = {
                                     singleMetric: {},
                                     suppress : {}
                                 };
@@ -864,7 +867,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.suppressConfig.threshold = this.data.threshold.suppress.threshold || 0;
             this.suppressConfig = {...this.suppressConfig};
             this.suppressConfig.disabled = false;
-        } 
+        }
         this.queries = this.data.queries && this.data.queries.raw ? this.data.queries.raw : [ this.getNewQueryConfig() ];
     }
 
@@ -1419,13 +1422,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
         };
         const queries = this.utils.deepClone(this.queries);
-        // show/hide series 
+        // show/hide series
         for ( let i = 0; i < queries.length; i++ ) {
             for ( let j = 0; j < queries[i].metrics.length; j++ ) {
                 const mid = queries[i].metrics[j].id;
                 if ( this.chartInvisibleMetrics.includes(mid)) {
                     queries[i].metrics[j].settings.visual.visible = false;
-                } 
+                }
             }
         }
         config.queries = queries;
@@ -1659,8 +1662,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     if ( this.suppressConfig.metricId) {
                         const [qindex, mindex] = this.utils.getMetricIndexFromId(this.suppressConfig.metricId, this.queries);
                         const suppressTags =  this.queries[qindex].metrics[mindex].groupByTags || [];
-                        if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) ) 
-                                    || (this.suppressConfig.comparisonOperator !== 'missing' && 
+                        if ( (this.tags.length && (!suppressTags.length || !this.utils.isArraySubset(this.tags, suppressTags)) )
+                                    || (this.suppressConfig.comparisonOperator !== 'missing' &&
                                         (this.suppressConfig.threshold === null || this.suppressConfig.timeSampler === 'all_of_the_times' && this.suppressConfig.reportingInterval <= 0))) {
                             this.suppressConfig.checkValidation = true;
                             this.alertForm.setErrors({ 'invalid': true });
@@ -1987,7 +1990,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         if ( this.notificationRecipients.value.opsgenie && !event.opsgenie) {
             this.alertForm['controls'].notification.get('opsgeniePriority').setValue('');
             this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
-            this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]); 
+            this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]);
         }
         this.notificationRecipients.setValue(event);
 
