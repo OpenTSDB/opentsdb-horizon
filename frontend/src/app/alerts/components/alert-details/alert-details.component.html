@@ -144,6 +144,7 @@
                                 <query-editor-proto [label]="'Q' + (index + 1)" [query]="query" [queries]="queries"
                                     [widget]="{queries: queries}"
                                     [options]="{
+                                        enableNamesapce: enableNamespace,
                                         metaSource: data.type === 'healthcheck' ? 'aurastatus:check' : 'meta',
                                         enableMultipleQueries: data.type === 'simple',
                                         enableMetric: data.type === 'simple',
