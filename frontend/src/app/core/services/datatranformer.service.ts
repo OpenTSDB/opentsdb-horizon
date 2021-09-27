@@ -733,7 +733,7 @@ export class DatatranformerService {
 
     getLableFromMetricTags(label, tags, len= 70 ) {
         const regex = /\{\{([\w-.:\/]+)\}\}/ig
-        label = label.trim();
+        label = label ? label.trim() : '';
         const matches = label.match(regex);
         if ( matches ) {
             for ( let i = 0, len = matches.length; i < len; i++ ) {

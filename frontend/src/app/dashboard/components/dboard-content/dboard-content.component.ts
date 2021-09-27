@@ -49,7 +49,7 @@ export class DboardContentComponent implements OnChanges {
   @Input() rerender: any;
   @Input() dashboardMode: string;
   @Input() dbid: any;
-
+  @Input() readonly = true;
   @Input() batchControlsToggle: boolean = false;
   @Input() batchSelectedItems: any = {};
 
@@ -167,6 +167,7 @@ export class DboardContentComponent implements OnChanges {
     // assign @input widget
     (<WidgetComponentModel>component.instance).widget = editWidget;
     (<WidgetComponentModel>component.instance).mode =  mode;
+    (<WidgetComponentModel>component.instance).readonly =  this.readonly;
   }
 
   // change ratio when breakpoint hits

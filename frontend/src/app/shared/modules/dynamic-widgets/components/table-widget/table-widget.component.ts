@@ -52,6 +52,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
     @Input() mode = 'view'; // view/explore/edit
     @Input() widget: WidgetModel;
+    @Input() readonly = true;
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild(MatSort) sort: MatSort;
