@@ -16,7 +16,7 @@
  -->
 <ng-template [ngIf]="mode.view" [ngIfElse]="variableEditMode">
     <div [formGroup]="listForm" class="variable-list-wrapper">
-        <button mat-button color="primary" class="configure-variables-button" *ngIf="!tplVariables.viewTplVariables.tvars || tplVariables.viewTplVariables.tvars.length === 0" (click)="doEdit()">
+        <button mat-button color="primary" class="configure-variables-button" *ngIf="!readonly && (!tplVariables.viewTplVariables.tvars || tplVariables.viewTplVariables.tvars.length === 0)" (click)="doEdit()">
             <mat-icon fontSet="denali" fontIcon="d-setting"></mat-icon>
             <span>Configure dashboard tag filters</span>
         </button>
@@ -43,7 +43,7 @@
                         </mat-autocomplete>
                     </mat-form-field>
                 </li>
-                <li>
+                <li *ngIf="!readonly">
                     <button mat-button color="primary" class="edit-variables-button" (click)="doEdit()">
                         <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
                         <span>Edit</span>

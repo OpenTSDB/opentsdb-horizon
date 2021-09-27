@@ -20,5 +20,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 // we use the app config from the server
 export const environment = {
-  production: false
+  production: false,
+  readonly: true,
+  runtimeConfig: false
 };

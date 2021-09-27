@@ -24,9 +24,10 @@
             [widgets]="widgets"
             [tagKeysByNamespaces] = "tagKeysByNamespaces"
             [tplVariables]="tplVariables"
+            [readonly]="readonly"
             (modeChange)="changeVarPanelMode($event)">
         </template-variable-panel>
-        <div class="batch-controls-wrap" fxLayout="row" fxLayoutLaign="stretch stretch" *ngIf="viewEditMode !== true && !snapshot && variablePanelMode.view">
+        <div class="batch-controls-wrap" fxLayout="row" fxLayoutLaign="stretch stretch" *ngIf="!readonly && viewEditMode !== true && !snapshot && variablePanelMode.view">
             <div class="batch-controls" *ngIf="variablePanelMode.view && batchToggle">
                 <button mat-icon-button
                     class="batch-select"
@@ -78,6 +79,7 @@
         [widgets]="widgets"
         [batchControlsToggle]="batchToggle"
         [batchSelectedItems]="batchSelectedItems"
+        [readonly]="readonly"
         [dashboardMode]="dashboardMode$ | async">
     </app-dboard-content>
 </div>
@@ -93,7 +95,7 @@
     <span class="navbar-item nav-title-readonly" *ngIf="(dashboardMode$ | async) === 'explore'">Explore: {{ editViewModeMeta.title }}</span>
 
     <span class="navbar-item navbar-icon-item nav-dashboard-favorite-trigger" style="margin-left: 0;"
-        *ngIf="viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
+        *ngIf="!readonly && viewEditMode !== true && !snapshot && activeMediaQuery !== 'xs' && dbid !=='_new_'">
         <button mat-icon-button class="mat-elevation-z0"
             [ngClass]="{'dashboard-faved': isUserFavorited}"
             (click)="dashboardFavoriteAction(isUserFavorited)">
@@ -102,7 +104,7 @@
     </span>
     <span class="flex-spacer"></span>
 
-    <span class="navbar-item nav-add-new-widget" *ngIf="viewEditMode !== true &&!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
+    <span class="navbar-item nav-add-new-widget" *ngIf="!readonly && viewEditMode !== true &&!snapshot && activeMediaQuery !== 'xs' && !viewEditMode">
         <button mat-flat-button class=""
             [ngClass]="{'menu-trigger-underline': availableWidgetsMenuIsOpen}"
             [matMenuTriggerFor]="dashboardAvailableWidgetsMenu"
@@ -140,7 +142,7 @@
         <navbar-timezone-toggle [timezone]="dbTime.zone" (change)="setTimezone($event);"></navbar-timezone-toggle>
     </span>
 
-    <span class="navbar-item nav-dashboard-actions" *ngIf="activeMediaQuery !== 'xs' && (!viewEditMode || snapshot)">
+    <span class="navbar-item nav-dashboard-actions" *ngIf="!readonly && activeMediaQuery !== 'xs' && (!viewEditMode || snapshot)">
         <navbar-dashboard-actions-menu *ngIf="!viewEditMode" mat-button [needsSaving]="doesUserHaveWriteAccess()" [id]="dbid" [dbSettingsMeta]="meta" (dashboardAction)="receiveDashboardAction($event)"></navbar-dashboard-actions-menu>
         <button mat-flat-button class="save-dashboard-button" *ngIf="snapshot && doesUserHaveWriteAccess()" (click)="saveSnapshot()">
             <mat-icon fontSet="denali" fontIcon="d-save"></mat-icon>
@@ -154,7 +156,7 @@
             <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
         </button>
     </span>-->
-    <navbar-clipboard-menu class="navbar-item" #clipboardMenu></navbar-clipboard-menu>
+    <navbar-clipboard-menu class="navbar-item" #clipboardMenu *ngIf="!readonly"></navbar-clipboard-menu>
     <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
     </span>
