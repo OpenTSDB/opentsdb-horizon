@@ -41,6 +41,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     /** Inputs */
     @Input() mode = 'view'; // view/edit
     @Input() widget: any; // includes query
+    @Input() readonly = true;
 
     /** Local Variables */
     events: any[] = [];

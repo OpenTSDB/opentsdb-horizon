@@ -35,6 +35,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   /** Inputs */
   @Input() mode = 'view'; // view/edit
   @Input() widget: any;
+  @Input() readonly = true;
 
   isDataRefreshRequired = false;
 

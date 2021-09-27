@@ -27,7 +27,6 @@ import { QueryService } from '../../../core/services/query.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 import { Store, Select } from '@ngxs/store';
-import { AuthState } from '../../../shared/state/auth.state';
 import { skip } from 'rxjs/operators';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
@@ -35,6 +34,7 @@ import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { AppConfigService } from '../../../core/services/config.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -104,7 +104,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.app-dashboard') private hostClass = true;
 
-    @Select(AuthState.getAuth) auth$: Observable<string>;
     @Select(DBSettingsState.getDashboardSettings) dbSettings$: Observable<any>;
     @Select(DbfsState.getUserFolderData()) userFolderData$: Observable<any>;
     @Select(DBState.getDashboardFriendlyPath) dbPath$: Observable<string>;
@@ -279,6 +278,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     newFromClipboard: boolean = false;
     newFromClipboardItems: any[] = [];
+    readonly = true;
 
     constructor(
         private store: Store,
@@ -302,7 +302,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dataShare: DataShareService,
         private iiService: InfoIslandService,
         private localStorageService: LocalStorageService,
-        private appConfig: AppConfigService
+        private appConfig: AppConfigService,
+        private auth : AuthService
     ) { }
 
     ngOnInit() {
@@ -310,6 +311,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // this.store.dispatch(new LoadUserNamespaces());
 
         this.urlOverrideService.initialize();
+        this.readonly = this.appConfig.getConfig().readonly;
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
@@ -331,6 +333,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.newWidget = null;
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
+                if ( this.readonly ) {
+                    this.router.navigate(['error']);
+                 }
                 // CHECK if New from clipboard
                 if (this.newFromClipboard) {
                     this.store.dispatch(new LoadDashboard(this.dbid, this.newFromClipboardItems));
@@ -1018,7 +1023,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             // close the clipboard
             if (mode === 'explore' || mode === 'edit') {
-                if (this.clipboardMenu.getDrawerState() === 'opened') {
+                if (this.clipboardMenu && this.clipboardMenu.getDrawerState() === 'opened') {
                     this.clipboardMenu.toggleDrawerState({});
                 }
             }
@@ -1139,12 +1144,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
-        // NOTE: we do nothing with this subscription... do we need it?
-        this.subscription.add(this.auth$.subscribe(auth => {
-            if (auth === 'invalid') {
-                // do something?
-            }
-        }));
 
         // skip the first time this drawer loaded
         this.subscription.add(this.drawerOpen$.pipe(skip(1)).subscribe(sideNav => {

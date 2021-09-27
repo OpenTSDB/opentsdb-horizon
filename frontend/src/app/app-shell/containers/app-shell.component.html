@@ -20,7 +20,7 @@
 
     <mat-sidenav-container class="app-navigator" fxFlex="1 1 100%" hasBackdrop="false">
         <!-- the sidebar nav that slides out from left -->
-        <mat-sidenav class="app-sidenav"
+        <mat-sidenav class="app-sidenav" 
             [fixedInViewport]="true"
             [fixedTopGap]="sideNavTopGap"
             mode="side"
@@ -32,6 +32,7 @@
                 [activeNav]="{'section': activeNavSection}"
                 [drawerOpen]="drawerOpened"
                 [mediaQuery]="activeMediaQuery"
+                [readonly]="readonly"
                 [adminMember]="isAdminMember"></app-navigator-sidenav>
         </mat-sidenav>
         <!-- where the rest of the app gets output -->

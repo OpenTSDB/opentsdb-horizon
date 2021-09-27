@@ -40,6 +40,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
 
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
     @ViewChild('container') private container: ElementRef;

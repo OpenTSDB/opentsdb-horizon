@@ -116,6 +116,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     @Input() batchSelector: boolean = false;
 
     @Input() batchSelected: boolean = false;
+    @Input() readonly = true;
 
     constructor(
         private widgetService: WidgetService,
