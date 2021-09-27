@@ -37,6 +37,7 @@ export class NavigatorSidenavComponent implements OnInit {
 
     @Input() adminMember: boolean = false;
     @Input() activeNav: any = {};
+    @Input() readonly = true;
     @Output() activeNavChange: EventEmitter<any> = new EventEmitter();
 
     // tslint:disable-next-line:no-inferrable-types

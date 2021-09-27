@@ -53,6 +53,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     @Input() widget: WidgetModel;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
     @Output() widgetOut = new EventEmitter<any>();
 
     @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;

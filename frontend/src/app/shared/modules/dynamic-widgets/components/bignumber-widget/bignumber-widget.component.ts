@@ -42,6 +42,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     /** Inputs */
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
     @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
 
     Object = Object;
