@@ -44,7 +44,7 @@
                     </button>
                     <!-- snapshot button -->
                     <button mat-icon-button class="snapshot-icon"
-                        *ngIf="widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
+                        *ngIf="!readonly && widget.settings.component_type !== 'PlaceholderWidgetComponent' && widget.settings.component_type !== 'EventsWidgetComponent' && widget.settings.component_type !== 'MarkdownWidgetComponent'"
                         (click)="saveSnapshot()"
                         matTooltip="Snapshot">
                         <mat-icon fontSet="denali" fontIcon="d-camera" ></mat-icon>
@@ -57,7 +57,7 @@
                         <mat-icon fontSet="denali" fontIcon="d-expand-fullscreen" ></mat-icon>
                     </button>
                     <!-- 3-dot menu button-->
-                    <button mat-icon-button class="widget-menu-trigger"
+                    <button mat-icon-button class="widget-menu-trigger" *ngIf="!readonly"
                         [matMenuTriggerFor]="widgetMenu"
                         matTooltip="More options">
                         <mat-icon fontSet="denali" fontIcon="d-more-horizontal"></mat-icon>

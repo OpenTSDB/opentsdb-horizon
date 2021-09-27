@@ -59,6 +59,7 @@ import {
 import { filter, map } from 'rxjs/operators';
 import { ThemeService } from '../services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-shell',
@@ -123,6 +124,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     private routedApp: any = '';
 
     clipboardAvailable = false;
+    readonly = environment.readonly;
 
     constructor(
         private interCom: IntercomService,
@@ -134,6 +136,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         @Inject(DOCUMENT) private document: any
     ) {
 
+        if ( this.readonly ) return;
         // prefetch the navigator first data
         this.store.dispatch(new DbfsLoadResources()).pipe(
             map(rs => {
@@ -246,6 +249,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
 
+        if ( this.readonly ) return;
         this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
             this.setAppTheme(theme);
         }));

@@ -312,7 +312,7 @@
                                             </div>
                                             <div class="sentence-item">
                                                     <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
-                                                    <div>breach(s) the above thresholds {{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? ' and a value is reported every' : ''}}</div>
+                                                    <div>breach(es) the above thresholds {{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? ' and a value is reported every' : ''}}</div>
                                             </div>
 
                                             <div class="sentence-item" *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">

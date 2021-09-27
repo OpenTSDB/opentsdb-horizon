@@ -53,6 +53,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() widget: WidgetModel;
   @Input() mode = 'view'; // view/explore/edit
+  @Input() readonly = true;
 
   @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
   @ViewChild('widgetTitle') private widgetTitle: ElementRef;
