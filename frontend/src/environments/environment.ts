@@ -21,6 +21,6 @@
 // we use the app config from the server
 export const environment = {
   production: false,
-  readonly: true,
+  readonly: false,
   runtimeConfig: true
 };
