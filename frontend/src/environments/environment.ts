@@ -22,5 +22,5 @@
 export const environment = {
   production: false,
   readonly: true,
-  runtimeConfig: false
+  runtimeConfig: true
 };
