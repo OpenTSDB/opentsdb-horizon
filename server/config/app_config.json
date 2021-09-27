@@ -1,6 +1,7 @@
 {
     "name"  : "OpenTSDB",
     "production": true,
+    "readonly": false,
     "queryParams": null,
     "debugLevel": "ERROR",
     "uiBranding": {
