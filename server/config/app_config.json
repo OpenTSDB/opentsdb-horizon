@@ -60,5 +60,11 @@
     "namespace": {
         "enabled": false,
         "default": "_default"
+    },
+    "auth": {
+        "loginURL": "/login",
+        "heartbeatURL": "/heartbeat",
+        "heartbeatImgURL": "/heartbeatimg",
+        "heartbeatInterval": 600
     }
 }
