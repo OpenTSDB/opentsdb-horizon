@@ -59,12 +59,10 @@ export class AuthService {
         const authConfig = this.appConfig.getConfig().auth;
         self.store.dispatch(new SetAuth('unknown'));
         if ( authConfig.heartbeatURL ) {
-            console.log("getCookiestatus=", authConfig.heartbeatURL);
             return this.http.get( authConfig.heartbeatURL )
                 .pipe(
                     map(
                         (res) => {
-                            console.log("status success", heartbeat, res)
                             if ( !heartbeat ) {
                                 self.store.dispatch(new SetAuth('valid'));
                             }
