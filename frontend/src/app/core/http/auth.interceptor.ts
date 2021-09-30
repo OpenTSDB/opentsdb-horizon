@@ -22,6 +22,7 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { AppConfigService } from '../services/config.service';
 import { Subject, Observable, throwError } from 'rxjs';
 import { tap, switchMap, catchError } from 'rxjs/operators';
 
@@ -35,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
     loginCheckSource = new Subject();
     loginChecked$ = this.loginCheckSource.asObservable();
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private appConfig: AppConfigService) {}
 
     /*
         handles more than one call to the login check.
@@ -71,14 +72,14 @@ export class AuthInterceptor implements HttpInterceptor {
                 // we don't want to do  authentication check on the url:/heartbeat
                 // url:/heartbeat is one that tells the failure is due to authentication
                 const url = error.url ? error.url : error.error.currentTarget.__zone_symbol__xhrURL;
-                if ( url.indexOf('/heartbeat') === -1 && error.status === 403 ) {
-
+                const authConfig = this.appConfig.getConfig().auth;
+                if ( url.indexOf('/config') === -1 && url.indexOf(authConfig.heartbeatURL) === -1 && error.status === 403 ) {
                     return this.checkLoginExpiration()
                         .pipe(
                             switchMap(
                                 (res) => {
                                     // re-try the request in case the cookie is renewed
-                                    if ( res === 'cookie-renewed' ) {
+                                    if ( res === 'cookie-renewed' || res === 'cookie-valid' ) {
                                         return next.handle(request);
                                     } else if (res === 'cookie-invalid') {
                                         // throw the authentication error
