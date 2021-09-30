@@ -69,19 +69,23 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         // interval for 1 min
         const authCheck = interval(60 * 1000);
-        this.authCheckSub = authCheck.subscribe(val => {
-            const now = new Date().getTime();
-            const lastHB = parseInt(localStorage.getItem('lastHeartBeat'), 10);
-            // only active tab and 10 mins ago
-            if (!document.hidden && (now - lastHB >= 600000)) {
-                return this.authService.getCookieStatus(true)
-                    .subscribe(
-                        (res) => {
-                            localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
-                        }
-                    );
-            }
-        });
+        const authConfig = this.configService.getConfig().auth; 
+        const heartbeatInverval = authConfig.heartbeatInterval !== undefined ? authConfig.heartbeatInterval * 1000 : 600000;
+        if ( heartbeatInverval > 0 ) {
+            this.authCheckSub = authCheck.subscribe(val => {
+                const now = new Date().getTime();
+                const lastHB = parseInt(localStorage.getItem('lastHeartBeat'), 10);
+                // only active tab and > heartbeatInverval 
+                if (!document.hidden && (now - lastHB >= heartbeatInverval)) {
+                    return this.authService.getCookieStatus(true)
+                        .subscribe(
+                            (res) => {
+                                localStorage.setItem('lastHeartBeat', new Date().getTime().toString());
+                            }
+                        );
+                }
+            });
+        }
     }
 
     ngOnDestroy() {
