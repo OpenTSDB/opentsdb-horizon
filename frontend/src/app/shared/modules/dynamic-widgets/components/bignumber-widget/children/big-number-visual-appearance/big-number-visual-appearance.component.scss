@@ -1,21 +1,21 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* WIDGET CONFIG COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// * WIDGET CONFIG COMPONENT */
 
 @mixin big-number-visual-appearance-component-base() {
 
@@ -103,7 +103,7 @@
                     }
                 }
             }
-            
+
         }
 
         .color-container {
@@ -111,7 +111,7 @@
             .color-picker-control {
                 width: 186px;
             }
-            
+
             .mat-button-toggle-group {
                 box-shadow: none;
                 border: none;
@@ -149,79 +149,70 @@
 
 @mixin big-number-visual-appearance-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $chip-bg: rgba(map-get($primary, default), .1);
+    @include variables-compatibility($theme-config) {
 
-    $input-background: map-get($primary, default);
+        $chip-bg: mat-color($primary, default, .1);
 
-    .big-number-visual-appearance {
-        /*.query-side-panel {
-            background-color: $chip-bg;
-        }*/
-    
-        .is-selected {
-            // background-color: map-get($background, background);
-            background-color: white;
-            border-left: 3px solid #18BDED;
-        }
+        $input-background: mat-color($primary, default);
 
-        .labels-container {
+        .big-number-visual-appearance {
 
-            .mat-button-toggle-group {
-                .mat-button-toggle {
-                    background-color: rgba($input-background, 0.08);
-                }
+            .is-selected {
+                background-color: white;
+                border-left: 3px solid #18BDED;
+            }
 
-                .mat-button-toggle-checked {
-                    background-color: rgba($input-background, 0.18);
-                    //color: mat-color($foreground, secondary-text);
-                }
-            
-                .mat-button-toggle-disabled {
-                    background-color: rgba($input-background, 0.08);
-                    //color: mat-color($foreground, disabled-button);
-                
-                    &.mat-button-toggle-checked {
-                        background-color: rgba($input-background, 0.14);
+            .labels-container {
+
+                .mat-button-toggle-group {
+                    .mat-button-toggle {
+                        background-color: mat-color($primary, default, 0.08);
+                    }
+
+                    .mat-button-toggle-checked {
+                        background-color: mat-color($primary, default, 0.18);
+                    }
+
+                    .mat-button-toggle-disabled {
+                        background-color: mat-color($primary, default, 0.08);
+
+                        &.mat-button-toggle-checked {
+                            background-color: mat-color($primary, default, 0.14);
+                        }
                     }
                 }
             }
+
+            .color-container {
+                .mat-button-toggle {
+                    border-bottom: 2px solid transparent;
+                    background-color: transparent;
+                    color: #18BDED;
+                    box-shadow: none;
+                }
+
+                .mat-button-toggle-checked {
+                    border-bottom: 2px solid  #18BDED;
+                    color: black;
+                }
+
+                .color-picker-container {
+                    border: 1px solid lightgrey;
+                }
+
+                .card {
+                    border-top: none;
+                }
+            }
         }
 
-        .color-container {
-            .mat-button-toggle {
-                border-bottom: 2px solid transparent;
-                background-color: transparent;
-                color: #18BDED;
-                box-shadow: none;
-            }
-
-            .mat-button-toggle-checked {
-                border-bottom: 2px solid  #18BDED;
-                color: black;
-            }
-
-            .color-picker-container {
-                border: 1px solid lightgrey;
-            }
-
-            .card {
-                border-top: none;
-            }
-        }
-    }
-
-    // CDK menu for custom unit
-    .custom-unit-menu-item {
-        background-color: $chip-bg;
-
-        .mat-menu-ripple {
+        // CDK menu for custom unit
+        .custom-unit-menu-item {
             background-color: $chip-bg;
+
+            .mat-menu-ripple {
+                background-color: $chip-bg;
+            }
         }
     }
 }

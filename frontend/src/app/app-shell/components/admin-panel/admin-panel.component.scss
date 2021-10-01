@@ -1,186 +1,108 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
 
-@mixin admin-panel-component-base() {
-    $navbar-height: map-get($navbar-config, 'navbar-height');
-    $logo-height: map-get($navbar-config, 'logo-height');
-    $admin-panel-min-width: 600px;
+ @import 'loader-component';
 
-    .admin-navigator {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
+$admin-panel-min-width: 600px;
+
+:host.admin-navigator {
+    width: $admin-panel-min-width;
+
+    .admin-panel {
         flex: 1;
-        font-weight: 300;
-        font-size: 12px;
-        width: $admin-panel-min-width;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+    }
 
-        .mat-icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
+    .admin-function-tabs {
+        flex: 1;
+    }
 
-            .mat-button-wrapper {
-                line-height: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+    .admin-function-tabs.mat-tab-group ::ng-deep {
+
+        .mat-tab-header {
+            .mat-tab-label {
+                height: 32px;
+                padding: 0 16px;
+                font-size: 12px;
             }
 
             .mat-icon {
-                line-height: 1;
-                width: 24px;
-                height: 24px;
-                font-size: 18px;
-                display: flex;
-                align-items: center;
+                @include sizeDenaliIcon(14px);
+                margin-right: 4px;
             }
         }
 
-        .panel-toolbar {
-            @include mat-elevation(0);
-            @include unselectable;
-
-            .nav-item {
-                display: flex;
-                align-items: center;
-            }
-
-            .panel-label {
-                cursor: pointer;
-
-                strong {
-                    font-weight: 400;
-                    font-size: 14px;
-                    text-transform: uppercase;
-                }
-            }
-
-            &.is-master-panel {
-
-                .panel-label {
-                    cursor: default;
-
-                    strong {
-                        text-transform: capitalize;
-                    }
-                }
-            }
-
-            &.mat-toolbar-multiple-rows,
-            &.mat-toolbar-single-row {
-                min-height: $navbar-height !important;
-                height: $navbar-height;
-            }
-        }
-
-        .admin-panel {
+        .mat-tab-body-wrapper {
             flex: 1;
-            position: relative;
-            overflow: hidden;
+            height: 100%;
+        }
+
+        .mat-tab-body {
+            padding: 0;
+        }
+
+        .mat-tab-body-content {
+            padding: 16px;
             display: flex;
-        }
-
-        .admin-function-tabs {
-            flex: 1;
-
-            .mat-tab-header {
-                .mat-tab-label {
-                    height: 32px;
-                    padding: 0 16px;
-                    font-size: 12px;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                    margin-right: 4px;
-                }
-            }
-
-            .mat-tab-body-wrapper {
-                flex: 1;
-                height: 100%;
-            }
-
-            .mat-tab-body {
-                padding: 0;
-            }
-
-            .mat-tab-body-content {
-                padding: 16px;
-                display: flex;
-            }
         }
     }
 }
 
-@mixin admin-panel-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
-    $status: map-get($theme-config, status);
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    /* navbar config */
-    $sn-light: map-get($navbar-config, sn-light);
-    $sn-dark: map-get($navbar-config, sn-dark);
-    $sn-light-text: map-get($navbar-config, sn-light-text);
-    $sn-dark-text: map-get($navbar-config, sn-dark-text);
-    $sn-seperator: map-get($navbar-config, sn-seperator);
-    $sn-active: map-get($navbar-config, sn-active);
-
-    $text-color: map-get($background, navbar);
-    $icon-color: $text-color;
-    $divider: map-get($foreground, divider);
-
-    $navbar-background: map-get($background, navbar);
-    $navbar-text: find-color-invert($navbar-background);
-
-    $menu-background: map-get($background, card);
-    $menu-background-hover: find-color-invert($menu-background);
-
-    $navbar-text-color: map-get($foreground, navbar-text);
-
-    .admin-navigator {
-
-        .admin-function-tabs.mat-tab-group {
+    :host.admin-navigator {
+        .admin-function-tabs.mat-tab-group ::ng-deep {
             .mat-tab-header {
-                background: if($is-dark-theme, rgba($text-color, .5), rgba($text-color, .1));
+                background: if(
+                    $is-dark,
+                    mat-color($background, navbar, .5),
+                    mat-color($background, navbar, .1)
+                );
 
                 .mat-tab-label {
-                    color: if($is-dark-theme, $navbar-text, $text-color);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text),
+                        mat-color($background, navbar)
+                    );
 
                     &.mat-tab-label-active {
                         opacity: 1;
-                        color: if($is-dark-theme, $navbar-text, $text-color);
+                        color: if(
+                            $is-dark,
+                            mat-color($foreground, navbar-text),
+                            mat-color($background, navbar)
+                        );
                     }
                 }
             }
 
             &.mat-primary {
                 .mat-ink-bar {
-                    background: $text-color;
+                    background: mat-color($background, navbar);
                 }
             }
         }
     }
+
 }
+
