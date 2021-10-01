@@ -1,0 +1,11 @@
+<p>
+  admin-namespaces works!
+</p>
+
+<mat-nav-list>
+    <a mat-list-item
+        [routerLink]="'/admin/namespace/'+link.path"
+        *ngFor="let link of testSubLinks; let i = index;">
+        {{ link.label }} [{{i}}]
+    </a>
+ </mat-nav-list>

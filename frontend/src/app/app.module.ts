@@ -27,6 +27,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { MaterialModule } from './shared/modules/material/material.module';
 import { AppRoutingModule } from './app-routing.module';
+import { ThemeModule } from './shared/modules/theme/theme.module';
 
 // store
 import { NgxsModule } from '@ngxs/store';
@@ -87,6 +88,7 @@ export class CustomUrlSerializer implements UrlSerializer {
     MaterialModule,
     // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: false }),
     AppRoutingModule,
+    ThemeModule,
     NgxsModule.forRoot([AuthState], { developmentMode: false }),
     NgxsLoggerPluginModule.forRoot(),
     AdminModule,

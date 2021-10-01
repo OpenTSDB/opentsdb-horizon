@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 $available-palettes:
     'auto',
     'blues',
@@ -258,7 +259,7 @@ $available-palettes:
                         align-items: center;
                         padding: 0 4px;
                         background: rgba($white, .8);
-                        color: black;
+                        color: black; // TODO: plug into theme
                     }
                 }
 
@@ -284,8 +285,8 @@ $available-palettes:
             }
 
             .palette-item:hover {
-                //border: 2px solid blue;
-                box-shadow:inset 0 0 0 2px blue;
+                //border: 2px solid blue; // TODO: plug into theme
+                box-shadow:inset 0 0 0 2px blue; // TODO: plug into theme
             }
         }
 
@@ -319,13 +320,13 @@ $available-palettes:
         .btn-single-color {
             width: 26px;
             height: 26px;
-            border: 1px solid #aaa;
+            border: 1px solid #aaa; // TODO: plug into theme
             min-width: 26px;
             padding: 0px;
             margin-right: 4px;
             box-sizing: initial;
             &.selected {
-                border: 2px solid #448aff;
+                border: 2px solid #448aff; // TODO: plug into theme
             }
 
             .mat-icon {
@@ -386,57 +387,52 @@ $available-palettes:
 
 @mixin color-picker-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
-    .color-picker-component {
+        .color-picker-component {
 
-        .color-picker-flex {
-            background-color: rgba(map-get($primary, default), 0.08)
-        }
+            .color-picker-flex {
+                background-color: mat-color($primary, default, 0.08)
+            }
 
-        .select-arrow-wrapper {
-            .select-arrow {
-                color: map-get($foreground, secondary-text);
+            .select-arrow-wrapper {
+                .select-arrow {
+                    color: mat-color($foreground, secondary-text);
+                }
+            }
+
+            ///// OLD STYLES /////
+            .mat-raised-button {
+                background: #F3F6FE; // TODO: plug into theme
             }
         }
 
-        ///// OLD STYLES /////
-        .mat-raised-button {
-            background: #F3F6FE;
-        }
-    }
+        // CDK OVERLAY ITEM / EMBEDDED CONTROL
+        .color-picker-component-control {
+            &.card {
+                background: mat-color($background, menu);
+                border-top: 2px solid mat-color($primary, default);
+            }
 
-    // CDK OVERLAY ITEM / EMBEDDED CONTROL
-    .color-picker-component-control {
-        &.card {
-            background: map-get($background, menu);
-            border-top: 2px solid map-get($primary, default);
-        }
+            .grey-outline {
+                //for white color on palette
+                border: 2px solid if($is-dark, transparent, lightgray); // TODO: plug into theme
+            }
 
-        .grey-outline {
-            //for white color on palette
-            border: 2px solid if($is-dark, transparent, lightgray);
-        }
+            .isSelected {
+                border: 2px solid mat-color($primary, default);
+            }
 
-        .isSelected {
-            border: 2px solid map-get($primary, default);
-        }
+            .toggle {
+                border-top: 1px solid mat-color($foreground, divider);
+                color: mat-color($primary, default);
+            }
 
-        .toggle {
-            border-top: 1px solid map-get($foreground, divider);
-            color: map-get($primary, default);
-        }
-
-        .palette-container {
-            .palette-item:hover,
-            .palette-item.selected {
-                border: 2px solid map-get($primary, default);
+            .palette-container {
+                .palette-item:hover,
+                .palette-item.selected {
+                    border: 2px solid mat-color($primary, default);
+                }
             }
         }
     }

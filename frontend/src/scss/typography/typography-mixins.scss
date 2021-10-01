@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin setBaseFontSize($base: 14px) {
     @at-root {
         html {
@@ -28,7 +29,7 @@
     $fonts: map-get($config, fonts);
 
     @each $font-tyle, $font-config in $fonts {
-    
+
         $style: map-get($font-config, style);
         $weight: map-get($font-config, weight);
         $local: map-get($font-config, local);
@@ -36,8 +37,8 @@
         $file-prefix: map-get($font-config, file-prefix);
         $woff-path: '#{$font-path}/#{$file-prefix}.woff';
         $woff2-path: '#{$font-path}/#{$file-prefix}.woff2';
-        
-    
+
+
         /* #{$family} - #{$weight} #{$style} */
         @font-face {
             font-family: $family;
@@ -70,7 +71,7 @@
     $body-1:        mat-typography-level(14px, 20px, map-get($weight-maps, regular));
     $caption:       mat-typography-level(12px, 20px, map-get($weight-maps, regular));
     $button:        mat-typography-level(14px, 14px, map-get($weight-maps, medium));
-    
+
 
     /*
     $display-4:     mat-typography-level(8rem, 8rem, map-get($weight-maps, light));

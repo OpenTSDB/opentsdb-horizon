@@ -1,23 +1,26 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * COMMON STYLES APPLIED APP WIDE
- * ALSO INCLUDES SOME COMMON OVERRIDES TO MATERIAL
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * COMMON STYLES APPLIED APP WIDE
+// * ALSO INCLUDES SOME COMMON OVERRIDES TO MATERIAL
+// *
+// TODO: refactor this. Looks like it could go in global common
+
 @mixin app-common-base() {
 
     // html,
@@ -816,7 +819,7 @@
     }
 
     .markdown-body ol ol,
-    .markdown-body ul ol, 
+    .markdown-body ul ol,
     .markdown-body ul ul {
         list-style-type: circle;
     }
@@ -1431,248 +1434,238 @@
 }
 
 @mixin app-common-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
 
+        $divider: mat-color($foreground, divider);
+        // * SCROLLBAR STYLING
+        // @include app-scrollbar($theme-config);
 
-    $divider: map-get($foreground, divider);
-    /* SCROLLBAR STYLING */
-    // @include app-scrollbar($theme-config);
+        $primary-default: mat-color($primary, default);
+        $text: mat-color($foreground, text);
 
-    $primary-default: map-get($primary, default);
-    $text: map-get($foreground, text);
+        // * GRIDSTER OVERRIDES
 
-    /* GRIDSTER OVERRIDES */
-
-    .gridster-item-prototype {
-        background-color: map-get($primary, darker);
-    }
-
-    .gridster-container {
-        .position-highlight {
-            .inner {
-                @include mat-elevation(3);
-                background-color: map-get($background, gridster-highlight);
-                border: 1px solid transparent;
-            }
+        .gridster-item-prototype {
+            background-color: mat-color($primary, darker);
         }
-    }
 
-    .gridster-item {
-
-        &.is-dragging {
-            .gridster-item-inner {
-                @include mat-elevation(10);
-            }
-        }
-    }
-
-    /* MATERIAL OVERRIDES */
-
-    // CDK items are outside of component namespace class - be sure to give them very unique names
-    .mat-menu-panel {
-        background-color: map-get($background, menu);
-
-        .mat-menu-item.is-active {
-            .mat-icon {
-                color: map-get($accent, default);
+        .gridster-container {
+            .position-highlight {
+                .inner {
+                    @include mat-elevation(3);
+                    background-color: mat-color($background, gridster-highlight);
+                    border: 1px solid transparent;
+                }
             }
         }
 
-    }
+        .gridster-item {
 
-    .mat-autocomplete-panel {
-        background-color: map-get($background, menu);
-    }
-
-    .mat-tab-group.mat-primary .mat-ink-bar,
-    .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-        background: map-get($background, ink-bar);
-    }
-
-    .mat-datepicker-content {
-        border: 1px solid map-get($accent, default);
-        background-color: map-get($background, menu);
-    }
-
-    // Mat Form Field
-    .mat-form-field {
-        &.mat-form-field-appearance-fill {
-            .mat-form-field-flex  {
-                // background-color: rgba($primary-default, 0.08);
-                background-color: transparent;
+            &.is-dragging {
+                .gridster-item-inner {
+                    @include mat-elevation(10);
+                }
             }
+        }
 
-            // remove the underline... inkbar will show on focus
-            // make it transparent, because there is some sort of animation
-            .mat-form-field-underline::before {
-                //background-color: rgba(0,0,0,0); // this is transparent
-                background-color: rgba($text, .2);
+        // * MATERIAL OVERRIDES
+
+        // CDK items are outside of component namespace class - be sure to give them very unique names
+        .mat-menu-panel {
+            background-color: mat-color($background, menu);
+
+            .mat-menu-item.is-active {
+                .mat-icon {
+                    color: mat-color($accent, default);
+                }
             }
+        }
 
-            &:hover:not(.mat-focused) {
-                .mat-form-field-flex {
-                    background-color: rgba($primary-default, .08);
+        .mat-autocomplete-panel {
+            background-color: mat-color($background, menu);
+        }
+
+        .mat-tab-group.mat-primary .mat-ink-bar,
+        .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+            background: mat-color($background, ink-bar);
+        }
+
+        .mat-datepicker-content {
+            border: 1px solid mat-color($accent, default);
+            background-color: mat-color($background, menu);
+        }
+
+        // Mat Form Field
+        .mat-form-field {
+            &.mat-form-field-appearance-fill {
+                .mat-form-field-flex  {
+                    // background-color: mat-color($primary, default, 0.08);
+                    background-color: transparent;
                 }
 
-                .mat-form-field-underline {
-                    // background-color: rgba(0,0,0,0); // this is transparent
-                    background-color: $primary-default;
+                // remove the underline... inkbar will show on focus
+                // make it transparent, because there is some sort of animation
+                .mat-form-field-underline::before {
+                    //background-color: rgba(0,0,0,0); // this is transparent
+                    background-color: mat-color($foreground, text, .2);
+                }
 
-                    .mat-form-field-ripple {
-                        background-color: rgba($primary-default, 0.3);
+                &:hover:not(.mat-focused) {
+                    .mat-form-field-flex {
+                        background-color: mat-color($primary, default, .08);
+                    }
+
+                    .mat-form-field-underline {
+                        // background-color: rgba(0,0,0,0); // this is transparent
+                        background-color: $primary-default;
+
+                        .mat-form-field-ripple {
+                            background-color: mat-color($primary, default, 0.3);
+                        }
+                    }
+                }
+
+                &.mat-focused,
+                &:hover {
+                    // @include mat-elevation(1);
+
+                    .mat-form-field-flex {
+                        background-color: mat-color($primary, default, .08);
                     }
                 }
             }
 
-            &.mat-focused,
-            &:hover {
-                // @include mat-elevation(1);
+            &.mat-form-field-appearance-fill.noticeable-field {
+                .mat-form-field-flex  {
+                    background-color: mat-color($primary, default, 0.05);
+                }
 
-                .mat-form-field-flex {
-                    background-color: rgba($primary-default, .08);
+                &:hover:not(.mat-focused) {
+                    .mat-form-field-flex {
+                        background-color: mat-color($primary, default, .08);
+                    }
                 }
             }
-        }
 
-        &.mat-form-field-appearance-fill.noticeable-field {
-            .mat-form-field-flex  {
-                background-color: rgba($primary-default, 0.05);
-            }
-
-            &:hover:not(.mat-focused) {
-                .mat-form-field-flex {
-                    background-color: rgba($primary-default, .08);
+            &.mat-form-field-legacy {
+                .mat-form-field-underline {
+                    background-color: rgba($black,0); // this is transparent
                 }
             }
-        }
-
-        &.mat-form-field-legacy {
-            .mat-form-field-underline {
-                background-color: rgba(0,0,0,0); // this is transparent
-            }
-        }
 
 
-        &.mat-form-field-appearance-outline {
-            .mat-form-field-outline,
-            .mat-form-field-outline-thick {
-                color: rgba(map-get($primary, default), 0.60);
-            }
-
-            &.mat-focused {
+            &.mat-form-field-appearance-outline {
                 .mat-form-field-outline,
                 .mat-form-field-outline-thick {
-                    color: rgba(map-get($primary, default), 0.60);
+                    color: mat-color($primary, default, 0.60);
+                }
+
+                &.mat-focused {
+                    .mat-form-field-outline,
+                    .mat-form-field-outline-thick {
+                        color: mat-color($primary, default, 0.60);
+                    }
                 }
             }
+
         }
 
-    }
+        // * loading spinner
+        $default-color: if($is-dark, $white, $black);
 
-    /* loading spinner */
-    $default-color: if($is-dark, #ffffff, #000000);
+        .loading-spinner {
+            border-top-color: rgba($default-color, 0.2);
+            border-right-color: rgba($default-color, 0.2);
+            border-bottom-color: rgba($default-color, 0.2);
+            border-left-color: $default-color;
 
-    .loading-spinner {
-        border-top-color: rgba($default-color, 0.2);
-        border-right-color: rgba($default-color, 0.2);
-        border-bottom-color: rgba($default-color, 0.2);
-        border-left-color: $default-color;
-
-        &.color-primary {
-            border-top-color: rgba(map-get($primary, default), 0.2);
-            border-right-color: rgba(map-get($primary, default), 0.2);
-            border-bottom-color: rgba(map-get($primary, default), 0.2);
-            border-left-color: map-get($primary, default);
-        }
-
-        &.color-accent {
-            border-top-color: rgba(map-get($accent, default), 0.2);
-            border-right-color: rgba(map-get($accent, default), 0.2);
-            border-bottom-color: rgba(map-get($accent, default), 0.2);
-            border-left-color: map-get($accent, default);
-        }
-
-        &.color-warn {
-            border-top-color: rgba(map-get($warn, default), 0.2);
-            border-right-color: rgba(map-get($warn, default), 0.2);
-            border-bottom-color: rgba(map-get($warn, default), 0.2);
-            border-left-color: map-get($warn, default);
-        }
-    }
-
-    .gif-spinner {
-        background-color: rgba(map-get($background, card), .8);
-    }
-
-    /** scrollbar base **/
-
-    $scrollbar: map-get($theme-config, scrollbar);
-
-    $scrollbar-padding: map-get($scrollbar, padding);
-    $scrollbar-size: map-get($scrollbar, size);
-    $scrollbar-radius: $scrollbar-size / 2;
-    $scrollbar-track-bg: map-get($scrollbar, track-bg);
-    $scrollbar-track-border: map-get($scrollbar, track-border);
-    $scrollbar-thumb-bg: map-get($scrollbar, thumb-bg);
-
-    * {
-        // this is the trick to hide the scrollbar
-        &::-webkit-scrollbar {
-            background: transparent;
-
-            &:vertical {
-                width: 0;
+            &.color-primary {
+                border-top-color: mat-color($primary, default, 0.2);
+                border-right-color: mat-color($primary, default, 0.2);
+                border-bottom-color: mat-color($primary, default, 0.2);
+                border-left-color: map-get($primary, default);
             }
 
-            &:horizontal {
-                height: 0;
+            &.color-accent {
+                border-top-color: mat-color($accent, default, 0.2);
+                border-right-color: mat-color($accent, default, 0.2);
+                border-bottom-color: mat-color($accent, default, 0.2);
+                border-left-color: map-get($accent, default);
+            }
+
+            &.color-warn {
+                border-top-color: mat-color($warn, default, 0.2);
+                border-right-color: mat-color($warn, default, 0.2);
+                border-bottom-color: mat-color($warn, default, 0.2);
+                border-left-color: map-get($warn, default);
             }
         }
 
-        &::-webkit-scrollbar-corner {
-            // may change this depending on how it looks in different themes
-            background-color: transparent;
+        .gif-spinner {
+            background-color: mat-color($background, card, .8);
         }
 
-        &::-webkit-scrollbar-thumb {
-            border-radius: $scrollbar-radius;
-            background-color: $scrollbar-thumb-bg; // default color
-            border: ($scrollbar-padding * 2) solid rgba(0, 0, 0, 0); // transparent - gives spacing around thumb
-            background-clip: padding-box; // needed to enforce spacing of transparent border
-        }
+        // * scrollbar base
 
-        &::-webkit-scrollbar-track {
-            //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-            border-radius: 0;
-            //background-color: $scrollbar-track-bg;
-            //border: 1px solid $scrollbar-track-border;
-        }
+        $scrollbar-padding: map-get($scrollbar, padding);
+        $scrollbar-size: map-get($scrollbar, size);
+        $scrollbar-radius: map-get($scrollbar, size);
+        $scrollbar-track-bg: map-get($scrollbar, color, map-get($scrollbar, track-bg-alpha));
+        $scrollbar-track-border: map-get($scrollbar, color, map-get($scrollbar, track-border-alpha));
+        $scrollbar-thumb-bg: map-get($scrollbar, color, map-get($scrollbar, thumb-bg-alpha));
 
-        // show the scrollbar on hover
-        &:hover {
+        * {
+            // this is the trick to hide the scrollbar
             &::-webkit-scrollbar {
+                background: transparent;
+
                 &:vertical {
-                    width: $scrollbar-size !important;
+                    width: 0;
                 }
 
                 &:horizontal {
-                    height: $scrollbar-size !important;
+                    height: 0;
+                }
+            }
+
+            &::-webkit-scrollbar-corner {
+                // may change this depending on how it looks in different themes
+                background-color: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border-radius: $scrollbar-radius;
+                background-color: $scrollbar-thumb-bg; // default color
+                border: ($scrollbar-padding * 2) solid rgba($black, 0); // transparent - gives spacing around thumb
+                background-clip: padding-box; // needed to enforce spacing of transparent border
+            }
+
+            &::-webkit-scrollbar-track {
+                //-webkit-box-shadow: inset 0 0 6px rgba($black, .3);
+                border-radius: 0;
+                //background-color: $scrollbar-track-bg;
+                //border: 1px solid $scrollbar-track-border;
+            }
+
+            // show the scrollbar on hover
+            &:hover {
+                &::-webkit-scrollbar {
+                    &:vertical {
+                        width: $scrollbar-size !important;
+                    }
+
+                    &:horizontal {
+                        height: $scrollbar-size !important;
+                    }
                 }
             }
         }
-    }
 
-    @-moz-document url-prefix() {
-        * {
-            scrollbar-color: $scrollbar-thumb-bg $scrollbar-track-bg; /* thumb and track color */
-            scrollbar-width: $scrollbar-size;
+        @-moz-document url-prefix() {
+            * {
+                scrollbar-color: $scrollbar-thumb-bg $scrollbar-track-bg; /* thumb and track color */
+                scrollbar-width: $scrollbar-size;
+            }
         }
     }
-
 }

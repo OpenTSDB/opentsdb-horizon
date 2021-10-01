@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin help-links-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -62,22 +63,20 @@
 }
 
 @mixin help-links-component-theme($theme-config) {
+    @include variables-compatibility($theme-config) {
+        $theme-name: map-get($theme-config, theme-name);
+        $cssVarMap: get-theme-css-variables($theme-name);
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $status: map-get($theme-config, status);
-    $is-dark: map-get($theme-config, is-dark);
+        // TODO: navbar color needs more variations is seems
+        $navbar-bg: _mat-convert-variable-to-color(map-get($background, navbar), $cssVarMap);
 
-    .mat-raised-button {
-        background-color: darken(map-get($background, navbar), 4%);
-        color: map-get($foreground, navbar-text);
+        .mat-raised-button {
+            background-color: darken($navbar-bg, 4%);
+            color: mat-color($foreground, navbar-text);
 
-        &:hover {
-            background-color: lighten(map-get($background, navbar), 8%);
+            &:hover {
+                background-color: lighten($navbar-bg, 8%);
+            }
         }
     }
 }

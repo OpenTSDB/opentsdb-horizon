@@ -1,21 +1,21 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* WIDGET CONFIG COMPONENT */
-// TODO: Describe how this is setup & why there are two mixins (at a minimum)
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// * WIDGET CONFIG COMPONENT */
 
 @mixin metric-autocomplete-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
@@ -155,69 +155,40 @@
 }
 
 @mixin metric-autocomplete-component-theme($theme-config) {
+    @include variables-compatibility($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $status: map-get($theme-config, status);
-    $is-dark: map-get($theme-config, is-dark);
-    $chip-bg: rgba(map-get($primary, default), .1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, .2), rgba(0, 0, 0, .2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, .5), rgba(0, 0, 0, .5));
+        // CDK ITEMS - panel for "multiple" autocomplete
 
-    $widgets: map-get($theme-config, widgets);
+        .metric-autocomplete-cdk-panel.mat-menu-panel {
 
-    $card-background: map-get($background, card);
-    $divider: map-get($foreground, divider);
+            .metric-search-result {
 
-    $query-marker-bg: map-get($widgets, query-editor-marker);
-    $query-marker-text: map-get($widgets, query-editor-marker-text);
-    $query-block-bg: map-get($widgets, query-editor-block-bg);
-    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
-
-    .metric-autocomplete {
-
-
-
-    }
-
-    // CDK ITEMS - panel for "multiple" autocomplete
-
-    .metric-autocomplete-cdk-panel.mat-menu-panel {
-
-        .metric-search-result {
-
-            .list-all {
-                border-right: 1px solid map-get($foreground, divider);
-            }
-
-            .mat-list.mat-list-base {
-
-
-
-                .mat-list-item-content {
-                    .mat-icon {
-                        color: map-get($foreground, link);
-                    }
+                .list-all {
+                    border-right: 1px solid mat-color($foreground, divider);
                 }
 
-                .mat-list-item {
-                    &.is-selected {
-                        background-color: rgba(map-get($foreground, link), .08);
-
+                .mat-list.mat-list-base {
+                    .mat-list-item-content {
                         .mat-icon {
-                            color: map-get($status, error);
+                            color: mat-color($foreground, link);
+                        }
+                    }
+
+                    .mat-list-item {
+                        &.is-selected {
+                            background-color: mat-color($foreground, link, .08);
+
+                            .mat-icon {
+                                color: mat-color($other, status-error);
+                            }
                         }
                     }
                 }
-            }
 
-            .list-selected {
-                .selected-header {
-                    border-bottom: 1px solid map-get($foreground, divider);
+                .list-selected {
+                    .selected-header {
+                        border-bottom: 1px solid mat-color($foreground, divider);
+                    }
                 }
             }
         }

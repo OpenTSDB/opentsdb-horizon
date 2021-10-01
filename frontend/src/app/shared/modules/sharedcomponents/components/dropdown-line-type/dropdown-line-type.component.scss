@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin dropdown-line-type-component-base() {
     .dropdown-line-type {
         display: inline-block;
@@ -59,29 +60,25 @@
 }
 
 @mixin dropdown-line-type-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $success: map-get($theme-config, success);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
+        $theme-name: map-get($theme-config, theme-name);
+        $cssVarMap: get-theme-css-variables($theme-name);
 
-    $line-selected-color: map-get($foreground, link);
-    $line-normal-color: map-get($foreground, text);
+        $line-selected-color-raw: _mat-convert-variable-to-color(map-get($foreground, link), $cssVarMap);
+        $line-normal-color-raw: _mat-convert-variable-to-color(map-get($foreground, text), $cssVarMap);
 
-    .dropdown-line-type {
-        @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
-        @include dropdown-line-type-preview-theme($line-normal-color, $line-selected-color);
-    }
+        .dropdown-line-type {
+            @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
+            @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
+        }
 
-    // CDK ITEMS
-    .dropdown-line-type-options {
-        .mat-select-content {
-            .mat-option {
-                @include vertical-button-toggle-override($line-normal-color, $line-selected-color);
-                @include dropdown-line-type-preview-theme($line-normal-color, $line-selected-color);
+        // CDK ITEMS
+        .dropdown-line-type-options {
+            .mat-select-content {
+                .mat-option {
+                    @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
+                    @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
+                }
             }
         }
     }

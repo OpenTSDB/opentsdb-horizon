@@ -31,6 +31,7 @@ import { DashboardService } from '../../../../../dashboard/services/dashboard.se
     // tslint:disable-next-line: component-selector
     selector: 'clipboard-drawer',
     templateUrl: './clipboard-drawer.component.html',
+    styleUrls: ['./clipboard-drawer.component.scss'],
     animations: [
         trigger('toggleDrawer', [
             state('closed', style({

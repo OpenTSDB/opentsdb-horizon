@@ -1,0 +1,85 @@
+// utility to add css-variables to document :root
+// with theme compatibility
+//
+// based on _mat-css-root from angular-css-vars
+// see: https://github.com/zbirizdo/material-css-vars
+@mixin root-variables($varMap: null, $theme-name: null) {
+
+    $defaultCheck: to-lower-case($theme-name);
+
+    @if ($theme-name and $defaultCheck != 'default') {
+        //@at-root :root .#{$theme-name}-theme,
+        @at-root :root [theme="#{$theme-name}"] {
+            @each $varName, $varValue in $varMap {
+                @if (type_of($varValue) == string) {
+                    #{$varName}: $varValue;
+                } @else {
+                    #{$varName}: #{$varValue};
+                }
+            }
+        }
+    } @else {
+        @at-root :root {
+            @each $varName, $varValue in $varMap {
+                @if (type_of($varValue) == string) {
+                    #{$varName}: $varValue;
+                } @else {
+                    #{$varName}: #{$varValue};
+                }
+            }
+        }
+    }
+}
+
+@mixin init-mat-theme($theme-name) {
+    $defaultCheck: to-lower-case($theme-name);
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    // set global variable so passed-in content can use the theme
+    $mat-css-theme: $light-theme !global;
+
+    @if ($theme-name and $defaultCheck != 'default') {
+        // OTHER THEMES
+        //@at-root .#{$theme-name}-theme,
+        @at-root [theme="#{$theme-name}"] {
+            &[variant="light"] {
+                @include angular-material-theme($light-theme);
+                @include generate-app-theme($light-theme); // TODO: remove this after moving to new style system
+                @content;
+            }
+
+            @if $dark-theme-selector {
+                $mat-css-theme: $dark-theme !global;
+                //&#{$dark-theme-selector},
+                &[variant="dark"] {
+                    @include angular-material-theme($dark-theme);
+                    @include generate-app-theme($dark-theme); // TODO: remove this after moving to new style system
+                    @content;
+                }
+            }
+        }
+    } @else {
+        // DEFAULT theme
+        @at-root {
+            @include angular-material-theme($light-theme);
+            @include generate-app-theme($light-theme); // TODO: remove this after moving to new style system
+            @content;
+
+            @if $dark-theme-selector {
+                $mat-css-theme: $dark-theme !global;
+                //#{$dark-theme-selector},
+                [variant="dark"] {
+                    @include angular-material-theme($dark-theme);
+                    @include generate-app-theme($dark-theme); // TODO: remove this after moving to new style system
+                    @content;
+                }
+            }
+        }
+    }
+
+    // reset
+    $mat-css-theme: null !global;
+}
+
