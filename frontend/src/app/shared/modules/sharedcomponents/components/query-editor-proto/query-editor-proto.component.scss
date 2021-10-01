@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin query-editor-proto-component-base() {
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-padding: map-get($widgets-common-config, edit-padding);
@@ -105,7 +106,7 @@
                     padding: 0 2px;
                     display: flex;
                     align-items: center;
-                    background-color: rgba(255,255,255,.4);
+                    background-color: rgba(255,255,255,.4); // TODO: add to theme
                     cursor: pointer;
 
                     .mat-icon {
@@ -114,7 +115,7 @@
                     }
 
                     &:hover {
-                        background-color: rgba(255,255,255,.5);
+                        background-color: rgba(255,255,255,.5); // TODO: add to theme
                     }
                 }
 
@@ -125,11 +126,6 @@
                     min-width: 100%;
                     font-size: 12px;
                     line-height: 12px;
-                    //color: white; // TODO: add to theme
-                    //background: rgba(255, 255, 255, 0.25); // TODO: add to theme
-                    //padding: 2px 8px;
-                    //border-radius: 8px;
-                    //cursor: pointer;
                     display: flex;
 
                     .query-alias-text {
@@ -1356,500 +1352,206 @@
     }
 }
 
+// TODO: This mixin needs a major rehaul to get it to use theme values.
+// There are too many raw values added in this mixin only
+
 @mixin query-editor-proto-component-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark: map-get($theme-config, is-dark);
-    $dbfilter: map-get($theme-config, dashboard-filters);
+    $theme-name: map-get($theme-config, theme-name);
+    $cssVarMap: get-theme-css-variables($theme-name);
 
-    $chip-bg: rgba(map-get($primary, default), 0.1);
-    $alias-bg: if($is-dark, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
-    $alias-text: if($is-dark, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.5));
+    @include variables-compatibility($theme-config) {
 
-    $link: map-get($foreground, link);
-    $text: map-get($foreground, text);
+        // TODO: Brand color sounds like it needs to be in theme
+        $brand-color: if(
+            $is-dark,
+            mat-color($background, navbar, .85),
+            mat-color($background, navbar)
+        );
 
-    $widgets: map-get($theme-config, widgets);
+        $brand-color-lighter: mat-color($background, navbar-alt);
+        $brand-color-inverse: mat-color($foreground, navbar-text);
 
-    $card-background: map-get($background, card);
-    $divider: map-get($foreground, divider);
+        $new-bg: if($is-dark, rgba($white, 0.25), #edeff4);// TODO: plug into theme
 
-    $query-marker-bg: map-get($widgets, query-editor-marker);
-    $query-marker-text: map-get($widgets, query-editor-marker-text);
-    $query-block-bg: map-get($widgets, query-editor-block-bg);
-    $query-block-selected-border: map-get($widgets, query-editor-selected-border);
+        .query-editor-proto {
+            border: 1px solid $new-bg;
+            border-radius: 4px;
 
-    $brand-color: if(
-        $is-dark,
-        lighten(map-get($background, navbar), 15%),
-        map-get($background, navbar)
-    );
-    $brand-color-lighter: map-get($background, navbar-alt);
-    $brand-color-inverse: find-color-invert($brand-color);
-
-    $lighter-divider: rgba(0, 0, 0, 0.04);
-
-    $dbf-automode-bg: map-get($dbfilter, auto-mode-bg);
-    $dbf-manualmode-bg: map-get($dbfilter, manual-mode-bg);
-    $new-bg: if($is-dark, rgba(255,255,255, 0.25), #edeff4);
-
-    $label-color: rgba(0, 0, 0, 0.5); // label color for query function keys (NOT the values)
-
-    .query-editor-proto {
-        // border: 1px solid #d5d5d5;
-        border: 1px solid $new-bg;
-        // box-shadow: 0 0 5px 0px rgba(map-get($foreground, text), .4);
-        border-radius: 4px;
-
-        .namespace-wrapper {
-            background-color: if($is-dark, rgba(255, 255, 255, 0.04), $new-bg);
-        }
-
-        .namespace-bar.mat-toolbar {
-            background-color: if($is-dark, rgba(255, 255, 255, 0.04), $new-bg);
-
-            &.is-expanded {
-                box-shadow: inset 0 -1px 0 1px map-get($background, card);
+            .namespace-wrapper {
+                background-color: if($is-dark, rgba($white, 0.04), $new-bg);
             }
 
-            .query-index {
-                color: $brand-color-inverse;
-                background-color: $brand-color;
-            }
+            .namespace-bar.mat-toolbar {
+                background-color: if($is-dark, rgba($white, 0.04), $new-bg);
 
-            .toolbar-item {
-                .mat-select-arrow-wrapper {
-                    color: map-get($foreground, link);
-                }
-                .mat-icon {
-                    color: $link;
-                }
-            }
-
-            .query-alias-edit-icon {
-                .mat-icon {
-                    color: map-get($foreground, link);
-                }
-            }
-
-            .query-alias-label {
-                color: $brand-color-inverse;
-                background-color: $brand-color-lighter;
-            }
-        }
-
-        .metric-wrapper {
-            border-left: 1px solid $lighter-divider;
-            border-right: 1px solid $lighter-divider;
-
-            .common-tags {
-                //background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
-                background-color: if(
-                    $is-dark,
-                    rgba(255, 255, 255, 0.04),
-                    $new-bg
-                );
-
-                .common-tags-label {
-                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                &.is-expanded {
+                    box-shadow: inset 0 -1px 0 1px mat-color($background, card);
                 }
 
-                .common-tags-wrapper {
-                    // background: $card-background;
-                }
-            }
-
-            .tags-selected-header {
-                border-bottom: 1px solid $card-background;
-            }
-
-            .tag-filter-detail {
-                .tagkey-item {
-                    .automode {
-                        color: rgba(0, 0, 0, 0.8);
-
-                        &.auto-mode {
-                            background-color: $dbf-automode-bg;
-                            border: 1px solid darken($dbf-automode-bg, 15%);
-                        }
-
-                        &.manual-mode {
-                            background-color: $dbf-manualmode-bg;
-                            border: 1px solid darken($dbf-manualmode-bg, 15%);
-                        }
-                    }
-                }
-            }
-
-            .mat-icon {
-                color: $link;
-            }
-        }
-
-        .vertical-line-spacer {
-            span {
-                background-color: $divider;
-            }
-        }
-
-        .metric-alias {
-            .display-name {
-                // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                background-color: transparent;
-                color: rgba(
-                    if(
-                        $is-dark,
-                        $text,
-                        $brand-color
-                    ),
-                    0.5
-                );
-
-                .mat-icon {
-                    color: $link;
+                .query-index {
+                    color: $brand-color-inverse;
+                    background-color: $brand-color;
                 }
 
-                .alias-text.has-alias {
-                    color: map-get($foreground, text);
-                    font-weight: bold;
-                }
-
-                &:hover {
-                    background-color: rgba($link, 0.1);
-                    color: if(
-                        $is-dark,
-                        $text,
-                        $brand-color
-                    );
-                }
-            }
-
-            .alias-input-field {
-                .mat-form-field-prefix {
-                    color: rgba(map-get($foreground, text), 0.5);
-                    background-color: rgba($link, 0.1);
-                }
-
-                .mat-input-element {
-                    color: $text;
-                }
-            }
-        }
-
-        .visual-panel-dropdown-text {
-            color: rgba(
-                if(
-                    $is-dark,
-                    $text,
-                    $brand-color
-                ),
-                0.5
-            );
-            margin-left: 4px;
-
-            &:hover {
-                background-color: rgba($link, 0.1);
-                color: if(
-                    $is-dark,
-                    $text,
-                    $brand-color
-                );
-            }
-
-            .mat-icon {
-                color: $link;
-            }
-
-
-        }
-
-        .metric-row-data {
-            &.metric-index {
-                background-color: if(
-                    $is-dark,
-                    rgba($brand-color, 1),
-                    rgba($brand-color, 0.15)
-                );
-                color: if(
-                    $is-dark,
-                    $text,
-                    $brand-color
-                );
-
-                /* ▼▼▼ Not sure this is still needed - need to check */
-                .mat-flat-button {
-                    background: if(
-                        $is-dark,
-                        rgba(255, 255, 255, 0.08),
-                        rgba(0, 0, 0, 0.03)
-                    );
-
+                .toolbar-item {
                     .mat-select-arrow-wrapper {
-                        border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
-
-                        .mat-select-arrow {
-                            color: if(
-                                $is-dark,
-                                rgba(255, 255, 255, 0.7),
-                                rgba(0, 0, 0, 0.7)
-                            );
-                        }
+                        color: mat-color($foreground, link);
                     }
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+                }
+
+                .query-alias-edit-icon {
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+                }
+
+                .query-alias-label {
+                    color: $brand-color-inverse;
+                    background-color: $brand-color-lighter;
                 }
             }
 
-            &.metric-name,
-            // &.alias,
-            &.expression {
+            .metric-wrapper {
+                border-left: 1px solid rgba($black, 0.04);
+                border-right: 1px solid rgba($black, 0.04);
+
+                .common-tags {
+                    //background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
+                    background-color: if(
+                        $is-dark,
+                        rgba(255, 255, 255, 0.04),
+                        $new-bg
+                    );
+
+                    .common-tags-label {
+                        color: if($is-dark, $brand-color-inverse, $brand-color);
+                    }
+
+                    .common-tags-wrapper {
+                        // background: mat-color($background, card);
+                    }
+                }
+
+                .tags-selected-header {
+                    border-bottom: 1px solid mat-color($background, card);
+                }
+
+                .tag-filter-detail {
+                    .tagkey-item {
+                        .automode {
+                            color: rgba(0, 0, 0, 0.8);
+
+                            &.auto-mode {
+                                background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                                border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                            }
+
+                            &.manual-mode {
+                                background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                                border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                            }
+                        }
+                    }
+                }
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .vertical-line-spacer {
+                span {
+                    background-color: mat-color($foreground, divider);
+                }
+            }
+
+            .metric-alias {
                 .display-name {
                     // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                     background-color: transparent;
-
-                    .mat-icon {
-                        color: $link;
-                    }
-
-                    &:hover {
-                        background-color: rgba($link, 0.1);
-                    }
-                }
-            }
-
-            &.tag-aggregator {
-                .tag-aggregator-wrapper {
-                    // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                    background-color: transparent;
-
-                    .aggregator-icon {
-                        color: rgba(map-get($foreground, text), 0.8);
-                    }
-
-                    &:hover {
-                        background-color: rgba($link, 0.1);
-                    }
-                }
-            }
-
-            &.summarizer-selector {
-                .mat-button {
-                    color: map-get($foreground, link);
-                }
-
-                .summarizer-selector-wrapper {
-                    border: 1px solid $lighter-divider;
-
-                    &:hover {
-                        background-color: rgba($link, 0.1);
-                    }
-                }
-            }
-
-            &.custom-function {
-                // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                background-color: transparent;
-
-                .custom-function-wrapper {
-                    //border: 1px solid $lighter-divider;
-
-                    &:hover {
-                        background-color: rgba($link, 0.1);
-                    }
-                }
-            }
-
-            &.add-function {
-                .mat-flat-button {
-                    //background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                    //border: 1px solid $lighter-divider;
-                    background-color: transparent;
-
-                    .mat-icon {
-                        color: map-get($foreground, link);
-                    }
-
-                    .mat-select-arrow-wrapper {
-                        .mat-select-arrow {
-                            color: if(
-                                $is-dark,
-                                rgba(255, 255, 255, 0.7),
-                                rgba(0, 0, 0, 0.7)
-                            );
-                        }
-                    }
-
-                    &:hover {
-                        background-color: rgba($link, 0.1);
-                    }
-                }
-            }
-        }
-
-        // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
-        .metric-query-item.visual-highlight {
-            &,
-            & + .metric-query-item-visual {
-                background-color: rgba(map-get($denali-yellow, 200), 0.2);
-            }
-
-            & + .metric-query-item-visual {
-                border-bottom: 2px solid rgba($link, .25);
-
-                .visual-panel-dropdown-text {
-                    background: rgba($link, .25);
-                    color: $text;
-
-                    .color-chip {
-                        box-shadow: 0 0 0 2px #ffffff;
-                    }
-
-                    .mat-select-arrow-wrapper .mat-select-arrow {
-                        color: rgba($text, 0.54);
-                    }
-                }
-            }
-        }
-
-        // metric row has been disabled
-        .metric-query-item.row-disabled {
-            &,
-            & + .metric-query-item-visual {
-                background-color: if(
-                    $is-dark,
-                    rgba(255, 255, 255, 0.3),
-                    rgba(0, 0, 0, 0.03)
-                );
-            }
-        }
-
-        .metric-query-item:not(:first-of-type) {
-            border-top: 1px dotted $divider;
-        }
-
-        .metric-action-buttons {
-            .add-metric-button {
-                background-color: rgba(map-get($primary, default), 0.15);
-            }
-        }
-    }
-
-    // CDK ITEMS
-    .function-selection-cdk-menu.mat-menu-panel {
-        .function-categories {
-            border-right: 1px solid map-get($foreground, divider);
-
-            .mat-nav-list {
-                .mat-list-item.is-active {
-                    background-color: rgba(map-get($primary, default), 0.06);
-                }
-            }
-        }
-
-        .function-category-help {
-            background: if(
-                $is-dark,
-                rgba(map-get($denali-brand-5, 100), .2),
-                rgba(map-get($denali-brand-5, 100), .5)
-            );
-            border-left: 1px solid $divider;
-
-            .help-title {
-               border-bottom: 1px solid $divider;
-            }
-        }
-    }
-
-
-    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
-    .cdk-drag.cdk-drag-preview {
-
-        .metric-alias {
-            .display-name {
-               background-color: transparent;
-                color: rgba(
-                    if(
-                        $is-dark,
-                        $text,
-                        $brand-color
-                    ),
-                    0.5
-                );
-
-                .mat-icon {
-                    color: $link;
-                }
-
-                .alias-text.has-alias {
-                    color: map-get($foreground, text);
-                    font-weight: bold;
-                }
-
-                &:hover {
-                    background-color: rgba($link, 0.1);
                     color: if(
                         $is-dark,
-                        $text,
-                        $brand-color
+                        mat-color($foreground, text, .5),
+                        mat-color($background, navbar, .5)
                     );
+
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+
+                    .alias-text.has-alias {
+                        color: mat-color($foreground, text);
+                        font-weight: bold;
+                    }
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                        color: if(
+                            $is-dark,
+                            mat-color($foreground, text),
+                            $brand-color
+                        );
+                    }
+                }
+
+                .alias-input-field {
+                    .mat-form-field-prefix {
+                        color: mat-color($foreground, text, 0.5);
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+
+                    .mat-input-element {
+                        color: mat-color($foreground, text);
+                    }
                 }
             }
-        }
 
-        .visual-panel-dropdown-text {
-            color: rgba(
-                if(
-                    $is-dark,
-                    $text,
-                    $brand-color
-                ),
-                0.5
-            );
-            margin-left: 4px;
-
-            &:hover {
-                background-color: rgba($link, 0.1);
+            .visual-panel-dropdown-text {
                 color: if(
                     $is-dark,
-                    $text,
-                    $brand-color
+                    mat-color($foreground, text, .5),
+                    mat-color($background, navbar, .5)
                 );
+                margin-left: 4px;
+
+                &:hover {
+                    background-color: mat-color($foreground, link, 0.1);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        mat-color($background, navbar)
+                    );
+                }
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+
+
             }
-
-            .mat-icon {
-                color: $link;
-            }
-        }
-
-        // query item (div)
-        &.query-metric-row {
-
-        }
-
-        // metric item (tr.mat-row)
-        &.metric-query-item.mat-row {
 
             .metric-row-data {
                 &.metric-index {
                     background-color: if(
                         $is-dark,
-                        rgba($brand-color, 1),
-                        rgba($brand-color, 0.15)
+                        mat-color($background, navbar, 1),
+                        mat-color($background, navbar, 0.15)
                     );
                     color: if(
                         $is-dark,
-                        $text,
-                        $brand-color
+                        mat-color($foreground, text),
+                        mat-color($background, navbar)
                     );
 
                     /* ▼▼▼ Not sure this is still needed - need to check */
                     .mat-flat-button {
                         background: if(
                             $is-dark,
-                            rgba(255, 255, 255, 0.08),
-                            rgba(0, 0, 0, 0.03)
+                            rgba($white, 0.08),
+                            rgba($black, 0.03)
                         );
 
                         .mat-select-arrow-wrapper {
@@ -1867,44 +1569,47 @@
                 }
 
                 &.metric-name,
+                // &.alias,
                 &.expression {
                     .display-name {
+                        // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                         background-color: transparent;
 
                         .mat-icon {
-                            color: $link;
+                            color: mat-color($foreground, link);
                         }
 
                         &:hover {
-                            background-color: rgba($link, 0.1);
+                            background-color: mat-color($foreground, link, 0.1);
                         }
                     }
                 }
 
                 &.tag-aggregator {
                     .tag-aggregator-wrapper {
+                        // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
                         background-color: transparent;
 
                         .aggregator-icon {
-                            color: rgba(map-get($foreground, text), 0.8);
+                            color: mat-color($foreground, text, 0.8);
                         }
 
                         &:hover {
-                            background-color: rgba($link, 0.1);
+                            background-color: mat-color($foreground, link, 0.1);
                         }
                     }
                 }
 
                 &.summarizer-selector {
                     .mat-button {
-                        color: map-get($foreground, link);
+                        color: mat-color($foreground, link);
                     }
 
                     .summarizer-selector-wrapper {
-                        border: 1px solid $lighter-divider;
+                        border: 1px solid rgba($black, 0.04);
 
                         &:hover {
-                            background-color: rgba($link, 0.1);
+                            background-color: mat-color($foreground, link, 0.1);
                         }
                     }
                 }
@@ -1913,10 +1618,259 @@
                     background-color: transparent;
 
                     .custom-function-wrapper {
-                        //border: 1px solid $lighter-divider;
 
                         &:hover {
-                            background-color: rgba($link, 0.1);
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+
+                &.add-function {
+                    .mat-flat-button {
+                        background-color: transparent;
+
+                        .mat-icon {
+                            color: mat-color($foreground, link);
+                        }
+
+                        .mat-select-arrow-wrapper {
+                            .mat-select-arrow {
+                                color: if(
+                                    $is-dark,
+                                    rgba($white, 0.7),
+                                    rgba($black, 0.7)
+                                );
+                            }
+                        }
+
+                        &:hover {
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+            }
+
+            // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
+            .metric-query-item.visual-highlight {
+                &,
+                & + .metric-query-item-visual {
+                    background-color: rgba(map-get($denali-yellow, 200), 0.2); // TODO: plug into theme
+                }
+
+                & + .metric-query-item-visual {
+                    border-bottom: 2px solid mat-color($foreground, link, .25);
+
+                    .visual-panel-dropdown-text {
+                        background: mat-color($foreground, link, .25);
+                        color: mat-color($foreground, text);
+
+                        .color-chip {
+                            box-shadow: 0 0 0 2px $white;
+                        }
+
+                        .mat-select-arrow-wrapper .mat-select-arrow {
+                            color: mat-color($foreground, text, 0.54);
+                        }
+                    }
+                }
+            }
+
+            // metric row has been disabled
+            .metric-query-item.row-disabled {
+                &,
+                & + .metric-query-item-visual {
+                    background-color: if(
+                        $is-dark,
+                        rgba($white, 0.3),
+                        rgba($black, 0.03)
+                    );
+                }
+            }
+
+            .metric-query-item:not(:first-of-type) {
+                border-top: 1px dotted mat-color($foreground, divider);
+            }
+
+            .metric-action-buttons {
+                .add-metric-button {
+                    background-color: mat-color($primary, default, 0.15);
+                }
+            }
+        }
+
+        // CDK ITEMS
+        .function-selection-cdk-menu.mat-menu-panel {
+            .function-categories {
+                border-right: 1px solid mat-color($foreground, divider);
+
+                .mat-nav-list {
+                    .mat-list-item.is-active {
+                        background-color: mat-color($primary, default, 0.06);
+                    }
+                }
+            }
+
+            .function-category-help {
+                background: if(
+                    $is-dark,
+                    rgba(map-get($denali-brand-5, 100), .2), // TODO: plug into theme
+                    rgba(map-get($denali-brand-5, 100), .5) // TODO: plug into theme
+                );
+                border-left: 1px solid mat-color($foreground, divider);
+
+                .help-title {
+                border-bottom: 1px solid mat-color($foreground, divider);
+                }
+            }
+        }
+
+
+        // CDK DRAG ITEM IS PLACED AT BODY LEVEL
+        .cdk-drag.cdk-drag-preview {
+
+            .metric-alias {
+                .display-name {
+                background-color: transparent;
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text, .5),
+                        mat-color($background, navbar, .5)
+                    );
+
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+
+                    .alias-text.has-alias {
+                        color: mat-color($foreground, text);
+                        font-weight: bold;
+                    }
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                        color: if(
+                            $is-dark,
+                            mat-color($foreground, text),
+                            mat-color($background, navbar)
+                        );
+                    }
+                }
+            }
+
+            .visual-panel-dropdown-text {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text, .5),
+                    mat-color($background, navbar, .5)
+                );
+                margin-left: 4px;
+
+                &:hover {
+                    background-color: mat-color($foreground, link, 0.1);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        mat-color($background, navbar)
+                    );
+                }
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            // query item (div)
+            //&.query-metric-row { }
+
+            // metric item (tr.mat-row)
+            &.metric-query-item.mat-row {
+
+                .metric-row-data {
+                    &.metric-index {
+                        background-color: if(
+                            $is-dark,
+                            mat-color($background, navbar),
+                            mat-color($background, navbar, 0.15)
+                        );
+                        color: if(
+                            $is-dark,
+                            mat-color($foreground, text),
+                            mat-color($background, navbar)
+                        );
+
+                        /* ▼▼▼ Not sure this is still needed - need to check */
+                        .mat-flat-button {
+                            background: if(
+                                $is-dark,
+                                rgba($white, 0.08),
+                                rgba($black, 0.03)
+                            );
+
+                            .mat-select-arrow-wrapper {
+                                border-top: 1px solid if($is-dark, rgba($white, 0.25), rgba($black, 0.06));
+
+                                .mat-select-arrow {
+                                    color: if(
+                                        $is-dark,
+                                        rgba($white, 0.7),
+                                        rgba($black, 0.7)
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+                    &.metric-name,
+                    &.expression {
+                        .display-name {
+                            background-color: transparent;
+
+                            .mat-icon {
+                                color: mat-color($foreground, link);
+                            }
+
+                            &:hover {
+                                background-color: mat-color($foreground, link, 0.1);
+                            }
+                        }
+                    }
+
+                    &.tag-aggregator {
+                        .tag-aggregator-wrapper {
+                            background-color: transparent;
+
+                            .aggregator-icon {
+                                color: mat-color($foreground, text, 0.8);
+                            }
+
+                            &:hover {
+                                background-color: mat-color($foreground, link, 0.1);
+                            }
+                        }
+                    }
+
+                    &.summarizer-selector {
+                        .mat-button {
+                            color: mat-color($foreground, link);
+                        }
+
+                        .summarizer-selector-wrapper {
+                            border: 1px solid rgba($black, 0.04);
+
+                            &:hover {
+                                background-color: mat-color($foreground, link, 0.1);
+                            }
+                        }
+                    }
+
+                    &.custom-function {
+                        background-color: transparent;
+
+                        .custom-function-wrapper {
+
+                            &:hover {
+                                background-color: mat-color($foreground, link, 0.1);
+                            }
                         }
                     }
                 }

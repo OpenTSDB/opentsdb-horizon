@@ -23,7 +23,7 @@ import { CdkService } from '../../../core/services/cdk.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './app-navbar.component.html',
-  styleUrls: []
+  styleUrls: ['./app-navbar.component.scss']
 })
 export class AppNavbarComponent implements OnInit {
 

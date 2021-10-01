@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin linechart-widget-component-base() {
 
     $default-padding: map-get($widgets-common-config, default-padding);
@@ -75,8 +76,9 @@
                 font-family: Monaco, monospace;
             }
 
-            .dygraph-label, .dygraph-axis-label {
-                color: slategrey;
+            .dygraph-label,
+            .dygraph-axis-label {
+                color: slategrey; // TODO: plug into theme
                 font-size: 12px;
                 // font-family: Monaco, monospace;
                 font-family: Helvetica Neue, Helvetica;
@@ -126,7 +128,7 @@
 
                 .mat-icon {
                     font-size: 16px;
-                    color: rgb(216, 216, 215);
+                    color: rgb(216, 216, 215); // TODO: plug into theme
                 }
             }
 
@@ -137,7 +139,7 @@
                 z-index: 1;
                 width: 30px;
                 height: 30px;
-                color: red;
+                color: red; // TODO: // Plug into theme
             }
 
             .debug{
@@ -147,7 +149,7 @@
                 z-index: 1;
                 width: 30px;
                 height: 30px;
-                color: rgb(75, 9, 228);
+                color: rgb(75, 9, 228); // TODO: plug into theme
             }
 
             // now for positioning of legend
@@ -262,9 +264,9 @@
             padding: 10px;
         }
 
-        // fixes the initial sort arrow  
-        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   { 
-            opacity: 1 !important; 
+        // fixes the initial sort arrow
+        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   {
+            opacity: 1 !important;
         }
     }
 
@@ -294,31 +296,25 @@
 
 @mixin linechart-widget-component-theme($theme-config) {
 
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
+    @include variables-compatibility($theme-config) {
+        $dygraph-tooltip-bg: if(
+            $is-dark,
+            mat-color($background, menu),
+            #f0f0f0
+        );
+        $dygraph-tooltip-border: if(
+            $is-dark,
+            mat-color($background, menu),
+            #cccccc // TODO: plug into theme
+        );
 
-    $dygraph-tooltip-bg: if($is-dark-theme, map-get($background, menu), #f0f0f0);
-    $dygraph-tooltip-border: if($is-dark-theme, lighten(map-get($background, menu), 10%) , #cccccc);
-
-    $graph-legend-bg: map-get($background, graph-legend);
-
-    .widget-panel-content.linechart-widget {
-        .widget-output {
-            .dygraph-legend {
-                background: $dygraph-tooltip-bg;
-                border: 1px solid $dygraph-tooltip-border;
+        .widget-panel-content.linechart-widget {
+            .widget-output {
+                .dygraph-legend {
+                    background: $dygraph-tooltip-bg;
+                    border: 1px solid $dygraph-tooltip-border;
+                }
             }
-
-            /* disable background of legend
-            .graph-legend {
-                background: $graph-legend-bg
-            } */
         }
     }
-
 }

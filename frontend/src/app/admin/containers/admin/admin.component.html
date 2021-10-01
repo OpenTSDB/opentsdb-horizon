@@ -1,0 +1,18 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link
+       *ngFor="let link of adminSectionLinks; let i = index;"
+       [routerLink]="'/admin/' + link.path"
+       [active]="i === activeAdminSectionIndex"
+       (click)="changeAdminSection(i)">
+       <mat-icon fontSet="denali" [fontIcon]="link.icon"></mat-icon>
+       <span>{{link.label}}</span>
+    </a>
+</nav>
+<router-outlet></router-outlet>
+
+<ng-template #adminNavbarTmpl>
+    <div class="navbar-item" style="margin-left: 10px;">
+        <span class="dashboard-name">OpenTSDB Admin</span>
+    </div>
+    <span class="flex-spacer"></span>
+</ng-template>

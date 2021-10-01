@@ -1,0 +1,48 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * FILE THAT EXPORTS VALUES TO TYPESCRIPT WHEN IMPORTED
+// * Exports app-themes
+// * Exports app-fontface-config
+// *
+// * see: https://stackoverflow.com/questions/40418804/access-sass-values-colors-from-variables-scss-in-typescript-angular2-ionic2
+// *
+
+@charset "utf-8";
+
+// import loader base
+@import "./loader-base.scss";
+
+@mixin rule($key, $value, $prefix) {
+    #{$prefix}-#{$key}: $value;
+}
+
+@mixin map-to-string($map, $prefix) {
+    @each $key, $value in $map {
+        @include rule($key, $value, $prefix);
+    }
+}
+
+$export-variables: (
+    app-themes: $app-themes,
+    app-font-faces: $app-fontface-config,
+);
+
+:export {
+    $styles: '' + #{$export-variables}
+}

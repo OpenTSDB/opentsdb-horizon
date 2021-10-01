@@ -1,19 +1,20 @@
-/**
- * This file is part of OpenTSDB.
- * Copyright (C) 2021  Yahoo.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
 @mixin dbs-variables-component-base() {
     .dbs-variables-component {
         padding-top: 0 !important;
@@ -31,7 +32,7 @@
 
             /*.template-variable-item {
                 display: flex;
-                
+
                 &:not(:last-child) {
                     margin-bottom: 20px;
                 }
@@ -95,55 +96,49 @@
                     }
                 }
             }*/
-            
+
         }
     }
 }
 
 @mixin dbs-variables-component-theme($theme-config) {
-    /* Theme config parts */
-    $tname: map-get($theme-config, theme-name);
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $widget: map-get($theme-config, widgets);
-    $is-dark: map-get($theme-config, is-dark);
 
-    $bg-color: map-get($background, background);
+    @include variables-compatibility($theme-config) {
 
-    .dbs-variables-component {
-        .template-variable-list {
+        $bg-color: mat-color($background, background);
 
-            /*.template-variable-item {
-                border: 2px solid $bg-color;
+        .dbs-variables-component {
+            .template-variable-list {
 
-                &:first-child {
-                    border-top: 0;
-                }
+                /*.template-variable-item {
+                    border: 2px solid $bg-color;
 
-                .settings-control {
-                    background-color: rgba($bg-color, 0);
-                }
-            }
+                    &:first-child {
+                        border-top: 0;
+                    }
 
-            &:not(.is-disabled) {
-                .template-variable-item {
-                    // individual item is disabled
-                    &.is-disabled {
-                        .settings-control:not(.actions-control){
-                            background-color: $bg-color;
-                        }
+                    .settings-control {
+                        background-color: rgba($bg-color, 0);
                     }
                 }
-            }*/
 
-            // all template items are disabled;
-            &.is-disabled {
-                .template-variable-item {
-                    .settings-control {
-                        background-color: $bg-color;
+                &:not(.is-disabled) {
+                    .template-variable-item {
+                        // individual item is disabled
+                        &.is-disabled {
+                            .settings-control:not(.actions-control){
+                                background-color: $bg-color;
+                            }
+                        }
+                    }
+                }*/
+
+                // all template items are disabled;
+                &.is-disabled {
+                    .template-variable-item {
+                        .settings-control {
+                            background-color: $bg-color;
+                        }
                     }
                 }
             }

@@ -18,6 +18,7 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
+                "src/scss",
                 "src"
               ]
             },
@@ -25,50 +26,25 @@
               "src/assets",
               "src/favicon.ico",
               {
-                "glob": "**/*", 
-                "input": "./node_modules/@ibm/plex/IBM-Plex-Mono/fonts/complete/woff", 
-                "output": "./assets/fonts/IBM-Plex/mono" 
+                "glob": "**/*",
+                "input": "./node_modules/typeface-ubuntu-mono/files",
+                "output": "./assets/fonts/Ubuntu/mono"
               },
               {
-                "glob": "**/*", 
-                "input": "./node_modules/@ibm/plex/IBM-Plex-Mono/fonts/complete/woff2", 
-                "output": "./assets/fonts/IBM-Plex/mono" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/@ibm/plex/IBM-Plex-Sans/fonts/complete/woff", 
-                "output": "./assets/fonts/IBM-Plex/sans" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/@ibm/plex/IBM-Plex-Sans/fonts/complete/woff2", 
-                "output": "./assets/fonts/IBM-Plex/sans" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/typeface-ubuntu-mono/files", 
-                "output": "./assets/fonts/Ubuntu/mono" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/typeface-ubuntu/files", 
-                "output": "./assets/fonts/Ubuntu/sans" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/typeface-roboto-mono/files", 
-                "output": "./assets/fonts/Roboto/mono" 
-              },
-              {
-                "glob": "**/*", 
-                "input": "./node_modules/typeface-roboto/files", 
-                "output": "./assets/fonts/Roboto/sans" 
+                "glob": "**/*",
+                "input": "./node_modules/typeface-ubuntu/files",
+                "output": "./assets/fonts/Ubuntu/sans"
               }
             ],
             "styles": [
-              "src/debug.scss",
-              "src/styles.scss",
-              "./node_modules/dygraphs/dist/dygraph.css"
+                {
+                    "input": "src/styles.scss",
+                    "bundleName": "styles"
+                },
+                {
+                    "input": "./node_modules/dygraphs/dist/dygraph.css",
+                    "bundleName": "dygraph"
+                }
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js"
@@ -93,8 +69,14 @@
                 }
               ],
               "styles": [
-                "src/styles.scss",
-                "./node_modules/dygraphs/dist/dygraph.css"
+                {
+                    "input": "src/styles.scss",
+                    "bundleName": "styles"
+                },
+                {
+                    "input": "./node_modules/dygraphs/dist/dygraph.css",
+                    "bundleName": "dygraph"
+                }
               ]
             }
           }
@@ -125,8 +107,10 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "src/debug.scss",
-              "src/styles.scss"
+                {
+                    "input": "src/styles.scss",
+                    "bundleName": "styles"
+                }
             ],
             "assets": [
               "src/assets",
