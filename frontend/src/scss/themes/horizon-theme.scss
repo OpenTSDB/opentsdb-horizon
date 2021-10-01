@@ -1,0 +1,367 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+$horizon-theme-css-text: (
+    --dark-primary-text:
+        _mat-css-hex-to-rgb($dark-primary-text),
+    --light-primary-text:
+        _mat-css-hex-to-rgb($light-primary-text),
+);
+
+// css variables, copy merged with the default so we don't miss values
+// All available variables can be seen in default-theme.scss
+$horizon-theme-css-variables: map-merge(
+    $default-theme-css-variables,
+    (
+    // PRIMARY
+    --palette-primary-50: _mat-css-hex-to-rgb(map-get($denali-brand-6,50)),
+    --palette-primary-100: _mat-css-hex-to-rgb(map-get($denali-brand-6,100)),
+    --palette-primary-200: _mat-css-hex-to-rgb(map-get($denali-brand-6,200)),
+    --palette-primary-300: _mat-css-hex-to-rgb(map-get($denali-brand-6,300)),
+    --palette-primary-400: _mat-css-hex-to-rgb(map-get($denali-brand-6,400)),
+    --palette-primary-500: _mat-css-hex-to-rgb(map-get($denali-brand-6,500)),
+    --palette-primary-600: _mat-css-hex-to-rgb(map-get($denali-brand-6,600)),
+    --palette-primary-700: _mat-css-hex-to-rgb(map-get($denali-brand-6,700)),
+    --palette-primary-800: _mat-css-hex-to-rgb(map-get($denali-brand-6,800)),
+    --palette-primary-900: _mat-css-hex-to-rgb(map-get($denali-brand-6,900)),
+    --palette-primary-A100: _mat-css-hex-to-rgb(map-get($denali-brand-6,A100)),
+    --palette-primary-A200: _mat-css-hex-to-rgb(map-get($denali-brand-6,A200)),
+    --palette-primary-A400: _mat-css-hex-to-rgb(map-get($denali-brand-6,A400)),
+    --palette-primary-A700: _mat-css-hex-to-rgb(map-get($denali-brand-6,A700)),
+    --palette-primary-contrast-50: var(--dark-primary-text),
+    --palette-primary-contrast-100: var(--dark-primary-text),
+    --palette-primary-contrast-200: var(--dark-primary-text),
+    --palette-primary-contrast-300: var(--dark-primary-text),
+    --palette-primary-contrast-400: var(--dark-primary-text),
+    --palette-primary-contrast-500: var(--light-primary-text),
+    --palette-primary-contrast-600: var(--light-primary-text),
+    --palette-primary-contrast-700: var(--light-primary-text),
+    --palette-primary-contrast-800: var(--light-primary-text),
+    --palette-primary-contrast-900: var(--light-primary-text),
+    --palette-primary-contrast-A100: var(--dark-primary-text),
+    --palette-primary-contrast-A200: var(--dark-primary-text),
+    --palette-primary-contrast-A400: var(--dark-primary-text),
+    --palette-primary-contrast-A700: var(--light-primary-text),
+    // ACCENT
+    --palette-accent-50: _mat-css-hex-to-rgb(map-get($denali-pink,50)),
+    --palette-accent-100: _mat-css-hex-to-rgb(map-get($denali-pink,100)),
+    --palette-accent-200: _mat-css-hex-to-rgb(map-get($denali-pink,200)),
+    --palette-accent-300: _mat-css-hex-to-rgb(map-get($denali-pink,300)),
+    --palette-accent-400: _mat-css-hex-to-rgb(map-get($denali-pink,400)),
+    --palette-accent-500: _mat-css-hex-to-rgb(map-get($denali-pink,500)),
+    --palette-accent-600: _mat-css-hex-to-rgb(map-get($denali-pink,600)),
+    --palette-accent-700: _mat-css-hex-to-rgb(map-get($denali-pink,700)),
+    --palette-accent-800: _mat-css-hex-to-rgb(map-get($denali-pink,800)),
+    --palette-accent-900: _mat-css-hex-to-rgb(map-get($denali-pink,900)),
+    --palette-accent-A100: _mat-css-hex-to-rgb(map-get($denali-pink,A100)),
+    --palette-accent-A200: _mat-css-hex-to-rgb(map-get($denali-pink,A200)),
+    --palette-accent-A400: _mat-css-hex-to-rgb(map-get($denali-pink,A400)),
+    --palette-accent-A700: _mat-css-hex-to-rgb(map-get($denali-pink,A700)),
+    --dark-accent-text: var(--dark-primary-text),
+    --light-accent-text: var(--light-primary-text),
+    --palette-accent-contrast-50: var(--dark-accent-text),
+    --palette-accent-contrast-100: var(--dark-accent-text),
+    --palette-accent-contrast-200: var(--dark-accent-text),
+    --palette-accent-contrast-300: var(--dark-accent-text),
+    --palette-accent-contrast-400: var(--dark-accent-text),
+    --palette-accent-contrast-500: var(--light-accent-text),
+    --palette-accent-contrast-600: var(--light-accent-text),
+    --palette-accent-contrast-700: var(--light-accent-text),
+    --palette-accent-contrast-800: var(--light-accent-text),
+    --palette-accent-contrast-900: var(--light-accent-text),
+    --palette-accent-contrast-A100: var(--dark-accent-text),
+    --palette-accent-contrast-A200: var(--dark-accent-text),
+    --palette-accent-contrast-A400: var(--light-accent-text),
+    --palette-accent-contrast-A700: var(--light-accent-text),
+    // WARN ($mat-red)
+    --palette-warn-50: _mat-css-hex-to-rgb(#ffebee),
+    --palette-warn-100: _mat-css-hex-to-rgb(#ffcdd2),
+    --palette-warn-200: _mat-css-hex-to-rgb(#ef9a9a),
+    --palette-warn-300: _mat-css-hex-to-rgb(#e57373),
+    --palette-warn-400: _mat-css-hex-to-rgb(#ef5350),
+    --palette-warn-500: _mat-css-hex-to-rgb(#f44336),
+    --palette-warn-600: _mat-css-hex-to-rgb(#e53935),
+    --palette-warn-700: _mat-css-hex-to-rgb(#d32f2f),
+    --palette-warn-800: _mat-css-hex-to-rgb(#c62828),
+    --palette-warn-900: _mat-css-hex-to-rgb(#b71c1c),
+    --palette-warn-A100: _mat-css-hex-to-rgb(#ff8a80),
+    --palette-warn-A200: _mat-css-hex-to-rgb(#ff5252),
+    --palette-warn-A400: _mat-css-hex-to-rgb(#ff1744),
+    --palette-warn-A700: _mat-css-hex-to-rgb(#d50000),
+    --dark-warn-text: var(--dark-primary-text),
+    --light-warn-text: var(--light-primary-text),
+    --palette-warn-contrast-50: var(--dark-warn-text),
+    --palette-warn-contrast-100: var(--dark-warn-text),
+    --palette-warn-contrast-200: var(--dark-warn-text),
+    --palette-warn-contrast-300: var(--dark-warn-text),
+    --palette-warn-contrast-400: var(--dark-warn-text),
+    --palette-warn-contrast-500: var(--light-warn-text),
+    --palette-warn-contrast-600: var(--light-warn-text),
+    --palette-warn-contrast-700: var(--light-warn-text),
+    --palette-warn-contrast-800: var(--light-warn-text),
+    --palette-warn-contrast-900: var(--light-warn-text),
+    --palette-warn-contrast-A100: var(--light-warn-text),
+    --palette-warn-contrast-A200: var(--light-warn-text),
+    --palette-warn-contrast-A400: var(--light-warn-text),
+    --palette-warn-contrast-A700: var(--light-warn-text),
+    // BACKGROUND
+    --palette-background-status-bar:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+    --palette-background-ink-bar:
+        _mat-css-hex-to-rgb(map_get($denali-brand-6, 500)),
+    --palette-background-app-bar:
+        _mat-css-hex-to-rgb(#084b4e),
+    --palette-background-navbar:
+        _mat-css-hex-to-rgb(#084b4e),
+    --palette-background-navbar-button:
+        _mat-css-hex-to-rgb(darken(#084b4e, 4%)),
+    --palette-background-navbar-button-hover:
+        _mat-css-hex-to-rgb(lighten(#084b4e, 8%)),
+    --palette-background-navbar-alt:
+        _mat-css-hex-to-rgb(#8eaeaf),
+    --palette-background-background:
+        _mat-css-hex-to-rgb(lighten(map-get($denali-cool-grey, 50), 4%)),
+    --palette-background-header:
+        _mat-css-hex-to-rgb(map_get($mat-blue, 900)),
+    --palette-background-hover: _mat-css-hex-to-rgb(#000000),
+    --palette-background-hover-alpha: 0.04,
+    --palette-background-card: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-lighter-card: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-card-header: _mat-css-hex-to-rgb(map-get($mat-blue, 900)),
+    --palette-background-card-header-alpha: 0.08,
+    --palette-background-dialog: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-disabled-button: _mat-css-hex-to-rgb(#000000),
+    --palette-background-disabled-button-alpha: 0.12,
+    --palette-background-raised-button: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-focused-button: _mat-css-hex-to-rgb($dark-focused),
+    --palette-background-selected-button:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+    --palette-background-selected-disabled-button:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 400)),
+    --palette-background-disabled-button-toggle:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 200)),
+    --palette-background-unselected-chip:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+    --palette-background-disabled-list-option:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 200)),
+    --palette-background-tooltip:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
+    --palette-background-menu: _mat-css-hex-to-rgb(map_get($mat-grey, 50)),
+    --palette-background-menu-border: _mat-css-hex-to-rgb(map_get($mat-grey, 100)),
+    // FOREGROUND
+    --palette-foreground-base: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-divider: _mat-css-hex-to-rgb($dark-dividers),
+    --palette-foreground-divider-alpha: 0.12,
+    --palette-foreground-lighter-divider: _mat-css-hex-to-rgb($dark-dividers),
+    --palette-foreground-lighter-divider-alpha: 0.04,
+    --palette-foreground-darker-divider: _mat-css-hex-to-rgb($dark-dividers),
+    --palette-foreground-darker-divider-alpha: 0.2,
+    --palette-foreground-dividers: _mat-css-hex-to-rgb($dark-dividers),
+
+    --palette-foreground-disabled: _mat-css-hex-to-rgb($dark-disabled-text),
+    --palette-foreground-disabled-alpha: 0.5,
+    --palette-foreground-disabled-button: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-disabled-button-alpha: 0.26,
+    --palette-foreground-disabled-text:
+        _mat-css-hex-to-rgb($dark-disabled-text),
+    --palette-foreground-disabled-text-alpha: 0.26,
+    --palette-foreground-elevation: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-hint-text: _mat-css-hex-to-rgb($dark-disabled-text),
+    --palette-foreground-secondary-text:
+        _mat-css-hex-to-rgb($dark-secondary-text),
+    --palette-foreground-secondary-text-alpha: 0.54,
+    --palette-foreground-icon: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-icon-alpha: 0.54,
+    --palette-foreground-icons: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-icons-alpha: 0.54,
+    --palette-foreground-text: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-text-alpha: 0.87,
+    --palette-foreground-slider-min: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-slider-min-alpha: 0.87,
+    --palette-foreground-slider-off: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-slider-off-alpha: 0.26,
+    --palette-foreground-slider-off-active: _mat-css-hex-to-rgb(#000000),
+    --palette-foreground-slider-off-active-alpha: 0.38,
+    --palette-foreground-link: _mat-css-hex-to-rgb(map-get($denali-brand-6,800)),
+    --palette-foreground-navbar-icons: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-navbar-text: _mat-css-hex-to-rgb(#ffffff),
+    // BACKGROUND DARK
+    --palette-background-status-bar-dark: _mat-css-hex-to-rgb(#000),
+    --palette-background-ink-bar-dark:
+        _mat-css-hex-to-rgb(map-get($denali-lime, A400)),
+    --palette-background-app-bar-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 900)),
+    --palette-background-navbar-dark:
+        _mat-css-hex-to-rgb(map_get($denali-mid-grey, 900)),
+    --palette-background-navbar-button-dark:
+        _mat-css-hex-to-rgb(darken(map_get($denali-mid-grey, 900), 4%)),
+    --palette-background-navbar-button-hover-dark:
+        _mat-css-hex-to-rgb(lighten(map_get($denali-mid-grey, 900), 8%)),
+    --palette-background-navbar-alt-dark:
+        _mat-css-hex-to-rgb(#517888),
+    --palette-background-background-dark: _mat-css-hex-to-rgb(#303030),
+    --palette-background-hover-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-hover-dark-alpha: 0.04,
+    --palette-background-card-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+    --palette-background-lighter-card-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 600)),
+    --palette-background-card-header-dark: _mat-css-hex-to-rgb(#8ACFED),
+    --palette-background-card-header-dark-alpha: 0.1,
+    --palette-background-dialog-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+    --palette-background-disabled-button-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-background-disabled-button-dark-alpha: 0.12,
+    --palette-background-raised-button-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+    --palette-background-focused-button-dark:
+        _mat-css-hex-to-rgb($light-focused),
+    --palette-background-selected-button-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 900)),
+    --palette-background-selected-disabled-button-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+    --palette-background-disabled-button-toggle-dark:
+        _mat-css-hex-to-rgb(#000000),
+    --palette-background-unselected-chip-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
+    --palette-background-disabled-list-option-dark:
+        _mat-css-hex-to-rgb(#000000),
+    --palette-background-tooltip-dark:
+        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
+    --palette-background-menu-dark: _mat-css-hex-to-rgb(map_get($denali-mid-grey, A400)),
+    --palette-background-menu-border-dark: _mat-css-hex-to-rgb(map_get($denali-mid-grey, A200)),
+    // FOREGROUND DARK
+    --palette-foreground-base-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-divider-dark: _mat-css-hex-to-rgb($light-dividers),
+    --palette-foreground-divider-dark-alpha: 0.12,
+    --palette-foreground-lighter-divider-dark: _mat-css-hex-to-rgb($light-dividers),
+    --palette-foreground-lighter-divider-dark-alpha: 0.04,
+    --palette-foreground-darker-divider-dark: _mat-css-hex-to-rgb($light-dividers),
+    --palette-foreground-darker-divider-dark-alpha: 0.2,
+    --palette-foreground-dividers-dark: _mat-css-hex-to-rgb($light-dividers),
+    --palette-foreground-disabled-dark:
+        _mat-css-hex-to-rgb($light-disabled-text),
+    --palette-foreground-disabled-dark-alpha: 0.5,
+    --palette-foreground-disabled-button-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-disabled-button-dark-alpha: 0.3,
+    --palette-foreground-disabled-text-dark:
+        _mat-css-hex-to-rgb($light-disabled-text),
+    --palette-foreground-disabled-text-dark-alpha: 0.3,
+    --palette-foreground-elevation-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-hint-text-dark:
+        _mat-css-hex-to-rgb($light-disabled-text),
+    --palette-foreground-secondary-text-dark:
+        _mat-css-hex-to-rgb($light-secondary-text),
+    --palette-foreground-secondary-text-dark-alpha: 0.54,
+    --palette-foreground-icon-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-icon-dark-alpha: 0.54,
+    --palette-foreground-icons-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-icons-dark-alpha: 0.54,
+    --palette-foreground-text-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-text-dark-alpha: 0.87,
+    --palette-foreground-slider-min-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-slider-min-dark-alpha: 0.87,
+    --palette-foreground-slider-off-dark: _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-slider-off-dark-alpha: 0.3,
+    --palette-foreground-slider-off-active-dark:
+        _mat-css-hex-to-rgb(#ffffff),
+    --palette-foreground-slider-off-active-dark-alpha: 0.38,
+    --palette-foreground-link-dark: _mat-css-hex-to-rgb(#8ACFED),
+    --palette-foreground-navbar-icons-dark: _mat-css-hex-to-rgb(#8ACFED),
+    --palette-foreground-navbar-text-dark: _mat-css-hex-to-rgb(#ffffff),
+    // GRIDSTER
+    --palette-gridster-highlight: _mat-css-hex-to-rgb(#0d47a1),
+    --palette-gridster-highlight-alpha: 0.15,
+    --palette-gridster-highlight-dark: _mat-css-hex-to-rgb(#bbdefb),
+    --palette-gridster-highlight-dark-alpha: 0.2,
+    // GRAPHS
+    --palette-graph-legend: _mat-css-hex-to-rgb(#f9e2e2),
+    --palette-graph-legend-dark: _mat-css-hex-to-rgb(#526978)
+));
+
+// merge (as copy) with default to make sure we get all the variable definitions
+$horizon-theme-palette-primary: map-merge(
+    $default-theme-palette-primary,
+    ()
+);
+
+$horizon-theme-palette-accent: map-merge(
+    $default-theme-palette-accent,
+    ()
+);
+
+$horizon-theme-palette-warn: map-merge(
+    $default-theme-palette-warn,
+    ()
+);
+
+$horizon-theme-palette-success: map-merge(
+    $default-theme-palette-success,
+    ()
+);
+
+$horizon-theme-palette-danger: map-merge(
+    $default-theme-palette-danger,
+    ()
+);
+
+$horizon-theme-palette-background: map-merge(
+    $default-theme-palette-background,
+    ()
+);
+
+$horizon-theme-palette-foreground: map-merge(
+    $default-theme-palette-foreground,
+    ()
+);
+
+$horizon-theme-palette-background-dark: map-merge(
+    $default-theme-palette-background-dark,
+    ()
+);
+
+$horizon-theme-palette-foreground-dark: map-merge(
+    $default-theme-palette-foreground-dark,
+    ()
+);
+
+// merge (as copy) with default to make sure we get all the values we need
+$horizon-theme: map-merge(
+    $default-theme,
+    (
+        'name': 'horizon',
+        'css-text': $horizon-theme-css-text,
+        'css-variables': $horizon-theme-css-variables,
+        'palette-primary': $horizon-theme-palette-primary,
+        'palette-accent': $horizon-theme-palette-primary,
+        'palette-warn': $horizon-theme-palette-warn,
+        'palette-success': $horizon-theme-palette-success,
+        'palette-danger': $horizon-theme-palette-danger,
+        'palette-background': $horizon-theme-palette-background,
+        'palette-foreground': $horizon-theme-palette-foreground,
+        'palette-background-dark': $horizon-theme-palette-background-dark,
+        'palette-foreground-dark': $horizon-theme-palette-foreground-dark,
+    )
+);
+
+// merge it into the theme list
+$theme-configs: map_merge(
+    $theme-configs,
+    (
+        "horizon": $horizon-theme,
+    )
+);

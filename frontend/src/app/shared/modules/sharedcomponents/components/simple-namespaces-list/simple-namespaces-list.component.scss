@@ -19,5 +19,7 @@
 }
 
 @mixin simple-namespaces-list-component-theme($theme-config) {
-
+    @include variables-compatibility($theme-config) {
+        // styles here
+    }
 }
