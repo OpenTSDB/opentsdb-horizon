@@ -53,16 +53,18 @@ import {
 } from '../../shared/modules/dashboard-filesystem/state';
 
 import {
+    ChangeNavigatorApp,
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
 
 import { filter, map } from 'rxjs/operators';
-import { ThemeService } from '../services/theme.service';
+import { ThemeService } from '../../shared/modules/theme/services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
 
 @Component({
     selector: 'app-shell',
-    templateUrl: './app-shell.component.html'
+    templateUrl: './app-shell.component.html',
+    styleUrls: [ './app-shell.component.scss' ]
 })
 export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -177,6 +179,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 // should clipboard be available
                 this.clipboardAvailable = (app === 'd' || app === 'a');
 
+                // if admin, lets set that as currentApp
+                if (app === 'admin') {
+                    this.store.dispatch(new ChangeNavigatorApp('admin'));
+                }
+
                 // doing it this way, in case we want to add in different tracking later (like alerts, or aura when we add it in)
                 if (app === 'd' || app === 'snap') {
                     // YAY! we are in dashboard land
@@ -226,7 +233,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 // check if there is a difference in routedApp
                 // from the new app from url
                 if (this.routedApp !== app) {
-
                     // previous routed app was dashboard
                     if (this.routedApp === 'd' || this.routedApp === 'snap') {
                         // need to reset dashboard state
@@ -246,9 +252,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
 
-        this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
+        /*this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
             this.setAppTheme(theme);
-        }));
+        }));*/
 
         this.subscription.add(this.mediaQuery$.subscribe(currentMediaQuery => {
             this.activeMediaQuery = currentMediaQuery;
@@ -304,6 +310,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription.add(this.resourcesLoaded$.subscribe(resourcesLoaded => {
             if (resourcesLoaded) {
                 const user = this.store.selectSnapshot(DbfsState.getUser());
+                // NOTE: this user admin thing needs to be more robust
+                // possibly set in the config
                 this.isAdminMember = user.memberNamespaces.includes('admin');
             }
         }));
@@ -318,6 +326,10 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
             const activeNav: any = { section: '' };
             switch (pathParts[0]) {
+                case 'admin':
+                    // admin
+                    activeNav.section = 'admin';
+                    break;
                 case 'a':
                     // alerts
                     activeNav.section = 'alerts';

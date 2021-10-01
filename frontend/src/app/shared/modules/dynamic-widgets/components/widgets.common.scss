@@ -70,8 +70,9 @@ $widgets-common-config: (
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             padding: 10px 0px;
+
             .widget-title {
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid #ccc; // TODO: move to theme portion
             }
         }
 
@@ -571,7 +572,7 @@ $widgets-common-config: (
                 min-width: initial;
                 margin: auto 6px;
                 line-height: 24px;
-                border: 1px solid lightgray;
+                border: 1px solid lightgray; // TODO: need to move to theme
 
                 .mat-icon {
                     margin: 0;
@@ -607,178 +608,185 @@ $widgets-common-config: (
 }
 
 @mixin widgets-common-theme($theme-config) {
-    /* Theme config parts */
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $is-dark-theme: map-get($theme-config, is-dark);
 
-    $divider: map-get($foreground, divider);
-    $card: map-get($background, card);
-    $text:  map-get($foreground, text);
+    @include variables-compatibility($theme-config) {
 
-    // multigraph
-    $mg-background: #E6EDED;
-    $mg-text: #606060;
+        $divider: mat-color($foreground, divider);
+        $card: mat-color($background, card);
+        $text:  mat-color($foreground, text);
 
-    // section markers
-    //
-    $section-tab-markers: if($is-dark-theme, rgba(map-get($foreground, link), .45), rgba(map-get($background, navbar), .45));
-    $section-tab-color: #ffffff; // most of the time, white will do. need to test
+        // multigraph
+         // TODO: need to plug into theme
+        $mg-background: #E6EDED;
+        $mg-text: #606060;
 
-    $new-bg: if($is-dark-theme, rgba(255,255,255, 0.25), #edeff4);
+        // section markers
+        //
+        $section-tab-markers: if($is-dark, mat-color($foreground, link, .45), mat-color($background, navbar, .45));
+        $section-tab-color: #ffffff; // most of the time, white will do. need to test
 
-    .edit-view-container.is-active {
-        .widget-output-container {
+        $new-bg: if($is-dark, rgba(255,255,255, 0.25), #edeff4);
 
-            .widget-output {
-                background-color: map-get($background, card);
-            }
+        .edit-view-container.is-active {
+            .widget-output-container {
 
-            .widget-title {
-                background-color: map-get($background, card);
-
-                .title-label {
-                    color: map-get($foreground, secondary-text);
+                .widget-output {
+                    background-color: mat-color($background, card);
                 }
-            }
-        }
-    }
 
-    .widget-panel-content {
+                .widget-title {
+                    background-color: mat-color($background, card);
 
-        .widget-controls-container {
-            background-color: map-get($background, card);
-            border-top: 1px solid rgba($divider,.15);
-        }
-        .widget-configs {
-
-            .mat-tab-label:not(.mat-tab-disabled):not(.mat-tab-label-active):focus {
-                background-color: transparent;
-            }
-
-            .mat-tab-label:not(.mat-tab-label-active) {
-                color: map-get($primary, default);
-            }
-
-            .mat-tab-label-active,
-            .mat-tab-label:not(.mat-tab-disabled):focus {
-                opacity: 1;
-                background-color: map-get($background, card);
-                border-radius: 0;
-                box-shadow: inset 1px 0 0 map-get($foreground, dividers), inset -1px 0 0 map-get($foreground, dividers);
-
-                &::after {
-                    background-color: map-get($background, card);
+                    .title-label {
+                        color: mat-color($foreground, secondary-text);
+                    }
                 }
             }
 
-            .mat-tab-label.mat-tab-disabled {
-                color: #A2A2A5;
-                cursor: no-drop;
-                pointer-events: none;
-            }
-            .mat-tab-body {
-                background-color: map-get($background, card);
-                border: 1px solid map-get($foreground, dividers);
-                border-top: 0;
-            }
+            .mat-flat-button {
+                &.snapshot-button {
+                    border: 1px solid mat-color($foreground, divider, .08); // TODO: need to move to theme
 
-            .mat-tab-header {
-                box-shadow: inset 0 -1px 0 map-get($foreground, dividers);
-            }
-        }
-
-        .widget-actions {
-            border-top: 1px solid map-get($foreground, dividers);
-        }
-
-        .step-section {
-            &:not(:first-of-type) {
-                border-top: 1px solid $new-bg;
-            }
-
-            .step-section-label {
-                background-color: $section-tab-markers;
-
-            }
-
-            .step-section-label-text {
-                span {
-                    color: $section-tab-color;
-                }
-
-                .mat-icon {
-                    color: rgba($section-tab-color, .8);
+                    .mat-icon {
+                        margin: 0;
+                    }
                 }
             }
         }
-    }
 
-    .multi-graph-container {
+        .widget-panel-content {
 
-        /* headers */
-        .graph-header-cell {
-            .graph-header-cell-inner {
-                color: $mg-text;
+            .widget-controls-container {
+                background-color: mat-color($background, card);
+                border-top: 1px solid mat-color($foreground, divider, .15);
             }
-        }
+            .widget-configs {
 
-        /* graph row/cells */
+                .mat-tab-label:not(.mat-tab-disabled):not(.mat-tab-label-active):focus {
+                    background-color: transparent;
+                }
 
-        .graph-row-label {
-            box-shadow: inset 0 -1px 0 $mg-background;
+                .mat-tab-label:not(.mat-tab-label-active) {
+                    color: mat-color($primary, default);
+                }
 
-            .graph-row-label-inner {
-                background-color: $mg-background;
-                color: $mg-text;
-            }
-        }
+                .mat-tab-label-active,
+                .mat-tab-label:not(.mat-tab-disabled):focus {
+                    opacity: 1;
+                    background-color: mat-color($background, card);
+                    border-radius: 0;
+                    box-shadow: inset 1px 0 0 mat-color($foreground, dividers), inset -1px 0 0 mat-color($foreground, dividers);
 
-        .graph-cell {
-            .no-data {
-                span {
-                    border: 1px solid $divider;
+                    &::after {
+                        background-color: mat-color($background, card);
+                    }
+                }
+
+                .mat-tab-label.mat-tab-disabled {
+                    color: #A2A2A5;  // TODO: need to plug into theme
+                    cursor: no-drop;
+                    pointer-events: none;
+                }
+                .mat-tab-body {
+                    background-color: mat-color($background, card);
+                    border: 1px solid mat-color($foreground, dividers);
+                    border-top: 0;
+                }
+
+                .mat-tab-header {
+                    box-shadow: inset 0 -1px 0 mat-color($foreground, dividers);
                 }
             }
 
-            .graph-header {
-                .graph-header-inner {
+            .widget-actions {
+                border-top: 1px solid mat-color($foreground, dividers);
+            }
+
+            .step-section {
+                &:not(:first-of-type) {
+                    border-top: 1px solid $new-bg;
+                }
+
+                .step-section-label {
+                    background-color: $section-tab-markers;
+
+                }
+
+                .step-section-label-text {
+                    span {
+                        color: $section-tab-color;
+                    }
+
+                    .mat-icon {
+                        color: rgba($section-tab-color, .8);
+                    }
+                }
+            }
+        }
+
+        .multi-graph-container {
+
+            /* headers */
+            .graph-header-cell {
+                .graph-header-cell-inner {
+                    color: $mg-text;
+                }
+            }
+
+            /* graph row/cells */
+
+            .graph-row-label {
+                box-shadow: inset 0 -1px 0 $mg-background;
+
+                .graph-row-label-inner {
                     background-color: $mg-background;
                     color: $mg-text;
                 }
             }
-        }
-    }
 
-    .multigraph-enabled {
-        .graph-cell.ts-legend-focus {
-            box-shadow: 0 0 3px 3px rgba(0, 191, 255, 0.3);
-        }
-    }
+            .graph-cell {
+                .no-data {
+                    span {
+                        border: 1px solid $divider;
+                    }
+                }
 
-    .singlegraph-enabled {
-        .graph-cell.ts-legend-focus {
-            > div {
-                box-shadow: inset 0 0 3px 3px rgba(0, 191, 255, 0.3);
+                .graph-header {
+                    .graph-header-inner {
+                        background-color: $mg-background;
+                        color: $mg-text;
+                    }
+                }
             }
         }
-    }
 
-    .widget-output.app-resizeable {
-
-        &::after {
-            // content is denali icon drag-handle
-            content: '\ebab';
-
-            background-color: if($is-dark-theme, rgba(0, 191, 255, 0.3), $card);
-            color: $text;
-            border: 1px solid rgba($text, .3);
-
+        .multigraph-enabled {
+            .graph-cell.ts-legend-focus {
+                box-shadow: 0 0 3px 3px rgba(0, 191, 255, 0.3); // TODO: need to plug into theme
+            }
         }
 
-        box-shadow: inset 0px -2px 1px -1px rgba($text, .3);
+        .singlegraph-enabled {
+            .graph-cell.ts-legend-focus {
+                > div {
+                    box-shadow: inset 0 0 3px 3px rgba(0, 191, 255, 0.3); // TODO: need to plug into theme
+                }
+            }
+        }
+
+        .widget-output.app-resizeable {
+
+            &::after {
+                // content is denali icon drag-handle
+                content: '\ebab';
+
+                background-color: if($is-dark, rgba(0, 191, 255, 0.3), $card); // TODO: need to plug into theme
+                color: $text;
+                border: 1px solid mat-color($foreground, text, .3);
+
+            }
+
+            box-shadow: inset 0px -2px 1px -1px mat-color($foreground, text, .3);
+        }
     }
 }

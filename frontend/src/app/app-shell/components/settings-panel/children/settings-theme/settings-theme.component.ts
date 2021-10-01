@@ -15,21 +15,24 @@
  * limitations under the License.
  */
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { ThemeService } from '../../../../services/theme.service';
+import { ThemeService } from '../../../../../shared/modules/theme/services/theme.service';
 import { take } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'settings-theme',
-    templateUrl: './settings-theme.component.html'
+    templateUrl: './settings-theme.component.html',
+    styleUrls: ['./settings-theme.component.scss']
 })
 export class SettingsThemeComponent implements OnInit {
 
     @HostBinding('class.settings-theme') private _hostClass = true;
 
     themeOptions: any[] = [];
+    variantOptions: any[] = [];
 
     activeTheme: string = '';
+    activeVariant: string = '';
 
     get activeThemeLabel(): string {
         const idx = this.themeOptions.findIndex(item => item.value === this.activeTheme);
@@ -40,8 +43,14 @@ export class SettingsThemeComponent implements OnInit {
         private themeService: ThemeService
     ) {
         this.themeOptions = ThemeService.themeOptions;
+        this.variantOptions = ThemeService.themeVariantOptions;
+
         this.themeService.getActiveTheme().pipe(take(1)).subscribe( theme => {
             this.activeTheme = theme;
+        });
+
+        this.themeService.getActiveVariant().pipe(take(1)).subscribe( variant => {
+            this.activeVariant= variant;
         });
     }
 
@@ -50,6 +59,11 @@ export class SettingsThemeComponent implements OnInit {
     selectTheme(item) {
         this.activeTheme = item.value;
         this.themeService.setActiveTheme(item.value);
+    }
+
+    changeThemeVariant(item) {
+        this.activeVariant = item.value;
+        this.themeService.setActiveVariant(item.value);
     }
 
 }

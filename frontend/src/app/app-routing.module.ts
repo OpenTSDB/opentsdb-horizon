@@ -24,6 +24,7 @@ const routes: Routes = [
   { path: 'a', loadChildren: 'app/alerts/alerts.module#AlertsModule' },
   { path: 'user', loadChildren: 'app/user/user.module#UserModule' },
   { path: 'namespace', loadChildren: 'app/namespace/namespace.module#NamespaceModule' },
+  { path: 'admin', loadChildren: 'app/admin/admin.module#AdminModule'},
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   { path: '**', redirectTo: 'main', pathMatch: 'full'}
 ];

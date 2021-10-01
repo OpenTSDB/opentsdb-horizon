@@ -16,24 +16,5 @@
  */
 @charset "utf-8";
 
-////// APP ROLLUP //////
-
-// denali colors
-@import 'scss/denali';
-
-// config items
-@import 'scss/config';
-
-// mixins
-@import 'scss/mixins';
-
-// Style Resets
-@import 'scss/resets';
-
-// Helper classes
-@import 'scss/helpers';
-
-// application theme definitions
-@import 'scss/theming';
-
-// YUP... Thats all there is to it (for now)
+// import app loader (GLOBAL STYLES)
+@import 'loader-app';

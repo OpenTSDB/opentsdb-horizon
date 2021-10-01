@@ -25,16 +25,19 @@ import {
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
-
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'test-navigator',
     templateUrl: './test-navigator.component.html',
-    styleUrls: ['./test-navigator.component.scss']
+    styleUrls: ['./test-navigator.component.scss'],
+    host: {
+        '[class.test-navigator]': 'true',
+        '[class.panel-content]': 'true'
+    }
 })
 export class TestNavigatorComponent implements OnInit {
 
-    @HostBinding('class.test-navigator') private _hostClass = true;
+    //@HostBinding('class.test-navigator') private _hostClass = true;
 
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
 
