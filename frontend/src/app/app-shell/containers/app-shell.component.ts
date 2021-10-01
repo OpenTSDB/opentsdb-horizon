@@ -256,6 +256,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit() {
 
         if ( this.readonly ) return;
+
         /*this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
             this.setAppTheme(theme);
         }));*/
