@@ -3,6 +3,12 @@
     "production": true,
     "queryParams": null,
     "debugLevel": "ERROR",
+    "uiBranding": {
+        "logo": {
+            "imageUrl": "/assets/horizon-logo-icon-only.png",
+            "homeUrl": "/main"
+        }
+    },
     "tsdbCacheMode": null,
     "tsdbSource": null,
     "tsdb_host": "<%tsdb endpoint%>",
