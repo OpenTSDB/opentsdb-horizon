@@ -98,6 +98,8 @@ export class TagAggregatorComponent implements OnInit {
 
     selectedAggregatorHelpIndex = -1;
 
+    selectedAggregatorHelpObj: any = {};
+
     subscription: Subscription;
 
     constructor() { }
