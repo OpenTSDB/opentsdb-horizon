@@ -96,7 +96,7 @@ export class TagAggregatorComponent implements OnInit {
     defaultAggregator = 'sum';
     selectedIndex = -1;
 
-    selectedAggregatorHelpIndex = -1;
+    selectedAggregatorHelpObj: any = {};
 
     subscription: Subscription;
 
@@ -122,7 +122,8 @@ export class TagAggregatorComponent implements OnInit {
         this.selectedIndex = this.aggregatorOptions.findIndex(item => item.value === this.value);
     }
 
-    setSelectedAggregatorHelpIndex(idx: number) {
-        this.selectedAggregatorHelpIndex = idx;
+    setAggregatorHelpObject(obj: any) {
+        console.log('setAggregatorHelpObject', obj);
+        this.selectedAggregatorHelpObj = obj;
     }
 }
