@@ -123,7 +123,6 @@ export class TagAggregatorComponent implements OnInit {
     }
 
     setAggregatorHelpObject(obj: any) {
-        console.log('setAggregatorHelpObject', obj);
         this.selectedAggregatorHelpObj = obj;
     }
 }
