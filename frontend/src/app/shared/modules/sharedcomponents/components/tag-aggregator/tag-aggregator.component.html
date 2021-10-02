@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,24 +22,28 @@
 </button>
 <mat-menu class="tag-aggregator-cdk-menu" #aggregatorMenu="matMenu" yPosition="below">
     <ng-template matMenuContent>
-        <div class="aggregator-list">
-            <button mat-menu-item *ngFor="let option of aggregatorOptions; let i = index"
-                (click)="selectOption(option.value)" (mouseover)="$event.stopPropagation(); setSelectedAggregatorHelpIndex(i)">{{option.icon}}</button>
+        <div class="aggregator-list" (mouseout)="selectedAggregatorHelpObj = {}">
+            <button mat-menu-item
+                *ngFor="let option of aggregatorOptions; let i = index"
+                (click)="selectOption(option.value)"
+                (mouseover)="setAggregatorHelpObject(option)">
+                {{option.icon}}
+            </button>
         </div>
-        <ng-container *ngIf="selectedAggregatorHelpIndex >= 0">
-            <ng-container *ngTemplateOutlet="aggregatorHelpLayout; context: aggregatorOptions[selectedAggregatorHelpIndex]"></ng-container>
+        <ng-container *ngIf="selectedAggregatorHelpObj && selectedAggregatorHelpObj.help">
+            <ng-container *ngTemplateOutlet="aggregatorHelpLayout"></ng-container>
         </ng-container>
     </ng-template>
 </mat-menu>
 
-<ng-template #aggregatorHelpLayout let-help="help">
+<ng-template #aggregatorHelpLayout>
     <div class="aggregator-help">
         <div class="help-title">
             <span>
                 <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
             </span>
-            <span [innerHtml]="help.label | safe:'html'"></span>
+            <span [innerHtml]="selectedAggregatorHelpObj.help.label | safe:'html'"></span>
         </div>
-        <div class="help-description" [innerHtml]="help.description | safe:'html'"></div>
+        <div class="help-description" [innerHtml]="selectedAggregatorHelpObj.help.description | safe:'html'"></div>
     </div>
 </ng-template>
