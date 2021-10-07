@@ -18,8 +18,8 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/scss",
-                "src"
+                "./src",
+                "./src/scss"
               ]
             },
             "assets": [
@@ -106,6 +106,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
+            "stylePreprocessorOptions": {
+                "includePaths": [
+                  "./src",
+                  "./src/scss"
+                ]
+              },
             "styles": [
                 {
                     "input": "src/styles.scss",
