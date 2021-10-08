@@ -60,7 +60,7 @@ import {
 import { filter, map } from 'rxjs/operators';
 import { ThemeService } from '../../shared/modules/theme/services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from '../../core/services/config.service'
 
 @Component({
     selector: 'app-shell',
@@ -126,7 +126,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     private routedApp: any = '';
 
     clipboardAvailable = false;
-    readonly = environment.readonly;
+    readonly = false;
 
     constructor(
         private interCom: IntercomService,
@@ -135,9 +135,11 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private location: Location,
         private themeService: ThemeService,
+        private appConfig: AppConfigService,
         @Inject(DOCUMENT) private document: any
     ) {
 
+        this.readonly = this.appConfig.getConfig().readonly;
         if ( this.readonly ) return;
         // prefetch the navigator first data
         this.store.dispatch(new DbfsLoadResources()).pipe(
