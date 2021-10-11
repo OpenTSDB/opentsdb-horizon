@@ -16,26 +16,24 @@
  */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { environment } from '../environments/environment';
+import { AuthGuardService } from './auth-guard.service';
 
-const routes: Routes = !environment.readonly ? [
+const routes: Routes =  [
   { path: 'd', loadChildren: 'app/dashboard/dashboard.module#DashboardModule' },
-  { path: 'snap', loadChildren: 'app/dashboard/dashboard.module#DashboardModule' },
-  { path: 'main', loadChildren: 'app/landing-page/landing-page.module#LandingPageModule' },
-  { path: 'a', loadChildren: 'app/alerts/alerts.module#AlertsModule' },
-  { path: 'user', loadChildren: 'app/user/user.module#UserModule' },
-  { path: 'namespace', loadChildren: 'app/namespace/namespace.module#NamespaceModule' },
-  { path: 'admin', loadChildren: 'app/admin/admin.module#AdminModule'},
-  { path: '', redirectTo: 'main', pathMatch: 'full' },
-  { path: '**', redirectTo: 'main', pathMatch: 'full'}
-] : [
-  { path: 'd', loadChildren: 'app/dashboard/dashboard.module#DashboardModule' },
-  { path: '**', loadChildren:'app/error/error.module#ErrorModule'}
+  { path: 'snap', loadChildren: 'app/dashboard/dashboard.module#DashboardModule', canLoad: [ AuthGuardService ] },
+  { path: 'main', loadChildren: 'app/landing-page/landing-page.module#LandingPageModule', canLoad: [ AuthGuardService ]  },
+  { path: 'a', loadChildren: 'app/alerts/alerts.module#AlertsModule', canLoad: [ AuthGuardService ]  },
+  { path: 'user', loadChildren: 'app/user/user.module#UserModule', canLoad: [ AuthGuardService ]  },
+  { path: 'namespace', loadChildren: 'app/namespace/namespace.module#NamespaceModule', canLoad: [ AuthGuardService ]  },
+  { path: 'admin', loadChildren: 'app/admin/admin.module#AdminModule', canLoad: [ AuthGuardService ] },
+  { path: '', redirectTo: 'main', pathMatch: 'full', canLoad: [ AuthGuardService ]  },
+  { path: 'error', loadChildren:'app/error/error.module#ErrorModule'},
+  { path: '**', redirectTo: 'main', pathMatch: 'full', canLoad: [ AuthGuardService ] }
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule],
-    providers: []
+    providers: [ AuthGuardService ]
 })
 export class AppRoutingModule { }
