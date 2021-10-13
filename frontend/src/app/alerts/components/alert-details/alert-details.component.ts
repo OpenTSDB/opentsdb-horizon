@@ -289,6 +289,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     events: any = [];
     startTime;
     endTime;
+    timeZone = 'local';
     prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
@@ -1009,6 +1010,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
     }
 
+    setTimezone(e: any) {
+        this.startTime = this.dateUtil.isRelativeTime(this.startTime) ? this.startTime : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.startTime, this.timeZone).unix().toString(), e);
+        this.endTime = this.dateUtil.isRelativeTime(this.endTime) ? this.endTime : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.endTime, this.timeZone).unix().toString(), e);
+        this.timeZone = e;
+        this.refreshChart();
+    }
+
     validateSingleMetricThresholds(group) {
         const slidingWindowCntrl = this.thresholdSingleMetricControls['slidingWindow'];
         const badStateCntrl = this.thresholdSingleMetricControls['badThreshold'];
@@ -1016,6 +1024,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const recoveryStateCntrl = this.thresholdSingleMetricControls['recoveryThreshold'];
         const reportingIntervalCntrl = this.thresholdSingleMetricControls['reportingInterval'];
         const requiresFullWindowCntrl = this.thresholdSingleMetricControls['requiresFullWindow'];
+        const autoRecoveryIntervalCntrl = this.thresholdControls['autoRecoveryInterval'];
 
         const recoveryMode = this.thresholdRecoveryType;
         const bad = badStateCntrl.value;
@@ -1058,6 +1067,12 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 recoveryStateCntrl.setErrors({ 'invalid': true });
             }
         }
+
+        autoRecoveryIntervalCntrl.setErrors(null);
+        if ( autoRecoveryIntervalCntrl.value !== null && parseInt(autoRecoveryIntervalCntrl.value) <= parseInt(slidingWindowCntrl.value) ) {
+            autoRecoveryIntervalCntrl.setErrors({ 'invalid': true });
+        }
+
     }
 
     validateHealthCheckForm() {
@@ -1249,8 +1264,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
             const startTime = new Date(this.chartData.ts[0][0]).getTime() / 1000;
             const endTime = new Date(this.chartData.ts[n - 1][0]).getTime() / 1000;
-            this.startTime = Math.floor(zConfig.start) <= startTime ? this.startTime : this.dateUtil.timestampToTime(zConfig.start, 'local');
-            this.endTime = Math.ceil(zConfig.end) >= endTime ? this.endTime : this.dateUtil.timestampToTime(zConfig.end, 'local');
+            this.startTime = Math.floor(zConfig.start) <= startTime ? this.startTime : this.dateUtil.timestampToTime(zConfig.start, this.timeZone);
+            this.endTime = Math.ceil(zConfig.end) >= endTime ? this.endTime : this.dateUtil.timestampToTime(zConfig.end, this.timeZone);
         } else if ( !zConfig.isZoomed && zConfig.axis === 'x' ) {
             this.startTime = this.prevDateRange.startTime;
             this.endTime = this.prevDateRange.endTime;
@@ -1277,8 +1292,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
         };
         this.queryTime = {
-            start: this.dateUtil.timeToMoment(this.startTime, 'local').valueOf(),
-            end: this.dateUtil.timeToMoment(this.endTime, 'local').valueOf()
+            start: this.dateUtil.timeToMoment(this.startTime, this.timeZone).valueOf(),
+            end: this.dateUtil.timeToMoment(this.endTime, this.timeZone).valueOf()
         };
         const queries = {};
 
@@ -1433,6 +1448,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         config.queries = queries;
         this.options.labels = ['x'];
+        this.options.labelsUTC = this.timeZone === 'utc' ? true : false;
         const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], this.queryData);
         this.setChartYMax();
         this.chartData = { ts: data };
@@ -1814,7 +1830,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 time:  {
                     start: this.queryTime.start / 1000,
                     end: this.queryTime.end / 1000,
-                    zone: 'local'
+                    zone: this.timeZone
                 },
                 meta : {
                     title: this.data.name
