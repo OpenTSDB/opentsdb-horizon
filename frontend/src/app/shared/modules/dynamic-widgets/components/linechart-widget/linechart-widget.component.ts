@@ -161,7 +161,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
     graphData: any = {}; // { y: { x: { ts: [[0]] }}};
-    graphRowLabelMarginLeft: 0;
+    graphRowLabelMarginLeft = 0;
+
+    multigraphContainerMinWidth: any = 'initial';
 
     // TIMESERIES LEGEND
     // tsHighlightData: any = {};
@@ -507,7 +509,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
-                            });
+                            }, 200);
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
@@ -1724,6 +1726,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             return false;
         });
         this.inViewport = { ...temp };
+
+        if (this.displayMultigraph && this.multigraphMode === 'grid' && this.multigraphColumns.length > 0) {
+            this.multigraphContainerMinWidth = ((this.size.width * this.multigraphColumns.length) - 6);
+        } else {
+            this.multigraphContainerMinWidth = 'initial';
+        }
+
         this.cdRef.detectChanges();
     }
 

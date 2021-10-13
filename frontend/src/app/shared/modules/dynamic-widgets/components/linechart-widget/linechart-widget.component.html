@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@
         <div class="multigraph-output" (scroll)="multigraphContainerScroll($event)" ttMouseListener ttType="linechart" [ttMultigraph]="displayMultigraph">
             <div class="multi-graph-container" #multigraphContainer
                 [ngClass]="{'multigraph-grid-mode': multigraphMode === 'grid', 'multigraph-freeflow-mode': multigraphMode === 'freeflow'}"
-                [style.minWidth.px]="(displayMultigraph && multigraphMode === 'grid' && multigraphColumns.length > 0) ? ((size.width * multigraphColumns.length) - 6) : 'initial'">
+                [style.minWidth.px]="multigraphContainerMinWidth">
                 <!-- column headers -->
                 <div class="graph-header-row" #multigraphHeaderRow *ngIf="multigraphColumns.length > 0 && multigraphMode === 'grid'">
                     <div class="graph-header-cell" *ngFor="let columnName of multigraphColumns" [style.width.px]="size.width">
