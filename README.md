@@ -60,6 +60,13 @@ sudo chown -R <userid>:staff ${HOME}/.ssh/opentsdb
 
 Note: In Chrome, you may have to type `thisisunsafe` to bypass HSTS security warning.
 
+### 7. App config
+
+| Field   |Type         |Description |
+|----------|-------------|:-----------|
+| readonly |  boolean | turns the dashboard into readonly mode. Disables other modules. |
+| auth |  object   |   Auth configuration<br><pre>"auth": {<br>  "loginURL": "/login", // Login URL where the user needs to be redirected in case of session expiry. <br>  "heartbeatURL": "/heartbeat", // URL where the heartbeat needs to be checked; auth cookie refresh logic can be added here. <br>  "heartbeatImgURL": "/heartbeatimg", // Optional. If heartbeat fails, this URL tries to refreshes the cookie through img.src since it follows the url redirect.  <br>  "heartbeatInterval": 600, // interval(secs) to check the heartbeat.<br>}</pre> |
+
 Contribute
 ----------
 
