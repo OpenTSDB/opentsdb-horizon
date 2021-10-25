@@ -88,13 +88,12 @@
             margin: 20px 0px 0px 0px;
             display:flex;
             justify-content: center;
+            align-items: center;
             &.display-legend-right {
                 flex-direction: row;
-                align-items: center;
             }
             &.display-legend-left {
                 flex-direction: row-reverse;
-                align-items: center;
             }
             text {
                 font-family: 'Ubuntu';

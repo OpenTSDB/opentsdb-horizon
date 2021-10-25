@@ -388,6 +388,12 @@
                                                         <mat-form-field appearance="fill" floatLabel="never">
                                                             <mat-select placeholder="Never" formControlName="autoRecoveryInterval" disableOptionCentering>
                                                                 <mat-option value="null">Never</mat-option>
+                                                                <mat-option value="300">after 5 mins</mat-option>
+                                                                <mat-option value="600">after 10 mins</mat-option>
+                                                                <mat-option value="900">after 15 mins</mat-option>
+                                                                <mat-option value="1200">after 20 mins</mat-option>
+                                                                <mat-option value="1800">after 30 mins</mat-option>
+                                                                <mat-option value="2700">after 45 mins</mat-option>
                                                                 <mat-option value="3600">after 1 hour</mat-option>
                                                                 <mat-option value="7200">after 2 hours</mat-option>
                                                                 <mat-option value="14400">after 4 hours</mat-option>
@@ -398,6 +404,9 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                         <span class="form-label"><strong> if no data arrives.</strong></span>
+                                                    </div>
+                                                    <div *ngIf="thresholdControls.autoRecoveryInterval.errors && thresholdControls.autoRecoveryInterval.errors.invalid">
+                                                        <mat-error>Recovery interval should be double or more of the sliding window value</mat-error>
                                                     </div>
                                                     <div>
                                                         <mat-hint class="info-hint">Select "Do not notify" on missing data to enable auto recovery options.</mat-hint>
@@ -1353,7 +1362,7 @@ This simulates the output of the query editor - minus a few events and buttons
 <div class="navbar-item" *ngIf="data.type === 'simple' || data.type === 'event'">
         <time-picker class="navbar-item nav-date-time-picker"
             (newChange)="handleTimePickerChanges($event)"
-            [timezone]="'local'"
+            [timezone]="timeZone"
             [startTime]="startTime"
             [endTime]="endTime"
             [downsample]=" data.type === 'simple' ? downsample: null"
@@ -1361,6 +1370,9 @@ This simulates the output of the query editor - minus a few events and buttons
             [config]="{enableSync: false, enableRefresh: false}"
             [xPosition]="menuXAlignValue">
         </time-picker>
+        <span class="navbar-item nav-timezone-toggle" *ngIf="data.type === 'simple'">
+            <navbar-timezone-toggle [timezone]="timeZone" (change)="setTimezone($event);"></navbar-timezone-toggle>
+        </span>
     </div>
     <div class="navbar-item">
         <help-links></help-links>

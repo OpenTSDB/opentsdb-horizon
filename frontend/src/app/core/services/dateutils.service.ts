@@ -159,6 +159,10 @@ export class DateUtilsService {
     return _moment;
   }
 
+  isRelativeTime(time) {
+    return this.relativeTimeToMoment(time) || this.timeToTime(time) || time.toLowerCase() === 'now';
+  }
+
   getTimeAmount(relativeTime: string): number {
     const number: number = Number(relativeTime.match(/\d+/));
     return number;
