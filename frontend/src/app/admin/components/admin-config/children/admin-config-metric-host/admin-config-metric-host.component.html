@@ -1,0 +1,23 @@
+<div *ngIf="!editMode; else editMetricHostForm" class="host-display-wrap">
+    <div class="metric-host">
+        <span>{{host.value}}</span>
+    </div>
+    <div class="actions">
+        <button mat-mini-fab color="primary" (click)="toggleEditMode()">
+            <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+        </button>
+    </div>
+</div>
+<ng-template #editMetricHostForm>
+    <div class="form-control-wrap auto-width">
+        <mat-form-field appearance="fill" floatLabel="never"
+            [ngClass]="{'mat-form-field-invalid': host.invalid}">
+            <input matInput type="string" autocomplete="off" placeholder="Enter value"
+                [formControl]="host">
+        </mat-form-field>
+        <div class="actions">
+            <button mat-flat-button color="primary" (click)="apply()">Apply</button>
+            <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+        </div>
+    </div>
+</ng-template>

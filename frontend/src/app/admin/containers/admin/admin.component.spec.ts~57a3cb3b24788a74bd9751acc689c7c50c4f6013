@@ -14,29 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@charset "utf-8";
 
-////// GENERIC //////
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-html,
-body {
-    width: 100%;
-    height: 100%;
-}
+import { AdminComponent } from './admin.component';
 
-body {
-    display: flex;
-}
+describe('AdminComponent', () => {
+  let component: AdminComponent;
+  let fixture: ComponentFixture<AdminComponent>;
 
-.options {
-  padding: 10px;
-}
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ AdminComponent ]
+    })
+    .compileComponents();
+  }));
 
-.options-header {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AdminComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
