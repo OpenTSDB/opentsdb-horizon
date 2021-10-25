@@ -1,0 +1,39 @@
+<div *ngIf="!editMode; else editHelpLinkForm" class="help-link-wrap">
+    <div>
+        <mat-icon *ngIf="link.get('icon')" fontSet="denali" [fontIcon]="link.get('icon').value"></mat-icon>
+        <span>{{link.get('label').value}}</span>
+        <button mat-button (click)="toggleEditMode()">edit </button>
+    </div>
+    <div>
+        <a mat-button href="{{link.get('href').value}}" target="_new">{{link.get('href').value}}</a>
+    </div>
+</div>
+<ng-template #editHelpLinkForm form>
+    <div class="help-link-edit-wrap" [formGroup]="link">
+        <div class="form-control-wrap auto-width">
+            <div class="form-label">
+                <span>Help label</span>
+            </div>
+            <mat-form-field appearance="fill" floatLabel="never"
+                [ngClass]="{'mat-form-field-invalid': link.errors}">
+                <input matInput type="string" autocomplete="off" placeholder="Enter value for help label"
+                    formControlName="label">
+            </mat-form-field>
+        </div>
+        <!-- TODO: add form field for OPTIONAL icon here -->
+        <div class="form-control-wrap auto-width">
+            <div class="form-label">
+                <span>Help URL</span>
+            </div>
+            <mat-form-field appearance="fill" floatLabel="never"
+                [ngClass]="{'mat-form-field-invalid': link.errors}">
+                <input matInput type="string" autocomplete="off" placeholder="Enter value for URL"
+                    formControlName="href">
+            </mat-form-field>
+        </div>
+        <div class="actions">
+            <button mat-flat-button color="primary" (click)="apply()">Apply</button>
+            <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+        </div>
+    </div>
+</ng-template>

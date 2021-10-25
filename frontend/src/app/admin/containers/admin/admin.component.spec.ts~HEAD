@@ -14,28 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@charset "utf-8";
 
-////// OVERRIDES SOME MATERIAL COMPONENTS //////
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-.mat-toolbar-single-row, .mat-toolbar-multiple-rows {
-  min-height: 48px !important;
-  height: 48px;
-}
+import { AdminComponent } from './admin.component';
 
-mat-nav-list {
-  min-width: 200px;
-  width: 20%;
-  border-right: 1px solid grey;
-  overflow: overlay;
-}
+describe('AdminComponent', () => {
+  let component: AdminComponent;
+  let fixture: ComponentFixture<AdminComponent>;
 
-@-moz-document url-prefix() {
-    mat-nav-list {
-        overflow: auto;
-    }
-}
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ AdminComponent ]
+    })
+    .compileComponents();
+  }));
 
-mat-nav-list .active, mat-nav-list .mat-list-item-focus.active:focus {
-  background: #afddff;
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AdminComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

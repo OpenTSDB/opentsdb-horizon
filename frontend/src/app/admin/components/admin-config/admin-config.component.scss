@@ -25,7 +25,60 @@
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
-    min-height: 100%;
+
+    .has-scroller {
+        flex: 1;
+    }
+
+    .is-scroller {
+        padding: 12px 24px;
+    }
+
+    .config-section-title {
+        h1 {
+            font-size: mat-font-size(map-get($app-fontface-config, sans), subheading-2);
+            font-weight: mat-font-weight(map-get($app-fontface-config, sans), title);
+        }
+    }
+
+    .config-section {
+        margin-bottom: 15px;
+    }
+
+    .config-section-content {
+        padding: 15px 20px;
+    }
+
+    .form-group:not(:last-child) {
+        margin-bottom: 12px;
+    }
+
+    .form-group {
+        .form-label {
+            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+            font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+        }
+    }
+
+    .module-section {
+        .module-section-title {
+            font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+        }
+
+        .module-subsection {
+            padding-top: 10px;
+        }
+     }
+
+    .action-controls {
+        padding: 8px 24px;
+        max-height: 55px;
+        flex: 1;
+
+        .mat-flat-button:not(:last-child) {
+            margin-right: 8px;
+        }
+    }
  }
 
  // CDK items (if any)
@@ -34,5 +87,9 @@
 @include init-component-variants() {
     :host.app-admin-section.app-admin-config {
         background-color: mat-color($background, card);
+
+        .action-controls {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
     }
 }
