@@ -73,7 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 // url:/heartbeat is one that tells the failure is due to authentication
                 const url = error.url ? error.url : error.error.currentTarget.__zone_symbol__xhrURL;
                 const authConfig = this.appConfig.getConfig().auth;
-                if ( url.indexOf('/config') === -1 && url.indexOf(authConfig.heartbeatURL) === -1 && error.status === 403 ) {
+                if ( url.indexOf('/config') === -1 && url.indexOf(authConfig.heartbeatURL) === -1 && [401, 403].includes(error.status)) {
                     return this.checkLoginExpiration()
                         .pipe(
                             switchMap(
