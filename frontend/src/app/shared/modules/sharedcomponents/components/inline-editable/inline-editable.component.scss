@@ -17,15 +17,19 @@
 
 @mixin inline-editable-component-base() {
     .inline-editable {
-        .mat-form-field-infix {
-            padding: 0px;
-            border-top-width: 14px;
-        }
 
-        .mat-form-field-wrapper {
-            padding-bottom: 1.35em;
-        }
+        .mat-form-field,
+        .mat-form-field.mat-form-field-hide-placeholder {
+            .mat-form-field-infix {
+                padding: 0px;
+                border-top-width: 14px;
+            }
 
+            // NOTE: not sure why this is here... leaving until I discover why
+            //.mat-form-field-wrapper {
+            //    padding-bottom: 1.35em;
+            //}
+        }
         /* Following style is to get
            the input to smartly grow
            using a css-grid and
@@ -38,7 +42,8 @@
            https://codepen.io/shshaw/pen/c72208b279d750f1ab46b6a45bbd04d7
            */
 
-        .mat-form-field {
+        .mat-form-field,
+        .mat-form-field.mat-form-field-hide-placeholder {
             width: auto;
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;

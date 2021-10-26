@@ -85,8 +85,8 @@
     //@include alerts-container-component-theme($theme-config); //nothing to style yet
 
     // components
-    //@include snooze-details-component-theme($theme-config);
-    //@include alert-details-component-theme($theme-config);
+    @include snooze-details-component-theme($theme-config);
+    @include alert-details-component-theme($theme-config);
     @include name-alert-dialog-component-theme($theme-config);
     @include alert-configuration-contacts-component-theme($theme-config);
     @include alert-details-metric-period-over-period-component-theme($theme-config);
