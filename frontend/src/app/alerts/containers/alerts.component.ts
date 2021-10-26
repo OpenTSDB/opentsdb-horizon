@@ -319,8 +319,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
         const config = this.appConfig.getConfig();
-        console.log('%cCONFIG', 'color: white; padding: 2px; background: purple;', config );
-
         this.showNamespace = config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true;
 
         this.subscription.add(this.alertSearch.valueChanges.pipe(
