@@ -1,39 +1,35 @@
 <div *ngIf="!editMode; else editHelpLinkForm" class="help-link-wrap">
-    <div>
-        <mat-icon *ngIf="link.get('icon')" fontSet="denali" [fontIcon]="link.get('icon').value"></mat-icon>
-        <span>{{link.get('label').value}}</span>
-        <button mat-button (click)="toggleEditMode()">edit </button>
+    <div class="help-label-wrap">
+        <div class="help-label">
+            <mat-icon *ngIf="link.get('icon')" fontSet="denali" [fontIcon]="link.get('icon').value" class="help-icon"></mat-icon>
+            <span>{{link.get('label').value}}</span>
+        </div>
+        <div class="actions">
+            <button mat-mini-fab color="primary" (click)="toggleEditMode()">
+                <mat-icon fontSet="denali" fontIcon="d-pencil"></mat-icon>
+            </button>
+        </div>
     </div>
-    <div>
+    <div class="help-link-wrap">
         <a mat-button href="{{link.get('href').value}}" target="_new">{{link.get('href').value}}</a>
     </div>
 </div>
 <ng-template #editHelpLinkForm form>
     <div class="help-link-edit-wrap" [formGroup]="link">
-        <div class="form-control-wrap auto-width">
-            <div class="form-label">
-                <span>Help label</span>
-            </div>
-            <mat-form-field appearance="fill" floatLabel="never"
-                [ngClass]="{'mat-form-field-invalid': link.errors}">
-                <input matInput type="string" autocomplete="off" placeholder="Enter value for help label"
-                    formControlName="label">
-            </mat-form-field>
-        </div>
+        <app-admin-config-generic-input class="form-group help-link-label"
+            inputLabel="Help label"
+            inputPlaceholder="Enter value for help label"
+            horizontalAlign="true"
+            formControlName="label"></app-admin-config-generic-input>
         <!-- TODO: add form field for OPTIONAL icon here -->
-        <div class="form-control-wrap auto-width">
-            <div class="form-label">
-                <span>Help URL</span>
-            </div>
-            <mat-form-field appearance="fill" floatLabel="never"
-                [ngClass]="{'mat-form-field-invalid': link.errors}">
-                <input matInput type="string" autocomplete="off" placeholder="Enter value for URL"
-                    formControlName="href">
-            </mat-form-field>
-        </div>
+        <app-admin-config-generic-input class="form-group help-link-url"
+            inputLabel="Help URL"
+            inputPlaceholder="Enter value for help URL"
+            horizontalAlign="true"
+            formControlName="href"></app-admin-config-generic-input>
         <div class="actions">
-            <button mat-flat-button color="primary" (click)="apply()">Apply</button>
-            <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="apply()" class="apply">Apply</button>
+            <button mat-flat-button color="warn" (click)="cancel()" class="cancel">Cancel</button>
         </div>
     </div>
 </ng-template>

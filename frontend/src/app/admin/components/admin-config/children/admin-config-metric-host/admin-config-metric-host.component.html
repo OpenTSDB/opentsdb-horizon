@@ -9,15 +9,26 @@
     </div>
 </div>
 <ng-template #editMetricHostForm>
-    <div class="form-control-wrap auto-width">
-        <mat-form-field appearance="fill" floatLabel="never"
-            [ngClass]="{'mat-form-field-invalid': host.invalid}">
-            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                [formControl]="host">
-        </mat-form-field>
-        <div class="actions">
-            <button mat-flat-button color="primary" (click)="apply()">Apply</button>
-            <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+    <div class="host-display-edit-wrap">
+        <div class="form-control-wrap auto-width">
+            <mat-form-field appearance="fill" floatLabel="never"
+                [ngClass]="{'mat-form-field-invalid': host.invalid}">
+                <input matInput type="string" autocomplete="off" placeholder="Enter value"
+                    oninput="this.parentNode.dataset.value = this.value"
+                    [value]="hostValue"
+                    [formControl]="host">
+            </mat-form-field>
         </div>
+        <div class="actions">
+            <button mat-flat-button (click)="apply()" class="apply">Apply</button>
+            <button mat-flat-button (click)="cancel()" class="cancel">Cancel</button>
+            <span class="flex-spacer"></span>
+            <button mat-flat-button color="warn" (click)="delete()" class="delete">Delete</button>
+        </div>
+    </div>
+    <div class="delete-confirm" *ngIf="needDeleteConfirm">
+        <span>Confirm host removal?</span>
+        <button mat-flat-button color="warn" (click)="deleteConfirm()" class="confirm-delete">Yes</button>
+        <button mat-flat-button color="primary" (click)="deleteCancel()" class="cancel-delete">No</button>
     </div>
 </ng-template>

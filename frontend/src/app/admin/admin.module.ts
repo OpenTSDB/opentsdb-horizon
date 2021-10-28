@@ -37,6 +37,7 @@ import { AdminThemesComponent } from './components/admin-themes/admin-themes.com
 import { AdminConfigMetricHostComponent } from './components/admin-config/children/admin-config-metric-host/admin-config-metric-host.component';
 import { AdminConfigHelpLinkComponent } from './components/admin-config/children/admin-config-help-link/admin-config-help-link.component';
 import { AdminConfigAlertEndpointComponent } from './components/admin-config/children/admin-config-alert-endpoint/admin-config-alert-endpoint.component';
+import { AdminConfigGenericInputComponent } from './components/admin-config/children/admin-config-generic-input/admin-config-generic-input.component';
 
 @NgModule({
     imports: [
@@ -59,7 +60,8 @@ import { AdminConfigAlertEndpointComponent } from './components/admin-config/chi
         AdminThemesComponent,
         AdminConfigMetricHostComponent,
         AdminConfigHelpLinkComponent,
-        AdminConfigAlertEndpointComponent
+        AdminConfigAlertEndpointComponent,
+        AdminConfigGenericInputComponent
     ]
 })
 export class AdminModule { }

@@ -6,21 +6,11 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <div class="form-group app-name">
-                    <div class="form-label">
-                        <span>App name</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].application.errors && adminConfigForm['controls'].application.errors.required}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="name">
-                        </mat-form-field>
-                        <mat-error
-                            *ngIf="adminConfigForm.touched && adminConfigForm['controls'].application.errors && adminConfigForm['controls'].application.errors.required">
-                            App name should not be empty</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group app-name"
+                    inputLabel="App name"
+                    formControlName="name"
+                    [hasErrors]="adminConfigForm.touched && adminConfigForm['controls'].application.errors && adminConfigForm['controls'].application.errors.required"
+                    errorMsg="App name should not be empty"></app-admin-config-generic-input>
                 <div class="form-group production-enabled">
                     <mat-checkbox formControlName="production">Production enabled</mat-checkbox>
                 </div>
@@ -32,34 +22,13 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content" formGroupName="logo">
-                <div class="form-group logo-img-url">
-                    <div class="form-label">
-                        <span>App Logo Image URL</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].uiBranding.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="imageUrl">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].uiBranding.errors">UI
-                            Branding errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group logo-home-url">
-                    <div class="form-label">
-                        <span>App Home URL</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].uiBranding.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="homeUrl">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].uiBranding.errors">UI
-                            Branding errors</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group logo-img-url"
+                    inputLabel="App Logo Image URL"
+                    formControlName="imageUrl"></app-admin-config-generic-input>
+
+                <app-admin-config-generic-input class="form-group logo-home-url"
+                    inputLabel="App Home URL"
+                    formControlName="homeUrl"></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-endpoints" formGroupName="endpoints">
@@ -68,78 +37,33 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <div class="form-group tsdb-host">
-                    <div class="form-label">
-                        <span>TSDB Host</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].endpoints.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="tsdb_host">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].endpoints.errors">
-                            Endpoint
-                            errors</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group tsdb-host"
+                    inputLabel="TSDB Host"
+                    formControlName="tsdb_host"></app-admin-config-generic-input>
                 <div class="form-group tsdb-metric-hosts">
                     <div class="form-label">
                         <span>TSDB Metric Hosts</span>
+                        <a mat-button (click)="addTsdbMetricHost('_new_')" class="add-new-metric-host">add metric host</a>
                     </div>
                     <div class="form-control-wrap auto-width">
                         <div class="metric-hosts-list">
                             <app-admin-config-metric-host
-                                *ngFor="let metricHost of endpoints.get('tsdb_hosts')['controls']; let i = index;" [index]="i"
-                                [host]="metricHost"></app-admin-config-metric-host>
+                                *ngFor="let metricHost of endpoints.get('tsdb_hosts')['controls']; let i = index;"
+                                [index]="i"
+                                [host]="metricHost"
+                                (metricHostUpdate)="tsdbMetricHostListener($event)"></app-admin-config-metric-host>
                         </div>
                     </div>
                 </div>
-                <div class="form-group configdb-host">
-                    <div class="form-label">
-                        <span>ConfigDB Host</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].endpoints.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="configdb">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].endpoints.errors">
-                            Endpoint
-                            errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group metaapi-host">
-                    <div class="form-label">
-                        <span>MetaAPI Host</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].endpoints.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="metaApi">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].endpoints.errors">
-                            Endpoint
-                            errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group auraui-host">
-                    <div class="form-label">
-                        <span>AuraUI Host</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].endpoints.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="auraUI">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].endpoints.errors">
-                            Endpoint
-                            errors</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group configdb-host"
+                    inputLabel="ConfigDB Host"
+                    formControlName="configdb"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group metaapi-host"
+                    inputLabel="MetaAPI Host"
+                    formControlName="metaApi"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group auraui-host"
+                    inputLabel="AuraUI Host"
+                    formControlName="auraUI"></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-alerts" formGroupName="alert">
@@ -148,21 +72,19 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <div class="form-group alert-history-url">
+                <app-admin-config-generic-input class="form-group alert-history-url"
+                    inputLabel="Alert History URL"
+                    formControlName="alert_history_url"></app-admin-config-generic-input>
+                <!-- TODO Alert endpoints-->
+                <div class="alert-endpoints-wrap">
                     <div class="form-label">
-                        <span>Alert History URL</span>
+                        <span>Alert Endpoints</span>
                     </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].alert.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="alert_history_url">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].alert.errors">Endpoint
-                            errors</mat-error>
+                    <mat-divider></mat-divider>
+                    <div class="alert-endpoint-list">
+                        <app-admin-config-alert-endpoint *ngFor="let recipient of alertRecipientKeys" [endpoint]="alert['controls'].recipient['controls'][recipient]" [index]="i"></app-admin-config-alert-endpoint>
                     </div>
                 </div>
-                <!-- TODO Alert endpoints-->
             </div>
         </section>
         <section class="config-section config-section-help-links" formGroupName="helpLinks">
@@ -206,21 +128,9 @@
                 <div class="form-group namespaces-enabled">
                     <mat-checkbox formControlName="enabled">Enable namespaces</mat-checkbox>
                 </div>
-                <div class="form-group default-namespace">
-                    <div class="form-label">
-                        <span>Default Namespace</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].endpoints.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="default">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].namespace.errors">
-                            Endpoint
-                            errors</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group default-namespace"
+                    inputLabel="Default Namespace"
+                    formControlName="default"></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-namespaces" formGroupName="auth">
@@ -229,62 +139,20 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <div class="form-group login-url">
-                    <div class="form-label">
-                        <span>Login URL</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].auth.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="loginURL">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].auth.errors">Auth
-                            errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group heartbeat-url">
-                    <div class="form-label">
-                        <span>Heartbeat URL</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].auth.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="heartbeatURL">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].auth.errors">Auth
-                            errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group heartbeat-image-url">
-                    <div class="form-label">
-                        <span>Heartbeat Image URL</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].auth.errors}">
-                            <input matInput type="string" autocomplete="off" placeholder="Enter value"
-                                formControlName="heartbeatImgURL">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].auth.errors">Auth
-                            errors</mat-error>
-                    </div>
-                </div>
-                <div class="form-group heartbeat-interval">
-                    <div class="form-label">
-                        <span>Heartbeat Interval (ms)</span>
-                    </div>
-                    <div class="form-control-wrap auto-width">
-                        <mat-form-field appearance="fill" floatLabel="never"
-                            [ngClass]="{'mat-form-field-invalid': adminConfigForm['controls'].auth.errors}">
-                            <input matInput type="number" autocomplete="off" placeholder="Enter numerical value"
-                                formControlName="heartbeatInterval">
-                        </mat-form-field>
-                        <mat-error *ngIf="adminConfigForm.touched && adminConfigForm['controls'].auth.errors">Auth
-                            errors</mat-error>
-                    </div>
-                </div>
+                <app-admin-config-generic-input class="form-group login-url"
+                    inputLabel="Login URL"
+                    formControlName="loginURL"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group heartbeat-url"
+                    inputLabel="Heartbeat URL"
+                    formControlName="heartbeatURL"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group heartbeat-img-url"
+                    inputLabel="Heartbeat Image URL"
+                    formControlName="heartbeatImgURL"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group heartbeat-interval"
+                    inputLabel="Heartbeat Interval (ms)"
+                    inputType="number"
+                    inputPlaceholder="Enter numerical value"
+                    formControlName="heartbeatInterval"></app-admin-config-generic-input>
             </div>
         </section>
     </div>

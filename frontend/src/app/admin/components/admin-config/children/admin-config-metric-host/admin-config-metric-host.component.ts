@@ -1,51 +1,135 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatInput, MatFormField } from '@angular/material';
 
 @Component({
     selector: 'app-admin-config-metric-host',
     templateUrl: './admin-config-metric-host.component.html',
     styleUrls: ['./admin-config-metric-host.component.scss']
 })
-export class AdminConfigMetricHostComponent implements OnInit {
+export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterViewInit {
 
     @HostBinding('class') classAttribute: string = 'app-admin-config-metric-host';
-    @HostBinding('class.edit-mode') private tplEdit: boolean = false;
+    @HostBinding('class.editing-mode') private get tplEdit() { return this.editMode; };
+    @HostBinding('class.reading-mode') private get tplRead() { return !this.editMode; };
+
+    @ViewChild(MatInput) inputControl: MatInput;
+    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
 
     @Input() host: FormControl;
     @Input() index: number;
 
-    _editMode: boolean = false;
+    @Output() metricHostUpdate: EventEmitter<any> = new EventEmitter();
 
-    get editMode() { return this._editMode; }
+    hostValue: any;
 
-    @Input() set editMode(mode: boolean) {
+    needDeleteConfirm: boolean = false;
+
+    private _originalValue: any;
+
+    private _editMode: boolean = false;
+
+    @Input()
+    get editMode(): boolean { return this._editMode; }
+
+    set editMode(mode: boolean) {
         this._editMode = mode;
-        this.tplEdit = !this._editMode;
+        if (this._editMode === true) {
+            this._originalValue = this.host.value;
+        }
+        //this.tplEdit = !this.editMode ? false : true;
+        //this.tplRead = !this.tplEdit;
     };
 
-    constructor() { }
+    constructor(
+        private renderer: Renderer2,
+        private eRef: ElementRef
+    ) { }
 
     ngOnInit() {
+        this.hostValue = this.host.value;
+
+        if (this.host.value === '_new_') {
+            this.editMode = true;
+            this.hostValue = '';
+            this.host.setValue('');
+        }
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.fixAutoWidth();
+        }, 200);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.hostValue && changes.hostValue.currentValue) {
+            this.hostValue = changes.hostValue.currentValue;
+            // when dashboard load, this one is undefined
+            if (this.host) {
+                this.host.setValue(this.hostValue);
+            }
+            this.fixAutoWidth();
+        }
     }
 
     toggleEditMode() {
         this.editMode = !this.editMode;
-    }
 
-    removeMetricHost() {
-        console.log('REMOVE');
+        if (this.editMode === true) {
+            this.hostValue = this.host.value;
+            setTimeout(() => {
+                this.fixAutoWidth();
+                this.inputControlEl.nativeElement.focus();
+            }, 200);
+        }
     }
 
     apply() {
-        console.log('APPLY');
+
         // do something
         this.toggleEditMode();
     }
 
     cancel() {
-        console.log('CANCEL');
         // do something... maybe revert?
+        if (this._originalValue === '_new_') {
+            this.metricHostUpdate.emit({
+                action: 'remove',
+                index: this.index
+            });
+        }
+        this.host.setValue(this._originalValue);
         this.toggleEditMode();
+
+    }
+
+    delete() {
+        this.needDeleteConfirm = true;
+    }
+
+    deleteConfirm() {
+        this.metricHostUpdate.emit({
+            action: 'remove',
+            index: this.index
+        });
+    }
+
+    deleteCancel() {
+        this.needDeleteConfirm = false;
+    }
+
+    private fixAutoWidth() {
+        if (this.editMode) {
+            // NOTE: this is for the autosizing of the function inputs
+            // NOTE: css uses the data-value attribute to correctly size item
+            // set the initial data-value
+            // needs to live on the .mat-form-field-infix
+            // aka, the wrapper around the actual input field
+            const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+            formFieldInfix.dataset.value = this.hostValue;
+        }
     }
 
 }

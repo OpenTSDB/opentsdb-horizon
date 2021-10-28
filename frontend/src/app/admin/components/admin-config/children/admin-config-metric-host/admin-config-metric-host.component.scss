@@ -24,6 +24,75 @@
 :host.app-admin-config-metric-host {
     display: flex;
     width: 100%;
+
+    ::ng-deep {
+        @include inputAutoWidth;
+    }
+
+    .host-display-wrap {
+        display: flex;
+        padding: 8px;
+        width: 100%;
+
+        .actions {
+            opacity: 0;
+            margin-left: 8px;
+        }
+
+        &:hover {
+            .actions {
+                opacity: 1;
+            }
+        }
+    }
+
+    .host-display-edit-wrap {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        width: 100%;
+
+        .form-control-wrap {
+            width: 100%;
+        }
+
+        .actions {
+            display: flex;
+            padding-top: 4px;
+
+            .mat-flat-button {
+                min-width: initial;
+                padding:  0 4px;
+                line-height: 24px;
+
+                &:not(:last-child) {
+                    margin-right: 4px;
+                }
+            }
+        }
+    }
+
+    &.editing-mode {
+        position: relative;
+
+        .delete-confirm {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .mat-flat-button {
+                min-width: initial;
+                padding:  0 4px;
+                line-height: 24px;
+                margin-left: 4px;
+            }
+        }
+    }
 }
 
 // CDK items (if any)
@@ -31,5 +100,39 @@
 // * THEME VARIANTS
 @include init-component-variants() {
     :host.app-admin-config-metric-host {
+        .host-display-wrap {
+            &:hover {
+                background-color: mat-color($background, menu);
+            }
+        }
+
+        .host-display-edit-wrap {
+            background: mat-color($background, menu);
+
+            .actions {
+                .mat-flat-button.apply {
+                    background-color: mat-color($success, default);
+                    color: mat-color($success, default-contrast);
+                }
+
+                .mat-flat-button.cancel {
+                    background-color: mat-color($primary, default);
+                    color: mat-color($primary, default-contrast);
+                }
+
+                .mat-flat-button.delete {
+                    background-color: mat-color($danger, default);
+                    color: mat-color($danger, default-contrast);
+                }
+            }
+        }
+
+        &.editing-mode {
+            .delete-confirm {
+                background: mat-color($background, menu);
+                box-shadow: inset 0 0 0 5px mat-color($other, status-warning);
+                color: mat-color($foreground, text);
+            }
+        }
     }
 }

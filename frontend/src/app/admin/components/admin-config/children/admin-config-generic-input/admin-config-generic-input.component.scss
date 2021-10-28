@@ -21,20 +21,38 @@
 
 @import "loader-base";
 
-:host.app-admin-config-alert-endpoint {
-    display: block;
+:host.app-admin-config-generic-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 
-    &:not(:last-child) {
-        margin-bottom: 8px;
+    &.row-align {
+        flex-direction: row;
+        align-items: center;
+
+        .form-label {
+            margin-right: 8px;
+        }
     }
 
-    .alert-endpoint-onboard-url,
-    .alert-endpoint-guide-url {
-        margin-left: 25px;
+    .form-label {
+        font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+        font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+    }
 
-        &:not(:last-child) {
-            margin-bottom: 6px;
+    .form-control-wrap {
+        width: 100%;
+        max-width: 60%;
+        display: flex;
+
+        &.auto-width {
+            width: initial;
+            max-width: initial;
         }
+    }
+
+    ::ng-deep {
+        @include inputAutoWidth;
     }
 }
 
@@ -42,7 +60,7 @@
 
 // * THEME VARIANTS
 @include init-component-variants() {
-    :host.app-admin-config-alert-endpoint {
+    :host.app-admin-config-generic-input {
 
     }
 }

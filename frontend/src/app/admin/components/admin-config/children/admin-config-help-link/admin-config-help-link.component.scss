@@ -22,6 +22,73 @@
 @import "loader-base";
 
 :host.app-admin-config-help-link {
+    display: block;
+
+    &:not(:last-child) {
+        margin-bottom: 15px;
+    }
+
+    .help-label-wrap {
+        display: flex;
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+
+            &.help-icon {
+                margin-right: 8px;
+            }
+        }
+
+        .actions {
+            margin-left: 8px;
+        }
+
+        .mat-mini-fab {
+            opacity: 0
+        }
+
+        .mat-mini-fab ::ng-deep .mat-button-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &:hover {
+            .mat-mini-fab {
+                opacity: 1;
+            }
+        }
+    }
+
+    .help-link-wrap {
+        .mat-button {
+            padding: 0 4px;
+            line-height: 18px;
+            margin-left: -4px;
+        }
+    }
+
+
+    .help-link-edit-wrap {
+        padding: 4px;
+
+        .actions {
+            display: flex;
+            padding-top: 4px;
+
+            .mat-flat-button {
+                min-width: initial;
+                padding:  0 4px;
+                line-height: 24px;
+
+                &:not(:last-child) {
+                    margin-right: 4px;
+                }
+            }
+        }
+    }
+
+
 }
 
 // CDK items (if any)
@@ -29,5 +96,27 @@
 // * THEME VARIANTS
 @include init-component-variants() {
     :host.app-admin-config-help-link {
+        .help-link-wrap {
+            .mat-button {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .help-link-edit-wrap {
+            border: 1px solid mat-color($foreground, divider);
+            background: mat-color($background, menu);
+
+            .actions {
+                .mat-flat-button.apply {
+                    background-color: mat-color($success, default);
+                    color: mat-color($success, default-contrast);
+                }
+
+                .mat-flat-button.cancel {
+                    background-color: mat-color($primary, default);
+                    color: mat-color($primary, default-contrast);
+                }
+            }
+        }
     }
 }

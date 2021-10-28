@@ -1,3 +1,18 @@
-<p>
-  admin-config-alert-endpoint works!
-</p>
+<div class="host-display-wrap" [formGroup]="endpoint">
+    <div class="form-group alert-endpoint-enabled">
+        <mat-checkbox formControlName="enable">{{endpoint.get('label').value}}</mat-checkbox>
+    </div>
+
+    <app-admin-config-generic-input class="form-group alert-endpoint-onboard-url"
+        *ngIf="endpoint.get('onboardUrl')"
+        inputLabel="Onboard URL"
+        inputPlaceholder="Enter value for onboarding URL"
+        horizontalAlign="true"
+        formControlName="onboardUrl"></app-admin-config-generic-input>
+    <app-admin-config-generic-input class="form-group alert-endpoint-guide-url"
+        *ngIf="endpoint.get('guideUrl')"
+        inputLabel="Guide URL"
+        inputPlaceholder="Enter value for guide URL"
+        horizontalAlign="true"
+        formControlName="guideUrl"></app-admin-config-generic-input>
+</div>
