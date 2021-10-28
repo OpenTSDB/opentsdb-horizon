@@ -803,6 +803,7 @@
         $theme-name: map-get($theme-config, theme-name);
         $cssVarMap: get-theme-css-variables($theme-name);
 
+
         .alert-details-component {
 
             .alert-configuration-wrapper {
@@ -815,7 +816,7 @@
                         }
 
                         .close-dialog {
-                            color: $card;
+                            color: mat-color($background, card);
                         }
                     }
                 }

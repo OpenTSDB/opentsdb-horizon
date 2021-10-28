@@ -42,6 +42,17 @@ openssl x509 -req -sha256 -days 3650 -in dev.opentsdb.csr -signkey dev.opentsdb.
 sudo chown -R <userid>:staff ${HOME}/.ssh/opentsdb
 ```
 
+#### Generate domain reference in /etc/hosts
+For Mac:
+```
+sudo bash -c 'echo "127.0.0.1 dev.opentsdb.net" >> /private/etc/hosts'
+```
+
+For Linux:
+```
+sudo bash -c 'echo "127.0.0.1 dev.opentsdb.net" >> /etc/hosts'
+```
+
 ### 5. Start application - this requires 2 terminals to be opened at the same time.
 ```
   #terminal 1:

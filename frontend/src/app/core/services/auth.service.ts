@@ -59,7 +59,7 @@ export class AuthService {
         const authConfig = this.appConfig.getConfig().auth;
         self.store.dispatch(new SetAuth('unknown'));
         if ( authConfig.heartbeatURL ) {
-            return this.http.get( authConfig.heartbeatURL )
+            return this.http.get( authConfig.heartbeatURL, { withCredentials: true } )
                 .pipe(
                     map(
                         (res) => {
