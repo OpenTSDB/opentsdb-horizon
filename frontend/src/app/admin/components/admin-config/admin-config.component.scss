@@ -26,6 +26,10 @@
     flex: 1 1 100%;
     flex-direction: column;
 
+    .mat-divider {
+        margin-bottom: 8px;
+    }
+
     .has-scroller {
         flex: 1;
     }
@@ -79,7 +83,58 @@
             margin-right: 8px;
         }
     }
+
+    .config-section-endpoints {
+
+        .tsdb-metric-hosts {
+            .form-control-wrap {
+                display: inline-block;
+            }
+        }
+
+        .metric-hosts-list {
+            max-height: 300px;
+            overflow: auto;
+        }
+    }
+
+    .add-new-metric-host {
+        font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+    }
+
+    // deep items
+    ::ng-deep {
+
+        .form-control-wrap {
+            width: 100%;
+            max-width: 60%;
+            display: flex;
+
+            &.auto-width {
+                width: initial;
+                max-width: initial;
+            }
+        }
+
+        .actions {
+            .mat-mini-fab {
+                width: 20px;
+                height: 20px;
+                line-height: 1;
+
+                .mat-button-wrapper {
+                    line-height: 1;
+                    padding: initial;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                }
+            }
+        }
+    }
  }
+
 
  // CDK items (if any)
 
@@ -90,6 +145,16 @@
 
         .action-controls {
             border-top: 1px solid mat-color($foreground, divider);
+        }
+
+        .config-section-endpoints {
+            .metric-hosts-list {
+                border: 1px solid mat-color($foreground, divider)
+            }
+        }
+
+        .add-new-metric-host {
+            color: mat-color($foreground, link);
         }
     }
 }

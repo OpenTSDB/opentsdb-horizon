@@ -8,7 +8,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class AdminConfigHelpLinkComponent implements OnInit {
     @HostBinding('class') classAttribute: string = 'app-admin-config-help-link';
-    @HostBinding('class.edit-mode') private tplEdit: boolean = false;
+    @HostBinding('class.editing-mode') private get tplEdit() { return this.editMode; };
+    @HostBinding('class.reading-mode') private get tplRead() { return !this.editMode; };
 
     @Input() link: FormGroup;
     @Input() index: number;
@@ -19,7 +20,6 @@ export class AdminConfigHelpLinkComponent implements OnInit {
 
     @Input() set editMode(mode: boolean) {
         this._editMode = mode;
-        this.tplEdit = !this._editMode;
     };
 
     constructor() { }
@@ -38,6 +38,16 @@ export class AdminConfigHelpLinkComponent implements OnInit {
     editHelpLink() {
         const formGroup = <FormGroup>this.link;
         console.log('EDIT HELP LINK', this.index, formGroup.getRawValue());
+    }
+
+    apply() {
+        // do something
+        this.toggleEditMode();
+    }
+
+    cancel() {
+        // do something... maybe revert?
+        this.toggleEditMode();
     }
 
 }

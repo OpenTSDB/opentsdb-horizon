@@ -53,7 +53,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
         private cdr: ChangeDetectorRef
     ) {
         this.configValues = this.appConfig.getConfig();
-        console.log('CONFIG VALUES', this.configValues);
+        //console.log('CONFIG VALUES', this.configValues);
     }
 
     ngOnInit() {
@@ -115,7 +115,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
             let rKey = recipients[i];
             let rObj = this.configValues.alert.recipient[rKey];
             rObj.label = (alertRecipientLabelMap[rKey]) ? alertRecipientLabelMap[rKey] : rKey; // add label
-            recipientControl.addControl(rKey, new FormControl(rObj));
+            recipientControl.addControl(rKey, this.fb.group(rObj));
         }
 
         this.adminConfigForm.addControl('alert', alert);
@@ -162,16 +162,17 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('auth', auth);
 
-        console.log('%cFORM GROUP', 'color: white; background: purple; padding: 2px;', this.adminConfigForm.getRawValue());
+        //console.log('%cFORM GROUP', 'color: white; background: purple; padding: 2px;', this.adminConfigForm.getRawValue());
 
-        this.subscription.add(this.adminConfigForm.valueChanges.subscribe((changes: any) => {
-            console.log('===>> CHANGES ::: ', changes);
-
+        //this.subscription.add(this.adminConfigForm.valueChanges.subscribe((changes: any) => {
+            //console.log('===>> CHANGES ::: ', changes);
             //this.cdr.detectChanges();
-        }));
+        //}));
     }
 
     // quick form accessors
+    get uiBranding(): FormGroup { return <FormGroup>this.adminConfigForm.get('uiBranding'); }
+    get auth(): FormGroup { return <FormGroup>this.adminConfigForm.get('auth'); }
     get alert(): FormGroup { return <FormGroup>this.adminConfigForm.get('alert'); }
     get endpoints(): FormGroup { return <FormGroup>this.adminConfigForm.get('endpoints'); }
     get helpLinks(): FormArray { return <FormArray>this.adminConfigForm.get('helpLinks'); }
@@ -193,12 +194,22 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     // TSDB METRIC HOSTS
     addTsdbMetricHost(hostData: any) {
         const control = <FormArray>this.endpoints.get('tsdb_hosts');
-        control.push(hostData);
+        control.push(new FormControl(hostData));
     }
 
     removeTsdbMetricHost(hostIndex: number) {
         const control = <FormArray>this.endpoints.get('tsdb_hosts');
         control.removeAt(hostIndex);
+    }
+
+    tsdbMetricHostListener(data: any) {
+        switch(data.action) {
+            case 'remove':
+                this.removeTsdbMetricHost(data.index);
+                break;
+            default:
+                break;
+        }
     }
 
     // HELP LINKS
@@ -239,16 +250,21 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         let httpIdx = keys.indexOf('http');
         if (httpIdx >= 0) {
-            keys.slice(httpIdx, 1);
+            keys.splice(httpIdx, 1);
         }
 
         let emailIdx = keys.indexOf('email');
         if (emailIdx >= 0) {
-            keys.slice(emailIdx, 1);
+            keys.splice(emailIdx, 1);
         }
 
         return recipientKeys.concat(keys);
+    }
 
+    getAlertRecipientGroup(key: string): FormGroup {
+        let recipientControl: FormGroup = <FormGroup>this.alert.get('recipient');
+        let recipientGroup = <FormGroup>recipientControl['controls'][key];
+        return recipientGroup;
     }
 
 
