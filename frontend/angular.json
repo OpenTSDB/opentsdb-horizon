@@ -38,10 +38,6 @@
             ],
             "styles": [
                 {
-                    "input": "src/debug2.scss",
-                    "bundleName": "debugStyles"
-                },
-                {
                     "input": "src/styles.scss",
                     "bundleName": "styles"
                 },
