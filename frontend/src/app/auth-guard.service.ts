@@ -24,10 +24,15 @@ export class AuthGuardService implements CanLoad {
   constructor(private appConfig: AppConfigService, private router: Router) {
   }
   canLoad(route: Route): boolean {
-    if (!this.appConfig.getConfig().readonly) {
+    const config = this.appConfig.getConfig();
+    const homeUrl = config.uiBranding && config.uiBranding.logo && config.uiBranding.logo.homeUrl ? config.uiBranding.logo.homeUrl : '/main';
+    if (!config.readonly) {
 	    return true; 
+    } else if ( homeUrl !== '/main') {
+      this.router.navigate([config.uiBranding.logo.homeUrl]);
+    } else {
+      this.router.navigate([ 'error' ]);
     }
-    this.router.navigate([ 'error' ]);
     return true;		
   }
 }
