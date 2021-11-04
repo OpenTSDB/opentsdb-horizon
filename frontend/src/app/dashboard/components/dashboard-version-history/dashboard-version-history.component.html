@@ -1,0 +1,29 @@
+<div><strong>Version History</strong></div>
+
+<div class="is-scroller">
+  <mat-list class="folder-list" *ngFor="let date of history.dates">
+      <div (click)="visibleSections[date]=!visibleSections[date]">
+        <span><strong>{{date}}</strong></span>
+        <mat-icon fontSet="denali" [fontIcon]="visibleSections[date] ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+      </div>
+      <ng-container *ngIf="visibleSections[date]">
+      <mat-list-item class="folder-nav-item" *ngFor="let history of history.data[date]">
+        <div mat-line> <span>{{ history.time }} </span></div>
+        <div  mat-line >
+          <mat-icon class="folder-icon" fontSet="denali" fontIcon="d-user-single"></mat-icon>
+          <span (click)="loadVersion(history.id)"> {{ history.user }}</span>
+        </div>
+      </mat-list-item>
+      </ng-container>
+  </mat-list>
+</div>
+
+<!--
+  <mat-nav-list class="folder-list">
+                <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
+                <mat-list-item *cdkVirtualFor="let user of usersDataSource; let i = index;" class="folder-nav-item" (click)="loadingItem = user.alias; gotoTopFolder(user.alias, 'user')">
+                    <ng-container *ngTemplateOutlet="simpleFolderDisplay;context:{data: user, icon: 'd-user-single-solid', loading: (loadingItem === user.alias)}"></ng-container>
+                </mat-list-item>
+                </cdk-virtual-scroll-viewport>
+            </mat-nav-list>
+-->

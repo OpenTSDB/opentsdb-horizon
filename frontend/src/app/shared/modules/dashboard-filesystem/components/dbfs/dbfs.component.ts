@@ -89,7 +89,7 @@ import {
 })
 export class DbfsComponent implements OnInit, OnDestroy {
 
-    //@HostBinding('class.dashboard-navigator') private _hostClass = true;
+    @HostBinding('class.dashboard-version-history') private _hostClass = true;
 
     @ViewChildren('moreMenuTrigger', {read: MatMenuTrigger}) moreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('miniNavTrigger', {read: MatMenuTrigger}) miniNavTriggers: QueryList<MatMenuTrigger>;

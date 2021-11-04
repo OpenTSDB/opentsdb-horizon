@@ -36,6 +36,7 @@ import {
 } from 'ngx-markdown';
 import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
 import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module';
+import { RightDrawerModule } from '../shared/modules/right-drawer/right-drawer.module';
 
 // services
 import { AppShellService } from './services/app-shell.service';
@@ -79,6 +80,7 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
             NavigatorState
         ]),
         UniversalClipboardModule,
+        RightDrawerModule,
         DashboardFilesystemModule,
         AppShellSharedModule,
         RouterModule

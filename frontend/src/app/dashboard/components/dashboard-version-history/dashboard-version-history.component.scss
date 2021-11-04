@@ -1,0 +1,117 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+@import 'loader-component';
+
+$navbar-height: map-get($navbar-config, 'navbar-height');
+$logo-height: map-get($navbar-config, 'logo-height');
+
+ :host.dashboard-version-history {
+    // Overrides for material elements specific to this component
+    .mat-nav-list {
+        padding-top: 0;
+
+        .mat-list-item {
+            height: 36px;
+            font-weight: 300;
+            font-size: 12px;
+
+            .folder-icon,
+            .dashboard-icon {
+                margin-right: 8px;
+            }
+        }
+
+    }
+
+    .mat-list .mat-list-item,
+    .mat-nav-list .mat-list-item {
+        &.no-item-message {
+            ::ng-deep .mat-list-item-content {
+                justify-content: center;
+            }
+        }
+    }
+
+    .dynamic-scroller {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .folder-list,
+        .favorites-list,
+        .recents-list {
+            flex: 1;
+
+            ::ng-deep .cdk-virtual-scroll-viewport {
+                min-height: 100%;
+                overflow: overlay;
+            }
+
+            @-moz-document url-prefix() {
+                ::ng-deep .cdk-virtual-scroll-viewport {
+                    overflow: auto;
+                }
+            }
+        }
+    }
+
+}
+
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    :host.dashboard-version-history {
+
+        .navigator-panel-item,
+        .mat-list .mat-list-item,
+        .mat-nav-list .mat-list-item {
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .6),
+                mat-color($background, navbar, .85)
+            );
+        }
+
+        .mat-list .mat-list-item,
+        .mat-nav-list .mat-list-item {
+
+            .folder-icon,
+            .dashboard-icon {
+                margin-right: 8px;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .6),
+                    mat-color($background, navbar, .85)
+                );
+            }
+
+            &.is-active {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .85),
+                    mat-color($background, navbar, .85)
+                );
+            }
+        }
+    }
+
+}
+

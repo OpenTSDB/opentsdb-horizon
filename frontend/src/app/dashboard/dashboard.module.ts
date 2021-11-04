@@ -65,7 +65,8 @@ import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
 
-import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module'
+import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module';
+import { DashboardVersionHistoryComponent } from './components/dashboard-version-history/dashboard-version-history.component'
 
 @NgModule({
     imports: [
@@ -92,6 +93,9 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
         //AppShellModule
         DashboardFilesystemModule
     ],
+    exports: [
+        DashboardVersionHistoryComponent
+    ],
     declarations: [
         DashboardComponent,
         DboardContentComponent,
@@ -109,7 +113,8 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
         TemplateVariablePanelComponent,
-        DashboardToAlertDialogComponent
+        DashboardToAlertDialogComponent,
+        DashboardVersionHistoryComponent
     ],
     providers: [
         DashboardService,

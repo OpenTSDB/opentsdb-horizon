@@ -156,7 +156,7 @@
             <mat-icon fontSet="denali" fontIcon="d-chart-edit"></mat-icon>
         </button>
     </span>-->
-    <navbar-clipboard-menu class="navbar-item" *ngIf="!readonly && (dashboardMode$ | async) !== 'explore' && (dashboardMode$ | async) !== 'edit'" #clipboardMenu></navbar-clipboard-menu>
+    <navbar-clipboard-menu [id]="dbid" class="navbar-item" *ngIf="!readonly && (dashboardMode$ | async) !== 'explore' && (dashboardMode$ | async) !== 'edit'" #clipboardMenu></navbar-clipboard-menu>
     <span class="navbar-item nav-explore-close" *ngIf="(dashboardMode$ | async) === 'explore' || (dashboardMode$ | async) === 'edit'" (click)="closeViewEditMode()">
         <button mat-flat-button class="explore-close-button"><mat-icon fontSet="denali" fontIcon="d-close"></mat-icon></button>
     </span>

@@ -35,7 +35,7 @@ import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { AppConfigService } from '../../../core/services/config.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
+import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, LoadDashboardHistory, SetDashboardVersion, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
     UpdateWidgets, UpdateGridPos, UpdateWidget,
@@ -110,6 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(DBState.getLoadedDB) loadedRawDB$: Observable<any>;
     @Select(DBState.getDashboardStatus) dbStatus$: Observable<string>;
     @Select(DBState.getDashboardError) dbError$: Observable<any>;
+    @Select(DBState.getDashboardHistory) dbHistory$: Observable<any>;
     @Select(DBState.getSnapshotId) snapshotId$: Observable<string>;
     @Select(DBSettingsState.getDashboardTime) dbTime$: Observable<any>;
     @Select(DBSettingsState.getDashboardAutoRefresh) refresh$: Observable<any>;
@@ -338,7 +339,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                  }
                 // CHECK if New from clipboard
                 if (this.newFromClipboard) {
-                    this.store.dispatch(new LoadDashboard(this.dbid, this.newFromClipboardItems));
+                    this.store.dispatch(new LoadDashboard(this.dbid, null, this.newFromClipboardItems));
                 } else {
                     this.store.dispatch(new LoadDashboard(this.dbid));
                 }
@@ -828,6 +829,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.newFromClipboardItems= cbWidgetItems;
                     this.router.navigate(['d', '_new_']);
                     break;
+                case 'GetDashboardHistory':
+                    this.store.dispatch(new LoadDashboardHistory(this.dbid));
+                    break;
+                case 'LoadDashboardVersion':
+                    this.store.dispatch(new LoadDashboard(this.dbid, message.id));
+                    break;
+                case 'SetDashboardDefaultVersion':
+                    this.store.dispatch(new SetDashboardVersion(this.dbid, { historyId: message.id }));
+                    break;
                 default:
                     break;
             }
@@ -1124,6 +1134,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
                 this.updateWidgetGroup(wid, grawdata, error);
             }
+        }));
+
+        this.subscription.add(this.dbHistory$.subscribe(data => {
+            this.interCom.responsePut({
+                action: 'SetDashboardHistory',
+                payload: {
+                    data: data
+                }
+            });
         }));
 
 
@@ -1884,6 +1903,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     doesUserHaveWriteAccess() {
+        return true;
         const user = this.store.selectSnapshot(DbfsState.getUser());
         const createdBy = this.store.selectSnapshot(DBState.getCreator);
         if ( !this.snapshot ) {

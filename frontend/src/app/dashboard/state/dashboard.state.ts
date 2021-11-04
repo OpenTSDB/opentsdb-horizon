@@ -39,6 +39,7 @@ export interface DBStateModel {
     fullPath: string;
     loadedDB: any;
     lastSnapshotId: string;
+    history: any;
 }
 
 /* action */
@@ -46,6 +47,7 @@ export class LoadDashboard {
     static readonly type = '[Dashboard] Load Dashboard';
     constructor(
         public id: string,
+        public versionId?: string,
         public clipboardItems?: any[]
     ) {}
 }
@@ -77,6 +79,16 @@ export class SaveDashboardSuccess {
 
 export class SaveDashboardFail {
     static readonly type = '[Dashboard] Save Dashboard Fail';
+    constructor(public readonly error: any) { }
+}
+
+export class SetDashboardVersion {
+    static readonly type = '[Dashboard] Set Dashboard Version';
+    constructor( public id: string, public payload: any ) {}
+}
+
+export class SetDashboardVersionFail {
+    static readonly type = '[Dashboard] Set Dashboard Version Fail';
     constructor(public readonly error: any) { }
 }
 
@@ -135,6 +147,21 @@ export class DeleteDashboardFail {
     constructor(public readonly error: any) { }
 }
 
+export class LoadDashboardHistory {
+    static readonly type = '[Dashboard] Load Dashboard History';
+    constructor(public id: string) {}
+}
+
+export class LoadDashboardHistorySuccess {
+    static readonly type = '[Dashboard] Load Dashboard Success';
+    constructor(public readonly payload: any) {}
+}
+
+export class LoadDashboardHistoryFail {
+    static readonly type = '[Dashboard] Load Dashboard History Fail';
+    constructor(public readonly error: any) { }
+}
+
 export class ResetDBtoDefault {
     static readonly type = '[Dashboard] Reset dashboard to default state';
     constructor() { }
@@ -155,7 +182,8 @@ export class ResetDBtoDefault {
         path: '_new_',
         fullPath: '',
         loadedDB: {},
-        lastSnapshotId: ''
+        lastSnapshotId: '',
+        history: {}
     },
     children: [ UserSettingsState, DBSettingsState, WidgetsState, ClientSizeState, WidgetsRawdataState ]
 })
@@ -198,6 +226,10 @@ export class DBState {
         return state.lastSnapshotId;
     }
 
+    @Selector() static getDashboardHistory(state: DBStateModel) {
+        return state.history;
+    }
+
     @Selector()
     static getDashboardFriendlyPath(state: DBStateModel) {
         // const friendlyPath = state.id + (state.loadedDB.fullPath ? state.loadedDB.fullPath : '');
@@ -210,11 +242,11 @@ export class DBState {
     }
 
     @Action(LoadDashboard)
-    loadDashboard(ctx: StateContext<DBStateModel>, { id, clipboardItems }: LoadDashboard) {
+    loadDashboard(ctx: StateContext<DBStateModel>, { id, versionId, clipboardItems }: LoadDashboard) {
         // id is the path
         if ( id !== '_new_' ) {
             ctx.patchState({ loading: true});
-            return this.httpService.getDashboardById(id).pipe(
+            return this.httpService.getDashboardById(id, versionId).pipe(
                 map(res => {
                     const dashboard: any = res.body;
                     // reset the url override, when newly go with url then id id empty
@@ -314,6 +346,22 @@ export class DBState {
     saveDashboardFail(ctx: StateContext<DBStateModel>, { error }: LoadDashboardFail) {
         const state = ctx.getState();
         ctx.patchState({...state, status: 'save-failed', error: error });
+    }
+
+    @Action(SetDashboardVersion)
+    setDashboardVersion(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SetDashboardVersion) {
+            ctx.patchState({ status: 'save-progress', error: {} });
+            return this.httpService.setDashboardVersion(id, payload).pipe(
+                map( (res: any) => {
+                    ctx.patchState({ status: 'set-version-success' });
+                }),
+                catchError( error => ctx.dispatch(new SetDashboardVersionFail(error)))
+            );
+    }
+
+    @Action(SetDashboardVersionFail)
+    setDashboardVersionFail(ctx: StateContext<DBStateModel>, { error }: SetDashboardVersionFail) {
+        ctx.patchState({ status: 'set-version-failed', error: error });
     }
 
     @Action(LoadSnapshot)
@@ -423,6 +471,27 @@ export class DBState {
         ctx.patchState(patchData);
     }
 
+    @Action(LoadDashboardHistory)
+    loadDashboardHistory(ctx: StateContext<DBStateModel>, { id: id }: LoadDashboardHistory) {
+        console.log("LoadDashboardHisotry...")
+        return this.httpService.getDashboardHistoryById(id).pipe(
+            map(res => {
+                console.log("loadDashboardHisotry", res.body);
+                const state = ctx.getState();
+                ctx.patchState({
+                    history: res.body
+                });
+            }),
+            catchError( error => ctx.dispatch(new LoadDashboardHistoryFail(error)))
+        );
+    }
+
+    @Action(LoadDashboardHistoryFail)
+    loadDashboardHistoryFail(ctx: StateContext<DBStateModel>, { error }: LoadDashboardHistoryFail) {
+        const state = ctx.getState();
+        ctx.patchState({status: 'history-failed', error: error });
+    }
+
     @Action(ResetDBtoDefault)
     resetDBtoDefault(ctx: StateContext<DBStateModel>, {}: ResetDBtoDefault) {
         // reset dashboard to defaults
@@ -436,7 +505,8 @@ export class DBState {
             path: '_new_',
             fullPath: '',
             loadedDB: {},
-            lastSnapshotId: ''
+            lastSnapshotId: '',
+            history: {}
         });
 
         // reset some children states

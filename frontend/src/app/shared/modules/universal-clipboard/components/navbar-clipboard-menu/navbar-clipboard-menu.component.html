@@ -14,10 +14,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
+ <button mat-flat-button class="clipboard-drawer-trigger"
+    *ngIf="!checkDrawerState"
+    matTooltip="Version history"
+    (click)="toggleDrawerState('history')">
+    <mat-icon>history</mat-icon>
+</button>
 <button mat-flat-button class="clipboard-drawer-trigger"
     *ngIf="!checkDrawerState"
     matTooltip="Open widget clipboard"
-    (click)="toggleDrawerState($event)">
+    (click)="toggleDrawerState('clipboard')">
     <mat-icon>content_paste</mat-icon>
 </button>
 <button mat-icon-button

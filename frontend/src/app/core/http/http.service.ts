@@ -302,14 +302,26 @@ export class HttpService {
         return this.http.get(apiUrl, httpOptions);
     }
 
-    getDashboardById(id: string) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id;
+    getDashboardById(id: string, versionId=null) {
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id + (versionId ? '?historyId=' + versionId : '' );
+        console.log(apiUrl, id, " version="+versionId);
+
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
             observe: 'response' as 'response'
         };
         return this.http.get(apiUrl, httpOptions);
+    }
+
+    setDashboardVersion(id, payload) {
+        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id + '/content';
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        return this.http.put(apiUrl, payload, httpOptions);
     }
 
     getDashboards() {
@@ -336,6 +348,17 @@ export class HttpService {
         /* This API call is an invalid endpoint */
         const apiUrl = this.appConfig.getConfig().configdb + '/object/' + id;
         return this.http.delete(apiUrl, { withCredentials: true });
+    }
+
+    getDashboardHistoryById(id) {
+        // const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id + '/history';
+        const apiUrl = "https://stg-config.yamas.ouroath.com:4443/api/v1/dashboard/file/21293/history";
+        const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+            observe: 'response' as 'response'
+        };
+        return this.http.get(apiUrl, httpOptions);        
     }
 
     getSnapshotById(id: string) {

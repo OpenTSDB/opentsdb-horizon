@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ClipboardService } from '../../services/clipboard.service';
+import { RightDrawerService } from '../../../right-drawer/services/right-drawer.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -31,22 +32,33 @@ export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
         return this.drawerState === 'opened';
     }
 
+    @Input() id = null;
     private drawerState: string = 'closed';
     private subscription = new Subscription();
 
     constructor(
-        private cbService: ClipboardService
+        private cbService: ClipboardService,
+        private drawerSrv: RightDrawerService
     ) { }
 
     ngOnInit() {
-        this.subscription.add(this.cbService.$drawerState.subscribe(val => {
-            this.drawerState = val;
-        }));
+        // this.subscription.add(this.cbService.$drawerState.subscribe(val => {
+            // this.drawerState = val;
+        // }));
     }
 
-    toggleDrawerState(event) {
-        const state = this.drawerState === 'closed' ? 'opened' : 'closed';
-        this.cbService.setDrawerState(state);
+    toggleDrawerState(type) {
+        this.drawerState = this.drawerState === 'closed' ? 'opened' : 'closed';
+        if ( this.drawerState === 'opened' && type === 'clipboard') {
+            this.cbService.setDrawerState(this.drawerState);
+        } else if ( this.drawerState === 'opened' ) {
+            this.drawerSrv.setDrawerState(this.drawerState);
+            this.drawerSrv.setDrawerParams({ type: type, id: this.id });
+        } else {
+            this.drawerSrv.setDrawerState(this.drawerState);
+            this.cbService.setDrawerState(this.drawerState);
+        }
+        console.log("123456 navbar toggleDrawerState", this.drawerState)
     }
 
     getDrawerState() {
@@ -57,9 +69,11 @@ export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
         this.cbService.setDrawerState('opened');
     }
 
+    /*
     setDrawerClosed() {
         this.cbService.setDrawerState('closed');
     }
+    */
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
