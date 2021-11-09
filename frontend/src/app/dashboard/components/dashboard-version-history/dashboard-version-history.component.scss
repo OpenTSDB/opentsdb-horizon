@@ -21,54 +21,69 @@ $navbar-height: map-get($navbar-config, 'navbar-height');
 $logo-height: map-get($navbar-config, 'logo-height');
 
  :host.dashboard-version-history {
-    // Overrides for material elements specific to this component
-    .mat-nav-list {
-        padding-top: 0;
+     display: flex;
+     flex-direction: column;
+     flex: 1;
 
-        .mat-list-item {
-            height: 36px;
-            font-weight: 300;
-            font-size: 12px;
-
-            .folder-icon,
-            .dashboard-icon {
-                margin-right: 8px;
-            }
-        }
-
-    }
-
-    .mat-list .mat-list-item,
-    .mat-nav-list .mat-list-item {
-        &.no-item-message {
-            ::ng-deep .mat-list-item-content {
-                justify-content: center;
-            }
-        }
-    }
-
-    .dynamic-scroller {
-        flex: 1;
+     .version-history-header {
+        height: $navbar-height;
+        padding: 4px 8px;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+     }
 
-        .folder-list,
-        .favorites-list,
-        .recents-list {
-            flex: 1;
+     .version-history-content-wrapper,
+     .version-history-item-list {
+         flex: 1
+     }
 
-            ::ng-deep .cdk-virtual-scroll-viewport {
-                min-height: 100%;
-                overflow: overlay;
+    // Overrides for material elements specific to this component
+    .mat-expansion-panel ::ng-deep {
+        .mat-expansion-panel-body {
+            padding: 0 0 8px;
+        }
+    }
+
+    .mat-list .mat-list-item ::ng-deep {
+        .mat-list-item-content {
+            padding: 0 0 8px 16px;
+        }
+    }
+
+    .version-date-item.mat-expansion-panel {
+        .mat-expansion-panel-header {
+            padding: 0 8px;
+            font-size: 10px;
+        }
+    }
+
+    .version-time-item {
+
+        .version-time-details {
+            display: flex;
+            flex-direction: column;
+            font-size: 10px;
+        }
+
+        .version-time-item-menu-trigger.mat-icon-button {
+            opacity: 0;
+            transition: opacity 200ms ease-in;
+
+            .mat-icon {
+                @include sizeDenaliIcon(12px);
+                justify-content: center;
+                margin-left: -2px;
             }
+        }
 
-            @-moz-document url-prefix() {
-                ::ng-deep .cdk-virtual-scroll-viewport {
-                    overflow: auto;
-                }
+        &:hover {
+            .version-time-item-menu-trigger.mat-icon-button {
+                opacity: 1;
             }
         }
     }
+
+
 
 }
 
@@ -79,6 +94,19 @@ $logo-height: map-get($navbar-config, 'logo-height');
     $cssVarMap: get-theme-css-variables($theme-name);
 
     :host.dashboard-version-history {
+        .version-history-header {
+            border-bottom: 1px solid mat-color($foreground, divider, .07);
+            background: if(
+                    $is-dark,
+                    mat-color($background, navbar, .5),
+                    mat-color($background, navbar, .1)
+                );
+            color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text),
+                    mat-color($background, navbar)
+                );
+        }
 
         .navigator-panel-item,
         .mat-list .mat-list-item,

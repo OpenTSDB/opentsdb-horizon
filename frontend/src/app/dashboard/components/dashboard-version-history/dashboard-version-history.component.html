@@ -1,29 +1,71 @@
-<div><strong>Version History</strong></div>
-
-<div class="is-scroller">
-  <mat-list class="folder-list" *ngFor="let date of history.dates">
-      <div (click)="visibleSections[date]=!visibleSections[date]">
-        <span><strong>{{date}}</strong></span>
-        <mat-icon fontSet="denali" [fontIcon]="visibleSections[date] ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
-      </div>
-      <ng-container *ngIf="visibleSections[date]">
-      <mat-list-item class="folder-nav-item" *ngFor="let history of history.data[date]">
-        <div mat-line> <span>{{ history.time }} </span></div>
-        <div  mat-line >
-          <mat-icon class="folder-icon" fontSet="denali" fontIcon="d-user-single"></mat-icon>
-          <span (click)="loadVersion(history.id)"> {{ history.user }}</span>
-        </div>
-      </mat-list-item>
-      </ng-container>
-  </mat-list>
+<div class="version-history-header">
+    <strong>Version History</strong>
+</div>
+<div class="version-history-content-wrapper has-scroller">
+    <div class="version-history-item-list is-scroller">
+        <!--
+        <mat-list class="folder-list" *ngFor="let date of history.dates">
+            <div (click)="visibleSections[date]=!visibleSections[date]">
+                <span><strong>{{date}}</strong></span>
+                <mat-icon fontSet="denali" [fontIcon]="visibleSections[date] ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
+            </div>
+            <ng-container *ngIf="visibleSections[date]">
+            <mat-list-item class="folder-nav-item" *ngFor="let history of history.data[date]">
+                <div mat-line> <span>{{ history.time }} </span></div>
+                <div  mat-line >
+                <mat-icon class="folder-icon" fontSet="denali" fontIcon="d-user-single"></mat-icon>
+                <span (click)="loadVersion(history.id)"> {{ history.user }}</span>
+                </div>
+            </mat-list-item>
+            </ng-container>
+        </mat-list>
+        -->
+        <!--
+            - accordion
+                - panel
+                    - list of items
+        -->
+        <mat-accordion multi="true" displayMode="flat">
+            <!-- history items -->
+            <mat-expansion-panel class="version-date-item"
+                expanded="true"
+                *ngFor="let date of history.dates">
+                <mat-expansion-panel-header expandedHeight="32px" collapsedHeight="32px">
+                    <mat-panel-title>
+                        <span class="history-date">{{date}}</span>
+                        <span class="flex-spacer"></span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list class="version-time-list">
+                    <mat-list-item class="version-time-item"
+                        *ngFor="let history of history.data[date]">
+                        <div class="version-time-details" (click)="loadVersion(history.id)">
+                            <span>{{history.time | date:'mediumTime'}}</span>
+                            <span>{{history.userId}} ({{history.userName}})</span>
+                        </div>
+                        <div class="version-time-menu-wrap">
+                            <button class="version-time-item-menu-trigger"
+                                    mat-icon-button
+                                    matTooltip="More actions"
+                                    (click)="$event.stopPropagation(); toggleVersionItemMoreMenu(history)">
+                                    <mat-icon fontSet="denali" fontIcon="d-more-vertical"></mat-icon>
+                                    <span #versionHistoryItemMoreMenuTrigger
+                                        [matMenuTriggerFor]="versionHistoryItemMoreMenu"
+                                        [matMenuTriggerData]="{date: date, item: history}"></span>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
 </div>
 
-<!--
-  <mat-nav-list class="folder-list">
-                <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
-                <mat-list-item *cdkVirtualFor="let user of usersDataSource; let i = index;" class="folder-nav-item" (click)="loadingItem = user.alias; gotoTopFolder(user.alias, 'user')">
-                    <ng-container *ngTemplateOutlet="simpleFolderDisplay;context:{data: user, icon: 'd-user-single-solid', loading: (loadingItem === user.alias)}"></ng-container>
-                </mat-list-item>
-                </cdk-virtual-scroll-viewport>
-            </mat-nav-list>
--->
+<!-- history item menu -->
+<mat-menu #versionHistoryItemMoreMenu="matMenu" overlapTrigger="true" class="version-history-item-more-menu">
+    <ng-template matMenuContent let-date="date" let-item="item">
+        <button mat-menu-item (click)="versionItemMenuAction(date,item)">
+            <span>Some version item action</span>
+        </button>
+    </ng-template>
+</mat-menu>
