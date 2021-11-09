@@ -38,7 +38,7 @@ export class AdminComponent implements OnInit {
     @ViewChild('adminNavbarTmpl') adminNavbarTmpl: TemplateRef<any>;
 
     activeAdminSection: any = './';
-    activeAdminSectionIndex = -1;
+    activeAdminSectionIndex = 0;
 
     // admin sections
     adminSectionLinks: any[] = [

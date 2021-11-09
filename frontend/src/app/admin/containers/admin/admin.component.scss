@@ -25,11 +25,31 @@
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
-    min-height: 100%;
+    overflow: hidden;
+
+    .admin-content-wrap {}
 
     router-outlet + * {
         display: flex;
         flex: 1 1 100%;
+    }
+
+    .admin-tab-navigation {
+        .mat-tab-link.mat-tab-label-active:not(.mat-tab-disabled) {
+            opacity: 1;
+        }
+
+        .mat-tab-link .mat-icon {
+            margin-right: 8px;
+        }
+    }
+ }
+
+ ::ng-deep {
+    .app-admin-section {
+        position: relative;
+        overflow: overlay;
+        //padding: 12px 24px;
     }
  }
 

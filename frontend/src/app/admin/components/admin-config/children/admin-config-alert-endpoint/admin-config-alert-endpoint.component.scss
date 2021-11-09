@@ -16,22 +16,33 @@
 // *
 
 // **
-// * ADMIN USERS COMPONENT
+// * ADMIN CONFIG METRIC HOST COMPONENT
 // *
 
- @import 'loader-base';
+@import "loader-base";
 
- :host.app-admin-section.app-admin-users {
-    display: flex;
-    flex: 1 1 100%;
-    flex-direction: column;
- }
+:host.app-admin-config-alert-endpoint {
+    display: block;
 
- // CDK items (if any)
+    &:not(:last-child) {
+        margin-bottom: 8px;
+    }
+
+    .alert-endpoint-onboard-url,
+    .alert-endpoint-guide-url {
+        margin-left: 25px;
+
+        &:not(:last-child) {
+            margin-bottom: 6px;
+        }
+    }
+}
+
+// CDK items (if any)
 
 // * THEME VARIANTS
 @include init-component-variants() {
-    :host.app-admin-section.app-admin-users {
-        background-color: map-get($background, card);
+    :host.app-admin-config-alert-endpoint {
+
     }
 }

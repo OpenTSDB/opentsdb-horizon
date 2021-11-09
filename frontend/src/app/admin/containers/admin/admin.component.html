@@ -1,4 +1,4 @@
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar class="admin-tab-navigation" fxFlex="1 1 49px" fxFlexFill>
     <a mat-tab-link
        *ngFor="let link of adminSectionLinks; let i = index;"
        [routerLink]="'/admin/' + link.path"
@@ -8,6 +8,7 @@
        <span>{{link.label}}</span>
     </a>
 </nav>
+
 <router-outlet></router-outlet>
 
 <ng-template #adminNavbarTmpl>
