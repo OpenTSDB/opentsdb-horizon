@@ -27,7 +27,7 @@ export class RightDrawerComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   params: any = {};
 
-  @HostBinding('class.clipboard-drawer') private _hostClass = true;
+  @HostBinding('class.right-drawer') private _hostClass = true;
 
   // binds the animation to the host component
   @HostBinding('@toggleDrawer') get getToggleDrawer(): string {
