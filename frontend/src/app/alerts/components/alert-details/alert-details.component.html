@@ -144,7 +144,7 @@
                                 <query-editor-proto [label]="'Q' + (index + 1)" [query]="query" [queries]="queries"
                                     [widget]="{queries: queries}"
                                     [options]="{
-                                        enableNamesapce: enableNamespace,
+                                        enableNamespace: enableNamespace,
                                         metaSource: data.type === 'healthcheck' ? 'aurastatus:check' : 'meta',
                                         enableMultipleQueries: data.type === 'simple',
                                         enableMetric: data.type === 'simple',
@@ -839,25 +839,25 @@
                         </div>
 
                         <div class="form-group alert-labels">
-                                <div class="form-label vertical-center"><strong>Labels</strong></div>
-                                <mat-form-field appearance="fill" color="primary" floatLabel="never">
-                                    <mat-chip-list class="filter-values-list" #labelChipList>
-                                        <mat-chip *ngFor="let val of notificationLabelValues['controls']; let n=index"
-                                            (removed)="removeNotificationLabelValue(n)">
-                                            <span>{{val.value}}</span>
-                                            <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
-                                        </mat-chip>
-                                        <input
-                                            placeholder="Enter value(s) seperated by commas"
-                                            #notificationLabelValueInput
-                                            [matChipInputFor]="labelChipList"
-                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                            [matChipInputAddOnBlur]="true"
-                                            (matChipInputTokenEnd)="addNotificationLabelValue($event)"
-                                            autocomplete="off">
-                                    </mat-chip-list>
-                                </mat-form-field>
-                            </div>
+                            <div class="form-label vertical-center"><strong>Labels</strong></div>
+                            <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                <mat-chip-list class="filter-values-list" #labelChipList>
+                                    <mat-chip *ngFor="let val of notificationLabelValues['controls']; let n=index"
+                                        (removed)="removeNotificationLabelValue(n)">
+                                        <span>{{val.value}}</span>
+                                        <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                    </mat-chip>
+                                    <input
+                                        placeholder="Enter value(s) seperated by commas"
+                                        #notificationLabelValueInput
+                                        [matChipInputFor]="labelChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="true"
+                                        (matChipInputTokenEnd)="addNotificationLabelValue($event)"
+                                        autocomplete="off">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
 
                         <div class="oc-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.oc">
                             <mat-divider></mat-divider>
@@ -937,9 +937,9 @@
                                                 autocomplete="off">
                                         </mat-chip-list>
                                     </mat-form-field>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
 
 
