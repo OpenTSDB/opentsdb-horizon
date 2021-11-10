@@ -370,24 +370,35 @@ export class DashboardVersionHistoryComponent implements OnInit, OnChanges {
     ];
 
     history = { dates: [], data: {} };
-    visibleSections = {};
+    defaultHistoryId: any;
+    defaultHistoryDate: any;
+    visibleSections = {}; // not sure we need visible sections anymore... to be determined
     private subscription: Subscription = new Subscription();
 
     ngOnInit() {
         this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
             switch (message.action) {
                 case 'SetDashboardHistory':
-                    console.log("SetDashboardHistory", message);
+                    console.log("%cSetDashboardHistory", 'background: black; color: white; padding: 4px;', message);
                     const res = message.payload.data.histories;
                     const userNames = message.payload.data.userNames;
+                    let defaultHistoryId = message.payload.data.defaultHistoryId;
                     const data = {};
+
                     for (let i = 0; i < res.length; i++) {
                         const dt = moment.unix(res[i].createdTime / 1000).format('YYYY-MM-DD'); // moment.unix(time).format(dtFormat) : moment.unix(time).utc().format(dtFormat), 'time:raw': time };
+
                         if (!data[dt]) {
                             data[dt] = [];
                             this.visibleSections[dt] = true;
                         };
+
                         const userId = res[i].creatorId;
+
+                        if (res[i].id === defaultHistoryId) {
+                            this.defaultHistoryDate = dt;
+                        }
+
                         data[dt].push({
                             id: res[i].id,
                             time: res[i].createdTime / 1000,
@@ -400,6 +411,7 @@ export class DashboardVersionHistoryComponent implements OnInit, OnChanges {
                     }
 
                     this.history = { dates: Object.keys(data), data: data };
+                    this.defaultHistoryId = defaultHistoryId;
                     break;
             }
         }));
@@ -459,6 +471,7 @@ export class DashboardVersionHistoryComponent implements OnInit, OnChanges {
 
     versionItemMenuAction(date: any, item: any) {
         // do something
+        console.log('ACTION MENU', date, item);
     }
 
     ngOnDestroy() {

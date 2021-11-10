@@ -28,20 +28,30 @@
         <mat-accordion multi="true" displayMode="flat">
             <!-- history items -->
             <mat-expansion-panel class="version-date-item"
+                [ngClass]="{'is-default-date': date === defaultHistoryDate}"
                 expanded="true"
                 *ngFor="let date of history.dates">
                 <mat-expansion-panel-header expandedHeight="32px" collapsedHeight="32px">
                     <mat-panel-title>
                         <span class="history-date">{{date}}</span>
+                        <span class="default-indicator" *ngIf="date === defaultHistoryDate">
+                            <span>DEFAULT</span>
+                        </span>
                         <span class="flex-spacer"></span>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-list class="version-time-list">
                     <mat-list-item class="version-time-item"
+                        [ngClass]="{'is-default-version': history.id === defaultHistoryId}"
                         *ngFor="let history of history.data[date]">
                         <div class="version-time-details" (click)="loadVersion(history.id)">
-                            <span>{{history.time | date:'mediumTime'}}</span>
-                            <span>{{history.userId}} ({{history.userName}})</span>
+                            <span class="version-time">
+                                {{history.time | date:'mediumTime'}}
+                                <span class="default-indicator" *ngIf="history.id === defaultHistoryId">
+                                    DEFAULT
+                                </span>
+                            </span>
+                            <span class="version-who">{{history.userId}} ({{history.userName}})</span>
                         </div>
                         <div class="version-time-menu-wrap">
                             <button class="version-time-item-menu-trigger"
