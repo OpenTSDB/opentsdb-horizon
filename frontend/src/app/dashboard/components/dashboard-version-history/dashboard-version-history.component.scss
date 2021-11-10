@@ -38,23 +38,57 @@ $logo-height: map-get($navbar-config, 'logo-height');
      }
 
     // Overrides for material elements specific to this component
-    .mat-expansion-panel ::ng-deep {
-        .mat-expansion-panel-body {
-            padding: 0 0 8px;
+    .mat-expansion-panel {
+        ::ng-deep {
+            .mat-expansion-panel-body {
+                padding: 0 0 8px;
+            }
+        }
+
+        .mat-expansion-panel-header {
+            position: relative;
+
+            .default-indicator {
+                opacity: 0;
+                display: flex;
+                align-items: center;
+                margin-left: 8px;
+
+                span {
+                    padding: 2px;
+                    font-size: 8px;
+                    line-height: 1;
+                    font-weight: 500;
+                    display: inline-block;
+                }
+            }
+        }
+
+        &:not(.mat-expanded) {
+            .mat-expansion-panel-header {
+                .default-indicator {
+                    opacity: 1;
+                }
+            }
         }
     }
 
     .mat-list .mat-list-item ::ng-deep {
         .mat-list-item-content {
-            padding: 0 0 8px 16px;
+            padding: 0 0 0 28px;
         }
     }
 
     .version-date-item.mat-expansion-panel {
         .mat-expansion-panel-header {
-            padding: 0 8px;
-            font-size: 10px;
+            padding: 0 14px;
+            font-size: 12px;
+            font-weight: 500;
         }
+    }
+
+    .version-time-list {
+        padding-top: 0;
     }
 
     .version-time-item {
@@ -62,12 +96,32 @@ $logo-height: map-get($navbar-config, 'logo-height');
         .version-time-details {
             display: flex;
             flex-direction: column;
-            font-size: 10px;
+            flex: 1;
+
+            .version-time {
+                font-size: 12px;
+
+                .default-indicator {
+                    padding: 2px;
+                    margin-left: 6px;
+                    font-size: 8px;
+                    line-height: 1;
+                    font-weight: 500;
+                }
+            }
+
+            .version-who {
+                font-size: 10px;
+            }
         }
 
         .version-time-item-menu-trigger.mat-icon-button {
             opacity: 0;
             transition: opacity 200ms ease-in;
+            margin-right: 8px;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
 
             .mat-icon {
                 @include sizeDenaliIcon(12px);
@@ -108,9 +162,17 @@ $logo-height: map-get($navbar-config, 'logo-height');
                 );
         }
 
-        .navigator-panel-item,
-        .mat-list .mat-list-item,
-        .mat-nav-list .mat-list-item {
+        .mat-expansion-panel-header {
+
+            .default-indicator {
+                span {
+                    color: mat-color($foreground, text);
+                    background: mat-color($foreground, text, .2);
+                }
+            }
+        }
+
+        .mat-list .mat-list-item {
             color: if(
                 $is-dark,
                 mat-color($foreground, navbar-text, .6),
@@ -118,25 +180,24 @@ $logo-height: map-get($navbar-config, 'logo-height');
             );
         }
 
-        .mat-list .mat-list-item,
-        .mat-nav-list .mat-list-item {
+        .version-time-item {
 
-            .folder-icon,
-            .dashboard-icon {
-                margin-right: 8px;
-                color: if(
+            &:hover {
+                background: if(
                     $is-dark,
-                    mat-color($foreground, navbar-text, .6),
-                    mat-color($background, navbar, .85)
+                    mat-color($foreground, navbar-text, .1),
+                    mat-color($background, navbar, .08)
                 );
+                cursor: pointer;
             }
 
-            &.is-active {
-                color: if(
-                    $is-dark,
-                    mat-color($foreground, navbar-text, .85),
-                    mat-color($background, navbar, .85)
-                );
+            .version-time-details .version-time .default-indicator {
+                color: mat-color($foreground, text);
+                background: mat-color($foreground, text, .2);
+            }
+
+            .version-time-item-menu-trigger.mat-icon-button {
+                background: rgba($black, 0.1);
             }
         }
     }
