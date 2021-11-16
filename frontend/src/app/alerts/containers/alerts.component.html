@@ -238,7 +238,8 @@
     </div>
     <div *ngIf="list === 'snooze'" class="common-results snooze-results" fxFlex="1 1 100%" fxLayout="column">
         <div class="common-results-wrapper">
-            <div class="common-results-body">
+            <div class="common-results-body has-scroller">
+                <div class="is-scroller">
                 <table class="common-table-result snooze-results-table" mat-table [dataSource]="snoozesDataSource" matSort matSortStart="desc">
                     <ng-container matColumnDef="select">
                         <th mat-header-cell *matHeaderCellDef>
@@ -330,6 +331,7 @@
                     <tr mat-header-row *matHeaderRowDef="snoozeDisplayedColumns; sticky: true" [ngClass]="{'is-batch-editing': selection.hasValue()}"></tr>
                     <tr mat-row *matRowDef="let row; columns: snoozeDisplayedColumns;"></tr>
                 </table>
+                </div>
                 <div class="message" *ngIf="stateLoaded.snooze && snoozes.length === 0">No snoozes found</div>
                 <div class="message" *ngIf="!stateLoaded.snooze">Loading...</div>
             </div>
