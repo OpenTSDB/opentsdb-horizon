@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -244,8 +244,9 @@
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
                                     [selected]="data.metric.groupByTags"
                                     [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
-                                    [excludeTags]=" options.excludeMetricGroupByTags && data.type !== 'expression'  ? options.excludeMetricGroupByTags : []"
-                                    (change)="setMetricGroupByTags(data.metric.id, $event)" [enableGroupBy]="options.enableGroupBy">
+                                    [excludeTags]=" options.excludeMetricGroupByTags && data.type !== 'expression' ? options.excludeMetricGroupByTags : []"
+                                    (change)="setMetricGroupByTags(data.metric.id, $event)"
+                                    [enableGroupBy]="options.enableGroupBy">
                                 </dropdown-metric-tags>
                             </div>
                         </div>
@@ -531,28 +532,29 @@
                 <mat-nav-list *ngIf="selectedFunctionCategoryIndex >= 0">
                     <a mat-list-item
                         *ngFor="let catFunction of functionCategories[selectedFunctionCategoryIndex].functions; let j = index;"
-                        (click)="addFunction(catFunction, metric.id)" (mouseover)="selectFunctionHelp($event, j)">
+                        (click)="addFunction(catFunction, metric.id)"
+                        (mouseover)="selectFunctionHelpObject(catFunction)">
                         <span>{{ catFunction.label }}</span>
                     </a>
                 </mat-nav-list>
             </div>
-            <ng-container *ngIf="selectedFunctionCategoryIndex >= 0 && selectedFunctionHelpIndex >= 0">
-                <ng-container *ngTemplateOutlet="functionHelpLayout; context: functionCategories[selectedFunctionCategoryIndex].functions[selectedFunctionHelpIndex]"></ng-container>
+            <ng-container *ngIf="selectedFunctionCategoryIndex >= 0 && selectedFunctionHelpObj.help">
+                <ng-container *ngTemplateOutlet="functionHelpLayout"></ng-container>
             </ng-container>
 
         </div>
     </ng-template>
 </mat-menu>
 
-<ng-template #functionHelpLayout let-help="help">
-    <div class="function-category-help" *ngIf="selectedFunctionCategoryIndex >= 0 && selectedFunctionHelpIndex >= 0">
+<ng-template #functionHelpLayout>
+    <div class="function-category-help">
         <div class="help-title">
             <span>
                 <mat-icon fontSet="denali" fontIcon="d-help-circle"></mat-icon>
             </span>
-            <span [innerHtml]="help.label | safe:'html'"></span>
+            <span [innerHtml]="selectedFunctionHelpObj.help.label | safe:'html'"></span>
         </div>
-        <div class="help-description" [innerHtml]="help.description | safe:'html'"></div>
+        <div class="help-description" [innerHtml]="selectedFunctionHelpObj.help.description | safe:'html'"></div>
     </div>
 </ng-template>
 
