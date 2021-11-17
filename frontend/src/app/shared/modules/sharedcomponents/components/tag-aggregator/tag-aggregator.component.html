@@ -15,7 +15,7 @@
   limitations under the License.
  -->
 <button mat-button [matMenuTriggerFor]="aggregatorMenu">
-    <div>{{ aggregatorOptions[selectedIndex].icon }}</div>
+    <div>{{ aggregatorOptions[selectedIndex].value }}</div>
     <div class="mat-select-arrow-wrapper">
         <div class="mat-select-arrow"></div>
     </div>
@@ -27,7 +27,7 @@
                 *ngFor="let option of aggregatorOptions; let i = index"
                 (click)="selectOption(option.value)"
                 (mouseover)="setAggregatorHelpObject(option)">
-                {{option.icon}}
+                {{option.value}}
             </button>
         </div>
         <ng-container *ngIf="selectedAggregatorHelpObj && selectedAggregatorHelpObj.help">

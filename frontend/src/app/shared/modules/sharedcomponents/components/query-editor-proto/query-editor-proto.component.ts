@@ -764,6 +764,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
     ];
 
+    selectedFunctionHelpObj: any = {};
+
 
     FunctionOptions: any = {
         'TotalUsingBaseInterval': {
@@ -1688,8 +1690,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.functionHelpVisible = visible;
     }
 
-    selectFunctionHelp($event: any, funcIdx: number) {
-        this.selectedFunctionHelpIndex = funcIdx;
+    selectFunctionHelpObject(helpObj: any) {
+        this.selectedFunctionHelpObj = helpObj;
     }
 
 
