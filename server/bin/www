@@ -3,33 +3,44 @@
 /**
  * Module dependencies.
  */
+
 var app = require('../index');
 var debug = require('debug')('server:server');
 var path = require('path');
 var port;
 var server;
 
-if(process.env.SSL_CERTIFICATE_PATH &&
-    process.env.SSL_PRIVATE_KEY_PATH
-){
+var enableTls = process.env.USE_TLS || 'true';
+var sslPath = '.ssh/opentsdb/';
+
+if(JSON.parse(enableTls.toLowerCase())){
   var https = require('https');
   var fs = require('fs');
-  port = process.env.PORT || 4443;
+  
   /**
    * Get port from environment and store in Express.
    * */
-  var privateKey = fs.readFileSync(path.resolve(process.env.SSL_PRIVATE_KEY_PATH), 'utf8');
-  var certificate = fs.readFileSync(path.resolve(process.env.SSL_CERTIFICATE_PATH), 'utf8');
-  var credentials = { key: privateKey, cert: certificate };
+  port = process.env.PORT || 4443;
   app.set('port', port);
+  
   /**
    * Create HTTPS server.
    */
+  var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.key'), 'utf8');
+  var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.crt'), 'utf8');
+
+  var credentials = { key: privateKey, cert: certificate };
+  
   server = https.createServer(credentials, app);
 }else{
   var http = require('http');
+  
+  /**
+   * Get port from environment and store in Express.
+   * */
   port = process.env.PORT || 4080;
   app.set('port', port);
+  
   /**
    * Create HTTP server.
    */
