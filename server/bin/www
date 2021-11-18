@@ -7,20 +7,19 @@
 var app = require('../index');
 var debug = require('debug')('server:server');
 var path = require('path');
-var port;
+var port = process.env.PORT || 4443;
 var server;
 
 var enableTls = process.env.USE_TLS || 'true';
 var sslPath = '.ssh/opentsdb/';
 
-if(JSON.parse(enableTls.toLowerCase())){
+if(enableTls === 'true'){
   var https = require('https');
   var fs = require('fs');
   
   /**
    * Get port from environment and store in Express.
    * */
-  port = process.env.PORT || 4443;
   app.set('port', port);
   
   /**
@@ -38,7 +37,6 @@ if(JSON.parse(enableTls.toLowerCase())){
   /**
    * Get port from environment and store in Express.
    * */
-  port = process.env.PORT || 4080;
   app.set('port', port);
   
   /**
