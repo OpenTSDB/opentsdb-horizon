@@ -2024,7 +2024,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const ts = new Date().getTime();
         const query = this.getQuery(message);
         const wd = message.payload;
-        const data = buildDownloadQueryHelpString() +
+        const data = this.buildDownloadQueryHelpString() +
                     'QUERY:\n' + JSON.stringify(query);
 
         const file = new Blob([data], {type: 'text/text'});
