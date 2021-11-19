@@ -2006,14 +2006,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+    buildDownloadQueryHelpString() {
+        const tsdb_host = this.appConfig.getConfig().tsdb_host
+        let msg = 'API URL: ' + tsdb_host + '/api/query/graph\n\n' +
+                  'HEADER:\n' +
+                  'Content-Type: application/json\n\n';
+
+        const examples = this.appConfig.getConfig().widget.downloadQuery.examples
+        for(let i = 0; i < examples.length; ++i) {
+            msg += examples[i] + '\n\n';
+        }
+
+        return msg;
+    }
+
     downloadDataQuery(message) {
         const ts = new Date().getTime();
         const query = this.getQuery(message);
         const wd = message.payload;
-        const data = 'API URL: https://metrics.yamas.ouroath.com:443/api/query/graph\n\n' +
-                    'HEADER:\n' +
-                    'Content-Type: application/json\n\n' +
-                    'CURL: curl -ki --cert /var/lib/sia/certs/<CERT>.cert.pem --key /var/lib/sia/keys/<KEY>.key.pem -X POST -d@<QUERY>.json -H \'Content-Type: application/json\' \'https://metrics.yamas.ouroath.com/api/query/graph\'\n\n' +
+        const data = buildDownloadQueryHelpString() +
                     'QUERY:\n' + JSON.stringify(query);
 
         const file = new Blob([data], {type: 'text/text'});

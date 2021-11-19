@@ -44,6 +44,14 @@
         }
       }
     },
+    "widget": {
+        "downloadQuery": {
+            "examples": [
+                "<% query example 1 (curl?) %>",
+                "<% query example 2 (CLI?) %>"
+            ],
+        },
+    },
     "alert_history_url": "<% alert log history url %>",
     "helpLinks": [
         { "label": "User guide", "href": "#" },
