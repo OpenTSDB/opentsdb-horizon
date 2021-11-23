@@ -53,8 +53,9 @@
         </div>
         <span class="flex-spacer"></span>
         <div class="control-item list-counts">
-            <span *ngIf="list === 'alerts'">Displaying {{alertsDataSource ? alertsDataSource.filteredData.length : '0'}} of {{alerts.length}}</span>
-            <span *ngIf="list === 'snooze'">Displaying {{snoozesDataSource ? snoozesDataSource.filteredData.length : '0'}} of {{snoozes.length}}</span>
+            <!--<span *ngIf="list === 'alerts'">Displaying {{alertsDataSource ? alertsDataSource.filteredData.length : '0'}} of {{alerts.length}} ({{ pagingTextDisplay }})</span>
+            <span *ngIf="list === 'snooze'">Displaying {{snoozesDataSource ? snoozesDataSource.filteredData.length : '0'}} of {{snoozes.length}}</span>-->
+            <span>{{ pagingTextDisplay }}</span>
         </div>
     </div>
     <div *ngIf="error" class="error">
@@ -68,11 +69,12 @@
                         <ng-container matColumnDef="select">
                             <th mat-header-cell *matHeaderCellDef>
                                 <mat-checkbox (change)="$event ? masterToggle() : null"
-                                    [checked]="selection.hasValue() && isAllSelected()"
-                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    [checked]="alertsSelection.hasValue() && isAllSelected()"
+                                    [indeterminate]="alertsSelection.hasValue() && !isAllSelected()"
+                                    *ngIf="stateLoaded.alerts && alerts.length > 0"
                                     color="primary">
                                 </mat-checkbox>
-                                <div class="bulk-actions-anchor" *ngIf="selection.hasValue()">
+                                <div class="bulk-actions-anchor" *ngIf="alertsSelection.hasValue()">
                                     <div class="bulk-actions-wrapper">
                                         <button mat-button color="primary" (click)="bulkDisableAlerts()">
                                             <mat-icon fontSet="denali" fontIcon="d-notification-disable"></mat-icon>
@@ -87,8 +89,8 @@
                             </th>
                             <td mat-cell *matCellDef="let element">
                                 <mat-checkbox (click)="$event.stopPropagation()"
-                                    (change)="$event ? selection.toggle(element) : null"
-                                    [checked]="selection.isSelected(element)"
+                                    (change)="$event ? alertsSelection.toggle(element) : null"
+                                    [checked]="alertsSelection.isSelected(element)"
                                     color="primary">
                                 </mat-checkbox>
                             </td>
@@ -224,7 +226,7 @@
                             </td>
                         </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" [ngClass]="{'is-batch-editing': selection.hasValue()}"></tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" [ngClass]="{'is-batch-editing': alertsSelection.hasValue()}"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'is-disabled': (row.enabled === undefined) ? true : !row.enabled}"></tr>
                     </table>
                     <div class="message" *ngIf="stateLoaded.alerts && alerts.length === 0">No alerts found</div>
@@ -233,7 +235,8 @@
             </div>
             <mat-paginator #alertsPaginator
                 [pageSizeOptions]="[25, 50, 100]"
-                [showFirstLastButtons]="alerts.length > 25"></mat-paginator>
+                [showFirstLastButtons]="alerts.length > 25"
+                (page)="paginatorPageEvent($event)"></mat-paginator>
         </div>
     </div>
     <div *ngIf="list === 'snooze'" class="common-results snooze-results" fxFlex="1 1 100%" fxLayout="column">
@@ -243,11 +246,12 @@
                     <ng-container matColumnDef="select">
                         <th mat-header-cell *matHeaderCellDef>
                             <mat-checkbox (change)="$event ? masterToggle() : null"
-                                [checked]="selection.hasValue() && isAllSelected()"
-                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                [checked]="snoozeSelection.hasValue() && isAllSelected()"
+                                [indeterminate]="snoozeSelection.hasValue() && !isAllSelected()"
+                                *ngIf="stateLoaded.snooze && snoozes.length > 0"
                                 color="primary">
                             </mat-checkbox>
-                            <div class="bulk-actions-anchor" *ngIf="selection.hasValue()">
+                            <div class="bulk-actions-anchor" *ngIf="snoozeSelection.hasValue()">
                                 <div class="bulk-actions-wrapper">
                                     <button mat-button color="primary" (click)="bulkDeleteAlerts()">
                                         <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
@@ -258,8 +262,8 @@
                         </th>
                         <td mat-cell *matCellDef="let element">
                             <mat-checkbox (click)="$event.stopPropagation()"
-                                (change)="$event ? selection.toggle(element) : null"
-                                [checked]="selection.isSelected(element)"
+                                (change)="$event ? snoozeSelection.toggle(element) : null"
+                                [checked]="snoozeSelection.isSelected(element)"
                                 color="primary">
                             </mat-checkbox>
                         </td>
@@ -327,7 +331,7 @@
                         </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="snoozeDisplayedColumns; sticky: true" [ngClass]="{'is-batch-editing': selection.hasValue()}"></tr>
+                    <tr mat-header-row *matHeaderRowDef="snoozeDisplayedColumns; sticky: true" [ngClass]="{'is-batch-editing': snoozeSelection.hasValue()}"></tr>
                     <tr mat-row *matRowDef="let row; columns: snoozeDisplayedColumns;"></tr>
                 </table>
                 <div class="message" *ngIf="stateLoaded.snooze && snoozes.length === 0">No snoozes found</div>
@@ -335,7 +339,8 @@
             </div>
             <mat-paginator #snoozePaginator
                 [pageSizeOptions]="[10, 20, 30]"
-                showFirstLastButtons></mat-paginator>
+                showFirstLastButtons
+                (page)="paginatorPageEvent($event)"></mat-paginator>
         </div>
     </div>
 

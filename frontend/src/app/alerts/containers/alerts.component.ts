@@ -96,6 +96,7 @@ const moment = _moment;
 export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     @HostBinding('class.alerts-container-component') private _hostClass = true;
+
     // @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
         if (paginator && this.list === 'alerts' && this.alertsDataSource) {
@@ -105,6 +106,18 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.snoozesDataSource.paginator = paginator;
         }
     }
+
+    get paginator(): MatPaginator {
+        //return this._currentPaginator || null
+        if (this.list === 'alerts' && this.alertsDataSource && this.alertsDataSource.paginator) {
+            return this.alertsDataSource.paginator;
+        } else if (this.list === 'snooze' && this.snoozesDataSource && this.snoozesDataSource.paginator) {
+            return this.snoozesDataSource.paginator;
+        } else {
+            return null;
+        }
+    }
+
     @ViewChild(MatSort) set dataSourceSort(sortor: MatSort) {
         if (sortor && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.sort = sortor;
@@ -190,7 +203,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     ];
 
     // for batch selection
-    selection = new SelectionModel<AlertModel>(true, []);
+    alertsSelection = new SelectionModel<AlertModel>(true, []);
+    snoozeSelection = new SelectionModel<any>(true, []);
 
     @Select(AlertsState.getActionResponse) asActionResponse$: Observable<any>;
     @Select(AlertsState.getEditItem) editItem$: Observable<any>;
@@ -279,6 +293,36 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     showNamespace = true;
     // where to navigate on save
     dashboardId = -1;
+
+    get currentDataSource(): MatTableDataSource<any> {
+        if (this.list === 'alerts' && this.alertsDataSource) {
+            return this.alertsDataSource;
+        }
+        if (this.list === 'snooze' && this.snoozesDataSource) {
+            return this.snoozesDataSource;
+        }
+        return null;
+    }
+
+    get pagingTextDisplay(): string {
+        if (this.paginator) {
+            let total: number = this.paginator.length;
+            let pageSize: number = this.paginator.pageSize;
+            let pageIndex: number = this.paginator.pageIndex;
+            let start: number = (pageIndex === 0) ? 1 : (pageIndex * pageSize) + 1;
+            let end: number = (start - 1) + pageSize;
+            if (end > total) {
+                end = total;
+            }
+            let prefix: string = 'Displaying';
+            if (total === 0) {
+                return '';
+            }
+            return prefix + ' ' + start + ' - ' + end + ' of ' + total;
+        } else {
+            return '';
+        }
+    }
 
     constructor(
         private store: Store,
@@ -601,6 +645,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             const queryParams = this.activatedRoute.snapshot.queryParams;
             this.clearSystemMessage();
+            this.alertsSelection.clear();
+            this.snoozeSelection.clear();
 
             let defaultNS = this.getDefaultNamespace();
             if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
@@ -825,6 +871,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     private setSnoozeTableDataSource(snoozes: AlertModel[]) {
         this.snoozesDataSource = new MatTableDataSource<any>(snoozes);
+        this.alertsDataSource.paginator = this.paginator;
     }
 
     setAlertListMeta() {
@@ -862,19 +909,67 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     /** batch selection tools */
+    // method to get the data indices of the currently displayed items
+    private getCurrentPaginatorDataRange(): any {
+        const pager = (this.list === 'alerts') ? this.alertsDataSource.paginator : this.snoozesDataSource.paginator;
+        if (pager) {
+            const pageIndex = pager.pageIndex;
+            const pageSize = pager.pageSize;
+
+            let startIndex = pageSize * pageIndex;
+            let endIndex = startIndex + (pageSize - 1);
+            let length = pageSize;
+
+            if (endIndex > pager.length) {
+                endIndex = pager.length - 1;
+                length = pager.length - startIndex;
+            }
+
+            return { start: startIndex, end: endIndex, length: length };
+        } else {
+            return {}
+        }
+    }
 
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.alertsDataSource.data.length;
-        return numSelected === numRows;
+        const dataSource = (this.list === 'alerts') ? this.alertsDataSource : this.snoozesDataSource;
+        if (dataSource) {
+            const dataRange: any = this.getCurrentPaginatorDataRange();
+            const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+
+            const numSelected = selection.selected.length;
+            const numRows = dataRange.length;
+            return numSelected === numRows;
+        } else {
+            return undefined;
+        }
     }
 
     /** Selects all rows if they are not all selected; otherwise clear selection. */
     masterToggle() {
-        this.isAllSelected() ?
-            this.selection.clear() :
-            this.alertsDataSource.data.forEach(row => this.selection.select(row));
+        const dataSource: MatTableDataSource<any> = (this.list === 'alerts') ? this.alertsDataSource : this.snoozesDataSource;
+        const selection: SelectionModel<any> = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+
+        if (dataSource) {
+            const dataRange: any = this.getCurrentPaginatorDataRange();
+
+            this.isAllSelected() ?
+                selection.clear() :
+                (() => {
+                    // connect only returns values currently displayed
+                    dataSource.connect().value.forEach((row, i) => {
+                        selection.select(row);
+                    })
+                })();
+
+            /*this.isAllSelected() ?
+                this.selection.clear() :
+                dataSource.data.forEach(row => this.selection.select(row));*/
+        } else {
+            selection.clear();
+        }
+
     }
 
     /** bulk actions */
@@ -882,8 +977,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // NOTE: adding stubs for now. Noticed the UI has buttons for this, but there were no functions assigned
 
     bulkDisableAlerts() {
+        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
         // TODO: get list of selected items, then disable (see this.toggleAlert)
-        const selected: any[] = this.selection.selected.map(item => {
+        const selected: any[] = selection.selected.map(item => {
             const data: any = {id: item.id, enabled: false};
             return data;
         });
@@ -896,8 +992,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     bulkDeleteAlerts() {
+        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
         // TODO: get list of selected items, then do delete confirmation, then delete (see this.deleteItem)
-        const selected: any[] = this.selection.selected.map(item => item.id);
+        const selected: any[] = selection.selected.map(item => item.id);
         const dialogData: any = {
             bulk: true,
             items: selected
@@ -1315,6 +1412,23 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             });
         }
     }
+
+    paginatorPageEvent(event: any) {
+        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+        if (event.previousPageIndex !== event.pageIndex) {
+            selection.clear();
+        }
+        if (event.previousPageIndex === event.pageIndex && selection.selected.length > 0) {
+            const dataRange: any = this.getCurrentPaginatorDataRange();
+            selection.selected.forEach((row, i) => {
+                if (i >= dataRange.length) {
+                    selection.deselect(row);
+                }
+            });
+        }
+    }
+
+
 
     ngAfterViewChecked() {
         if (this.location.path() === '/a' || this.location.path() === '/a/' + this.selectedNamespace) {
