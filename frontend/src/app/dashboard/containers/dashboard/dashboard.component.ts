@@ -2007,12 +2007,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     buildDownloadQueryHelpString() {
-        const tsdb_host = this.appConfig.getConfig().tsdb_host
+        const tsdb_host = this.appConfig.getConfig().tsdb_host;
         let msg = 'API URL: ' + tsdb_host + '/api/query/graph\n\n' +
                   'HEADER:\n' +
                   'Content-Type: application/json\n\n';
 
-        const examples = this.appConfig.getConfig().widget.downloadQuery.examples
+        const examples = this.appConfig.getConfig().widget.downloadQuery.examples;
         for(let i = 0; i < examples.length; ++i) {
             msg += examples[i] + '\n\n';
         }
