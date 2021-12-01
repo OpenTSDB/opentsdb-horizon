@@ -348,13 +348,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         // icons
         const svgIcons = ['email', 'http', 'oc', 'opsgenie', 'slack'];
 
-        // add icons to registry... url has to be trusted
-        for (const type of svgIcons) {
-            matIconRegistry.addSvgIcon(
-                type + '_contact',
-                domSanitizer.bypassSecurityTrustResourceUrl('assets/' + type + '-contact.svg')
-            );
-        }
     }
 
     ngOnInit() {
@@ -448,6 +441,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.alerts$.pipe(skip(1)).subscribe(alerts => {
             this.stateLoaded.alerts = true;
+            for (let i = 0; i < alerts.length; i++ ) {
+                alerts[i].recipientsKeys = this.getRecipientKeys(alerts[i]);
+            }
             this.alerts = JSON.parse(JSON.stringify(alerts));
             this.setAlertListMeta();
             this.retriggerAlertSearch();

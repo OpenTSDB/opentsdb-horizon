@@ -47,6 +47,8 @@ export interface AlertModel {
     contacts: any[];
     created: any;
     modified: any;
+    recipient: any;
+    recipientsKeys?: string[]; 
     snoozed: boolean;
     disabled: boolean;
     alerting: boolean;
