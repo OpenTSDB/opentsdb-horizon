@@ -952,7 +952,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // reset state for save pop-up
                     this.oldMeta = {...this.meta};
                     this.oldWidgets = [... this.widgets];
-                    this.refreshDashboardVersionHistory();
                     break;
                 case 'delete-success':
                     this.snackBar.open('Dashboard has been moved to trash folder.', '', {
