@@ -962,15 +962,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                       panelClass: 'success-notification'
                     });
                     break;
-                case 'set-version-success':
-                    this.snackBar.open('Dashboard default version has been changed.', '', {
-                        horizontalPosition: 'center',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                        panelClass: 'success-notification'
-                      });
-                    this.refreshDashboardVersionHistory();
-                    break;
             }
         }));
 
@@ -1212,13 +1203,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.dbToT = this.dbWdViewBackup.tot;
         this.dbDownsample = this.dbWdViewBackup.downsample;
         this.isDBZoomed = this.dbWdViewBackup.isDBZoomed;
-    }
-
-    refreshDashboardVersionHistory() {
-        this.interCom.responsePut({
-            action: 'RefreshDashboardHistory',
-            payload: {}
-        });
     }
 
     updateURLParams(p) {
