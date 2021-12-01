@@ -22,7 +22,7 @@
 </button>
 <button mat-icon-button
     *ngIf="checkDrawerState"
-    matTooltip="Close widget clipboard"
+    [matTooltip]="closeBtnLabel"
     (click)="toggleDrawerState($event)">
     <mat-icon fontSet="denali" fontIcon="d-close-square"></mat-icon>
 </button>

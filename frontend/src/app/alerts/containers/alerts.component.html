@@ -158,9 +158,9 @@
                                 <span>Recipients</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <ng-container *ngIf="getRecipientKeys(element).length > 0">
+                                <ng-container *ngIf="element.recipientsKeys.length > 0">
                                     <div class="contact-icon-strip" [matMenuTriggerFor]="contactsMenu" [matMenuTriggerData]="{element: element}">
-                                        <mat-icon *ngFor="let contactType of getRecipientKeys(element)" [svgIcon]="contactType + '_contact'"></mat-icon>
+                                        <mat-icon *ngFor="let contactType of element.recipientsKeys" [ngClass]="'contact-' + contactType"></mat-icon>
                                     </div>
                                 </ng-container>
                             </td>
