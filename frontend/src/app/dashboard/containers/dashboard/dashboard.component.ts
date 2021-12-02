@@ -73,7 +73,9 @@ import {
     DbfsDeleteDashboard,
     DbfsResourcesState,
     DbfsRemoveUserFav,
-    DbfsAddUserFav
+    DbfsAddUserFav,
+    DbfsUpdateFolder,
+    DbfsRefreshFolder
 } from '../../../shared/modules/dashboard-filesystem/state';
 import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
@@ -257,6 +259,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // used for unsaved changes warning message
     oldMeta = {};
     oldWidgets = [];
+
+    fullPath = '';
+    oldFullPath = '';
 
     // used to determine db write access (and display popup for unsaved changes)
     dbOwner: string = ''; // /namespace/admin
@@ -654,14 +659,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'dashboardSaveRequest':
                     // DashboardSaveRequest comes from the save button
                     // we just need to update the title of dashboard
+
                     if ( this.snapshot ) {
                         this.store.dispatch(new UpdateWidgets([this.newWidget]));
                     }
+
                     if (message.payload.updateFirst === true) {
                         this.store.dispatch(new UpdateDashboardTitle(message.payload.name));
                     }
+
                     let dbcontent2 = this.store.selectSnapshot(DBState);
                     dbcontent2 = this.dbService.getStorableFormatFromDBState(dbcontent2);
+
                     const payload2: any = {
                         'name': dbcontent2.settings.meta.title,
                         'content': dbcontent2
@@ -675,7 +684,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (this.dbid !== '_new_') {
                         payload2.id = this.dbid;
                     }
-                    this.store.dispatch(new SaveDashboard(this.dbid, payload2));
+
+                    this.store.dispatch(new SaveDashboard(this.dbid, payload2)).subscribe(() => {
+                        if (this.oldFullPath.length > 0) {
+                            const oldDbFile: any = this.store.selectSnapshot(DbfsResourcesState.getFile(this.oldFullPath));
+
+                            // if the title has changed, that affects the URL and the DBFS side navigation...
+                            // if there is a difference in titles, lets refresh the DBFS parent folder
+                            if (oldDbFile.name !== dbcontent2.settings.meta.title) {
+                                let folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(oldDbFile.parentPath));
+                                this.store.dispatch(new DbfsRefreshFolder(folder.fullPath, {}));
+                            }
+                        }
+                    });
 
                     break;
                 case 'updateTemplateVariables':
@@ -894,6 +915,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             if (path && path.startsWith('/_new_')) {
                 this.dbOwner = this.user;
+                this.oldFullPath = this.fullPath;
+                this.fullPath = '';
             }
 
             // we only need to check of path returned from configdb is not _new_,
@@ -918,6 +941,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // if the save was on a NEW dashboard, lets tell the navigator to update
                     if (path !== '/_new_' && path !== undefined) {
                         const fullPath = '/' + path.split('/').slice(2).join('/'); // strip off the id part of the url
+                        this.oldFullPath = this.fullPath;
+                        this.fullPath = fullPath;
                         const details = this.dbfsUtils.detailsByFullPath(fullPath);
                         const parentDetails = this.dbfsUtils.detailsByFullPath(details.parentPath);
                         if (parentDetails.topFolder) {
@@ -935,6 +960,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.checkUserFavoritedSub = this.checkUserFavorited$.subscribe(val => {
                         this.isUserFavorited = val;
                     });
+                }else {
+                    const fullPath = '/' + path.split('/').slice(2).join('/');
+                    this.oldFullPath = this.fullPath;
+                    this.fullPath = fullPath;
                 }
             }
         }));
