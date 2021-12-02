@@ -396,10 +396,26 @@ $header-chip-size: 8px;
                     .mat-icon {
                         width: 12px;
                         height: 12px;
-
+                        background-size: cover;
                         &:not(:last-child) {
                             margin-right: 4px;
                         }
+                    }
+
+                    .mat-icon.contact-email {
+                        background-image: url(/assets/email-contact.svg);
+                    }
+                    .mat-icon.contact-http {
+                        background-image: url(/assets/http-contact.svg);
+                    }
+                    .mat-icon.contact-oc {
+                        background-image: url(/assets/oc-contact.svg);
+                    }
+                    .mat-icon.contact-opsgenie {
+                        background-image: url(/assets/opsgenie-contact.svg);
+                    }
+                    .mat-icon.contact-slack {
+                        background-image: url(/assets/slack-contact.svg);
                     }
                 }
             }

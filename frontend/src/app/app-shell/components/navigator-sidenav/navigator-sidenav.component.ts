@@ -55,7 +55,7 @@ export class NavigatorSidenavComponent implements OnInit {
         { section: 'admin',             label: 'Admin',             icon: 'd-user-secure', requiresUserAdmin: true }
     ];
 
-    private brandingImageUrl =  '/assets/horizon-logo-icon-only.png'; // path to the image file. We will default to one in public assets folder
+    brandingImageUrl: any =  '/assets/horizon-logo-icon-only.png'; // path to the image file. We will default to one in public assets folder
     private brandingHomeUrl = '/main'; // href path that you go to if you click on the logo. We default to main
 
     constructor(
@@ -73,6 +73,7 @@ export class NavigatorSidenavComponent implements OnInit {
                 this.brandingHomeUrl = brandingConfig.homeUrl;
             }
         }
+        this.brandingImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.brandingImageUrl);
     }
 
     ngOnInit() { }
