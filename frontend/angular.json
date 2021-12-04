@@ -162,7 +162,90 @@
           }
         }
       }
-    }
+    },
+    "horizon": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "/Users/hilln/dev/www",
+            "index": "src/app/horizon/index.html",
+            "main": "src/app/horizon/horizon.main.ts",
+            "tsConfig": "src/app/horizon/tsconfig.horizon.json",
+            "polyfills": "src/polyfills.ts",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./src",
+                "./src/scss"
+              ]
+            },
+            "assets": [
+              "src/assets",
+              "src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/typeface-ubuntu-mono/files",
+                "output": "./assets/fonts/Ubuntu/mono"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/typeface-ubuntu/files",
+                "output": "./assets/fonts/Ubuntu/sans"
+              }
+            ],
+            "styles": [
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles"
+              },
+              {
+                "input": "./node_modules/dygraphs/dist/dygraph.css",
+                "bundleName": "dygraph"
+              }
+            ],
+            "scripts": [
+              "node_modules/marked/lib/marked.js",
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "styles": [
+                {
+                  "input": "src/styles.scss",
+                  "bundleName": "styles"
+                },
+                {
+                  "input": "./node_modules/dygraphs/dist/dygraph.css",
+                  "bundleName": "dygraph"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }    
   },
   "defaultProject": "frontend",
   "schematics": {
