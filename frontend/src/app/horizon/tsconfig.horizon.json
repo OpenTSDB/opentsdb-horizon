@@ -2,7 +2,8 @@
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
         "outDir": "../../../out-tsc/horizon",
-        "types": []
+        "types": [],
+        "target": "es2015",
     },
     "files": [
         "./horizon.main.ts",
