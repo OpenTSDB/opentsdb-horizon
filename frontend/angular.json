@@ -178,24 +178,11 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "./src",
+                "./src/app/horizon",
                 "./src/scss"
               ]
             },
-            "assets": [
-              "src/assets",
-              "src/favicon.ico",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/typeface-ubuntu-mono/files",
-                "output": "./assets/fonts/Ubuntu/mono"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/typeface-ubuntu/files",
-                "output": "./assets/fonts/Ubuntu/sans"
-              }
-            ],
+
             "styles": [
               {
                 "input": "src/styles.scss",
@@ -207,7 +194,6 @@
               }
             ],
             "scripts": [
-              "node_modules/marked/lib/marked.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
@@ -215,7 +201,7 @@
           },
           "configurations": {
             "production": {
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -223,7 +209,7 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "serviceWorker": false,
               "fileReplacements": [
                 {
