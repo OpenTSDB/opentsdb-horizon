@@ -1,0 +1,51 @@
+//* Date Time Picker Global Styles
+//* ====================================================
+//* Since part of the app-navbar is a cdk portal
+//* the css encapsulation doesn't work on the items
+//* ported in from other containers.
+//* So we have to put those styles in the global space.
+//* ====================================================
+
+// when it is in the navbar
+.navbar-item.nav-date-time-picker {
+    margin: 0 5px;
+
+    .mat-raised-button {
+        @include mat-elevation(0);
+        line-height: 24px;
+        font-size: 12px;
+        padding-left: 6px;
+        padding-right: 0;
+
+        .mat-icon {
+            font-size: 1.2em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            &:first-child {
+                margin-right: 5px;
+            }
+
+            &:last-child {
+                margin-left: 5px;
+            }
+        }
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    // when it is in the navbar
+    .navbar-item.nav-date-time-picker {
+        .mat-raised-button {
+            background-color: mat-color($background, navbar-button);
+            color: mat-color($foreground, navbar-text);
+
+            &:hover {
+            background-color: mat-color($background, navbar-button-hover);
+            }
+        }
+    }
+}
+

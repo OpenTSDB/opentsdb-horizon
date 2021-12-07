@@ -32,7 +32,7 @@
 // import your component scss
 // example: @import './components/componentName/componentName.component.scss';
 
-@import 'date-time-picker.common';
+//@import 'date-time-picker.common';
 @import './components/date-picker-2/datepicker.component';
 @import './components/keypad/keypad.component';
 @import './components/time-picker/time-picker.component';
@@ -42,7 +42,7 @@
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin date-time-picker-module-core() {
-    @include date-time-picker-common-base();
+    //@include date-time-picker-common-base();
     @include date-picker-component-base();
     @include keypad-component-base();
     @include time-picker-component-base();
@@ -52,7 +52,7 @@
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
 @mixin date-time-picker-module-theme($theme-config) {
-    @include date-time-picker-common-theme($theme-config);
+    //@include date-time-picker-common-theme($theme-config);
     @include date-picker-component-theme($theme-config);
     @include keypad-component-theme($theme-config);
     @include time-picker-component-theme($theme-config);
