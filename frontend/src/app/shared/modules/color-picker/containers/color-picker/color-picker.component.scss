@@ -64,100 +64,103 @@ $available-palettes:
     'Set3',
     'Tableau10';
 
-@mixin color-picker-component-base() {
+@import 'loader-base';
 
-    .color-picker-component {
-        display: inline-block;
+:host.color-picker-component {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    z-index: 1;
+    @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), input);
+
+    .color-picker-wrapper {
         position: relative;
-        text-align: left;
-        z-index: 1;
-        @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), input);
+        width: 186px;
 
-        .color-picker-wrapper {
-            position: relative;
-            width: 186px;
-
-            .color-picker-flex {
-                border-radius: 4px 4px 0 0;
-                cursor: pointer;
-                display: inline-flex;
-                align-items: baseline;
-                box-sizing: border-box;
-                width: 100%;
-            }
-
-            .color-picker-infix {
-                display: inline-flex;
-                justify-content: center;
-                align-content: center;
-                padding: 8px 8px 7px 8px;
-                position: relative;
-                flex: auto;
-                min-width: 0;
-                width: 100%;
-            }
-
-            .color-picker-trigger {
-                width: 100%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                position: relative;
-                box-sizing: border-box;
-                height: 1.125em;
-            }
-
-            .color-preview-wrapper,
-            .select-arrow-wrapper {
-                height: 100%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .select-arrow {
-                width: 0;
-                height: 0;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 5px solid;
-                margin: 0 4px;
-            }
-
-            .color-preview-wrapper,
-            .color-hex-value {
-                margin-right: 8px;
-            }
-
-            .color-preview-chip {
-                height: 14px;
-                width: 14px;
-                display: inline-block;
-                border-radius: 4px;
-            }
-
-            .color-hex-value {
-                display: flex;
-                width: 100%;
-            }
-
-            .color-hex-value,
-            .color-hex-value-text {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+        .color-picker-flex {
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: baseline;
+            box-sizing: border-box;
+            width: 100%;
         }
 
-        ///// OLD STYLE //////
-        .mat-raised-button {
-            //main button
-            padding: 0px;
-            width: 186px;
+        .color-picker-infix {
+            display: inline-flex;
+            justify-content: center;
+            align-content: center;
+            padding: 8px 8px 7px 8px;
+            position: relative;
+            flex: auto;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .color-picker-trigger {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            box-sizing: border-box;
+            height: 1.125em;
+        }
+
+        .color-preview-wrapper,
+        .select-arrow-wrapper {
+            height: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .select-arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid;
+            margin: 0 4px;
+        }
+
+        .color-preview-wrapper,
+        .color-hex-value {
+            margin-right: 8px;
+        }
+
+        .color-preview-chip {
+            height: 14px;
+            width: 14px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .color-hex-value {
+            display: flex;
+            width: 100%;
+        }
+
+        .color-hex-value,
+        .color-hex-value-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
+    ///// OLD STYLE //////
+    .mat-raised-button {
+        //main button
+        padding: 0px;
+        width: 186px;
+    }
+}
+
+
+ // CDK items (if any)
+ @at-root ::ng-deep {
     // CDK OVERLAY ITEM / EMBEDDED CONTROL
     .color-picker-component-control {
 
@@ -372,43 +375,36 @@ $available-palettes:
             .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
                 padding: 0px 5px;
             }
-            /*button {
-                padding-right: 22px;
-                padding-left: 48px;
-            }
-
-            #default-color {
-                padding-right: 12px;
-                padding-left: 61px;
-            }*/
         }
     }
 }
 
-@mixin color-picker-component-theme($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    @include variables-compatibility($theme-config) {
+    :host.color-picker-component {
 
-        .color-picker-component {
+        .color-picker-flex {
+            background-color: mat-color($primary, default, 0.08)
+        }
 
-            .color-picker-flex {
-                background-color: mat-color($primary, default, 0.08)
-            }
-
-            .select-arrow-wrapper {
-                .select-arrow {
-                    color: mat-color($foreground, secondary-text);
-                }
-            }
-
-            ///// OLD STYLES /////
-            .mat-raised-button {
-                background: #F3F6FE; // TODO: plug into theme
+        .select-arrow-wrapper {
+            .select-arrow {
+                color: mat-color($foreground, secondary-text);
             }
         }
 
-        // CDK OVERLAY ITEM / EMBEDDED CONTROL
+        ///// OLD STYLES /////
+        .mat-raised-button {
+            background: #F3F6FE; // TODO: plug into theme
+        }
+
+    }
+
+    // CDK OVERLAY ITEM / EMBEDDED CONTROL
+    @include cdk-nested-css-theme-fix($theme-name, $theme-variant) {
         .color-picker-component-control {
+            content: '#{$theme-name}#{$theme-variant}';
             &.card {
                 background: mat-color($background, menu);
                 border-top: 2px solid mat-color($primary, default);
@@ -437,3 +433,4 @@ $available-palettes:
         }
     }
 }
+

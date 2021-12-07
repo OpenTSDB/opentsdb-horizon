@@ -51,7 +51,7 @@ interface ColorOption {
     // tslint:disable-next-line:component-selector
     selector: 'color-picker-selector',
     templateUrl: './color-picker-selector.component.html',
-    styleUrls: [],
+    styleUrls: ['./color-picker-selector.component.scss'],
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -194,9 +194,9 @@ export class ColorPickerSelectorComponent
      */
     heightOfComponent: number;
 
-    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' }, 
-        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' }, 
-        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' }, 
+    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' },
+        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' },
+        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' },
         { hex: '#800080', rgb: [128,0,128], name:'Purple' }, { hex: '#FFFF00', rgb: [255, 255, 0], name:'Yellow' }, { hex: '#FF0000', rgb: [255, 0, 0], name:'Red' }, { hex: '#A52A2A', rgb: [165, 42, 42], name:'Brown' }
     ];
 

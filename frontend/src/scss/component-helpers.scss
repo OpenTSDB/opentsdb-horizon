@@ -25,6 +25,8 @@ $variant-options: (
 
             @each $theme-variant in $variant-options {
 
+                $theme-variant: $theme-variant !global;
+
                 $theme-config: map-get($variants, $theme-variant);
 
                 // * Theme config parts
@@ -57,11 +59,23 @@ $variant-options: (
                 $other: null !global;
                 $scrollbar: null !global;
                 $is-dark: null !global;
-
+                $theme-variant: null !global;
             }
         }
         // reset theme global theme-name variable
         $theme-name: null !global;
+    }
+}
+
+@mixin cdk-nested-css-theme-fix($theme-name, $theme-variant) {
+    // hack to get styles to apply to cdk items that are injected in dom outside of _nghost
+    // yes, two ng-deeps are required to make this work. They basically nullify _nghost and _ngcontent from being applied to styles
+    @at-root {
+        ::ng-deep {
+            [theme="#{$theme-name}"][variant="#{$theme-variant}"] ::ng-deep {
+                @content;
+            }
+        }
     }
 }
 

@@ -14,50 +14,48 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
+@import 'loader-component';
 
-@mixin color-picker-hsv-selector-component-base() {
-    .color-picker-hsv-selector {
-        margin: 17px 15px 0px;
+:host.color-picker-hsv-selector {
+    margin: 17px 15px 0px;
+    position: relative;
+
+    .saturation-vibrance-block {
+        width: 156px;
+        height: 78px;
         position: relative;
 
-        .saturation-vibrance-block {
-            width: 156px;
-            height: 78px;
-            position: relative;
+        background: -moz-linear-gradient(bottom, #000000 0%, rgba(0,0,0,0) 100%),
+                    -moz-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(bottom, #000000 0%,rgba(0,0,0,0) 100%),
+                    -webkit-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
+                    linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    }
 
-            background: -moz-linear-gradient(bottom, #000000 0%, rgba(0,0,0,0) 100%),
-                        -moz-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* FF3.6-15 */
-            background: -webkit-linear-gradient(bottom, #000000 0%,rgba(0,0,0,0) 100%),
-                        -webkit-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* Chrome10-25,Safari5.1-6 */
-            background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
-                        linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        }
+    .picker {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 1px solid #FFF; // TODO: plug into theme
+        position: absolute;
+        left: 45%;
+        bottom: 45%;
 
-        .picker {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 1px solid #FFF;
+        &::before {
+            width: 8px;
+            height: 8px;
+            content: "";
             position: absolute;
-            left: 45%;
-            bottom: 45%;
-
-            &::before {
-                width: 8px;
-                height: 8px;
-                content: "";
-                position: absolute;
-                border: 1px solid #999; // TODO: plug into theme
-                border-radius: 50%;
-            }
+            border: 1px solid #999; // TODO: plug into theme
+            border-radius: 50%;
         }
     }
 }
 
-@mixin color-picker-hsv-selector-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        .color-picker-hsv-selector {
 
-        }
-    }
-}
+// * THEME VARIANTS
+/*@include init-component-variants() {
+    :host.color-picker-hsv-selector { }
+}*/
+
