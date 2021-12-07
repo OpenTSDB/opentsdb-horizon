@@ -53,6 +53,7 @@ import {
     LoadNamespaces,
     CheckWriteAccess,
     LoadAlerts,
+    LoadAlertsStats,
     LoadSnoozes,
     DeleteAlerts,
     DeleteSnoozes,
@@ -163,6 +164,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // under the case 'setAlertTypeFilterSuccess'
     @Select(AlertsState.getAlerts) alerts$: Observable<any[]>;
     alerts: AlertModel[] = [];
+    @Select(AlertsState.getAlertsStats) alertsStats$: Observable<any>;
+    alertsStats:any = {};
     @Select(AlertsState.getSnoozes) snoozes$: Observable<any[]>;
     snoozes: AlertModel[] = [];
     alertListMeta: any = [];
@@ -449,6 +452,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.retriggerAlertSearch();
         }));
 
+        this.subscription.add(this.alertsStats$.pipe(skip(1)).subscribe(stats => {
+            this.alertsStats = JSON.parse(JSON.stringify(stats));
+            this.alertsDataSource.data = this.alerts;
+        }));
+
         this.subscription.add(this.snoozes$.pipe(skip(1)).subscribe(snoozes => {
             this.stateLoaded.snooze = true;
             this.snoozes = JSON.parse(JSON.stringify(snoozes));
@@ -470,6 +478,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 case 'update-success':
                     message = 'Alert has been ' + (status === 'add-success' ? 'created' : 'updated') + '.';
                     this.detailsView = false;
+                    this.loadAlertsSnooze(['alerts']);
                     // this.router.navigate(['a']);
                     // this.editMode = false;
                     break;
@@ -517,9 +526,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 // this.store.dispatch(new LoadAlerts({namespace: _data.namespace}));
                 // }
                 // set the namespace if the user comes directly from edit url
-                if (!this.selectedNamespace) {
-                    this.setNamespace(_data.namespace, null);
-                }
+                // if (!this.selectedNamespace) {
+                    // this.setNamespace(_data.namespace, null);
+                // }
                 if (_data.id === '_new_') {
                     if (this.list === 'alerts') {
                         _data = {
@@ -712,7 +721,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 parts = data.id ? ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace( namespace, null);
+                // this.setNamespace( namespace, null);
 
                 // url path has 1 parts, (i.e. /a/1234)
             } else if (
@@ -723,7 +732,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 parts = data.id ? ['/a', data.id, data.namespace, data.slug, 'view'] : ['/a', namespace ];
                 this.location.go(parts.join('/'));
                 // set the namespace, since we probably didn't get it from the url
-                this.setNamespace(namespace, null);
+                // this.setNamespace(namespace, null);
             } else if ( !data.id ) {
                 this.location.go('/a/' + namespace);
                 this.setNamespace(namespace, null);
@@ -838,13 +847,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     loadAlertsSnooze(list) {
-        if (list.includes('alerts')) {
+        if (list.includes('alerts') && !this.detailsView) {
+            this.stateLoaded.alerts = false;
             if (this.alertsDataSource) {
                 this.alertsDataSource.data = [];
             }
             this.store.dispatch(new LoadAlerts({ namespace: this.selectedNamespace }));
         }
         if (list.includes('snooze')) {
+            this.stateLoaded.snooze = false;
             if (this.snoozesDataSource) {
                 this.snoozesDataSource.data = [];
             }
@@ -867,7 +878,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     private setSnoozeTableDataSource(snoozes: AlertModel[]) {
         this.snoozesDataSource = new MatTableDataSource<any>(snoozes);
-        this.alertsDataSource.paginator = this.paginator;
+        this.snoozesDataSource.paginator = this.paginator;
     }
 
     setAlertListMeta() {
@@ -1270,7 +1281,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 }
                 // lets save this thing
                 this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
-                this.router.navigateByUrl('a/' + this.selectedNamespace);
+                this.router.navigateByUrl('a/' + message.namespace);
                 break;
             case 'ToggleAlert':
                 this.toggleAlert(message.payload);
@@ -1291,7 +1302,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             default:
                 // this is when dialog is closed to return to summary page
                 this.detailsView = false;
-                this.router.navigateByUrl('a/' + this.selectedNamespace);
+                this.router.navigateByUrl('a/' + message.namespace);
                 break;
         }
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
@@ -1306,7 +1317,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     retriggerAlertSearch() {
         const val = this.alertSearch.value;
-        if (this.alertSearch) {
+        if (this.list === 'alerts' && this.alertSearch) {
             this.alertSearchDebounceTime = 0;
             this.alertSearch.setValue(val);
         }
@@ -1314,7 +1325,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     retriggerSnoozeSearch() {
         const val = this.snoozeSearch.value;
-        if (this.snoozeSearch) {
+        if (this.list === 'snooze' && this.snoozeSearch) {
             this.snoozeSearchDebounceTime = 0;
             this.snoozeSearch.setValue(val);
         }
