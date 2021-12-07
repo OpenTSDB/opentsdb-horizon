@@ -15,188 +15,166 @@
 // * limitations under the License.
 // *
 
-@mixin color-picker-selector-component-base() {
+@import 'loader-component';
 
-    .color-picker-selector-component {
-        .cps {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
+:host.color-picker-selector-component {
+    .cps {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
 
-            canvas {
-                &#colors {
-                    margin: 5px;
-                    border-radius: 3px;
-                }
-
-                &:hover {
-                    cursor: crosshair;
-                }
-            }
-
-            // BIG COLOR BLOCK
-            .color-picker-selector {
-                height: 87px; // why the abitrary number
-                position: relative;
-                //top: 17px;
-                //left: 15px;
-                margin: 17px 15px 0px;
-
-            }
-
-            //overlay to track movement
-            .picker-selector {
-                position: absolute;
-                //width: 156px;
-                //height: 87px;
-                top: 0;
-                left: 0;
-                z-index: 10;
-                cursor: crosshair;
-                //margin-left: 5px;
-            }
-
-            // canvas
-            .picker-canvas {
+        canvas {
+            &#colors {
+                margin: 5px;
                 border-radius: 3px;
             }
 
-            .picker-selector,
-            .picker-canvas {
+            &:hover {
+                cursor: crosshair;
+            }
+        }
+
+        // BIG COLOR BLOCK
+        .color-picker-selector {
+            height: 87px; // why the abitrary number
+            position: relative;
+            margin: 17px 15px 0px;
+        }
+
+        //overlay to track movement
+        .picker-selector {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            cursor: crosshair;
+        }
+
+        // canvas
+        .picker-canvas {
+            border-radius: 3px;
+        }
+
+        .picker-selector,
+        .picker-canvas {
+            width: 156px;
+            height: 87px;
+        }
+
+        // selector on canvas (aka color cursor)
+        .picker-position {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            z-index: 1;
+            border: 1px #ddd solid; // TODO: plug into theme
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3); // TODO: plug into theme
+            top: -5px;
+            right: 25px;
+        }
+
+        // COLOR HUE SLIDING STRIP
+        .color-picker-hue {
+            width: 110px;
+            z-index: 1;
+            background: url('data:image/gif;base64,R0lGODdhHgAIALMAAAAAADU1NTk5OUJCQkpKSlZWVltbW2pqaoCAgP///wAAAAAAAAAAAAAAAAAAAAAAACH5BAkAAAoALAAAAAAeAAgAAAQw0BhFq734yjJm/p8xFEVAeGCqGERACmahgkUrvPH81cFdnjoQy8VBBTOiguSokkQAADs=') no-repeat;
+            transform: rotate(270deg);
+            display: none;
+        }
+
+        .color-picker-saturation-vibrance {
+            margin: 17px 15px 0px;
+            position: relative;
+            width: 100%;
+
+            .saturation-vibrance-block {
                 width: 156px;
-                height: 87px;
+                height: 78px;
+                position: relative;
+                background: -moz-linear-gradient(bottom, #000000 0%, rgba(0,0,0,0) 100%),
+                            -moz-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* FF3.6-15 */
+                background: -webkit-linear-gradient(bottom, #000000 0%,rgba(0,0,0,0) 100%),
+                            -webkit-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* Chrome10-25,Safari5.1-6 */
+                background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
+                            linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
             }
 
-            // selector on canvas (aka color cursor)
-            .picker-position {
-                position: absolute;
+            .picker {
                 width: 10px;
                 height: 10px;
-                z-index: 1;
-                border: 1px #ddd solid;
                 border-radius: 50%;
-                background: rgba(0, 0, 0, 0.3);
-                top: -5px;
-                right: 25px;
-            }
+                border: 1px solid #FFF; // TODO: plug into theme
+                position: absolute;
+                top: 45%;
+                left: 45%;
 
-            // COLOR HUE SLIDING STRIP
-            .color-picker-hue {
-                width: 110px;
-                //height: 35px;
-                //margin-top: -88px;
-                // margin-right: -5px;
-                //margin-left: 40px;
-                z-index: 1;
-                background: url('data:image/gif;base64,R0lGODdhHgAIALMAAAAAADU1NTk5OUJCQkpKSlZWVltbW2pqaoCAgP///wAAAAAAAAAAAAAAAAAAAAAAACH5BAkAAAoALAAAAAAeAAgAAAQw0BhFq734yjJm/p8xFEVAeGCqGERACmahgkUrvPH81cFdnjoQy8VBBTOiguSokkQAADs=') no-repeat;
-                transform: rotate(270deg);
-                display: none;
-            }
-
-            .color-picker-saturation-vibrance {
-                margin: 17px 15px 0px;
-                position: relative;
-                width: 100%;
-
-
-                .saturation-vibrance-block {
-                    width: 156px;
-                    height: 78px;
-                    position: relative;
-                    background: -moz-linear-gradient(bottom, #000000 0%, rgba(0,0,0,0) 100%),
-                                -moz-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* FF3.6-15 */
-                    background: -webkit-linear-gradient(bottom, #000000 0%,rgba(0,0,0,0) 100%),
-                                -webkit-linear-gradient(left, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* Chrome10-25,Safari5.1-6 */
-                    background: linear-gradient(to top, #000000 0% ,rgba(0, 0, 0, 0) 100%),
-                                linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-                }
-
-                .picker {
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    border: 1px solid #FFF;
+                &::before {
+                    width: 8px;
+                    height: 8px;
+                    content: "";
                     position: absolute;
-                    top: 45%;
-                    left: 45%;
-
-                    &::before {
-                        width: 8px;
-                        height: 8px;
-                        content: "";
-                        position: absolute;
-                        border: 1px solid #999;
-                        border-radius: 50%;
-                    }
-                }
-
-            }
-
-
-            .color-hue-strip {
-                width: 100%;
-                margin: 5px 15px;
-                // color strip gradient
-                .hue-strip {
-                    width: 156px;
-                    height: 35px;
-                    display: block;
-
-
-                    background: -moz-linear-gradient(left, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%,
-                                #00ffff 50%, #0000ff 66.66%, #ff00ff 83.33%, #ff0000 100%); /* FF3.6-15 */
-                    background: -webkit-linear-gradient(left, #ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,
-                                #00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%); /* Chrome10-25,Safari5.1-6 */
-                    background: linear-gradient(to right, #ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,
-                                #00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%);
-                }
-
-                .slider-picker {
-                    position: relative;
-                    top: -1px;
-                    width: 4px;
-                    height: calc(100% + 2px);
-                    //border-radius: 2;
-                    background-color: white;
-                    box-shadow: inset 0 0 1px 0 black;
+                    border: 1px solid #999; // TODO: plug into theme
+                    border-radius: 50%;
                 }
             }
 
-            .selected-color {
-                display: flex;
-                width: auto;
-                //width: 146px;
+        }
+
+        .color-hue-strip {
+            width: 100%;
+            margin: 5px 15px;
+
+            // color strip gradient
+            .hue-strip {
+                width: 156px;
+                height: 35px;
+                display: block;
+
+                // NOTE: this might be useful as mixin, since we use this a few places
+                background: -moz-linear-gradient(left, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%,
+                            #00ffff 50%, #0000ff 66.66%, #ff00ff 83.33%, #ff0000 100%); /* FF3.6-15 */
+                background: -webkit-linear-gradient(left, #ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,
+                            #00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%); /* Chrome10-25,Safari5.1-6 */
+                background: linear-gradient(to right, #ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,
+                            #00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%);
+            }
+
+            .slider-picker {
                 position: relative;
-                //top: -38px;
+                top: -1px;
+                width: 4px;
+                height: calc(100% + 2px);
+                background-color: white; // TODO: plug into theme
+                box-shadow: inset 0 0 1px 0 black; // TODO: plug into theme
+            }
+        }
 
-                margin: 5px 15px 10px 15px;
+        .selected-color {
+            display: flex;
+            width: auto;
+            position: relative;
+            margin: 5px 15px 10px 15px;
 
-                .color-sample {
-                    flex: 1 0 28px;
-                    //margin-left: 15px;
-                    //margin-top: 5px;
-                    height: 28px;
-                    width: 28px;
-                    min-width: 28px;
-                    display: inline-block;
-                    vertical-align: middle;
-                    border-radius: 3px;
-                    margin: 0;
-                    /*margin-right: 3px;
+            .color-sample {
+                flex: 1 0 28px;
+                height: 28px;
+                width: 28px;
+                min-width: 28px;
+                display: inline-block;
+                vertical-align: middle;
+                border-radius: 3px;
+                margin: 0;
+            }
 
-                    margin-top: 0px;
-                    position: relative;
-                    top: -7px;*/
-                }
+            .color-form {
+                width: auto;
+                display: flex;
+                margin-left: 10px;
 
-                .color-form {
-                    width: auto;
-                    display: flex;
-                    margin-left: 10px;
-
-                    .mat-form-field {
+                ::ng-deep {
+                    .mat-form-field{
                         display: flex;
-
 
                         .mat-form-field-infix {
                             width: 100%;
@@ -219,72 +197,61 @@
                     }
                 }
             }
+        }
 
-
-
-            .preset-color {
-                padding: 0px 15px;
-                margin-bottom: 6px;
-                .title {
-                    padding-bottom: 4px;
-                    font-size: 10px;
-                }
-                .colors {
-                    display: flex;
-                    flex-wrap: wrap;
-                    .btn-preset-color {
-                        width: 15px;
-                        height: 15px;
-                        border: 1px solid lightgray;
-                        border-radius: 5px;
-                        min-width: 15px;
-                        padding: 0px;
-                        margin: 1px;
-                        box-sizing: initial;
-                    }
-                }
+        .preset-color {
+            padding: 0px 15px;
+            margin-bottom: 6px;
+            .title {
+                padding-bottom: 4px;
+                font-size: 10px;
             }
-
-            .button-options {
-                text-align: right;
-                height: 32px;
-                position: relative;
-                margin: 5px 15px 0;
-                //top: -43px;
-
-                .mat-button {
+            .colors {
+                display: flex;
+                flex-wrap: wrap;
+                .btn-preset-color {
+                    width: 15px;
+                    height: 15px;
+                    border: 1px solid lightgray; // TODO: plug into theme
+                    border-radius: 5px;
+                    min-width: 15px;
                     padding: 0px;
-                    padding-left: 4px;
-                    padding-right: 4px;
-                    min-width: 16px;
-                    line-height: 30px;
+                    margin: 1px;
+                    box-sizing: initial;
                 }
+            }
+        }
 
-                #apply {
-                    //margin-right: 11px;
-                    margin-left: 8px;
-                }
+        .button-options {
+            text-align: right;
+            height: 32px;
+            position: relative;
+            margin: 5px 15px 0;
+
+            .mat-button {
+                padding: 0px;
+                padding-left: 4px;
+                padding-right: 4px;
+                min-width: 16px;
+                line-height: 30px;
+            }
+
+            #apply {
+                margin-left: 8px;
             }
         }
     }
 }
 
-@mixin color-picker-selector-component-theme($theme-config) {
 
-    @include variables-compatibility($theme-config) {
-        .color-picker-selector-compponent {
-
-            ////// OLD STYLES //////
-            .cps {
-
-                /*input {
-                    background: if($is-dark, transparent, #F3F6FE);
-                }*/
-
-                .mat-button {
-                    color: mat-color($primary, default);
-                }
+// * THEME VARIANTS
+@include init-component-variants() {
+    :host.color-picker-selector-compponent {
+        .cps {
+            .mat-button {
+                color: mat-color($primary, default);
             }
         }
     }
 }
+

@@ -55,7 +55,7 @@ interface IColor {
     // tslint:disable-next-line:component-selector
     selector: 'color-picker',
     templateUrl: './color-picker.component.html',
-    styleUrls: [],
+    styleUrls: ['./color-picker.component.scss'],
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

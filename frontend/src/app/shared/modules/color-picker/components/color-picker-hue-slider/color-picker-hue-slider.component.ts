@@ -35,7 +35,7 @@ import { ColorService } from '../../services/color.service';
     // tslint:disable-next-line:component-selector
     selector: 'color-picker-hue-slider',
     templateUrl: './color-picker-hue-slider.component.html',
-    styleUrls: []
+    styleUrls: ['./color-picker-hue-slider.component.scss']
 })
 export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 

@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 /**
  * This file is part of OpenTSDB.
  * Copyright (C) 2021  Yahoo.
@@ -32,23 +34,23 @@
 // import your component scss
 // example: @import './components/componentName/componentName.component.scss';
 
-@import './containers/color-picker/color-picker.component';
-@import './components/color-picker-hue-slider/color-picker-hue-slider.component';
-@import './components/color-picker-hsv-selector/color-picker-hsv-selector.component';
-@import './components/color-picker-selector/color-picker-selector.component';
+//@import './containers/color-picker/color-picker.component';
+//@import './components/color-picker-hue-slider/color-picker-hue-slider.component';
+//@import './components/color-picker-hsv-selector/color-picker-hsv-selector.component';
+//@import './components/color-picker-selector/color-picker-selector.component';
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin color-picker-module-core() {
-    @include color-picker-component-base();
-    @include color-picker-hsv-selector-component-base();
-    @include color-picker-hue-slider-component-base();
-    @include color-picker-selector-component-base();
+    //@include color-picker-component-base();
+    //@include color-picker-hsv-selector-component-base();
+    //@include color-picker-hue-slider-component-base();
+    //@include color-picker-selector-component-base();
 }
 
 // [ STEP 3 ] - ADD COMPONENT'S THEME MIXINS (aka look-n-feel)
 @mixin color-picker-module-theme($theme-config) {
-    @include color-picker-component-theme($theme-config);
-    @include color-picker-hsv-selector-component-theme($theme-config);
-    @include color-picker-hue-slider-component-theme($theme-config);
-    @include color-picker-selector-component-theme($theme-config);
+    //@include color-picker-component-theme($theme-config);
+    //@include color-picker-hsv-selector-component-theme($theme-config);
+    //@include color-picker-hue-slider-component-theme($theme-config);
+    //@include color-picker-selector-component-theme($theme-config);
 }
