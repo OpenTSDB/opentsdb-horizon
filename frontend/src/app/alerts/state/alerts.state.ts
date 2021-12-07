@@ -65,6 +65,7 @@ export interface AlertsStateModel {
     actionResponse: any;
     actionStatus: string;
     alerts: AlertModel[];
+    stats: any;
     snoozes: any[];
     alertTypeFilter: string;
     editItem: any;
@@ -86,6 +87,11 @@ export class SetNamespace {
 
 export class LoadAlerts {
     static readonly type = '[Alerts] Load Alerts';
+    constructor(public options: any) {}
+}
+
+export class LoadAlertsStats {
+    static readonly type = '[Alerts] Load Alerts Stats';
     constructor(public options: any) {}
 }
 
@@ -146,6 +152,7 @@ export class ClearNamespace {
         saveError: {}, // handles dialog create/update error
         actionResponse: {},
         alerts: [],
+        stats: {},
         snoozes: [],
         actionStatus: '',
         alertTypeFilter: 'all', // all, alerting, snoozed, disabled
@@ -216,6 +223,11 @@ export class AlertsState {
     @Selector()
     static getAlerts(state: AlertsStateModel) {
         return state.alerts;
+    }
+
+    @Selector()
+    static getAlertsStats(state: AlertsStateModel) {
+        return state.stats;
     }
 
     @Selector()
@@ -328,6 +340,28 @@ export class AlertsState {
         return this.httpService.getAlerts(options).subscribe(
             alerts => {
                 ctx.patchState({ alerts: alerts});
+                ctx.dispatch(new LoadAlertsStats(options));
+            },
+            error => {
+                ctx.patchState({ error: error });
+            }
+        );
+
+    }
+
+    @Action(LoadAlertsStats)
+    loadAlertsStats(ctx: StateContext<AlertsStateModel>, { options }: LoadAlertsStats) {
+        return this.httpService.getAlertsStats(options).subscribe(
+            res => {
+                const alertCounts = {};
+                if ( res.error === undefined && res.results ) {
+                    const sData = res.results[0].data;
+                    for ( let i = 0; i < sData.length; i++ ) {
+                        const alertId = parseInt(sData[i].tags._alert_id, 10);
+                        alertCounts[alertId] = sData[i].summary;
+                    }
+                }
+                ctx.patchState({ stats: alertCounts});
             },
             error => {
                 ctx.patchState({ error: error });
@@ -342,7 +376,6 @@ export class AlertsState {
         return this.httpService.saveAlert(namespace, payload).subscribe(
             res => {
                 ctx.patchState({ actionStatus: payload.data[0].id ? 'update-success' : 'add-success', saveError: null});
-                ctx.dispatch(new LoadAlerts({namespace: namespace}));
             },
             error => {
                 ctx.patchState({ actionStatus: payload.data[0].id ? 'update-failed' : 'add-failed', saveError: error });
