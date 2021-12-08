@@ -171,7 +171,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "/Users/hilln/dev/www",
+            "outputPath": "/Users/cesler/Stuffz/HORIZON",
             "index": "src/app/horizon/index.html",
             "main": "src/app/horizon/horizon.main.ts",
             "tsConfig": "src/app/horizon/tsconfig.horizon.json",
@@ -179,18 +179,14 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "./src/app/horizon",
+                "./src/app",
                 "./src/scss"
               ]
             },
-
             "styles": [
               {
-                "input": "src/styles.scss",
+                "input": "src/standalone.scss",
                 "bundleName": "styles"
-              },
-              {
-                "input": "./node_modules/dygraphs/dist/dygraph.css",
-                "bundleName": "dygraph"
               }
             ],
             "scripts": [
@@ -219,19 +215,15 @@
               ],
               "styles": [
                 {
-                  "input": "src/styles.scss",
+                  "input": "src/standalone.scss",
                   "bundleName": "styles"
-                },
-                {
-                  "input": "./node_modules/dygraphs/dist/dygraph.css",
-                  "bundleName": "dygraph"
                 }
               ]
             }
           }
         }
       }
-    }    
+    }
   },
   "defaultProject": "frontend",
   "schematics": {
