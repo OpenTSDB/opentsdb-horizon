@@ -233,15 +233,6 @@
 
         .tooltip-mouse-boundary-hover {
             box-shadow: 0 0 5px mat-color($primary, default, .65);
-
-            /*&.shift-above {
-                //box-shadow: 0 -2px 0 0 mat-color($background, background), 0 0px 0px 2px mat-color($primary, A100, 1);
-            }
-
-            &.shift-below {
-                //box-shadow: 0 2px 0 0 mat-color($background, background), 0 0px 0px 2px mat-color($primary, A100, 1);
-            }*/
-
         }
     }
 
