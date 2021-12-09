@@ -1895,7 +1895,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         } else {
             // emit with no event
             this.configChange.emit({
-                action: 'CancelEdit'
+                action: 'CancelEdit',
+                namespace: this.data.namespace
             });
         }
     }
