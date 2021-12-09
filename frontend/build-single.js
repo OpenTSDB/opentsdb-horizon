@@ -2,12 +2,14 @@ const fs = require('fs-extra');
 const concat = require('concat');
 
 (async function build() {
+    //const prefix = '/Users/hilln/dev/www';
+    const prefix = '/Users/cesler/Stuffz/HORIZON';
     const files = [
-        '/Users/hilln/dev/www/runtime.js',
-        '/Users/hilln/dev/www/polyfills.js',
-        '/Users/hilln/dev/www/scripts.js',
-        '/Users/hilln/dev/www/main.js'
+        prefix + '/runtime.js',
+        prefix + '/polyfills.js',
+        prefix + '/scripts.js',
+        prefix + '/main.js'
     ]
-    await concat(files, '/Users/hilln/dev/www/horizon.js')
+    await concat(files, prefix + '/horizon.js')
     console.info('DONE to horizon.js');
 })()

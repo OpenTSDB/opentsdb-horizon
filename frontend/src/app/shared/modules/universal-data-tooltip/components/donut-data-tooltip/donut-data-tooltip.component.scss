@@ -18,36 +18,7 @@
 @mixin donut-data-tooltip-component-base() {
     .donut-data-tooltip {
         .tooltip-output {
-            /*.value-marker {
-                display: flex;
 
-                span {
-                    display: inline-block;
-                    padding: 4px 8px;
-                    font-size: 14px;
-
-                    &.value {
-                        font-weight: bold;
-                    }
-
-                    &.time {
-                        flex: 1;
-                    }
-                }
-            }
-            .other-data {
-                padding: 4px 8px;
-                margin-top: 2px;
-                font-size: 10px;
-
-                p {
-                    display: inline-block;
-
-                    &:not(:last-child) {
-                        margin-right: 12px;
-                    }
-                }
-            }*/
         }
     }
 }

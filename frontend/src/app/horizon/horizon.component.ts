@@ -3,20 +3,8 @@ import { IDygraphOptions } from '../shared/modules/dygraphs/IDygraphOptions';
 
 @Component({
   selector: 'horizon-chart',
-  template: `
-  <div ttBoundaryListener>
-    <div ttMouseListener ttType="linechart" [ttMultigraph]="false">
-        <div dygraphsChart 
-        [options]="options" 
-        [size]="size" 
-        [chartType]="chartType" 
-        [multigraph]="false" 
-        [data]="data">
-        </div>
-    </div>
-</div>
-  `,
-  styles: [],
+  templateUrl: './horizon.component.html',
+  styleUrls: ['./horizon.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class HorizonComponent implements OnInit {
