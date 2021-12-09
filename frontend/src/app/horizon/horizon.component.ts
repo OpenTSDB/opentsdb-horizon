@@ -12,7 +12,148 @@ export class HorizonComponent implements OnInit {
 
   constructor() { }
 
-  options: IDygraphOptions = { "labels": ["x", "1", "2"], "labelsUTC": false, "labelsKMB": true, "connectSeparatedPoints": true, "drawPoints": false, "logscale": false, "digitsAfterDecimal": 2, "fillAlpha": 0.55, "stackedGraph": false, "stackedGraphNaNFill": "none", "strokeWidth": 1, "strokeBorderWidth": 0, "highlightSeriesBackgroundAlpha": 1, "highlightSeriesBackgroundColor": "rgb(255,255,255)", "isZoomedIgnoreProgrammaticZoom": true, "hideOverlayOnMouseOut": true, "isCustomZoomed": false, "theme": "light", "highlightSeriesOpts": { "strokeWidth": 2, "highlightCircleSize": 5 }, "xlabel": "", "ylabel": "", "y2label": "", "axisLineWidth": 0, "axisTickSize": 0, "axisLineColor": "#fff", "axes": { "y": { "valueRange": [null, null], "tickFormat": { "unit": "auto", "precision": "auto", "unitDisplay": true, "max": 3568458.627042899, "min": 20390.98419067054 }, "logscale": false, "drawAxis": true, "axisLabelWidth": 50 }, "y2": { "valueRange": [null, null], "tickFormat": { "unit": "auto", "precision": "auto", "unitDisplay": true, "max": 0, "min": null }, "drawGrid": true, "independentTicks": true, "logscale": false, "drawAxis": false, "axisLabelWidth": 0 } }, "series": { "1": { "strokeWidth": 1, "strokePattern": [], "fillGraph": false, "isStacked": false, "axis": "y", "metric": "Yamas.system.cpu.cpu.idle", "tags": { "metric": "Yamas.system.cpu.cpu.idle" }, "aggregations": { "sum": 205118399.88829207, "count": 59, "min": 3356253.232115142, "max": 3568458.627042899, "avg": 3476583.048954103, "first": 3455646.9192100326, "last": 3462804.358924385 }, "group": "line", "order1": "1-0-0", "stackOrderBy": "min", "stackOrder": "asc", "connectMissingData": false, "label": "Yamas.system.cpu.cpu.idle", "color": "#0000FF", "hash": "Yamas.system.cpu.cpu.idle" }, "2": { "strokeWidth": 1, "strokePattern": [], "fillGraph": false, "isStacked": false, "axis": "y", "metric": "Yamas.system.cpu.busy.pct1", "tags": { "metric": "Yamas.system.cpu.busy.pct1" }, "aggregations": { "sum": 1285787.5149417296, "count": 59, "min": 20390.98419067054, "max": 24137.155613413197, "avg": 21793.008727825927, "first": 22280.7367488147, "last": 21471.298434161232 }, "group": "line", "order1": "1-0-1", "stackOrderBy": "min", "stackOrder": "asc", "connectMissingData": false, "label": "Yamas.system.cpu.busy.pct1", "color": "#008000", "hash": "Yamas.system.cpu.busy.pct1" } }, "visibility": [true, true], "visibilityHash": { "Yamas.system.cpu.cpu.idle": true, "Yamas.system.cpu.busy.pct1": true }, "gridLineColor": "#ccc", "isIslandLegendOpen": false, "initZoom": null, "labelsDiv": {} };
+  options: IDygraphOptions = {
+    "labels": [
+        "x",
+        "1",
+        "2"
+    ],
+    "labelsUTC": false,
+    "labelsKMB": true,
+    "connectSeparatedPoints": true,
+    "drawPoints": false,
+    "logscale": false,
+    "digitsAfterDecimal": 2,
+    "fillAlpha": 0.55,
+    "stackedGraph": false,
+    "stackedGraphNaNFill": "none",
+    "strokeWidth": 1,
+    "strokeBorderWidth": 0,
+    "highlightSeriesBackgroundAlpha": 1,
+    "highlightSeriesBackgroundColor": "rgb(255,255,255)",
+    "isZoomedIgnoreProgrammaticZoom": true,
+    "hideOverlayOnMouseOut": true,
+    "isCustomZoomed": false,
+    "theme": "light",
+    "highlightSeriesOpts": {
+        "strokeWidth": 2,
+        "highlightCircleSize": 5
+    },
+    "xlabel": "",
+    "ylabel": "",
+    "y2label": "",
+    "axisLineWidth": 0,
+    "axisTickSize": 0,
+    "axisLineColor": "#fff",
+    "axes": {
+        "y": {
+            "valueRange": [
+                null,
+                null
+            ],
+            "tickFormat": {
+                "unit": "auto",
+                "precision": "auto",
+                "unitDisplay": true,
+                "max": 3568458.627042899,
+                "min": 20390.98419067054
+            },
+            "logscale": false,
+            "drawAxis": true,
+            "axisLabelWidth": 50,
+            "axisLabelFontSize": 10
+        },
+        "y2": {
+            "valueRange": [
+                null,
+                null
+            ],
+            "tickFormat": {
+                "unit": "auto",
+                "precision": "auto",
+                "unitDisplay": true,
+                "max": 0,
+                "min": null
+            },
+            "drawGrid": true,
+            "independentTicks": true,
+            "logscale": false,
+            "drawAxis": false,
+            "axisLabelWidth": 0,
+            "axisLabelFontSize": 10
+        }
+    },
+    "series": {
+        "1": {
+            "strokeWidth": 1,
+            "strokePattern": [],
+            "fillGraph": false,
+            "isStacked": false,
+            "axis": "y",
+            "metric": "Yamas.system.cpu.cpu.idle",
+            "tags": {
+                "metric": "Yamas.system.cpu.cpu.idle"
+            },
+            "aggregations": {
+                "sum": 205118399.88829207,
+                "count": 59,
+                "min": 3356253.232115142,
+                "max": 3568458.627042899,
+                "avg": 3476583.048954103,
+                "first": 3455646.9192100326,
+                "last": 3462804.358924385
+            },
+            "group": "line",
+            "order1": "1-0-0",
+            "stackOrderBy": "min",
+            "stackOrder": "asc",
+            "connectMissingData": false,
+            "label": "Yamas.system.cpu.cpu.idle",
+            "color": "#0000FF",
+            "hash": "Yamas.system.cpu.cpu.idle"
+        },
+        "2": {
+            "strokeWidth": 1,
+            "strokePattern": [],
+            "fillGraph": false,
+            "isStacked": false,
+            "axis": "y",
+            "metric": "Yamas.system.cpu.busy.pct1",
+            "tags": {
+                "metric": "Yamas.system.cpu.busy.pct1"
+            },
+            "aggregations": {
+                "sum": 1285787.5149417296,
+                "count": 59,
+                "min": 20390.98419067054,
+                "max": 24137.155613413197,
+                "avg": 21793.008727825927,
+                "first": 22280.7367488147,
+                "last": 21471.298434161232
+            },
+            "group": "line",
+            "order1": "1-0-1",
+            "stackOrderBy": "min",
+            "stackOrder": "asc",
+            "connectMissingData": false,
+            "label": "Yamas.system.cpu.busy.pct1",
+            "color": "#008000",
+            "hash": "Yamas.system.cpu.busy.pct1"
+        }
+    },
+    "visibility": [
+        true,
+        true
+    ],
+    "visibilityHash": {
+        "Yamas.system.cpu.cpu.idle": true,
+        "Yamas.system.cpu.busy.pct1": true
+    },
+    "gridLineColor": "#ccc",
+    "isIslandLegendOpen": false,
+    "initZoom": null,
+    "labelsDiv": {}
+};
 
   chartType: string;
   size: any = { width: 600, height: 250 };
