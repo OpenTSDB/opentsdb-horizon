@@ -20,7 +20,7 @@ import { Component, OnInit, HostBinding, Output, EventEmitter, Input } from '@an
     // tslint:disable-next-line:component-selector
     selector: 'keypad',
     templateUrl: './keypad.component.html',
-    styleUrls: []
+    styleUrls: ['./keypad.component.scss']
 })
 export class KeypadComponent implements OnInit {
     @HostBinding('class.dtp-keypad') private _hostClass = true;

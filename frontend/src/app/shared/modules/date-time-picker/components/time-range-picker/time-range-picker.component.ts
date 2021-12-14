@@ -31,7 +31,7 @@ const moment = momentNs;
     // tslint:disable-next-line:component-selector
     selector: 'time-range-picker',
     templateUrl: './time-range-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./time-range-picker.component.scss']
 })
 
 export class TimeRangePickerComponent implements OnInit {

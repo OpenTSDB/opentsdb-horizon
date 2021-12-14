@@ -15,65 +15,66 @@
 // * limitations under the License.
 // *
 
-@mixin date-picker-component-base() {
+@import 'loader-component';
 
-    $calendar-padding: 8px;
-    $calendar-cell-size: 40px;
-    $calendar-width: $calendar-cell-size * 7 + $calendar-padding * 2;
-    $calendar-height: 320px;
+$calendar-padding: 8px;
+$calendar-cell-size: 40px;
+$calendar-width: $calendar-cell-size * 7 + $calendar-padding * 2;
+$calendar-height: 320px;
 
-    $calendar-body-label-padding-start: 5% !default;
-    $calendar-body-label-side-padding: 33% / 7 !default;
-    $calendar-body-cell-min-size: 32px !default;
-    $calendar-body-cell-content-margin: 5% !default;
-    $calendar-body-cell-content-border-width: 1px !default;
+$calendar-body-label-padding-start: 5% !default;
+$calendar-body-label-side-padding: 33% / 7 !default;
+$calendar-body-cell-min-size: 32px !default;
+$calendar-body-cell-content-margin: 5% !default;
+$calendar-body-cell-content-border-width: 1px !default;
 
-    $calendar-body-min-size: 7 * $calendar-body-cell-min-size !default;
-    $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 !default;
+$calendar-body-min-size: 7 * $calendar-body-cell-min-size !default;
+$calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 !default;
 
-    $calendar-padding: 8px !default;
-    $calendar-header-divider-width: 1px !default;
-    $calendar-controls-vertical-padding: 5%;
-    $calendar-controls-side-margin: calc(33% / 7 - 16px);
+$calendar-padding: 8px !default;
+$calendar-header-divider-width: 1px !default;
+$calendar-controls-vertical-padding: 5%;
+$calendar-controls-side-margin: calc(33% / 7 - 16px);
 
-    $calendar-arrow-size: 5px !default;
-    $calendar-arrow-disabled-opacity: 0.5 !default;
+$calendar-arrow-size: 5px !default;
+$calendar-arrow-disabled-opacity: 0.5 !default;
 
-    $calendar-prev-next-icon-border-width: 2px;
-    $calendar-prev-next-icon-margin: 15.5px;
-    $calendar-prev-icon-transform: translateX(2px) rotate(-45deg);
-    $calendar-next-icon-transform: translateX(-2px) rotate(45deg);
+$calendar-prev-next-icon-border-width: 2px;
+$calendar-prev-next-icon-margin: 15.5px;
+$calendar-prev-icon-transform: translateX(2px) rotate(-45deg);
+$calendar-next-icon-transform: translateX(-2px) rotate(45deg);
 
-    .date-picker-component {
-        position: relative;
+:host.date-picker-component {
+    position: relative;
 
-        .calendar-container  {
-            position: fixed;
-            z-index: 1;
+    .calendar-container  {
+        position: fixed;
+        z-index: 1;
+    }
+
+    .input-field {
+        #input-box {
+            //height: 28px;
+            width: 210px;
         }
 
-       .input-field {
-            #input-box {
-                //height: 28px;
-                width: 210px;
-            }
+        #calendar-icon {
+            min-width: 0px;
+            padding: 1px;
+            margin-left: 4px;
+        }
 
-            #calendar-icon {
-                min-width: 0px;
-                padding: 1px;
-                margin-left: 4px;
-            }
+        .code {
+            font-weight: bold;
+        }
 
-            .code {
-                font-weight: bold;
-            }
+        .mat-error {
+            font-size: 9px;
+            line-height: 9px;
+        }
 
-            .mat-error {
-                font-size: 9px;
-                line-height: 9px;
-            }
-
-            // resetting some input fields
+        // resetting some input fields
+        ::ng-deep {
             .mat-form-field.mat-form-field-appearance-fill {
 
                 .mat-form-field-flex {
@@ -87,10 +88,6 @@
 
                 .mat-input-element {
                     height: initial;
-                }
-
-                .mat-form-field-subscript-wrapper {
-
                 }
 
                 .mat-form-field-label-wrapper {
@@ -115,70 +112,71 @@
             }
         }
     }
+}
 
-    @include until(600px) {
-        .date-picker-component {
-            .input-field {
-                display: block;
+@include until(600px) {
+    :host.date-picker-component {
+        .input-field {
+            display: block;
 
-                &,
-                .mat-form-field {
-                    width: 100%;
-                }
+            &,
+            .mat-form-field {
+                width: 100%;
             }
         }
     }
+}
 
-    .calendar-container {
-        @include mat-elevation(5);
-        display: block;
-        font-size: 14px;
-        width: $calendar-width;
+:host .calendar-container {
+    @include mat-elevation(5);
+    display: block;
+    font-size: 14px;
+    width: $calendar-width;
 
-        .mat-card {
-            padding: 4px $calendar-padding $calendar-padding $calendar-padding;
-            width: initial;
+    .mat-card {
+        padding: 4px $calendar-padding $calendar-padding $calendar-padding;
+        width: initial;
+    }
+
+    .mat-card-title {
+        margin-bottom: 5px;
+    }
+
+    .mat-card-content {
+        margin-left: 8px;
+        margin-bottom: 8px;
+    }
+
+    .mat-button {
+        min-width: 0px;
+        padding-left: 2px;
+        padding-right: 2px;
+        line-height: 18px;
+    }
+
+    .dp-calendar-weekday {
+        display: inline-block;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .dp-calendar-week {
+        height: 20px;
+    }
+
+    .dp-weekdays {
+        height: 25px;
+    }
+
+    .dp-hide-near-month {
+        .dp-prev-month,
+        .dp-next-month {
+            visibility: hidden;
         }
+    }
 
-        .mat-card-title {
-            margin-bottom: 5px;
-        }
-
-        .mat-card-content {
-            margin-left: 8px;
-            margin-bottom: 8px;
-        }
-
-        .mat-button {
-            min-width: 0px;
-            padding-left: 2px;
-            padding-right: 2px;
-            line-height: 18px;
-        }
-
-        .dp-calendar-weekday {
-            display: inline-block;
-            padding-left: 2px;
-            padding-right: 2px;
-        }
-
-        .dp-calendar-week {
-            height: 20px;
-        }
-
-        .dp-weekdays {
-            height: 25px;
-        }
-
-        .dp-hide-near-month {
-            .dp-prev-month,
-            .dp-next-month {
-                visibility: hidden;
-            }
-        }
-
-        // NEW
-
+    // NEW
+    ::ng-deep {
         .mat-calendar-period-button {
             padding-left: 12px;
             padding-right: 12px;
@@ -368,12 +366,9 @@
     }
 }
 
-@mixin date-picker-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-
-        /*TODO: overwrite mat-button background: transparent */
+// * THEME VARIANTS
+@include init-component-variants() {
+    @include cdk-nested-css-theme-fix($theme-name, $theme-variant) {
         .dp-selected {
             // background: if($is-dark, true-value, false-value);
             background: mat-color($primary, default);
@@ -394,12 +389,13 @@
             .mat-calendar-body-disabled {
                 background: repeating-linear-gradient(
                     45deg,
-                    rgba($black,.03),
-                    rgba($black,.03) 2px,
-                    rgba($black,.05) 2px,
-                    rgba($black,.05) 4px
+                    rgba($black, .03),
+                    rgba($black, .03) 2px,
+                    rgba($black, .05) 2px,
+                    rgba($black, .05) 4px
                 );
             }
         }
     }
-  }
+}
+

@@ -43,8 +43,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
   selector: 'heatmap-widget',
   templateUrl: './heatmap-widget.component.html',
   styleUrls: ['./heatmap-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 

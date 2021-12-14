@@ -25,7 +25,7 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
     // tslint:disable-next-line: component-selector
     selector: 'events-widget',
     templateUrl: './events-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./events-widget.component.scss']
 })
 export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

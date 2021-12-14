@@ -21,7 +21,7 @@ import { MatMenuTrigger } from '@angular/material';
     // tslint:disable-next-line:component-selector
     selector: 'big-number-visual-appearance',
     templateUrl: './big-number-visual-appearance.component.html',
-    styleUrls: []
+    styleUrls: ['./big-number-visual-appearance.component.scss']
 })
 
 export class BignumberVisualAppearanceComponent implements OnInit {
@@ -54,7 +54,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'tebibyte': 'TiB - tebibyte (1024 GiB)',
         'pebibyte': 'PiB - pebibyte (1024 TiB)',
         'exibyte' : 'EiB - exibyte  (1024 PiB)'
-    }; 
+    };
 
     decimalDataUnitsKeys: Array<string> = ['decbyte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte', 'exabyte'];
     decimalDataUnits: { [key:string] : string; } = {
@@ -79,7 +79,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'mebibyte/s': 'MiB/s (1024 KiB/s)',
         'gibibyte/s': 'GiB/s (1024 MiB/s)',
         'tebibyte/s': 'TiB/s (1024 GiB/s)'
-    }; 
+    };
 
     decimalDataRateKeys: Array<string> = ['decbps', 'kbps', 'mbps', 'gbps', 'tbps', 'decbyte/s', 'kilobyte/s', 'megabyte/s', 'gigabyte/s', 'terabyte/s'];
     decimalDataRateUnits: { [key:string] : string; } = {
@@ -93,7 +93,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'megabyte/s': 'MB/s (1000 kB/s)',
         'gigabyte/s': 'GB/s (1000 MB/s)',
         'terabyte/s': 'TB/s (1000 GB/s)'
-    }; 
+    };
 
     currencyUnits: Array<string> = ['usd'];
     otherUnits: Array<string> = ['auto'];

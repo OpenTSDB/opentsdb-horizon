@@ -31,7 +31,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     // tslint:disable-next-line:component-selector
     selector: 'bignumber-widget',
     templateUrl: './bignumber-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./bignumber-widget.component.scss']
 })
 
 export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewInit {

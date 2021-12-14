@@ -30,7 +30,7 @@ import { take, withLatestFrom, filter } from 'rxjs/operators';
     // tslint:disable-next-line:component-selector
     selector: 'time-picker',
     templateUrl: './time-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./time-picker.component.scss']
 })
 
 export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges, OnDestroy {

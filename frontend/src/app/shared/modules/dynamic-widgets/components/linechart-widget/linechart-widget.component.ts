@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, Input, EventEmitter,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output, ViewEncapsulation
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -44,7 +44,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
     // tslint:disable-next-line:component-selector
     selector: 'linechart-widget',
     templateUrl: './linechart-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./linechart-widget.component.scss']
 })
 export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 
