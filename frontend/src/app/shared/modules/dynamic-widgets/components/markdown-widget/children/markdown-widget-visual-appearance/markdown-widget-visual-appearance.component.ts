@@ -20,7 +20,7 @@ import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@an
   // tslint:disable-next-line:component-selector
   selector: 'markdown-widget-visual-appearance',
   templateUrl: './markdown-widget-visual-appearance.component.html',
-  styleUrls: []
+  styleUrls: ['./markdown-widget-visual-appearance.component.scss']
 })
 export class MarkdownWidgetVisualAppearanceComponent implements OnInit {
   @HostBinding('class.markdown-visual-appearance-widget') private _hostClass = true;

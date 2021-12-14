@@ -15,24 +15,29 @@
 // * limitations under the License.
 // *
 
-@mixin developer-widget-component-base() {
+@import 'loader-component';
+
+
     $default-padding: map-get($widgets-common-config, default-padding);
     $edit-view-padding: map-get($widgets-common-config, edit-padding);
     $tab-width: map-get($widgets-common-config, tab-width);
     $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    // .widget-panel-content.developer-widget { }
+    //:host.widget-panel-content.developer-widget { }
 
     // when we are in edit view
-    // .edit-view-container.is-active {
-    //    .widget-panel-content.developer-widget { }
+    // @at-root {
+    //    ::ng-deep {
+    //      .edit-view-container.is-active {
+    //          .widget-panel-content.developer-widget { }
+    //      }
+    //   }
     // }
+
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    //:host.widget-panel-content.developer-widget { }
 }
 
-@mixin developer-widget-component-theme($theme-config) {
 
-    @include variables-compatibility($theme-config) {
-        //.widget-panel-content.developer-widget { }
-    }
-
-}

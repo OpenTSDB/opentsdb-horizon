@@ -15,120 +15,80 @@
 // * limitations under the License.
 // *
 
-@mixin barchart-widget-component-base() {
+@import 'loader-component';
 
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    .widget-panel-content.barchart-widget {
-        flex: 1;
+:host.widget-panel-content.barchart-widget {
+    flex: 1;
+    display: flex;
+
+    .widget-output {
+        width: 100%;
+        // height: 100%;
         display: flex;
-        .widget-output {
-            width: 100%;
-            // height: 100%;
-            display: flex;
-        }
-        #container {
-            padding: 20px 0px 0px 0px;
-            box-sizing: border-box;
-            display:inline-block;
-            /*
-                this is parent containter(#container) of chartjs canvas.
-                position:relative is required on parent container as
-                chartjs-zoom and threshold plugins inserts a canvas on top of chart canvas.
-            */
-            // position: relative;
-            canvas {
-                // width: 100% !important;
-                // height: 100% !important;
-            }
-            .loading-spinner,
-            .gif-spinner {
-                position: absolute;
-                left: 5px;
-                bottom: 5px;
-                z-index: 1;
-                /*width: 24px;
-                height: 24px;
-                background-image: url(/assets/denali-loader.svg);
-                background-color: transparent;*/
-            }
-            .apply-tpl-status {
-                position: absolute;
-                right: -5px;
-                top: 0px;
-                z-index: 1;
-                .mat-icon {
-                    font-size: 16px;
-                    color: rgb(216, 216, 215);
-                }
-            }
-
-            .error{
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                z-index: 1;
-                width: 30px;
-                height: 30px;
-                color: red;
-            }
-
-            .debug{
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                z-index: 1;
-                width: 30px;
-                height: 30px;
-                color: rgb(75, 9, 228);
-            }
-        }
     }
 
-                    // when we are in edit view
-                    .edit-view-container.is-active {
-                        .widget-panel-content.barchart-widget {
-                            .widget-output-container {
-                                // background: yellowgreen;
-                                // display: block;
-                                // flex: 1 1 auto;
-                                // height: 250px;
-                                // max-height: calc(100% - 200px);
-                            }
+    #container {
+        padding: 20px 0px 0px 0px;
+        box-sizing: border-box;
+        display:inline-block;
+        /*
+            this is parent containter(#container) of chartjs canvas.
+            position:relative is required on parent container as
+            chartjs-zoom and threshold plugins inserts a canvas on top of chart canvas.
+        */
+        // position: relative;
+        canvas {
+            // width: 100% !important;
+            // height: 100% !important;
+        }
 
-                            /*
-                            .widget-controls-container {
-                                display: flex;
-                                padding: 0;
-                                // background: lightblue;
-                                overflow: hidden;
-                                // flex: 1 1 auto;
-                                // min-height: 200px;
-                                // max-height: 100%;
-                                flex-grow: 1;
-                            }
+        .loading-spinner,
+        .gif-spinner {
+            position: absolute;
+            left: 5px;
+            bottom: 5px;
+            z-index: 1;
+        }
 
+        .apply-tpl-status {
+            position: absolute;
+            right: -5px;
+            top: 0px;
+            z-index: 1;
+            .mat-icon {
+                font-size: 16px;
+                color: rgb(216, 216, 215);
+            }
+        }
 
-                            .widget-output {
-                                //top: 30px;
-                                padding: 8px 0px;
-                                //display: block;
-                                position: relative;
-                                // height: inherit;
-                                display: block;
-                            }
-                            */
-                        }
-                    }
-}
+        .error{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            color: red;
+        }
 
-@mixin barchart-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        //.widget-panel-content.linechart-widget { }
+        .debug{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            color: rgb(75, 9, 228);
+        }
     }
-
 }
+
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    .widget-panel-content.linechart-widget { }
+//}

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, 
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output,
     EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
     // tslint:disable-next-line:component-selector
     selector: 'downsample',
     templateUrl: './downsample.component.html',
-    styleUrls: [],
+    styleUrls: ['./downsample.component.scss'],
     providers: [
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
@@ -167,29 +167,29 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.downsample && this.widgetConfigTime) {
-            // we need to update form as soon as it changes 
+            // we need to update form as soon as it changes
             this.widgetConfigTime.controls.downsample.setValue(changes.downsample.currentValue.value, {emitEvent:false});
             // set to prev is they change to custom
             if (changes.downsample.currentValue.value === 'custom')  {
                 // can be load from save dashboard
                 if (changes.downsample.currentValue.customValue !== '' && changes.downsample.currentValue.customUnit !== '') {
                     this.widgetConfigTime.controls.customDownsampleValue.setValue(changes.downsample.currentValue.customValue, {emitEvent: false});
-                    this.widgetConfigTime.controls.customDownsampleUnit.setValue(changes.downsample.currentValue.customUnit, {emitEvent: false}); 
+                    this.widgetConfigTime.controls.customDownsampleUnit.setValue(changes.downsample.currentValue.customUnit, {emitEvent: false});
                 } else {
                     this.setCustomDownsample(changes.downsample.previousValue.value);
                 }
-            } 
+            }
 
             this.selectedAggregators = changes.downsample.currentValue.aggregators;
             this.widgetConfigTime.controls.aggregators.setValue(changes.downsample.currentValue.aggregators, {emitEvent: false});
             this.overrideResolution = changes.downsample.currentValue.value === 'auto' ? false : true;
             this.overrideAggregator = changes.downsample.currentValue.aggregators[0] !== '' ? true : false;
-   
+
             if (this.overrideResolution || this.overrideAggregator) {
                 this.openMoreSettings = true;
             } else {
                 this.openMoreSettings = false;
-            }     
+            }
         }
         if ( changes.tot && changes.tot.currentValue ) {
             this.tot = changes.tot.currentValue;
@@ -227,7 +227,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
             customUnit = 'h';
         }
         this.widgetConfigTime.controls.customDownsampleValue.setValue(customValue, {emitEvent: false});
-        this.widgetConfigTime.controls.customDownsampleUnit.setValue(customUnit, {emitEvent: false});        
+        this.widgetConfigTime.controls.customDownsampleUnit.setValue(customUnit, {emitEvent: false});
     }
 
     createForm() {
@@ -279,7 +279,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
             // previous value
             if (this.selectedDownsample === 'auto') {
                 this.widgetConfigTime.controls.customDownsampleValue.setValue(this.customDownsampleValue);
-                this.widgetConfigTime.controls.customDownsampleUnit.setValue(this.customDownsampleUnit); 
+                this.widgetConfigTime.controls.customDownsampleUnit.setValue(this.customDownsampleUnit);
             } else {
                 this.setCustomDownsample(this.selectedDownsample);
             }
@@ -298,7 +298,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         // turn off this with value is auto and we do nothing
         if (!this.overrideResolution && this.widgetConfigTime.get('downsample').value !== 'auto') {
             this.downsample = {...this.downsample, value: 'auto'}
-            this.widgetConfigTime.controls.downsample.setValue('auto');         
+            this.widgetConfigTime.controls.downsample.setValue('auto');
         }
     }
 

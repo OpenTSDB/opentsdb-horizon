@@ -14,69 +14,73 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
+@import 'loader-component';
 
-@mixin time-picker-component-base() {
-
-    .dtp-time-picker {
-        button {
-            &.refresh-button {
-                &.mat-raised-button {
-                    padding: 0px;
-                    margin-left: 6px;
-                    margin-right: 6px;
-                    min-width: 10px;
-                }
-            }
-        }
-        .auto-refresh-button {
+:host.dtp-time-picker {
+    button {
+        &.refresh-button {
             &.mat-raised-button {
                 padding: 0px;
                 margin-left: 6px;
                 margin-right: 6px;
                 min-width: 10px;
             }
-            span {
-                // pointer-events: none;
-                cursor: default;
-                margin-right: 6px;
-            }
-
-            .mat-icon {
-                cursor: pointer;
-            }
         }
     }
-
-    // dropdown menu container
-    .timerange-picker-menu.mat-menu-panel {
-        position: relative;
-        overflow: initial;
-        max-width: initial;
-
-        .timerange-picker-container {
-            padding: 0 12px;
-            height: initial;
+    .auto-refresh-button {
+        &.mat-raised-button {
+            padding: 0px;
+            margin-left: 6px;
+            margin-right: 6px;
+            min-width: 10px;
         }
-    }
-    .timerange-picker-menu {
-        .mat-menu-content {
-            padding-top: 2px;
-            padding-bottom: 4px;
+        span {
+            // pointer-events: none;
+            cursor: default;
+            margin-right: 6px;
         }
-    }
 
-    // mobile media query
-    @include until(600px) {
-        // cdk dropdown menu container
-        .timerange-picker-menu.mat-menu-panel {
-            width: 100vw;
+        .mat-icon {
+            cursor: pointer;
         }
     }
 }
 
-@mixin time-picker-component-theme($theme-config) {
+@at-root {
+    ::ng-deep {
+        // dropdown menu container
+        .timerange-picker-menu.mat-menu-panel {
+            position: relative;
+            overflow: initial;
+            max-width: initial;
 
-    @include variables-compatibility($theme-config) {
+            .timerange-picker-container {
+                padding: 0 12px;
+                height: initial;
+            }
+        }
+        .timerange-picker-menu {
+            .mat-menu-content {
+                padding-top: 2px;
+                padding-bottom: 4px;
+            }
+        }
+
+        // mobile media query
+        @include until(600px) {
+            // cdk dropdown menu container
+            .timerange-picker-menu.mat-menu-panel {
+                width: 100vw;
+            }
+        }
+    }
+}
+
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    @include cdk-nested-css-theme-fix($theme-name, $theme-variant) {
 
         // tooltip color
         .dtp-tooltip-text {
@@ -102,3 +106,4 @@
         }
     }
 }
+

@@ -14,25 +14,27 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
+@import 'loader-component';
 
-@mixin status-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    // .widget-panel-content.status-widget { }
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    // when we are in edit view
-    // .edit-view-container.is-active {
-    //    .widget-panel-content.status-widget { }
-    // }
-}
+//:host.widget-panel-content.status-widget { }
 
-@mixin status-widget-component-theme($theme-config) {
+//@at-root {
+//    ::ng-deep {
+// when we are in edit view
+//      :host.edit-view-container.is-active {
+//          .widget-panel-content.status-widget { }
+//      }
+//    }
+//}
 
-    @include variables-compatibility($theme-config) {
-        //.widget-panel-content.status-widget { }
-    }
 
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    :host.widget-panel-content.status-widget { }
+//}

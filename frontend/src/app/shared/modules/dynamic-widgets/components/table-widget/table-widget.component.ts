@@ -42,13 +42,13 @@ import { ElementQueries, ResizeSensor } from 'css-element-queries';
     //tslint:disable-next-line:component-selector
     selector: 'table-widget',
     templateUrl: './table-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./table-widget.component.scss']
 })
 
 export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
-    @HostBinding('class.widget-panel-content') private _hostClass = true; 
-    @HostBinding('class.table-widget') private _componentClass = true; 
+    @HostBinding('class.widget-panel-content') private _hostClass = true;
+    @HostBinding('class.table-widget') private _componentClass = true;
 
     @Input() mode = 'view'; // view/explore/edit
     @Input() widget: WidgetModel;
@@ -62,7 +62,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
     //global vars
     Object = Object;
-    dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([{}]); 
+    dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([{}]);
     displayedColumns;
     displayedColumnsIds = [];
 
@@ -109,7 +109,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         private appConfig: AppConfigService
     ) { }
 
-    ngOnInit() 
+    ngOnInit()
     {
         this.widget.settings.layout = this.widget.settings.layout || 'column';
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -189,10 +189,10 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
                             this.setTimezone(message.payload.timezone);
                             const rawdata = message.payload.rawdata;
-                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata); 
+                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata);
                             this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
                             this.dataSource = new MatTableDataSource(this.data);
-                            this.displayedColumns = this.util.deepClone(this.options.displayColumns); 
+                            this.displayedColumns = this.util.deepClone(this.options.displayColumns);
                             this.displayedColumnsIds = [...this.displayedColumns.map(d => d.id)];
                             this.cdRef.detectChanges();
                             if ( this.sort ) {
@@ -340,7 +340,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
     sortingDataAccessor(data, colId)  {
         switch (colId) {
-          case 'metric': 
+          case 'metric':
           case 'tag':
               return data[colId];
           default: return parseFloat(data[colId+':raw']);
@@ -375,7 +375,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
         const heightMod = 0.55;
         // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 10;
         const outputSize = nativeEl.getBoundingClientRect();
         if (this.mode !== 'view') {

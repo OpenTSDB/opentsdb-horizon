@@ -14,36 +14,35 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
+@import 'loader-component';
 
-@mixin keypad-component-base() {
+:host.dtp-keypad {
 
-    .dtp-keypad {
+    .mat-button {
 
-        .mat-button {
+        min-width: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
 
-            min-width: 0px;
-            padding-left: 10px;
-            padding-right: 10px;
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
-
+    ::ng-deep {
         mat-grid-list {
             display:flex;
             justify-content:center;
         }
     }
-    // CDK ITEMS HERE
 }
 
-@mixin keypad-component-theme($theme-config) {
 
-    @include variables-compatibility($theme-config) {
-        .dtp-keypad {
-            .mat-button {
-                background-color: map-get($background, default);
-                //   color: map-get($primary, default-invert);
-            }
+// * THEME VARIANTS
+@include init-component-variants() {
+    :host.dtp-keypad {
+        .mat-button {
+            background-color: map-get($background, default);
+            //   color: map-get($primary, default-invert);
         }
     }
 }
+

@@ -15,136 +15,138 @@
 // * limitations under the License.
 // *
 
-@mixin events-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+@import 'loader-component';
 
-    .widget-panel-content.events-widget {
-        flex: 1;
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+:host.widget-panel-content.events-widget {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 0px;
+    overflow: hidden;
+
+    .flex {
         display: flex;
+    }
+
+    .main-container {
+        height: 100%;
         flex-direction: column;
-        padding-top: 0px;
-        overflow: hidden;
+    }
 
-        .flex {
-            display: flex;
+    .widget-output-container {
+        height: 100%;
+
+        .event-stream-title {
+            border-bottom: 1px solid lightgray;
+            line-height: 21px;
+            text-transform: uppercase;
+            font-size: 12px;
         }
 
-        .main-container {
-            height: 100%;
-            flex-direction: column;
-        }
-
-        .widget-output-container {
-            height: 100%;
-            .event-stream-title {
-                border-bottom: 1px solid lightgray;
-                line-height: 21px;
-                text-transform: uppercase;
-                font-size: 12px;
-            }
-
-            .widget-title .readonly {
-                display: inline-block;
-                padding: 2px;
-                margin-left: auto;
-                margin-right: auto;
-                font-size: 12px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-        }
-
-        .widget-output {
-            overflow: overlay;
-            align-items: flex-start;
-            padding: 0;
-
-            .widget-container {
-                width: 100%;
-            }
-
-            .event-result-title {
-                font-weight: bold;
-                padding-left: 10px;
-            }
-        }
-
-        @-moz-document url-prefix() {
-            .widget-output {
-                overflow: auto;
-            }
-        }
-
-        .query-container {
-            display: flex;
-            padding: 10px;
-            padding-top: 15px;
-            flex-direction: row;
+        .widget-title .readonly {
+            display: inline-block;
+            padding: 2px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 12px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 
-    // EDIT MODE
-    .edit-view-container.is-active {
-        .widget-panel-content.events-widget {
+    .widget-output {
+        overflow: overlay;
+        align-items: flex-start;
+        padding: 0;
 
-            .widget-title {
-                margin-bottom: 0;
-            }
+        .widget-container {
+            width: 100%;
+        }
 
-            .widget-output-container {
-                flex: 1;
-                max-height: initial;
-                height: 50px;
-            }
+        .event-result-title {
+            font-weight: bold;
+            padding-left: 10px;
+        }
+    }
 
-            .widget-output {
-                height: initial;
-                max-height: initial;
-                //margin-bottom: 12px;
-                align-items: flex-start;
-                flex: 1 1 100%;
-                position: relative;
+    @-moz-document url-prefix() {
+        .widget-output {
+            overflow: auto;
+        }
+    }
 
-                .widget-container {
-                    overflow: hidden;
-                    height: 100%;
-                    max-height: 100%;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    display: flex;
-                    flex-direction: column;
+    .query-container {
+        display: flex;
+        padding: 10px;
+        padding-top: 15px;
+        flex-direction: row;
+    }
+}
 
-                    .event-list {
-                        flex: 1;
-                        overflow: auto;
+@at-root {
+    ::ng-deep {
+        // EDIT MODE
+        .edit-view-container.is-active {
+            .widget-panel-content.events-widget {
+
+                .widget-title {
+                    margin-bottom: 0;
+                }
+
+                .widget-output-container {
+                    flex: 1;
+                    max-height: initial;
+                    height: 50px;
+                }
+
+                .widget-output {
+                    height: initial;
+                    max-height: initial;
+                    //margin-bottom: 12px;
+                    align-items: flex-start;
+                    flex: 1 1 100%;
+                    position: relative;
+
+                    .widget-container {
+                        overflow: hidden;
+                        height: 100%;
+                        max-height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        display: flex;
+                        flex-direction: column;
+
+                        .event-list {
+                            flex: 1;
+                            overflow: auto;
+                        }
                     }
                 }
-            }
 
-            .widget-controls-container {
-                margin: 12px 0;
-                background-color: white;
-                min-height: 240px;
-            }
+                .widget-controls-container {
+                    margin: 12px 0;
+                    background-color: white;
+                    min-height: 240px;
+                }
 
-            .widget-configs .mat-tab-header .mat-tab-label:last-child {
-                margin-left: initial;
+                .widget-configs .mat-tab-header .mat-tab-label:last-child {
+                    margin-left: initial;
+                }
             }
         }
     }
 }
 
-@mixin events-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        //.events-widget {}
-    }
-
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+    //.events-widget {}
+//}

@@ -36,7 +36,7 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'status-widget',
     templateUrl: './status-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./status-widget.component.scss']
 })
 export class StatusWidgetComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs';
   // tslint:disable-next-line:component-selector
   selector: 'donutchart-legend',
   templateUrl: './donutchart-legend.component.html',
-  styleUrls: []
+  styleUrls: ['./donutchart-legend.component.scss']
 })
 export class DonutchartLegendComponent implements OnInit {
 

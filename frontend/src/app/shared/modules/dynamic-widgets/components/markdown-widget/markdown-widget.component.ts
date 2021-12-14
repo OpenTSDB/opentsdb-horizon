@@ -22,7 +22,7 @@ import { Subscription, BehaviorSubject, of } from 'rxjs';
   // tslint:disable-next-line:component-selector
   selector: 'markdown-widget',
   templateUrl: './markdown-widget.component.html',
-  styleUrls: []
+  styleUrls: ['./markdown-widget.component.scss']
 })
 export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   @HostBinding('class.widget-panel-content') private _hostClass = true;

@@ -36,7 +36,7 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'developer-widget',
     templateUrl: './developer-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./developer-widget.component.scss']
 })
 export class DeveloperWidgetComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
