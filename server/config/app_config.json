@@ -33,7 +33,7 @@
         },
         "oc": {
             "enable": false,
-            "onboardUrl": "<% OC onboad url %>",
+            "onboardUrl": "<% OC onboard url %>",
             "guideUrl": "<% OC guide url %>"
         },
         "http": {
@@ -41,6 +41,10 @@
         },
         "email": {
             "enable": true
+        },
+        "pagerduty": {
+            "enable": false,
+            "guideUrl": "<% pagerduty guide url %>"
         }
       }
     },

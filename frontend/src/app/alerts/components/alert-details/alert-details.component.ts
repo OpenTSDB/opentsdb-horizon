@@ -571,7 +571,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.prevTimeSampler = data.threshold.singleMetric.timeSampler || 'at_least_once';
@@ -754,7 +756,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.setTags();
@@ -834,7 +838,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.options.axes.y.valueRange[0] = 0;
@@ -2009,6 +2015,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
             this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]);
         }
+
+        if (this.notificationRecipients.value.pagerduty && !event.pagerduty) {
+            this.alertForm['controls'].notification.get('pagerdutyAutoClose').setValue(false);
+        }
         this.notificationRecipients.setValue(event);
 
     }
@@ -2092,7 +2102,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             slack: 'Slack',
             http: 'Webhook',
             oc: 'OC',
-            email: 'Email'
+            email: 'Email',
+            pagerduty: 'PagerDuty'
         }
         return types[type];
     }

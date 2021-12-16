@@ -26,7 +26,8 @@ export enum RecipientType {
     slack = 'slack',
     http = 'http',
     oc = 'oc',
-    email = 'email'
+    email = 'email',
+    pagerduty = 'pagerduty'
 }
 
 export class Recipient {
