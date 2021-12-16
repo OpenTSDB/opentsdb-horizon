@@ -1568,7 +1568,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const oMetric = this.query.metrics[index];
         const nMetric = this.utils.deepClone(oMetric);
         nMetric.id = this.utils.generateId(3, this.utils.getIDs(this.utils.getAllMetrics(this.queries)));
-        this.fg.addControl(nMetric.id, new FormControl(nMetric.expression));
+        if ( nMetric.expression ) {
+            this.fg.addControl(nMetric.id, new FormControl(nMetric.expression));
+        }
 
         if (!this.options.enableMultiMetricSelection && nMetric.settings && nMetric.settings.visual) {
             nMetric.settings.visual.visible = false;
