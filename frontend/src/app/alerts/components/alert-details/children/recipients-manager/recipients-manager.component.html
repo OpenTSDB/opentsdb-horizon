@@ -256,6 +256,38 @@
                                 </mat-form-field>
                             </div>
                         </div>
+
+                        <!--Pager duty Form-->
+                        <div *ngIf="recipientType === _recipientType.pagerduty" class="contacts-create-form">
+                            <div class="form-group">
+                                <div class="form-label vertical-center">Team Name</div>
+                                <mat-form-field floatLabel="never" appearance="fill">
+                                    <input matInput [formControl]="pagerDutyName" placeholder="Enter Team Name*" required
+                                           minlength="2" maxlength="36" [value]="recipientsFormData[_recipientType.pagerduty].name"
+                                           (input)="updateRecipient(recipientsFormData[_recipientType.pagerduty], 'name', $event.target.value)">
+                                    <mat-error *ngIf="pagerDutyName.errors && (pagerDutyName.dirty || pagerDutyName.touched)">
+                                        Unique Team Name required. Min length is 2. Max length is 36.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-label vertical-center">Routing Key</div>
+                                <mat-form-field floatLabel="never" appearance="fill" class="wide-formfield">
+                                    <input matInput [formControl]="pagerDutyRoutingKey" placeholder="Enter Routing Key*" required
+                                           minlength="32" maxlength="32" [value]="recipientsFormData[_recipientType.pagerduty].routingkey"
+                                           (input)="updateRecipient(recipientsFormData[_recipientType.pagerduty], 'routingkey', $event.target.value)">
+                                    <mat-error *ngIf="pagerDutyRoutingKey.errors && (pagerDutyRoutingKey.dirty || pagerDutyRoutingKey.touched)">
+                                        Routing Key required. Length is {{pagerDutyRoutingKeyMaxLength}}.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-label"></div>
+                                <span>
+                                    Follow steps outlined in <a href="{{config.alert.recipient.pagerduty.guideUrl}}" target="_blank">the user-guide</a> to create an API key.
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -65,6 +65,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     ];
     slackWebhookMaxLength = 200;
     opsGenieApiKeyMaxLength = 200;
+    pagerDutyRoutingKeyMaxLength = 32;
 
     _mode = Mode; // for template
     _recipientType = RecipientType; // for template
@@ -83,6 +84,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     httpName = new FormControl('');
     httpEndpoint = new FormControl('');
     emailAddress = new FormControl('');
+    pagerDutyName = new FormControl('');
+    pagerDutyRoutingKey = new FormControl('');
 
     // state control
     private nsRecipientSub: Subscription;
@@ -111,6 +114,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             }
         } else if (this.recipientType === RecipientType.email) {
             if (this.emailAddress.errors) {
+                return true;
+            }
+        } else if (this.recipientType === RecipientType.pagerduty) {
+            if (this.pagerDutyName.errors || this.pagerDutyRoutingKey.errors) {
                 return true;
             }
         }
@@ -292,6 +299,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.httpName.setValue(this.recipientsFormData[RecipientType.http].name);
         this.httpEndpoint.setValue(this.recipientsFormData[RecipientType.http].endpoint);
         this.emailAddress.setValue(this.recipientsFormData[RecipientType.email].name);
+        this.pagerDutyName.setValue(this.recipientsFormData[RecipientType.pagerduty].name);
+        this.pagerDutyRoutingKey.setValue(this.recipientsFormData[RecipientType.pagerduty].routingkey);
     }
 
     addUserInputToAlertRecipients($event: MatChipInputEvent) {
@@ -473,6 +482,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             return 'OC';
         } else if (type === RecipientType.email) {
             return 'Email';
+        } else if (type === RecipientType.pagerduty) {
+            return 'PagerDuty';
         }
         return '';
     }
@@ -484,6 +495,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let emptyHTTPRecipient = this.createDefaultRecipient(RecipientType.http);
         let emptyOCRecipient = this.createDefaultRecipient(RecipientType.oc);
         let emptyEmailRecipient = this.createDefaultRecipient(RecipientType.email);
+        let emptyPagerDutyRecipient = this.createDefaultRecipient(RecipientType.pagerduty);
 
         // Set Defaults
         emptyOpsGenieRecipient.apikey = '';
@@ -493,12 +505,14 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         emptyOCRecipient.context = 'analysis';
         emptyOCRecipient.opsdbproperty = '';
         emptyEmailRecipient.name = '';
+        emptyPagerDutyRecipient.routingkey = '';
 
         emptyRecipients[RecipientType.opsgenie] = emptyOpsGenieRecipient;
         emptyRecipients[RecipientType.slack] = emptySlackRecipient;
         emptyRecipients[RecipientType.http] = emptyHTTPRecipient;
         emptyRecipients[RecipientType.oc] = emptyOCRecipient;
         emptyRecipients[RecipientType.email] = emptyEmailRecipient;
+        emptyRecipients[RecipientType.pagerduty] = emptyPagerDutyRecipient;
         this.recipientsFormData = emptyRecipients;
     }
 
@@ -532,6 +546,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
     isOpsGenieApiKeyCorrectLength(apiKey: string): boolean {
         return apiKey && apiKey.length > 0 && apiKey.length <= this.opsGenieApiKeyMaxLength;
+    }
+
+    isPagerDutyRoutingKeyCorrectLength(routingkey: string): boolean {
+        return routingkey && routingkey.length > 0 && routingkey.length <= this.pagerDutyRoutingKeyMaxLength;
     }
 
     getRecipientItemsByType(type) {
@@ -619,6 +637,13 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         };
     }
 
+    pagerDutyRoutingKeyValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let forbidden = !this.isPagerDutyRoutingKeyCorrectLength(control.value);
+            return forbidden ? {'forbiddenName': {value: control.value}} : null;
+        };
+    }
+
     urlValidator() : ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = !/^https:\/\/(www\.)?(([-a-zA-Z0-9@:%._[\]]{1,256}\.[a-zA-Z0-9()]{0,6}\b)|(\[?[a-fA-F0-9]*:[a-fA-F0-9:]+\]))([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/.test(control.value);
@@ -636,6 +661,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
         this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
         this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);
+        this.pagerDutyName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.pagerduty), this.recipientsFormData[this.recipientType])]);
+        this.pagerDutyRoutingKey = new FormControl('', [this.pagerDutyRoutingKeyValidator()]);
     }
 
     trimRecipientName(name) {
