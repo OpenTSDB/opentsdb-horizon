@@ -343,8 +343,7 @@ export class AlertsState {
             this.sub.unsubscribe();
         }
         this.sub = this.httpService.getAlerts(options).subscribe(
-            alerts => {
-                console.log("alerts ===>", alerts);
+            alerts => {                
                 ctx.patchState({ alerts: alerts});
                 if ( alerts.length ) {
                     ctx.dispatch(new LoadAlertsStats(options));
