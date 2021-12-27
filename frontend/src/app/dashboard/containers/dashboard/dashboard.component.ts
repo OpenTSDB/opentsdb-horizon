@@ -1249,15 +1249,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
-            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' )  {
-                const search = this.widgets[i].eventQueries[0].search;
-                if ( this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
+            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' || this.widgets[i].settings.component_type === 'LinechartWidgetComponent' )  {
+                const search = this.widgets[i].eventQueries ? this.widgets[i].eventQueries[0].search : '';
+                if ( this.widgets[i].eventQueries && this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
                     this.handleEventQueryPayload({
                             id: this.widgets[i].id,
                             payload: this.utilService.deepClone({eventQueries: this.widgets[i].eventQueries })
                         });
                 }
-                continue;
+                if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' ) {
+                    continue;
+                }
             }
             for (let j = 0; j < queries.length; j++) {
                 if (tvars.length > 0) {

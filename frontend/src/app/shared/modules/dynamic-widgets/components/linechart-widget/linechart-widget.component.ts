@@ -1215,7 +1215,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'getEventData',
-                payload: { eventQueries: this.widget.eventQueries, settings: this.widget.settings, limit: this.eventsCount }
+                payload: { eventQueries: this.utilService.deepClone(this.widget.eventQueries), settings: this.widget.settings, limit: this.eventsCount }
             });
         }
     }
@@ -1231,9 +1231,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setEventQuerySearch(search: string) {
         // todo: set correctly
-        const deepClone = JSON.parse(JSON.stringify(this.widget));
-        deepClone.eventQueries[0].search = search;
-        this.widget.eventQueries = [...deepClone.eventQueries];
+        // const deepClone = JSON.parse(JSON.stringify(this.widget));
+        // deepClone.eventQueries[0].search = search;
+        this.widget.eventQueries[0].search = search;
         this.getEvents();
     }
 
