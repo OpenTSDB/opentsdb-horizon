@@ -100,7 +100,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
             this.filteredTagOptions = this.tagOptions;
             this.triggerMenu();
         } else if (load ) {
-            if ( !this.namespace || !this.metric ) {
+            if ( !this.metric ) {
                 this.tagOptions = [];
                 this.filteredTagOptions = this.tagOptions;
                 this.triggerMenu();
