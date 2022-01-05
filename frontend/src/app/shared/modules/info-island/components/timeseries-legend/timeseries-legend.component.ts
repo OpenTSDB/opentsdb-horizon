@@ -26,8 +26,9 @@ import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { I } from '@angular/cdk/keycodes';
-import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
+import { TableItemSizeDirective, TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { ResizeSensor} from 'css-element-queries';
+import * as moment from 'moment';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -98,7 +99,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         private utilsService: UtilsService,
         @Inject(ISLAND_DATA) private _islandData: any
     ) {
-        // this.console.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
+        //console.log('[TSL] Constructor', { ISLAND_DATA: _islandData });
         // Set initial incoming data (data from first click that opens island)
         this.currentWidgetId = _islandData.originId;
         if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.component_type) {
@@ -823,6 +824,73 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 }
             });
         }
+    }
+
+    // data -> CSV
+    getLegendCSV() {
+        //let csvContent = "data:text/csv;charset=utf-8;";
+        let csvContent = "";
+        let columns: any[] = [...this.tableColumns];
+        columns.shift();
+        csvContent += columns.join(',') + '\n';
+
+        let data = this.tableDataSource.data;
+        //console.log('DATA', columns, data);
+
+        data.forEach((item: any) => {
+            // first is always metric
+            let rowData = '';
+            columns.forEach(col => {
+                if ( col === 'metric' ) {
+                    rowData += this.formattedMetricLabel(item) + ',';
+                } else if ( col === 'value' ) {
+                    rowData += item.formattedValue.trim();
+                } else {
+                    rowData += item.series.tags[col] + ',';
+                }
+            });
+            csvContent += rowData + '\n';
+        });
+        //console.log('CSV CONTENT', csvContent);
+
+        let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA');
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        let navigator = window.navigator;
+
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        this.parseCSVDataToConsole(csvContent);
+    }
+
+    // utility to print out the CSV data to console
+    private parseCSVDataToConsole(data){
+        let lbreak = data.split('\n');
+        let columns = lbreak.shift().split(',');
+        let csvData = [];
+
+        lbreak.forEach(res => {
+            let items = res.split(',');
+            let resObj = {};
+            items.forEach((item, i) => {
+                resObj[columns[i]] = item;
+            });
+            csvData.push(resObj);
+        });
+        console.table(csvData);
     }
 
     @HostListener('document:keydown.shift', ['$event'])
