@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
-import { Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { CdkObserveContent } from '@angular/cdk/observers';
@@ -29,6 +29,8 @@ import { I } from '@angular/cdk/keycodes';
 import { TableItemSizeDirective, TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { ResizeSensor} from 'css-element-queries';
 import * as moment from 'moment';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'timeseries-legend-component',
@@ -44,6 +46,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     @ViewChild('legendTable', { read: CdkObserveContent }) private _legendTableObserve: CdkObserveContent;
     @ViewChild('tsDataWrapper', { read: ElementRef }) private _tsDataWrapper: ElementRef<any>;
     @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(CdkVirtualScrollViewport) viewportComponent: CdkVirtualScrollViewport;
 
     islandRef: InfoIslandComponent;
 
@@ -143,12 +146,20 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         this.logScaleY2 = (widgetAxes.y2 && widgetAxes.y2.hasOwnProperty('logscale')) ? widgetAxes.y2.logscale : false;
 
         // set subscriptions
+        this.subscription.add(this.interCom.responseGet().subscribe(message => {
+            switch (message.action) {
+                case 'islandResizeComplete':
+                    // island got resized... need to tell virtual scrollport to check size
+                    this.viewportComponent.checkViewportSize();
+                    break;
+                default:
+                    break;
+            }
+        }));
+
         this.subscription.add(this.interCom.requestListen().subscribe(message => {
             // this.console.intercom('[TSL] RequestListen', {message});
             switch (message.action) {
-                case 'islandResizeComplete':
-                    console.log('%cRESIZE COMPLETE', 'color: white; background: green; padding: 2px;')
-                    break;
                 case 'tsLegendWidgetOptionsUpdate':
                     //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
                     this.currentWidgetOptions = message.payload.options;
