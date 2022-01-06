@@ -29,7 +29,6 @@ import { I } from '@angular/cdk/keycodes';
 import { TableItemSizeDirective, TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { ResizeSensor} from 'css-element-queries';
 import * as moment from 'moment';
-
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'timeseries-legend-component',
@@ -827,33 +826,17 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     }
 
     // data -> CSV
-    getLegendCSV() {
-        //let csvContent = "data:text/csv;charset=utf-8;";
-        let csvContent = "";
-        let columns: any[] = [...this.tableColumns];
-        columns.shift();
-        csvContent += columns.join(',') + '\n';
 
-        let data = this.tableDataSource.data;
-        //console.log('DATA', columns, data);
+    // initiates CSV download
+    saveLegendDataCSV() {
 
-        data.forEach((item: any) => {
-            // first is always metric
-            let rowData = '';
-            columns.forEach(col => {
-                if ( col === 'metric' ) {
-                    rowData += this.formattedMetricLabel(item) + ',';
-                } else if ( col === 'value' ) {
-                    rowData += item.formattedValue.trim();
-                } else {
-                    rowData += item.series.tags[col] + ',';
-                }
-            });
-            csvContent += rowData + '\n';
-        });
+        let csvContent = this.getLegendCSV();
         //console.log('CSV CONTENT', csvContent);
 
         let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA');
+
+        // see: https://stackoverflow.com/a/24922761/1810361
+        // for the Blob download snippet
         var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         let navigator = window.navigator;
 
@@ -872,14 +855,90 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 document.body.removeChild(link);
             }
         }
+    }
+
+    // initiates copying CSV to clipboard
+    copyLegendDataCSV() {
+
+        let csvContent = this.getLegendCSV();
+        //console.log('CSV CONTENT', csvContent);
+
+        // see: https://stackoverflow.com/a/49121680/1810361
+        // for this quick copy to clipboard snippet
+        // NOTE: need to upgrade to angular CDK clipboard service once we go to NG9+
+        const selBox = document.createElement('textarea');
+        selBox.style.position = 'fixed';
+        selBox.style.left = '0';
+        selBox.style.top = '0';
+        selBox.style.opacity = '0';
+        selBox.value = csvContent;
+        document.body.appendChild(selBox);
+        selBox.focus();
+        selBox.select();
+        document.execCommand('copy');
+        document.body.removeChild(selBox);
+    }
+
+    // formats legend data into CSV format
+    private getLegendCSV(): any {
+        let csvContent = '';
+        // get headers
+        let columns: any[] = [...this.tableColumns];
+        columns.shift();
+        // add headers to first line
+        csvContent += columns.join(',') + '\n';
+
+        // get legend data
+        let data = this.getVisibleLegendItems();
+        console.log('DATA', data);
+
+        // loop through data and add relevant items to csvContent
+        data.forEach((item: any) => {
+            // first is always metric
+            let rowData = '';
+            columns.forEach(col => {
+                if ( col === 'metric' ) {
+                    rowData += this.formattedMetricLabel(item) + ',';
+                } else if ( col === 'value' ) {
+                    rowData += (typeof(item.formattedValue) === 'string') ? item.formattedValue.trim() : item.formattedValue;
+                } else {
+                    rowData += ((item.series.tags[col] === undefined) ? 'n/a' : item.series.tags[col]) + ',';
+                }
+            });
+            csvContent += rowData + '\n';
+        });
 
         this.parseCSVDataToConsole(csvContent);
+
+        return csvContent;
+    }
+
+    // gets only the legend items that are checked (visible)
+    private getVisibleLegendItems(): any[] {
+        let toShow: number[] = [];
+        let dataItems: any[];
+
+        // get the indexes of items that are visible
+        for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
+            const itemVis = this.currentWidgetOptions.visibility[i];
+            if (itemVis === true) {
+                toShow.push(i);
+            }
+        }
+
+        // filter table data to only return visible (checked) items
+        dataItems = this.tableDataSource.data.filter((item: any) => toShow.includes(item.srcIndex)).map((item: any) => item);
+
+        return dataItems;
     }
 
     // utility to print out the CSV data to console
     private parseCSVDataToConsole(data){
         let lbreak = data.split('\n');
         let columns = lbreak.shift().split(',');
+        if (lbreak[lbreak.length-1].trim().length === 0) {
+            lbreak.pop();
+        }
         let csvData = [];
 
         lbreak.forEach(res => {

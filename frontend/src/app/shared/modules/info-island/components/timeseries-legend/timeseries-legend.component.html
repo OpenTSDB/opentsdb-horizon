@@ -122,7 +122,20 @@
     </div>
     <span class="flex-spacer" style="min-width: 30px;"></span>
     <div class="toolbar-item">
-        <a mat-button color="primary" (click)="getLegendCSV()">[CSV]</a>
+        <button mat-mini-fab class="csv-data-menu-button" color="primary" [matMenuTriggerFor]="legendCsvMenu">
+            <!--<mat-icon aria-label="legend csv data" fontSet="denali" fontIcon="d-"></mat-icon>-->
+            <span>CSV</span>
+        </button>
+        <mat-menu #legendCsvMenu="matMenu" class="show-legend-csv-cdk-menu">
+            <button mat-menu-item (click)="saveLegendDataCSV()">
+                <mat-icon fontSet="denali" fontIcon="d-download"></mat-icon>
+                <span>Download CSV data</span>
+            </button>
+            <button mat-menu-item (click)="copyLegendDataCSV()">
+                <mat-icon fontSet="denali" fontIcon="d-copy-file"></mat-icon>
+                <span>Copy CSV data</span>
+            </button>
+        </mat-menu>
     </div>
     <div class="toolbar-item">
         <mat-checkbox (change)="trackmouseCheckboxChange($event)" [checked]="options.trackMouse" labelPosition="before">Track Mouse</mat-checkbox>
