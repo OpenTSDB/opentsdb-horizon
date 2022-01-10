@@ -570,7 +570,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             // tslint:disable-next-line: max-line-length
             this.options.initZoom.y = chartOptions.axes && chartOptions.axes.y ? { ...this.options.axes.y, valueRange: chartOptions.axes.y } : null;
             // tslint:disable-next-line: max-line-length
-            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? { ...this.options.axes.y2, valueRange: chartOptions.axes.y } : null;
+            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? { ...this.options.axes.y2, valueRange: chartOptions.axes.y2 } : null;
         }
     }
 
