@@ -29,7 +29,7 @@ import { forkJoin } from 'rxjs';
 
 import { UtilsService } from '../../core/services/utils.service';
 import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 export interface AlertModel {
@@ -162,6 +162,8 @@ export class ClearNamespace {
 })
 
 export class AlertsState {
+    sub: Subscription;
+    sub2: Subscription;
     constructor(
         private httpService: HttpService,
         private alertsService: AlertsService,
@@ -337,10 +339,15 @@ export class AlertsState {
     @Action(LoadAlerts)
     loadAlerts(ctx: StateContext<AlertsStateModel>, { options }: LoadAlerts) {
         ctx.patchState({ actionStatus: 'save-progress', error: {}});
-        return this.httpService.getAlerts(options).subscribe(
-            alerts => {
+        if ( this.sub ) {
+            this.sub.unsubscribe();
+        }
+        this.sub = this.httpService.getAlerts(options).subscribe(
+            alerts => {                
                 ctx.patchState({ alerts: alerts});
-                ctx.dispatch(new LoadAlertsStats(options));
+                if ( alerts.length ) {
+                    ctx.dispatch(new LoadAlertsStats(options));
+                }
             },
             error => {
                 ctx.patchState({ error: error });
@@ -351,7 +358,10 @@ export class AlertsState {
 
     @Action(LoadAlertsStats)
     loadAlertsStats(ctx: StateContext<AlertsStateModel>, { options }: LoadAlertsStats) {
-        return this.httpService.getAlertsStats(options).subscribe(
+        if ( this.sub2 ) {
+            this.sub2.unsubscribe();
+        }
+        this.sub2 =  this.httpService.getAlertsStats(options).subscribe(
             res => {
                 const alertCounts = {};
                 if ( res.error === undefined && res.results ) {
