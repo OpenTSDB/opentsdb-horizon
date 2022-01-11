@@ -844,7 +844,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         let csvContent = this.getLegendCSV();
         //console.log('CSV CONTENT', csvContent);
 
-        let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA');
+        let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA') + '.csv';
 
         // see: https://stackoverflow.com/a/24922761/1810361
         // for the Blob download snippet
