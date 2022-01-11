@@ -24,6 +24,7 @@ import { WidgetViewDirective } from '../../directives/widgetview.directive';
 import { WidgetComponentModel } from '../../widgets/models/widgetcomponent';
 import { DashboardService } from '../../services/dashboard.service';
 import { WidgetService } from '../../../core/services/widget.service';
+import { UtilsService } from '../../../core/services/utils.service';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
@@ -105,6 +106,7 @@ export class DboardContentComponent implements OnChanges {
     private widgetService: WidgetService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private interCom: IntercomService,
+    private utils: UtilsService,
     private cdRef: ChangeDetectorRef
   ) { }
 
@@ -151,6 +153,10 @@ export class DboardContentComponent implements OnChanges {
   // to load selected component factory to edit
   editComponent(comp: any) {
     this.loadComponent(comp);
+  }
+
+  deepClone(o) {
+    return this.utils.deepClone(o);
   }
 
   loadComponent(comp: any) {

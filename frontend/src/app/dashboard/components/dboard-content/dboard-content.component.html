@@ -41,7 +41,7 @@
                 (editComponent)="editComponent($event)"
                 [batchSelector]="batchControlsToggle"
                 [batchSelected]="batchSelectedItems[widget.id]"
-                [widget]="widget"
+                [widget]="deepClone(widget)"
                 [readonly]="readonly"
                 [isNewDb]="dbid === '_new_'"></app-widget-loader>
             </ngx-gridster-item>
