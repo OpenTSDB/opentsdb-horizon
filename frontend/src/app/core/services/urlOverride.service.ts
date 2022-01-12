@@ -144,7 +144,7 @@ export class URLOverrideService {
         
     }
 
-    initialize() {
+    initialize(options = null ) {
         const url = this.getLocationURLandQueryParams();
         let otherParams = {};
         for (const k in url['queryParams']) {
@@ -173,7 +173,7 @@ export class URLOverrideService {
                     otherParams[k] = v;
             }
         }
-        if (Object.keys(otherParams).length > 0) {
+        if ( options && options.dbOverride && Object.keys(otherParams).length > 0) {
             this.applyURLParamsToDB(otherParams);
         }
     }
