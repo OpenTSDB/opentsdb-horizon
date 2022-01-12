@@ -158,9 +158,9 @@
                                 <span>Recipients</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <ng-container *ngIf="getRecipientKeys(element).length > 0">
+                                <ng-container *ngIf="element.recipientsKeys.length > 0">
                                     <div class="contact-icon-strip" [matMenuTriggerFor]="contactsMenu" [matMenuTriggerData]="{element: element}">
-                                        <mat-icon *ngFor="let contactType of getRecipientKeys(element)" [svgIcon]="contactType + '_contact'"></mat-icon>
+                                        <mat-icon *ngFor="let contactType of element.recipientsKeys" [ngClass]="'contact-' + contactType"></mat-icon>
                                     </div>
                                 </ng-container>
                             </td>
@@ -183,8 +183,8 @@
                                 <span class="header-chip is-error">Bad</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <span class="count-empty" *ngIf="!element.bad">-</span>
-                                <a *ngIf="element.bad" class="count-amount" (click)="showAuraDialog(element.id, { status: 1 })"> {{ element.bad }}</a>
+                                <span class="count-empty" *ngIf="!alertsStats[element.id] || !alertsStats[element.id].bad">-</span>
+                                <a *ngIf="alertsStats[element.id] && alertsStats[element.id].bad" class="count-amount" (click)="showAuraDialog(element.id, { status: 1 })"> {{ alertsStats[element.id].bad }}</a>
                             </td>
                         </ng-container>
 
@@ -193,8 +193,8 @@
                                 <span class="header-chip is-warning">Warn</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <span class="count-empty" *ngIf="!element.warn">-</span>
-                                <a *ngIf="element.warn" class="count-amount" (click)="showAuraDialog(element.id, { status: 2 } )">{{ element.warn }}</a>
+                                <span class="count-empty" *ngIf="!alertsStats[element.id] || !alertsStats[element.id].warn">-</span>
+                                <a *ngIf="alertsStats[element.id] && alertsStats[element.id].warn" class="count-amount" (click)="showAuraDialog(element.id, { status: 2 } )">{{ alertsStats[element.id].warn }}</a>
                             </td>
                         </ng-container>
 
@@ -203,8 +203,8 @@
                                 <span class="header-chip is-good">Good</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <span class="count-empty" *ngIf="!element.good">-</span>
-                                <a *ngIf="element.good" class="count-amount" (click)="showAuraDialog(element.id, { status: 0 } )">{{ element.good }}</a>
+                                <span class="count-empty" *ngIf="!alertsStats[element.id] || !alertsStats[element.id].good">-</span>
+                                <a *ngIf="alertsStats[element.id] && alertsStats[element.id].good" class="count-amount" (click)="showAuraDialog(element.id, { status: 0 } )">{{ alertsStats[element.id].good }}</a>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="unknown">
@@ -212,8 +212,8 @@
                                 <span class="header-chip is-unknown">Unknown</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <span class="count-empty" *ngIf="!element.unknown">-</span>
-                                <a *ngIf="element.unknown" class="count-amount" (click)="showAuraDialog(element.id, { status: 3 } )">{{ element.unknown }}</a>
+                                <span class="count-empty" *ngIf="!alertsStats[element.id] || !alertsStats[element.id].unknown">-</span>
+                                <a *ngIf="alertsStats[element.id] && alertsStats[element.id].unknown" class="count-amount" (click)="showAuraDialog(element.id, { status: 3 } )">{{ alertsStats[element.id].unknown }}</a>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="missing">
@@ -221,8 +221,8 @@
                                 <span class="header-chip is-missing">Missing</span>
                             </th>
                             <td mat-cell *matCellDef="let element">
-                                <span class="count-empty" *ngIf="!element.missing">-</span>
-                                <a *ngIf="element.missing" class="count-amount" (click)="showAuraDialog(element.id, { status: 4 } )">{{ element.missing }}</a>
+                                <span class="count-empty" *ngIf="!alertsStats[element.id] || !alertsStats[element.id].missing">-</span>
+                                <a *ngIf="alertsStats[element.id] && alertsStats[element.id].missing" class="count-amount" (click)="showAuraDialog(element.id, { status: 4 } )">{{ alertsStats[element.id].missing }}</a>
                             </td>
                         </ng-container>
 
@@ -243,7 +243,7 @@
         <div class="common-results-wrapper">
             <div class="common-results-body has-scroller">
                 <div class="is-scroller">
-                <table class="common-table-result snooze-results-table" mat-table [dataSource]="snoozesDataSource" matSort matSortStart="desc">
+                    <table class="common-table-result snooze-results-table" mat-table [dataSource]="snoozesDataSource" matSort matSortStart="desc">
                     <ng-container matColumnDef="select">
                         <th mat-header-cell *matHeaderCellDef>
                             <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -334,10 +334,10 @@
 
                     <tr mat-header-row *matHeaderRowDef="snoozeDisplayedColumns; sticky: true" [ngClass]="{'is-batch-editing': snoozeSelection.hasValue()}"></tr>
                     <tr mat-row *matRowDef="let row; columns: snoozeDisplayedColumns;"></tr>
-                </table>
+                    </table>
+                    <div class="message" *ngIf="stateLoaded.snooze && snoozes.length === 0">No snoozes found</div>
+                    <div class="message" *ngIf="!stateLoaded.snooze">Loading...</div>
                 </div>
-                <div class="message" *ngIf="stateLoaded.snooze && snoozes.length === 0">No snoozes found</div>
-                <div class="message" *ngIf="!stateLoaded.snooze">Loading...</div>
             </div>
             <mat-paginator #snoozePaginator
                 [pageSizeOptions]="[10, 20, 30]"

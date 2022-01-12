@@ -8,12 +8,9 @@ body {
 
 // IMAGE PRELOADING
 :root:before {
-    content: url(/assets/spinner-26x26.gif) url(/assets/widget-icon-sprite.png)
-        url(/assets/email-contact.svg) url(/assets/http-contact.svg)
-        url(/assets/oc-contact.svg) url(/assets/opsgenie-contact.svg)
-        url(/assets/slack-contact.svg);
+    content: url(/assets/widget-icon-sprite.png);
     /* partial fallback */
-    background-image: url(/assets/spinner-26x26.gif);
+    // background-image: url(/assets/spinner-26x26.gif);
     visibility: hidden;
     position: absolute;
     left: -999em;

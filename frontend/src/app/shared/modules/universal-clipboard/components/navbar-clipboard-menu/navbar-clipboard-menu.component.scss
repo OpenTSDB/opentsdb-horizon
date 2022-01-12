@@ -32,6 +32,10 @@
         line-height: 24px;
     }
 
+    .mat-flat-button:not(:last-child) {
+        margin-right: 8px;
+    }
+
     .mat-icon {
         @include sizeDenaliIcon(18px);
     }

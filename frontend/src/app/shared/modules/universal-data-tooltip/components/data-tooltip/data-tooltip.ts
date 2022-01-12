@@ -271,6 +271,7 @@ export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 
     /* Last */
     ngOnDestroy() {
+        this.hide();
         if (this._positionListener) {
             this._removePositionListener();
         }
