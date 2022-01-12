@@ -315,7 +315,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
-        this.urlOverrideService.initialize();
+        this.urlOverrideService.initialize( { dbOverride: true } );
         this.readonly = this.appConfig.getConfig().readonly;
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {

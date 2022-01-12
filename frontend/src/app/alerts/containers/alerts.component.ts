@@ -82,6 +82,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
 
 import { UtilsService } from '../../core/services/utils.service';
+import { URLOverrideService } from '../../core/services/urlOverride.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
 import { FormControl } from '@angular/forms';
@@ -344,6 +345,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private localStorageService: LocalStorageService,
         private dataShare: DataShareService,
         private infoIslandService: InfoIslandService,
+        private urlOverrideService: URLOverrideService,
         private appConfig: AppConfigService
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
@@ -355,6 +357,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     ngOnInit() {
 
+        this.urlOverrideService.initialize();
         this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();

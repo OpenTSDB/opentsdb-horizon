@@ -1070,6 +1070,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
         autoRecoveryIntervalCntrl.setErrors(null);
         if ( autoRecoveryIntervalCntrl.value !== null && parseInt(autoRecoveryIntervalCntrl.value) <= parseInt(slidingWindowCntrl.value) ) {
+            this.showThresholdAdvanced = true;
             autoRecoveryIntervalCntrl.setErrors({ 'invalid': true });
         }
 
