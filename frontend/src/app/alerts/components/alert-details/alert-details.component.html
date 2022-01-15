@@ -1367,7 +1367,8 @@ This simulates the output of the query editor - minus a few events and buttons
             [endTime]="endTime"
             [downsample]=" data.type === 'simple' ? downsample: null"
             [tot]="null"
-            [config]="{enableSync: false, enableRefresh: false}"
+            [refresh]="autoRefresh"
+            [config]="{enableSync: false, enableRefresh: true}"
             [xPosition]="menuXAlignValue">
         </time-picker>
         <span class="navbar-item nav-timezone-toggle" *ngIf="data.type === 'simple'">

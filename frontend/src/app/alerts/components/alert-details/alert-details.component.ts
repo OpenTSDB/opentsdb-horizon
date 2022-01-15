@@ -290,6 +290,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     startTime;
     endTime;
     timeZone = 'local';
+    autoRefresh = {'auto': 0, 'duration': 60 };
     prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
@@ -1007,7 +1008,22 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     };
                     this.reloadData();
                 break;
+            case 'SetAutoRefreshConfig':
+                this.autoRefresh = {...message.payload};
+                break;
+            case 'RefreshDashboard':
+                this.refresh();
+                break;
         }
+    }
+
+    refresh() {
+        if ( this.data.type === 'event') {
+            this.doEventQuery$.next(['list', 'count']);
+        } else if ( this.data.type === 'simple' ) {
+            this.reloadData();
+        }
+        this.getCount();
     }
 
     setTimezone(e: any) {
