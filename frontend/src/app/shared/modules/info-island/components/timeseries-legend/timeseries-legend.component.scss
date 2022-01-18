@@ -174,6 +174,17 @@
                     margin-right: 8px;
                 }
             }
+
+            .csv-data-menu-button {
+                width: 24px;
+                height: 24px;
+                line-height: 1;
+                font-size: 8px;
+
+                .mat-button-wrapper {
+                    line-height: 8px;
+                }
+            }
         }
 
         .mat-select-arrow-wrapper {
@@ -193,10 +204,15 @@
     }
 
     // cdk items
-    .show-limit-type-cdk-menu.mat-menu-panel {
+    .show-limit-type-cdk-menu.mat-menu-panel,
+    .show-legend-csv-cdk-menu.mat-menu-panel {
         .mat-menu-item {
             height: 24px;
             line-height: 24px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
         }
 
         .mat-divider {

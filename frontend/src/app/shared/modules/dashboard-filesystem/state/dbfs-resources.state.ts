@@ -166,6 +166,22 @@ export class DbfsUpdateFolderSuccess {
     ) { }
 }
 
+export class DbfsRefreshFolder {
+    public static type = '[DBFS Resources] Refresh Folder';
+    constructor(
+        public readonly fullPath: any,
+        public readonly resourceAction: any
+    ) { }
+}
+
+export class DbfsRefreshFolderSuccess {
+    public static type = '[DBFS Resources] Refresh Folder SUCCESS';
+    constructor(
+        public readonly response: any,
+        public readonly args: any
+    ) { }
+}
+
 export class DbfsUpdateFile {
     public static type = '[DBFS Resources] Update File';
     constructor(
@@ -1187,6 +1203,7 @@ export class DbfsResourcesState {
         const folder = this.dbfsUtils.normalizeFolder(response);
         folders[folder.fullPath] = folder;
 
+
         // update parent (if we have it cached)
         if (folders[folder.parentPath]) {
             if (!folders[folder.parentPath].subfolders) {
@@ -1207,6 +1224,71 @@ export class DbfsResourcesState {
             files,
             resourceAction: args.resourceAction
         });
+    }
+
+    @Action(DbfsRefreshFolder)
+    refreshFolder(ctx: StateContext<DbfsResourcesModel>, {fullPath, resourceAction}: DbfsRefreshFolder) {
+        let originDetails = this.dbfsUtils.detailsByFullPath(fullPath);
+        const args = {
+            originDetails,
+            resourceAction
+        };
+
+        let topFolder: any = false;
+
+        if (originDetails.topFolder) {
+            topFolder = { type: originDetails.type };
+            topFolder.value = (topFolder.type === 'user') ? 'user.' + originDetails.typeKey : originDetails.typeKey;
+        }
+
+        return this.service.getFolderByPath(fullPath, topFolder).pipe(
+            map((payload: any) => {
+                ctx.dispatch(new DbfsRefreshFolderSuccess(payload, args));
+            }),
+            catchError(error => ctx.dispatch(new DbfsResourcesError(error, 'Refresh Folder')))
+        );
+    }
+
+
+
+    @Action(DbfsRefreshFolderSuccess)
+    refreshFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsRefreshFolderSuccess) {
+        const state = ctx.getState();
+
+        const folders = JSON.parse(JSON.stringify({ ...state.folders }));
+        const files = JSON.parse(JSON.stringify({ ...state.files }));
+
+        // get keys of folders and files that may contain the original path
+        const folderKeys = Object.keys(folders).filter(item => item.includes(args.originDetails.fullPath));
+        const fileKeys = Object.keys(files).filter(item => item.includes(args.originDetails.fullPath));
+
+        // remove from origin parent folder subfolders
+        const opfIdx = folders[args.originDetails.parentPath].subfolders.indexOf(args.originDetails.fullPath);
+        folders[args.originDetails.parentPath].subfolders.splice(opfIdx, 1);
+
+        // remove cache of children folders
+        if (folderKeys.length > 0) {
+            for (const key of folderKeys) {
+                if (folders[key]) {
+                    delete folders[key];
+                }
+            }
+        }
+
+        // remove cache of children files
+        if (fileKeys.length > 0) {
+            for (const key of fileKeys) {
+                if (files[key]) {
+                    delete files[key];
+                }
+            }
+        }
+
+        if (args.originDetails.topFolder) {
+            ctx.dispatch(new DbfsLoadTopFolderSuccess(response, args));
+        } else {
+            ctx.dispatch(new DbfsLoadSubfolderSuccess(response, args.resourceAction))
+        }
     }
 
     /* Files */
