@@ -18,7 +18,7 @@
     <span widget-view-container></span>
 </div>
 
-<div *ngIf="dashboardMode!== 'snap'" class="main-content" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
+<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
         <ngx-gridster #gridster class="dashboard"
             [options]="gridsterOptions"
             (optionsChange)="breakpointChange($event)"
