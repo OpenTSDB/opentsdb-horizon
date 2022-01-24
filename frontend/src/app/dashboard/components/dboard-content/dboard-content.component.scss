@@ -55,11 +55,13 @@
         }
 
         .main-content {
-            //width: 100%;
+            width: 100%;
             flex: 1 0px;
             display: flex;
             flex-direction: column;
-            overflow: overlay;
+            overflow-y: auto;
+            overflow-x: overlay;
+            padding: 10px;
         }
 
         @-moz-document url-prefix() {
