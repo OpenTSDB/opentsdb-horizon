@@ -54,7 +54,7 @@
             width: 275px;
         }
 
-        .main-content {
+        .gridster-stage {
             width: 100%;
             flex: 1 0px;
             display: flex;
@@ -76,12 +76,14 @@
             width: 100%;
         }
 
+        /*
         .gridster-stage {
             .is-scroller {
                 //@include is-scroller();
                 padding: 10px;
             }
         }
+        */
 
         .edit-view-container {
             &.is-active {
