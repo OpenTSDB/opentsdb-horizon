@@ -68,7 +68,9 @@ export class DatatranformerService {
                 continue;
             }
 
-            timeSpecification = queryResults.timeSpecification;
+            if ( source !== 'summarizer' ) {
+                timeSpecification = queryResults.timeSpecification;
+            }
             const n = queryResults.data.length;
             const unit = vConfig.unit ? vConfig.unit : 'auto';
             const format = { unit: unit, precision: decimals, unitDisplay: true };
