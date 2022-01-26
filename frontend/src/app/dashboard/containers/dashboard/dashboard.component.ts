@@ -451,7 +451,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
                     this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
-                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.gridster-stage');
                     cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
                     containerPos = gridsterContainerEl.getBoundingClientRect();
                     if (cloneWidgetEndPos > containerPos.height) {
@@ -499,7 +499,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
                     this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
-                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.gridster-stage');
                     cloneWidgetEndPos = batchGridPosOffset * this.gridsterUnitSize.height;
                     containerPos = gridsterContainerEl.getBoundingClientRect();
                     if (cloneWidgetEndPos > containerPos.height) {
