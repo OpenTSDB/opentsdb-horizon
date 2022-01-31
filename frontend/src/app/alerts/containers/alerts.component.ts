@@ -167,6 +167,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     alerts: AlertModel[] = [];
     @Select(AlertsState.getAlertsStats) alertsStats$: Observable<any>;
     alertsStats:any = {};
+    defAlertStats:any = { bad: 0, warn: 0, good: 0, unknown: 0, missing: 0 };
     @Select(AlertsState.getSnoozes) snoozes$: Observable<any[]>;
     snoozes: AlertModel[] = [];
     alertListMeta: any = [];
@@ -448,7 +449,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.add(this.alerts$.pipe(skip(1)).subscribe(alerts => {
             this.stateLoaded.alerts = true;
             for (let i = 0; i < alerts.length; i++ ) {
-                alerts[i].recipientsKeys = this.getRecipientKeys(alerts[i]);
+                alerts[i] = {...alerts[i], ...this.defAlertStats, recipientsKeys:this.getRecipientKeys(alerts[i])};
             }
             this.alerts = JSON.parse(JSON.stringify(alerts));
             this.setAlertListMeta();
@@ -457,6 +458,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.subscription.add(this.alertsStats$.pipe(skip(1)).subscribe(stats => {
             this.alertsStats = JSON.parse(JSON.stringify(stats));
+            for (let i = 0; i < this.alerts.length; i++ ) {
+                this.setAlertCount(i);
+            }
             this.alertsDataSource.data = this.alerts;
         }));
 
@@ -807,6 +811,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             }
         }
         return filteredSnoozes;
+    }
+
+    setAlertCount(index) {
+        const id = this.alerts[index].id;
+        const counts = this.alertsStats[id] ? this.alertsStats[id] : {};
+        this.alerts[index] = { ...this.alerts[index], ...this.defAlertStats,  ...counts };
     }
 
     clearSystemMessage() {
