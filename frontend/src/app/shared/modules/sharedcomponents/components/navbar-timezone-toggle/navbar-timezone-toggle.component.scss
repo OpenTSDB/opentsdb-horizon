@@ -17,45 +17,40 @@
 
 // * TIMEZONE TOGGLE COMPONENT */
 
-@mixin navbar-timezone-toggle-component-base() {
+@import 'loader-component';
 
-    .navbar-timezone-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+.navbar-timezone-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-        .timezone-toggle-options.sliding-button-group {
-            .mat-tab-link {
-                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-                height: 24px;
-            }
-
-            .mat-ink-bar {
-                height: 20px;
-            }
+    .timezone-toggle-options.sliding-button-group {
+        .mat-tab-link {
+            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+            height: 24px;
         }
 
+        .mat-ink-bar {
+            height: 20px;
+        }
     }
 }
 
-@mixin navbar-timezone-toggle-component-theme($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
+    .navbar-timezone-toggle {
+        .timezone-toggle-options.sliding-button-group {
+            background-color: mat-color($background, navbar-button);
 
-    @include variables-compatibility($theme-config) {
-
-        .navbar-timezone-toggle {
-            .timezone-toggle-options.sliding-button-group {
-                background-color: mat-color($background, navbar-button);
-
-                .mat-tab-link {
-                    &,
-                    &.mat-tab-label-active {
-                        color: mat-color($foreground, navbar-text);
-                    }
+            .mat-tab-link {
+                &,
+                &.mat-tab-label-active {
+                    color: mat-color($foreground, navbar-text);
                 }
+            }
 
-                .mat-ink-bar {
-                    background-color: mat-color($foreground, navbar-text, .25);
-                }
+            .mat-ink-bar {
+                background-color: mat-color($foreground, navbar-text, .25);
             }
         }
     }

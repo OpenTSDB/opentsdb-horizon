@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Output, EventEmitter, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, HostBinding, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'graph-type',
-  templateUrl: './graph-type.component.html'
+  templateUrl: './graph-type.component.html',
+  styleUrls: ['./graph-type.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class GraphTypeComponent implements OnInit {
   @HostBinding('class.graph-type') private _hostClass = true;

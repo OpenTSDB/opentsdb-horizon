@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, HostBinding, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, ViewChild, HostListener, ViewEncapsulation } from '@angular/core';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
 
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'info-tooltip',
-  templateUrl: './info-tooltip.component.html'
+  templateUrl: './info-tooltip.component.html',
+  styleUrls: ['./info-tooltip.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class InfoTooltipComponent implements OnInit {
 

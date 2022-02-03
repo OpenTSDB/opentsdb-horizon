@@ -26,7 +26,8 @@ import {
     ViewChild,
     ElementRef,
     HostBinding,
-    HostListener
+    HostListener,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -38,9 +39,9 @@ import { HttpService } from '../../../../../core/http/http.service';
     // tslint:disable-next-line:component-selector
     selector: 'namespace-autocomplete',
     templateUrl: './namespace-autocomplete.component.html',
-    styleUrls: []
+    styleUrls: ['./namespace-autocomplete.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
-
 export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.namespace-autocomplete-component') private _hostClass = true;

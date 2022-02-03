@@ -26,7 +26,7 @@ import {
     ViewChild,
     OnChanges,
     OnDestroy,
-    SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef
+    SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation
 } from '@angular/core';
 import { MatAutocomplete, MatMenuTrigger } from '@angular/material';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -40,7 +40,8 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     // tslint:disable-next-line:component-selector
     selector: 'metric-autocomplete',
     templateUrl: './metric-autocomplete.component.html',
-    styleUrls: ['./metric-autocomplete.component.scss']
+    styleUrls: ['./metric-autocomplete.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterViewInit {
