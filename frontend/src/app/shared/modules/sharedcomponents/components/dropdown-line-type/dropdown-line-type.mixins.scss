@@ -1,0 +1,65 @@
+// UTILITY MIXINS
+@mixin dropdown-line-type-preview() {
+    .line-type-preview {
+        display: inline-flex;
+        align-items: center;
+        width: 21px;
+        max-width: 21px;
+        flex: 1;
+        margin-right: 8px;
+
+        span {
+            border-bottom-width: 2px;
+            display: inline-block;
+            flex: 1;
+            height: 1px;
+            max-height: 1px;
+        }
+
+        // modifiers
+        &.line-type-solid {
+            span {
+                border-bottom-style: solid;
+            }
+        }
+
+        &.line-type-dotted {
+            span {
+                border-bottom-style: dotted;
+            }
+        }
+
+        &.line-type-dashed {
+            span {
+                border-bottom-style: dashed;
+            }
+        }
+
+        &.line-type-dot-dashed {
+            span:first-child {
+                border-bottom-style: dotted;
+                margin-right: 2px;
+            }
+            span:last-child {
+                border-bottom-style: dashed;
+            }
+        }
+    }
+}
+
+@mixin dropdown-line-type-preview-theme($text, $color) {
+    // theme part
+    .line-type-preview {
+        span {
+            border-bottom-color: $text;
+        }
+    }
+
+    .mat-button-toggle.mat-button-toggle-checked {
+        .line-type-preview {
+            span {
+                border-bottom-color: $color;
+            }
+        }
+    }
+}

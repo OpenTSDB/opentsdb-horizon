@@ -24,16 +24,7 @@
 // ? for the common and individual styles of the config tabs
 // **
 
-$widgets-common-config: (
-    default-padding: 14px,
-    edit-padding: 10px,
-    tab-width: initial,
-    action-bar-height: 30px,
-    output-radius: 4px,
-    widget-output-height: 318px,
-    edit-toolbar-height: 50px,
-    edit-toolbar-border-width: 2px
-);
+
 
 @mixin widgets-common-base() {
     // class that goes on the widget components
