@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, ViewChild, ElementRef, HostBinding, Input, Output, EventEmitter,
-    OnChanges, SimpleChanges
+    OnChanges, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import * as deepEqual from 'fast-deep-equal';
@@ -25,7 +25,8 @@ import * as deepEqual from 'fast-deep-equal';
     // tslint:disable-next-line:component-selector
     selector: 'event-timeline',
     templateUrl: './event-timeline.component.html',
-    styleUrls: []
+    styleUrls: ['./event-timeline.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class EventTimelineComponent implements OnInit, OnChanges {

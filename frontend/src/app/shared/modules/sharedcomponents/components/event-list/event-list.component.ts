@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, SimpleChanges, OnChanges, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'event-list',
     templateUrl: './event-list.component.html',
-    styleUrls: []
+    styleUrls: ['./event-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EventListComponent implements OnInit, OnChanges {
     @HostBinding('class.event-list') private _componentClass = true;

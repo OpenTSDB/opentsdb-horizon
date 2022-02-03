@@ -24,7 +24,8 @@ import {
     EventEmitter,
     HostBinding,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { HttpService } from '../../../../../core/http/http.service';
 import { MatMenuTrigger, MatMenu } from '@angular/material';
@@ -36,7 +37,8 @@ import { FormControl } from '@angular/forms';
     // tslint:disable-next-line:component-selector
     selector: 'dropdown-metric-tags',
     templateUrl: './dropdown-metric-tags.component.html',
-    styleUrls: []
+    styleUrls: ['./dropdown-metric-tags.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DropdownMetricTagsComponent implements OnInit, OnChanges {
 

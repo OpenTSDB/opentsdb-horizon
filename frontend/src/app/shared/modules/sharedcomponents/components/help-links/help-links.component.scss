@@ -15,68 +15,68 @@
 // * limitations under the License.
 // *
 
-@mixin help-links-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
-    .help-links-button {
-        &.mat-raised-button {
-            @include mat-elevation(0);
-            line-height: 24px;
-            font-size: 12px;
-            padding-left: 6px;
-            padding-right: 0;
-            min-width: 25px;
-            margin-bottom: 8px;
+@import 'loader-component';
 
-            span {
-                // pointer-events: none;
-                cursor: default;
-                margin-right: 6px;
-            }
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-            .mat-icon {
-                cursor: pointer;
-                font-size: 1.5em;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
+.help-links-button {
+    &.mat-raised-button {
+        @include mat-elevation(0);
+        line-height: 24px;
+        font-size: 12px;
+        padding-left: 6px;
+        padding-right: 0;
+        min-width: 25px;
+        margin-bottom: 8px;
 
-            }
+        span {
+            // pointer-events: none;
+            cursor: default;
+            margin-right: 6px;
+        }
+
+        .mat-icon {
+            cursor: pointer;
+            font-size: 1.5em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
         }
     }
-
-    .links-menu.mat-menu-panel {
-        .mat-menu-item {
-            font-size: 12px;
-            height: 26px;
-            line-height: 26px;
-
-            .mat-icon {
-                @include sizeDenaliIcon(16px);
-                margin-right: 2px;
-            }
-        }
-    }
-
 }
 
-@mixin help-links-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        $theme-name: map-get($theme-config, theme-name);
-        $cssVarMap: get-theme-css-variables($theme-name);
+// CDK items
+.links-menu.mat-menu-panel {
+    .mat-menu-item {
+        font-size: 12px;
+        height: 26px;
+        line-height: 26px;
 
-        // TODO: navbar color needs more variations is seems
-        $navbar-bg: _mat-convert-variable-to-color(map-get($background, navbar), $cssVarMap);
+        .mat-icon {
+            @include sizeDenaliIcon(16px);
+            margin-right: 2px;
+        }
+    }
+}
 
-        .mat-raised-button {
-            background-color: darken($navbar-bg, 4%);
-            color: mat-color($foreground, navbar-text);
+// * THEME VARIANTS
+@include init-component-variants() {
 
-            &:hover {
-                background-color: lighten($navbar-bg, 8%);
-            }
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    // TODO: navbar color needs more variations is seems
+    $navbar-bg: _mat-convert-variable-to-color(map-get($background, navbar), $cssVarMap);
+
+    .mat-raised-button {
+        background-color: darken($navbar-bg, 4%);
+        color: mat-color($foreground, navbar-text);
+
+        &:hover {
+            background-color: lighten($navbar-bg, 8%);
         }
     }
 }

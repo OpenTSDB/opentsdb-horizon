@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, ElementRef, ViewChild, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material';
 
@@ -22,7 +22,8 @@ import { MatMenuTrigger } from '@angular/material';
   // tslint:disable-next-line:component-selector
   selector: 'time-selector',
   templateUrl: './time-selector.component.html',
-  styleUrls: []
+  styleUrls: ['./time-selector.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class TimeSelectorComponent implements OnInit {

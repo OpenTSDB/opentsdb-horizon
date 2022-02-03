@@ -18,7 +18,8 @@ import {
     Component,
     OnInit,
     HostBinding,
-    OnDestroy
+    OnDestroy,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -30,7 +31,9 @@ import { FormControl } from '@angular/forms';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'simple-recents-list',
-    templateUrl: './simple-recents-list.component.html'
+    templateUrl: './simple-recents-list.component.html',
+    styleUrls: ['./simple-recents-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SimpleRecentsListComponent implements OnInit, OnDestroy {
 

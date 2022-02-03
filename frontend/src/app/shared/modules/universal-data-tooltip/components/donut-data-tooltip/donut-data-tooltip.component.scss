@@ -15,55 +15,23 @@
 // * limitations under the License.
 // *
 
-@mixin donut-data-tooltip-component-base() {
+@import 'loader-component';
+
+//.donut-data-tooltip {
+//    .tooltip-output {}
+//}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
     .donut-data-tooltip {
         .tooltip-output {
-            /*.value-marker {
-                display: flex;
-
-                span {
-                    display: inline-block;
-                    padding: 4px 8px;
-                    font-size: 14px;
-
-                    &.value {
-                        font-weight: bold;
-                    }
-
-                    &.time {
-                        flex: 1;
-                    }
-                }
-            }
+            .value-marker,
             .other-data {
-                padding: 4px 8px;
-                margin-top: 2px;
-                font-size: 10px;
-
-                p {
-                    display: inline-block;
-
-                    &:not(:last-child) {
-                        margin-right: 12px;
-                    }
-                }
-            }*/
-        }
-    }
-}
-
-@mixin donut-data-tooltip-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        $primary-accent-contrast: map-get($primary, A100-contrast);
-        $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-        .donut-data-tooltip {
-            .tooltip-output {
-                .value-marker,
-                .other-data {
-                    color: $vm-text;
-                }
+                color: $vm-text;
             }
         }
     }

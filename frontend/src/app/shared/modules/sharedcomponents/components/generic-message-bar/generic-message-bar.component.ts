@@ -21,7 +21,8 @@ import {
     Input,
     Output,
     EventEmitter,
-    HostBinding
+    HostBinding,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -31,7 +32,8 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
     // tslint:disable-next-line:component-selector
     selector: 'generic-message-bar',
     templateUrl: './generic-message-bar.component.html',
-    styleUrls: []
+    styleUrls: ['./generic-message-bar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class GenericMessageBarComponent implements OnInit, OnDestroy {
 

@@ -15,60 +15,59 @@
 // * limitations under the License.
 // *
 
-@mixin dropdown-visual-type-component-base() {
-    .dropdown-visual-type {
-        display: inline-block;
+@import 'loader-component';
 
-        .mat-button-toggle-group.mat-button-toggle-group-horizontal.mat-button-toggle-group-appearance-standard {
-            line-height: 16px;
+.dropdown-visual-type {
+    display: inline-block;
 
-            .mat-button-toggle-label-content {
-                line-height: 24px;
+    .mat-button-toggle-group.mat-button-toggle-group-horizontal.mat-button-toggle-group-appearance-standard {
+        line-height: 16px;
+
+        .mat-button-toggle-label-content {
+            line-height: 24px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(16px);
+                margin-right: 4px;
+            }
+        }
+    }
+
+    .mat-form-field {
+        .mat-form-field-infix {
+            width: initial;
+            display: flex;
+        }
+    }
+
+    .mat-select {
+        display: flex;
+
+        .mat-select-trigger {
+            .mat-select-value-text {
+                display: flex;
+                flex: 1;
+
+                .trigger-value-display {
+                    display: flex;
+                }
 
                 .mat-icon {
-                    @include sizeDenaliIcon(16px);
-                    margin-right: 4px;
+                    width: 14px;
+                    height: 14px;
+                    font-size: 14px;
+                    margin-right: 8px;
                 }
             }
-        }
 
-        .mat-form-field {
-            .mat-form-field-infix {
-                width: initial;
-                display: flex;
-            }
-        }
-
-        .mat-select {
-            display: flex;
-
-            .mat-select-trigger {
-                .mat-select-value-text {
-                    display: flex;
-                    flex: 1;
-
-                    .trigger-value-display {
-                        display: flex;
-                    }
-
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 14px;
-                        margin-right: 8px;
-                    }
-                }
-
-                .mat-select-arrow-wrapper {
-                    margin-left: 8px;
-                }
+            .mat-select-arrow-wrapper {
+                margin-left: 8px;
             }
         }
     }
 }
 
-@mixin dropdown-visual-type-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        //.dropdown-visual-type {}
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//  .dropdown-visual-type {}
+//}

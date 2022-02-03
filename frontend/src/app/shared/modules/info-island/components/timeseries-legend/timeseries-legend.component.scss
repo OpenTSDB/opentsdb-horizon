@@ -15,287 +15,286 @@
 // * limitations under the License.
 // *
 
-@mixin timeseries-legend-component-base() {
-    .timeseries-legend-component {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        min-height: 100%;
+@import 'loader-component';
 
-        .ts-data-wrapper {
-            flex: 1;
+.timeseries-legend-component {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100%;
+
+    .ts-data-wrapper {
+        flex: 1;
+    }
+
+    .ts-legend-toolbar {
+        font-size: 12px;
+
+        &.mat-toolbar-multiple-rows {
+            min-height: initial;
         }
 
-        .ts-legend-toolbar {
+        .mat-toolbar-row {
+            padding: 0 6px;
+        }
+
+        .mat-toolbar-row.detail-brief {
+            font-weight: normal;
+            height: 24px;
+            font-size: 10px;
+        }
+    }
+
+    .ts-legend-table {
+        min-width: 100%;
+
+        .mat-header-row .mat-header-cell {
             font-size: 12px;
+            font-weight: 600;
+        }
 
-            &.mat-toolbar-multiple-rows {
-                min-height: initial;
+        .mat-row .mat-cell {
+            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            font-size: 12px;
+        }
+
+        .mat-header-row,
+        .mat-row {
+            height: auto;
+
+            .mat-header-cell,
+            .mat-cell {
+                &:first-child {
+                    flex: initial;
+                    max-width: 35px;
+                    width: 35px;
+                }
             }
 
-            .mat-toolbar-row {
-                padding: 0 6px;
+        }
+
+        .mat-header-row .mat-header-cell,
+        .mat-row .mat-cell {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-left: 4px;
+            padding-right: 4px;
+            white-space: nowrap;
+
+            &:first-of-type {
+                padding-left: 8px;
             }
+
+            &:last-of-type {
+                padding-right: 8px;
+            }
+
+            // value column is right aligned
+            &.mat-column-value {
+                text-align: right;
+            }
+        }
+
+        .mat-header-cell.mat-column-value .mat-sort-header-container {
+            justify-content: flex-end;
+        }
+
+        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+            opacity: 1 !important;
+        }
+
+        .mat-cell.tag-highlight {
+            cursor: pointer;
+        }
+
+        .mat-header-cell.mat-column-checkbox,
+        .mat-cell.mat-column-checkbox {
+            .mat-icon-button {
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+            }
+
+            .mat-icon {
+                @include sizeDenaliIcon(18px);
+            }
+        }
+    }
+
+    .color-chip {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: currentColor;
+        display: inline-block;
+        margin-right: 4px;
+    }
+}
+
+// island toolbar
+.info-island-toolbar.timeseries-legend-toolbar {
+    .toolbar-item {
+        &:not(:last-child) {
+            margin-right: 6px;
+        }
+
+        &.show-limit-types {
+            > span {
+                margin-right: 6px;
+            }
+
+            .mat-flat-button {
+                padding: 0 0 0 8px;
+                line-height: 18px;
+                font-size: 12px;
+
+                .mat-button-wrapper {
+                    display: flex;
+                    text-align: left;
+
+                    > span {
+                        flex: 1;
+                    }
+                }
+            }
+        }
+
+        &.show-amount-controls {
+            input {
+                font-size: 12px;
+                max-width: 50px;
+            }
+        }
+
+        &.logscale-controls {
+            > span {
+                margin-right: 6px;
+            }
+
+            .mat-checkbox {
+                margin-right: 8px;
+            }
+        }
+
+        .csv-data-menu-button {
+            width: 24px;
+            height: 24px;
+            line-height: 1;
+            font-size: 8px;
+
+            .mat-button-wrapper {
+                line-height: 8px;
+            }
+        }
+    }
+
+    .mat-select-arrow-wrapper {
+        width: 24px;
+        display: flex;
+        align-items: center;
+
+        .mat-select-arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid;
+            margin: 0 4px;
+        }
+    }
+}
+
+// cdk items
+.show-limit-type-cdk-menu.mat-menu-panel,
+.show-legend-csv-cdk-menu.mat-menu-panel {
+    .mat-menu-item {
+        height: 24px;
+        line-height: 24px;
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
+    }
+
+    .mat-divider {
+        margin: 8px 0;
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $divider: mat-color($foreground, divider);
+
+    $menu-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
+    $menu-bg-lighter: if($is-dark, mat-color($background, menu, .85), mat-color($background, menu));
+
+    $cdk-window-bg: $menu-bg;
+    $cdk-window-border: $divider;
+
+    $header-bg: if($is-dark, mat-color($background, menu), mat-color($background, navbar));
+    $text: mat-color($foreground, navbar-text);
+
+    $brief-dark: #3a87ad; // TODO: plug into theme
+    $brief-light: #ddeff9; // TODO: plug into theme
+
+    .timeseries-legend-component {
+        .ts-legend-toolbar {
+            color: white;
+            background-color: black;
 
             .mat-toolbar-row.detail-brief {
-                font-weight: normal;
-                height: 24px;
-                font-size: 10px;
+                color: if($is-dark, $brief-light, $brief-dark);
+                background-color: if($is-dark, $brief-dark, $brief-light);
             }
         }
 
         .ts-legend-table {
-            min-width: 100%;
+            background: $cdk-window-bg;
 
-            .mat-header-row .mat-header-cell {
-                font-size: 12px;
-                font-weight: 600;
-            }
+            .mat-sort-header-container.mat-sort-header-sorted {
+                color: #c09853; // TODO: plug into theme
 
-            .mat-row .mat-cell {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
-                font-size: 12px;
-            }
-
-            .mat-header-row,
-            .mat-row {
-                height: auto;
-
-                .mat-header-cell,
-                .mat-cell {
-                    &:first-child {
-                        flex: initial;
-                        max-width: 35px;
-                        width: 35px;
-                    }
-                }
-
-            }
-
-            .mat-header-row .mat-header-cell,
-            .mat-row .mat-cell {
-                padding-top: 4px;
-                padding-bottom: 4px;
-                padding-left: 4px;
-                padding-right: 4px;
-                white-space: nowrap;
-
-                &:first-of-type {
-                    padding-left: 8px;
-                }
-
-                &:last-of-type {
-                    padding-right: 8px;
-                }
-
-                // value column is right aligned
-                &.mat-column-value {
-                    text-align: right;
+                .mat-sort-header-arrow {
+                    color: darken(#c09853, 15%); // TODO: plug into theme
                 }
             }
 
-            .mat-header-cell.mat-column-value .mat-sort-header-container {
-                justify-content: flex-end;
+            .mat-row:hover,
+            .mat-row.tag-highlight {
+                background-color: mat-color($primary, default, .04);
             }
-
-            .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
-                opacity: 1 !important;
-            }
-
+            .mat-cell:hover,
             .mat-cell.tag-highlight {
-                cursor: pointer;
+                background-color: mat-color($primary, default, .15);
             }
-
-            .mat-header-cell.mat-column-checkbox,
-            .mat-cell.mat-column-checkbox {
-                .mat-icon-button {
-                    width: 24px;
-                    height: 24px;
-                    line-height: 24px;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(18px);
-                }
-            }
-        }
-
-        .color-chip {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: currentColor;
-            display: inline-block;
-            margin-right: 4px;
         }
     }
 
     // island toolbar
     .info-island-toolbar.timeseries-legend-toolbar {
-        .toolbar-item {
-            &:not(:last-child) {
-                margin-right: 6px;
-            }
 
-            &.show-limit-types {
-                > span {
-                    margin-right: 6px;
-                }
-
-                .mat-flat-button {
-                    padding: 0 0 0 8px;
-                    line-height: 18px;
-                    font-size: 12px;
-
-                    .mat-button-wrapper {
-                        display: flex;
-                        text-align: left;
-
-                        > span {
-                            flex: 1;
-                        }
-                    }
-                }
-            }
-
-            &.show-amount-controls {
-                input {
-                    font-size: 12px;
-                    max-width: 50px;
-                }
-            }
-
-            &.logscale-controls {
-                > span {
-                    margin-right: 6px;
-                }
-
-                .mat-checkbox {
-                    margin-right: 8px;
-                }
-            }
-
-            .csv-data-menu-button {
-                width: 24px;
-                height: 24px;
-                line-height: 1;
-                font-size: 8px;
-
-                .mat-button-wrapper {
-                    line-height: 8px;
-                }
+        @if $is-dark {
+            .mat-select-arrow-wrapper .mat-select-arrow {
+                color: $white;
             }
         }
 
-        .mat-select-arrow-wrapper {
-            width: 24px;
-            display: flex;
-            align-items: center;
-
-            .mat-select-arrow {
-                width: 0;
-                height: 0;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 5px solid;
-                margin: 0 4px;
+        .mat-checkbox:not(.mat-checkbox-checked) {
+            .mat-checkbox-background {
+                background-color: $white;
             }
+        }
+    }
+
+    @if $is-dark {
+        .mat-menu-panel.show-limit-type-cdk-menu {
+            background: $menu-bg-lighter;
         }
     }
 
     // cdk items
-    .show-limit-type-cdk-menu.mat-menu-panel,
-    .show-legend-csv-cdk-menu.mat-menu-panel {
-        .mat-menu-item {
-            height: 24px;
-            line-height: 24px;
-
-            .mat-icon {
-                @include sizeDenaliIcon(14px);
-            }
-        }
-
-        .mat-divider {
-            margin: 8px 0;
-        }
-    }
-}
-
-@mixin timeseries-legend-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        $divider: mat-color($foreground, divider);
-
-        $menu-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
-        $menu-bg-lighter: if($is-dark, mat-color($background, menu, .85), mat-color($background, menu));
-
-        $cdk-window-bg: $menu-bg;
-        $cdk-window-border: $divider;
-
-        $header-bg: if($is-dark, mat-color($background, menu), mat-color($background, navbar));
-        $text: mat-color($foreground, navbar-text);
-
-        $brief-dark: #3a87ad; // TODO: plug into theme
-        $brief-light: #ddeff9; // TODO: plug into theme
-
-        .timeseries-legend-component {
-            .ts-legend-toolbar {
-                color: white;
-                background-color: black;
-
-                .mat-toolbar-row.detail-brief {
-                    color: if($is-dark, $brief-light, $brief-dark);
-                    background-color: if($is-dark, $brief-dark, $brief-light);
-                }
-            }
-
-            .ts-legend-table {
-                background: $cdk-window-bg;
-
-                .mat-sort-header-container.mat-sort-header-sorted {
-                    color: #c09853; // TODO: plug into theme
-
-                    .mat-sort-header-arrow {
-                        color: darken(#c09853, 15%); // TODO: plug into theme
-                    }
-                }
-
-                .mat-row:hover,
-                .mat-row.tag-highlight {
-                    background-color: mat-color($primary, default, .04);
-                }
-                .mat-cell:hover,
-                .mat-cell.tag-highlight {
-                    background-color: mat-color($primary, default, .15);
-                }
-            }
-        }
-
-        // island toolbar
-        .info-island-toolbar.timeseries-legend-toolbar {
-
-            @if $is-dark {
-                .mat-select-arrow-wrapper .mat-select-arrow {
-                    color: $white;
-                }
-            }
-
-            .mat-checkbox:not(.mat-checkbox-checked) {
-                .mat-checkbox-background {
-                    background-color: $white;
-                }
-            }
-        }
-
-        @if $is-dark {
-            .mat-menu-panel.show-limit-type-cdk-menu {
-                background: $menu-bg-lighter;
-            }
-        }
-
-        // cdk items
-        .namespace-selector-menu.mat-menu-panel {
-            border: 1px solid mat-color($foreground, divider);
-        }
+    .namespace-selector-menu.mat-menu-panel {
+        border: 1px solid mat-color($foreground, divider);
     }
 }

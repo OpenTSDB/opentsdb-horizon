@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostBinding, ViewEncapsulation } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
 
 // NOTE: This component needs more work. Just don't have time at the moment.
@@ -24,7 +24,8 @@ import { MatMenuTrigger } from '@angular/material';
     // tslint:disable-next-line:component-selector
     selector: 'dropdown-unit-type',
     templateUrl: './dropdown-unit-type.component.html',
-    styleUrls: ['./dropdown-unit-type.component.scss']
+    styleUrls: ['./dropdown-unit-type.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DropdownUnitTypeComponent implements OnInit {
 

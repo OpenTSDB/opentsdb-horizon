@@ -14,43 +14,39 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
+@import 'loader-component';
 
-@mixin heatmap-data-tooltip-component-base() {
-    .heatmap-data-tooltip {
-        .color-chip {
-            &::after {
-                border: 1px solid rgba($black, .04);
-            }
+.heatmap-data-tooltip {
+    .color-chip {
+        &::after {
+            border: 1px solid rgba($black, .04);
+        }
 
-            &::before {
-                content: '';
-                display: inline-block;
-                width: 12px;
-                height: 12px;
-                border-radius: 6px;
-                background-color: currentColor;
-                position: absolute;
-                left: 0;
-                top: 0;
-                z-index: 1;
-            }
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            background-color: currentColor;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
         }
     }
 }
 
-@mixin heatmap-data-tooltip-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
+    $primary-accent-contrast: mat-color($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
 
-        $primary-accent-contrast: mat-color($primary, A100-contrast);
-        $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-        .heatmap-data-tooltip {
-            .tooltip-output {
-                .value-marker,
-                .other-data {
-                    //background: rgba($vm-background, .65);
-                    color: $vm-text;
-                }
+    .heatmap-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                color: $vm-text;
             }
         }
     }

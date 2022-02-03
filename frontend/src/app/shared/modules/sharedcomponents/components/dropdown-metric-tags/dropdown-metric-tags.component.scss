@@ -15,108 +15,97 @@
 // * limitations under the License.
 // *
 
-@mixin dropdown-metric-tags-component-base() {
-    .dropdown-metric-tags {
-        width: 100%;
+@import 'loader-component';
 
-        .mat-button {
-            position: relative;
-            padding: 0;
+.dropdown-metric-tags {
+    width: 100%;
+
+    .mat-button {
+        position: relative;
+        padding: 0;
+        display: inline-flex;
+        line-height: 32px;
+
+        .mat-button-wrapper {
             display: inline-flex;
-            line-height: 32px;
+            flex: 1;
+        }
 
-            .mat-button-wrapper {
-                display: inline-flex;
-                flex: 1;
-            }
+        .button-label {
+            position: relative;
+            z-index: 1;
+            padding: 0 6px;
+            display: inline-flex;
+            align-items: center;
+        }
 
-            .button-label {
-                position: relative;
-                z-index: 1;
-                padding: 0 6px;
-                display: inline-flex;
-                align-items: center;
-            }
-
-            .menu-trigger {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 0;
-            }
+        .menu-trigger {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
         }
     }
+}
 
-    // cdk items
-    .tag-options-cdk-menu.mat-menu-panel {
-        min-width: initial;
-        max-height: 300px;
+// cdk items
+.tag-options-cdk-menu.mat-menu-panel {
+    min-width: initial;
+    max-height: 300px;
 
-        .mat-menu-content {
-            padding: 0;
+    .mat-menu-content {
+        padding: 0;
 
-            .filter-input {
+        .filter-input {
+            width: 100%;
+            padding: 4px;
+
+            .mat-form-field {
                 width: 100%;
-                padding: 4px;
 
-                .mat-form-field {
-                    width: 100%;
+                .mat-icon-button {
+                    width: 2em;
+                    height: 2em;
+                    opacity: .6;
+                    transform: translateY(2px);
 
-                    .mat-icon-button {
-                        width: 2em;
-                        height: 2em;
-                        opacity: .6;
-                        transform: translateY(2px);
-
-                        &:hover {
-                            opacity: .8;
-                        }
-                    }
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(16px);
+                    &:hover {
+                        opacity: .8;
                     }
                 }
-            }
 
-            .mat-selection-list {
-                padding-top: 0;
-            }
-
-            .mat-list-option {
-                height: 32px;
-                line-height: 32px;
-                font-size: 14px;
-
-                /*.mat-list-item-content-reverse {
-                    flex-direction: row;
-
-                    .mat-pseudo-checkbox {
-                        margin-right: 8px;
-                    }
-                }*/
-
-                .mat-pseudo-checkbox-checked::after {
-                    top: calc(50% - 3.6px);
-                    left: calc(50% - 5px);
-                    width: 10px;
-                    height: 5px;
+                .mat-icon {
+                    @include sizeDenaliIcon(16px);
                 }
+            }
+        }
+
+        .mat-selection-list {
+            padding-top: 0;
+        }
+
+        .mat-list-option {
+            height: 32px;
+            line-height: 32px;
+            font-size: 14px;
+
+            .mat-pseudo-checkbox-checked::after {
+                top: calc(50% - 3.6px);
+                left: calc(50% - 5px);
+                width: 10px;
+                height: 5px;
             }
         }
     }
 }
 
-@mixin dropdown-metric-tags-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        .dropdown-metric-tags {
-
-            .mat-button {
-                color: map-get($foreground, link);
-            }
+// * THEME VARIANTS
+@include init-component-variants() {
+    .dropdown-metric-tags {
+        .mat-button {
+            color: map-get($foreground, link);
         }
     }
 }

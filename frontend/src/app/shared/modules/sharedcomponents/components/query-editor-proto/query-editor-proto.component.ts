@@ -28,7 +28,8 @@ import {
     QueryList,
     OnDestroy,
     OnChanges,
-    SimpleChanges
+    SimpleChanges,
+    ViewEncapsulation
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -67,7 +68,8 @@ interface IQueryEditorOptions {
     // tslint:disable-next-line:component-selector
     selector: 'query-editor-proto',
     templateUrl: './query-editor-proto.component.html',
-    styleUrls: [],
+    styleUrls: ['./query-editor-proto.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger( 'addQueryItem', [
             state('collapsed', style({ height: '0px', minHeight: '0px', visibility: 'hidden'})),

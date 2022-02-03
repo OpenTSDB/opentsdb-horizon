@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'dropdown-visual-type',
   templateUrl: './dropdown-visual-type.component.html',
-  styleUrls: []
+  styleUrls: ['./dropdown-visual-type.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DropdownVisualTypeComponent {
     @HostBinding('class.dropdown-visual-type') private _hostClass = true;
