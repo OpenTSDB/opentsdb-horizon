@@ -16,7 +16,7 @@
  */
 // tslint:disable:max-line-length
 import { Component, OnInit, Input, HostBinding, OnChanges, SimpleChanges, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy,
-          Output, EventEmitter  } from '@angular/core';
+          Output, EventEmitter, ViewEncapsulation  } from '@angular/core';
 import * as deepEqual from 'fast-deep-equal';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
@@ -27,7 +27,8 @@ import { ComponentPortal } from '@angular/cdk/portal';
   // tslint:disable-next-line:component-selector
   selector: 'alert-details-metric-period-over-period-preview',
   templateUrl: './alert-details-metric-period-over-period-preview.component.html',
-  styleUrls: []
+  styleUrls: ['./alert-details-metric-period-over-period-preview.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AlertDetailsMetricPeriodOverPeriodPreviewComponent implements OnInit, OnChanges, OnDestroy {
   @HostBinding('class.period-over-period-preview') private _hostClass = true;

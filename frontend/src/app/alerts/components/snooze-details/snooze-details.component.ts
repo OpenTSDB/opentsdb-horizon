@@ -49,7 +49,7 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
     // tslint:disable-next-line:component-selector
     selector: 'snooze-details',
     templateUrl: './snooze-details.component.html',
-    styleUrls: [],
+    styleUrls: ['./snooze-details.component.scss'],
     providers: [
         { provide: DateAdapter, useClass:  MomentDateAdapter},
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

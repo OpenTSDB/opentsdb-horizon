@@ -20,7 +20,8 @@ import {
     OnDestroy,
     Inject,
     HostBinding,
-    ViewChild
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { FormControl, Validators } from '@angular/forms';
@@ -33,7 +34,8 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'name-alert-dialog',
     templateUrl: './name-alert-dialog.component.html',
-    styleUrls: []
+    styleUrls: ['./name-alert-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NameAlertDialogComponent implements OnInit {
 

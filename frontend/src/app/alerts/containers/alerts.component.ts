@@ -24,7 +24,8 @@ import {
     TemplateRef,
     Input,
     ChangeDetectorRef,
-    AfterViewChecked
+    AfterViewChecked,
+    ViewEncapsulation
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -93,7 +94,8 @@ const moment = _moment;
 @Component({
     selector: 'app-alerts',
     templateUrl: './alerts.component.html',
-    styleUrls: ['./alerts.component.scss']
+    styleUrls: ['./alerts.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 

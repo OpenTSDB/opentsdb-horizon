@@ -15,42 +15,34 @@
 // * limitations under the License.
 // *
 
-@mixin name-alert-dialog-component-base() {
+@import 'loader-component';
 
-    .name-alert-dialog-component {
+.name-alert-dialog-component {
+    .mat-dialog-content {
+        overflow: initial;
+        margin-bottom: 24px;
 
-
-        .mat-dialog-content {
-            overflow: initial;
-            margin-bottom: 24px;
-
-            .mat-form-field {
-                width: 100%;
-            }
-        }
-
-        .mat-dialog-actions {
-            margin-bottom: initial;
-            margin-top: 8px;
-
-            .mat-button,
-            .mat-flat-button,
-            .mat-stroked-button {
-                &:not(:last-child) {
-                    margin-right: 8px;
-                }
-            }
+        .mat-form-field {
+            width: 100%;
         }
     }
 
-    // cdk items
-    .name-alert-dialog-panel {
+    .mat-dialog-actions {
+        margin-bottom: initial;
+        margin-top: 8px;
 
+        .mat-button,
+        .mat-flat-button,
+        .mat-stroked-button {
+            &:not(:last-child) {
+                margin-right: 8px;
+            }
+        }
     }
 }
 
-@mixin name-alert-dialog-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        //.name-alert-dialog-component {}
-    }
-}
+
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    :host.name-alert-dialog-component {}
+//}

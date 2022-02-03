@@ -26,7 +26,8 @@ import {
     Output,
     Input,
     ChangeDetectorRef,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
@@ -69,7 +70,8 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
 // tslint:disable-next-line: component-selector
     selector: 'alert-details',
     templateUrl: './alert-details.component.html',
-    styleUrls: ['./alert-details.component.scss']
+    styleUrls: ['./alert-details.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
