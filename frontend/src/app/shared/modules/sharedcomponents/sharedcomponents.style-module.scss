@@ -35,18 +35,18 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // components
-@import 'components/generic-message-bar/generic-message-bar.component';
+//@import 'components/generic-message-bar/generic-message-bar.component';
 @import 'components/theme-picker/theme-picker.component';
 @import 'components/inline-editable/inline-editable.component';
 @import 'components/navbar-timezone-toggle/navbar-timezone-toggle.component';
-@import 'components/dropdown-line-type/dropdown-line-type.component';
-@import 'components/dropdown-line-weight/dropdown-line-weight.component';
-@import 'components/dropdown-unit-type/dropdown-unit-type.component';
-@import 'components/dropdown-visual-type/dropdown-visual-type.component';
-@import 'components/dropdown-join-type/dropdown-join-type.component';
+//@import 'components/dropdown-line-type/dropdown-line-type.component';
+//@import 'components/dropdown-line-weight/dropdown-line-weight.component';
+//@import 'components/dropdown-unit-type/dropdown-unit-type.component';
+//@import 'components/dropdown-visual-type/dropdown-visual-type.component';
+//@import 'components/dropdown-join-type/dropdown-join-type.component';
 //@import 'components/conditional-formatter/conditional-formatter.component.scss';
 @import 'components/metric-autocomplete/metric-autocomplete.component.scss';
-@import 'components/dropdown-metric-tags/dropdown-metric-tags.component.scss';
+//@import 'components/dropdown-metric-tags/dropdown-metric-tags.component.scss';
 @import 'components/inline-filter-editor/inline-filter-editor.component.scss';
 @import 'components/widget-config-sorting/widget-config-sorting.component.scss';
 @import 'components/query-editor-proto/query-editor-proto.component';
@@ -54,8 +54,8 @@
 @import 'components/metric-function/metric-function.component';
 @import 'components/tag-aggregator/tag-aggregator.component';
 @import 'components/namespace-autocomplete/namespace-autocomplete.component';
-@import 'components/event-timeline/event-timeline.component';
-@import 'components/event-list/event-list.component';
+//@import 'components/event-timeline/event-timeline.component';
+//@import 'components/event-list/event-list.component';
 @import 'components/time-selector/time-selector.component';
 @import 'components/graph-type/graph-type.component';
 //@import 'components/aura-dialog/aura-dialog.component';
@@ -88,17 +88,17 @@
 @mixin sharedcomponents-module-core() {
     // include your core mixins
     // example: @include componentName-component-core();
-    @include generic-message-bar-component-base();
+    //@include generic-message-bar-component-base();
     @include theme-picker-component-base();
     @include inline-editable-component-base();
     @include navbar-timezone-toggle-component-base();
-    @include dropdown-line-type-component-base();
-    @include dropdown-line-weight-component-base();
-    @include dropdown-unit-type-component-base();
-    @include dropdown-visual-type-component-base();
-    @include dropdown-join-type-component-base();
+    //@include dropdown-line-type-component-base();
+    //@include dropdown-line-weight-component-base();
+    //@include dropdown-unit-type-component-base();
+    //@include dropdown-visual-type-component-base();
+    //@include dropdown-join-type-component-base();
     @include metric-autocomplete-component-base();
-    @include dropdown-metric-tags-component-base();
+    //@include dropdown-metric-tags-component-base();
     @include inline-filter-editor-component-base();
     //@include conditional-formatter-component-base();
     @include query-editor-proto-component-base();
@@ -106,8 +106,8 @@
     @include metric-function-component-base();
     @include tag-aggregator-component-base();
     @include namespace-autocomplete-component-base();
-    @include event-timeline-component-base();
-    @include event-list-component-base();
+    //@include event-timeline-component-base();
+    //@include event-list-component-base();
     @include time-selector-component-base();
     @include graph-type-component-base();
     //@include aura-dialog-component-base();
@@ -139,17 +139,17 @@
 @mixin sharedcomponents-module-theme($theme-config) {
     // include your theme mixins, passing along the $theme-config
     // example: @include componentName-component-theme($theme-config);
-    @include generic-message-bar-component-theme($theme-config);
+    //@include generic-message-bar-component-theme($theme-config);
     @include theme-picker-component-theme($theme-config);
     @include inline-editable-component-theme($theme-config);
     @include navbar-timezone-toggle-component-theme($theme-config);
-    @include dropdown-line-type-component-theme($theme-config);
-    @include dropdown-line-weight-component-theme($theme-config);
-    @include dropdown-unit-type-component-theme($theme-config);
-    @include dropdown-visual-type-component-theme($theme-config);
-    @include dropdown-join-type-component-theme($theme-config);
+    //@include dropdown-line-type-component-theme($theme-config);
+    //@include dropdown-line-weight-component-theme($theme-config);
+    //@include dropdown-unit-type-component-theme($theme-config);
+    //@include dropdown-visual-type-component-theme($theme-config);
+    //@include dropdown-join-type-component-theme($theme-config);
     @include metric-autocomplete-component-theme($theme-config);
-    @include dropdown-metric-tags-component-theme($theme-config);
+    //@include dropdown-metric-tags-component-theme($theme-config);
     @include inline-filter-editor-component-theme($theme-config);
     //@include conditional-formatter-component-theme($theme-config);
     @include query-editor-proto-component-theme($theme-config);
@@ -157,8 +157,8 @@
     @include metric-function-component-theme($theme-config);
     @include tag-aggregator-component-theme($theme-config);
     @include namespace-autocomplete-component-theme($theme-config);
-    @include event-timeline-component-theme($theme-config);
-    @include event-list-component-theme($theme-config);
+    //@include event-timeline-component-theme($theme-config);
+    //@include event-list-component-theme($theme-config);
     @include time-selector-component-theme($theme-config);
     @include graph-type-component-theme($theme-config);
     //@include aura-dialog-component-theme($theme-config);

@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 
 @Component({
   selector: 'app-error-dialog',
   templateUrl: './error-dialog.component.html',
-  styleUrls: []
+  styleUrls: ['./error-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ErrorDialogComponent implements OnInit {
 

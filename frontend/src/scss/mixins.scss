@@ -970,6 +970,23 @@
     }
 }
 
+@mixin vertical-button-toggle-override($text, $color) {
+
+    .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        .mat-button-toggle {
+            color: $text;
+            border: 0;
+            background: transparent;
+        }
+
+        .mat-button-toggle.mat-button-toggle-checked {
+           color: $color;
+           border: 0;
+           background-color: rgba($color, .1);
+        }
+    }
+}
+
 // * for debugging sass maps
 @mixin debug-map($map) {
     @at-root {
