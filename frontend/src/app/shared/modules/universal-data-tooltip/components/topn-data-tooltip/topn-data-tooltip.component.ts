@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -22,7 +22,9 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
 
 @Component({
     selector: 'topn-data-tooltip',
-    templateUrl: './topn-data-tooltip.component.html'
+    templateUrl: './topn-data-tooltip.component.html',
+    styleUrls: ['./topn-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class TopnDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 

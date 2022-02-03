@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'conditional-formatter',
   templateUrl: './conditional-formatter.component.html',
-  styleUrls: ['./conditional-formatter.component.scss']
+  styleUrls: ['./conditional-formatter.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ConditionalFormatterComponent implements OnInit, OnDestroy {
   @HostBinding('class.conditional-formatter') private _hostClass = true;

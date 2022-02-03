@@ -15,36 +15,33 @@
 // * limitations under the License.
 // *
 
-@mixin topn-data-tooltip-component-base() {
-    .topn-data-tooltip {
-        .tooltip-output {
-            .value-marker {
+@import 'loader-component';
 
-                span {
-                    &.label {
-                        flex: 1;
-                        font-style: italic;
-                        align-self: center;
-                    }
+.topn-data-tooltip {
+    .tooltip-output {
+        .value-marker {
+            span {
+                &.label {
+                    flex: 1;
+                    font-style: italic;
+                    align-self: center;
                 }
             }
-
         }
     }
 }
 
-@mixin topn-data-tooltip-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-        $primary-accent-contrast: mat-color($primary, A100-contrast);
-        $vm-text: if($is-dark, $black, $primary-accent-contrast);
+    $primary-accent-contrast: mat-color($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
 
-        .topn-data-tooltip {
-            .tooltip-output {
-                .value-marker,
-                .other-data {
-                    color: $vm-text;
-                }
+    .topn-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                color: $vm-text;
             }
         }
     }
