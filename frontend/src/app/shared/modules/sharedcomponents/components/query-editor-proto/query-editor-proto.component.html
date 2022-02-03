@@ -335,7 +335,10 @@
                             <button mat-icon-button color="primary" class="clone-metric" (click)="cloneMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-duplicate"></mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" class="delete-metric" [disabled]="!canDeleteMetric(data.metric.id)"
+                            <button mat-icon-button color="primary"
+                                class="delete-metric"
+                                [ngClass]="{'is-disabled': !canDeleteMetric(data.metric.id)}"
+                                [disabled]="!canDeleteMetric(data.metric.id)"
                                 (click)="deleteMetric(data.metric.id)">
                                 <mat-icon fontSet="denali" fontIcon="d-trash"></mat-icon>
                             </button>

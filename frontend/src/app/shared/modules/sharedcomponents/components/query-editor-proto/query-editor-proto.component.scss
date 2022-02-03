@@ -1648,6 +1648,12 @@
                         }
                     }
                 }
+
+                &.action {
+                    .action-icons .delete-metric.is-disabled .mat-icon {
+                        color: mat-color($foreground, disabled-text);
+                    }
+                }
             }
 
             // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
