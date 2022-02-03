@@ -327,6 +327,7 @@ $filter-block-padding: 8px;
                 vertical-align: middle;
                 padding-left: 0px;
             }
+        }
 
             &:last-of-type {
                 padding-right: 8px;
@@ -442,15 +443,13 @@ $filter-block-padding: 8px;
                         transition: opacity 200ms ease-in-out;
                     }
 
+                .mat-form-field {
+                    width: 100%;
                     &:hover {
                         .mat-icon {
                             opacity: 1;
                         }
                     }
-                }
-
-                .mat-form-field {
-                    width: 100%;
                 }
             }
 
@@ -645,6 +644,25 @@ $filter-block-padding: 8px;
             th.mat-header-cell {
                 padding: 0;
                 border-bottom-width: 0;
+            }
+        }
+
+        .metric-alias,
+        .visual-panel-dropdown-text {
+            cursor: pointer;
+
+            font-size: 12px;
+            padding: 0 4px;
+        }
+
+        .visual-panel-dropdown-text {
+            padding: 0 4px;
+
+            .color-chip {
+                width: 10px;
+                height: 10px;
+                display: inline-block;
+                margin-right: 6px;
             }
         }
 
@@ -1390,6 +1408,102 @@ $filter-block-padding: 8px;
                 }
                 .mat-icon {
                     color: mat-color($foreground, link);
+                }
+            }
+
+            .query-alias-edit-icon {
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .query-alias-label {
+                color: $brand-color-inverse;
+                background-color: $brand-color-lighter;
+            }
+        }
+
+        .metric-wrapper {
+            border-left: 1px solid rgba($black, 0.04);
+            border-right: 1px solid rgba($black, 0.04);
+
+            .common-tags {
+                background-color: if(
+                    $is-dark,
+                    rgba(255, 255, 255, 0.04),
+                    $new-bg
+                );
+
+                .common-tags-label {
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                }
+            }
+
+            .tags-selected-header {
+                border-bottom: 1px solid mat-color($background, card);
+            }
+
+            .tag-filter-detail {
+                .tagkey-item {
+                    .automode {
+                        color: rgba(0, 0, 0, 0.8);
+
+                        &.auto-mode {
+                            background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                            border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                        }
+
+                        &.manual-mode {
+                            background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                            border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                        }
+                    }
+                }
+            }
+
+            .mat-icon {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .vertical-line-spacer {
+            span {
+                background-color: mat-color($foreground, divider);
+            }
+        }
+
+        .metric-alias {
+            .display-name {
+                background-color: transparent;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text, .5),
+                    mat-color($background, navbar, .5)
+                );
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+
+                .alias-text.has-alias {
+                    color: mat-color($foreground, text);
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: mat-color($foreground, link, 0.1);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        $brand-color
+                    );
+                }
+            }
+
+            .alias-input-field {
+                .mat-form-field-prefix {
+                    color: mat-color($foreground, text, 0.5);
+                    background-color: mat-color($foreground, link, 0.1);
                 }
             }
 

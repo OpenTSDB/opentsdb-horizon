@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { MatMenu, MatMenuTrigger } from '@angular/material';
@@ -23,7 +23,8 @@ import { MatMenu, MatMenuTrigger } from '@angular/material';
     // tslint:disable-next-line:component-selector
     selector: 'theme-picker',
     templateUrl: './theme-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./theme-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ThemePickerComponent implements OnInit {
 

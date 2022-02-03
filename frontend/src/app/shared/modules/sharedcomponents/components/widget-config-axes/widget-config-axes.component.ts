@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -29,7 +29,8 @@ import { isDefaultChangeDetectionStrategy } from '@angular/core/src/change_detec
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-axes',
     templateUrl: './widget-config-axes.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-axes.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;

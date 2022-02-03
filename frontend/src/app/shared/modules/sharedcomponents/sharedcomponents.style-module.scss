@@ -36,7 +36,7 @@
 
 // components
 //@import 'components/generic-message-bar/generic-message-bar.component';
-@import 'components/theme-picker/theme-picker.component';
+//@import 'components/theme-picker/theme-picker.component';
 //@import 'components/inline-editable/inline-editable.component';
 //@import 'components/navbar-timezone-toggle/navbar-timezone-toggle.component';
 //@import 'components/dropdown-line-type/dropdown-line-type.component';
@@ -48,48 +48,48 @@
 //@import 'components/metric-autocomplete/metric-autocomplete.component.scss';
 //@import 'components/dropdown-metric-tags/dropdown-metric-tags.component.scss';
 //@import 'components/inline-filter-editor/inline-filter-editor.component.scss';
-//@import 'components/widget-config-sorting/widget-config-sorting.component.scss';
+@import 'components/widget-config-sorting/widget-config-sorting.component.scss';
 //@import 'components/query-editor-proto/query-editor-proto.component';
 //@import 'components/metric-visual-panel/metric-visual-panel.component';
 //@import 'components/metric-function/metric-function.component';
-@import 'components/tag-aggregator/tag-aggregator.component';
+//@import 'components/tag-aggregator/tag-aggregator.component';
 //@import 'components/namespace-autocomplete/namespace-autocomplete.component';
 //@import 'components/event-timeline/event-timeline.component';
 //@import 'components/event-list/event-list.component';
-@import 'components/time-selector/time-selector.component';
+//@import 'components/time-selector/time-selector.component';
 //@import 'components/graph-type/graph-type.component';
-@import 'components/aura-dialog/aura-dialog.component';
+//@import 'components/aura-dialog/aura-dialog.component';
 //@import 'components/info-tooltip/info-tooltip.component';
 //@import 'components/help-links/help-links.component';
 
 
 // widget common FIRST
-@import 'components/widget-config.common';
+//@import 'components/widget-config.common';
 
 // if individual widget-configs have custom style, include them
-@import 'components/widget-config-axes/widget-config-axes.component';
-@import 'components/widget-config-general/widget-config-general.component';
+//@import 'components/widget-config-axes/widget-config-axes.component';
+//@import 'components/widget-config-general/widget-config-general.component';
 @import 'components/widget-config-legend/widget-config-legend.component';
 @import 'components/widget-config-metric-queries/widget-config-metric-queries.component';
 @import 'components/widget-config-query-inspector/widget-config-query-inspector.component';
 @import 'components/widget-config-time/widget-config-time.component';
 @import 'components/widget-config-visual-appearance/widget-config-visual-appearance.component';
-@import 'components/widget-config-events/widget-config-events.component';
+//@import 'components/widget-config-events/widget-config-events.component';
 @import 'components/widget-config-multigraph/widget-config-multigraph.component';
 
 
 @import 'components/widget-projection/widget-projection.component';
-@import 'components/simple-dashboard-list/simple-dashboard-list.component';
-@import 'components/simple-favorites-list/simple-favorites-list.component';
-@import 'components/simple-recents-list/simple-recents-list.component';
-@import 'components/simple-namespaces-list/simple-namespaces-list.component';
+//@import 'components/simple-dashboard-list/simple-dashboard-list.component';
+//@import 'components/simple-favorites-list/simple-favorites-list.component';
+//@import 'components/simple-recents-list/simple-recents-list.component';
+//@import 'components/simple-namespaces-list/simple-namespaces-list.component';
 
 // [ STEP 2 ] - ADD COMPONENT'S BASE MIXINS (aka structure)
 @mixin sharedcomponents-module-core() {
     // include your core mixins
     // example: @include componentName-component-core();
     //@include generic-message-bar-component-base();
-    @include theme-picker-component-base();
+    //@include theme-picker-component-base();
     //@include inline-editable-component-base();
     //@include navbar-timezone-toggle-component-base();
     //@include dropdown-line-type-component-base();
@@ -104,34 +104,34 @@
     //@include query-editor-proto-component-base();
     //@include metric-visual-panel-component-base();
     //@include metric-function-component-base();
-    @include tag-aggregator-component-base();
+    //@include tag-aggregator-component-base();
     //@include namespace-autocomplete-component-base();
     //@include event-timeline-component-base();
     //@include event-list-component-base();
-    @include time-selector-component-base();
+    //@include time-selector-component-base();
     //@include graph-type-component-base();
     //@include aura-dialog-component-base();
     //@include info-tooltip-component-base();
     //@include help-links-component-base();
 
     // WIDGET CONFIG ITEMS
-    @include widget-config-common-base();
-    @include widget-config-axes-component-base();
-    @include widget-config-general-component-base();
+    //@include widget-config-common-base();
+    //@include widget-config-axes-component-base();
+    //@include widget-config-general-component-base();
     @include widget-config-legend-component-base();
     @include widget-config-metric-queries-component-base();
     @include widget-config-query-inspector-component-base();
     @include widget-config-time-component-base();
     @include widget-config-visual-appearance-component-base();
     @include widget-config-sorting-component-base();
-    @include widget-config-events-component-base();
+    //@include widget-config-events-component-base();
     @include widget-config-multigraph-component-base();
 
     @include widget-projection-component-base();
-    @include simple-dashboard-list-component-base();
-    @include simple-favorites-list-component-base();
-    @include simple-recents-list-component-base();
-    @include simple-namespaces-list-component-base();
+    //@include simple-dashboard-list-component-base();
+    //@include simple-favorites-list-component-base();
+    //@include simple-recents-list-component-base();
+    //@include simple-namespaces-list-component-base();
 
 }
 
@@ -140,7 +140,7 @@
     // include your theme mixins, passing along the $theme-config
     // example: @include componentName-component-theme($theme-config);
     //@include generic-message-bar-component-theme($theme-config);
-    @include theme-picker-component-theme($theme-config);
+    //@include theme-picker-component-theme($theme-config);
     //@include inline-editable-component-theme($theme-config);
     //@include navbar-timezone-toggle-component-theme($theme-config);
     //@include dropdown-line-type-component-theme($theme-config);
@@ -155,32 +155,32 @@
     //@include query-editor-proto-component-theme($theme-config);
     //@include metric-visual-panel-component-theme($theme-config);
     //@include metric-function-component-theme($theme-config);
-    @include tag-aggregator-component-theme($theme-config);
+    //@include tag-aggregator-component-theme($theme-config);
     //@include namespace-autocomplete-component-theme($theme-config);
     //@include event-timeline-component-theme($theme-config);
     //@include event-list-component-theme($theme-config);
-    @include time-selector-component-theme($theme-config);
+    //@include time-selector-component-theme($theme-config);
     //@include graph-type-component-theme($theme-config);
     //@include aura-dialog-component-theme($theme-config);
     //@include info-tooltip-component-theme($theme-config);
     //@include help-links-component-theme($theme-config);
 
     // WIDGET CONFIG ITEMS
-    @include widget-config-common-theme($theme-config);
-    @include widget-config-axes-component-theme($theme-config);
-    @include widget-config-general-component-theme($theme-config);
+    //@include widget-config-common-theme($theme-config);
+    //@include widget-config-axes-component-theme($theme-config);
+    //@include widget-config-general-component-theme($theme-config);
     @include widget-config-legend-component-theme($theme-config);
     @include widget-config-metric-queries-component-theme($theme-config);
     @include widget-config-query-inspector-component-theme($theme-config);
     @include widget-config-time-component-theme($theme-config);
     @include widget-config-visual-appearance-component-theme($theme-config);
     @include widget-config-sorting-component-theme($theme-config);
-    @include widget-config-events-component-theme($theme-config);
+    //@include widget-config-events-component-theme($theme-config);
     @include widget-config-multigraph-component-theme($theme-config);
 
     @include widget-projection-component-theme($theme-config);
-    @include simple-dashboard-list-component-theme($theme-config);
-    @include simple-favorites-list-component-theme($theme-config);
-    @include simple-recents-list-component-theme($theme-config);
-    @include simple-namespaces-list-component-theme($theme-config);
+    //@include simple-dashboard-list-component-theme($theme-config);
+    //@include simple-favorites-list-component-theme($theme-config);
+    //@include simple-recents-list-component-theme($theme-config);
+    //@include simple-namespaces-list-component-theme($theme-config);
 }
