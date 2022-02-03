@@ -15,21 +15,20 @@
 // * limitations under the License.
 // *
 
-@mixin info-island-toolbar-component-base() {
-    .info-island-component {
-        .info-island-container {
-            .info-island-toolbar {
-                display: flex;
-                flex: 1 1 100%;
-                align-items: center;
-                justify-content: center;
-            }
+@import 'loader-component';
+
+.info-island-component {
+    .info-island-container {
+        .info-island-toolbar {
+            display: flex;
+            flex: 1 1 100%;
+            align-items: center;
+            justify-content: center;
         }
     }
 }
 
-@mixin info-island-toolbar-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // styles here
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+// styles here
+//}

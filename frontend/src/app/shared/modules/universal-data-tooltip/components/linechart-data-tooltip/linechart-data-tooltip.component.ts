@@ -21,7 +21,8 @@ import {
     OnDestroy,
     Renderer2,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
@@ -31,7 +32,9 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'linechart-data-tooltip',
-    templateUrl: './linechart-data-tooltip.component.html'
+    templateUrl: './linechart-data-tooltip.component.html',
+    styleUrls: ['./linechart-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 

@@ -22,7 +22,8 @@ import {
     OnInit,
     ViewChild,
     ViewContainerRef,
-    Input
+    Input,
+    ViewEncapsulation
 } from '@angular/core';
 import { InfoIslandService } from '../../services/info-island.service';
 
@@ -30,7 +31,8 @@ import { InfoIslandService } from '../../services/info-island.service';
     // tslint:disable-next-line: component-selector
     selector: 'info-island-toolbar',
     templateUrl: './info-island-toolbar.component.html',
-    styleUrls: []
+    styleUrls: ['./info-island-toolbar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 

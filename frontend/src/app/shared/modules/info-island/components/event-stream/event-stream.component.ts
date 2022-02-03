@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDestroy, Inject, ViewChild, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDestroy, Inject, ViewChild, ViewChildren, QueryList, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { Subscription } from 'rxjs';
@@ -27,7 +27,8 @@ import { MatAccordion, MatExpansionPanel } from '@angular/material';
     // tslint:disable-next-line:component-selector
     selector: 'event-stream',
     templateUrl: './event-stream.component.html',
-    styleUrls: []
+    styleUrls: ['./event-stream.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.event-stream') private _componentClass = true;

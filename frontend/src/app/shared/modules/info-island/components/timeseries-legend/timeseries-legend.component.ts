@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit
+    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit, ViewEncapsulation
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
@@ -35,7 +35,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
     // tslint:disable-next-line: component-selector
     selector: 'timeseries-legend-component',
     templateUrl: './timeseries-legend.component.html',
-    styleUrls: []
+    styleUrls: ['./timeseries-legend.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterContentInit {
 

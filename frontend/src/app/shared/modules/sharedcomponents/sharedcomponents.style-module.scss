@@ -1,3 +1,5 @@
+// NOTE: EVENTUALLY REMOVE THIS FILE
+
 /**
  * This file is part of OpenTSDB.
  * Copyright (C) 2021  Yahoo.
@@ -42,7 +44,7 @@
 @import 'components/dropdown-unit-type/dropdown-unit-type.component';
 @import 'components/dropdown-visual-type/dropdown-visual-type.component';
 @import 'components/dropdown-join-type/dropdown-join-type.component';
-@import 'components/conditional-formatter/conditional-formatter.component.scss';
+//@import 'components/conditional-formatter/conditional-formatter.component.scss';
 @import 'components/metric-autocomplete/metric-autocomplete.component.scss';
 @import 'components/dropdown-metric-tags/dropdown-metric-tags.component.scss';
 @import 'components/inline-filter-editor/inline-filter-editor.component.scss';
@@ -56,7 +58,7 @@
 @import 'components/event-list/event-list.component';
 @import 'components/time-selector/time-selector.component';
 @import 'components/graph-type/graph-type.component';
-@import 'components/aura-dialog/aura-dialog.component';
+//@import 'components/aura-dialog/aura-dialog.component';
 @import 'components/info-tooltip/info-tooltip.component';
 @import 'components/help-links/help-links.component';
 
@@ -98,7 +100,7 @@
     @include metric-autocomplete-component-base();
     @include dropdown-metric-tags-component-base();
     @include inline-filter-editor-component-base();
-    @include conditional-formatter-component-base();
+    //@include conditional-formatter-component-base();
     @include query-editor-proto-component-base();
     @include metric-visual-panel-component-base();
     @include metric-function-component-base();
@@ -108,7 +110,7 @@
     @include event-list-component-base();
     @include time-selector-component-base();
     @include graph-type-component-base();
-    @include aura-dialog-component-base();
+    //@include aura-dialog-component-base();
     @include info-tooltip-component-base();
     @include help-links-component-base();
 
@@ -149,7 +151,7 @@
     @include metric-autocomplete-component-theme($theme-config);
     @include dropdown-metric-tags-component-theme($theme-config);
     @include inline-filter-editor-component-theme($theme-config);
-    @include conditional-formatter-component-theme($theme-config);
+    //@include conditional-formatter-component-theme($theme-config);
     @include query-editor-proto-component-theme($theme-config);
     @include metric-visual-panel-component-theme($theme-config);
     @include metric-function-component-theme($theme-config);
@@ -159,7 +161,7 @@
     @include event-list-component-theme($theme-config);
     @include time-selector-component-theme($theme-config);
     @include graph-type-component-theme($theme-config);
-    @include aura-dialog-component-theme($theme-config);
+    //@include aura-dialog-component-theme($theme-config);
     @include info-tooltip-component-theme($theme-config);
     @include help-links-component-theme($theme-config);
 

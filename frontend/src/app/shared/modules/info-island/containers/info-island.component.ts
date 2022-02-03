@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, Inject, OnDestroy, HostBinding,
-    AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, ViewContainerRef} from '@angular/core';
+    AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Subject, Observable, Subscription } from 'rxjs';
@@ -28,7 +28,8 @@ import { IntercomService } from '../../../../core/services/intercom.service';
     // tslint:disable-next-line: component-selector
     selector: 'info-island',
     templateUrl: './info-island.component.html',
-    styleUrls: [],
+    styleUrls: ['./info-island.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger('infoIslandAnimation', [
             state(

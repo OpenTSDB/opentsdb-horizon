@@ -15,57 +15,23 @@
 // * limitations under the License.
 // *
 
-@mixin barchart-data-tooltip-component-base() {
+@import 'loader-component';
+
+//.barchart-data-tooltip {
+//    .tooltip-output {}
+//}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    $primary-accent-contrast: mat-color($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
     .barchart-data-tooltip {
         .tooltip-output {
-            /*.value-marker {
-                display: flex;
-
-                span {
-                    display: inline-block;
-                    padding: 4px 8px;
-                    font-size: 14px;
-
-                    &.value {
-                        font-weight: bold;
-                    }
-
-                    &.time {
-                        flex: 1;
-                    }
-                }
-            }
+            .value-marker,
             .other-data {
-                padding: 4px 8px;
-                margin-top: 2px;
-                font-size: 10px;
-
-                p {
-                    display: inline-block;
-
-                    &:not(:last-child) {
-                        margin-right: 12px;
-                    }
-                }
-            }*/
-        }
-    }
-}
-
-@mixin barchart-data-tooltip-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        $primary-accent-contrast: mat-color($primary, A100-contrast);
-        $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-        .barchart-data-tooltip {
-            .tooltip-output {
-                .value-marker,
-                .other-data {
-                    // background: rgba($vm-background, .65);
-                    color: $vm-text;
-                }
+                // background: rgba($vm-background, .65);
+                color: $vm-text;
             }
         }
     }

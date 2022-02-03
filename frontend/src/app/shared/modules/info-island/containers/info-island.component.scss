@@ -15,219 +15,213 @@
 // * limitations under the License.
 // *
 
-@mixin info-island-component-base() {
+@import 'loader-component';
 
-    .info-island-container {
+.info-island-container {
 
-        .mat-card {
-            padding: 0;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+    .mat-card {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
 
-            .mat-header {
-                padding: 8px;
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
+        .mat-header {
+            padding: 8px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .mat-card-header-text {
+            margin: 0;
+            width: 100%;
+        }
+
+        .mat-card-title {
+            margin-bottom: 0;
+            margin-left: 8px;
+            margin-right: 8px;
+            align-items: center;
+            font-size: 12px;
+
+            .title {
+                font-size: 14px;
+                flex: 1;
             }
 
-            .mat-card-header-text {
-                margin: 0;
-                width: 100%;
+            .toolbar-item {
+                margin-right: 6px;
             }
 
-            .mat-card-title {
-                margin-bottom: 0;
-                margin-left: 8px;
-                margin-right: 8px;
-                align-items: center;
-                font-size: 12px;
+            .close {
+                margin-left: 0;
+                margin-right: -8px;
 
-                .title {
-                    font-size: 14px;
-                    flex: 1;
-                }
+                .close-button.mat-icon-button {
+                    width: 32px;
+                    height: 32px;
+                    line-height: initial;
 
-                .toolbar-item {
-                    margin-right: 6px;
-                }
-
-                .close {
-                    margin-left: 0;
-                    margin-right: -8px;
-
-                    .close-button.mat-icon-button {
-                        width: 32px;
-                        height: 32px;
-                        line-height: initial;
-
-                        .mat-icon {
-                            @include sizeDenaliIcon(18px);
-                        }
+                    .mat-icon {
+                        @include sizeDenaliIcon(18px);
                     }
                 }
             }
-
-            .mat-card-actions {
-                padding: 0;
-                margin: 0;
-                margin-bottom: 0;
-            }
-
-            >.mat-card-actions:last-child {
-                margin-bottom: 0;
-            }
-
-            .mat-card-content {
-                margin: 0;
-                padding: 0;
-                flex: 1;
-                overflow: hidden;
-                display: flex;
-            }
         }
 
+        .mat-card-actions {
+            padding: 0;
+            margin: 0;
+            margin-bottom: 0;
+        }
 
+        >.mat-card-actions:last-child {
+            margin-bottom: 0;
+        }
 
-
-        // STYLES FOR RESIZABILITY
-        & {
-            position: relative;
+        .mat-card-content {
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            overflow: hidden;
             display: flex;
-            align-items: stretch;
-            justify-content: stretch;
+        }
+    }
+
+    // STYLES FOR RESIZABILITY
+    & {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .resizers {
+        user-select: none;
+    }
+
+    .resizer {
+        position: absolute;
+
+        // dimensions
+        &.top-left,
+        &.top-right,
+        &.bottom-left,
+        &.bottom-right {
+            width: 10px;
+            height: 10px;
         }
 
-        .resizers {
-            user-select: none;
+        &.top,
+        &.bottom {
+            height: 10px;
         }
 
-        .resizer {
-            position: absolute;
-
-            // dimensions
-            &.top-left,
-            &.top-right,
-            &.bottom-left,
-            &.bottom-right {
-                width: 10px;
-                height: 10px;
-            }
-
-            &.top,
-            &.bottom {
-                height: 10px;
-            }
-
-            &.left,
-            &.right {
-                width: 10px;
-            }
-
-            // cursors
-            &.top-left,
-            &.bottom-right {
-                cursor: nwse-resize;
-            }
-
-            &.top-right,
-            &.bottom-left {
-                cursor: nesw-resize;
-            }
-
-            &.top,
-            &.bottom {
-                cursor: ns-resize;
-            }
-
-            &.left,
-            &.right {
-                cursor: ew-resize;
-            }
+        &.left,
+        &.right {
+            width: 10px;
         }
 
-        .resizer.top {
-            top: -5px;
-            left: 5px;
-            right: 5px;
+        // cursors
+        &.top-left,
+        &.bottom-right {
+            cursor: nwse-resize;
         }
 
-        .resizer.bottom {
-            bottom: -5px;
-            left: 5px;
-            right: 5px;
+        &.top-right,
+        &.bottom-left {
+            cursor: nesw-resize;
         }
 
-        .resizer.left {
-            left: -5px;
-            top: 5px;
-            bottom: 5px;
+        &.top,
+        &.bottom {
+            cursor: ns-resize;
         }
 
-        .resizer.right {
-            right: -5px;
-            top: 5px;
-            bottom: 5px;
+        &.left,
+        &.right {
+            cursor: ew-resize;
         }
+    }
 
-        .resizer.top-left {
-            left: -5px;
-            top: -5px;
-        }
+    .resizer.top {
+        top: -5px;
+        left: 5px;
+        right: 5px;
+    }
 
-        .resizer.top-right {
-            right: -5px;
-            top: -5px;
-        }
+    .resizer.bottom {
+        bottom: -5px;
+        left: 5px;
+        right: 5px;
+    }
 
-        .resizer.bottom-left {
-            left: -5px;
-            bottom: -5px;
-        }
+    .resizer.left {
+        left: -5px;
+        top: 5px;
+        bottom: 5px;
+    }
 
-        .resizer.bottom-right {
-            right: -5px;
-            bottom: -5px;
-        }
+    .resizer.right {
+        right: -5px;
+        top: 5px;
+        bottom: 5px;
+    }
+
+    .resizer.top-left {
+        left: -5px;
+        top: -5px;
+    }
+
+    .resizer.top-right {
+        right: -5px;
+        top: -5px;
+    }
+
+    .resizer.bottom-left {
+        left: -5px;
+        bottom: -5px;
+    }
+
+    .resizer.bottom-right {
+        right: -5px;
+        bottom: -5px;
     }
 }
 
-@mixin info-island-component-theme($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-    @include variables-compatibility($theme-config) {
+    $cdk-window-bg: if(
+        $is-dark,
+        mat-color($background, menu, .9),
+        mat-color($background, menu)
+    );
 
-        $cdk-window-bg: if(
-            $is-dark,
-            mat-color($background, menu, .9),
-            mat-color($background, menu)
-        );
+    $header-bg: if(
+        $is-dark,
+        mat-color($background, menu),
+        mat-color($background, navbar)
+    );
 
-        $header-bg: if(
-            $is-dark,
-            mat-color($background, menu),
-            mat-color($background, navbar)
-        );
+    .info-island-container {
+        @include mat-elevation(4);
 
-        .info-island-container {
-            @include mat-elevation(4);
+        .mat-card {
+            background-color: $cdk-window-bg;
 
-            .mat-card {
-                background-color: $cdk-window-bg;
-
-                @if $is-dark {
-                    border: 1px solid mat-color($foreground, divider);
-                }
+            @if $is-dark {
+                border: 1px solid mat-color($foreground, divider);
             }
+        }
 
-            .mat-card-header {
-                background: $header-bg;
-                color: mat-color($foreground, navbar-text);
-                border-bottom: 1px solid mat-color($foreground, divider);
-            }
+        .mat-card-header {
+            background: $header-bg;
+            color: mat-color($foreground, navbar-text);
+            border-bottom: 1px solid mat-color($foreground, divider);
+        }
 
-            .mat-card-actions {
-                border-top: 1px solid mat-color($foreground, divider);
-            }
+        .mat-card-actions {
+            border-top: 1px solid mat-color($foreground, divider);
         }
     }
 }
