@@ -15,114 +15,105 @@
 // * limitations under the License.
 // *
 
-@mixin alert-details-metric-period-over-period-component-base() {
+@import 'loader-component';
 
-    .period-over-period {
+.period-over-period {
 
-        .sliding-window {
+    .sliding-window {
 
-            .sliding-window-form-control {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .aggregator{
-                display:inline;
-                margin-right: 5px;
-            }
-
-        }
-
-        .lookbacks {
-            .lookbacks-input {
-                width: 100px;
-                height: 31px;
-                padding: 8px;
-            }
-        }
-
-        .time-button {
-            padding-left: 8px;
-
-            .mat-button-wrapper {
-                height: 31px;
-            }
-        }
-
-        .threshold {
+        .sliding-window-form-control {
             display: flex;
             align-items: center;
-
-            .threshold-type,
-            .warning-title {
-                margin-left: 25px;
-            }
-
-            .threshold-title {
-                width: 70%
-            }
-
-            .threshold-bad-title {
-                width: 50%
-            }
-
-            .threshold-input {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                // height: 32px;
-                padding: 5px;
-            }
-
-            .type {
-                width: 10px;
-            }
-
-            .mat-button-toggle-group {
-                .mat-button-toggle-label-content {
-                    line-height: 32px;
-                }
-            }
+            justify-content: center;
         }
 
-        .error-messages {
-            padding-left: 197px;
-            margin-bottom: 15px;
+        .aggregator{
+            display:inline;
+            margin-right: 5px;
         }
 
-        .delay-evaluation-input {
+    }
+
+    .lookbacks {
+        .lookbacks-input {
+            width: 100px;
+            height: 31px;
+            padding: 8px;
+        }
+    }
+
+    .time-button {
+        padding-left: 8px;
+
+        .mat-button-wrapper {
+            height: 31px;
+        }
+    }
+
+    .threshold {
+        display: flex;
+        align-items: center;
+
+        .threshold-type,
+        .warning-title {
+            margin-left: 25px;
+        }
+
+        .threshold-title {
+            width: 70%
+        }
+
+        .threshold-bad-title {
+            width: 50%
+        }
+
+        .threshold-input {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            // height: 32px;
             padding: 5px;
         }
 
-        #outliers-form {
-            margin-bottom: 0px;
+        .type {
+            width: 10px;
+        }
 
-            .outliers {
-                display: flex;
-                align-items: center;
-
-                .outlier-input {
-                    width: 38px;
-                    margin-left: 10px;
-                    padding: 4px;
-                    margin-right: 10px;
-                }
+        .mat-button-toggle-group {
+            .mat-button-toggle-label-content {
+                line-height: 32px;
             }
         }
     }
 
+    .error-messages {
+        padding-left: 197px;
+        margin-bottom: 15px;
+    }
+
+    .delay-evaluation-input {
+        padding: 5px;
+    }
+
+    #outliers-form {
+        margin-bottom: 0px;
+
+        .outliers {
+            display: flex;
+            align-items: center;
+
+            .outlier-input {
+                width: 38px;
+                margin-left: 10px;
+                padding: 4px;
+                margin-right: 10px;
+            }
+        }
+    }
 }
 
-@mixin alert-details-metric-period-over-period-component-theme($theme-config) {
-    // * Theme config parts
-    $primary: map-get($theme-config, primary);
-    //$accent: map-get($theme-config, accent);
-    //$warn: map-get($theme-config, warn);
-    //$foreground: map-get($theme-config, foreground);
-    //$background: map-get($theme-config, background);
-    //$other: map-get($theme-config, other);
-    //$is-dark: map-get($theme-config, is-dark);
+// * THEME VARIANTS
+@include init-component-variants() {
 
     .period-over-period {
 

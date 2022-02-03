@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
@@ -22,7 +22,8 @@ import { FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/
 @Component({
   selector: 'alert-details-metric-period-over-period',
   templateUrl: './alert-details-metric-period-over-period.component.html',
-  styleUrls: []
+  styleUrls: ['./alert-details-metric-period-over-period.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
   @HostBinding('class.period-over-period') private _hostClass = true;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, HostBinding, ElementRef, HostListener,
-    Input, Output, EventEmitter, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+    Input, Output, EventEmitter, ViewChild, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { MatChipInputEvent, MatMenuTrigger, MatInput } from '@angular/material';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Mode, RecipientType, Recipient } from './models';
@@ -33,7 +33,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     // tslint:disable-next-line:component-selector
     selector: 'recipients-manager',
     templateUrl: './recipients-manager.component.html',
-    styleUrls: []
+    styleUrls: ['./recipients-manager.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class AlertConfigurationContactsComponent implements OnInit, OnChanges, OnDestroy {
@@ -44,7 +45,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     @ViewChild('recipientInput', { read: MatInput }) private recipientInput: MatInput;
 
     @Input() namespace: string;
-    @Input() selectedAlertRecipients: any; 
+    @Input() selectedAlertRecipients: any;
     @Input() formHasError: true;
     @Output() updatedAlertRecipients = new EventEmitter<any>();
 
@@ -139,7 +140,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.types = Object.keys(RecipientType)
             .filter(t => this.config.alert.recipient[t])
             .filter(t => this.config.alert.recipient[t].enable);
-        
+
         this.populateEmptyRecipients();
         if (!this.alertRecipients) {
             this.alertRecipients = [];

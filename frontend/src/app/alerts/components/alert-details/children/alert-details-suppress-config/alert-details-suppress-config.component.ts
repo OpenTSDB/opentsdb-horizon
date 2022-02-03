@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component,OnInit, OnChanges, SimpleChanges, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component,OnInit, OnChanges, SimpleChanges, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'alert-details-suppress-config',
-  templateUrl: './alert-details-suppress-config.component.html'
+  templateUrl: './alert-details-suppress-config.component.html',
+  styleUrls: ['./alert-details-suppress-config.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
 
@@ -54,7 +56,7 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
       timeSampler: this.config.timeSampler ||  'all_of_the_times',
       reportingInterval: this.config.reportingInterval || 60,
     });
-    
+
     const sub = this.suppressForm.valueChanges.subscribe(formval => {
       this.validateForm();
       this.configChange.emit(formval);

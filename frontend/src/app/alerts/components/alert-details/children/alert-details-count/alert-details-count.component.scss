@@ -15,77 +15,67 @@
 // * limitations under the License.
 // *
 
-@mixin alert-details-count-component-base() {
+@import 'loader-component';
 
-    .alert-details-count {
-        position: relative;
-        top: 0px;
-        margin-right: -5px;
+.alert-details-count {
+    position: relative;
+    top: 0px;
+    margin-right: -5px;
 
-        .mat-header-row {
-            height: 31px;
+    .mat-header-row {
+        height: 31px;
+    }
+
+    .mat-row {
+        height: 32px;
+    }
+
+    .mat-cell {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .mat-header-cell {
+        padding: 0px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .cdk-column-bad,
+    .cdk-column-warn,
+    .cdk-column-good,
+    .cdk-column-unknown,
+    .cdk-column-missing,
+    .cdk-column-snoozed {
+        text-align: right;
+
+        .count-empty {
+            width: 100%;
+            display: inline-block;
+            text-align: center;
         }
 
-        .mat-row {
-            height: 32px;
+        .count-amount {
+            padding: 2px;
+            cursor: pointer;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 3px 6px;
+            outline: none;
         }
+    }
 
-        .mat-cell {
-            padding-left: 1px;
-            padding-right: 1px;
-        }
-
-        .mat-header-cell {
-            padding: 0px;
-            padding-left: 1px;
-            padding-right: 1px;
-        }
-
-        .cdk-column-bad,
-        .cdk-column-warn,
-        .cdk-column-good,
-        .cdk-column-unknown,
-        .cdk-column-missing,
-        .cdk-column-snoozed {
-            text-align: right;
-
-            .count-empty {
-                width: 100%;
-                display: inline-block;
-                text-align: center;
-            }
-
-            .count-amount {
-                padding: 2px;
-                cursor: pointer;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 4px;
-                font-size: 12px;
-                padding: 3px 6px;
-                outline: none;
-            }
-        }
-
-        .header {
-            padding: 4px;
-            font-weight: normal
-        }
+    .header {
+        padding: 4px;
+        font-weight: normal
     }
 }
 
-@mixin alert-details-count-component-theme($theme-config) {
-    // * Theme config parts
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $other: map-get($theme-config, other);
-    $is-dark: map-get($theme-config, is-dark);
 
-    //$divider: map-get($foreground, divider);
-    //$status: map-get($theme-config, status);
+// * THEME VARIANTS
+@include init-component-variants() {
 
     .alert-details-count {
 
