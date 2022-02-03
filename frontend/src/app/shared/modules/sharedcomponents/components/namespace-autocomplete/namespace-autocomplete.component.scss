@@ -15,14 +15,11 @@
 // * limitations under the License.
 // *
 
-@mixin namespace-autocomplete-component-base() {
-    .namespace-autocomplete-component {
+//@import 'loader-component';
 
-    }
-}
+//.namespace-autocomplete-component {}
 
-@mixin namespace-autocomplete-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        //.namespace-autocomplete-component {}
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//  .namespace-autocomplete-component {}
+//}

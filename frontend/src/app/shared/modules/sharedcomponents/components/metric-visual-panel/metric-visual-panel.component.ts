@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostListener, HostBinding, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostListener, HostBinding, ElementRef, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 
 @Component({
   selector: 'metric-visual-panel',
-  templateUrl: './metric-visual-panel.component.html'
+  templateUrl: './metric-visual-panel.component.html',
+  styleUrls: ['./metric-visual-panel.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MetricVisualPanelComponent implements OnInit {
 

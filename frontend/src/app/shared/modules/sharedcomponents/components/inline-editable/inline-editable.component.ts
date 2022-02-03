@@ -16,7 +16,7 @@
  */
 import {
     Component, Input, EventEmitter, Output, ViewChild, Renderer2,
-    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit
+    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatFormField, MatInput } from '@angular/material';
@@ -26,7 +26,8 @@ import { MatFormField, MatInput } from '@angular/material';
     selector: 'inline-editable',
     templateUrl: './inline-editable.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: []
+    styleUrls: ['./inline-editable.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {

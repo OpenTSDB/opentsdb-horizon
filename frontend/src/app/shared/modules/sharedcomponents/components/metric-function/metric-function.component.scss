@@ -15,228 +15,226 @@
 // * limitations under the License.
 // *
 
-@mixin metric-function-component-base() {
-    .metric-function-component {
-        display: flex;
-        align-items: stretch;
+@import 'loader-component';
+
+.metric-function-component {
+    display: flex;
+    align-items: stretch;
+    width: auto;
+
+    .mat-form-field {
+        .mat-form-field-wrapper,
+        .mat-form-field-flex {
+            height: 100%;
+        }
+
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-flex {
+            padding-top: 0;
+        }
+
+        .mat-form-field-underline {
+            bottom: 0;
+        }
+
+        .mat-form-field-infix {
+            border-top-width: 0;
+            padding: 0;
+            align-self: stretch;
+            display: inline-flex;
+            align-items: center;
+            font-weight: bold;
+
+            .mat-input-element {
+                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                padding: 0 4px;
+                align-self: stretch;
+                min-width: 30px;
+            }
+        }
+
+        .mat-form-field-prefix,
+        .mat-form-field-suffix {
+            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+        }
+
+        .mat-form-field-prefix {
+            padding: 0 4px;
+        }
+
+        .mat-form-field-suffix {
+            opacity: 0;
+            transition: opacity 200ms ease-in-out;
+            cursor: pointer;
+            padding: 0 4px;
+
+            .mat-mini-fab {
+                width: 18px;
+                height: 18px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                .mat-button-wrapper {
+                    line-height: 18px;
+                    padding: 0;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                }
+            }
+        }
+
+        // when you hover/focus the form field
+        &:focus-within,
+        &:hover {
+            .mat-form-field-suffix {
+                opacity: 0.5;
+            }
+        }
+
+        // when you hover over the delete
+        .mat-form-field-suffix {
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+
+
+
+
+        &.readonly-mode {
+            .mat-form-field-underline {
+                display: none;
+            }
+        }
+
+        &.group-by-fx {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    /* Following style is to get
+        the input to smartly grow
+        using a css-grid and
+        data-attributes.
+
+        It IS dependant on
+        one-line js on input
+
+        inspired by:
+        https://codepen.io/shshaw/pen/c72208b279d750f1ab46b6a45bbd04d7
+        */
+
+    .mat-form-field {
         width: auto;
 
+        // grid wrapper
+        .mat-form-field-flex {
+            width: auto;
+            display: inline-grid;
+            align-items: center;
+        }
+
+        // grid column assignment
+        .mat-form-field-prefix {
+            grid-column: 1;
+        }
+
+        .mat-form-field-infix {
+            &,
+            &::after {
+                grid-column: 2;
+            }
+        }
+
+        .mat-form-field-suffix {
+            grid-column: 3;
+        }
+
+        // input and pseudo element sizing
+        // infix needs auto to smartly resize
+        // from pseudo element
+        .mat-form-field-infix {
+            width: auto;
+            grid-area: 1/2;
+            align-self: initial;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            // NOTE: input needs size="1"
+            .mat-input-element {
+                width: 100%
+            }
+
+            &::after {
+                // make it have same font/padding as input
+                // this causes it to take up the same space
+                font-family: "Ubuntu Mono", Monaco, monospace;
+                padding: 0 4px;
+                grid-area: 1/2;
+                // disable height
+                height: 0;
+                // width dependant on content
+                width: auto;
+                resize: none;
+                overflow: hidden;
+                // but we want a min-width so input still accessible
+                min-width: 2em;
+                // content
+                content: attr(data-value);
+                white-space: pre-wrap;
+                // we don't want it to show
+                // but we want it to still push
+                // in the DOM
+                // so visibility:hidden is important
+                visibility: hidden;
+            }
+        }
+
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    .metric-function-component {
         .mat-form-field {
-            .mat-form-field-wrapper,
-            .mat-form-field-flex {
-                height: 100%;
-            }
-
-            .mat-form-field-wrapper {
-                padding-bottom: 0;
-            }
-
-            .mat-form-field-flex {
-                padding-top: 0;
+            .mat-form-field-prefix {
+                color: mat-color($foreground, text, .5)
             }
 
             .mat-form-field-underline {
-                bottom: 0;
+                background-color: mat-color($foreground, link);
             }
 
-            .mat-form-field-infix {
-                border-top-width: 0;
-                padding: 0;
-                align-self: stretch;
-                display: inline-flex;
-                align-items: center;
-                font-weight: bold;
-
-                .mat-input-element {
-                    font-family: mat-font-family(map-get($app-fontface-config, mono));
-                    padding: 0 4px;
-                    align-self: stretch;
-                    min-width: 30px;
-                }
-            }
-
-            .mat-form-field-prefix,
-            .mat-form-field-suffix {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
-                align-self: stretch;
-                display: flex;
-                align-items: center;
-            }
-
-            .mat-form-field-prefix {
-                padding: 0 4px;
-            }
-
-            .mat-form-field-suffix {
-                opacity: 0;
-                transition: opacity 200ms ease-in-out;
-                cursor: pointer;
-                padding: 0 4px;
-
-                .mat-mini-fab {
-                    width: 18px;
-                    height: 18px;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    .mat-button-wrapper {
-                        line-height: 18px;
-                        padding: 0;
-                    }
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                    }
-                }
-            }
-
-            // when you hover/focus the form field
-            &:focus-within,
-            &:hover {
-                .mat-form-field-suffix {
-                    opacity: 0.5;
-                }
-            }
-
-            // when you hover over the delete
-            .mat-form-field-suffix {
-                &:hover {
-                    opacity: 1;
-                }
-            }
-
-
-
-
-
-            &.readonly-mode {
-                .mat-form-field-underline {
-                    display: none;
-                }
-            }
-
-            &.group-by-fx {
-                display: flex;
-                align-items: center;
-            }
-        }
-
-        /* Following style is to get
-           the input to smartly grow
-           using a css-grid and
-           data-attributes.
-
-           It IS dependant on
-           one-line js on input
-
-           inspired by:
-           https://codepen.io/shshaw/pen/c72208b279d750f1ab46b6a45bbd04d7
-           */
-
-        .mat-form-field {
-            width: auto;
-
-            // grid wrapper
-            .mat-form-field-flex {
-                width: auto;
-                display: inline-grid;
-                align-items: center;
-            }
-
-            // grid column assignment
-            .mat-form-field-prefix {
-                grid-column: 1;
-            }
-
-            .mat-form-field-infix {
-                &,
-                &::after {
-                    grid-column: 2;
-                }
-            }
-
-            .mat-form-field-suffix {
-                grid-column: 3;
-            }
-
-            // input and pseudo element sizing
-            // infix needs auto to smartly resize
-            // from pseudo element
-            .mat-form-field-infix {
-                width: auto;
-                grid-area: 1/2;
-                align-self: initial;
-                display: flex;
-                align-items: center;
-                flex-direction: column;
-
-                // NOTE: input needs size="1"
-                .mat-input-element {
-                    width: 100%
-                }
-
-                &::after {
-                    // make it have same font/padding as input
-                    // this causes it to take up the same space
-                    font-family: "Ubuntu Mono", Monaco, monospace;
-                    padding: 0 4px;
-                    grid-area: 1/2;
-                    // disable height
-                    height: 0;
-                    // width dependant on content
-                    width: auto;
-                    resize: none;
-                    overflow: hidden;
-                    // but we want a min-width so input still accessible
-                    min-width: 2em;
-                    // content
-                    content: attr(data-value);
-                    white-space: pre-wrap;
-                    // we don't want it to show
-                    // but we want it to still push
-                    // in the DOM
-                    // so visibility:hidden is important
-                    visibility: hidden;
-
-                }
-            }
-
-        }
-    }
-}
-@mixin metric-function-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        .metric-function-component {
-            .mat-form-field {
-                .mat-form-field-prefix {
-                    color: mat-color($foreground, text, .5)
+            &.mat-focused {
+                &:not(.readonly-mode) {
+                    background-color: mat-color($foreground, link, 0.04)
                 }
 
                 .mat-form-field-underline {
                     background-color: mat-color($foreground, link);
                 }
+            }
 
-                &.mat-focused {
-                    &:not(.readonly-mode) {
-                        background-color: mat-color($foreground, link, 0.04)
-                    }
-
-                    .mat-form-field-underline {
-                        background-color: mat-color($foreground, link);
-                    }
+            .mat-form-field-suffix {
+                .mat-mini-fab {
+                    background-color: if($is-dark, $white, $black)
                 }
+            }
 
-                .mat-form-field-suffix {
-                    .mat-mini-fab {
-                        background-color: if($is-dark, $white, $black)
-                    }
-                }
-
-                &.group-by-fx {
-                        border: 1px solid rgba($black, 0.04);
-                }
+            &.group-by-fx {
+                    border: 1px solid rgba($black, 0.04);
             }
         }
     }
