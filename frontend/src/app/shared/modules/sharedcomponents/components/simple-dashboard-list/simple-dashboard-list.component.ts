@@ -17,7 +17,8 @@
 import {
     Component,
     OnInit,
-    HostBinding
+    HostBinding,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -26,7 +27,9 @@ import { HttpService } from '../../../../../core/http/http.service';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'simple-dashboard-list',
-    templateUrl: './simple-dashboard-list.component.html'
+    templateUrl: './simple-dashboard-list.component.html',
+    styleUrls: ['./simple-dashboard-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SimpleDashboardListComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

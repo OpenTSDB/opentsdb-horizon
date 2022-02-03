@@ -17,272 +17,157 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@mixin widget-config-axes-component-base() {
-    .widget-config-tab.axes-configuration {
-        // style rules here
+@import 'loader-component';
 
-        &.has-columns .column {
+.widget-config-tab.axes-configuration {
+    // style rules here
+
+    &.has-columns .column {
+        display: flex;
+        flex-direction: column;
+
+        // column title/label
+        .mat-body-strong {
+            margin-bottom: 8px;
+        }
+
+        // individual columns - specific width
+        &.y1-axis-container,
+        &.y2-axis-container {
+            flex: 1;
+        }
+    }
+
+    .y1-axis-container,
+    .y2-axis-container {
+        .config-control {
             display: flex;
-            flex-direction: column;
-
-            // column title/label
-            .mat-body-strong {
-                margin-bottom: 8px;
-            }
-
-            // individual columns - specific width
-            &.y1-axis-container,
-            &.y2-axis-container {
-                flex: 1;
-            }
-        }
-
-        .y1-axis-container,
-        .y2-axis-container {
-            .config-control {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                > .mat-label {
-                    width: 150px;
-                    display: inline-flex;
-                    line-height: 24px;
-
-                    &:not(:first-child) {
-                        padding-left: 30px;
-                        padding-right: 30px;
-                        width: initial;
-                        flex-shrink: 0;
-                    }
-                }
-
-                .mat-form-field {
-                    //flex: 1;
-
-                    &.has-right-items {
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-
-                    /*.mat-form-field-infix {
-                        //display: flex;
-                        //padding: 0 0 0 8px;
-                    }*/
-
-                    .mat-form-field-flex {
-                        border-radius: 4px;
-                    }
-
-                    .mat-input-element {
-                        flex: 1;
-                    }
-                }
-
-                .mat-button-toggle-group {
-                    @include mat-elevation(0);
-                    border-radius: 0;
-
-                    .mat-button-toggle-label-content {
-                        line-height: 1.125;
-                        padding: 8px 16px;
-                    }
-
-                    .mat-icon {
-                        font-size: 14px;
-                        width: initial;
-                        height: initial;
-                    }
-                }
-
-                // MODIFIERS
-
-                // this is first control that primarily acts a column label, but it has a toggle control
-                // so we wrap it in control-config. But some control-config styles are problematic
-                &.with-enable-label {
-                    margin-bottom: initial;
-                    justify-content: flex-start;
-                }
-
-                // Ymin and Ymax have labels before the input
-                // need to adjust the hint placement to be inline with input
-                .mat-form-field.inline-hint {
-                    .mat-input-element {
-                        margin-left: 60px;
-                        width: calc(100% - 60px);
-                    }
-
-                    .mat-form-field-subscript-wrapper {
-                        padding: 8px 1em;
-                        margin: 0;
-                        top: 0;
-                        white-space: nowrap;
-                        font-size: mat-font-size(map-get($app-fontface-config, sans), body-1);
-                        width: initial;
-                    }
-
-                    .mat-hint {
-                        @include unselectable();
-                    }
-                }
-            }
-
-            .config-control.values-control {
-                .mat-form-field.y1-min,
-                .mat-form-field.y2-min {
-                    .mat-form-field-flex {
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-                }
-
-                .mat-form-field.y1-max,
-                .mat-form-field.y2-max {
-                    .mat-form-field-flex {
-                        border-top-left-radius: 0;
-                        border-bottom-left-radius: 0;
-                    }
-                }
-            }
-        }
-
-        .y1-axis-container.y1-axis-disabled {
-            .config-control:not(.with-enable-label) {
-                opacity: .3;
-                pointer-events: none;
-            }
-        }
-
-        .y2-axis-container.y2-axis-disabled {
-            .config-control:not(.with-enable-label) {
-                opacity: .3;
-                pointer-events: none;
-            }
-        }
-
-        ////// OLD STYLES //////
-
-        /*
-        .column:nth-child(n+2):nth-last-child(n+2) {
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-
-        .column:first-child {
-            padding-right: 30px;
-        }
-
-        .column:last-child {
-            padding-left: 30px;
-        }
-
-        .form-field-group {
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
-            }
-        }
-
-        .fixed-label {
-            display: inline-block;
-            width: 75px;
-        }
-
-        .mat-form-field-subscript-wrapper {
-            padding: 0;
-        }
-
-        // this pulls the hint up into the input area to act almost as an inline placeholder that is already there
-        // see the Y1 Min and Y1 Max fields
-        .mat-form-field.inline-hint {
-            .mat-input-element {
-                margin-left: 60px;
-                width: auto;
-            }
-
-            .mat-form-field-subscript-wrapper {
-                padding: 0 1em;
-                margin: 0;
-                top: 12px;
-                white-space: nowrap;
-                font-size: 14px;
-                width: initial;
-            }
-        }
-
-        .config-control:not(.with-enable-label):not(.inline-controls) > .label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .config-control.with-enable-label {
-            display: flex;
-            flex-direction: row;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
 
-            .label:first-child {
-                margin-right: 10px;
-            }
-        }
-
-        .config-control.inline-controls {
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-
-            .fixed-label {
-                padding: 10px 0;
+            > .mat-label {
+                width: 150px;
+                display: inline-flex;
+                line-height: 24px;
 
                 &:not(:first-child) {
-                    margin-left: 25px;
+                    padding-left: 30px;
+                    padding-right: 30px;
+                    width: initial;
+                    flex-shrink: 0;
+                }
+            }
+
+            .mat-form-field {
+                //flex: 1;
+
+                &.has-right-items {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+
+                .mat-form-field-flex {
+                    border-radius: 4px;
+                }
+
+                .mat-input-element {
+                    flex: 1;
+                }
+            }
+
+            .mat-button-toggle-group {
+                @include mat-elevation(0);
+                border-radius: 0;
+
+                .mat-button-toggle-label-content {
+                    line-height: 1.125;
+                    padding: 8px 16px;
+                }
+
+                .mat-icon {
+                    font-size: 14px;
+                    width: initial;
+                    height: initial;
+                }
+            }
+
+            // MODIFIERS
+
+            // this is first control that primarily acts a column label, but it has a toggle control
+            // so we wrap it in control-config. But some control-config styles are problematic
+            &.with-enable-label {
+                margin-bottom: initial;
+                justify-content: flex-start;
+            }
+
+            // Ymin and Ymax have labels before the input
+            // need to adjust the hint placement to be inline with input
+            .mat-form-field.inline-hint {
+                .mat-input-element {
+                    margin-left: 60px;
+                    width: calc(100% - 60px);
+                }
+
+                .mat-form-field-subscript-wrapper {
+                    padding: 8px 1em;
+                    margin: 0;
+                    top: 0;
+                    white-space: nowrap;
+                    font-size: mat-font-size(map-get($app-fontface-config, sans), body-1);
+                    width: initial;
+                }
+
+                .mat-hint {
+                    @include unselectable();
                 }
             }
         }
 
-        .mat-form-field {
-            .mat-form-field-flex {
-                padding-top: 0;
-
-                .mat-form-field-infix {
-                    padding-top: 0;
-                }
-
-                // mat-select caret
-                .mat-select-arrow-wrapper {
-                    transform: initial;
+        .config-control.values-control {
+            .mat-form-field.y1-min,
+            .mat-form-field.y2-min {
+                .mat-form-field-flex {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
                 }
             }
-        }*/
 
+            .mat-form-field.y1-max,
+            .mat-form-field.y2-max {
+                .mat-form-field-flex {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+            }
+        }
+    }
 
+    .y1-axis-container.y1-axis-disabled {
+        .config-control:not(.with-enable-label) {
+            opacity: .3;
+            pointer-events: none;
+        }
+    }
+
+    .y2-axis-container.y2-axis-disabled {
+        .config-control:not(.with-enable-label) {
+            opacity: .3;
+            pointer-events: none;
+        }
     }
 }
 
-@mixin widget-config-axes-component-theme($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
+    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
 
-    @include variables-compatibility($theme-config) {
-        $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
+    .widget-config-tab.axes-configuration {
+        // style rules here
 
-        .widget-config-tab.axes-configuration {
-            // style rules here
-
-            .mat-form-field.inline-hint {
-                .mat-hint {
-                    color: mat-color($foreground, hint-text);
-                }
+        .mat-form-field.inline-hint {
+            .mat-hint {
+                color: mat-color($foreground, hint-text);
             }
-
-            ////// OLD STYLES //////
-            /*
-            .column:not(:first-child) {
-                border-left: 1px solid map-get($foreground, divider);
-            }
-
-            .config-control.with-enable-label {
-                .mat-caption.is-enabled {
-                    color: $good-green;
-                }
-            }*/
         }
     }
 }

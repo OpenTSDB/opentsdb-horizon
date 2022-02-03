@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -22,7 +22,8 @@ import { Subscription } from 'rxjs';
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-general',
     templateUrl: './widget-config-general.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-general.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigGeneralComponent implements OnInit, OnDestroy {
     @HostBinding('class.widget-config-tab') private _hostClass = true;

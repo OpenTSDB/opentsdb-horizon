@@ -17,40 +17,35 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@mixin widget-config-general-component-base() {
+@import 'loader-component';
 
-    $default-padding: map-get($widgets-common-config, default-padding);
+$default-padding: map-get($widgets-common-config, default-padding);
 
-    .widget-config-tab.general-configuration {
-        padding-left: 10px;
-        padding-top: 5px;
+.widget-config-tab.general-configuration {
+    padding-left: 10px;
+    padding-top: 5px;
 
-        margin-top: ($default-padding * 2);
+    margin-top: ($default-padding * 2);
 
-        // title input
-        .config-widget-title {
-            .mat-form-field {
-                min-width: 400px;
-            }
+    // title input
+    .config-widget-title {
+        .mat-form-field {
+            min-width: 400px;
         }
-        // description textarea
-        .config-widget-description {
-            .mat-form-field {
-                min-width: 600px;
-            }
+    }
+    // description textarea
+    .config-widget-description {
+        .mat-form-field {
+            min-width: 600px;
         }
+    }
 
-        form {
-            display: block;
-        }
+    form {
+        display: block;
     }
 }
 
-@mixin widget-config-general-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        .widget-config-tab.general-configuration {
-            // style rules here
-        }
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    .widget-config-tab.general-configuration {}
+//}

@@ -17,58 +17,55 @@
 
 // * THEME-PICKER COMPONENT */
 
-@mixin theme-picker-component-base() {
-    .nav-theme-picker {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+@import 'loader-component';
 
-        .mat-icon-button {
-            width: 24px;
-            height: 24px;
-            line-height: 1;
-        }
-    }
+.nav-theme-picker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-    //cdk items
-    .nav-bar-dropmenu.nav-bar-themepicker-menu {
-        // arrow
-        &::after {
-            bottom: calc(100% - 3px);
-            left: calc(100% - 12px);
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-            border-width: 6px;
-            margin-left: -6px;
-        }
+    .mat-icon-button {
+        width: 24px;
+        height: 24px;
+        line-height: 1;
     }
 }
 
-@mixin theme-picker-component-theme($theme-config) {
+//cdk items
+.nav-bar-dropmenu.nav-bar-themepicker-menu {
+    // arrow
+    &::after {
+        bottom: calc(100% - 3px);
+        left: calc(100% - 12px);
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-width: 6px;
+        margin-left: -6px;
+    }
+}
 
-    @include variables-compatibility($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-        //.nav-theme-picker { }
+    //.nav-theme-picker { }
 
-        // CDK items are outside of component namespace class - be sure to give them very unique names
-        .nav-bar-dropmenu.nav-bar-themepicker-menu {
+    // CDK items are outside of component namespace class - be sure to give them very unique names
+    .nav-bar-dropmenu.nav-bar-themepicker-menu {
 
-            // arrow
-            &::after {
-                border-color: rgba($white, 0);
-                border-bottom-color: mat-color($background, menu); // actual color of arrow
-            }
+        // arrow
+        &::after {
+            border-color: rgba($white, 0);
+            border-bottom-color: mat-color($background, menu); // actual color of arrow
+        }
 
-            .mat-menu-item.is-active {
-                .mat-icon {
-                    color: mat-color($accent, A200);
-                }
+        .mat-menu-item.is-active {
+            .mat-icon {
+                color: mat-color($accent, A200);
             }
         }
     }
-
 }

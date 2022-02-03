@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin simple-namespaces-list-component-base() {
 
-}
+//@import 'loader-component';
 
-@mixin simple-namespaces-list-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // styles here
-    }
-}
+//.widget-panel-content.simple-namespaces-list {}
+
+// * THEME VARIANTS
+//@include init-component-variants() {
+// styles here
+//}

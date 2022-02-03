@@ -15,99 +15,98 @@
 // * limitations under the License.
 // *
 
-@mixin simple-favorites-list-component-base() {
-    .widget-panel-content.simple-favorites-list {
-        .has-scroller {
-            flex: 1;
-            max-width: 100%;
-            max-height: 100%;
+@import 'loader-component';
 
-            .is-scroller {
-                padding: 0;
-            }
+.widget-panel-content.simple-favorites-list {
+    .has-scroller {
+        flex: 1;
+        max-width: 100%;
+        max-height: 100%;
+
+        .is-scroller {
+            padding: 0;
+        }
+    }
+
+    .mat-table {
+        @include mat-elevation(0);
+        width: 100%;
+
+        tr.mat-header-row {
+            height: 32px;
         }
 
-        .mat-table {
-            @include mat-elevation(0);
-            width: 100%;
+        td.mat-cell {
+            cursor: pointer;
 
-            tr.mat-header-row {
-                height: 32px;
+            &.mat-column-dashboard {
+                width: 100%;
             }
 
-            td.mat-cell {
-                cursor: pointer;
+            &:first-of-type {
+                padding-right: 12px;
+            }
 
-                &.mat-column-dashboard {
-                    width: 100%;
-                }
+            &:last-of-type {
+                white-space: nowrap;
+            }
 
-                &:first-of-type {
-                    padding-right: 12px;
-                }
+            .fav-labels {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: stretch;
 
-                &:last-of-type {
-                    white-space: nowrap;
-                }
-
-                .fav-labels {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: stretch;
-                    justify-content: stretch;
-
-                    .root-path,
-                    .visited-date,
-                    .visited-time {
-                        font-size: 10px;
-                    }
+                .root-path,
+                .visited-date,
+                .visited-time {
+                    font-size: 10px;
                 }
             }
         }
     }
 }
 
-@mixin simple-favorites-list-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+// * THEME VARIANTS
+@include init-component-variants() {
 
-        $row-hover-bg: if(
-            $is-dark,
-            mat-color($primary, 50, .05),
-            mat-color($primary, 50)
-        );
+    $row-hover-bg: if(
+        $is-dark,
+        mat-color($primary, 50, .05),
+        mat-color($primary, 50)
+    );
 
-        $table-header-bg: if(
-            $is-dark,
-            mat-color($foreground, divider, .15),
-            mat-color($foreground, divider)
-        );
+    $table-header-bg: if(
+        $is-dark,
+        mat-color($foreground, divider, .15),
+        mat-color($foreground, divider)
+    );
 
-        .widget-panel-content.simple-favorites-list {
-            .mat-table {
-                tr.mat-header-row {
-                    background: $table-header-bg;
+    .widget-panel-content.simple-favorites-list {
+        .mat-table {
+            tr.mat-header-row {
+                background: $table-header-bg;
+            }
+
+            tr.mat-row {
+                &:hover {
+                    background-color: $row-hover-bg;
                 }
+            }
 
-                tr.mat-row {
-                    &:hover {
-                        background-color: $row-hover-bg;
+            td.mat-cell {
+
+                .fav-labels {
+
+                    .dashboard-name {
+                        color: mat-color($foreground, link);
                     }
-                }
 
-                td.mat-cell {
-
-                    .fav-labels {
-
-                        .dashboard-name {
-                            color: mat-color($foreground, link);
-                        }
-
-                        .root-path,
-                        .fav-date {
-                            color: mat-color($foreground, text, .7);
-                        }
+                    .root-path,
+                    .fav-date {
+                        color: mat-color($foreground, text, .7);
                     }
                 }
             }

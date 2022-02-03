@@ -18,7 +18,8 @@ import {
     Component,
     OnInit,
     HostBinding,
-    OnDestroy
+    OnDestroy,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -32,7 +33,9 @@ import { FormControl } from '@angular/forms';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'simple-favorites-list',
-    templateUrl: './simple-favorites-list.component.html'
+    templateUrl: './simple-favorites-list.component.html',
+    styleUrls: ['./simple-favorites-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
 
