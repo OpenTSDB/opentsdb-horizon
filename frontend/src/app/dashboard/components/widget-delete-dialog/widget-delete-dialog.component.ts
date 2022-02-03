@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding } from '@angular/core';
+import { Component, OnInit, Inject, HostBinding, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-widget-delete-dialog',
   templateUrl: './widget-delete-dialog.component.html',
-  styleUrls: ['./widget-delete-dialog.component.scss']
+  styleUrls: ['./widget-delete-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetDeleteDialogComponent implements OnInit {
 

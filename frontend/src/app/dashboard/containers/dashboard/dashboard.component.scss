@@ -16,30 +16,275 @@
 // *
 
 // * DASHBOARD CONTAINER COMPONENT */
+@import 'loader-component';
 
-@mixin dashboard-component-base() {
-    .app-dashboard {
+
+.app-dashboard {
+    display: flex;
+    flex: 1 1 100%;
+    * {
+        animation: none !important;
+        transition-property: none !important;
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+    }
+}
+
+.app-navbar {
+    // title
+    .inline-editable {
+        padding-left: 15px;
+    }
+}
+
+
+// NAVBAR PORTAL ITEMS
+.nav-add-new-widget,
+.nav-dashboard-actions,
+.nav-refresh-icon,
+.nav-explore-close,
+.nav-dashboard-template-var-trigger {
+    .mat-raised-button,
+    .mat-flat-button {
+        line-height: 24px;
+        font-size: 12px;
+
+        .mat-icon {
+            font-size: 1.2em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            &:first-child {
+                margin-right: 6px;
+            }
+
+            &:last-child {
+                margin-left: 6px;
+            }
+        }
+
+        &.explore-close-button,
+        &.save-dashboard-button {
+            padding: 0;
+            min-width: initial;
+            margin: auto 6px;
+
+            .mat-icon {
+                margin: 0px;
+            }
+        }
+        &.explore-close-button {
+            .mat-icon {
+                font-size: 1.8em;
+            }
+        }
+    }
+}
+
+.nav-add-new-widget,
+.nav-dashboard-template-var-trigger {
+    .mat-raised-button,
+    .mat-flat-button {
+        padding-left: 6px;
+    }
+
+    .widget-clipboard-paste-trigger.mat-flat-button {
+        margin-left: 4px;
+        min-width: initial;
+        padding: 0;
+
+        .mat-icon {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
+.nav-dashboard-actions {
+    .mat-raised-button,
+    .mat-flat-button {
+        padding-right: 0;
+    }
+}
+
+.nav-refresh-icon {
+    &.navbar-item {
+        margin-right: 0;
+    }
+
+    .mat-raised-button,
+    .mat-flat-button {
+        min-width: auto;
+        padding: 0;
+
+        .mat-icon {
+            &,
+            &:last-child,
+            &:first-child {
+                margin-left: 3px;
+                margin-right: 3px;
+            }
+        }
+    }
+}
+
+.nav-date-time-picker.dtp-time-picker {
+    &.navbar-item {
+        margin: 0 5px 0 2px;
+    }
+}
+
+.app-navbar .navbar-item.nav-dashboard-config-trigger {
+    margin-left: 0;
+}
+
+.controls-bar {
+    display: flex;
+
+    .batch-controls-wrap {
+        .mat-icon {
+            @include sizeDenaliIcon(18px);
+        }
+    }
+
+    .batch-controls {
+        //background: rgba($black, 0.08);
+        min-width: 100px;
         display: flex;
-        flex: 1 1 100%;
-        * {
-            animation: none !important;
-            transition-property: none !important;
-            -webkit-transition: none !important;
-            -moz-transition: none !important;
-            -o-transition: none !important;
-            transition: none !important;
-        }
+        align-items: center;
+        justify-content: center;
+        padding: 0 8px;
     }
 
-    .app-navbar {
-        // title
-        .inline-editable {
-            padding-left: 15px;
-        }
+    .batch-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -5px
+    }
+}
+
+// cdk items
+.dashboard-actions-menu {
+    width: 150px;
+}
+
+
+.dashboard-available-widgets-menu.mat-menu-panel {
+    max-width: 390px;
+    position: relative;
+    overflow: initial;
+    //max-width: initial;
+
+    .timerange-picker-container {
+        padding: 0 12px;
     }
 
+    .available-widget-output {
+        margin: auto 10px;
+    }
 
-    // NAVBAR PORTAL ITEMS
+    .widget-types {
+
+        .widget-type-selector {
+            padding: 8px 16px 0 16px;
+            width: 110px;
+
+            &:not(:last-child) {
+                margin-right: 12px;
+                margin-bottom: 12px;
+            }
+
+            .mat-button-wrapper {
+                display: inline-flex;
+                flex-direction: column;
+            }
+
+            .widget-type-label,
+            .widget-type-icon {
+                width: 100%;
+                line-height: 32px;
+            }
+
+            //.widget-type-label {}
+
+            .widget-type-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+
+                &::after {
+                    content: '';
+                    display: block;
+                    overflow: hidden;
+                    width: 50px;
+                    height: 50px;
+                    background-repeat: no-repeat;
+                    background-size: 200px; // four columns of icons * 50px = 200px
+                    background-image: url(/assets/widget-icon-sprite.png);
+                }
+
+                &.widget-icon-bar-graph::after {
+                    background-position: -50px 0px;
+                }
+
+                &.widget-icon-area-graph::after {
+                    background-position: 0px 0px;
+                }
+
+                &.widget-icon-line-chart::after {
+                    background-position: -100px -50px
+                }
+
+                &.widget-icon-heatmap::after {
+                    background-position: -50px -50px
+                }
+
+                &.widget-icon-topn-chart::after {
+                    background-position: -150px -50px
+                }
+
+                &.widget-icon-big-number::after {
+                    background-position: -100px 0px;
+                }
+
+                &.widget-icon-donut-chart::after {
+                    background-position: 0px -50px;
+                }
+
+                &.widget-icon-statuses::after {
+                    background-position: -150px 0px;
+                }
+
+                &.widget-icon-notes::after {
+                    background-position: 0px -100px;
+                }
+
+                &.widget-icon-events::after {
+                    background-position: -50px -100px;
+                }
+
+                &.widget-icon-table::after {
+                    background-position: -150px -100px;
+                }
+            }
+        }
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $close-button-background: mat-color($accent, A400);
+    $close-button-text: mat-color($foreground, navbar-text);
+    $navbar-background: mat-color($background, navbar);
+
+    $disabled-text: map-get($foreground, disabled-text);
+
     .nav-add-new-widget,
     .nav-dashboard-actions,
     .nav-refresh-icon,
@@ -47,347 +292,94 @@
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
-            line-height: 24px;
-            font-size: 12px;
+            background-color: mat-color($background, navbar-button);
+            color: mat-color($foreground, navbar-text);
 
-            .mat-icon {
-                font-size: 1.2em;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-
-                &:first-child {
-                    margin-right: 6px;
-                }
-
-                &:last-child {
-                    margin-left: 6px;
-                }
-            }
-
-            &.explore-close-button,
-            &.save-dashboard-button {
-                padding: 0;
-                min-width: initial;
-                margin: auto 6px;
-
-                .mat-icon {
-                    margin: 0px;
-                }
-            }
-            &.explore-close-button {
-                .mat-icon {
-                    font-size: 1.8em;
-                }
+            &:hover {
+                background-color: mat-color($background, navbar-button-hover);
             }
         }
     }
-
-    .nav-add-new-widget,
-    .nav-dashboard-template-var-trigger {
-        .mat-raised-button,
-        .mat-flat-button {
-            padding-left: 6px;
-        }
-
-        .widget-clipboard-paste-trigger.mat-flat-button {
-            margin-left: 4px;
-            min-width: initial;
-            padding: 0;
-
-            .mat-icon {
-                margin-left: 0;
-                margin-right: 0;
-            }
-        }
-    }
-
-    .nav-dashboard-actions {
-        .mat-raised-button,
-        .mat-flat-button {
-            padding-right: 0;
-        }
-    }
-
-    .nav-refresh-icon {
-        &.navbar-item {
-            margin-right: 0;
-        }
-
-        .mat-raised-button,
-        .mat-flat-button {
-            min-width: auto;
-            padding: 0;
-
-            .mat-icon {
-                &,
-                &:last-child,
-                &:first-child {
-                    margin-left: 3px;
-                    margin-right: 3px;
-                }
-            }
-        }
-    }
-
-    .nav-date-time-picker.dtp-time-picker {
-        &.navbar-item {
-            margin: 0 5px 0 2px;
-        }
-    }
-
-    .app-navbar .navbar-item.nav-dashboard-config-trigger {
-        margin-left: 0;
-    }
-
-    .controls-bar {
-        display: flex;
-
-        .batch-controls-wrap {
-            .mat-icon {
-                @include sizeDenaliIcon(18px);
-            }
-        }
-
-        .batch-controls {
-            //background: rgba($black, 0.08);
-            min-width: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 8px;
-        }
-
-        .batch-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: -5px
-        }
+    .nav-title-readonly {
+        color: $navbar-background;
     }
 
     // cdk items
-    .dashboard-actions-menu {
-        width: 150px;
+    .controls-bar {
+        .batch-controls-wrap {
+            border-bottom: 1px solid mat-color($foreground, divider);
+
+            .batch-toggle {
+                background: mat-color($primary, default, 0.08);
+            }
+
+            .batch-select,
+            .batch-copy,
+            .batch-trash {
+                color: mat-color($foreground, link);
+
+                &[disabled] {
+                    color: $disabled-text;
+                }
+            }
+
+            .batch-select.is-checked {
+                color: mat-color($accent, default);
+            }
+        }
     }
 
-
-    .dashboard-available-widgets-menu.mat-menu-panel {
-        max-width: 390px;
-        position: relative;
-        overflow: initial;
-        //max-width: initial;
-
-        .timerange-picker-container {
-            padding: 0 12px;
+    .mat-flat-button {
+        &.save-dashboard-button {
+            background-color: mat-color($other, status-success);
+            color: mat-color($other, status-success-contrast);
         }
+    }
 
-        .available-widget-output {
-            margin: auto 10px;
+    .dashboard-available-widgets-menu {
+        &::after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: mat-color($background, menu); // actual color of arrow
         }
 
         .widget-types {
-
             .widget-type-selector {
-                padding: 8px 16px 0 16px;
-                width: 110px;
+                // need a background color here
+                background-color: mat-color($other, widget-icons-background);
 
-                &:not(:last-child) {
-                    margin-right: 12px;
-                    margin-bottom: 12px;
+                &:hover {
+                    background-color: mat-color($other, widget-icons-background-hover);
                 }
+            }
 
-                .mat-button-wrapper {
-                    display: inline-flex;
-                    flex-direction: column;
-                }
-
-                .widget-type-label,
-                .widget-type-icon {
-                    width: 100%;
-                    line-height: 32px;
-                }
-
-                //.widget-type-label {}
-
-                .widget-type-icon {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-
-                    &::after {
-                        content: '';
-                        display: block;
-                        overflow: hidden;
-                        width: 50px;
-                        height: 50px;
-                        background-repeat: no-repeat;
-                        background-size: 200px; // four columns of icons * 50px = 200px
-                        background-image: url(/assets/widget-icon-sprite.png);
-                    }
-
-                    &.widget-icon-bar-graph::after {
-                        background-position: -50px 0px;
-                    }
-
-                    &.widget-icon-area-graph::after {
-                        background-position: 0px 0px;
-                    }
-
-                    &.widget-icon-line-chart::after {
-                        background-position: -100px -50px
-                    }
-
-                    &.widget-icon-heatmap::after {
-                        background-position: -50px -50px
-                    }
-
-                    &.widget-icon-topn-chart::after {
-                        background-position: -150px -50px
-                    }
-
-                    &.widget-icon-big-number::after {
-                        background-position: -100px 0px;
-                    }
-
-                    &.widget-icon-donut-chart::after {
-                        background-position: 0px -50px;
-                    }
-
-                    &.widget-icon-statuses::after {
-                        background-position: -150px 0px;
-                    }
-
-                    &.widget-icon-notes::after {
-                        background-position: 0px -100px;
-                    }
-
-                    &.widget-icon-events::after {
-                        background-position: -50px -100px;
-                    }
-
-                    &.widget-icon-table::after {
-                        background-position: -150px -100px;
-                    }
-                }
+            .widget-type-label {
+                color: mat-color($foreground, text);
             }
         }
     }
 
-
-}
-
-@mixin dashboard-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        $close-button-background: mat-color($accent, A400);
-        $close-button-text: mat-color($foreground, navbar-text);
-        $navbar-background: mat-color($background, navbar);
-
-        $disabled-text: map-get($foreground, disabled-text);
-
-        .nav-add-new-widget,
-        .nav-dashboard-actions,
-        .nav-refresh-icon,
-        .nav-explore-close,
-        .nav-dashboard-template-var-trigger {
-            .mat-raised-button,
-            .mat-flat-button {
-                background-color: mat-color($background, navbar-button);
-                color: mat-color($foreground, navbar-text);
-
+    .app-navbar .inline-editable,
+    .app-navbar .mat-toolbar .inline-editable {
+        .mat-form-field {
+            &.readonly-mode {
                 &:hover {
-                    background-color: mat-color($background, navbar-button-hover);
-                }
-            }
-        }
-        .nav-title-readonly {
-            color: $navbar-background;
-        }
-
-        // cdk items
-        .controls-bar {
-            .batch-controls-wrap {
-                border-bottom: 1px solid mat-color($foreground, divider);
-
-                .batch-toggle {
-                    background: mat-color($primary, default, 0.08);
-                }
-
-                .batch-select,
-                .batch-copy,
-                .batch-trash {
-                    color: mat-color($foreground, link);
-
-                    &[disabled] {
-                        color: $disabled-text;
-                    }
-                }
-
-                .batch-select.is-checked {
-                    color: mat-color($accent, default);
-                }
-            }
-        }
-
-        .mat-flat-button {
-            &.save-dashboard-button {
-                background-color: mat-color($other, status-success);
-                color: mat-color($other, status-success-contrast);
-            }
-        }
-
-        .dashboard-available-widgets-menu {
-            &::after {
-                border-color: rgba(255, 255, 255, 0);
-                border-bottom-color: mat-color($background, menu); // actual color of arrow
-            }
-
-            .widget-types {
-                .widget-type-selector {
-                    // need a background color here
-                    background-color: mat-color($other, widget-icons-background);
-
-                    &:hover {
-                        background-color: mat-color($other, widget-icons-background-hover);
-                    }
-                }
-
-                .widget-type-label {
-                    color: mat-color($foreground, text);
-                }
-            }
-        }
-
-
-        %inline-editable-app-navbar-override {
-            .mat-form-field {
-                &.readonly-mode {
-                    &:hover {
-                        background-color: rgba($white, 0.25) !important;
-                    }
-                }
-
-                &.editing-mode {
                     background-color: rgba($white, 0.25) !important;
                 }
             }
-        }
 
-        .app-navbar .inline-editable,
-        .app-navbar .mat-toolbar .inline-editable {
-            @extend %inline-editable-app-navbar-override;
-        }
-
-        $success-bg: mat-color($other, status-success);
-        $success-txt: mat-color($other, status-success-contrast);
-
-        .mat-snack-bar-container.success-notification {
-            color: $success-txt;
-            background: $success-bg;
-            box-shadow: 2px 2px 6px $black;
+            &.editing-mode {
+                background-color: rgba($white, 0.25) !important;
+            }
         }
     }
+
+    $success-bg: mat-color($other, status-success);
+    $success-txt: mat-color($other, status-success-contrast);
+
+    .mat-snack-bar-container.success-notification {
+        color: $success-txt;
+        background: $success-bg;
+        box-shadow: 2px 2px 6px $black;
+    }
 }
+

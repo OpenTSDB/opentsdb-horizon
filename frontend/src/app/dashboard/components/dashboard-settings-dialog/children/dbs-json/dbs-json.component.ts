@@ -20,14 +20,16 @@ import {
     HostBinding,
     EventEmitter,
     Input,
-    Output
+    Output,
+    ViewEncapsulation
 } from '@angular/core';
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'dbs-json',
     templateUrl: './dbs-json.component.html',
-    styleUrls: ['./dbs-json.component.scss']
+    styleUrls: ['./dbs-json.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsJsonComponent implements OnInit {
 

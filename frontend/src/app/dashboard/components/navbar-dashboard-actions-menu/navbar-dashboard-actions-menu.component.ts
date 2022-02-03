@@ -21,7 +21,8 @@ import {
     Output,
     EventEmitter,
     HostBinding,
-    ViewChild
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 
 import {
@@ -39,7 +40,8 @@ import { IntercomService, IMessage } from '../../../core/services/intercom.servi
     // tslint:disable-next-line:component-selector
     selector: 'navbar-dashboard-actions-menu',
     templateUrl: './navbar-dashboard-actions-menu.component.html',
-    styleUrls: []
+    styleUrls: ['./navbar-dashboard-actions-menu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavbarDashboardActionsMenuComponent implements OnInit {
 

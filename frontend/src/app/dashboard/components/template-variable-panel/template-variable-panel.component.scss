@@ -15,950 +15,940 @@
 // * limitations under the License.
 // *
 
-@mixin template-variable-panel-component-base() {
+@import 'loader-component';
 
-    $vtb-height: 44px;
+$vtb-height: 44px;
 
-    .isDisabled {
-        color: currentColor;
-        cursor: not-allowed;
-        opacity: 0.5;
-        text-decoration: none;
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.template-variable-panel-component {
+    width: 100%;
+    max-width: 100%;
+
+    .regexp {
+        padding: 0 2px 0 6px;
+        align-items: center;
+        align-self: stretch;
+        display: flex;
+        background-color: #eeeeee;
+        font-style: italic;
+        font-size: smaller;
     }
 
-    .template-variable-panel-component {
+    /* Table overrides */
+    table {
+        width: auto;
+    }
+
+    th {
+        padding-left: 8px;
+        text-transform: uppercase;
+        font-size: 10px;
+        user-select: none;
+
+        &:first-child {
+            padding-left: 4px;
+        }
+
+    }
+
+    th,
+    td {
+        font-size: 10px;
+    }
+
+    ul.varlist {
+        li {
+                display: inline;
+            list-style-type: none;
+            padding-right: 10px;
+        }
+    }
+
+    /* wrapper for variables - NOT in edit mode */
+    .variable-list-wrapper {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        height: 100%;
+        min-height: 44px;
         width: 100%;
         max-width: 100%;
+        padding: 4px 12px;
+    }
 
-        .regexp {
-            padding: 0 2px 0 6px;
-            align-items: center;
-            align-self: stretch;
+    .hidden-focus {
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        float: left;
+        margin-left: -10000px;
+        background: transparent;
+        outline: none;
+        opacity: 0;
+    }
+
+    /* wrapper for EDIT view */
+    .variable-edit-wrapper {
+        padding: 0;
+        height: 100%;
+    }
+
+    .variable-form-wrapper {
+        display: flex;
+        flex: 1;
+
+        .column-title {
+            margin-bottom: 6px;
+        }
+
+        .namespace-column,
+        .filters-column {
             display: flex;
-            background-color: #eeeeee;
-            font-style: italic;
-            font-size: smaller;
+            flex-direction: column;
+            padding: 10px 16px;
         }
 
-        /* Table overrides */
-        table {
-            width: auto;
-        }
+        .namespace-column {
+            max-width: 300px;
+            min-width: 300px;
+            flex: 1 1 300px;
 
-        th {
-            padding-left: 8px;
-            text-transform: uppercase;
-            font-size: 10px;
-            user-select: none;
-
-            &:first-child {
-                padding-left: 4px;
-            }
-
-        }
-
-        th,
-        td {
-            font-size: 10px;
-        }
-
-        ul.varlist {
-            li {
-                 display: inline;
-                list-style-type: none;
-                padding-right: 10px;
-            }
-        }
-
-        /* wrapper for variables - NOT in edit mode */
-        .variable-list-wrapper {
-            display: flex;
-            align-items: center;
-            flex: 1;
-            height: 100%;
-            min-height: 44px;
-            width: 100%;
-            max-width: 100%;
-            padding: 4px 12px;
-        }
-
-        .hidden-focus {
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            float: left;
-            margin-left: -10000px;
-            background: transparent;
-            outline: none;
-            opacity: 0;
-        }
-
-        /* wrapper for EDIT view */
-        .variable-edit-wrapper {
-            padding: 0;
-            height: 100%;
-        }
-
-        .variable-form-wrapper {
-            display: flex;
-            flex: 1;
-
-            .column-title {
-                margin-bottom: 6px;
-            }
-
-            .namespace-column,
-            .filters-column {
-                display: flex;
-                flex-direction: column;
-                padding: 10px 16px;
-            }
-
-            .namespace-column {
-                max-width: 300px;
-                min-width: 300px;
-                flex: 1 1 300px;
-
-                .mat-form-field {
-                    width: 100%;
-                }
-
-                .mat-chip-list-wrapper {
-                    margin: 0px;
-                }
-
-                .mat-chip {
-                    font-weight: 300;
-                }
-
-                .mat-standard-chip {
-                    margin: 2px;
-                    min-height: 25px;
-                    padding: 5px 8px;
-                }
-
-                .mat-icon {
-                    width: 15px;
-                    height: 15px;
-                    font-size: 15px;
-                }
-            }
-
-            .filters-column {
-                flex: 1;
-            }
-
-            .new-tag-filter {
-                .mat-button {
-                    font-size: 12px;
-                    line-height: 24px;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                    }
-
-                    .mat-icon:first-child {
-                        margin-right: 6px;
-                    }
-                }
-            }
-
-            .namespace-required-message {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 16px;
-            }
-        }
-
-        /* form fields for list-view */
-        .dashboard-template-variable.mat-form-field {
-
-            .mat-form-field-prefix,
-            .mat-form-field-suffix {
-                align-self: stretch;
-                display: flex;
-                align-items: center;
-                padding: 0 4px;
-            }
-
-            .mat-form-field-prefix {
-                padding: 0;
-
-                .automode {
-                    padding: 0 4px;
-                    align-items: center;
-                    align-self: stretch;
-                    display: flex;
-                }
-            }
-
-            .mat-form-field-infix {
-                min-width: 50px;
+            .mat-form-field {
                 width: 100%;
             }
-            &.mat-focused {
-                .mat-form-field-suffix {
-                    display: none;
+
+            .mat-chip-list-wrapper {
+                margin: 0px;
+            }
+
+            .mat-chip {
+                font-weight: 300;
+            }
+
+            .mat-standard-chip {
+                margin: 2px;
+                min-height: 25px;
+                padding: 5px 8px;
+            }
+
+            .mat-icon {
+                width: 15px;
+                height: 15px;
+                font-size: 15px;
+            }
+        }
+
+        .filters-column {
+            flex: 1;
+        }
+
+        .new-tag-filter {
+            .mat-button {
+                font-size: 12px;
+                line-height: 24px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                }
+
+                .mat-icon:first-child {
+                    margin-right: 6px;
                 }
             }
         }
 
-        /* Some button overrides */
-        .configure-variables-button,
-        .edit-variables-button,
-        .delete-variable-button,
-        .apply-to-all-button,
-        .remove-from-all-button {
-            line-height: 24px;
+        .namespace-required-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
+    }
 
-        .delete-variable-button {
-            width: 24px;
-            height: 24px;
-        }
+    /* form fields for list-view */
+    .dashboard-template-variable.mat-form-field {
 
-        .configure-variables-button,
-        .edit-variables-button {
-            .mat-icon {
-                @include sizeDenaliIcon(12px);
-                margin-right: 4px;
-            }
-        }
-
-        .configure-variables-button {
+        .mat-form-field-prefix,
+        .mat-form-field-suffix {
+            align-self: stretch;
+            display: flex;
+            align-items: center;
             padding: 0 4px;
         }
 
-        .edit-form-title {
-            display: flex;
-            align-items: center;
-            line-height: 30px;
-            margin-left: -6px;
-            margin-right: -6px;
-            padding-left: 12px;
-            background-color: rgba(180,220,220, .5);
-            font-weight: bold;
-            user-select: none;
-        }
+        .mat-form-field-prefix {
+            padding: 0;
 
-        /* in edit mode - these are the buttons at bottom */
-        .variable-action-controls {
-            width: 100%;
-            max-width: 100%;
-            padding: 5px 10px;
-
-            .edit-actions {
-
-                .mat-flat-button,
-                .mat-stroked-button {
-                    line-height: 24px;
-                }
-
-                .mat-flat-button {
-                    margin-right: 8px;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                        margin-right: 6px;
-                    }
-                }
+            .automode {
+                padding: 0 4px;
+                align-items: center;
+                align-self: stretch;
+                display: flex;
             }
         }
 
-
+        .mat-form-field-infix {
+            min-width: 50px;
+            width: 100%;
+        }
+        &.mat-focused {
+            .mat-form-field-suffix {
+                display: none;
+            }
+        }
     }
 
-    // cdk items here (if any)
+    /* Some button overrides */
+    .configure-variables-button,
+    .edit-variables-button,
+    .delete-variable-button,
+    .apply-to-all-button,
+    .remove-from-all-button {
+        line-height: 24px;
+    }
 
-    /* custom placeholder drag indicator */
+    .delete-variable-button {
+        width: 24px;
+        height: 24px;
+    }
 
-    .custom-tr-drag-placeholder {
-        transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-        max-width: 100%;
+    .configure-variables-button,
+    .edit-variables-button {
+        .mat-icon {
+            @include sizeDenaliIcon(12px);
+            margin-right: 4px;
+        }
+    }
+
+    .configure-variables-button {
+        padding: 0 4px;
+    }
+
+    .edit-form-title {
+        display: flex;
+        align-items: center;
+        line-height: 30px;
+        margin-left: -6px;
+        margin-right: -6px;
+        padding-left: 12px;
+        background-color: rgba(180,220,220, .5);
+        font-weight: bold;
+        user-select: none;
+    }
+
+    /* in edit mode - these are the buttons at bottom */
+    .variable-action-controls {
         width: 100%;
-        max-height: 49px;
-        height: 49px;
-        display: table-row !important;
-        vertical-align: inherit;
-        border-color: inherit;
-        padding: 4px;
-        border-collapse: collapse;
-        border-spacing: 0;
+        max-width: 100%;
+        padding: 5px 10px;
 
-        position: relative;
+        .edit-actions {
 
-        &:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            //background:red;
-            //box-shadow: inset 0 0 0 3px rgba(106, 84, 84, 0.15); // fake border
+            .mat-flat-button,
+            .mat-stroked-button {
+                line-height: 24px;
+            }
+
+            .mat-flat-button {
+                margin-right: 8px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 6px;
+                }
+            }
         }
     }
 
-    /* Edit Controls - this list of edit controls
-        - first selector is within the component
-        - second selector (with .cdk-drag) is in CDK during drag
-    */
 
-    .template-variable-panel-component .variable-edit-controls,
-    tr.variable-edit-controls.cdk-drag.cdk-drag-preview {
+}
 
-        td {
-            padding: 4px;
-            vertical-align: center;
+// cdk items here (if any)
 
-            height: 41px;
+/* custom placeholder drag indicator */
 
-            &:first-child {
-                padding-left: 0;
+.custom-tr-drag-placeholder {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    max-width: 100%;
+    width: 100%;
+    max-height: 49px;
+    height: 49px;
+    display: table-row !important;
+    vertical-align: inherit;
+    border-color: inherit;
+    padding: 4px;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    position: relative;
+
+    &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        //background:red;
+        //box-shadow: inset 0 0 0 3px rgba(106, 84, 84, 0.15); // fake border
+    }
+}
+
+/* Edit Controls - this list of edit controls
+    - first selector is within the component
+    - second selector (with .cdk-drag) is in CDK during drag
+*/
+
+.template-variable-panel-component .variable-edit-controls,
+tr.variable-edit-controls.cdk-drag.cdk-drag-preview {
+
+    td {
+        padding: 4px;
+        vertical-align: center;
+
+        height: 41px;
+
+        &:first-child {
+            padding-left: 0;
+        }
+    }
+
+    td:last-child {
+        width: 100%;
+    }
+
+    .settings-control {
+        height: 100%;
+        margin-bottom: 0;
+        transition: background-color 500ms ease-in-out;
+        display: flex;
+        align-items: center;
+
+        &.tag-key-control,
+        &.alias-control {
+            .mat-form-field .mat-form-field-infix {
+                width: 100%;
+                min-width: 100px;
+                max-width: 120px;
             }
         }
 
-        td:last-child {
-            width: 100%;
+        &.values-control {
+            .mat-form-field .mat-form-field-infix {
+                width: 100%;
+                min-width: 120px;
+                max-width: 150px;
+            }
         }
 
-        .settings-control {
-            height: 100%;
-            margin-bottom: 0;
-            transition: background-color 500ms ease-in-out;
-            display: flex;
+
+        &.actions-control {
+            justify-content: center;
+
+            .mat-label {
+                text-transform: uppercase;
+            }
+
+            .mat-button {
+                min-width: 36px;
+                padding: 0;
+                margin-right: 8px;
+            }
+
+            .mat-icon-button {
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                }
+            }
+
+            .auto-message {
+                white-space: nowrap;
+            }
+
+            .actions {
+                display: flex;
+            }
+
+            .add-to-button,
+            .remove-from-button {
+                padding: 0 10px;
+                font-size: 10px;
+                line-height: 18px;
+            }
+
+            // TODO: May remove the next 3 blocks
+            .affected-count {
+                margin-right: 12px;
+            }
+
+            .apply-to-all-button,
+            .remove-from-all-button {
+                padding: 0 4px;
+                margin-right: 8px;
+            }
+            .undo-button {
+                margin-right: 10px;
+                margin-left: -12px;
+            }
+        }
+
+        &.error-control {
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
 
-            &.tag-key-control,
-            &.alias-control {
-                .mat-form-field .mat-form-field-infix {
-                    width: 100%;
-                    min-width: 100px;
-                    max-width: 120px;
-                }
-            }
-
-            &.values-control {
-                .mat-form-field .mat-form-field-infix {
-                    width: 100%;
-                    min-width: 120px;
-                    max-width: 150px;
-                }
-            }
-
-
-            &.actions-control {
+            .errors {
+                display: flex;
+                align-items: stretch;
                 justify-content: center;
-
-                .mat-label {
-                    text-transform: uppercase;
-                }
-
-                .mat-button {
-                    min-width: 36px;
-                    padding: 0;
-                    margin-right: 8px;
-                }
-
-                .mat-icon-button {
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                    }
-                }
-
-                .auto-message {
-                    white-space: nowrap;
-                }
-
-                .actions {
-                    display: flex;
-                }
-
-                .add-to-button,
-                .remove-from-button {
-                    padding: 0 10px;
-                    font-size: 10px;
-                    line-height: 18px;
-                }
-
-                // TODO: May remove the next 3 blocks
-                .affected-count {
-                    margin-right: 12px;
-                }
-
-                .apply-to-all-button,
-                .remove-from-all-button {
-                    padding: 0 4px;
-                    margin-right: 8px;
-                }
-                .undo-button {
-                    margin-right: 10px;
-                    margin-left: -12px;
-                }
             }
+        }
 
-            &.error-control {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+        &.filter-mode-control {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 0 !important;
+            padding: 0 2px;
+            display: inline-block;
+            margin-top: 3px;
 
-                .errors {
-                    display: flex;
-                    align-items: stretch;
-                    justify-content: center;
-                }
-            }
-
-            &.filter-mode-control {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                border-bottom: 0 !important;
+            .sliding-toggle-group {
                 padding: 0 2px;
-                display: inline-block;
-                margin-top: 3px;
-
-                .sliding-toggle-group {
-                    padding: 0 2px;
 
 
-                    .mat-tab-link {
-                        font-size: 10px;
-                        height: 24px;
-                        padding: 0 4px;
-                        min-width: 50px;
-                        opacity: 1;
-                        z-index: 1;
-                        background-color: transparent;
-                        user-select: none;
+                .mat-tab-link {
+                    font-size: 10px;
+                    height: 24px;
+                    padding: 0 4px;
+                    min-width: 50px;
+                    opacity: 1;
+                    z-index: 1;
+                    background-color: transparent;
+                    user-select: none;
 
-                        &.mat-tab-label-active,
-                        &:not(.mat-tab-disabled):not(.mat-tab-label-active) {
-                            &,
-                            &:focus {
-                                background-color: transparent !important;
-                            }
-                        }
-
-                        &:not(.mat-tab-disabled):focus {
+                    &.mat-tab-label-active,
+                    &:not(.mat-tab-disabled):not(.mat-tab-label-active) {
+                        &,
+                        &:focus {
                             background-color: transparent !important;
                         }
                     }
 
-                    .mat-ink-bar {
-                        height: 20px;
-                        bottom: 2px;
-                        border-radius: 4px;
+                    &:not(.mat-tab-disabled):focus {
+                        background-color: transparent !important;
                     }
                 }
-            }
 
-            &.values-control {
-                .mat-form-field {
-                    width: 155px;
-                    max-width: 155px;
+                .mat-ink-bar {
+                    height: 20px;
+                    bottom: 2px;
+                    border-radius: 4px;
                 }
             }
         }
 
-        .filter-values-list {
-            .mat-chip-list-wrapper {
-                .mat-standard-chip {
-                    margin: 0 4px;
-                    padding: 3px 3px 3px 9px;
-                    line-height: 14px;
-                    font-size: 12px;
-                }
+        &.values-control {
+            .mat-form-field {
+                width: 155px;
+                max-width: 155px;
             }
         }
     }
 
-    // cdk items
-    .filter-scope-cdk-menu.mat-menu-panel {
-        max-width: initial; // reset this... can change to value later if needed
-        min-height: 200px; // change this to whatever min width you want
-        min-width: 400px;
-        display: flex;
-        overflow: hidden;
-
-        .mat-menu-content {
-            padding: 0;
-            display: flex;
-            flex: 1;
-
-            & > div {
-                display: flex;
-                flex-direction: row;
-                flex: 1;
-            }
-        }
-
-        /*.filter-scope-column-headers {
-            display: flex;
-
-            .header-column {
-                min-width: 150px;
-                padding: 2px 3px;
-                display: flex;
-                align-items: center;
-                font-size: 10px;
-                text-transform: uppercase;
-            }
-        }*/
-
-        .filter-tab-nav.mat-nav-list {
-            padding-top: 0;
-
-            .mat-icon {
-                @include sizeDenaliIcon(14px);
-            }
-
-            .mat-list-item {
-                width: 32px;
-                height: 32px;
-
-                .mat-list-item-content {
-                    justify-content: center;
-                }
-            }
-        }
-
-        .filter-scope-columns {
-            flex: 1;
-            max-height: 100%;
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-
-            .filter-scope-type {
-                padding: 2px 4px;
-                text-transform: uppercase;
-                font-size: 10px;
-                font-weight: bold;
-            }
-
-            .scope-columns-wrap {
-                display: flex;
-                flex: 1;
-            }
-
-            .header-column {
-                width: 100%;
-                padding: 2px 3px;
-                display: flex;
-                align-items: center;
-                font-size: 10px;
-                text-transform: uppercase;
-            }
-
-
-            .scope-column {
-                display: flex;
-                flex-direction: column;
-                min-width: 200px;
-            }
-
-            .list-filter,
-            .list-items .is-scroller {
-                padding: 4px;
-            }
-
-            .list-items {
-                flex: 1;
-            }
-
-            .list-item {
-                font-size: 10px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                cursor: pointer;
-
-                .mat-icon {
-                    @include sizeDenaliIcon(12px);
-                    margin-right: 8px;
-                }
-
-                &.mat-chip {
-                    min-height: 16px;
-                    padding: 2px 4px;
-                    max-width: 100%;
-                    display: inline-flex;
-
-                    .scope-value {
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        flex: 1;
-                    }
-
-                    .mat-icon {
-                        visibility: hidden;
-                    }
-
-                    .mat-icon:first-child {
-                        margin-right: 4px;
-                    }
-
-                    .mat-icon:last-child {
-                        margin-right: 0;
-                        margin-left: 4px;
-                    }
-
-                    &:hover .mat-icon {
-                        cursor: pointer;
-                        visibility: visible;
-                    }
-                }
-            }
-
-            .col-left {
-                .tag-search-input-field.mat-form-field {
-                    width: 100%;
-
-                    .mat-form-field-infix {
-                        min-width: 100px;
-                        width: 100%;
-                    }
-                }
-            }
-
-            .col-right {
-                .is-scroller {
-                    padding: 4px;
-                }
-            }
-        }
-    }
-
-    .mat-autocomplete-panel.default-value-autocomplete {
-        position: relative;
-        min-width: initial;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-
-        .option-list {
-            overflow: auto;
-            max-height: 224px;
-            flex: 1;
-        }
-
-        .filter-type-toggle {
-            width: 100%;
-
-            .mat-tab-link {
+    .filter-values-list {
+        .mat-chip-list-wrapper {
+            .mat-standard-chip {
+                margin: 0 4px;
+                padding: 3px 3px 3px 9px;
+                line-height: 14px;
                 font-size: 12px;
-                height: 26px;
-            }
-        }
-
-        &.mat-autocomplete-hidden {
-            .mat-tab-nav-bar {
-                display: none;
             }
         }
     }
 }
 
-@mixin template-variable-panel-component-theme($theme-config) {
+// cdk items
+.filter-scope-cdk-menu.mat-menu-panel {
+    max-width: initial; // reset this... can change to value later if needed
+    min-height: 200px; // change this to whatever min width you want
+    min-width: 400px;
+    display: flex;
+    overflow: hidden;
 
-    @include variables-compatibility($theme-config) {
+    .mat-menu-content {
+        padding: 0;
+        display: flex;
+        flex: 1;
 
-        .template-variable-panel-component {
+        & > div {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+        }
+    }
+
+    /*.filter-scope-column-headers {
+        display: flex;
+
+        .header-column {
+            min-width: 150px;
+            padding: 2px 3px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+    }*/
+
+    .filter-tab-nav.mat-nav-list {
+        padding-top: 0;
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
+
+        .mat-list-item {
+            width: 32px;
+            height: 32px;
+
+            .mat-list-item-content {
+                justify-content: center;
+            }
+        }
+    }
+
+    .filter-scope-columns {
+        flex: 1;
+        max-height: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .filter-scope-type {
+            padding: 2px 4px;
+            text-transform: uppercase;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .scope-columns-wrap {
+            display: flex;
+            flex: 1;
+        }
+
+        .header-column {
+            width: 100%;
+            padding: 2px 3px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+
+        .scope-column {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .list-filter,
+        .list-items .is-scroller {
+            padding: 4px;
+        }
+
+        .list-items {
+            flex: 1;
+        }
+
+        .list-item {
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+
+            .mat-icon {
+                @include sizeDenaliIcon(12px);
+                margin-right: 8px;
+            }
+
+            &.mat-chip {
+                min-height: 16px;
+                padding: 2px 4px;
+                max-width: 100%;
+                display: inline-flex;
+
+                .scope-value {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    flex: 1;
+                }
+
+                .mat-icon {
+                    visibility: hidden;
+                }
+
+                .mat-icon:first-child {
+                    margin-right: 4px;
+                }
+
+                .mat-icon:last-child {
+                    margin-right: 0;
+                    margin-left: 4px;
+                }
+
+                &:hover .mat-icon {
+                    cursor: pointer;
+                    visibility: visible;
+                }
+            }
+        }
+
+        .col-left {
+            .tag-search-input-field.mat-form-field {
+                width: 100%;
+
+                .mat-form-field-infix {
+                    min-width: 100px;
+                    width: 100%;
+                }
+            }
+        }
+
+        .col-right {
+            .is-scroller {
+                padding: 4px;
+            }
+        }
+    }
+}
+
+.mat-autocomplete-panel.default-value-autocomplete {
+    position: relative;
+    min-width: initial;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .option-list {
+        overflow: auto;
+        max-height: 224px;
+        flex: 1;
+    }
+
+    .filter-type-toggle {
+        width: 100%;
+
+        .mat-tab-link {
+            font-size: 12px;
+            height: 26px;
+        }
+    }
+
+    &.mat-autocomplete-hidden {
+        .mat-tab-nav-bar {
+            display: none;
+        }
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    .template-variable-panel-component {
+        background-color: mat-color($background, card);
+        //color: mat-color($foreground, navbar-text);
+        border-bottom: 1px solid mat-color($foreground, divider);
+
+        &.is-edit-mode {
             background-color: mat-color($background, card);
-            //color: mat-color($foreground, navbar-text);
-            border-bottom: 1px solid mat-color($foreground, divider);
+            color: mat-color($foreground, text);
+        }
 
-            &.is-edit-mode {
-                background-color: mat-color($background, card);
-                color: mat-color($foreground, text);
-            }
+        .error-msg {
+            color: mat-color($warn, default);
+        }
 
-            .error-msg {
-                color: mat-color($warn, default);
-            }
+        .variable-list-wrapper {
+            .varlist {
+                .mat-form-field {
+                    &.mat-form-field-appearance-fill {
+                        .mat-form-field-flex {
+                            background-color: mat-color($primary, default, 0.08);
+                        }
 
-            .variable-list-wrapper {
-                .varlist {
-                    .mat-form-field {
-                        &.mat-form-field-appearance-fill {
+                        .mat-form-field-underline::before {
+                            background-color: rgba(0,0,0,0); // this is transparent
+                        }
+
+                        &:hover:not(.mat-focused) {
                             .mat-form-field-flex {
-                                background-color: mat-color($primary, default, 0.08);
+                                background-color: mat-color($primary, default, .1);
                             }
 
-                            .mat-form-field-underline::before {
+                            .mat-form-field-underline {
                                 background-color: rgba(0,0,0,0); // this is transparent
-                            }
 
-                            &:hover:not(.mat-focused) {
-                                .mat-form-field-flex {
-                                    background-color: mat-color($primary, default, .1);
-                                }
-
-                                .mat-form-field-underline {
-                                    background-color: rgba(0,0,0,0); // this is transparent
-
-                                    .mat-form-field-ripple {
-                                        background-color: mat-color($primary, default, 0.3);
-                                    }
+                                .mat-form-field-ripple {
+                                    background-color: mat-color($primary, default, 0.3);
                                 }
                             }
+                        }
 
-                            &.mat-focused,
-                            &:hover {
-                                .mat-form-field-flex {
-                                    background-color: mat-color($primary, default, .08);
-                                }
+                        &.mat-focused,
+                        &:hover {
+                            .mat-form-field-flex {
+                                background-color: mat-color($primary, default, .08);
                             }
                         }
                     }
                 }
             }
+        }
 
-            // list-view controls
+        // list-view controls
 
-            .variable-form-wrapper {
-                .namespace-column {
-                    border-right: 1px solid mat-color($foreground, divider);
+        .variable-form-wrapper {
+            .namespace-column {
+                border-right: 1px solid mat-color($foreground, divider);
 
-                    .mat-chip-list-wrapper {
-                        .mat-standard-chip {
-                            background-color: if(
-                                $is-dark,
-                                mat-color($primary, default, .6),
-                                mat-color($primary, default, .1)
-                            );
-                        }
+                .mat-chip-list-wrapper {
+                    .mat-standard-chip {
+                        background-color: if(
+                            $is-dark,
+                            mat-color($primary, default, .6),
+                            mat-color($primary, default, .1)
+                        );
                     }
-                }
-
-                .filters-column {
-                    table {
-                        thead tr {
-                            border-bottom: 1px solid rgba($black,.05)
-                        }
-                    }
-                }
-
-                .namespace-required-message {
-                    background: mat-color($foreground, divider);
                 }
             }
 
-            .variable-action-controls {
-                border-top: 1px solid mat-color($foreground, divider);
+            .filters-column {
+                table {
+                    thead tr {
+                        border-bottom: 1px solid rgba($black,.05)
+                    }
+                }
             }
 
-            // form fields for list-view
-            .dashboard-template-variable.mat-form-field {
-                .mat-form-field-prefix {
-                    background: mat-color($primary, default, .1);
+            .namespace-required-message {
+                background: mat-color($foreground, divider);
+            }
+        }
 
-                    .automode {
-                        color: rgba($black,.8);
+        .variable-action-controls {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
 
-                        &.auto-mode {
+        // form fields for list-view
+        .dashboard-template-variable.mat-form-field {
+            .mat-form-field-prefix {
+                background: mat-color($primary, default, .1);
+
+                .automode {
+                    color: rgba($black,.8);
+
+                    &.auto-mode {
+                        background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                        border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                    }
+
+                    &.manual-mode {
+                        background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                        border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                    }
+                }
+            }
+
+            .mat-form-field-suffix {
+                .mat-icon {
+                    cursor: pointer;
+                    color: mat-color($primary, default, .1);
+                }
+
+                &:hover {
+                    .mat-icon {
+                        color: mat-color($primary, default, .3);
+                    }
+                }
+            }
+        }
+
+        // Edit View controls
+
+        .variable-edit-controls {
+
+            .settings-control.counts-control {
+                justify-content: flex-end;
+                padding-right: 24px;
+            }
+
+            .settings-control.filter-mode-control {
+                .sliding-toggle-group {
+                    background-color: mat-color($primary, default, 0.08);
+                    border-bottom: 1px solid transparent;
+
+                    .mat-tab-link {
+                        &,
+                        &.mat-tab-label-active {
+                            color: mat-color($foreground, link);
+                        }
+                    }
+
+                    .mat-ink-bar {
+                        background-color: if($is-dark, rgba(#ffffff, 0.12), #ffffff);
+                        border: 1px solid mat-color($foreground, link);
+                    }
+
+                    &.auto-mode {
+                        .mat-ink-bar {
                             background-color: mat-color($other, dashboard-filter-auto-mode-bg);
                             border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
                         }
+                    }
 
-                        &.manual-mode {
+                    &.manual-mode {
+                        .mat-ink-bar {
                             background-color: mat-color($other, dashboard-filter-manual-mode-bg);
                             border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
                         }
                     }
-                }
 
-                .mat-form-field-suffix {
-                    .mat-icon {
-                        cursor: pointer;
-                        color: mat-color($primary, default, .1);
-                    }
-
-                    &:hover {
-                        .mat-icon {
-                            color: mat-color($primary, default, .3);
-                        }
-                    }
-                }
-            }
-
-            // Edit View controls
-
-            .variable-edit-controls {
-
-                .settings-control.counts-control {
-                    justify-content: flex-end;
-                    padding-right: 24px;
-                }
-
-                .settings-control.filter-mode-control {
-                    .sliding-toggle-group {
-                        background-color: mat-color($primary, default, 0.08);
-                        border-bottom: 1px solid transparent;
-
+                    &.auto-mode,
+                    &.manual-mode {
                         .mat-tab-link {
                             &,
                             &.mat-tab-label-active {
-                                color: mat-color($foreground, link);
-                            }
-                        }
-
-                        .mat-ink-bar {
-                            background-color: if($is-dark, rgba(#ffffff, 0.12), #ffffff);
-                            border: 1px solid mat-color($foreground, link);
-                        }
-
-                        &.auto-mode {
-                            .mat-ink-bar {
-                                background-color: mat-color($other, dashboard-filter-auto-mode-bg);
-                                border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
-                            }
-                        }
-
-                        &.manual-mode {
-                            .mat-ink-bar {
-                                background-color: mat-color($other, dashboard-filter-manual-mode-bg);
-                                border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
-                            }
-                        }
-
-                        &.auto-mode,
-                        &.manual-mode {
-                            .mat-tab-link {
-                                &,
-                                &.mat-tab-label-active {
-                                    color: rgba($black, .85);
-                                }
+                                color: rgba($black, .85);
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        // cdk items here (if any)
-        .mat-autocomplete-panel.default-value-autocomplete {
-            .filter-type-toggle {
-                border-bottom: 2px solid mat-color($foreground, divider);
-            }
+    // cdk items here (if any)
+    .mat-autocomplete-panel.default-value-autocomplete {
+        .filter-type-toggle {
+            border-bottom: 2px solid mat-color($foreground, divider);
+        }
 
-            // regexp option is treated differently
-            .mat-option:first-child {
-                border-bottom: 1px solid mat-color($foreground, divider);
-                background-color: mat-color($primary, default, 0.08);
+        // regexp option is treated differently
+        .mat-option:first-child {
+            border-bottom: 1px solid mat-color($foreground, divider);
+            background-color: mat-color($primary, default, 0.08);
+        }
+    }
+
+    // cdk items
+    .filter-scope-cdk-menu.mat-menu-panel {
+
+        .filter-tab-nav.mat-nav-list {
+            background-color: mat-color($primary, default, .1);
+
+            .mat-list-item.selected {
+                background-color: mat-color($primary, default, .1);
+                box-shadow: inset 4px 0 0 -2px mat-color($primary, default);
+                pointer-events: none;
             }
         }
 
-        // cdk items
-        .filter-scope-cdk-menu.mat-menu-panel {
+        .filter-scope-columns {
 
-            .filter-tab-nav.mat-nav-list {
-                background-color: mat-color($primary, default, .1);
+            .filter-scope-type {
+                background-color: mat-color($primary, default, .3);
+                color: mat-color($foreground, text, .6);
+            }
 
-                .mat-list-item.selected {
-                    background-color: mat-color($primary, default, .1);
-                    box-shadow: inset 4px 0 0 -2px mat-color($primary, default);
-                    pointer-events: none;
+            .header-column {
+                background-color: mat-color($foreground, divider);
+                color: mat-color($foreground, text, .6);
+            }
+
+            .scope-column:not(:last-child) {
+                border-right: 1px solid mat-color($foreground, divider);
+            }
+
+            .mat-standard-chip {
+                background-color: mat-color($foreground, link, 0.15);
+            }
+
+            .mat-standard-chip:hover {
+                background-color: #016eff; // TODO: needs to be in theme
+                color: $white;
+
+                .mat-icon {
+                    color: currentColor;
                 }
             }
 
-            .filter-scope-columns {
-
-                .filter-scope-type {
-                    background-color: mat-color($primary, default, .3);
-                    color: mat-color($foreground, text, .6);
+            .mat-standard-chip {
+                &.exclude {
+                    background-color: #e8e8e8; // TODO: needs to be in theme
+                    color: rgba($black, .6);
                 }
 
-                .header-column {
-                    background-color: mat-color($foreground, divider);
-                    color: mat-color($foreground, text, .6);
-                }
-
-                .scope-column:not(:last-child) {
-                    border-right: 1px solid mat-color($foreground, divider);
-                }
-
-                .mat-standard-chip {
-                    background-color: mat-color($foreground, link, 0.15);
-                }
-
-                .mat-standard-chip:hover {
-                    background-color: #016eff; // TODO: needs to be in theme
-                    color: $white;
+                &.exclude:hover {
+                    background-color: darken(#e8e8e8, 15%); // TODO: needs to be in theme
+                    color: $black;
 
                     .mat-icon {
-                        color: currentColor;
-                    }
-                }
-
-                .mat-standard-chip {
-                    &.exclude {
-                        background-color: #e8e8e8; // TODO: needs to be in theme
-                        color: rgba($black, .6);
-                    }
-
-                    &.exclude:hover {
-                        background-color: darken(#e8e8e8, 15%); // TODO: needs to be in theme
                         color: $black;
-
-                        .mat-icon {
-                            color: $black;
-                        }
-                        .mat-icon.exclude {
-                            color: mat-color($other, status-error);
-                        }
+                    }
+                    .mat-icon.exclude {
+                        color: mat-color($other, status-error);
                     }
                 }
-
             }
+
         }
+    }
 
-        $placeholderBG: if(
-            $is-dark,
-            mat-color($primary, default, .6),
-            mat-color($primary, default, .1)
-        );
+    $placeholderBG: if(
+        $is-dark,
+        mat-color($primary, default, .6),
+        mat-color($primary, default, .1)
+    );
 
-        //$placeholderBorder: if(
-        //    $is-dark,
-        //    find-color-invert($placeholderBG),
-        //    lighten($divider, 45%)
-        //);
+    // TODO: this is nasty to get the old code to work with variables
+    // TODO: rework this using theme values
 
-        // TODO: this is nasty to get the old code to work with variables
-        // TODO: rework this using theme values
+    $cssVarMap: get-theme-css-variables($theme-name);
+    $placeholderBG_color: _mat-convert-variable-to-color(map-get($primary, default), $cssVarMap);
+    $divider: _mat-convert-variable-to-color(map-get($foreground, divider), $cssVarMap);
+    $placeholderBorder: if(
+        $is-dark,
+        find-color-invert(rgba($placeholderBG_color, .6)),
+        lighten($divider, 45%)
+    );
 
-        $theme-name: map-get($theme-config, theme-name);
-        $cssVarMap: get-theme-css-variables($theme-name);
-        $placeholderBG_color: _mat-convert-variable-to-color(map-get($primary, default), $cssVarMap);
-        $divider: _mat-convert-variable-to-color(map-get($foreground, divider), $cssVarMap);
-        $placeholderBorder: if(
-            $is-dark,
-            find-color-invert(rgba($placeholderBG_color, .6)),
-            lighten($divider, 45%)
-        );
-
-        .custom-tr-drag-placeholder {
-            &:after {
-                background:$placeholderBG;
-                box-shadow: inset 0 0 0 3px rgba($placeholderBorder, 0.5); // fake border
-            }
+    .custom-tr-drag-placeholder {
+        &:after {
+            background:$placeholderBG;
+            box-shadow: inset 0 0 0 3px rgba($placeholderBorder, 0.5); // fake border
         }
+    }
 
-        // TODO: see todo just above
-        // TODO: rework this using theme values
-        $card_color: _mat-convert-variable-to-color( map-get($background, card), $cssVarMap);
+    // TODO: see todo just above
+    // TODO: rework this using theme values
+    $card_color: _mat-convert-variable-to-color( map-get($background, card), $cssVarMap);
 
-        $drag-highlight: if(
-            $is-dark,
-            lighten($card_color, 15%),
-            darken($card_color, 15%)
-        );
+    $drag-highlight: if(
+        $is-dark,
+        lighten($card_color, 15%),
+        darken($card_color, 15%)
+    );
 
-        tr.variable-edit-controls.cdk-drag.cdk-drag-preview {
-            background-color: $drag-highlight;
-        }
+    tr.variable-edit-controls.cdk-drag.cdk-drag-preview {
+        background-color: $drag-highlight;
     }
 }

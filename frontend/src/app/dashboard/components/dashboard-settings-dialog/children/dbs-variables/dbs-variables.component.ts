@@ -21,7 +21,8 @@ import {
     HostBinding,
     EventEmitter,
     Input,
-    Output
+    Output,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -30,7 +31,8 @@ import { Subscription } from 'rxjs';
     // tslint:disable-next-line:component-selector
     selector: 'dbs-variables',
     templateUrl: './dbs-variables.component.html',
-    styleUrls: []
+    styleUrls: ['./dbs-variables.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsVariablesComponent implements OnInit, OnDestroy {
 

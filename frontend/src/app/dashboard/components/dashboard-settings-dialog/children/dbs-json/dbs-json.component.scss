@@ -15,12 +15,11 @@
 // * limitations under the License.
 // *
 
-@mixin dbs-json-component-base() {
+//@import 'loader-component';
 
-}
+//.dbs-json-component {}
 
-@mixin dbs-json-component-theme($theme-config) {
-    //@include variables-compatibility($theme-config) {
-    // CSS HERE
-    //}
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    .dbs-json-component {}
+//}

@@ -33,19 +33,19 @@
 // example: @import './components/componentName/componentName.component.scss';
 
 // containers
-@import './containers/dashboard/dashboard.component'; // nothing to style yet
+//@import './containers/dashboard/dashboard.component'; // nothing to style yet
 
 // components
-@import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
-@import './components/dashboard-save-dialog/dashboard-save-dialog.component';
-@import './components/dashboard-delete-dialog/dashboard-delete-dialog.component';
-@import './components/widget-delete-dialog/widget-delete-dialog.component';
-@import './components/dashboard-settings-toggle/dashboard-settings-toggle.component';
-@import './components/dashboard-settings-dialog/dashboard-settings-dialog.component';
-@import './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
-@import './components/dboard-content/dboard-content.component';
-@import './components/widget-loader/widget-loader.component';
-@import './components/template-variable-panel/template-variable-panel.component';
+//@import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
+//@import './components/dashboard-save-dialog/dashboard-save-dialog.component';
+//@import './components/dashboard-delete-dialog/dashboard-delete-dialog.component';
+//@import './components/widget-delete-dialog/widget-delete-dialog.component';
+//@import './components/dashboard-settings-toggle/dashboard-settings-toggle.component';
+//@import './components/dashboard-settings-dialog/dashboard-settings-dialog.component';
+//@import './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
+//@import './components/dboard-content/dboard-content.component';
+//@import './components/widget-loader/widget-loader.component';
+//@import './components/template-variable-panel/template-variable-panel.component';
 
 // widget specific styles are in shared/modules/dynamic-widgets
 
@@ -55,19 +55,19 @@
     // example: @include componentName-component-core();
 
     // containers
-    @include dashboard-component-base(); // nothing to style yet
+    //@include dashboard-component-base(); // nothing to style yet
 
     // components
-    @include navbar-dashboard-actions-menu-component-base();
-    @include dashboard-save-dialog-component-base();
-    @include dashboard-delete-dialog-component-base();
-    @include widget-delete-dialog-component-base();
-    @include dashboard-settings-toggle-component-base();
-    @include dashboard-settings-dialog-component-base();
-    @include dashboard-to-alert-dialog-component-base();
-    @include dboard-content-component-base();
-    @include widget-loader-component-base();
-    @include template-variable-panel-component-base();
+    //@include navbar-dashboard-actions-menu-component-base();
+    //@include dashboard-save-dialog-component-base();
+    //@include dashboard-delete-dialog-component-base();
+    //@include widget-delete-dialog-component-base();
+    //@include dashboard-settings-toggle-component-base();
+    //@include dashboard-settings-dialog-component-base();
+    //@include dashboard-to-alert-dialog-component-base();
+    //@include dboard-content-component-base();
+    //@include widget-loader-component-base();
+    //@include template-variable-panel-component-base();
 
 }
 
@@ -77,18 +77,18 @@
     // example: @include componentName-component-theme($theme-config);
 
     // container
-    @include dashboard-component-theme($theme-config); //nothing to style yet
+    //@include dashboard-component-theme($theme-config); //nothing to style yet
 
     // components
-    @include navbar-dashboard-actions-menu-component-theme($theme-config);
-    @include dashboard-save-dialog-component-theme($theme-config);
-    @include dashboard-delete-dialog-component-theme($theme-config);
-    @include widget-delete-dialog-component-theme($theme-config);
-    @include dashboard-settings-toggle-component-theme($theme-config);
-    @include dashboard-settings-dialog-component-theme($theme-config);
-    @include dashboard-to-alert-dialog-component-theme($theme-config);
-    @include dboard-content-component-theme($theme-config);
-    @include widget-loader-component-theme($theme-config);
-    @include template-variable-panel-component-theme($theme-config);
+    //@include navbar-dashboard-actions-menu-component-theme($theme-config);
+    //@include dashboard-save-dialog-component-theme($theme-config);
+    //@include dashboard-delete-dialog-component-theme($theme-config);
+    //@include widget-delete-dialog-component-theme($theme-config);
+    //@include dashboard-settings-toggle-component-theme($theme-config);
+    //@include dashboard-settings-dialog-component-theme($theme-config);
+    //@include dashboard-to-alert-dialog-component-theme($theme-config);
+    //@include dboard-content-component-theme($theme-config);
+    //@include widget-loader-component-theme($theme-config);
+    //@include template-variable-panel-component-theme($theme-config);
 
 }

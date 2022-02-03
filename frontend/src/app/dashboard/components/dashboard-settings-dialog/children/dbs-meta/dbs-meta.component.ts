@@ -23,7 +23,8 @@ import {
     Input,
     Output,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -33,7 +34,8 @@ import { Subscription } from 'rxjs';
     // tslint:disable-next-line:component-selector
     selector: 'dbs-meta',
     templateUrl: './dbs-meta.component.html',
-    styleUrls: []
+    styleUrls: ['./dbs-meta.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsMetaComponent implements OnInit, OnDestroy {
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, HostBinding, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges
+    Component, OnInit, HostBinding, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 
 import {
@@ -31,7 +31,8 @@ import { IntercomService, IMessage } from '../../../core/services/intercom.servi
     // tslint:disable-next-line:component-selector
     selector: 'dashboard-settings-toggle',
     templateUrl: './dashboard-settings-toggle.component.html',
-    styleUrls: []
+    styleUrls: ['./dashboard-settings-toggle.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardSettingsToggleComponent implements OnInit, OnDestroy {
 

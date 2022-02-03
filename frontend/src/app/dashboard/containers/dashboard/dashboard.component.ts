@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, OnDestroy, HostBinding, ViewChild,
-    TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
+    TemplateRef, ChangeDetectorRef, ElementRef, HostListener, ViewEncapsulation,
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -100,7 +100,8 @@ import { NavbarClipboardMenuComponent } from '../../../shared/modules/universal-
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss']
+    styleUrls: ['./dashboard.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 

@@ -22,7 +22,8 @@ import {
     HostBinding,
     AfterViewInit,
     ChangeDetectionStrategy,
-    ViewChild
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatMenuTrigger } from '@angular/material';
 
@@ -38,7 +39,8 @@ import { UtilsService } from '../../../core/services/utils.service';
     // tslint:disable-next-line:component-selector
     selector: 'dashboard-save-dialog',
     templateUrl: './dashboard-save-dialog.component.html',
-    styleUrls: [],
+    styleUrls: ['./dashboard-save-dialog.component.html'],
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterViewInit {
