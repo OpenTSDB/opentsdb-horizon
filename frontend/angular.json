@@ -162,6 +162,67 @@
           }
         }
       }
+    },
+    "horizon": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "/Users/cesler/Stuffz/HORIZON",
+            "index": "src/app/horizon/index.html",
+            "main": "src/app/horizon/horizon.main.ts",
+            "tsConfig": "src/app/horizon/tsconfig.horizon.json",
+            "polyfills": "src/polyfills.ts",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./src/app/horizon",
+                "./src/app",
+                "./src/scss"
+              ]
+            },
+            "styles": [
+              {
+                "input": "src/standalone.scss",
+                "bundleName": "styles"
+              }
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "styles": [
+                {
+                  "input": "src/standalone.scss",
+                  "bundleName": "styles"
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "frontend",

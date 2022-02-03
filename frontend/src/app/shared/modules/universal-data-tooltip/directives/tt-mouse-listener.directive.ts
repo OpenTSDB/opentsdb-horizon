@@ -78,10 +78,13 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
                     // alerts page with chart
                     mBoundaryEl = this.elRef.nativeElement;
                 }
+                else if (el.closest('.hrzn-chart')) {
+                    mBoundaryEl = this.elRef.nativeElement;
+                }
                 // tell service we are entering an element that has tooltips
                 // so it can set up the correct tooltip layout
                 this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
-            }
+            } 
         }, {capture: true, passive: true});
 
         this._mouseOutListener = this.elRef.nativeElement.addEventListener('mouseout', (event: any) => {
