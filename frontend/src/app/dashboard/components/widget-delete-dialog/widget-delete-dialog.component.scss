@@ -15,127 +15,111 @@
 // * limitations under the License.
 // *
 
-@mixin widget-delete-dialog-component-base() {
-    .widget-delete-dialog {
+@import 'loader-component';
+
+.widget-delete-dialog {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    width: 100%;
+
+    .mat-dialog-title,
+    .mat-dialog-content {
+        padding: 12px 24px;
+    }
+
+    .mat-dialog-content,
+    .mat-dialog-actions {
+        margin: 0;
+    }
+
+    .mat-dialog-title {
         display: flex;
-        flex-direction: column;
-        min-width: 320px;
+        align-items: center;
+        margin: 0;
+
+        .mat-icon {
+            margin-right: 6px;
+        }
+    }
+
+    .mat-dialog-content {
+        max-height: initial;
+        padding: 25px;
+        min-height: 80px;
+    }
+
+    .mat-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 12px 24px;
+
+        .mat-flat-button,
+        .mat-stroked-button {
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .save-control {
         width: 100%;
+        margin-bottom: 24px;
 
-        .mat-dialog-title,
-        .mat-dialog-content {
-            padding: 12px 24px;
+        &.is-disabled {
+            opacity: .3;
+            pointer-events: none;
         }
 
-        .mat-dialog-content,
-        .mat-dialog-actions {
-            margin: 0;
+        &.mat-caption {
+            font-style: italic;
         }
 
-        .mat-dialog-title {
-            display: flex;
-            align-items: center;
-            margin: 0;
-
-            .mat-icon {
-                margin-right: 6px;
-            }
+        .mat-label {
+            font-weight: 500;
         }
 
-        .mat-dialog-content {
-            max-height: initial;
-            padding: 25px;
-            min-height: 80px;
-        }
-
-        .mat-dialog-actions {
-            display: flex;
-            justify-content: flex-end;
-            padding: 12px 24px;
-
-            .mat-flat-button,
-            .mat-stroked-button {
-                &:not(:last-child) {
-                    margin-right: 10px;
-                }
-            }
-
-        }
-
-        .save-control {
+        .mat-form-field {
             width: 100%;
-            margin-bottom: 24px;
-
-            &.is-disabled {
-                opacity: .3;
-                pointer-events: none;
-            }
-
-            &.mat-caption {
-                font-style: italic;
-            }
-
-            .mat-label {
-                font-weight: 500;
-            }
-
-            .mat-form-field {
-                width: 100%;
-            }
         }
+    }
+}
 
+// CDK Items
+
+// panel
+.widget-delete-dialog-panel {
+    .mat-dialog-container {
+        padding: 0;
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $divider: mat-color($foreground, divider);
+
+    .widget-delete-dialog {
+        .mat-dialog-title {
+            background-color: mat-color($other, status-warning);
+            color: mat-color($other, status-warning-contrast);
+        }
     }
 
     // CDK Items
-
     // backdrop
     .widget-delete-dialog-backdrop {
-
+        background-color: mat-color($foreground, disabled);
     }
 
     // panel
     .widget-delete-dialog-panel {
-        // width: 100%;
-        // height: 100%;
-        .mat-dialog-container {
-            padding: 0;
-        }
-    }
-
-
-}
-
-@mixin widget-delete-dialog-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        $divider: mat-color($foreground, divider);
-
-        .widget-delete-dialog {
-            .mat-dialog-title {
-                background-color: mat-color($other, status-warning);
-                color: mat-color($other, status-warning-contrast);
-            }
+        .mat-dialog-title {
+            border-bottom: 1px solid $divider;
         }
 
-        // CDK Items
-
-        // backdrop
-        .widget-delete-dialog-backdrop {
-            background-color: mat-color($foreground, disabled);
-        }
-
-        // panel
-        .widget-delete-dialog-panel {
-
-            .mat-dialog-title {
-                border-bottom: 1px solid $divider;
-            }
-
-            .mat-dialog-actions {
-                background-color: $divider;
-            }
-
+        .mat-dialog-actions {
+            background-color: $divider;
         }
     }
 }

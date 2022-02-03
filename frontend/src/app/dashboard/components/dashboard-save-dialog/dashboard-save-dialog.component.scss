@@ -15,148 +15,138 @@
 // * limitations under the License.
 // *
 
-@mixin dashboard-save-dialog-component-base() {
-    .dashboard-save-dialog {
+@import 'loader-component';
+
+.dashboard-save-dialog {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    width: 100%;
+
+    .mat-dialog-title,
+    .mat-dialog-content {
+        padding: 12px 24px;
+    }
+
+    .mat-dialog-content,
+    .mat-dialog-actions {
+        margin: 0;
+    }
+
+    .mat-dialog-title {
         display: flex;
-        flex-direction: column;
-        min-width: 320px;
+        align-items: center;
+        margin: 0;
+
+        .mat-icon {
+            margin-right: 6px;
+        }
+    }
+
+    .mat-dialog-content {
+        max-height: initial;
+    }
+
+    .mat-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 12px 24px;
+
+        .mat-flat-button,
+        .mat-stroked-button {
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .save-control {
         width: 100%;
-
-        .mat-dialog-title,
-        .mat-dialog-content {
-            padding: 12px 24px;
+        margin-bottom: 24px;
+        .mat-radio-button {
+            display: block;
         }
 
-        .mat-dialog-content,
-        .mat-dialog-actions {
-            margin: 0;
-        }
-
-        .mat-dialog-title {
-            display: flex;
-            align-items: center;
-            margin: 0;
-
-            .mat-icon {
-                margin-right: 6px;
-            }
-        }
-
-        .mat-dialog-content {
-            max-height: initial;
-        }
-
-        .mat-dialog-actions {
-            display: flex;
-            justify-content: flex-end;
-            padding: 12px 24px;
-
-            .mat-flat-button,
-            .mat-stroked-button {
-                &:not(:last-child) {
-                    margin-right: 10px;
-                }
-            }
-        }
-
-        .save-control {
+        .mat-form-field.dashboard-title {
             width: 100%;
-            margin-bottom: 24px;
-            .mat-radio-button {
-                display: block;
-            }
+        }
+    }
 
-            .mat-form-field.dashboard-title {
-                width: 100%;
-            }
+    .dashboard-save-location {
+        .mini-nav-trigger {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+        }
+    }
+
+    .use-namespace {
+        &.is-disabled {
+            opacity: .3;
+            pointer-events: none;
         }
 
-        .dashboard-save-location {
-            .mini-nav-trigger {
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                height: 1px;
-            }
+        &.mat-caption {
+            font-style: italic;
         }
 
-        .use-namespace {
-            &.is-disabled {
-                opacity: .3;
-                pointer-events: none;
-            }
-
-            &.mat-caption {
-                font-style: italic;
-            }
-
-            .mat-label {
-                font-weight: 300;
-                margin-right: 8px;
-            }
-
-            .mat-form-field {
-                width: 100%;
-            }
+        .mat-label {
+            font-weight: 300;
+            margin-right: 8px;
         }
 
+        .mat-form-field {
+            width: 100%;
+        }
+    }
+
+}
+
+// CDK Items
+// panel
+.dashboard-save-dialog-panel {
+
+    .mat-dialog-container {
+        padding: 0;
+    }
+}
+
+.dnav-cdk-mini-navigator.db-save-location-selector.mat-menu-panel {
+    margin-top: 0;
+    margin-left: 0;
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $divider: mat-color($foreground, divider);
+
+    .dashboard-save-dialog {
+        .mat-dialog-title {
+            background-color: mat-color($other, status-success);
+            color: mat-color($other, status-success-contrast);
+        }
     }
 
     // CDK Items
 
     // backdrop
     .dashboard-save-dialog-backdrop {
-
+        background-color: mat-color($foreground, disabled);
     }
 
     // panel
     .dashboard-save-dialog-panel {
-        // width: 100%;
-        // height: 100%;
-        .mat-dialog-container {
-            padding: 0;
-        }
-    }
 
-    .dnav-cdk-mini-navigator.db-save-location-selector.mat-menu-panel {
-        margin-top: 0;
-        margin-left: 0;
-    }
-
-
-}
-
-@mixin dashboard-save-dialog-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        $divider: mat-color($foreground, divider);
-
-        .dashboard-save-dialog {
-            .mat-dialog-title {
-                background-color: mat-color($other, status-success);
-                color: mat-color($other, status-success-contrast);
-            }
+        .mat-dialog-title {
+            border-bottom: 1px solid $divider;
         }
 
-        // CDK Items
-
-        // backdrop
-        .dashboard-save-dialog-backdrop {
-            background-color: mat-color($foreground, disabled);
+        .mat-dialog-actions {
+            background-color: $divider;
         }
 
-        // panel
-        .dashboard-save-dialog-panel {
-
-            .mat-dialog-title {
-                border-bottom: 1px solid $divider;
-            }
-
-            .mat-dialog-actions {
-                background-color: $divider;
-            }
-
-        }
     }
 }

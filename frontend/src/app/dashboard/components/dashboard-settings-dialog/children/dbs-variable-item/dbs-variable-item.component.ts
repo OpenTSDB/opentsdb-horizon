@@ -25,7 +25,8 @@ import {
     EventEmitter,
     HostBinding,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
@@ -41,7 +42,8 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
     // tslint:disable-next-line:component-selector
     selector: 'dbs-variable-item',
     templateUrl: './dbs-variable-item.component.html',
-    styleUrls: []
+    styleUrls: ['./dbs-variable-item.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsVariableItemComponent implements OnInit, OnDestroy {
 

@@ -31,6 +31,7 @@ import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component'
 @Component({
   selector: 'app-dboard-content',
   templateUrl: './dboard-content.component.html',
+  styleUrls: ['./dboard-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })

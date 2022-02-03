@@ -15,220 +15,200 @@
 // * limitations under the License.
 // *
 
-@import './children/dbs-variable-item/dbs-variable-item.component';
-@import './children/dbs-json/dbs-json.component';
-@import './children/dbs-variables/dbs-variables.component';
-@import './children/dbs-meta/dbs-meta.component';
+@import 'loader-component';
 
-@mixin dashboard-settings-dialog-component-base(){
-    .dashboard-settings-dialog {
-        @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
+.dashboard-settings-dialog {
+    @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+
+    .mat-dialog-title {
+        @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
+        flex: 1 1 48px;
+        margin: 0;
+
+        &.mat-toolbar {
+            display: flex;
+            padding: 0 20px;
+        }
+
+        .close-dialog-btn {
+            min-width: auto;
+            padding: 4px;
+            line-height: 12px;
+            font-size: 12px;
+        }
+    }
+
+
+    .mat-dialog-content {
+        max-height: initial;
+        flex: 1 1 100%;
+        padding: 0;
+        margin: 0;
         display: flex;
         flex-direction: column;
-        flex: 1 1 100%;
+    }
 
-        .mat-dialog-title {
-            @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
-            flex: 1 1 48px;
-            margin: 0;
+    .mat-dialog-actions {
+        flex: 1 1 65px;
+        padding: 12px 24px;
+        margin-bottom: initial;
 
-            &.mat-toolbar {
-                display: flex;
-                padding: 0 20px;
+        // apply/cancel buttons
+        .mat-raised-button:not(:last-child) {
+            margin-right: 6px;
+        }
+    }
+
+    .content-container {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    // TAB GROUP
+    .dashboard-settings.mat-tab-group {
+        flex-direction: row;
+        flex: 1;
+
+        .mat-ink-bar {
+            height: 3px;
+        }
+
+        .mat-tab-label-container {
+            min-width: 300px;
+            width: 100%;
+            transform: rotate(90deg);
+            height: 300px;
+            flex-grow: 0;
+        }
+
+        .mat-tab-label {
+            min-height: 300px;
+            height: 100%;
+            min-width: 48px;
+            width: 48px;
+            text-align: start;
+            padding: 0;
+            justify-content: center;
+            align-items: flex-end;
+            display: flex;
+
+            .mat-ripple-element {
+                transform-origin: center center;
             }
 
-            .close-dialog-btn {
-                min-width: auto;
-                padding: 4px;
-                line-height: 12px;
-                font-size: 12px;
+            &.mat-tab-label-active {
+                opacity: 1;
             }
         }
 
+        .mat-tab-label-content {
+            transform: rotate(-90deg);
+            padding: 0 24px;;
+            width: 100%;
+            height: 48px;
+            line-height: 48px;
+            display: block;
+        }
 
-        .mat-dialog-content {
-            max-height: initial;
-            flex: 1 1 100%;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
+        .mat-tab-body-wrapper {
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .dbs-settings-tab {
+            width: 100%;
+            display: block;
+            padding: 12px 24px;
+        }
+    }
+
+}
+
+// CDK ITEMS
+.dashboard-settings-dialog-panel {
+    .mat-dialog-container {
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
+        padding: 0;
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $close-button-background: mat-color($accent, A400);
+    $close-button-text: mat-color($foreground, navbar-text);
+
+    $divider: mat-color($background, background);
+    $card-background: mat-color($background, card);
+
+    $light-gray-background: mat-color($background, menu);
+
+    $expanded-header-bg: mat-color($primary, default);
+    $expanded-header-text: mat-color($primary, default-contrast);
+
+    $expanded-body-bg: mat-color($primary, default, 0.05);
+
+    .dashboard-settings-dialog {
+        background-color: $card-background;
+
+        .mat-toolbar {
+            background: transparent;
+            border-bottom: 2px solid $divider;
         }
 
         .mat-dialog-actions {
-            flex: 1 1 65px;
-            padding: 12px 24px;
-            margin-bottom: initial;
-
-            // apply/cancel buttons
-            .mat-raised-button:not(:last-child) {
-                margin-right: 6px;
-            }
+            border-top: 2px solid $divider;
         }
 
         .content-container {
-            display: flex;
-            flex: 1;
-            flex-direction: row;
-            align-items: stretch;
-            justify-content: stretch;
+            background: $card-background;
         }
 
         // TAB GROUP
         .dashboard-settings.mat-tab-group {
-            flex-direction: row;
-            flex: 1;
 
             .mat-ink-bar {
-                height: 3px;
+                background: mat-color($primary, default);
             }
 
-            .mat-tab-label-container {
-                min-width: 300px;
-                width: 100%;
-                transform: rotate(90deg);
-                height: 300px;
-                flex-grow: 0;
+            .mat-tab-header {
+                background-color: $divider;
             }
 
             .mat-tab-label {
-                min-height: 300px;
-                height: 100%;
-                min-width: 48px;
-                width: 48px;
-                text-align: start;
-                padding: 0;
-                justify-content: center;
-                align-items: flex-end;
-                display: flex;
-
-                .mat-ripple-element {
-                    transform-origin: center center;
-                }
-
-                &.mat-tab-label-active {
-                    opacity: 1;
-                }
+                color: mat-color($foreground, link);
             }
 
-            .mat-tab-label-content {
-                transform: rotate(-90deg);
-                padding: 0 24px;;
-                width: 100%;
-                height: 48px;
-                line-height: 48px;
-                display: block;
-            }
-
-            .mat-tab-body-wrapper {
-                flex: 1;
-                overflow-x: hidden;
-                overflow-y: auto;
-            }
-
-            .dbs-settings-tab {
-                width: 100%;
-                display: block;
-                padding: 12px 24px;
+            .mat-tab-label.mat-tab-label-active {
+                background-color: $card-background;
+                color: mat-color($foreground, text);
             }
         }
 
-    }
-
-    // CDK ITEMS
-    .dashboard-settings-dialog-panel {
-        .mat-dialog-container {
-            transform: none;
+        // COMMON SETTINGS FORM CLASSES
+        .settings-control {
             display: flex;
             flex-direction: column;
-            align-items: stretch;
-            justify-content: stretch;
-            padding: 0;
-        }
-    }
 
-
-    // CALL CHILDREN STYLES
-    @include dbs-variable-item-component-base();
-    @include dbs-json-component-base();
-    @include dbs-meta-component-base();
-    @include dbs-variables-component-base();
-}
-
-@mixin dashboard-settings-dialog-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        $close-button-background: mat-color($accent, A400);
-        $close-button-text: mat-color($foreground, navbar-text);
-
-        $divider: mat-color($background, background);
-        $card-background: mat-color($background, card);
-
-        $light-gray-background: mat-color($background, menu);
-
-        $expanded-header-bg: mat-color($primary, default);
-        $expanded-header-text: mat-color($primary, default-contrast);
-
-        $expanded-body-bg: mat-color($primary, default, 0.05);
-
-        .dashboard-settings-dialog {
-            background-color: $card-background;
-
-            .mat-toolbar {
-                background: transparent;
-                border-bottom: 2px solid $divider;
+            .mat-label {
+                font-weight: 500;
+                margin-bottom: 8px;
             }
 
-            .mat-dialog-actions {
-                border-top: 2px solid $divider;
-            }
-
-            .content-container {
-                background: $card-background;
-            }
-
-            // TAB GROUP
-            .dashboard-settings.mat-tab-group {
-
-                .mat-ink-bar {
-                    background: mat-color($primary, default);
-                }
-
-                .mat-tab-header {
-                    background-color: $divider;
-                }
-
-                .mat-tab-label {
-                    color: mat-color($foreground, link);
-                }
-
-                .mat-tab-label.mat-tab-label-active {
-                    background-color: $card-background;
-                    color: mat-color($foreground, text);
-                }
-            }
-
-            // COMMON SETTINGS FORM CLASSES
-            .settings-control {
-                display: flex;
-                flex-direction: column;
-
-                .mat-label {
-                    font-weight: 500;
-                    margin-bottom: 8px;
-                }
-
-                .mat-form-field:not(:last-child) {
-                    margin-bottom: 12px;
-                }
+            .mat-form-field:not(:last-child) {
+                margin-bottom: 12px;
             }
         }
     }
-
-    // CALL CHILDREN STYLES
-    @include dbs-variable-item-component-theme($theme-config);
-    @include dbs-json-component-theme($theme-config);
-    @include dbs-meta-component-theme($theme-config);
-    @include dbs-variables-component-theme($theme-config);
 }

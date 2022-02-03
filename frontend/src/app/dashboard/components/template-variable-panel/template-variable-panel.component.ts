@@ -25,7 +25,7 @@ import {
     OnDestroy,
     SimpleChanges,
     ViewChild,
-    ElementRef, ChangeDetectionStrategy, ChangeDetectorRef
+    ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -40,8 +40,9 @@ import { moveItemInArray, CdkDragStart } from '@angular/cdk/drag-drop';
     // tslint:disable-next-line:component-selector
     selector: 'template-variable-panel',
     templateUrl: './template-variable-panel.component.html',
-    styleUrls: [],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./template-variable-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDestroy {
 

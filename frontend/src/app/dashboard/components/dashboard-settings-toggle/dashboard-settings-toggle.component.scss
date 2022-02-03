@@ -15,33 +15,30 @@
 // * limitations under the License.
 // *
 
-@mixin dashboard-settings-toggle-component-base() {
-    .dashboard-settings-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 0;
+@import 'loader-component';
 
-        .mat-icon-button {
-            width: 24px;
-            height: 24px;
-            line-height: 1;
+.dashboard-settings-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
 
-            .mat-icon {
-                width: 14px;
-                height: 14px;
-                line-height: 14px;
-                font-size: 14px;
-            }
+    .mat-icon-button {
+        width: 24px;
+        height: 24px;
+        line-height: 1;
+
+        .mat-icon {
+            width: 14px;
+            height: 14px;
+            line-height: 14px;
+            font-size: 14px;
         }
     }
 }
 
-@mixin dashboard-settings-toggle-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        $close-button-background: mat-color($accent, A400);
-        $close-button-text: mat-color($foreground, navbar-text);
 
-        //.dashboard-settings-toggle {}
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//  .dashboard-settings-toggle {}
+//}

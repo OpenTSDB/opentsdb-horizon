@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Inject, OnInit, HostBinding } from '@angular/core';
+import { Component, Inject, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, DialogPosition, MatSort, MatTableDataSource } from '@angular/material';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
@@ -22,7 +22,8 @@ import { IntercomService, IMessage } from '../../../core/services/intercom.servi
     // tslint:disable-next-line:component-selector
     selector: 'dashboard-settings-dialog',
     templateUrl: './dashboard-settings-dialog.component.html',
-    styleUrls: []
+    styleUrls: ['./dashboard-settings-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardSettingsDialogComponent implements OnInit {
     @HostBinding('class.dashboard-settings-dialog') private _hostClass = true;

@@ -17,7 +17,7 @@
 import {
     Type, Component, OnInit, Input, Output, ViewChild,
     ComponentFactoryResolver, EventEmitter,
-    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef
+    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef, ViewEncapsulation
 } from '@angular/core';
 import { WidgetService } from '../../../core/services/widget.service';
 import { WidgetDirective } from '../../directives/widget.directive';
@@ -38,7 +38,8 @@ import domtoimage from 'dom-to-image-more';
     selector: 'app-widget-loader',
     templateUrl: './widget-loader.component.html',
     styleUrls: ['./widget-loader.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetLoaderComponent implements OnInit, OnChanges {
     @HostBinding('class.widget-loader') private hostClass = true;
@@ -203,7 +204,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         }));
         const config = this.appConfig.getConfig();
         this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
-        
+
     }
 
     ngOnChanges(changes: SimpleChanges) {
