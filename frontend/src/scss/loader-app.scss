@@ -32,8 +32,6 @@
 }
 
 // IMPORT APPLICATION MODULE STYLE/THEME LOADERS
-// TODO: remove this after moving to new style system
-@import 'app/app.style-module';
 
 // NOTE: Sometimes there is a weird browser console warning saying something about theme not being loaded.
 // * This is a known bug with the current version of Angular Material2, and hopefully they will fix it soon.
@@ -59,26 +57,7 @@
 // NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
 @include mat-core(map-get($app-fontface-config, sans));
 
-// APPLICATION CORE (structure)
-// TODO: remove this after moving to new style system
-@include app-core();
-
 // THEME RULES
-
-//@each $theme-name, $theme-config in $app-available-themes {
-
-    //* [[  THEME  ]] #($theme)  */
-    //[theme='#{$theme-name}'] {
-
-        //@if ($theme-name == 'developing') {
-        //    $theme-config: get-theme-light-variant('horizon');
-        //}
-        //* Material core theme */
-        //@include angular-material-theme($theme-config);
-        //* Component themes */
-        //@include generate-app-theme($theme-config);
-    //}
-//}
 
 // NEW: CSS VARIABLES
 @each $theme-name, $theme-config in $app-themes {
@@ -92,7 +71,6 @@
 @each $theme-name, $theme-config in $app-themes {
     @include init-mat-theme($theme-name);
 }
-
 
 // import icons
 // we include font icons here instead of typography

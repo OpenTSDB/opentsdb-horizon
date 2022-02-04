@@ -15,36 +15,34 @@
 // * limitations under the License.
 // *
 
-@mixin widget-config-sorting-component-base() {
-    widget-config-sorting {
-        .config-control {
-            margin-top : 30px;
-            margin-left: 5px;
-        }
-        .order-title, .limit-title, .form-label  {
-            width: 150px;
-            display: inline-block;
-        }
+@import 'loader-component';
 
+.widget-config-sorting {
+    .config-control {
+        margin-top : 30px;
+        margin-left: 5px;
+    }
+    .order-title, .limit-title, .form-label  {
+        width: 150px;
+        display: inline-block;
+    }
 
-        mat-button-toggle-group { // top/bottom toggle
-            margin-top: 5px;
+    mat-button-toggle-group { // top/bottom toggle
+        margin-top: 5px;
 
-            .mat-button-toggle-button {
-                .mat-button-toggle-label-content {
-                    line-height: 36px;
-                }
+        .mat-button-toggle-button {
+            .mat-button-toggle-label-content {
+                line-height: 36px;
             }
         }
+    }
 
-        mat-form-field {
-            width: 123px;
-        }
+    mat-form-field {
+        width: 123px;
     }
 }
 
-@mixin widget-config-sorting-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // widget-config-sorting {}
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//  widget-config-sorting {}
+//}

@@ -17,378 +17,369 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@mixin widget-config-metric-queries-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-padding: map-get($widgets-common-config, edit-padding);
+@import 'loader-component';
 
-    .widget-config-tab.metric-queries-configuration {
-        // margin: 0;
-        // display: flex;
-        // sflex-direction: column;
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-padding: map-get($widgets-common-config, edit-padding);
 
-        // config specific toolbar overrides
-        .config-toolbar.time-series-toolbar {
-            padding: 0 $edit-padding 0 0;
+.widget-config-tab.metric-queries-configuration {
 
-            .toolbar-item.master-checkbox {
-                margin-right: 3px;
+    // config specific toolbar overrides
+    .config-toolbar.time-series-toolbar {
+        padding: 0 $edit-padding 0 0;
+
+        .toolbar-item.master-checkbox {
+            margin-right: 3px;
+        }
+    }
+
+    // config section that shows the selected metrics
+    .query-metrics-section {
+        // @include has-scroller();
+        flex: 1 1 100%;
+        width: 100%;
+        height: 100%;
+    }
+
+    // wrapper for the query metrics
+    .query-metrics-wrap {
+        // @include is-scroller();
+        padding: 10px;
+
+        &,
+        .mat-expansion-panel-header,
+        .mat-toolbar {
+            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+        }
+
+        .mat-expansion-panel-header {
+            flex-direction: row-reverse;
+            padding: 0;
+
+            // icon for the collapse icon direction
+            .mat-icon.arrow-down {
+                display: none;
+            }
+            .mat-icon.arrow-right {
+                display: inline-flex;
             }
         }
 
-        // config section that shows the selected metrics
-        .query-metrics-section {
-            // @include has-scroller();
-            flex: 1 1 100%;
-            width: 100%;
-            height: 100%;
+        .mat-expansion-panel-header,
+        .mat-expansion-panel-body {
+            padding: 0;
         }
 
-        // wrapper for the query metrics
-        .query-metrics-wrap {
-            // @include is-scroller();
-            padding: 10px;
+        // General toolbar items
+        .toolbar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            &,
-            .mat-expansion-panel-header,
-            .mat-toolbar {
-                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-            }
-
-            .mat-expansion-panel-header {
-                flex-direction: row-reverse;
-                padding: 0;
-
-                // icon for the collapse icon direction
-                .mat-icon.arrow-down {
-                    display: none;
-                }
-                .mat-icon.arrow-right {
-                    display: inline-flex;
-                }
-            }
-
-            .mat-expansion-panel-header,
-            .mat-expansion-panel-body {
-                padding: 0;
-            }
-
-            // General toolbar items
-            .toolbar-item {
-                display: flex;
+            .mat-icon {
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
+            }
 
+            strong {
+                padding-left: 20px;
+            }
+        }
+
+        .toolbar-action-icons,
+        .action-icons {
+            float: right;
+            .mat-icon-button {
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+
+            .mat-icon {
+                font-size: 16px;
+            }
+        }
+
+        .toolbar-action-icons {
+            padding-right: 30px;
+        }
+
+        // selector checkboxes for group level and metric level
+        .group-selector,
+        .metric-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+        }
+
+        // group-level toolbar
+        .group-item-toolbar {
+            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+            height: auto;
+            padding: 0;
+            margin-left: 3px;
+            padding: 0 $default-padding 0 0;
+
+            .group-label {
                 .mat-icon {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                strong {
-                    padding-left: 20px;
+                    font-size: 16px;
+                    margin-right: 4px;
                 }
             }
 
-            .toolbar-action-icons,
-            .action-icons {
-                float: right;
-                .mat-icon-button {
-                    width: 30px;
-                    height: 30px;
-                    line-height: 30px;
-                }
+            .add-query-actions {
+                margin-right: 20px;
 
                 .mat-icon {
                     font-size: 16px;
-                }
-            }
-
-            .toolbar-action-icons {
-                padding-right: 30px;
-            }
-
-            // selector checkboxes for group level and metric level
-            .group-selector,
-            .metric-selector {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-            }
-
-            // group-level toolbar
-            .group-item-toolbar {
-                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-                height: auto;
-                padding: 0;
-                margin-left: 3px;
-                padding: 0 $default-padding 0 0;
-
-                .group-label {
-                    .mat-icon {
-                        font-size: 16px;
-                        margin-right: 4px;
-                    }
+                    margin-right: 2px;
                 }
 
-                .add-query-actions {
-                    margin-right: 20px;
-
-                    .mat-icon {
-                        font-size: 16px;
-                        margin-right: 2px;
-                    }
-
-                    .mat-button {
-                        font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-                        padding: 0 6px;
-                        line-height: 24px;
-                        min-width: initial;
-                    }
+                .mat-button {
+                    font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                    padding: 0 6px;
+                    line-height: 24px;
+                    min-width: initial;
                 }
             }
+        }
 
-            // group metric row wrapper - contains checkbox, then metric item details
+        // group metric row wrapper - contains checkbox, then metric item details
 
-            // mat-expansion-panel inside the accordion (.mat-accordion.query-group-list)
-            .mat-expansion-panel {
-                overflow: visible;
+        // mat-expansion-panel inside the accordion (.mat-accordion.query-group-list)
+        .mat-expansion-panel {
+            overflow: visible;
+        }
+        .mat-expansion-panel.query-group-item {
+            margin-bottom: 2px;
+
+            &:hover {
+                .group-selector,
+                .metric-selector {
+                    opacity: 1;
+                }
             }
-            .mat-expansion-panel.query-group-item {
-                margin-bottom: 2px;
+        }
 
-                &:hover {
+        // collapsible accordion list of the query groups
+        .mat-accordion.query-group-list {
+            display: flex;
+            flex-direction: column;
+
+            // if ANY checkbox is selected, then all the checkboxes become visible
+            &.items-selected {
+                .query-group-item {
                     .group-selector,
                     .metric-selector {
                         opacity: 1;
                     }
                 }
             }
-
-            // collapsible accordion list of the query groups
-            .mat-accordion.query-group-list {
-                display: flex;
-                flex-direction: column;
-
-                // if ANY checkbox is selected, then all the checkboxes become visible
-                &.items-selected {
-                    .query-group-item {
-                        .group-selector,
-                        .metric-selector {
-                            opacity: 1;
-                        }
-                    }
-                }
-            }
-
-            // EXPANDED MODE
-            .mat-expansion-panel-header.mat-expanded {
-                .mat-icon.arrow-down {
-                    display: inline-flex;
-                }
-                .mat-icon.arrow-right {
-                    display: none;
-                }
-            }
-
-            // NOT EXPANDED
-            // getting some wierd background on hover when it was not expaded
-            .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']):hover {
-                background: transparent;
-            }
         }
 
-        .query-group-list.drag-mode {
-            .metric-wrapper {
+        // EXPANDED MODE
+        .mat-expansion-panel-header.mat-expanded {
+            .mat-icon.arrow-down {
+                display: inline-flex;
+            }
+            .mat-icon.arrow-right {
                 display: none;
             }
         }
 
-
-
-        .value-options {
-            padding-left: 5px;
-
-            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-
-            mat-select {
-                padding: 5px;
-            }
-            .values-form-field {
-                width: 100px;
-            }
-        }
-
-        // WHEN NOT EDITING A METRIC (the list of queries show)
-        .query-metrics-wrap {
-            .query-group-list {
-
-                .query-metric-row {
-                    margin-bottom: 8px;
-
-                    &:not(:first-child) {
-                        margin-top: 18px;
-                    }
-                }
-            }
-        }
-
-        // WHEN EDITING A METRIC
-        .query-metrics-wrap.is-editing-metric {
-            display: flex;
-
-            .query-group-list {
-
-                &,
-                .query-group-item,
-                .mat-expansion-panel-content,
-                .mat-expansion-panel-body,
-                .query-metric-row {
-                    flex: 1;
-                }
-
-                .query-group-item,
-                .mat-expansion-panel-body,
-                .query-metric-row {
-                    display: flex;
-                }
-
-                .mat-expansion-panel-header {
-                    display: none;
-                }
-
-
-            }
+        // NOT EXPANDED
+        // getting some wierd background on hover when it was not expaded
+        .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+            background: transparent;
         }
     }
 
-    .cdk-drag-preview {
+    .query-group-list.drag-mode {
         .metric-wrapper {
             display: none;
         }
     }
-    .cdk-drag-placeholder {
-        opacity: 0;
-        background:#ccc;
-      }
-}
 
-@mixin widget-config-metric-queries-component-theme($theme-config) {
+    .value-options {
+        padding-left: 5px;
+        font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
 
-    @include variables-compatibility($theme-config) {
+        mat-select {
+            padding: 5px;
+        }
+        .values-form-field {
+            width: 100px;
+        }
+    }
 
-        $chip-bg: mat-color($primary, default, .1);
-        $alias-bg: if($is-dark, rgba($white, .2), rgba($black, .2));
-        $alias-text: if($is-dark, rgba($white, .5), rgba($black, .5));
-
-        .widget-config-tab.metric-queries-configuration {
-            // style rules here
-
-            .dbfilter-panel {
-                background-color: rgb(250, 249, 249);
-                margin-bottom: 5px;
-                padding: 0px;
-                .mat-button-toggle-group {
-                    margin: 6px 6px 6px 0px;
-                    span {
-                        margin-left: 4px;
-                    }
-                    .mat-button-toggle-label-content {
-                        line-height: 24px;
-                        .mat-icon {
-                            height: 18px;
-                            font-size: 16px;
-                        }
-                    }
-                }
-                .mat-button-toggle-checked {
-                    background-color: mat-color($primary);
-                    color: mat-color($primary, default-contrast);
-                }
-            }
-
-            /*
-            .mat-expansion-panel.query-group-item {
-                border: 1px solid #d5d5d5;
-            }
-            */
+    // WHEN NOT EDITING A METRIC (the list of queries show)
+    .query-metrics-wrap {
+        .query-group-list {
 
             .query-metric-row {
-                position: relative;
+                margin-bottom: 8px;
 
-                .cdk-drag-handle.metric-query-drag-handle {
-                    width: 20px;
-                    height: 20px;
-                    position: absolute;
-                    right: 97px;
-                    top: 10px;
+                &:not(:first-child) {
+                    margin-top: 18px;
                 }
+            }
+        }
+    }
 
-                .add-new-query-button {
+    // WHEN EDITING A METRIC
+    .query-metrics-wrap.is-editing-metric {
+        display: flex;
+
+        .query-group-list {
+
+            &,
+            .query-group-item,
+            .mat-expansion-panel-content,
+            .mat-expansion-panel-body,
+            .query-metric-row {
+                flex: 1;
+            }
+
+            .query-group-item,
+            .mat-expansion-panel-body,
+            .query-metric-row {
+                display: flex;
+            }
+
+            .mat-expansion-panel-header {
+                display: none;
+            }
+        }
+    }
+}
+
+.cdk-drag-preview {
+    .metric-wrapper {
+        display: none;
+    }
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+    background:#ccc; // TODO: plug into theme
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+
+    $chip-bg: mat-color($primary, default, .1);
+    $alias-bg: if($is-dark, rgba($white, .2), rgba($black, .2));
+    $alias-text: if($is-dark, rgba($white, .5), rgba($black, .5));
+
+    .widget-config-tab.metric-queries-configuration {
+        // style rules here
+
+        .dbfilter-panel {
+            background-color: rgb(250, 249, 249);
+            margin-bottom: 5px;
+            padding: 0px;
+            .mat-button-toggle-group {
+                margin: 6px 6px 6px 0px;
+                span {
+                    margin-left: 4px;
+                }
+                .mat-button-toggle-label-content {
                     line-height: 24px;
-
                     .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                        margin-right: 8px;
-                    }
-                }
-
-                .metric-tags {
-                    .mat-basic-chip {
-                        background-color: $chip-bg;
-
-                        // first-child should be the tag-key
-                        :first-child {
-                            color: mat-color($foreground, text, .65);
-                        }
-                    }
-                }
-                .query-metric-item {
-                    .expression-metrics {
-                        .metric {
-                            display: flex;
-                            flex-direction: row;
-                            margin-bottom: 3px;
-                            align-items: center;
-                            padding: 5px 0px 5px 0px;
-                            border-bottom: 1px solid #f0f0f0;
-                            .metric-alias {
-                                display: inline-flex;
-
-                                width: 30px;
-                                margin-right: 10px;
-                                span {
-                                    background-color: $alias-bg;
-                                    color: $alias-text;
-                                    font-size: 10px;
-                                    padding: 0px 5px;
-                                    border-radius: 4px;
-                                    font-weight: bold;
-                                }
-                            }
-                            .metric-label {
-                                font-size: 12px;
-                                display: inline-flex;
-                            }
-                        }
-                        .metric:last-child {
-                            border-bottom: none;
-                        }
+                        height: 18px;
+                        font-size: 16px;
                     }
                 }
             }
+            .mat-button-toggle-checked {
+                background-color: mat-color($primary);
+                color: mat-color($primary, default-contrast);
+            }
+        }
 
-            .group-item-toolbar {
-                background-color: $white;
+        /*
+        .mat-expansion-panel.query-group-item {
+            border: 1px solid #d5d5d5;
+        }
+        */
+
+        .query-metric-row {
+            position: relative;
+
+            .cdk-drag-handle.metric-query-drag-handle {
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                right: 97px;
+                top: 10px;
             }
 
-            .value-options {
-                mat-select {
+            .add-new-query-button {
+                line-height: 24px;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(14px);
+                    margin-right: 8px;
+                }
+            }
+
+            .metric-tags {
+                .mat-basic-chip {
                     background-color: $chip-bg;
+
+                    // first-child should be the tag-key
+                    :first-child {
+                        color: mat-color($foreground, text, .65);
+                    }
                 }
-                .mat-form-field-underline {
-                    background-color: transparent;
+            }
+            .query-metric-item {
+                .expression-metrics {
+                    .metric {
+                        display: flex;
+                        flex-direction: row;
+                        margin-bottom: 3px;
+                        align-items: center;
+                        padding: 5px 0px 5px 0px;
+                        border-bottom: 1px solid #f0f0f0;
+                        .metric-alias {
+                            display: inline-flex;
+
+                            width: 30px;
+                            margin-right: 10px;
+                            span {
+                                background-color: $alias-bg;
+                                color: $alias-text;
+                                font-size: 10px;
+                                padding: 0px 5px;
+                                border-radius: 4px;
+                                font-weight: bold;
+                            }
+                        }
+                        .metric-label {
+                            font-size: 12px;
+                            display: inline-flex;
+                        }
+                    }
+                    .metric:last-child {
+                        border-bottom: none;
+                    }
                 }
+            }
+        }
+
+        .group-item-toolbar {
+            background-color: $white;
+        }
+
+        .value-options {
+            mat-select {
+                background-color: $chip-bg;
+            }
+            .mat-form-field-underline {
+                background-color: transparent;
             }
         }
     }

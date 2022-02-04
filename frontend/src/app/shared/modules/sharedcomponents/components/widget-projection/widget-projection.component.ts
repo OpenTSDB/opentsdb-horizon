@@ -18,7 +18,8 @@ import {
     Component,
     OnInit,
     HostBinding,
-    Input
+    Input,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -26,7 +27,9 @@ import { Observable, Subscription } from 'rxjs';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'widget-projection',
-    templateUrl: './widget-projection.component.html'
+    templateUrl: './widget-projection.component.html',
+    styleUrls: ['./widget-projection.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetProjectionComponent implements OnInit {
 

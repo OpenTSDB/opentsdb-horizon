@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TimeRangePickerOptions } from '../../../../modules/date-time-picker/models/models';
@@ -31,7 +31,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-time',
     templateUrl: './widget-config-time.component.html',
-    styleUrls: [],
+    styleUrls: ['./widget-config-time.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [
         // `MomentDateAdapter` and `MAT_MOMENT_DATE_FORMATS` can be automatically provided by importing
         // `MatMomentDateModule` in your applications root module. We provide it at the component level

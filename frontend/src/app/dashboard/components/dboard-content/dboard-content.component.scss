@@ -76,6 +76,14 @@
     }
 
     .gridster-stage {
+        width: 100%;
+        flex: 1 0px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: overlay;
+        padding: 10px;
+
         .is-scroller {
             //@include is-scroller();
             padding: 10px;

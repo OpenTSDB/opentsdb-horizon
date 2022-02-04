@@ -15,138 +15,98 @@
 // * limitations under the License.
 // *
 
-@mixin widget-config-multigraph-component-base() {
-    .widget-config-tab.multigraph-configuration {
-        // style rules here
-        padding: 0 10px 14px 10px;
-        display: flex;
+@import 'loader-component';
 
-        > form {
-            flex-direction: column;
-        }
+.widget-config-tab.multigraph-configuration {
+    // style rules here
+    padding: 0 10px 14px 10px;
+    display: flex;
+
+    > form {
+        flex-direction: column;
+    }
+
+    .fixed-label {
+        display: inline-block;
+        width: 150px;
+    }
+
+    .config-control.inline-controls {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
 
         .fixed-label {
-            display: inline-block;
-            width: 150px;
-        }
+            padding: 10px 0;
 
-        .config-control.inline-controls {
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-
-            .fixed-label {
-                padding: 10px 0;
-
-                &:not(:first-child) {
-                    margin-left: 25px;
-                }
+            &:not(:first-child) {
+                margin-left: 25px;
             }
-            .mat-checkbox {
+        }
+        .mat-checkbox {
+            margin-right: 8px;
+        }
+    }
+
+    .radio-row {
+        display: flex;
+        line-height: 48px;
+
+        .radio-inline-label {
+            .mat-form-field,
+            .mat-form-field + span {
                 margin-right: 8px;
             }
         }
+    }
 
-        .radio-row {
-            display: flex;
-            line-height: 48px;
+    .mat-form-field.numeric-options {
+        .mat-form-field-infix {
+            width: 60px;
+        }
+    }
 
-            .radio-inline-label {
-                .mat-form-field,
-                .mat-form-field + span {
-                    margin-right: 8px;
-                }
+    .form-field-group.table-output {
+        width: calc(100% - 150px);
+
+        .mat-header-cell,
+        .mat-cell {
+            &.mat-column-x,
+            &.mat-column-y,
+            &.mat-column-g,
+            &.mat-column-order {
+                justify-content: center;
             }
         }
 
-        .mat-form-field.numeric-options {
-           .mat-form-field-infix {
-               width: 60px;
-           }
+        .mat-header-cell:first-of-type
+        .mat-cell:first-of-type {
+            padding-left: 0;
         }
 
-        .form-field-group.table-output {
-            width: calc(100% - 150px);
+        .mat-header-cell.mat-column-remove,
+        .mat-cell.mat-column-remove {
+            padding-right: 6px;
+            padding-left: 6px;
+            max-width: 30px;
 
-            .mat-header-cell,
-            .mat-cell {
-                &.mat-column-x,
-                &.mat-column-y,
-                &.mat-column-g,
-                &.mat-column-order {
-                    justify-content: center;
-                }
-            }
-
-            .mat-header-cell:first-of-type
-            .mat-cell:first-of-type {
-                padding-left: 0;
-            }
-
-            .mat-header-cell.mat-column-remove,
-            .mat-cell.mat-column-remove {
-                padding-right: 6px;
-                padding-left: 6px;
-                max-width: 30px;
-
-                .mat-icon-button {
-                    width: 18px;
-                    height: 18px;
-                    line-height: 18px;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                    }
-                }
-            }
-
-            .mat-cell.mat-column-order .mat-icon {
-                cursor: grab;
-            }
-
-            .multigraph-mode-row {
-                .mat-cell.mat-column-label {
-                    padding-left: 16px;
-                    padding-right: 8px;
-                }
-            }
-
-            .mat-cell.mat-column-label,
-            .cdk-column-label {
-
-                .mat-form-field-underline {
-                    display: none; // get rid of the underline
-                }
-            }
-
-        }
-
-        .add-tag-control .mat-form-field {
-            width: 100%;
-
-            .mat-form-field-prefix {
-                align-self: stretch;
-                display: flex;
-                align-items: center;
-                margin: 0 4px 0 8px;
+            .mat-icon-button {
+                width: 18px;
+                height: 18px;
+                line-height: 18px;
 
                 .mat-icon {
                     @include sizeDenaliIcon(14px);
-                    margin-right: 8px;
                 }
             }
         }
 
-       .mat-select {
-            .mat-select-value {
-                width: auto;
-                max-width: initial;
-            }
+        .mat-cell.mat-column-order .mat-icon {
+            cursor: grab;
         }
 
         .multigraph-mode-row {
-            .mat-cell.mat-column-label,
-            .cdk-column-label {
+            .mat-cell.mat-column-label {
                 padding-left: 16px;
                 padding-right: 8px;
             }
@@ -159,28 +119,67 @@
                 display: none; // get rid of the underline
             }
         }
+
     }
 
-    // cdk items
-    .multigraph-data-row.mat-row.cdk-drag-preview {
-        .mat-cell {
-            &.mat-column-x,
-            &.mat-column-y,
-            &.mat-column-g,
-            &.mat-column-order {
-                justify-content: center;
+    .add-tag-control .mat-form-field {
+        width: 100%;
+
+        .mat-form-field-prefix {
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            margin: 0 4px 0 8px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+                margin-right: 8px;
             }
+        }
+    }
+
+    .mat-select {
+        .mat-select-value {
+            width: auto;
+            max-width: initial;
+        }
+    }
+
+    .multigraph-mode-row {
+        .mat-cell.mat-column-label,
+        .cdk-column-label {
+            padding-left: 16px;
+            padding-right: 8px;
+        }
+    }
+
+    .mat-cell.mat-column-label,
+    .cdk-column-label {
+
+        .mat-form-field-underline {
+            display: none; // get rid of the underline
         }
     }
 }
 
-@mixin widget-config-multigraph-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        .widget-config-tab.multigraph-configuration {
-            .form-field-group.table-output {
-                .mat-row:hover {
-                    background: mat-color($foreground, lighter-divider);
-                }
+// cdk items
+.multigraph-data-row.mat-row.cdk-drag-preview {
+    .mat-cell {
+        &.mat-column-x,
+        &.mat-column-y,
+        &.mat-column-g,
+        &.mat-column-order {
+            justify-content: center;
+        }
+    }
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    .widget-config-tab.multigraph-configuration {
+        .form-field-group.table-output {
+            .mat-row:hover {
+                background: mat-color($foreground, lighter-divider);
             }
         }
     }

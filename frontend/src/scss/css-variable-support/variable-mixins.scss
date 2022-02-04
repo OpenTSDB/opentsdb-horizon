@@ -62,7 +62,6 @@
         @at-root [theme="#{$theme-name}"] {
             &[variant="light"] {
                 @include angular-material-theme($light-theme);
-                @include generate-app-theme($light-theme); // TODO: remove this after moving to new style system
                 @content;
             }
 
@@ -71,7 +70,6 @@
                 //&#{$dark-theme-selector},
                 &[variant="dark"] {
                     @include angular-material-theme($dark-theme);
-                    @include generate-app-theme($dark-theme); // TODO: remove this after moving to new style system
                     @content;
                 }
             }
@@ -80,7 +78,6 @@
         // DEFAULT theme
         @at-root {
             @include angular-material-theme($light-theme);
-            @include generate-app-theme($light-theme); // TODO: remove this after moving to new style system
             @content;
 
             @if $dark-theme-selector {
@@ -88,7 +85,6 @@
                 //#{$dark-theme-selector},
                 [variant="dark"] {
                     @include angular-material-theme($dark-theme);
-                    @include generate-app-theme($dark-theme); // TODO: remove this after moving to new style system
                     @content;
                 }
             }
