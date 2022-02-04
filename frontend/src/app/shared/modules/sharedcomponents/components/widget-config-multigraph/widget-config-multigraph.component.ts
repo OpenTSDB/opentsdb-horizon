@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, OnDestroy, OnChanges, SimpleChanges,
-    HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef
+    HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
@@ -34,7 +34,8 @@ import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
     // tslint:disable-next-line: component-selector
     selector: 'widget-config-multigraph',
     templateUrl: './widget-config-multigraph.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-multigraph.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDestroy {
 

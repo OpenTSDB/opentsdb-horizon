@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnChanges, SimpleChanges, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { FormArray, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -31,7 +31,8 @@ export interface VisualizationData {
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-visual-appearance',
     templateUrl: './widget-config-visual-appearance.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-visual-appearance.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigVisualAppearanceComponent implements OnInit, OnChanges  {
     @HostBinding('class.widget-config-tab') private _hostClass = true;

@@ -17,17 +17,13 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@mixin widget-config-query-inspector-component-base() {
-    .widget-config-tab.query-inspector-configuration {
-        // style rules here
-    }
-}
+//@import 'loader-component';
 
-@mixin widget-config-query-inspector-component-theme($theme-config) {
+//.widget-config-tab.query-inspector-configuration {}
 
-    @include variables-compatibility($theme-config) {
-        .widget-config-tab.query-inspector-configuration {
-            // style rules here
-        }
-    }
-}
+
+// * THEME VARIANTS
+//@include init-component-variants() {
+//    .widget-config-tab.query-inspector-configuration {}
+//}
+

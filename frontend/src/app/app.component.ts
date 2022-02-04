@@ -24,11 +24,11 @@ import { AuthService } from './core/services/auth.service';
 import { AppConfigService } from './core/services/config.service';
 import { LoginExpireDialogComponent } from './core/components/login-expire-dialog/login-expire-dialog.component';
 import { Select } from '@ngxs/store';
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: [ './app.component.scss' ]
+    styleUrls: [ './app.component.scss' ],
+    encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('class.app-root') hostClass = true;
@@ -70,13 +70,13 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         // interval for 1 min
         const authCheck = interval(60 * 1000);
-        const authConfig = this.configService.getConfig().auth; 
+        const authConfig = this.configService.getConfig().auth;
         const heartbeatInverval = authConfig.heartbeatInterval !== undefined ? authConfig.heartbeatInterval * 1000 : 600000;
         if ( heartbeatInverval > 0 ) {
             this.authCheckSub = authCheck.subscribe(val => {
                 const now = new Date().getTime();
                 const lastHB = parseInt(localStorage.getItem('lastHeartBeat'), 10);
-                // only active tab and > heartbeatInverval 
+                // only active tab and > heartbeatInverval
                 if (!document.hidden && (now - lastHB >= heartbeatInverval)) {
                     return this.authService.getCookieStatus(true)
                         .subscribe(

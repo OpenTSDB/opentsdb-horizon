@@ -44,7 +44,8 @@ import { ComponentPortal } from '@angular/cdk/portal';
     // tslint:disable-next-line:component-selector
     selector: 'linechart-widget',
     templateUrl: './linechart-widget.component.html',
-    styleUrls: ['./linechart-widget.component.scss']
+    styleUrls: ['./linechart-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 

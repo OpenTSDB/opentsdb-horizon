@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
@@ -25,7 +25,8 @@ import { Subscription } from 'rxjs';
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-legend',
     templateUrl: './widget-config-legend.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-legend.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
