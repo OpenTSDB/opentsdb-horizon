@@ -43,8 +43,10 @@ import {
 } from '@ngxs/store';
 import { DbfsUtilsService } from '../../services/dbfs-utils.service';
 import { DbfsService } from '../../services/dbfs.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { UtilsService } from '../../../../../core/services/utils.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -139,7 +141,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         private dbfsUtils: DbfsUtilsService,
         private utils: UtilsService,
         private service: DbfsService,
-        private cdref: ChangeDetectorRef
+        private cdref: ChangeDetectorRef,
+        private appConfig: AppConfigService,
+        private http: HttpClient
     ) { }
 
     ngOnInit() {
@@ -265,6 +269,10 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 const folderPanel = this.dbfsUtils.normalizePanelFolder(folder, true, true, folderNoDisplay);
                 folderPanel.loaded = folder.loaded;
                 this.folders[folderPanel.fullPath] = folderPanel;
+
+                if (this.mode === 'save' && (folder.trashFolder || (folder.ownerType === 'user' && folder.name === '_clipboard_'))) {
+                    delete this.folders[folderPanel.fullPath];
+                }
             }
         }
 
@@ -292,6 +300,10 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                         const subfolderPanel = this.dbfsUtils.normalizePanelFolder(subfolder, true, true, subfolderNoDisplay);
                         subfolderPanel.loaded = subfolder.loaded;
                         this.folders[subfolderPanel.fullPath] = subfolderPanel;
+
+                        if (this.mode === 'save' && (subfolder.trashFolder || (subfolder.ownerType === 'user' && subfolder.name === '_clipboard_'))) {
+                            delete this.folders[subfolderPanel.fullPath];
+                        }
                     }
                 }
             }
@@ -308,10 +320,11 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         // After initial setup, we will no longer pull from the state resources cache, but will call API
     }
 
-    getPanelContext(path: string) {
+    /*getPanelContext(path: string) {
         const panel = this.store.select(DbfsResourcesState.getFolderResource(path));
+        this.debugPanelVars({'function': 'getPanelContext', path, panel});
         return panel;
-    }
+    }*/
 
     navigatorAction(action: string, event?: any) {
         switch (action) {
@@ -360,11 +373,13 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
                 break;
             case 'goUpDirectory':
                 this.navPanel.goBack(() => {
-                    this.panels.splice(this.panelIndex);
-                    this.panelIndex = this.panels.length - 1;
+                    this.panels.splice(this.panelIndex, 1);
+                    //this.panelIndex = this.panels.length - 1;
+                    this.panelIndex = this.panelIndex - 1;
                     this.selected = false;
                     this.cdref.detectChanges();
                 });
+
                 break;
             default:
                 break;
@@ -372,10 +387,9 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     }
 
     folderAction(action: any, folder: any, event: any) {
-
         switch (action) {
             case 'gotoFolder':
-                if (folder.loaded) {
+                if (folder.loaded === true) {
                     this.addPanel(folder.fullPath);
                 } else {
                     this.loadSubFolderThenPanel(folder);
@@ -409,18 +423,17 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
         this.panels.push(this.folders[path]);
         this.panelIndex = this.panels.length - 1;
 
-        console.log('FOLDER CONTEXT', this.folders[path]);
-
-        setTimeout(function() {
+        setTimeout(() => {
             this.selected = false;
             this.navPanel.goNext();
-        }.bind(this), 200);
+        }, 200);
     }
 
-    private loadSubFolderThenPanel(folder: any) {
-
+    private fetchFolder(folder: any): Promise<any> {
         const details = this.dbfsUtils.detailsByFullPath(folder.fullPath);
         let topFolder: any = false;
+        let apiUrl: string;
+        let params: any = {};
 
         if (details.topFolder) {
             topFolder = {
@@ -429,40 +442,86 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
             };
         }
 
-        this.service.getFolderByPath(folder.path, topFolder).pipe(
-            catchError(val => of(`error caught: ${val}`))
-        ).subscribe((resource: any) => {
+        if (topFolder && topFolder.type && topFolder.value) {
+            const tokenType = (topFolder.type === 'user') ? 'userId' : 'namespace';
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
+            params[tokenType] = topFolder.value;
+        } else {
+            apiUrl = this.appConfig.getConfig().configdb + '/dashboard' + folder.path;
+        }
 
-            const folderPanel = this.dbfsUtils.normalizePanelFolder(resource, true, true, (resource.fullPath === this.originDetails.fullPath));
-            folderPanel.loaded = true;
-
-            // just to be sure the name carries over
-            if (folderPanel.ownerType === 'namespace' && folderPanel.topFolder === true) {
-                const nsData = this.store.selectSnapshot(DbfsResourcesState.getNamespacesData);
-                folderPanel.name = nsData[folderPanel.namespace].name;
-            }
-
-            if (folderPanel.ownerType === 'user' && folderPanel.topFolder === true) {
-                folderPanel.name = 'My Dashboards';
-            }
-
-            const subfolders = [];
-
-            folderPanel.subfolders.sort((a: any, b: any) => {
-                return this.utils.sortAlphaNum(a.name, b.name);
-            });
-
-            for (const subfolder of folderPanel.subfolders) {
-                subfolders.push(subfolder.fullPath);
-                const subfolderPanel = this.dbfsUtils.normalizePanelFolder(subfolder, true, true, (subfolder.fullPath === this.originDetails.fullPath));
-                this.folders[subfolderPanel.fullPath] = subfolderPanel;
-            }
-
-            folderPanel.subfolders = subfolders;
-
-            this.folders[folderPanel.fullPath] = folderPanel;
-            this.addPanel(folderPanel.fullPath);
-
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
         });
+
+        const httpOptions: any = {
+            headers,
+            withCredentials: true,
+            params
+        };
+
+        return this.http.get(apiUrl, httpOptions)
+            .toPromise()
+            .then((response: any) => {
+                return response;
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+    private loadSubFolderThenPanel(folder: any) {
+
+        this.fetchFolder(folder)
+            .then(resource => {
+
+                let folderPanel: any;
+
+                folderPanel = this.dbfsUtils.normalizePanelFolder(resource, true, true, (resource.fullPath === this.originDetails.fullPath));
+                folderPanel.loaded = true;
+
+               // just to be sure the name carries over
+                if (folderPanel.ownerType === 'namespace' && folderPanel.topFolder === true) {
+                    const nsData = this.store.selectSnapshot(DbfsResourcesState.getNamespacesData);
+                    folderPanel.name = nsData[folderPanel.namespace].name;
+                }
+
+                if (folderPanel.ownerType === 'user' && folderPanel.topFolder === true) {
+                    folderPanel.name = 'My Dashboards';
+                }
+
+                const subfolders = [];
+
+                folderPanel.subfolders.sort((a: any, b: any) => {
+                    return this.utils.sortAlphaNum(a.name, b.name);
+                });
+
+                for (const subfolder of folderPanel.subfolders) {
+                    subfolders.push(subfolder.fullPath);
+                    const subfolderPanel = this.dbfsUtils.normalizePanelFolder(subfolder, true, true, (subfolder.fullPath === this.originDetails.fullPath));
+                    this.folders[subfolderPanel.fullPath] = subfolderPanel;
+
+                    if (this.mode === 'save' && (subfolderPanel.trashFolder || (subfolderPanel.ownerType === 'user' && subfolderPanel.name === '_clipboard_'))) {
+                        delete this.folders[subfolderPanel.fullPath];
+                    }
+                }
+
+                folderPanel.subfolders = subfolders;
+                this.folders[folderPanel.fullPath] = folderPanel;
+
+                return folderPanel;
+            })
+            .then(folderPanel => {
+                this.panels.push(this.folders[folderPanel.fullPath]);
+                this.panelIndex = this.panels.length - 1;
+                this.selected = false;
+                this.cdref.detectChanges();
+                return folderPanel;
+            })
+            .then(() => {
+                setTimeout(() => {
+                    this.navPanel.goNext();
+                }, 200);
+            });
     }
 }
