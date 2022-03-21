@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
 
 .dropdown-visual-type {
     display: inline-block;
@@ -66,8 +66,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .dropdown-visual-type {}
-//}

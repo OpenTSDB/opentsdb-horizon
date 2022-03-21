@@ -1,0 +1,39 @@
+@import './containers/dashboard/dashboard.theme';
+
+@import './components/dashboard-delete-dialog/dashboard-delete-dialog.theme';
+@import './components/dashboard-save-dialog/dashboard-save-dialog.theme';
+
+@import './components/dashboard-settings-dialog/dashboard-settings-dialog.theme';
+@import './components/dashboard-settings-dialog/children/dbs-json/dbs-json.theme';
+@import './components/dashboard-settings-dialog/children/dbs-meta/dbs-meta.theme';
+@import './components/dashboard-settings-dialog/children/dbs-variable-item/dbs-variable-item.theme';
+@import './components/dashboard-settings-dialog/children/dbs-variables/dbs-variables.theme';
+
+@import './components/dashboard-settings-toggle/dashboard-settings-toggle.theme';
+@import './components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.theme';
+@import './components/dboard-content/dboard-content.theme';
+@import './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.theme';
+@import './components/template-variable-panel/template-variable-panel.theme';
+@import './components/widget-delete-dialog/widget-delete-dialog.theme';
+@import './components/widget-loader/widget-loader.theme';
+
+@mixin dashboard-module-theme() {
+    @include dashboard-container-component-theme();
+    @include dashboard-delete-dialog-component-theme();
+    @include dashboard-save-dialog-component-theme();
+
+    @include dashboard-settings-dialog-component-theme();
+    @include dbs-json-component-theme();
+    @include dbs-meta-component-theme();
+    @include dbs-variable-item-component-theme();
+    @include dbs-variables-component-theme();
+
+    @include dashboard-settings-toggle-component-theme();
+    @include dashboard-to-alert-dialog-component-theme();
+    @include dboard-content-component-theme();
+    @include navbar-dashboard-actions-menu-component-theme();
+    @include template-variable-panel-component-theme();
+    @include widget-delete-dialog-component-theme();
+    @include widget-loader-component-theme();
+
+}

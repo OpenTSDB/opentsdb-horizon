@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'big-number-visual-appearance',
     templateUrl: './big-number-visual-appearance.component.html',
-    styleUrls: ['./big-number-visual-appearance.component.scss']
+    styleUrls: ['./big-number-visual-appearance.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class BignumberVisualAppearanceComponent implements OnInit {

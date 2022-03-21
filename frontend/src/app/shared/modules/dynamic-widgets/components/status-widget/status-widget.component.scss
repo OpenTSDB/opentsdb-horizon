@@ -14,27 +14,17 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
 
 
-$default-padding: map-get($widgets-common-config, default-padding);
-$edit-view-padding: map-get($widgets-common-config, edit-padding);
-$tab-width: map-get($widgets-common-config, tab-width);
-$action-bar-height: map-get($widgets-common-config, action-bar-height);
+//$default-padding: map-get($widgets-common-config, default-padding);
+//$edit-view-padding: map-get($widgets-common-config, edit-padding);
+//$tab-width: map-get($widgets-common-config, tab-width);
+//$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-//:host.widget-panel-content.status-widget { }
+//.widget-panel-content.status-widget { }
 
-//@at-root {
-//    ::ng-deep {
+
 // when we are in edit view
-//      :host.edit-view-container.is-active {
-//          .widget-panel-content.status-widget { }
-//      }
-//    }
-//}
-
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    :host.widget-panel-content.status-widget { }
+//.edit-view-container.is-active {
+//    .widget-panel-content.status-widget { }
 //}

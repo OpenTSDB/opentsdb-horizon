@@ -1,0 +1,55 @@
+@import './components/barchart-widget/barchart-widget.theme';
+
+@import './components/bignumber-widget/bignumber-widget.theme';
+@import './components/bignumber-widget/children/big-number-visual-appearance/big-number-visual-appearance.theme';
+
+//@import './components/developer-widget/developer-widget.theme';
+
+@import './components/donut-widget/donut-widget.theme';
+@import './components/donut-widget/children/donutchart-legend/donutchart-legend.theme';
+
+@import './components/events-widget/events-widget.theme';
+
+@import './components/heatmap-widget/heatmap-widget.theme';
+
+@import './components/linechart-widget/linechart-widget.theme';
+
+@import './components/markdown-widget/markdown-widget.theme';
+@import './components/markdown-widget/children/markdown-widget-visual-appearance/markdown-widget-visual-appearance.theme';
+
+@import './components/placeholder-widget/placeholder-widget.theme';
+
+@import './components/status-widget/status-widget.theme';
+
+@import './components/table-widget/table-widget.component';
+
+@import './components/topn-widget/topn-widget.component';
+
+@mixin dynamic-widgets-module-theme() {
+    @include barchart-widget-component-theme();
+
+    @include bignumber-widget-component-theme();
+    @include big-number-visual-appearance-component-theme();
+
+    //@include developer-widget-component-theme();
+
+    @include donut-widget-component-theme();
+    @include donutchart-legend-component-theme();
+
+    @include events-widget-component-theme();
+
+    @include heatmap-widget-component-theme();
+
+    @include linechart-widget-component-theme();
+
+    @include markdown-widget-component-theme();
+    @include markdown-widget-visual-appearance-component-theme();
+
+    @include placeholder-widget-component-theme();
+
+    @include status-widget-component-theme();
+
+    @include table-widget-component-theme();
+
+    @include topn-widget-component-theme();
+}

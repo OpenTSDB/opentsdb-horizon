@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.donutchart-widget {
+.widget-panel-content.donutchart-widget {
     flex: 1;
     display: flex;
     max-height: 100%;
@@ -147,23 +147,13 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
     }
 }
 
-::ng-deep {
-    // when we are in edit view
-    .edit-view-container.is-active {
-        .widget-panel-content.donutchart-widget {
-            #container {
-                margin: 0px 0px 0px 0px;
-                align-items: flex-end;
-                justify-content: start;
-            }
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.donutchart-widget {
+        #container {
+            margin: 0px 0px 0px 0px;
+            align-items: flex-end;
+            justify-content: start;
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .donut-widget { }
-//}
-
-
-

@@ -14,14 +14,15 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
+
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.heatmap-widget {
+.widget-panel-content.heatmap-widget {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -40,6 +41,7 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         .graph-chart {
             padding: 20px 0px 0px 0px;
         }
+
         .dygraph-legend {
             display: none;
             z-index: 1000;
@@ -68,17 +70,15 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             }
         }
 
-        ::ng-deep {
-            .dygraph-label, .dygraph-axis-label {
-                color: slategrey; // TODO: plug into theme
-                font-size: 12px;
-                // font-family: Monaco, monospace;
-                font-family: Helvetica Neue, Helvetica;
-            }
+        .dygraph-label, .dygraph-axis-label {
+            color: slategrey; // TODO: plug into theme
+            font-size: 12px;
+            // font-family: Monaco, monospace;
+            font-family: Helvetica Neue, Helvetica;
+        }
 
-            .dygraph-ylabel {
-                font-weight: 400;
-            }
+        .dygraph-ylabel {
+            font-weight: 400;
         }
 
         .graph-legend {
@@ -88,6 +88,7 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             height: 100%;
             overflow: overlay;
             z-index: 0;
+
             .mat-table {
                 font-family: Monaco, monospace;
             }
@@ -208,41 +209,11 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
     }
 }
 
-@at-root {
-    ::ng-deep {
-        // when we are in edit view
-        .edit-view-container.is-active {
-            .widget-panel-content.heatmap-widget {
-                .graph-chart {
-                    padding: 10px 0px 0px 0px;
-                }
-            }
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.heatmap-widget {
+        .graph-chart {
+            padding: 10px 0px 0px 0px;
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $dygraph-tooltip-bg: if(
-        $is-dark,
-        mat-color($background, menu),
-        #f0f0f0 // TODO: plug into theme
-    );
-    $dygraph-tooltip-border: if(
-        $is-dark,
-        mat-color($background, menu, .85),
-        #cccccc // TODO: plug into theme
-    );
-
-    :host.widget-panel-content.heatmap-widget {
-
-        .widget-output {
-            .dygraph-legend {
-                background: $dygraph-tooltip-bg;
-                border: 1px solid $dygraph-tooltip-border;
-            }
-        }
-    }
-}
-

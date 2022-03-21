@@ -14,9 +14,8 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
 
-:host.color-picker-hsv-selector {
+.color-picker-hsv-selector {
     margin: 17px 15px 0px;
     position: relative;
 
@@ -52,10 +51,3 @@
         }
     }
 }
-
-
-// * THEME VARIANTS
-/*@include init-component-variants() {
-    :host.color-picker-hsv-selector { }
-}*/
-

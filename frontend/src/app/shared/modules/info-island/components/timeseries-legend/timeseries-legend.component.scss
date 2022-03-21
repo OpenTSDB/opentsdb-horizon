@@ -15,7 +15,9 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
+@import 'mixins';
 
 .timeseries-legend-component {
     display: flex;
@@ -218,83 +220,5 @@
 
     .mat-divider {
         margin: 8px 0;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $divider: mat-color($foreground, divider);
-
-    $menu-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
-    $menu-bg-lighter: if($is-dark, mat-color($background, menu, .85), mat-color($background, menu));
-
-    $cdk-window-bg: $menu-bg;
-    $cdk-window-border: $divider;
-
-    $header-bg: if($is-dark, mat-color($background, menu), mat-color($background, navbar));
-    $text: mat-color($foreground, navbar-text);
-
-    $brief-dark: #3a87ad; // TODO: plug into theme
-    $brief-light: #ddeff9; // TODO: plug into theme
-
-    .timeseries-legend-component {
-        .ts-legend-toolbar {
-            color: white;
-            background-color: black;
-
-            .mat-toolbar-row.detail-brief {
-                color: if($is-dark, $brief-light, $brief-dark);
-                background-color: if($is-dark, $brief-dark, $brief-light);
-            }
-        }
-
-        .ts-legend-table {
-            background: $cdk-window-bg;
-
-            .mat-sort-header-container.mat-sort-header-sorted {
-                color: #c09853; // TODO: plug into theme
-
-                .mat-sort-header-arrow {
-                    color: darken(#c09853, 15%); // TODO: plug into theme
-                }
-            }
-
-            .mat-row:hover,
-            .mat-row.tag-highlight {
-                background-color: mat-color($primary, default, .04);
-            }
-            .mat-cell:hover,
-            .mat-cell.tag-highlight {
-                background-color: mat-color($primary, default, .15);
-            }
-        }
-    }
-
-    // island toolbar
-    .info-island-toolbar.timeseries-legend-toolbar {
-
-        @if $is-dark {
-            .mat-select-arrow-wrapper .mat-select-arrow {
-                color: $white;
-            }
-        }
-
-        .mat-checkbox:not(.mat-checkbox-checked) {
-            .mat-checkbox-background {
-                background-color: $white;
-            }
-        }
-    }
-
-    @if $is-dark {
-        .mat-menu-panel.show-limit-type-cdk-menu {
-            background: $menu-bg-lighter;
-        }
-    }
-
-    // cdk items
-    .namespace-selector-menu.mat-menu-panel {
-        border: 1px solid mat-color($foreground, divider);
     }
 }

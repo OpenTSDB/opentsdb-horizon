@@ -34,6 +34,7 @@ import {
     Renderer2,
     SimpleChanges,
     ViewChild,
+    ViewEncapsulation,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -52,6 +53,7 @@ interface ColorOption {
     selector: 'color-picker-selector',
     templateUrl: './color-picker-selector.component.html',
     styleUrls: ['./color-picker-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

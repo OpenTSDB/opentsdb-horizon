@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
 
@@ -25,7 +25,8 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
     // tslint:disable-next-line: component-selector
     selector: 'events-widget',
     templateUrl: './events-widget.component.html',
-    styleUrls: ['./events-widget.component.scss']
+    styleUrls: ['./events-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

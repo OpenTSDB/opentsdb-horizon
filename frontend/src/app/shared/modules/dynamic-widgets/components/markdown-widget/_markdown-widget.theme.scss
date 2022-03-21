@@ -1,0 +1,20 @@
+@mixin markdown-widget-component-theme() {
+
+    .markdown-widget {
+        textarea {
+            background: if($is-dark, $black, $white);
+            color: if($is-dark, $white, $black);
+        }
+    }
+
+    .markdown-note {
+        background: mat-color($background, background);
+        color: if($is-dark, $white, $black);
+        border: none;
+
+        a:visited {
+            color: if($is-dark, $white, $black);
+        }
+    }
+
+}

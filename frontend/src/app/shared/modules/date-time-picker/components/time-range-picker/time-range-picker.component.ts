@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, ViewChild, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding, ViewChildren, QueryList
+    Component, OnInit, ViewChild, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding, ViewChildren, QueryList, ViewEncapsulation
 } from '@angular/core';
 import { Moment } from 'moment';
 import * as momentNs from 'moment';
@@ -31,7 +31,8 @@ const moment = momentNs;
     // tslint:disable-next-line:component-selector
     selector: 'time-range-picker',
     templateUrl: './time-range-picker.component.html',
-    styleUrls: ['./time-range-picker.component.scss']
+    styleUrls: ['./time-range-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TimeRangePickerComponent implements OnInit {

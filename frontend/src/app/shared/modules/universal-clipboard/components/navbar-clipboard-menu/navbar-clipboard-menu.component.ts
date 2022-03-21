@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ClipboardService } from '../../services/clipboard.service';
 
@@ -22,7 +22,8 @@ import { ClipboardService } from '../../services/clipboard.service';
     // tslint:disable-next-line: component-selector
     selector: 'navbar-clipboard-menu',
     templateUrl: './navbar-clipboard-menu.component.html',
-    styleUrls: ['./navbar-clipboard-menu.component.scss']
+    styleUrls: ['./navbar-clipboard-menu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
 

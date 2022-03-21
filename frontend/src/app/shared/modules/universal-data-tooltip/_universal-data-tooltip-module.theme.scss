@@ -1,0 +1,13 @@
+@import './components/barchart-data-tooltip/barchart-data-tooltip.theme';
+@import './components/donut-data-tooltip/donut-data-tooltip.theme';
+@import './components/heatmap-data-tooltip/heatmap-data-tooltip.theme';
+@import './components/linechart-data-tooltip/linechart-data-tooltip.theme';
+@import './components/topn-data-tooltip/topn-data-tooltip.theme';
+
+@mixin universal-data-tooltip-module-theme() {
+    @include barchart-data-tooltip-component-theme();
+    @include donut-data-tooltip-component-theme();
+    @include heatmap-data-tooltip-component-theme();
+    @include linechart-data-tooltip-component-theme();
+    @include topn-data-tooltip-component-theme();
+}

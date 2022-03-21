@@ -14,9 +14,8 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
 
-:host.dtp-keypad {
+.dtp-keypad {
 
     .mat-button {
 
@@ -27,22 +26,9 @@
         padding-bottom: 0px;
     }
 
-    ::ng-deep {
-        mat-grid-list {
-            display:flex;
-            justify-content:center;
-        }
+    mat-grid-list {
+        display:flex;
+        justify-content:center;
     }
+
 }
-
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.dtp-keypad {
-        .mat-button {
-            background-color: map-get($background, default);
-            //   color: map-get($primary, default-invert);
-        }
-    }
-}
-

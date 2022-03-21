@@ -19,7 +19,9 @@
 // * COMMON STYLES FOR WDATE TIME
 // **/
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
+@import 'mixins';
 
 $mono-fontface: map-get($app-fontface-config, mono);
 
@@ -237,78 +239,6 @@ $mono-fontface: map-get($app-fontface-config, mono);
         .ng-animating .mat-expansion-panel:not(.mat-expanded) & {
             height: 0;
             overflow: hidden;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    .event-stream {
-        .event-stream-list {
-            background: mat-color($background, card);
-
-            .event-panel.mat-expansion-panel {
-                .mat-expansion-panel-header {
-                    &:hover {
-                        background: mat-color($foreground, darker-divider);
-                    }
-                }
-
-                .mat-expansion-panel-body {
-                    .event-summary {
-                        border-top: if($is-dark, 1px solid $black, 1px solid #e0e0e0);
-
-                        &:not(:last-child) {
-                            border-bottom: 1px solid mat-color($foreground, lighter-divider);
-                        }
-
-                        &:hover {
-                            background: mat-color($primary, default, .10);
-                        }
-
-                        .event-details {
-                            border: 1px solid mat-color($foreground, divider);
-                            background: mat-color($foreground, lighter-divider);
-                        }
-
-                        fieldset {
-                            background: if($is-dark, mat-color($background, background), $white);
-                            border: if($is-dark, 1px solid $black, 1px solid #e0e0e0);
-                        }
-
-                        .event-summary {
-                            background: mat-color($foreground, lighter-divider);
-
-                            &:not(:last-child) {
-                                border-bottom: 1px solid mat-color($foreground, lighter-divider);
-                            }
-                        }
-
-                        .event-tag {
-                            background: mat-color($foreground, lighter-divider);
-                            border-radius: 5px;
-                        }
-
-                        .event-property {
-                            background: mat-color($foreground, lighter-divider);
-                            border-radius: 5px;
-                        }
-                    }
-                }
-
-                // when event-panel (accordion item) is open
-                &.mat-expanded {
-                    .mat-expansion-panel-header {
-                    //    .mat-expansion-indicator { }
-                        background: mat-color($foreground, lighter-divider);
-                    }
-
-                    .mat-expansion-panel-body {
-                        border-bottom: 1px solid mat-color($foreground, divider);
-                    }
-                }
-            }
         }
     }
 }

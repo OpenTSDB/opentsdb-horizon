@@ -1,0 +1,10 @@
+@mixin user-container-component-theme() {
+
+    $navbar-text: map-get($foreground, navbar-text);
+
+    .nav-user-title {
+        color: $navbar-text;
+    }
+
+    //:host.app-user {}
+}

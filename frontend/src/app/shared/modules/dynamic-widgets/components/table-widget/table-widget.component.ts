@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, Input,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -42,7 +42,8 @@ import { ElementQueries, ResizeSensor } from 'css-element-queries';
     //tslint:disable-next-line:component-selector
     selector: 'table-widget',
     templateUrl: './table-widget.component.html',
-    styleUrls: ['./table-widget.component.scss']
+    styleUrls: ['./table-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{

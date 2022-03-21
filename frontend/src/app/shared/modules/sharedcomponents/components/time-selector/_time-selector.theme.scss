@@ -1,0 +1,7 @@
+@mixin time-selector-component-theme() {
+    .time-selector-component {
+        .time-button {
+            background-color: mat-color($primary, default, 0.08)
+        }
+    }
+}

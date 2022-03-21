@@ -1,0 +1,38 @@
+@mixin widget-projection-component-theme() {
+    .widget-projection {
+        .mat-card {
+            box-shadow: none;
+            background-color: mat-color($background, card);
+            border: 1px solid rgba($black, 0.08);
+
+            .panel-body .panel-heading {
+                background-color: transparent;
+                display: none;
+
+                & {
+                    @include transition(background-color 0.2s ease-in-out);
+                }
+
+                .mat-toolbar {
+                    @include transition(none);
+                    background: transparent;
+
+                    .mat-icon-button {
+                        @include opacity(.5);
+                    }
+                }
+
+                &:hover {
+                    //background-color: rgba(map-get($accent, A700), .1);
+                    background-color: mat-color($background, card-header);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

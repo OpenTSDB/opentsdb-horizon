@@ -17,7 +17,7 @@
 import {
     Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output,
     EventEmitter, AfterViewChecked,
-    ChangeDetectorRef, HostBinding, SimpleChanges, HostListener
+    ChangeDetectorRef, HostBinding, SimpleChanges, HostListener, ViewEncapsulation
 } from '@angular/core';
 import { TimeRangePickerComponent } from '../time-range-picker/time-range-picker.component';
 import { TimeRangePickerOptions, ISelectedTime } from '../../models/models';
@@ -30,7 +30,8 @@ import { take, withLatestFrom, filter } from 'rxjs/operators';
     // tslint:disable-next-line:component-selector
     selector: 'time-picker',
     templateUrl: './time-picker.component.html',
-    styleUrls: ['./time-picker.component.scss']
+    styleUrls: ['./time-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges, OnDestroy {

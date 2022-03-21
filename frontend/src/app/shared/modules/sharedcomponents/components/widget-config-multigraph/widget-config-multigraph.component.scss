@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
 
 .widget-config-tab.multigraph-configuration {
     // style rules here
@@ -170,17 +170,6 @@
         &.mat-column-g,
         &.mat-column-order {
             justify-content: center;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .widget-config-tab.multigraph-configuration {
-        .form-field-group.table-output {
-            .mat-row:hover {
-                background: mat-color($foreground, lighter-divider);
-            }
         }
     }
 }

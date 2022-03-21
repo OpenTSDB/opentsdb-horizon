@@ -25,7 +25,8 @@ import {
     ElementRef,
     Renderer2,
     ViewChild,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
@@ -34,7 +35,8 @@ import { ColorService } from '../../services/color.service';
     // tslint:disable-next-line:component-selector
     selector: 'color-picker-hsv-selector',
     templateUrl: './color-picker-hsv-selector.component.html',
-    styleUrls: ['./color-picker-hsv-selector.component.scss']
+    styleUrls: ['./color-picker-hsv-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
 

@@ -19,9 +19,12 @@
 // * ADMIN CONFIG COMPONENT
 // *
 
- @import 'loader-base';
+@import '~@angular/material/theming';
+@import 'mixins';
+@import 'typography';
 
-:host.app-admin-section.app-admin-config {
+
+.app-admin-section.app-admin-config {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
@@ -40,8 +43,14 @@
 
     .config-section-title {
         h1 {
-            font-size: mat-font-size(map-get($app-fontface-config, sans), subheading-2);
-            font-weight: mat-font-weight(map-get($app-fontface-config, sans), title);
+            font-size: mat-font-size(
+                map-get($app-fontface-config, sans),
+                subheading-2
+            );
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                title
+            );
         }
     }
 
@@ -59,20 +68,29 @@
 
     .form-group {
         .form-label {
-            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
-            font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+            font-size: mat-font-size(
+                map-get($app-fontface-config, sans),
+                caption
+            );
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                body-2
+            );
         }
     }
 
     .module-section {
         .module-section-title {
-            font-weight: mat-font-weight(map-get($app-fontface-config, sans), body-2);
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                body-2
+            );
         }
 
         .module-subsection {
             padding-top: 10px;
         }
-     }
+    }
 
     .action-controls {
         padding: 8px 24px;
@@ -85,7 +103,6 @@
     }
 
     .config-section-endpoints {
-
         .tsdb-metric-hosts {
             .form-control-wrap {
                 display: inline-block;
@@ -102,59 +119,31 @@
         font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
     }
 
-    // deep items
-    ::ng-deep {
+    .form-control-wrap {
+        width: 100%;
+        max-width: 60%;
+        display: flex;
 
-        .form-control-wrap {
-            width: 100%;
-            max-width: 60%;
-            display: flex;
-
-            &.auto-width {
-                width: initial;
-                max-width: initial;
-            }
-        }
-
-        .actions {
-            .mat-mini-fab {
-                width: 20px;
-                height: 20px;
-                line-height: 1;
-
-                .mat-button-wrapper {
-                    line-height: 1;
-                    padding: initial;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                }
-            }
+        &.auto-width {
+            width: initial;
+            max-width: initial;
         }
     }
- }
 
+    .actions {
+        .mat-mini-fab {
+            width: 20px;
+            height: 20px;
+            line-height: 1;
 
- // CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-section.app-admin-config {
-        background-color: mat-color($background, card);
-
-        .action-controls {
-            border-top: 1px solid mat-color($foreground, divider);
-        }
-
-        .config-section-endpoints {
-            .metric-hosts-list {
-                border: 1px solid mat-color($foreground, divider)
+            .mat-button-wrapper {
+                line-height: 1;
+                padding: initial;
             }
-        }
 
-        .add-new-metric-host {
-            color: mat-color($foreground, link);
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+            }
         }
     }
 }

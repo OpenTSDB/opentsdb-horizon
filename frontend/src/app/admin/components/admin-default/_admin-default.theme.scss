@@ -1,0 +1,5 @@
+@mixin admin-default-component-theme() {
+    .app-admin-section.app-admin-default {
+        background-color: mat-color($background, card);
+    }
+}

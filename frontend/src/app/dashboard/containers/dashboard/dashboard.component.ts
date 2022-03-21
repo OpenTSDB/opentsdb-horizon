@@ -1959,11 +1959,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     openDashboardDeleteDialog() {
         const dialogConf: MatDialogConfig = new MatDialogConfig();
-        // dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        // dialogConf.hasBackdrop = true;
-        // dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-        dialogConf.width = '400px';
-        dialogConf.height = '300px';
+        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        dialogConf.hasBackdrop = true;
+        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        //dialogConf.width = '400px';
+        //dialogConf.height = '300px';
         dialogConf.autoFocus = true;
         dialogConf.data = {};
 

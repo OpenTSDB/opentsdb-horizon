@@ -1,0 +1,7 @@
+@import './components/dbfs/dbsf.theme';
+@import './components/dbfs-mini-nav/dbfs-mini-nav.theme';
+
+@mixin dashboard-file-system-module-theme() {
+    @include dbfs-component-theme();
+    @include dbfs-mini-nav-component-theme();
+}

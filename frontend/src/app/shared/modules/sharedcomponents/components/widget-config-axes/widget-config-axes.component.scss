@@ -15,9 +15,9 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
-
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
+@import 'mixins';
 
 .widget-config-tab.axes-configuration {
     // style rules here
@@ -153,21 +153,6 @@
         .config-control:not(.with-enable-label) {
             opacity: .3;
             pointer-events: none;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
-
-    .widget-config-tab.axes-configuration {
-        // style rules here
-
-        .mat-form-field.inline-hint {
-            .mat-hint {
-                color: mat-color($foreground, hint-text);
-            }
         }
     }
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, ViewEncapsulation } from '@angular/core';
 
 // import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 
@@ -36,7 +36,8 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'developer-widget',
     templateUrl: './developer-widget.component.html',
-    styleUrls: ['./developer-widget.component.scss']
+    styleUrls: ['./developer-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DeveloperWidgetComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

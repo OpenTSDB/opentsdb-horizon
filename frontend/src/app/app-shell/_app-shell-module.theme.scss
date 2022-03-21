@@ -1,0 +1,18 @@
+@import './containers/app-shell.theme';
+@import './components/admin-panel/admin-panel.theme';
+@import './components/app-navbar/app-navbar.theme';
+@import './components/navigator-panel/navigator-panel.theme';
+@import './components/navigator-sidenav/navigator-sidenav.theme';
+@import './components/settings-panel/settings-panel.theme';
+@import './components/settings-panel/children/settings-theme/settings-theme.theme';
+//@import './components/test-navigator/test-navigator.theme';
+
+@mixin app-shell-module-theme() {
+    @include app-shell-container-theme();
+    @include admin-panel-component-theme();
+    @include app-navbar-component-theme();
+    @include navigator-panel-component-theme();
+    @include navigator-sidenav-component-theme();
+    @include settings-panel-component-theme();
+    @include settings-theme-component-theme();
+}

@@ -15,7 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
 @import 'dropdown-line-type.mixins.scss';
 
 .dropdown-line-type {
@@ -56,30 +55,6 @@
         .mat-option-text {
             display: inline-flex;
             @include dropdown-line-type-preview();
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $cssVarMap: get-theme-css-variables($theme-name);
-
-    $line-selected-color-raw: _mat-convert-variable-to-color(map-get($foreground, link), $cssVarMap);
-    $line-normal-color-raw: _mat-convert-variable-to-color(map-get($foreground, text), $cssVarMap);
-
-    .dropdown-line-type {
-        @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
-        @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
-    }
-
-    // CDK ITEMS
-    .dropdown-line-type-options {
-        .mat-select-content {
-            .mat-option {
-                @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
-                @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
-            }
         }
     }
 }

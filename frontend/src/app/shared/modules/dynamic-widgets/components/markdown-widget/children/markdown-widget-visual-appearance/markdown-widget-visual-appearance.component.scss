@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.markdown-visual-appearance-widget {
+.markdown-visual-appearance-widget {
     .container {
         display: flex;
         padding: 10px;
@@ -55,8 +55,3 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         margin-bottom: 5px;
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-    //:host.markdown-visual-appearance-widget {}
-//}

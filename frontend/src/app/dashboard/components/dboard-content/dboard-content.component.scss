@@ -17,8 +17,6 @@
 
 //* DBOARD-CONTEMT COMPONENT */
 
-@import 'loader-component';
-
 .app-dboard-content {
     position: relative;
     height: 100%;
@@ -102,8 +100,3 @@
     }
 
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .app-dboard-content {}
-//}

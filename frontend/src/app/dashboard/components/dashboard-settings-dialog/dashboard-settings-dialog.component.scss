@@ -15,7 +15,8 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
 
 .dashboard-settings-dialog {
     @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
@@ -140,75 +141,5 @@
         align-items: stretch;
         justify-content: stretch;
         padding: 0;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $close-button-background: mat-color($accent, A400);
-    $close-button-text: mat-color($foreground, navbar-text);
-
-    $divider: mat-color($background, background);
-    $card-background: mat-color($background, card);
-
-    $light-gray-background: mat-color($background, menu);
-
-    $expanded-header-bg: mat-color($primary, default);
-    $expanded-header-text: mat-color($primary, default-contrast);
-
-    $expanded-body-bg: mat-color($primary, default, 0.05);
-
-    .dashboard-settings-dialog {
-        background-color: $card-background;
-
-        .mat-toolbar {
-            background: transparent;
-            border-bottom: 2px solid $divider;
-        }
-
-        .mat-dialog-actions {
-            border-top: 2px solid $divider;
-        }
-
-        .content-container {
-            background: $card-background;
-        }
-
-        // TAB GROUP
-        .dashboard-settings.mat-tab-group {
-
-            .mat-ink-bar {
-                background: mat-color($primary, default);
-            }
-
-            .mat-tab-header {
-                background-color: $divider;
-            }
-
-            .mat-tab-label {
-                color: mat-color($foreground, link);
-            }
-
-            .mat-tab-label.mat-tab-label-active {
-                background-color: $card-background;
-                color: mat-color($foreground, text);
-            }
-        }
-
-        // COMMON SETTINGS FORM CLASSES
-        .settings-control {
-            display: flex;
-            flex-direction: column;
-
-            .mat-label {
-                font-weight: 500;
-                margin-bottom: 8px;
-            }
-
-            .mat-form-field:not(:last-child) {
-                margin-bottom: 12px;
-            }
-        }
     }
 }

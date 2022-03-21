@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .info-island-component {
     .info-island-container {
         .info-island-toolbar {
@@ -27,8 +25,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-// styles here
-//}

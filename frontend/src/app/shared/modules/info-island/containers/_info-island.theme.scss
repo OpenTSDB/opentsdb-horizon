@@ -1,0 +1,36 @@
+@mixin info-island-container-component-theme() {
+
+    $cdk-window-bg: if(
+        $is-dark,
+        mat-color($background, menu, .9),
+        mat-color($background, menu)
+    );
+
+    $header-bg: if(
+        $is-dark,
+        mat-color($background, menu),
+        mat-color($background, navbar)
+    );
+
+    .info-island-container {
+        @include mat-elevation(4);
+
+        .mat-card {
+            background-color: $cdk-window-bg;
+
+            @if $is-dark {
+                border: 1px solid mat-color($foreground, divider);
+            }
+        }
+
+        .mat-card-header {
+            background: $header-bg;
+            color: mat-color($foreground, navbar-text);
+            border-bottom: 1px solid mat-color($foreground, divider);
+        }
+
+        .mat-card-actions {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
+    }
+}

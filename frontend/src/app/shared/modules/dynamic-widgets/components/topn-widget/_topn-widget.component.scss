@@ -1,0 +1,67 @@
+@mixin topn-widget-component-theme() {
+    //$theme-name: map-get($theme-config, $theme-name);
+    $cssText: get-theme-css-text($theme-name);
+
+    $bar-default-fill: if(
+        $is-dark,
+        map-get($denali-sky, 200), // TODO: plug into theme
+        #dff0ff // TODO: plug into theme
+    );
+
+    $tooltip-bg: if(
+        $is-dark,
+        mat-color($background, menu),
+        #f0f0f0 // TODO: plug into theme
+    );
+
+    $tooltip-border: if(
+        $is-dark,
+        mat-color($background, menu-border),
+        #cccccc // TODO: plug into theme
+    );
+
+    $tooltip-text: if(
+        $is-dark,
+        map-get($cssText, --dark-primary-text),
+        map-get($cssText, --light-primary-text)
+    );
+
+    :host.widget-panel-content.topnchart-widget {
+
+        .widget-output {
+
+            .apply-tpl-status {
+                .mat-icon {
+                    color: rgb(216, 216, 215); // TODO: plug into theme
+                }
+            }
+
+            .error{
+                color: red; // TODO: plug into theme
+            }
+
+            .debug{
+                color: rgb(75, 9, 228); // TODO: plug into theme
+            }
+
+            /* tooltip */
+            .tooltip{
+                background: $tooltip-bg;
+                box-shadow: 0 0 5px rgba(0,0,0,.6); // TODO: plug into theme
+                color: $tooltip-text;
+                border: 1px solid $tooltip-border;
+            }
+        }
+
+        #container {
+
+            .bar {
+                fill: $bar-default-fill;
+            }
+
+            .label {
+                fill: #333; // TODO: plug into theme
+            }
+        }
+    }
+}

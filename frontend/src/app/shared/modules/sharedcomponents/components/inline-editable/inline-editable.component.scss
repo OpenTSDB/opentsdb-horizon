@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .inline-editable {
     .mat-form-field,
     .mat-form-field.mat-form-field-hide-placeholder {
@@ -208,59 +206,6 @@
             .mat-form-field-infix::after {
                 height: 0;
                 visibility: hidden;
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    .inline-editable,
-    .mat-toolbar .inline-editable {
-        .mat-form-field-underline {
-            background-color: transparent;
-        }
-
-        .mat-form-field {
-
-            .save-button.mat-mini-fab {
-                background-color: mat-color($success, default);
-            }
-
-            .edit-button {
-                color: mat-color($foreground, link);
-            }
-
-            &.readonly-mode {
-                .mat-form-field-underline {
-                    background-color: transparent;
-                }
-
-                &:hover {
-                    background-color: mat-color($primary, default, 0.08);
-
-                    .mat-form-field-underline {
-                        background-color: mat-color($foreground, link);
-                        color: mat-color($foreground, link);
-                    }
-                }
-            }
-
-            &.editing-mode {
-                background-color: mat-color($primary, default, 0.08);
-
-                .mat-form-field-underline {
-                    background-color: mat-color($foreground, link);
-                    color: mat-color($foreground, link);
-                }
-            }
-
-            &.mat-focused {
-                .mat-form-field-ripple {
-                    background-color: mat-color($foreground, link);
-                    color: mat-color($foreground, link);
-                }
             }
         }
     }

@@ -1,0 +1,5 @@
+@mixin admin-namespaces-component-theme() {
+    .app-admin-section.app-admin-namespaces {
+        background-color: mat-color($background, card);
+    }
+}

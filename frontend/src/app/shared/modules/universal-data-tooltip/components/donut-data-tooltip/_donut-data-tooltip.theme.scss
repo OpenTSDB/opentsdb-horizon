@@ -1,0 +1,14 @@
+@mixin donut-data-tooltip-component-theme() {
+
+    $primary-accent-contrast: map-get($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
+    .donut-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                color: $vm-text;
+            }
+        }
+    }
+}

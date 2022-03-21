@@ -1,0 +1,5 @@
+@mixin admin-users-component-theme() {
+    .app-admin-section.app-admin-users {
+        background-color: map-get($background, card);
+    }
+}

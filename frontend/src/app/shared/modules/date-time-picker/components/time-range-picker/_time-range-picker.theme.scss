@@ -1,0 +1,39 @@
+@mixin time-range-picker-component-theme() {
+
+    .dtp-time-range-picker {
+
+        .wrapper {
+            //background: map-get($background, background);
+            background: transparent;
+        }
+
+        .is-selected {
+            background-color: mat-color($accent, default);
+        }
+
+        .dtp-action-controls {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
+
+        .time-preset-button {
+            // background-color: mat-color($primary, 100);
+            background-color: mat-color($primary, default, 0.15);
+            // color: mat-color($primary, '100-contrast');
+            color: mat-color($foreground, link);
+
+            &.is-selected {
+                background-color: mat-color($primary, default);
+                color: mat-color($primary, 'default-contrast')
+            }
+        }
+    }
+
+    .preset-picker-menu {
+        border: 1px solid mat-color($primary, default);
+
+        &::after {
+            border-color: rgba($white, 0);
+            border-bottom-color: mat-color($background, menu); // actual color of arrow
+        }
+    }
+}

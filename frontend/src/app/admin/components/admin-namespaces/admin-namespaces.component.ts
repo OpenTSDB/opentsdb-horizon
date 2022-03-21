@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
- import { Component, HostBinding, OnInit } from '@angular/core';
+ import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
     selector: 'app-admin-namespaces',
     templateUrl: './admin-namespaces.component.html',
-    styleUrls: ['./admin-namespaces.component.scss']
+    styleUrls: ['./admin-namespaces.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminNamespacesComponent implements OnInit {
 

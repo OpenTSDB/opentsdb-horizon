@@ -1,0 +1,14 @@
+@mixin topn-data-tooltip-component-theme() {
+
+    $primary-accent-contrast: mat-color($primary, A100-contrast);
+    $vm-text: if($is-dark, $black, $primary-accent-contrast);
+
+    .topn-data-tooltip {
+        .tooltip-output {
+            .value-marker,
+            .other-data {
+                color: $vm-text;
+            }
+        }
+    }
+}

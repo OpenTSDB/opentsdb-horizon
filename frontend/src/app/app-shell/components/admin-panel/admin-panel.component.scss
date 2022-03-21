@@ -15,13 +15,14 @@
 // * limitations under the License.
 // *
 
- @import 'loader-component';
+@import 'config';
+@import 'mixins';
 
 $navbar-height: map-get($navbar-config, 'navbar-height');
 $logo-height: map-get($navbar-config, 'logo-height');
 $admin-panel-min-width: 600px;
 
-:host.admin-navigator {
+.admin-navigator {
     width: $admin-panel-min-width;
 
     .admin-panel {
@@ -35,7 +36,7 @@ $admin-panel-min-width: 600px;
         flex: 1;
     }
 
-    .admin-function-tabs.mat-tab-group ::ng-deep {
+    .admin-function-tabs.mat-tab-group {
 
         .mat-tab-header {
             .mat-tab-label {
@@ -65,44 +66,3 @@ $admin-panel-min-width: 600px;
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    :host.admin-navigator {
-        .admin-function-tabs.mat-tab-group ::ng-deep {
-            .mat-tab-header {
-                background: if(
-                    $is-dark,
-                    mat-color($background, navbar, .5),
-                    mat-color($background, navbar, .1)
-                );
-
-                .mat-tab-label {
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, navbar-text),
-                        mat-color($background, navbar)
-                    );
-
-                    &.mat-tab-label-active {
-                        opacity: 1;
-                        color: if(
-                            $is-dark,
-                            mat-color($foreground, navbar-text),
-                            mat-color($background, navbar)
-                        );
-                    }
-                }
-            }
-
-            &.mat-primary {
-                .mat-ink-bar {
-                    background: mat-color($background, navbar);
-                }
-            }
-        }
-    }
-
-}
-

@@ -1,0 +1,30 @@
+@mixin datepicker-component-theme() {
+
+    .dp-selected {
+        // background: if($is-dark, true-value, false-value);
+        background: mat-color($primary, default);
+    }
+
+    .calendar-container {
+        background-color: mat-color($background, card);
+        color: mat-color($foreground, text);
+
+        .mat-calendar-body-not-current {
+            background-color: mat-color($background, hover);
+
+            .mat-calendar-body-cell-content {
+                color: mat-color($foreground, disabled);
+            }
+        }
+
+        .mat-calendar-body-disabled {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba($black, .03),
+                rgba($black, .03) 2px,
+                rgba($black, .05) 2px,
+                rgba($black, .05) 4px
+            );
+        }
+    }
+}

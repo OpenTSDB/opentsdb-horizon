@@ -39,7 +39,7 @@ import { UtilsService } from '../../../core/services/utils.service';
     // tslint:disable-next-line:component-selector
     selector: 'dashboard-save-dialog',
     templateUrl: './dashboard-save-dialog.component.html',
-    styleUrls: ['./dashboard-save-dialog.component.html'],
+    styleUrls: ['./dashboard-save-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

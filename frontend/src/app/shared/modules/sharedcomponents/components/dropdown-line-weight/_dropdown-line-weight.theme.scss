@@ -1,0 +1,25 @@
+@import './dropdown-line-weight.mixins';
+
+@mixin dropdown-line-weight-component-theme() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    $line-selected-color-raw: _mat-convert-variable-to-color(map-get($foreground, link), $cssVarMap);
+    $line-normal-color-raw: _mat-convert-variable-to-color(map-get($foreground, text), $cssVarMap);
+
+    .dropdown-line-weight {
+        @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
+        @include dropdown-line-weight-preview-theme($line-normal-color-raw, $line-selected-color-raw);
+
+    }
+
+    // CDK ITEMS
+    .dropdown-line-weight-options {
+        .mat-select-content {
+            .mat-option {
+                @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
+                @include dropdown-line-weight-preview-theme($line-normal-color-raw, $line-selected-color-raw);
+            }
+        }
+    }
+}

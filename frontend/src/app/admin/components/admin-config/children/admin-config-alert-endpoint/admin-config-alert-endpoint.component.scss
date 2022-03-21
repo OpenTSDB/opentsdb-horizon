@@ -19,9 +19,7 @@
 // * ADMIN CONFIG METRIC HOST COMPONENT
 // *
 
-@import "loader-base";
-
-:host.app-admin-config-alert-endpoint {
+.app-admin-config-alert-endpoint {
     display: block;
 
     &:not(:last-child) {
@@ -35,14 +33,5 @@
         &:not(:last-child) {
             margin-bottom: 6px;
         }
-    }
-}
-
-// CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-config-alert-endpoint {
-
     }
 }

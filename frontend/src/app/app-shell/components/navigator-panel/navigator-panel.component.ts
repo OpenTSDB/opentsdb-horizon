@@ -24,7 +24,8 @@ import {
     Input,
     QueryList,
     ViewChild,
-    ViewChildren
+    ViewChildren,
+    ViewEncapsulation
 } from '@angular/core';
 import { animate, AnimationBuilder, AnimationFactory, AnimationPlayer, style } from '@angular/animations';
 
@@ -42,7 +43,8 @@ export class NavigatorPanelItemElement {
     // tslint:disable-next-line:component-selector
     selector: 'navigator-panel',
     templateUrl: './navigator-panel.component.html',
-    styleUrls: ['./navigator-panel.component.scss']
+    styleUrls: ['./navigator-panel.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavigatorPanelComponent implements AfterViewInit {
 

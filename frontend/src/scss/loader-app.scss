@@ -26,6 +26,8 @@
 // import loader base
 @import './loader-base.scss';
 
+@import './component-theming.scss';
+
 // generate font-face imports
 @each $font-face, $font-config in $app-available-typefaces {
     @include generate-typeface-imports($font-config);
@@ -71,6 +73,8 @@
 @each $theme-name, $theme-config in $app-themes {
     @include init-mat-theme($theme-name);
 }
+
+@include init-component-themes();
 
 // import icons
 // we include font icons here instead of typography

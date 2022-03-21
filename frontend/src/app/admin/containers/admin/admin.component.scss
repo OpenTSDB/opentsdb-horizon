@@ -19,15 +19,13 @@
 // * ADMIN CONTAINER COMPONENT
 // *
 
- @import 'loader-base';
+//@import 'loader-base';
 
- :host.app-admin.app-admin-container {
+.app-admin.app-admin-container {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
     overflow: hidden;
-
-    .admin-content-wrap {}
 
     router-outlet + * {
         display: flex;
@@ -43,23 +41,15 @@
             margin-right: 8px;
         }
     }
- }
-
- ::ng-deep {
-    .app-admin-section {
-        position: relative;
-        overflow: overlay;
-        //padding: 12px 24px;
-    }
- }
-
- // CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    :host.app-admin.app-admin-container {
-        background-color: mat-color($background, card);
-    }
-
 }
+
+.app-admin-section {
+    position: relative;
+    overflow: overlay;
+    //padding: 12px 24px;
+}
+
+
+// CDK items (if any)
+
+

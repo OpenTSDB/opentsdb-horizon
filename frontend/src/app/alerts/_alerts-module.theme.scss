@@ -1,0 +1,5 @@
+@import './containers/alerts.theme';
+
+@mixin alerts-module-theme() {
+    @include alerts-container-component-theme();
+}

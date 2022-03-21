@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.table-widget {
+.widget-panel-content.table-widget {
     flex: 1;
     display: flex;
     padding-top: 20px;
@@ -42,12 +42,10 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         flex: 1;
     }
 
-
-
     .mat-button-toggle-group{
         overflow: initial;
-
         margin: 0px 10px;
+
         .mat-button-toggle {
             display: inline-flex;
             align-items: center;
@@ -110,51 +108,48 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         height: calc(100% - 2px);
         position: relative;
 
-        ::ng-deep {
+        .mat-table {
+            height: 100%;
+            overflow: overlay;
 
-            .mat-table {
-                height: 100%;
-                overflow: overlay;
+            .mat-header-row,
+            .mat-footer-row,
+            .mat-row {
+                min-height: inherit;
+            }
 
-                .mat-header-row,
-                .mat-footer-row,
-                .mat-row {
-                    min-height: inherit;
+            .mat-header-cell,
+            .mat-cell {
+                min-width: 80px;
+                font-size: inherit;
+                padding: inherit;
+                text-align: right;
+                justify-content: flex-end;
+
+                &.mat-column-time,
+                &.mat-column-metric,
+                &.mat-column-tag {
+                    text-align: left;
+                    justify-content: flex-start;
                 }
 
-                .mat-header-cell,
-                .mat-cell {
-                    min-width: 80px;
-                    font-size: inherit;
-                    padding: inherit;
-                    text-align: right;
-                    justify-content: flex-end;
-
-                    &.mat-column-time,
-                    &.mat-column-metric,
-                    &.mat-column-tag {
-                        text-align: left;
-                        justify-content: flex-start;
+                &.mat-column-metric,
+                &.mat-column-tag {
+                    &.mat-table-sticky {
+                        min-width: 120px;
+                        overflow-wrap: anywhere;
                     }
-
-                    &.mat-column-metric,
-                    &.mat-column-tag {
-                        &.mat-table-sticky {
-                            min-width: 120px;
-                            overflow-wrap: anywhere;
-                        }
-                    }
-
                 }
 
-                .mat-header-cell,
-                .mat-cell {
-                    overflow-wrap: anywhere;
-                }
+            }
 
-                .mat-header-cell .mat-sort-header-button span {
-                    text-align: right;
-                }
+            .mat-header-cell,
+            .mat-cell {
+                overflow-wrap: anywhere;
+            }
+
+            .mat-header-cell .mat-sort-header-button span {
+                text-align: right;
             }
         }
 
@@ -165,90 +160,44 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             padding: 10px;
             height: 100%;
         }
-
     }
 }
 
-@at-root {
-    ::ng-deep {
-        // EDIT MODE
-        .edit-view-container.is-active {
-            .widget-config-container[style*="flex-direction: row-reverse;"] {
-                box-sizing: border-box;
-                padding: 0;
 
-                .table-widget-output-container {
-                    width: 50%;
-                    height: 100%;
+// EDIT MODE
+.edit-view-container.is-active {
+    .widget-config-container[style*="flex-direction: row-reverse;"] {
+        box-sizing: border-box;
+        padding: 0;
 
-                    .widget-output {
-                        min-height: 100%;
+        .table-widget-output-container {
+            width: 50%;
+            height: 100%;
 
-                        .gif-spinner {
-                            position: absolute;
-                            left: calc(50% + 15px);
-                            top: 50px;
-                            z-index: 1000;
-                        }
-                    }
-                }
-            }
+            .widget-output {
+                min-height: 100%;
 
-            .widget-config-container[style*="flex-direction: column;"] {
-                .table-widget-output-container {
-                    width: 100%;
-                    padding: 0px 14px;
-
-                    .widget-output {
-                        display: flex;
-                        flex: 1;
-                        min-height: 250px;
-                        height: calc(100% - 10px);
-                        padding: 0px 2px;
-                    }
+                .gif-spinner {
+                    position: absolute;
+                    left: calc(50% + 15px);
+                    top: 50px;
+                    z-index: 1000;
                 }
             }
         }
     }
-}
 
-// * THEME VARIANTS
-@include init-component-variants() {
+    .widget-config-container[style*="flex-direction: column;"] {
+        .table-widget-output-container {
+            width: 100%;
+            padding: 0px 14px;
 
-    $card-background: mat-color($background, card);
-    $ink-bar-color: mat-color($background, ink-bar);
-
-    :host.widget-panel-content.table-widget {
-
-        .mat-button-toggle-group{
-            .mat-button-toggle-appearance-standard {
-                &.mat-button-toggle-checked {
-                    background: $card-background;
-                    position: relative;
-
-                    &::after {
-                        content: '';
-                        display: block;
-                        height: 2px;
-                        background-color: $ink-bar-color;
-                        position: absolute;
-                        top: 100%;
-                        left: 0;
-                        right: 0;
-                    }
-                }
-            }
-        }
-
-        .widget-output {
-            background-color: mat-color($background, card);
-        }
-
-        ::ng-deep {
-            .mat-cell {
-                &.mat-table-sticky {
-                    border-right: 1px solid if($is-dark, find-color-invert(#e0e0e0), #e0e0e0); // TODO: plulg into theme
-                }
+            .widget-output {
+                display: flex;
+                flex: 1;
+                min-height: 250px;
+                height: calc(100% - 10px);
+                padding: 0px 2px;
             }
         }
     }

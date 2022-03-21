@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
 
 .widget-panel-content.simple-recents-list {
     .has-scroller {
@@ -57,52 +57,6 @@
 
                 .root-path {
                     font-size: 10px;
-                }
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $row-hover-bg: if(
-        $is-dark,
-        mat-color($primary, 50, .05),
-        mat-color($primary, 50)
-    );
-
-    $table-header-bg: if(
-        $is-dark,
-        mat-color($foreground, divider, .15),
-        mat-color($foreground, divider)
-    );
-
-    .widget-panel-content.simple-recents-list {
-        .mat-table {
-            tr.mat-header-row {
-                background: $table-header-bg;
-            }
-
-            tr.mat-row {
-                &:hover {
-                    background-color: $row-hover-bg;
-                }
-            }
-
-            td.mat-cell {
-
-                .recent-labels {
-
-                    .dashboard-name {
-                        color: mat-color($foreground, link);
-                    }
-
-                    .root-path,
-                    .visited-date,
-                    .visited-time {
-                        color: mat-color($foreground, text, .7);
-                    }
                 }
             }
         }

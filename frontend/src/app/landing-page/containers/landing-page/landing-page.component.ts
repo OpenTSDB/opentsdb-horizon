@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
 import { CdkService } from '../../../core/services/cdk.service';
@@ -22,7 +22,8 @@ import { CdkService } from '../../../core/services/cdk.service';
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.scss']
+  styleUrls: ['./landing-page.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LandingPageComponent implements OnInit {
 

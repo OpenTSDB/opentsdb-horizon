@@ -19,9 +19,11 @@
 // * ADMIN CONFIG METRIC HOST COMPONENT
 // *
 
-@import "loader-base";
+@import '~@angular/material/theming';
+@import 'typography';
+@import 'mixins';
 
-:host.app-admin-config-generic-input {
+.app-admin-config-generic-input {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -51,16 +53,5 @@
         }
     }
 
-    ::ng-deep {
-        @include inputAutoWidth;
-    }
-}
-
-// CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-config-generic-input {
-
-    }
+    @include inputAutoWidth;
 }
