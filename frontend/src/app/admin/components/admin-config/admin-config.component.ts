@@ -27,7 +27,8 @@ const alertRecipientLabelMap: any = {
     http: 'HTTP',
     oc: 'OC',
     slack: 'Slack',
-    opsgenie: 'OpsGenie'
+    opsgenie: 'OpsGenie',
+    pagerduty: 'PagerDuty'
 };
 
 @Component({

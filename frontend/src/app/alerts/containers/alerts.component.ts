@@ -354,7 +354,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
         // icons
-        const svgIcons = ['email', 'http', 'oc', 'opsgenie', 'slack'];
+        const svgIcons = ['email', 'http', 'oc', 'opsgenie', 'slack', 'pagerduty'];
 
     }
 
@@ -1391,6 +1391,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             return 'OC';
         } else if (type === RecipientType.email) {
             return 'Email';
+        } else if (type === RecipientType.pagerduty) {
+            return 'PagerDuty';
         }
         return '';
     }

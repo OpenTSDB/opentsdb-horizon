@@ -720,6 +720,15 @@
                                         </mat-form-field>
                                 </div>
                             </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <mat-checkbox formControlName="pagerdutyAutoClose" value="true"></mat-checkbox>
+                                        <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for PagerDuty. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -937,6 +946,15 @@
                                                 autocomplete="off">
                                         </mat-chip-list>
                                     </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <mat-checkbox formControlName="pagerdutyAutoClose" value="true"></mat-checkbox>
+                                        <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for PagerDuty. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1191,6 +1209,15 @@
                                     <div class="form-label vertical-center"><strong>OpsGenie Tags</strong></div>
                                     <div class="opsgenie-tags" *ngIf="data.notification.opsgenieTags">
                                         {{ data.notification.opsgenieTags.join(', ') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <span>{{ data.notification.pagerdutyAutoClose === true ? 'Yes' : 'No' }}</span>
+                                        <mat-hint class="info-hint" *ngIf="data.notification.pagerdutyAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for Paferduty. Alerts will be sent per unique tag set.</mat-hint>
                                     </div>
                                 </div>
                             </div>
