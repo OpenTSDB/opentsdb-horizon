@@ -1,0 +1,7 @@
+@mixin landing-page-container-component-theme() {
+    .landing-page-main {
+        .sidebar {
+            background-color: mat-color($background, card);
+        }
+    }
+}

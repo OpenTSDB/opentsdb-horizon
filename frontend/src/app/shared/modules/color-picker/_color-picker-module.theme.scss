@@ -1,0 +1,11 @@
+@import './containers/color-picker/color-picker.theme';
+//@import './components/color-picker-hsv-selector/color-picker-hsv-selector.theme';
+//@import './components/color-picker-hue-slider/color-picker-hue-slider.theme';
+@import './components/color-picker-selector/color-picker-selector.theme';
+
+@mixin color-picker-module-theme() {
+    @include color-picker-container-component-theme();
+    //@include color-picker-hsv-selector-component-theme();
+    //@include color-picker-hue-slider-component-theme();
+    @include color-picker-selector-component-theme();
+}

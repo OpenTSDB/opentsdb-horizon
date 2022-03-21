@@ -1,0 +1,31 @@
+@mixin dashboard-delete-dialog-component-theme() {
+
+    $divider: mat-color($foreground, divider);
+
+    .dashboard-delete-dialog {
+        .mat-dialog-title {
+            background-color: mat-color($other, status-warning);
+            color: mat-color($other, status-warning-contrast);
+        }
+    }
+
+    // CDK Items
+
+    // backdrop
+    .dashboard-delete-dialog-backdrop {
+        background-color: mat-color($foreground, disabled);
+    }
+
+    // panel
+    .dashboard-delete-dialog-panel {
+
+        .mat-dialog-title {
+            border-bottom: 1px solid $divider;
+        }
+
+        .mat-dialog-actions {
+            background-color: $divider;
+        }
+
+    }
+}

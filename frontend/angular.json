@@ -46,6 +46,12 @@
                     "bundleName": "dygraph"
                 }
             ],
+            "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true,
+                "vendor": false
+            },
             "scripts": [
               "node_modules/marked/marked.min.js"
             ]

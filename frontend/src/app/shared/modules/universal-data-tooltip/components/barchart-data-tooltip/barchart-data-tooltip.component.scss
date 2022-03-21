@@ -15,24 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 //.barchart-data-tooltip {
 //    .tooltip-output {}
 //}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    $primary-accent-contrast: mat-color($primary, A100-contrast);
-    $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-    .barchart-data-tooltip {
-        .tooltip-output {
-            .value-marker,
-            .other-data {
-                // background: rgba($vm-background, .65);
-                color: $vm-text;
-            }
-        }
-    }
-}

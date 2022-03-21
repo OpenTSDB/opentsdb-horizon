@@ -15,7 +15,9 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'config';
+@import 'mixins';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -59,24 +61,6 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         .mat-icon {
             @include sizeDenaliIcon(16px);
             margin-right: 2px;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $cssVarMap: get-theme-css-variables($theme-name);
-
-    // TODO: navbar color needs more variations is seems
-    $navbar-bg: _mat-convert-variable-to-color(map-get($background, navbar), $cssVarMap);
-
-    .mat-raised-button {
-        background-color: darken($navbar-bg, 4%);
-        color: mat-color($foreground, navbar-text);
-
-        &:hover {
-            background-color: lighten($navbar-bg, 8%);
         }
     }
 }

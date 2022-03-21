@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .time-selector-component {
     .edit-mode {
         width: 125px;
@@ -45,16 +43,5 @@
     .cdk-custom-time {
         height: 60px;
         line-height: 48px;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .time-selector-component {
-
-        .time-button {
-            background-color: mat-color($primary, default, 0.08)
-        }
-
     }
 }

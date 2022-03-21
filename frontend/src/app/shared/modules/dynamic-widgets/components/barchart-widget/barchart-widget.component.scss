@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.barchart-widget {
+.widget-panel-content.barchart-widget {
     flex: 1;
     display: flex;
 
@@ -41,7 +41,7 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             position:relative is required on parent container as
             chartjs-zoom and threshold plugins inserts a canvas on top of chart canvas.
         */
-        // position: relative;
+
         canvas {
             // width: 100% !important;
             // height: 100% !important;
@@ -60,6 +60,7 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             right: -5px;
             top: 0px;
             z-index: 1;
+
             .mat-icon {
                 font-size: 16px;
                 color: rgb(216, 216, 215);
@@ -87,8 +88,3 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    .widget-panel-content.linechart-widget { }
-//}

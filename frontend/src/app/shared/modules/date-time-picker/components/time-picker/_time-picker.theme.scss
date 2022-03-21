@@ -1,0 +1,25 @@
+@mixin time-picker-component-theme() {
+
+    // tooltip color
+    .dtp-tooltip-text {
+        background-color: mat-color($accent, default);
+    }
+
+    // dropdown menu container
+    .timerange-picker-menu.mat-menu-panel {
+        &::after {
+            border-color: rgba($white, 0);
+            border-bottom-color: mat-color($background, menu); // actual color of arrow
+        }
+    }
+
+    .timerange-picker-menu {
+        .mat-menu-content {
+            .timerange-picker-container {
+                &.mat-menu-item {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}

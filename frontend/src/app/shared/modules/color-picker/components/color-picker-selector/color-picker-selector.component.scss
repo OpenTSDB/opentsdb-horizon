@@ -15,9 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
-:host.color-picker-selector-component {
+.color-picker-selector-component {
     .cps {
         width: 100%;
         display: flex;
@@ -172,28 +170,26 @@
                 display: flex;
                 margin-left: 10px;
 
-                ::ng-deep {
-                    .mat-form-field{
-                        display: flex;
+                .mat-form-field{
+                    display: flex;
 
-                        .mat-form-field-infix {
-                            width: 100%;
-                            padding-top: 7px;
-                            padding-bottom: 7px;
-                        }
+                    .mat-form-field-infix {
+                        width: 100%;
+                        padding-top: 7px;
+                        padding-bottom: 7px;
+                    }
 
-                        //for typing in hex
-                        .mat-input-element {
-                            width: 102px;
-                        }
+                    //for typing in hex
+                    .mat-input-element {
+                        width: 102px;
+                    }
 
-                        .mat-form-field-underline {
-                            display: none;
-                        }
+                    .mat-form-field-underline {
+                        display: none;
+                    }
 
-                        .mat-form-field-flex {
-                            border-radius: 4px 4px 4px 4px;
-                        }
+                    .mat-form-field-flex {
+                        border-radius: 4px 4px 4px 4px;
                     }
                 }
             }
@@ -202,13 +198,16 @@
         .preset-color {
             padding: 0px 15px;
             margin-bottom: 6px;
+
             .title {
                 padding-bottom: 4px;
                 font-size: 10px;
             }
+
             .colors {
                 display: flex;
                 flex-wrap: wrap;
+
                 .btn-preset-color {
                     width: 15px;
                     height: 15px;
@@ -242,16 +241,3 @@
         }
     }
 }
-
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.color-picker-selector-compponent {
-        .cps {
-            .mat-button {
-                color: mat-color($primary, default);
-            }
-        }
-    }
-}
-

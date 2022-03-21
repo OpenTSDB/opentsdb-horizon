@@ -26,7 +26,8 @@ import {
     ElementRef,
     Renderer2,
     ViewChild,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
@@ -35,7 +36,8 @@ import { ColorService } from '../../services/color.service';
     // tslint:disable-next-line:component-selector
     selector: 'color-picker-hue-slider',
     templateUrl: './color-picker-hue-slider.component.html',
-    styleUrls: ['./color-picker-hue-slider.component.scss']
+    styleUrls: ['./color-picker-hue-slider.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 

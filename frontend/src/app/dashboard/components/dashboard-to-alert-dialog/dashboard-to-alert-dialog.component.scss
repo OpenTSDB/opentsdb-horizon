@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .dashboard-to-alert-dialog {
 
     .header {
@@ -58,36 +56,6 @@
             &.mat-list-item {
                 height: 32px
             }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $bg: mat-color($background, background);
-
-    .dashboard-to-alert-dialog  {
-
-        .header {
-            background: if(
-                $is-dark,
-                #3E4955, // TODO: plug these values into theme
-                #E1E5E5  // TODO: plug these values into theme
-            );
-        }
-
-        .footer {
-            border-top: 1px solid if(
-                $is-dark,
-                $black,
-                #3E4955     // TODO: plug these values into theme
-            );
-            background: if(
-                $is-dark,
-                $bg,
-                $white
-            );
         }
     }
 }

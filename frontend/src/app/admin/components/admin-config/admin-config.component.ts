@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { formArrayNameProvider } from '@angular/forms/src/directives/reactive_directives/form_group_name';
@@ -33,7 +33,8 @@ const alertRecipientLabelMap: any = {
 @Component({
     selector: 'app-admin-config',
     templateUrl: './admin-config.component.html',
-    styleUrls: ['./admin-config.component.scss']
+    styleUrls: ['./admin-config.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminConfigComponent implements OnInit, OnDestroy {
 

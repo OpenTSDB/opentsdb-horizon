@@ -1,7 +1,7 @@
 import {
     AfterViewInit, Attribute, Component, ElementRef,
     forwardRef, HostBinding, Input, OnDestroy,
-    OnInit, Provider, Renderer2, ViewChild
+    OnInit, Provider, Renderer2, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatInput, MatFormField } from '@angular/material';
@@ -17,6 +17,7 @@ const GENERIC_INPUT_CONTROL_VALUE_ACCESSOR: Provider = {
     selector: 'app-admin-config-generic-input',
     templateUrl: './admin-config-generic-input.component.html',
     styleUrls: ['./admin-config-generic-input.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [
         GENERIC_INPUT_CONTROL_VALUE_ACCESSOR
     ]

@@ -15,12 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
-$navbar-height: map-get($navbar-config, 'navbar-height');
-$logo-height: map-get($navbar-config, 'logo-height');
-
-:host.settings-navigator {
+.settings-navigator {
     .settings-panel {
         flex: 1;
 
@@ -29,13 +24,3 @@ $logo-height: map-get($navbar-config, 'logo-height');
         }
     }
 }
-
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    :host.settings-navigator {
-//        .panel-toolbar {
-//            background-color: mat-color($background, card);
-//        }
-//    }
-//}

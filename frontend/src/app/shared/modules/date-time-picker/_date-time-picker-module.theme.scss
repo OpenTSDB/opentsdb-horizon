@@ -1,0 +1,13 @@
+@import './components/date-picker-2/datepicker.theme';
+@import './components/downsample/downsample.theme';
+@import './components/keypad/keypad.theme';
+@import './components/time-picker/time-picker.theme';
+@import './components/time-range-picker/time-range-picker.theme';
+
+@mixin date-time-picker-module-theme() {
+    @include datepicker-component-theme();
+    @include downsample-component-theme();
+    @include keypad-component-theme();
+    @include time-picker-component-theme();
+    @include time-range-picker-component-theme();
+}

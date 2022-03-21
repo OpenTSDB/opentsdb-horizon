@@ -72,22 +72,6 @@
     $caption:       mat-typography-level(12px, 20px, map-get($weight-maps, regular));
     $button:        mat-typography-level(14px, 14px, map-get($weight-maps, medium));
 
-
-    /*
-    $display-4:     mat-typography-level(8rem, 8rem, map-get($weight-maps, light));
-    $display-3:     mat-typography-level(5rem, 5.4rem, map-get($weight-maps, regular));
-    $display-2:     mat-typography-level(4rem, 4.2rem, map-get($weight-maps, regular));
-    $display-1:     mat-typography-level(3rem, 3.6rem, map-get($weight-maps, regular));
-    $headline:      mat-typography-level(2rem, 2.2rem, map-get($weight-maps, regular));
-    $title:         mat-typography-level(1.6rem, 2rem, map-get($weight-maps, medium));
-    $subheading-2:  mat-typography-level(1.4rem, 1.8rem, map-get($weight-maps, regular));
-    $subheading-1:  mat-typography-level(1.2rem, 1.6rem, map-get($weight-maps, regular));
-    $body-2:        mat-typography-level(1rem, 1.8rem, map-get($weight-maps, medium));
-    $body-1:        mat-typography-level(1rem, 1.8rem, map-get($weight-maps, regular));
-    $caption:       mat-typography-level(.8rem, 1.2rem, map-get($weight-maps, regular));
-    $button:        mat-typography-level(1rem, 1rem, map-get($weight-maps, medium));
-    */
-
     // Line-height must be unit-less fraction of the font-size.
     $input:         mat-typography-level(inherit, 1.125, map-get($weight-maps, regular));
 
@@ -108,5 +92,4 @@
         $button,
         $input
       );
-
 }

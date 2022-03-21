@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .topn-data-tooltip {
     .tooltip-output {
         .value-marker {
@@ -26,22 +24,6 @@
                     font-style: italic;
                     align-self: center;
                 }
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $primary-accent-contrast: mat-color($primary, A100-contrast);
-    $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-    .topn-data-tooltip {
-        .tooltip-output {
-            .value-marker,
-            .other-data {
-                color: $vm-text;
             }
         }
     }

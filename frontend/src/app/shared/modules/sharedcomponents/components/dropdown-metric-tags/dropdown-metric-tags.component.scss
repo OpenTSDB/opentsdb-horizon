@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
 
 .dropdown-metric-tags {
     width: 100%;
@@ -97,15 +97,6 @@
                 width: 10px;
                 height: 5px;
             }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .dropdown-metric-tags {
-        .mat-button {
-            color: map-get($foreground, link);
         }
     }
 }

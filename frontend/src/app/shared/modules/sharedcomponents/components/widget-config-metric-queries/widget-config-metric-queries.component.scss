@@ -15,9 +15,9 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
-
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'config';
+@import 'typography';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-padding: map-get($widgets-common-config, edit-padding);
@@ -266,121 +266,4 @@ $edit-padding: map-get($widgets-common-config, edit-padding);
     background:#ccc; // TODO: plug into theme
 }
 
-// * THEME VARIANTS
-@include init-component-variants() {
 
-    $chip-bg: mat-color($primary, default, .1);
-    $alias-bg: if($is-dark, rgba($white, .2), rgba($black, .2));
-    $alias-text: if($is-dark, rgba($white, .5), rgba($black, .5));
-
-    .widget-config-tab.metric-queries-configuration {
-        // style rules here
-
-        .dbfilter-panel {
-            background-color: rgb(250, 249, 249);
-            margin-bottom: 5px;
-            padding: 0px;
-            .mat-button-toggle-group {
-                margin: 6px 6px 6px 0px;
-                span {
-                    margin-left: 4px;
-                }
-                .mat-button-toggle-label-content {
-                    line-height: 24px;
-                    .mat-icon {
-                        height: 18px;
-                        font-size: 16px;
-                    }
-                }
-            }
-            .mat-button-toggle-checked {
-                background-color: mat-color($primary);
-                color: mat-color($primary, default-contrast);
-            }
-        }
-
-        /*
-        .mat-expansion-panel.query-group-item {
-            border: 1px solid #d5d5d5;
-        }
-        */
-
-        .query-metric-row {
-            position: relative;
-
-            .cdk-drag-handle.metric-query-drag-handle {
-                width: 20px;
-                height: 20px;
-                position: absolute;
-                right: 97px;
-                top: 10px;
-            }
-
-            .add-new-query-button {
-                line-height: 24px;
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                    margin-right: 8px;
-                }
-            }
-
-            .metric-tags {
-                .mat-basic-chip {
-                    background-color: $chip-bg;
-
-                    // first-child should be the tag-key
-                    :first-child {
-                        color: mat-color($foreground, text, .65);
-                    }
-                }
-            }
-            .query-metric-item {
-                .expression-metrics {
-                    .metric {
-                        display: flex;
-                        flex-direction: row;
-                        margin-bottom: 3px;
-                        align-items: center;
-                        padding: 5px 0px 5px 0px;
-                        border-bottom: 1px solid #f0f0f0;
-                        .metric-alias {
-                            display: inline-flex;
-
-                            width: 30px;
-                            margin-right: 10px;
-                            span {
-                                background-color: $alias-bg;
-                                color: $alias-text;
-                                font-size: 10px;
-                                padding: 0px 5px;
-                                border-radius: 4px;
-                                font-weight: bold;
-                            }
-                        }
-                        .metric-label {
-                            font-size: 12px;
-                            display: inline-flex;
-                        }
-                    }
-                    .metric:last-child {
-                        border-bottom: none;
-                    }
-                }
-            }
-        }
-
-        .group-item-toolbar {
-            background-color: $white;
-        }
-
-        .value-options {
-            mat-select {
-                background-color: $chip-bg;
-            }
-            .mat-form-field-underline {
-                background-color: transparent;
-            }
-        }
-    }
-}

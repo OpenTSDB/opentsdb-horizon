@@ -15,9 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
-:host.time-downsample-component {
+.time-downsample-component {
     flex-direction: column;
 
     .advanced-toggle {
@@ -43,45 +41,38 @@
     .form-field-group {
         display: inline-block;
 
-        ::ng-deep {
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
-            }
+        .mat-form-field:not(:last-child) {
+            margin-right: 8px;
         }
     }
 
-    ::ng-deep {
-        .form-field-group {
-            &.mat-select {
-                width: 200px;
-            }
+    .form-field-group {
+        &.mat-select {
+            width: 200px;
+        }
 
-            .mat-select {
-                padding: 6px;
-                border-radius: 4px;
-                width: 180px;
-                //background-color: rgba(34, 122, 236, 0.08);
-            }
+        .mat-select {
+            padding: 6px;
+            border-radius: 4px;
+            width: 180px;
+            //background-color: rgba(34, 122, 236, 0.08);
         }
     }
+
 
     .config-control {
         display: flex;
         align-items: flex-start;
 
-        ::ng-deep {
-            .mat-checkbox {
-                line-height: 24px;
-                margin-right: 24px;
-            }
+        .mat-checkbox {
+            line-height: 24px;
+            margin-right: 24px;
         }
 
         &.aggregator-controls,
         &.downsample-controls {
-            ::ng-deep {
-                .mat-checkbox.mat-checkbox-checked {
-                    line-height: 48px;
-                }
+            .mat-checkbox.mat-checkbox-checked {
+                line-height: 48px;
             }
         }
 
@@ -93,30 +84,24 @@
                     display: flex;
                     padding-top: 5px;
 
-                    ::ng-deep {
-                        .mat-form-field-subscript-wrapper {
-                            overflow: initial;
-                            padding: 0;
-                        }
+                    .mat-form-field-subscript-wrapper {
+                        overflow: initial;
+                        padding: 0;
                     }
                 }
 
-                ::ng-deep {
-                    .mat-form-field,
-                    .mat-select {
-                        width: 100px;
-                    }
+                .mat-form-field,
+                .mat-select {
+                    width: 100px;
                 }
             }
         }
 
         &.aggregator-controls {
             .form-field-group {
-                ::ng-deep {
-                    .mat-form-field,
-                    .mat-select {
-                        width: 115px;
-                    }
+                .mat-form-field,
+                .mat-select {
+                    width: 115px;
                 }
             }
         }
@@ -131,28 +116,25 @@
     }
 
     .time-over-time-controls {
-        ::ng-deep {
-            .mat-form-field:not(:last-child) {
-                margin-right: 16px;
-            }
+        .mat-form-field:not(:last-child) {
+            margin-right: 16px;
         }
     }
 
     .downsample-controls,
     .aggregator-controls {
-        ::ng-deep {
-            .mat-radio-button:not(:last-child) {
-                margin-right: 20px;
-            }
 
-            .mat-radio-group {
-                .mat-radio-label {
-                    flex-direction: column;
-                    justify-content: center;
+        .mat-radio-button:not(:last-child) {
+            margin-right: 20px;
+        }
 
-                    .mat-radio-label-content {
-                        padding-left: 0;
-                    }
+        .mat-radio-group {
+            .mat-radio-label {
+                flex-direction: column;
+                justify-content: center;
+
+                .mat-radio-label-content {
+                    padding-left: 0;
                 }
             }
         }
@@ -163,10 +145,8 @@
     .min-interval-controls,
     .reporting-interval-controls,
     .downsample-controls .custom-downsample {
-        ::ng-deep {
-            .mat-form-field-infix {
-                border-top: 0;
-            }
+        .mat-form-field-infix {
+            border-top: 0;
         }
     }
 
@@ -186,56 +166,16 @@
         }
     }
 
-    ::ng-deep {
+    .mat-radio-label-content {
+        line-height: 24px;
+        font-size: 12px;
+    }
 
-        .mat-radio-label-content {
-            line-height: 24px;
-            font-size: 12px;
-        }
+    .mat-form-field.mat-form-field-type-mat-select {
+        line-height: 24px;
 
-        .mat-form-field.mat-form-field-type-mat-select {
-            line-height: 24px;
-
-            .mat-form-field-infix {
-                padding: 0;
-            }
+        .mat-form-field-infix {
+            padding: 0;
         }
     }
 }
-
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
-
-    $divider: mat-color($foreground, divider);
-    $link: mat-color($foreground, link);
-
-    :host.time-downsample-component {
-        // style rules here
-
-        .advanced-toggle {
-            a {
-                color: mat-color($foreground, link);
-            }
-        }
-
-        &.advanced-open {
-            .advanced-toggle {
-                border-bottom: 2px solid mat-color($foreground, link, .25);
-
-                .mat-button.mat-primary {
-                    .mat-button-focus-overlay {
-                        opacity: .04;
-
-                        &:hover {
-                            opacity: .08;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-

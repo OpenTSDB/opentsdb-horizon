@@ -15,15 +15,11 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
-::ng-deep {
-    g.legend text {
-        font-size: 10px;
-    }
+g.legend text {
+    font-size: 10px;
 }
 
-:host.widget-config-tab.donutchart-legend-configuration {
+.widget-config-tab.donutchart-legend-configuration {
     // style rules here
     padding: 14px 10px;
 
@@ -46,10 +42,8 @@
     }
 
     .form-field-group {
-        ::ng-deep {
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
-            }
+        .mat-form-field:not(:last-child) {
+            margin-right: 8px;
         }
     }
 
@@ -88,20 +82,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
-
-    :host.widget-config-tab.legend-configuration {
-        .config-control.with-enable-label {
-            .mat-caption.is-enabled {
-                color: $good-green;
-            }
-        }
-    }
-}
-
-
-

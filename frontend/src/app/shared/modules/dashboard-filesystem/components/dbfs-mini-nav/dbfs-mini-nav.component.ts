@@ -23,7 +23,8 @@ import {
     OnDestroy,
     Output,
     ViewChild,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Observable, Subscription, of } from 'rxjs';
@@ -50,7 +51,8 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     // tslint:disable-next-line: component-selector
     selector: 'dbfs-mini-nav',
     templateUrl: './dbfs-mini-nav.component.html',
-    styleUrls: ['./dbfs-mini-nav.component.scss']
+    styleUrls: ['./dbfs-mini-nav.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 

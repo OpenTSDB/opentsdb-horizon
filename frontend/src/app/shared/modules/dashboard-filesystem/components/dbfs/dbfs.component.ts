@@ -25,7 +25,8 @@ import {
     Output,
     ViewChild,
     ViewChildren,
-    QueryList
+    QueryList,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -82,6 +83,7 @@ import {
     selector: 'dbfs',
     templateUrl: './dbfs.component.html',
     styleUrls: ['./dbfs.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     host: {
         '[class.dashboard-navigator]': 'true',
         '[class.panel-content]': 'true'

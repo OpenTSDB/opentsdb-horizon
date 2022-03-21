@@ -36,13 +36,12 @@ import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { AppConfigService } from '../../../../../core/services/config.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-
-
 @Component({
 // tslint:disable-next-line: component-selector
   selector: 'heatmap-widget',
   templateUrl: './heatmap-widget.component.html',
   styleUrls: ['./heatmap-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -1,0 +1,47 @@
+@mixin navigator-sidenav-component-theme() {
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    $sn-light: mat-color($background, background);
+    $sn-dark: map-get($navbar-config, sn-dark); // TODO: this navbar-config needs to plug into theme
+
+    $sn-light-text: map-get($navbar-config, sn-light-text); // TODO: this navbar-config needs to plug into theme
+    $sn-dark-text: map-get($navbar-config, sn-dark-text); // TODO: this navbar-config needs to plug into theme
+
+    $sn-seperator: mat-color($foreground, divider);
+
+    $sn-active: map-get($navbar-config, sn-active); // TODO: this navbar-config needs to plug into theme
+
+    $nav-item-bg: if(
+        $is-dark,
+        mat-color($background, lighter-card),
+        mat-color($foreground, text, 0.08)
+    );
+
+    .app-navigator-sidenav {
+        background-color: $sn-light;
+
+        .mat-list-item {
+            color: $sn-dark-text;
+
+            &.is-active {
+                background-color: $nav-item-bg;
+                color: $sn-light-text;
+                box-shadow: inset 0 -1px 0 0 $sn-seperator,
+                    inset 0 1px 0 0 $sn-seperator;
+            }
+        }
+
+        .mat-toolbar {
+            background: mat-color($background, navbar);
+            color: mat-color($foreground, navbar-text);
+
+            .mat-icon-button .mat-icon {
+                color: mat-color($foreground, navbar-icons);
+            }
+        }
+
+        .side-nav-applications.mat-nav-list {
+            box-shadow: inset -1px 0 0 0 $sn-seperator;
+        }
+    }
+}

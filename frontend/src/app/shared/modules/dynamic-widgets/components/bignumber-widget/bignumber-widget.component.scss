@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.bignumber-widget {
+.widget-panel-content.bignumber-widget {
     // reset margin top on big number because it should be edge to edge
     padding-top: 0;
     flex: 1;
@@ -198,61 +198,54 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
     }
 }
 
-::ng-deep {
-    // when we are in edit view
-    .edit-view-container.is-active {
-        .widget-panel-content.bignumber-widget {
-            // in edit mode, give the output some padding
-            .widget-output {
-                padding: 16px;
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.bignumber-widget {
+        // in edit mode, give the output some padding
+        .widget-output {
+            padding: 16px;
+        }
+
+        // in edit mode, give big number a fixed width
+        // close to something people might use
+        .big-num-container {
+            flex: 1 0 300px;
+            padding: 0 25px;
+        }
+
+        // in edit mode, show the metric representing the big number
+        .fully-qualified-metric {
+            display: block;
+            flex: 1 1 100%;
+            padding-left: 30px;
+
+            .metric-details {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
             }
 
-            // in edit mode, give big number a fixed width
-            // close to something people might use
-            .big-num-container {
-                flex: 1 0 300px;
-                padding: 0 25px;
-            }
+            .metric-tag {
+                font-size: 10px;
+                display: inline-flex;
+                margin-right: 10px;
+                margin-bottom: 8px;
 
-            // in edit mode, show the metric representing the big number
-            .fully-qualified-metric {
-                display: block;
-                flex: 1 1 100%;
-                padding-left: 30px;
-
-                .metric-details {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                }
-
-                .metric-tag {
-                    font-size: 10px;
-                    display: inline-flex;
-                    margin-right: 10px;
-                    margin-bottom: 8px;
-
-                    .tag-key {
-                        margin-right: 2px;
-                    }
+                .tag-key {
+                    margin-right: 2px;
                 }
             }
+        }
 
-            .widget-output {
-                height: 0px;
-                display: inline-block;
+        .widget-output {
+            height: 0px;
+            display: inline-block;
 
-            }
-            #container {
-                margin: 0px 0px 0px 0px;
-                align-items: flex-end;
-                justify-content: start;
-            }
+        }
+        #container {
+            margin: 0px 0px 0px 0px;
+            align-items: flex-end;
+            justify-content: start;
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-    //.widget-panel-content.bignumber-widget { }
-//}

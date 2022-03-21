@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
@@ -27,7 +27,8 @@ import { IntercomService } from '../../../core/services/intercom.service';
 @Component({
     selector: 'app-namespace',
     templateUrl: './namespace.component.html',
-    styleUrls: ['./namespace.component.scss']
+    styleUrls: ['./namespace.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NamespaceComponent implements OnInit, OnDestroy {
 

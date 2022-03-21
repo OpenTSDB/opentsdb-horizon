@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
 
 .info-tooltip-component {
     .info-tooltip-trigger {
@@ -33,36 +33,5 @@
 .mat-menu-panel.info-tooltip {
     .mat-menu-content:not(:empty) {
         padding: 8px;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $text: get-theme-css-text($theme-name);
-
-    $tooltip-bg: if(
-        $is-dark,
-        mat-color($background, menu),
-        #f0f0f0
-    );
-
-    $tooltip-border: if(
-        $is-dark,
-        mat-color($background, menu-border),
-        #cccccc
-    );
-
-    $tooltip-text: if(
-        $is-dark,
-        map-get($text, --dark-primary-text),
-        map-get($text, --light-primary-text)
-    );
-
-    //cdk items
-    .mat-menu-panel.info-tooltip {
-        background-color: $tooltip-bg;
-        border: 1px solid $tooltip-border;
-        color: $tooltip-text;
     }
 }

@@ -1,0 +1,16 @@
+@import './containers/info-island.theme';
+
+@import './components/event-stream/event-stream.theme';
+@import './components/heatmap-bucket-detail/heatmap-bucket-detail.theme';
+@import './components/info-island-toolbar/info-island-toolbar.theme';
+//@import './components/island-test/island-test.theme';
+@import './components/timeseries-legend/timeseries-legend.theme';
+
+@mixin info-island-module-theme() {
+    @include info-island-container-component-theme();
+    @include event-stream-component-theme();
+    @include heatmap-bucket-detail-component-theme();
+    @include info-island-toolbar-component-theme();
+    //@include island-test-component-theme();
+    @include timeseries-legend-component-theme();
+}

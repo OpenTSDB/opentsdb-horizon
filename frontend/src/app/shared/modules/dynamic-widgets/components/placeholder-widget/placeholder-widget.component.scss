@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 // TODO: get this common config items into the themes
 $default-padding: map-get($widgets-common-config, default-padding);
@@ -23,7 +23,7 @@ $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.placeholder-widget {
+.widget-panel-content.placeholder-widget {
     overflow-y: auto;
 
     // selector icons for the base
@@ -112,26 +112,6 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
                 &.widget-icon-table::after {
                     background-position: -150px -100px;
                 }
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.widget-panel-content.placeholder-widget {
-        .widget-types {
-            .widget-type-selector {
-                // need a background color here
-                background-color: mat-color($other, widget-icons-background);
-
-                &:hover {
-                    background-color: mat-color($other, widget-icons-background-hover);
-                }
-            }
-
-            .widget-type-label {
-                color: mat-color($foreground, text);
             }
         }
     }

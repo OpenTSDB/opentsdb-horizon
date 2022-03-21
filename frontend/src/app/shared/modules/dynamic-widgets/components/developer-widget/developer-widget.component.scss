@@ -15,29 +15,17 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+//@import 'config';
 
+//$default-padding: map-get($widgets-common-config, default-padding);
+//$edit-view-padding: map-get($widgets-common-config, edit-padding);
+//$tab-width: map-get($widgets-common-config, tab-width);
+//$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+//.widget-panel-content.developer-widget { }
 
-    //:host.widget-panel-content.developer-widget { }
+// when we are in edit view
 
-    // when we are in edit view
-    // @at-root {
-    //    ::ng-deep {
-    //      .edit-view-container.is-active {
-    //          .widget-panel-content.developer-widget { }
-    //      }
-    //   }
-    // }
-
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    //:host.widget-panel-content.developer-widget { }
-}
-
-
+//      .edit-view-container.is-active {
+//          .widget-panel-content.developer-widget { }
+//      }

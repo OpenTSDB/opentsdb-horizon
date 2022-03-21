@@ -15,9 +15,7 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
-
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 
@@ -45,7 +43,4 @@ $default-padding: map-get($widgets-common-config, default-padding);
     }
 }
 
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    .widget-config-tab.general-configuration {}
-//}
+

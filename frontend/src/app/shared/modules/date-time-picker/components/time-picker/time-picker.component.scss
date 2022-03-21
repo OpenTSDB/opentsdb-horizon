@@ -14,9 +14,10 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
 
-:host.dtp-time-picker {
+@import 'mixins';
+
+.dtp-time-picker {
     button {
         &.refresh-button {
             &.mat-raised-button {
@@ -46,64 +47,29 @@
     }
 }
 
-@at-root {
-    ::ng-deep {
-        // dropdown menu container
-        .timerange-picker-menu.mat-menu-panel {
-            position: relative;
-            overflow: initial;
-            max-width: initial;
+// dropdown menu container
+.timerange-picker-menu.mat-menu-panel {
+    position: relative;
+    overflow: initial;
+    max-width: initial;
 
-            .timerange-picker-container {
-                padding: 0 12px;
-                height: initial;
-            }
-        }
-        .timerange-picker-menu {
-            .mat-menu-content {
-                padding-top: 2px;
-                padding-bottom: 4px;
-            }
-        }
-
-        // mobile media query
-        @include until(600px) {
-            // cdk dropdown menu container
-            .timerange-picker-menu.mat-menu-panel {
-                width: 100vw;
-            }
-        }
+    .timerange-picker-container {
+        padding: 0 12px;
+        height: initial;
     }
 }
 
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    @include cdk-nested-css-theme-fix($theme-name, $theme-variant) {
-
-        // tooltip color
-        .dtp-tooltip-text {
-            background-color: mat-color($accent, default);
-        }
-
-        // dropdown menu container
-        .timerange-picker-menu.mat-menu-panel {
-            &::after {
-                border-color: rgba($white, 0);
-                border-bottom-color: mat-color($background, menu); // actual color of arrow
-            }
-        }
-
-        .timerange-picker-menu {
-            .mat-menu-content {
-                .timerange-picker-container {
-                    &.mat-menu-item {
-                        background-color: transparent;
-                    }
-                }
-            }
-        }
+.timerange-picker-menu {
+    .mat-menu-content {
+        padding-top: 2px;
+        padding-bottom: 4px;
     }
 }
 
+// mobile media query
+@include until(600px) {
+    // cdk dropdown menu container
+    .timerange-picker-menu.mat-menu-panel {
+        width: 100vw;
+    }
+}

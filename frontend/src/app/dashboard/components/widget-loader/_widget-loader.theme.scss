@@ -1,0 +1,77 @@
+@mixin widget-loader-component-theme() {
+
+    $divider: mat-color($foreground, divider);
+    $card: mat-color($background, card);
+
+    .widget-loader {
+        .mat-card {
+            box-shadow: none;
+            background-color: mat-color($background, card);
+            border: 1px solid rgba($black, .08);
+
+            .panel-body .panel-heading {
+                background-color: transparent;
+                display: none;
+
+                & {
+                    @include transition(background-color 0.2s ease-in-out);
+                }
+
+                .panel-title {
+                    padding: 0 10px;
+                    font-weight: 300;
+                }
+
+                .mat-toolbar {
+                    @include transition(none);
+                    background: transparent;
+
+                    .mat-icon-button {
+                        @include opacity(.5);
+                    }
+                }
+
+                &:hover {
+
+                    background-color: mat-color($background, card-header);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+
+        .batch-selector {
+            background: $card;
+        }
+    }
+
+    // Gridster
+    .gridster-item.is-dragging {
+        .gridster-item-inner {
+            .widget-loader {
+                .mat-card-header {
+                    background-color: mat-color($background, card-header);
+
+                    .mat-toolbar {
+                        .mat-icon-button {
+                            @include opacity(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // CDK items are outside of the component namespace class - be sure to give them a unique class name
+    .widget-menu,
+    .widget-submenu {
+        .menu-seperator {
+            background-color: mat-color($foreground, divider, .1);
+        }
+    }
+}

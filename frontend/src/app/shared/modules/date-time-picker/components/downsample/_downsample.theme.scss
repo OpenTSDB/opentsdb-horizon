@@ -1,0 +1,33 @@
+@mixin downsample-component-theme() {
+
+    $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
+
+    $divider: mat-color($foreground, divider);
+    $link: mat-color($foreground, link);
+
+    .time-downsample-component {
+        // style rules here
+
+        .advanced-toggle {
+            a {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        &.advanced-open {
+            .advanced-toggle {
+                border-bottom: 2px solid mat-color($foreground, link, .25);
+
+                .mat-button.mat-primary {
+                    .mat-button-focus-overlay {
+                        opacity: .04;
+
+                        &:hover {
+                            opacity: .08;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

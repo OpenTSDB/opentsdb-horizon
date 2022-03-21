@@ -1,10 +1,11 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-alert-endpoint',
     templateUrl: './admin-config-alert-endpoint.component.html',
-    styleUrls: ['./admin-config-alert-endpoint.component.scss']
+    styleUrls: ['./admin-config-alert-endpoint.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminConfigAlertEndpointComponent implements OnInit {
 

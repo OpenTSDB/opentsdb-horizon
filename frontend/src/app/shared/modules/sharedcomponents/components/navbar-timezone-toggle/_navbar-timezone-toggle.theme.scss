@@ -1,0 +1,18 @@
+@mixin navbar-timezone-toggle-component-theme() {
+    .navbar-timezone-toggle {
+        .timezone-toggle-options.sliding-button-group {
+            background-color: mat-color($background, navbar-button);
+
+            .mat-tab-link {
+                &,
+                &.mat-tab-label-active {
+                    color: mat-color($foreground, navbar-text);
+                }
+            }
+
+            .mat-ink-bar {
+                background-color: mat-color($foreground, navbar-text, .25);
+            }
+        }
+    }
+}

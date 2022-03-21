@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
 
 .navbar-dashboard-actions-menu {
     display: inline-flex;
@@ -33,9 +33,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-// cdk items
-//.dashboard-actions-menu {}
-//}
