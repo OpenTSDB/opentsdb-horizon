@@ -23,7 +23,6 @@ $available-palettes: "auto", "blues", "greens", "greys", "oranges", "purples",
     "sinebow", "rainbow", "Category10", "Accent", "Dark2", "Paired", "Set1",
     "Set2", "Set3", "Tableau10";
 
-//@import 'loader-base';
 @import "~@angular/material/theming";
 @import "config";
 @import "typography";

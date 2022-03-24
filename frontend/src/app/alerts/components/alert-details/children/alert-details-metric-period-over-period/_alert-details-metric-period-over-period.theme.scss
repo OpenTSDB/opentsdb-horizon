@@ -1,0 +1,22 @@
+@mixin alert-details-metric-period-over-period-component-theme() {
+
+    .period-over-period {
+
+        .blue-background {
+            background: mat-color($primary, default, 0.08);
+        }
+
+        .threshold-type {
+
+            .mat-button-toggle {
+                background: mat-color($primary, default, 0.08);
+            }
+
+            .mat-button-toggle-checked {
+                border: 2px solid blue; // TODO: plug into theme
+                border-radius: 3px;
+                background: white;
+            }
+        }
+    }
+}

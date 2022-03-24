@@ -1,0 +1,199 @@
+@mixin alert-details-component-theme() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    .alert-details-component {
+
+        .alert-configuration-wrapper {
+            .mat-card-header {
+                .mat-toolbar {
+
+                    .close-dialog-wrapper {
+                        border-left: 1px solid mat-color($background, card, 0.5);
+                    }
+
+                    .close-dialog {
+                        color: mat-color($background, card);
+                    }
+                }
+            }
+
+            .mat-card-content {
+                background-color: mat-color($background, background);
+            }
+
+            .mat-card-actions {
+                border-top: 1px solid mat-color($foreground, divider);
+            }
+
+        }
+
+        .alert-status-bar {
+            background-color: mat-color($background, card);
+        }
+
+        .alert-status {
+            .messaging-bar {
+                .mat-slide-toggle {
+                    background-color: rgba($white, 0.8);
+                }
+            }
+        }
+
+        .preview-wrapper {
+            .graph-wrapper {
+                background-color: mat-color($background, card);
+                border: 1px solid mat-color($foreground, divider);
+
+                //.graph-output { }
+            }
+
+            .legend-wrapper {
+                border-left: 1px solid mat-color($foreground, divider);
+            }
+        }
+
+        .edit-link {
+            color: mat-color($foreground, link);
+            background: none;
+        }
+
+        .config-toolbar.mat-toolbar {
+            background: transparent;
+            border-bottom: 1px solid mat-color($foreground, divider);
+
+            .alert-history-link a {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .controls-wrapper {
+            background-color: mat-color($background, card);
+            border-top: 1px solid mat-color($foreground, divider);
+            //border-top-left-radius: 16px;
+            //border-top-right-radius: 16px;
+
+            .form-group {
+                .form-label {
+                    .indicator-square {
+                        &.is-bad {
+                            background-color: mat-color($other, status-error);
+                        }
+                        &.is-warning {
+                            background-color: mat-color($other, status-warning);
+                        }
+                        &.is-good {
+                            background-color: mat-color($other, status-success);
+                        }
+                    }
+                }
+            }
+
+            .step-section {
+                .step-section-label {
+                    border-top: 1px solid mat-color($foreground, divider);
+
+                    .step-section-label-text {
+                        color: if($is-dark, mat-color($foreground, navbar-text), mat-color($background, navbar));
+                        background-color: if($is-dark, mat-color($foreground, navbar-text, 0.15), mat-color($background, navbar, 0.15));
+                        border-bottom-right-radius: 20px 24px;
+                    }
+                }
+
+                .created-by,
+                .updated-by {
+                    color: mat-color($foreground, text);
+                }
+            }
+        }
+
+        .threshold-type-toggle-options {
+
+            &.mat-tab-nav-bar {
+                a.mat-tab-link.mat-tab-label-active {
+                    color: $white;
+                }
+
+                .mat-ink-bar {
+                    background-color: mat-color($foreground, link);
+                }
+            }
+
+        }
+
+        .show-advanced-threshold-toggle {
+
+            a.toggle-action {
+                color: mat-color($foreground, link);
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .form-group:first-of-type {
+                margin-top: 16px;
+            }
+        }
+
+        .notify-when-options {
+            flex-wrap: wrap;
+            .mat-pseudo-checkbox {
+                color: mat-color($primary, default);
+            }
+
+            .mat-pseudo-checkbox-checked {
+                background: mat-color($primary, default);
+            }
+        }
+
+        dropdown-metric-tags {
+            background: mat-color($primary, default, 0.08);
+        }
+
+        // dygraph tooltip
+
+        // hacky way to get the current theming to work with variables
+        // TODO: rework all this color manipulation into the theme
+        $dygraph-tooltip-bg: if(
+            $is-dark,
+            mat-color($background, menu),
+            #f0f0f0 // TODO: plug into theme
+        );
+
+        $menu-color: _mat-convert-variable-to-color(map-get($background, menu), $cssVarMap);
+
+        $dygraph-tooltip-border: if(
+            $is-dark,
+            lighten($menu-color, 10%),
+            #cccccc
+        );
+
+        .dygraph-legend {
+
+            background: $dygraph-tooltip-bg;
+            border: 1px solid $dygraph-tooltip-border;
+
+        }
+
+        .app-resizeable {
+
+            &::after {
+                // content is denali icon drag-handle
+                content: '\ebab';
+
+                background-color: if(
+                    $is-dark,
+                    rgba(0, 191, 255, 0.3), // TODO: plug this into theme
+                    mat-color($background, card)
+                );
+
+                color: mat-color($foreground, text);
+                border: 1px solid mat-color($foreground, text, .3);
+
+            }
+
+            box-shadow: inset 0px -2px 1px -1px mat-color($foreground, text, .3);
+        }
+    }
+}
