@@ -19,7 +19,7 @@
 // * LANDING PAGE CONTAINER COMPONENT
 // *
 
-@import 'loader-base';
+//@import 'loader-base';
 
 :host.landing-page-main {
     display: flex;
@@ -64,13 +64,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.landing-page-main {
-        .sidebar {
-            background-color: mat-color($background, card);
-        }
-    }
-}
-

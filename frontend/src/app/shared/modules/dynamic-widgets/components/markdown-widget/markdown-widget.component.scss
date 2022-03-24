@@ -18,14 +18,14 @@
 // TODO: THIS FILE NEEDS TO BE CLEANED UP
 // TODO: THIS FILE NEEDS TO BE CLEANED UP
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.markdown-widget {
+.markdown-widget {
     height: 100%;
     max-width: 100%;
     padding-top: 0px;
@@ -44,30 +44,28 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         display: flex;
         flex-direction: row-reverse;
 
-        ::ng-deep {
-            .inputArea {
-                // editor for users to type
-                min-width: 100%;
-                height: calc(100% - 20px);
+        .inputArea {
+            // editor for users to type
+            min-width: 100%;
+            height: calc(100% - 20px);
 
-                .mat-form-field-wrapper {
+            .mat-form-field-wrapper {
+                height: 100%;
+
+                .mat-form-field-flex {
                     height: 100%;
 
-                    .mat-form-field-flex {
+                    .mat-form-field-infix {
                         height: 100%;
 
-                        .mat-form-field-infix {
+                        .mat-form-field-label {
+                            // 'Type here' placeholder
+                            padding-left: 5px;
+                        }
+
+                        textarea {
                             height: 100%;
-
-                            .mat-form-field-label {
-                                // 'Type here' placeholder
-                                padding-left: 5px;
-                            }
-
-                            textarea {
-                                height: 100%;
-                                font-size: 12px;
-                            }
+                            font-size: 12px;
                         }
                     }
                 }
@@ -128,23 +126,20 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         }
 
         .widget-configs {
-            ::ng-deep {
+            .mat-tab-body-wrapper {
+                mat-tab-body {
+                    &.mat-tab-body {
+                        // border: none;
 
-                .mat-tab-body-wrapper {
-                    mat-tab-body {
-                        &.mat-tab-body {
-                            // border: none;
-
-                            .mat-tab-body-content {
-                                display: block;
-                            }
+                        .mat-tab-body-content {
+                            display: block;
                         }
                     }
                 }
+            }
 
-                .mat-tab-labels {
-                    display: block;
-                }
+            .mat-tab-labels {
+                display: block;
             }
         }
     }
@@ -158,35 +153,11 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
     }
 }
 
-@at-root {
-    ::ng-deep {
-        .edit-view-container.is-active {
-            .widget-panel-content.markdown-widget {
-                .widget-output-container,
-                .widget-controls-container {
-                    flex: 1 1 50%;
-                }
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    ::ng-deep {
-        textarea {
-            background: if($is-dark, $black, $white);
-            color: if($is-dark, $white, $black);
-        }
-
-        .markdown-note {
-            background: mat-color($background, background);
-            color: if($is-dark, $white, $black);
-            border: none;
-
-            a:visited {
-                color: if($is-dark, $white, $black);
-            }
+.edit-view-container.is-active {
+    .widget-panel-content.markdown-widget {
+        .widget-output-container,
+        .widget-controls-container {
+            flex: 1 1 50%;
         }
     }
 }

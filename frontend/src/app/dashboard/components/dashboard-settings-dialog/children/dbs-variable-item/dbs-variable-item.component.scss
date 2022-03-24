@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .template-variable-item {
     display: flex;
 
@@ -77,36 +75,6 @@
         .settings-control:not(.actions-control) {
             opacity: .5;
             pointer-events: none;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .template-variable-item {
-        border: 2px solid  mat-color($background, background);
-
-        &:first-child {
-            border-top: 0;
-        }
-
-        .settings-control {
-            background-color:  mat-color($background, background, 0);
-        }
-
-        // modifier
-        &.is-disabled {
-            .settings-control:not(.actions-control){
-                background-color:  mat-color($background, background);
-            }
-        }
-
-        .filter-values-list {
-            .mat-chip-list-wrapper {
-                .mat-standard-chip {
-                    background-color: mat-color($primary, default, .1);
-                }
-            }
         }
     }
 }

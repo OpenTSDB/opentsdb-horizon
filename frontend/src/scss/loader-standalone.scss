@@ -1,0 +1,94 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **
+// * SCSS APP LOADER - GLOBAL STYLES
+// * Builds base stylesheet
+// * includes Material base
+// * includes global app styles
+// *
+@charset "utf-8";
+
+// import loader base
+@import './loader-base.scss';
+
+
+
+@import 'horizon-standalone.style-module.scss';
+
+// generate font-face imports
+//@each $font-face, $font-config in $app-available-typefaces {
+//    @include generate-typeface-imports($font-config);
+//}
+
+// NOTE: Sometimes there is a weird browser console warning saying something about theme not being loaded.
+// * This is a known bug with the current version of Angular Material2, and hopefully they will fix it soon.
+// * In the meantime...There are a couple of options to fix this if the warning really bugs you.
+// * Uncomment your option below
+
+// NOTE: OPTION 1 - import a predefined angular theme. Kind of sucks if you really don't want any of the predefined themes.
+// * Recommended only if you plan on using one of the themes, otherwise it just adds weight to your css load
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+// NOTE: OPTION 2 - Looks like the check that triggers the console warning may be looking for this class.
+// * Recommended method - definitely much lighter for the css load;
+// * You need to uncomment 5 lines starting at the '@at-root'
+@at-root {
+    .mat-theme-loaded-marker {
+        display: none;
+    }
+}
+
+@include setBaseFontSize($base-font-size);
+
+// RENDER MATERIAL CORE (structure)
+// NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
+$typography-config: mat-typography-config();
+@include mat-core($typography-config);
+
+// APPLICATION CORE (structure)
+@include standalone-core();
+
+// THEME RULES
+
+// NEW: CSS VARIABLES
+// going with Horizon theme
+$theme-name: 'horizon';
+$theme-config: map-get($app-themes, $theme-name);
+$css-vars: map-get($theme-config, css-variables);
+$css-text: map-get($theme-config, css-text);
+@include standalone-root-variables($css-text, $theme-name);
+@include standalone-root-variables($css-vars, $theme-name);
+
+// NEW: CSS VARIANTS
+@include init-mat-standalone-theme($theme-name);
+
+// import icons
+// we include font icons here instead of typography
+// because most fonts are pure css classes of each character,
+// so we can't set it up as a map like the other traditional fonts
+//@import './icons.scss';
+
+// GLOBAL STYLES
+@import './app/resets.scss';
+//@import './app/helpers.scss';
+//@import './app/core.scss';
+//@import './app/overrides.scss';
+//@import './app/features.scss';
+
+@import '~dygraphs/dist/dygraph.css';
+

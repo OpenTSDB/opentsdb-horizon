@@ -39,12 +39,12 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../theme/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'linechart-widget',
     templateUrl: './linechart-widget.component.html',
-    styleUrls: ['./linechart-widget.component.scss']
+    styleUrls: ['./linechart-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 

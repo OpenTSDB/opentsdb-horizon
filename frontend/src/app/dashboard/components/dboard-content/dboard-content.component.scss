@@ -17,8 +17,6 @@
 
 //* DBOARD-CONTEMT COMPONENT */
 
-@import 'loader-component';
-
 .app-dboard-content {
     position: relative;
     height: 100%;
@@ -76,6 +74,14 @@
     }
 
     .gridster-stage {
+        width: 100%;
+        flex: 1 0px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: overlay;
+        padding: 10px;
+
         .is-scroller {
             //@include is-scroller();
             padding: 10px;
@@ -94,8 +100,3 @@
     }
 
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .app-dboard-content {}
-//}

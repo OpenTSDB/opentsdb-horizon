@@ -15,63 +15,28 @@
 // * limitations under the License.
 // *
 
-$available-palettes:
-    'auto',
-    'blues',
-    'greens',
-    'greys',
-    'oranges',
-    'purples',
-    'reds',
-    'BuGn',
-    'BuPu',
-    'GnBu',
-    'OrRd',
-    'PuBuGn',
-    'PuBu',
-    'PuRd',
-    'RdPu',
-    'YlGnBu',
-    'YlGn',
-    'ylOrBr',
-    'ylOrRd',
-    'cividis',
-    'viridis',
-    'inferno',
-    'magma',
-    'plasma',
-    'warm',
-    'cool',
-    'CubehelixDefault',
-    'turbo',
-    'BrBG',
-    'PRGn',
-    'PiYG',
-    'PuOr',
-    'RdBu',
-    'RdGy',
-    'RdYlBu',
-    'RdYlGn',
-    'Spectral',
-    'sinebow',
-    'rainbow',
-    'Category10',
-    'Accent',
-    'Dark2',
-    'Paired',
-    'Set1',
-    'Set2',
-    'Set3',
-    'Tableau10';
+$available-palettes: "auto", "blues", "greens", "greys", "oranges", "purples",
+    "reds", "BuGn", "BuPu", "GnBu", "OrRd", "PuBuGn", "PuBu", "PuRd", "RdPu",
+    "YlGnBu", "YlGn", "ylOrBr", "ylOrRd", "cividis", "viridis", "inferno",
+    "magma", "plasma", "warm", "cool", "CubehelixDefault", "turbo", "BrBG",
+    "PRGn", "PiYG", "PuOr", "RdBu", "RdGy", "RdYlBu", "RdYlGn", "Spectral",
+    "sinebow", "rainbow", "Category10", "Accent", "Dark2", "Paired", "Set1",
+    "Set2", "Set3", "Tableau10";
 
-@import 'loader-base';
+//@import 'loader-base';
+@import "~@angular/material/theming";
+@import "config";
+@import "typography";
 
-:host.color-picker-component {
+.color-picker-component {
     display: inline-block;
     position: relative;
     text-align: left;
     z-index: 1;
-    @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), input);
+    @include mat-typography-level-to-styles(
+        map-get($app-fontface-config, sans),
+        input
+    );
 
     .color-picker-wrapper {
         position: relative;
@@ -158,279 +123,221 @@ $available-palettes:
     }
 }
 
+// CDK items (if any)
 
- // CDK items (if any)
- @at-root ::ng-deep {
-    // CDK OVERLAY ITEM / EMBEDDED CONTROL
-    .color-picker-component-control {
+// CDK OVERLAY ITEM / EMBEDDED CONTROL
+.color-picker-component-control {
+    &.card {
+        width: 186px;
+    }
 
-        &.card {
-            width: 186px;
+    .btn-picker {
+        //wrapper for button content
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .color-sample {
+        height: 14px;
+        width: 14px;
+        margin: 0px;
+        margin-right: 11px;
+        margin-left: 12px;
+        margin-top: 12px;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+    .color-hex {
+        //text
+        flex: 1;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .mat-icon {
+        //down arow
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 18px 18px 18px 18px 18px;
+        grid-column-gap: 12px;
+        grid-row-gap: 4px;
+        padding-left: 20px;
+        padding-top: 17px;
+    }
+
+    .grid-item {
+        width: 24px;
+        height: 24px;
+        border: 2px solid transparent;
+    }
+
+    .palette-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-height: 200px;
+        overflow: auto;
+
+        .palette-item {
+            position: relative;
+            cursor: pointer;
+            height: 26px;
+            width: 180px;
+            margin-bottom: 4px;
+            overflow: hidden;
+
+            .image-caption {
+                position: absolute;
+                top: 4px;
+                left: 5px;
+            }
+
+            img {
+                height: 26px;
+                width: 180px;
+                background-image: url("/assets/color-palette-sprite.png");
+                background-repeat: no-repeat;
+                background-position-x: 0;
+            }
+
+            @each $palette in $available-palettes {
+                $palette-index: index($available-palettes, $palette);
+                $palette-index: $palette-index - 1;
+                $palette-offset: -($palette-index * 26);
+                &.palette-#{$palette} {
+                    img {
+                        background-position-y: #{$palette-offset}px;
+                    }
+                }
+            }
+
+            &.palette-auto {
+                span {
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 4px;
+                    background: rgba($white, 0.8);
+                    color: black; // TODO: plug into theme
+                }
+            }
+
+            &.palette-cividis,
+            &.palette-viridis,
+            &.palette-inferno,
+            &.palette-magma,
+            &.palette-plasma,
+            &.palette-CubehelixDefault,
+            &.palette-warm,
+            &.palette-cool,
+            &.palette-turbo,
+            &.palette-BrBG,
+            &.palette-PRGn,
+            &.palette-PiYG,
+            &.palette-PuOr,
+            &.palette-RdBu,
+            &.palette-RdGy {
+                span {
+                    color: white;
+                }
+            }
         }
 
-        .btn-picker {
-            //wrapper for button content
-            display: flex;
-            justify-content: flex-start;
+        .palette-item:hover {
+            //border: 2px solid blue; // TODO: plug into theme
+            box-shadow: inset 0 0 0 2px blue; // TODO: plug into theme
         }
+    }
 
-        .color-sample {
-            height: 14px;
-            width: 14px;
-            margin: 0px;
-            margin-right: 11px;
-            margin-left: 12px;
-            margin-top: 12px;
-            display: inline-block;
-            border-radius: 5px;
+    .auto-color {
+        width: 140px;
+        height: 24px;
+        border: 2px solid transparent;
+        margin-left: 22px;
+        margin-top: 10px;
+    }
+
+    .default-color-button {
+        //the default color buttons
+        border-radius: 5px;
+        width: 18px;
+        height: 18px;
+        outline: none;
+        margin: 1px;
+        min-width: 18px;
+        padding: 0px;
+    }
+
+    .multi-color {
+        padding: 0px 15px;
+        .title {
+            padding-bottom: 10px;
+            font-size: 10px;
         }
+    }
 
-        .color-hex {
-            //text
-            flex: 1;
-            text-align: left;
-            font-size: 14px;
+    .btn-single-color {
+        width: 26px;
+        height: 26px;
+        border: 1px solid #aaa; // TODO: plug into theme
+        min-width: 26px;
+        padding: 0px;
+        margin-right: 4px;
+        box-sizing: initial;
+        &.selected {
+            border: 2px solid #448aff; // TODO: plug into theme
         }
 
         .mat-icon {
-            //down arow
-            margin-top: 10px;
-            font-size: 16px;
+            padding: 3px;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            margin: 0px;
         }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 18px 18px 18px 18px 18px;
-            grid-column-gap: 12px;
-            grid-row-gap: 4px;
-            padding-left: 20px;
-            padding-top: 17px;
-        }
-
-        .grid-item {
-            width: 24px;
-            height: 24px;
-            border: 2px solid transparent;
-        }
-
-        .palette-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            max-height: 200px;
-            overflow: auto;
-
-            .palette-item {
-                position: relative;
-                cursor: pointer;
-                height: 26px;
-                width: 180px;
-                margin-bottom: 4px;
-                overflow: hidden;
-
-                .image-caption {
-                    position: absolute;
-                    top: 4px;
-                    left: 5px;
-                }
-
-                img {
-                    height: 26px;
-                    width: 180px;
-                    background-image: url('/assets/color-palette-sprite.png');
-                    background-repeat: no-repeat;
-                    background-position-x: 0;
-                }
-
-                @each $palette in $available-palettes {
-                    $palette-index: index($available-palettes, $palette);
-                    $palette-index: $palette-index - 1;
-                    $palette-offset: -($palette-index * 26);
-                    &.palette-#{$palette} {
-                        img {
-                            background-position-y: #{$palette-offset}px;
-                        }
-                    }
-                }
-
-                &.palette-auto {
-                    span {
-                        top: 0;
-                        left: 0;
-                        bottom: 0;
-                        display: flex;
-                        align-items: center;
-                        padding: 0 4px;
-                        background: rgba($white, .8);
-                        color: black; // TODO: plug into theme
-                    }
-                }
-
-                &.palette-cividis,
-                &.palette-viridis,
-                &.palette-inferno,
-                &.palette-magma,
-                &.palette-plasma,
-                &.palette-CubehelixDefault,
-                &.palette-warm,
-                &.palette-cool,
-                &.palette-turbo,
-                &.palette-BrBG,
-                &.palette-PRGn,
-                &.palette-PiYG,
-                &.palette-PuOr,
-                &.palette-RdBu,
-                &.palette-RdGy {
-                    span {
-                        color: white;
-                    }
-                }
-            }
-
-            .palette-item:hover {
-                //border: 2px solid blue; // TODO: plug into theme
-                box-shadow:inset 0 0 0 2px blue; // TODO: plug into theme
-            }
-        }
-
-        .auto-color {
-            width: 140px;
-            height: 24px;
-            border: 2px solid transparent;
-            margin-left: 22px;
-            margin-top: 10px;
-        }
-
-        .default-color-button {
-            //the default color buttons
-            border-radius: 5px;
-            width: 18px;
-            height: 18px;
-            outline: none;
-            margin: 1px;
-            min-width: 18px;
+        .mat-icon.delete {
+            margin: 0px;
             padding: 0px;
+            top: -6px;
+            right: -4px;
+            width: 10px;
+            height: 10px;
+            font-size: 12px;
+            position: absolute;
         }
+    }
 
-        .multi-color {
-            padding: 0px 15px;
-            .title {
-                padding-bottom: 10px;
-                font-size: 10px;
-            }
-        }
+    .auto-color-button {
+        width: 136px;
+        line-height: 20px;
+        border-radius: 5px;
+    }
 
-        .btn-single-color {
-            width: 26px;
-            height: 26px;
-            border: 1px solid #aaa; // TODO: plug into theme
-            min-width: 26px;
-            padding: 0px;
-            margin-right: 4px;
-            box-sizing: initial;
-            &.selected {
-                border: 2px solid #448aff; // TODO: plug into theme
-            }
+    .isSelected {
+        border-radius: 5px;
+    }
 
-            .mat-icon {
-                padding: 3px;
-                font-size: 20px;
-                width: 20px;
-                height: 20px;
-                position: absolute;
-                top: 0px;
-                right: 0px;
-                margin: 0px;
-            }
-            .mat-icon.delete {
-                margin: 0px;
-                padding: 0px;
-                top: -6px;
-                right: -4px;
-                width: 10px;
-                height: 10px;
-                font-size: 12px;
-                position: absolute;
-            }
-        }
+    .toggle {
+        //between default and custom
+        text-align: center;
+        margin-top: 5px;
+        width: 186px;
+        font-family: Helvetica;
+        display: flex;
 
-        .auto-color-button {
-            width: 136px;
-            line-height: 20px;
-            border-radius: 5px;
-        }
-
-        .isSelected {
-            border-radius: 5px;
-        }
-
-        .toggle {
-            //between default and custom
-            text-align: center;
-            margin-top: 5px;
-            width: 186px;
-            font-family: Helvetica;
-            display: flex;
-
-            .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
-                padding: 0px 5px;
-            }
+        .mat-button-toggle-appearance-standard
+            .mat-button-toggle-label-content {
+            padding: 0px 5px;
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    :host.color-picker-component {
-
-        .color-picker-flex {
-            background-color: mat-color($primary, default, 0.08)
-        }
-
-        .select-arrow-wrapper {
-            .select-arrow {
-                color: mat-color($foreground, secondary-text);
-            }
-        }
-
-        ///// OLD STYLES /////
-        .mat-raised-button {
-            background: #F3F6FE; // TODO: plug into theme
-        }
-
-    }
-
-    // CDK OVERLAY ITEM / EMBEDDED CONTROL
-    @include cdk-nested-css-theme-fix($theme-name, $theme-variant) {
-        .color-picker-component-control {
-            content: '#{$theme-name}#{$theme-variant}';
-            &.card {
-                background: mat-color($background, menu);
-                border-top: 2px solid mat-color($primary, default);
-            }
-
-            .grey-outline {
-                //for white color on palette
-                border: 2px solid if($is-dark, transparent, lightgray); // TODO: plug into theme
-            }
-
-            .isSelected {
-                border: 2px solid mat-color($primary, default);
-            }
-
-            .toggle {
-                border-top: 1px solid mat-color($foreground, divider);
-                color: mat-color($primary, default);
-            }
-
-            .palette-container {
-                .palette-item:hover,
-                .palette-item.selected {
-                    border: 2px solid mat-color($primary, default);
-                }
-            }
-        }
-    }
-}
-

@@ -1,0 +1,284 @@
+@mixin dbfs-component-theme() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    .dashboard-navigator {
+        .panel-toolbar {
+            background: mat-color($background, card);
+            border-bottom: 1px solid mat-color($foreground, divider, .07);
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text),
+                mat-color($background, navbar)
+            );
+
+            .nav-item.icon-nav {
+                background: if(
+                    $is-dark,
+                    mat-color($background, navbar, .5),
+                    mat-color($background, navbar, .1)
+                );
+            }
+
+            .nav-item.icon-nav:not(:last-child) {
+                border-right: 1px solid mat-color($foreground, divider, .07);
+            }
+
+            .nav-item:hover {
+                background: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .1),
+                    mat-color($background, navbar, .2)
+                );
+                cursor: pointer;
+            }
+
+            .nav-item.icon-nav.is-active {
+                background: transparent;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text),
+                    mat-color($background, navbar)
+                );
+            }
+
+            &.is-master-panel {
+                .header-label {
+                    color: mat-color($background, navbar, .85);
+                }
+            }
+        }
+
+        .navigator-panel-item,
+        .mat-list .mat-list-item,
+        .mat-nav-list .mat-list-item {
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .6),
+                mat-color($background, navbar, .85)
+            );
+        }
+
+        .mat-list .mat-list-item,
+        .mat-nav-list .mat-list-item {
+
+            .folder-icon,
+            .dashboard-icon {
+                margin-right: 8px;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .6),
+                    mat-color($background, navbar, .85)
+                );
+            }
+
+            &.is-active {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .85),
+                    mat-color($background, navbar, .85)
+                );
+            }
+        }
+
+        .breadcrumb-path {
+            border-bottom: 1px solid mat-color($foreground, divider, .07);
+
+            .mat-chip:hover {
+                background: mat-color($foreground, link);
+                color: find-color-invert(
+                    _mat-convert-variable-to-color(
+                        map-get($foreground, link),
+                        $cssVarMap
+                    )
+                );
+            }
+        }
+
+        .counter {
+            .chip-count {
+                color: $white;
+                background-color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .4),
+                    mat-color($background, navbar, .4)
+                );
+            }
+        }
+
+        .block-header {
+            background-color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .1),
+                mat-color($background, navbar, .1)
+            );
+
+            .counter {
+                .chip-count {
+                    background-color: if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text, .3),
+                        mat-color($background, navbar, .3)
+                    );
+                }
+            }
+        }
+
+        .create-dashboard {
+            .mat-flat-button {
+                background-color: mat-color($background, navbar);
+                color: mat-color($foreground, navbar-text);
+            }
+        }
+
+        .filter-list-control {
+            border-bottom: 1px solid mat-color($foreground, divider, .07);
+        }
+
+        // COMMON STYLES
+        .dnav-item {
+            .dnav-menu {
+                .mat-icon-button {
+                    background: rgba($black, .1);
+                }
+            }
+
+            &.dnav-menu-opened {
+                background: if(
+                    $is-dark,
+                    mat-color($background, navbar, .20),
+                    mat-color($background, navbar, .05)
+                );
+                box-shadow: inset 0 1px 0 0 mat-color($background, navbar, .15), inset 0 -1px 0 0 mat-color($background, navbar, .15);
+
+                &::after {
+                    border-color: transparent if(
+                        $is-dark,
+                        mat-color($background, navbar, .80),
+                        mat-color($background, navbar, .15)
+                    ) transparent transparent;
+                }
+            }
+        }
+
+        // FOLDERS
+        .dnav-folders {
+            .remove-folders-button.mat-button[disabled] {
+                color: inherit;
+                opacity: .5;
+            }
+
+            .remove-folders-button.is-active {
+                color: mat-color($other, status-error);
+            }
+        }
+
+        .block-header.folders-header {
+            .edit-actions,
+            .create-actions,
+            .display-actions {
+                .mat-button:hover {
+                    background-color: rgba($white, 0.08);
+                }
+            }
+        }
+
+        // FOLDER ITEM
+        .dnav-folder-item {
+            .save-folder-name {
+                color: mat-color($other, status-success);
+            }
+
+            .mat-checkbox {
+                .mat-checkbox-frame {
+                    border-color:if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text, .54),
+                        mat-color($background, navbar, .54)
+                    );
+                }
+
+                &.mat-checkbox-checked {
+                    .mat-checkbox-frame {
+                        border-color: mat-color($other, status-error);
+                    }
+
+                    .mat-checkbox-background {
+                        background-color: mat-color($other, status-error);
+                    }
+                }
+            }
+
+            .list-item.edit-form {
+                .mat-form-field {
+                    .mat-input-element::placeholder {
+                        color: if(
+                            $is-dark,
+                            mat-color($foreground, navbar-text, .25),
+                            mat-color($background, navbar, .25)
+                        );
+                    }
+                }
+            }
+
+        }
+
+        // DASHBOARD ITEM
+        .dnav-dashboard-item {
+            &.matched-dashboard {
+                background: mat-color($primary, default, .15);
+                box-shadow: inset 3px 0 0 rgb(34,122,236); //TODO: plug this into theme
+            }
+        }
+
+        // favorite/recent
+        .dnav-favorite-item,
+        .dnav-recent-item {
+            &.matched-dashboard {
+                background: mat-color($primary, default, .15);
+                box-shadow: inset 3px 0 0 rgb(34,122,236); //TODO: plug this into theme
+            }
+        }
+    }
+
+    // cdk items
+
+    .dnav-cdk-folder-menu,
+    .dnav-cdk-dashboard-menu,
+    .dnav-cdk-favorite-menu {
+        background-color: mat-color($background, card);
+        border: 1px solid mat-color($background, navbar, .15);
+        @if ($is-dark) {
+            filter: brighten(1.15);
+
+            * {
+                filter: brighten(1);
+            }
+        }
+
+        .mat-menu-item {
+            color: if(
+                $is-dark,
+                mat-color($foreground, navbar-text, .5),
+                mat-color($background, navbar, .5)
+            );
+
+            .mat-icon {
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, navbar-text, .5),
+                    mat-color($background, navbar, .5)
+                );
+            }
+
+            &:hover {
+                background-color: if(
+                    $is-dark,
+                    mat-color($foreground, text, .12),
+                    mat-color($foreground, text, .08)
+                );
+            }
+        }
+    }
+
+}

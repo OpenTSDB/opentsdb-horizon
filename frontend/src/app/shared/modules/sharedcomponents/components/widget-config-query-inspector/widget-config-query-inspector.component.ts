@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-query-inspector',
     templateUrl: './widget-config-query-inspector.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-query-inspector.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigQueryInspectorComponent implements OnInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;

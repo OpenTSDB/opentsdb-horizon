@@ -20,7 +20,8 @@
     Input,
     Output,
     EventEmitter,
-    HostBinding
+    HostBinding,
+    ViewEncapsulation
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfigService } from '../../../core/services/config.service';
@@ -29,7 +30,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
     selector: 'app-navigator-sidenav',
     templateUrl: './navigator-sidenav.component.html',
-    styleUrls: [ './navigator-sidenav.component.scss' ]
+    styleUrls: [ './navigator-sidenav.component.scss' ],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavigatorSidenavComponent implements OnInit {
 

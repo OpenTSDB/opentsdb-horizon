@@ -14,7 +14,8 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-@import 'loader-component';
+
+@import 'config';
 
 .heatmap-data-tooltip {
     .color-chip {
@@ -37,17 +38,3 @@
     }
 }
 
-// * THEME VARIANTS
-@include init-component-variants() {
-    $primary-accent-contrast: mat-color($primary, A100-contrast);
-    $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-    .heatmap-data-tooltip {
-        .tooltip-output {
-            .value-marker,
-            .other-data {
-                color: $vm-text;
-            }
-        }
-    }
-}

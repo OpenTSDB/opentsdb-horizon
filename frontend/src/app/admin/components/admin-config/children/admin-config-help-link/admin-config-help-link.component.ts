@@ -1,10 +1,11 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-help-link',
     templateUrl: './admin-config-help-link.component.html',
-    styleUrls: ['./admin-config-help-link.component.scss']
+    styleUrls: ['./admin-config-help-link.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminConfigHelpLinkComponent implements OnInit {
     @HostBinding('class') classAttribute: string = 'app-admin-config-help-link';

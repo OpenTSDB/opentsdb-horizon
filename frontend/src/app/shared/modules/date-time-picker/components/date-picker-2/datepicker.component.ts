@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, ElementRef, ViewChild, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
@@ -26,6 +26,7 @@ import { HostBinding } from '@angular/core';
     selector: 'datepicker2',
     templateUrl: 'datepicker.component.html',
     styleUrls: ['datepicker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DatepickerComponent implements OnInit, OnChanges {
     // tslint:disable:no-inferrable-types

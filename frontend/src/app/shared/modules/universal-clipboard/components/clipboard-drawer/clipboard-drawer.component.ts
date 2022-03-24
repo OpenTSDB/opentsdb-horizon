@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
@@ -32,6 +32,7 @@ import { DashboardService } from '../../../../../dashboard/services/dashboard.se
     selector: 'clipboard-drawer',
     templateUrl: './clipboard-drawer.component.html',
     styleUrls: ['./clipboard-drawer.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger('toggleDrawer', [
             state('closed', style({

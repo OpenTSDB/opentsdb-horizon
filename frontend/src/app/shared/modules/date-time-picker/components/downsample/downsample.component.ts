@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, OnDestroy, HostBinding, Input, Output,
-    EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+    EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
@@ -30,6 +30,7 @@ import { Subscription } from 'rxjs';
     selector: 'downsample',
     templateUrl: './downsample.component.html',
     styleUrls: ['./downsample.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

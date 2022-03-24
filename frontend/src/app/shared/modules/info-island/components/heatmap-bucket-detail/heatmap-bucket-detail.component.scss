@@ -15,7 +15,8 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
 
 .heatmap-bucket-detail-component {
     min-height: 100%;
@@ -173,35 +174,5 @@
         z-index: 10;
         top:10px;
         left: 10px;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $cdk-window-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
-
-    .heatmap-bucket-detail-component {
-        .ts-legend-toolbar {
-            color: $white;
-            background-color: $black;
-        }
-
-        .ts-legend-table {
-            background: $cdk-window-bg;
-
-            .mat-sort-header-container.mat-sort-header-sorted {
-                color: #c09853; // TODO: plug into theme
-
-                .mat-sort-header-arrow {
-                    color: darken(#c09853, 15%); // TODO: plug into theme
-                }
-            }
-
-            .mat-row:hover {
-                background-color: mat-color($primary, default, .15);
-            }
-
-        }
     }
 }

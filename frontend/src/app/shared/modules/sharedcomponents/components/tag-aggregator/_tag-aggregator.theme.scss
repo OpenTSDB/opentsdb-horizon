@@ -1,0 +1,25 @@
+@mixin tag-aggregator-component-theme() {
+    .tag-aggregator-component {
+        .mat-button {
+            color: mat-color($foreground, link);
+        }
+    }
+
+    // cdk items
+    .tag-aggregator-cdk-menu.mat-menu-panel {
+        .mat-menu-content {
+            .aggregator-help {
+                background: if(
+                    $is-dark,
+                    mat-color($denali-brand-5, 100, .2),
+                    mat-color($denali-brand-5, 100, .5)
+                );
+                border-left: 1px solid mat-color($foreground, divider);
+
+                .help-title {
+                border-bottom: 1px solid mat-color($foreground, divider);
+                }
+            }
+        }
+    }
+}

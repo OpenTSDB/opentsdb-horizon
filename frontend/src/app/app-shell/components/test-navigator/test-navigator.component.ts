@@ -20,7 +20,7 @@ import {
     HostBinding,
     Input,
     OnInit,
-    Output, ViewChild, ElementRef
+    Output, ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
@@ -30,6 +30,7 @@ import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.comp
     selector: 'test-navigator',
     templateUrl: './test-navigator.component.html',
     styleUrls: ['./test-navigator.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     host: {
         '[class.test-navigator]': 'true',
         '[class.panel-content]': 'true'

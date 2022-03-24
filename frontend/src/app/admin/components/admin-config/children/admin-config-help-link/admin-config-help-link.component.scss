@@ -19,9 +19,9 @@
 // * ADMIN CONFIG HELP LINK COMPONENT
 // *
 
-@import "loader-base";
+@import 'mixins';
 
-:host.app-admin-config-help-link {
+.app-admin-config-help-link {
     display: block;
 
     &:not(:last-child) {
@@ -47,7 +47,7 @@
             opacity: 0
         }
 
-        .mat-mini-fab ::ng-deep .mat-button-wrapper {
+        .mat-mini-fab .mat-button-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -68,7 +68,6 @@
         }
     }
 
-
     .help-link-edit-wrap {
         padding: 4px;
 
@@ -83,38 +82,6 @@
 
                 &:not(:last-child) {
                     margin-right: 4px;
-                }
-            }
-        }
-    }
-
-
-}
-
-// CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-config-help-link {
-        .help-link-wrap {
-            .mat-button {
-                color: mat-color($foreground, link);
-            }
-        }
-
-        .help-link-edit-wrap {
-            border: 1px solid mat-color($foreground, divider);
-            background: mat-color($background, menu);
-
-            .actions {
-                .mat-flat-button.apply {
-                    background-color: mat-color($success, default);
-                    color: mat-color($success, default-contrast);
-                }
-
-                .mat-flat-button.cancel {
-                    background-color: mat-color($primary, default);
-                    color: mat-color($primary, default-contrast);
                 }
             }
         }

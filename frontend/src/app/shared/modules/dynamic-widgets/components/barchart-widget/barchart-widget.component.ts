@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, OnChanges, AfterViewInit, ChangeDetectorRef,
-    SimpleChanges, HostBinding, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+    SimpleChanges, HostBinding, Input, OnDestroy, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -34,6 +34,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
   selector: 'app-barchart-widget',
   templateUrl: './barchart-widget.component.html',
   styleUrls: ['./barchart-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;

@@ -637,7 +637,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         }
                     }
                     if ( dbState.Settings.tplVariables ) {
-                        dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
+                        dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']') || aliases.includes('![' +  d.alias + ']'));
                     }
                     delete message.payload.widget.settings.time.overrideTime;
                     dbState.Widgets.widgets = [message.payload.widget];
@@ -1959,11 +1959,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     openDashboardDeleteDialog() {
         const dialogConf: MatDialogConfig = new MatDialogConfig();
-        // dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        // dialogConf.hasBackdrop = true;
-        // dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-        dialogConf.width = '400px';
-        dialogConf.height = '300px';
+        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        dialogConf.hasBackdrop = true;
+        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        //dialogConf.width = '400px';
+        //dialogConf.height = '300px';
         dialogConf.autoFocus = true;
         dialogConf.data = {};
 

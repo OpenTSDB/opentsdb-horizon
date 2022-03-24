@@ -15,7 +15,10 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'config';
+@import 'mixins';
+@import 'typography';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-padding: map-get($widgets-common-config, edit-padding);
@@ -327,7 +330,6 @@ $filter-block-padding: 8px;
                 vertical-align: middle;
                 padding-left: 0px;
             }
-        }
 
             &:last-of-type {
                 padding-right: 8px;
@@ -443,13 +445,15 @@ $filter-block-padding: 8px;
                         transition: opacity 200ms ease-in-out;
                     }
 
-                .mat-form-field {
-                    width: 100%;
                     &:hover {
                         .mat-icon {
                             opacity: 1;
                         }
                     }
+                }
+
+                .mat-form-field {
+                    width: 100%;
                 }
             }
 
@@ -644,25 +648,6 @@ $filter-block-padding: 8px;
             th.mat-header-cell {
                 padding: 0;
                 border-bottom-width: 0;
-            }
-        }
-
-        .metric-alias,
-        .visual-panel-dropdown-text {
-            cursor: pointer;
-
-            font-size: 12px;
-            padding: 0 4px;
-        }
-
-        .visual-panel-dropdown-text {
-            padding: 0 4px;
-
-            .color-chip {
-                width: 10px;
-                height: 10px;
-                display: inline-block;
-                margin-right: 6px;
             }
         }
 
@@ -1362,6 +1347,7 @@ $filter-block-padding: 8px;
         }
     }
 }
+<<<<<<< HEAD
 
 // TODO: This mixin needs a major rehaul to get it to use theme values.
 // There are too many raw values added in this mixin only
@@ -2196,3 +2182,5 @@ $filter-block-padding: 8px;
         }
     }
 }
+=======
+>>>>>>> 7407be1ada99619d94194bc0f296d1c26d65e4c9

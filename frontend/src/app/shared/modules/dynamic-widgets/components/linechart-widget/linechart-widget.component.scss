@@ -15,14 +15,14 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
 $tab-width: map-get($widgets-common-config, tab-width);
 $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-:host.widget-panel-content.linechart-widget {
+.widget-panel-content.linechart-widget {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -76,18 +76,16 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             font-family: Monaco, monospace;
         }
 
-        ::ng-deep {
-            .dygraph-label,
-            .dygraph-axis-label {
-                color: slategrey; // TODO: plug into theme
-                font-size: 12px;
-                // font-family: Monaco, monospace;
-                font-family: Helvetica Neue, Helvetica;
-            }
+        .dygraph-label,
+        .dygraph-axis-label {
+            color: slategrey; // TODO: plug into theme
+            font-size: 12px;
+            // font-family: Monaco, monospace;
+            font-family: Helvetica Neue, Helvetica;
+        }
 
-            .dygraph-ylabel {
-                font-weight: 400;
-            }
+        .dygraph-ylabel {
+            font-weight: 400;
         }
 
         .graph-legend {
@@ -99,13 +97,11 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
             z-index: 0;
             align-items: flex-start;
 
-            ::ng-deep {
-                .mat-table {
-                    font-family: Monaco, monospace;
-                    background-color: inherit;
-                    .nowrap {
-                        white-space: nowrap;
-                    }
+            .mat-table {
+                font-family: Monaco, monospace;
+                background-color: inherit;
+                .nowrap {
+                    white-space: nowrap;
                 }
             }
         }
@@ -209,119 +205,90 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
         &.display-legend-top,
         &.display-legend-bottom {
             .graph-legend {
-                ::ng-deep {
-                    table {
-                        // flex: 1;
-                    }
+                table {
+                    // flex: 1;
+                }
 
-                    tr {
-                        cursor: pointer;
-                    }
+                tr {
+                    cursor: pointer;
+                }
 
-                    .mat-column-series {
-                        width: 12px;
-                        max-width: 12px;
-                    }
+                .mat-column-series {
+                    width: 12px;
+                    max-width: 12px;
+                }
 
-                    .mat-row, .mat-header-row {
-                        height: 10px;
-                        line-height: 12px;
-                    }
+                .mat-row, .mat-header-row {
+                    height: 10px;
+                    line-height: 12px;
+                }
 
-                    .mat-cell, .mat-header-cell {
-                        padding: 0px 8px;
-                        font-size: 9px;
-                        border-bottom-width: 0px;
-                    }
+                .mat-cell, .mat-header-cell {
+                    padding: 0px 8px;
+                    font-size: 9px;
+                    border-bottom-width: 0px;
+                }
 
-                    .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
-                        text-align: right;
-                    }
+                .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
+                    text-align: right;
                 }
             }
         }
     }
 
-    ::ng-deep {
+    .events {
+        max-height: 500px;
+    }
 
-        .events {
-            max-height: 500px;
+    .events-overlay {
+        padding-left: 2px;
+        padding-top: 6px;
+            event-timeline {
+            display: inline;
         }
+    }
 
-        .events-overlay {
-            padding-left: 2px;
-            padding-top: 6px;
-                event-timeline {
-                display: inline;
-            }
+    .events-config {
+        max-height: 200px;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        width: 100%;
+        .event-result-title {
+            font-weight: bold;
+            padding-left: 10px;
         }
+    }
 
-        .events-config {
-            max-height: 200px;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            width: 100%;
+    .disabled-message {
+        padding: 10px;
+    }
 
-            .event-result-title {
-                font-weight: bold;
-                padding-left: 10px;
-            }
-        }
-
-        .disabled-message {
-            padding: 10px;
-        }
-
-        // fixes the initial sort arrow
-        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   {
-            opacity: 1 !important;
-        }
+    // fixes the initial sort arrow
+    .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   {
+        opacity: 1 !important;
     }
 }
 
-::ng-deep {
-    // when we are in edit view
-    .edit-view-container.is-active {
-        //.widget-panel-content.linechart-widget {
-        //    .widget-output-container {
-        //    }
-        //}
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.linechart-widget {
+        .widget-output-container {
+            // background: yellowgreen;
+            // display: block;
+            // flex: 1 1 auto;
+            // height: 50%;
+            // max-height: calc(100% - 200px);
+        }
+    }
 
+    .event-preview-list-wrapper {
+        overflow: overlay;
+    }
+
+    @-moz-document url-prefix() {
         .event-preview-list-wrapper {
-            overflow: overlay;
-        }
-
-        @-moz-document url-prefix() {
-            .event-preview-list-wrapper {
-                overflow: auto;
-            }
+            overflow: auto;
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $dygraph-tooltip-bg: if(
-        $is-dark,
-        mat-color($background, menu),
-        #f0f0f0
-    );
-
-    $dygraph-tooltip-border: if(
-        $is-dark,
-        mat-color($background, menu),
-        #cccccc // TODO: plug into theme
-    );
-
-    :host.widget-panel-content.linechart-widget {
-        .widget-output {
-            .dygraph-legend {
-                background: $dygraph-tooltip-bg;
-                border: 1px solid $dygraph-tooltip-border;
-            }
-        }
-    }
-}
-

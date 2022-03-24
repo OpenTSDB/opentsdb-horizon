@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, ViewChild, ElementRef, OnDestroy,  AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, ViewChild, ElementRef, OnDestroy,  AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -31,7 +31,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     // tslint:disable-next-line:component-selector
     selector: 'bignumber-widget',
     templateUrl: './bignumber-widget.component.html',
-    styleUrls: ['./bignumber-widget.component.scss']
+    styleUrls: ['./bignumber-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewInit {

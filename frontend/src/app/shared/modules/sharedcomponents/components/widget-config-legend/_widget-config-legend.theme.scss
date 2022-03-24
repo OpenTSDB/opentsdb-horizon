@@ -1,0 +1,14 @@
+@mixin widget-config-legend-component-theme() {
+
+    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
+
+    .widget-config-tab.legend-configuration {
+        // style rules here
+
+        .config-control.with-enable-label {
+            .mat-caption.is-enabled {
+                color: $good-green;
+            }
+        }
+    }
+}

@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .widget-config-events {
     padding: 10px;
     width: 100%;
@@ -55,17 +53,4 @@
     }
 }
 
-// * THEME VARIANTS
-@include init-component-variants() {
-    $chip-bg: rgba(map-get($primary, default), .1);
 
-    .widget-config-events {
-
-        .search {
-            .search-input {
-                background: $chip-bg;
-
-            }
-        }
-    }
-}

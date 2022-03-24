@@ -23,7 +23,8 @@ import {
     Input,
     OnChanges,
     SimpleChanges,
-    Inject
+    Inject,
+    ViewEncapsulation
 } from '@angular/core';
 import { Location, DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -57,7 +58,7 @@ import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
 
-import { filter, map } from 'rxjs/operators';
+import { filter, map, reduce, withLatestFrom } from 'rxjs/operators';
 import { ThemeService } from '../../shared/modules/theme/services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
 import { AppConfigService } from '../../core/services/config.service'
@@ -65,7 +66,8 @@ import { AppConfigService } from '../../core/services/config.service'
 @Component({
     selector: 'app-shell',
     templateUrl: './app-shell.component.html',
-    styleUrls: [ './app-shell.component.scss' ]
+    styleUrls: [ './app-shell.component.scss' ],
+    encapsulation: ViewEncapsulation.None
 })
 export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -253,6 +255,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 }
             }
         });
+
+        console.log('%cFUCKER', 'background: red; color: white; padding: 2px;');
     }
 
     ngOnInit() {

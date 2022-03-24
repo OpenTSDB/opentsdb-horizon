@@ -19,19 +19,8 @@
 // * ADMIN USERS COMPONENT
 // *
 
- @import 'loader-base';
-
- :host.app-admin-section.app-admin-users {
+.app-admin-section.app-admin-users {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
- }
-
- // CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-section.app-admin-users {
-        background-color: map-get($background, card);
-    }
 }

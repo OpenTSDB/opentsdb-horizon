@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { Router, NavigationStart } from '@angular/router';
 
@@ -23,7 +23,8 @@ import { CdkService } from '../../../core/services/cdk.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './app-navbar.component.html',
-  styleUrls: ['./app-navbar.component.scss']
+  styleUrls: ['./app-navbar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppNavbarComponent implements OnInit {
 
@@ -44,7 +45,7 @@ export class AppNavbarComponent implements OnInit {
         public cdkService: CdkService
     ) { }
 
-    ngOnInit() { 
+    ngOnInit() {
         this.router.events.subscribe((event) => {
             if ( event instanceof NavigationStart ) {
                 this.snapshot = event.url.indexOf('snap') === 1;

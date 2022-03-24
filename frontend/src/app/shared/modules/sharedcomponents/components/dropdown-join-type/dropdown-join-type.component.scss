@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .dropdown-join-type {
     display: flex;
     align-items: stretch;
@@ -46,15 +44,6 @@
         .mat-menu-item {
             height: 32px;
             line-height: 32px;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .dropdown-join-type {
-        .mat-button {
-            color: mat-color($foreground, link);
         }
     }
 }

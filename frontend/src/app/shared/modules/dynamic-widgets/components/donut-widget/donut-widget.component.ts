@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, ChangeDetectorRef,
-    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit
+    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
@@ -36,7 +36,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     // tslint:disable-next-line:component-selector
     selector: 'donut-widget',
     templateUrl: './donut-widget.component.html',
-    styleUrls: ['./donut-widget.component.scss']
+    styleUrls: ['./donut-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {

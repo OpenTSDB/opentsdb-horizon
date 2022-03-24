@@ -15,25 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 //.linechart-data-tooltip {
 //    .tooltip-output {
 //    }
 //}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $primary-accent-contrast: mat-color($primary, "A100-contrast");
-    $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-    .linechart-data-tooltip {
-        .tooltip-output {
-            .value-marker,
-            .other-data {
-                color: $vm-text;
-            }
-        }
-    }
-}

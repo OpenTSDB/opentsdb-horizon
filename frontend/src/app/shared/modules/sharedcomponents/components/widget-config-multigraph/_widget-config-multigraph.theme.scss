@@ -1,0 +1,9 @@
+@mixin widget-config-multigraph-component-theme() {
+    .widget-config-tab.multigraph-configuration {
+        .form-field-group.table-output {
+            .mat-row:hover {
+                background: mat-color($foreground, lighter-divider);
+            }
+        }
+    }
+}

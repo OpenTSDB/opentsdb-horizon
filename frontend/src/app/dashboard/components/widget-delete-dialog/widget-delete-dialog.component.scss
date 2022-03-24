@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .widget-delete-dialog {
     display: flex;
     flex-direction: column;
@@ -91,35 +89,5 @@
 .widget-delete-dialog-panel {
     .mat-dialog-container {
         padding: 0;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $divider: mat-color($foreground, divider);
-
-    .widget-delete-dialog {
-        .mat-dialog-title {
-            background-color: mat-color($other, status-warning);
-            color: mat-color($other, status-warning-contrast);
-        }
-    }
-
-    // CDK Items
-    // backdrop
-    .widget-delete-dialog-backdrop {
-        background-color: mat-color($foreground, disabled);
-    }
-
-    // panel
-    .widget-delete-dialog-panel {
-        .mat-dialog-title {
-            border-bottom: 1px solid $divider;
-        }
-
-        .mat-dialog-actions {
-            background-color: $divider;
-        }
     }
 }

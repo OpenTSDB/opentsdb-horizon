@@ -18,9 +18,9 @@
  * ACTIVITY PANEL COMPONENT
  */
 
- @import 'loader-base';
+ //@import 'loader-base';
 
- :host.activity-panel {
+ .activity-panel {
     display: flex;
     flex-direction: column;
 
@@ -139,48 +139,4 @@
             }
         }
     }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $d-blue: mat-color($denali-blue, 500);
-    $d-purple: mat-color($denali-purple, 500);
-    $d-red: mat-color($denali-red, 500);
-    $d-green: mat-color($denali-green, 500);
-    $d-orange: mat-color($denali-orange, 500);
-
-    $d-blue-accent: mat-color($denali-blue, 'A100');
-    $d-purple-accent: mat-color($denali-purple, 'A100');
-    $d-red-accent: mat-color($denali-red, 'A100');
-    $d-green-accent: mat-color($denali-green, 'A100');
-    $d-orange-accent: mat-color($denali-orange, 'A100');
-
-    $activityTypes: (
-        namespace: ($d-blue, $d-blue-accent),
-        dashboard: ($d-purple, $d-purple-accent),
-        bug: ($d-red, $d-red-accent),
-        admin: ($d-green, $d-green-accent),
-        alert: ($d-orange, $d-orange-accent)
-    );
-
-    :host.activity-panel {
-        .activity-lists {
-            .mat-list {
-                .mat-icon {
-
-                    @each $key, $value in $activityTypes {
-                        $color: nth($value, 1);
-                        $accent: nth($value, 2);
-
-                        &.for-#{$key} {
-                            color: $color;
-                            background-color: $accent;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
 }

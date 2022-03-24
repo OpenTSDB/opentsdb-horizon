@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .dashboard-save-dialog {
     display: flex;
     flex-direction: column;
@@ -105,6 +103,7 @@
 }
 
 // CDK Items
+
 // panel
 .dashboard-save-dialog-panel {
 
@@ -116,37 +115,4 @@
 .dnav-cdk-mini-navigator.db-save-location-selector.mat-menu-panel {
     margin-top: 0;
     margin-left: 0;
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $divider: mat-color($foreground, divider);
-
-    .dashboard-save-dialog {
-        .mat-dialog-title {
-            background-color: mat-color($other, status-success);
-            color: mat-color($other, status-success-contrast);
-        }
-    }
-
-    // CDK Items
-
-    // backdrop
-    .dashboard-save-dialog-backdrop {
-        background-color: mat-color($foreground, disabled);
-    }
-
-    // panel
-    .dashboard-save-dialog-panel {
-
-        .mat-dialog-title {
-            border-bottom: 1px solid $divider;
-        }
-
-        .mat-dialog-actions {
-            background-color: $divider;
-        }
-
-    }
 }

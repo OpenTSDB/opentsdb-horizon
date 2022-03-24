@@ -15,9 +15,9 @@
 // * limitations under the License.
 // *
 
-@import 'loader-base';
+//@import 'loader-base';
 
-:host.app-namespace {
+.app-namespace {
     flex: 1;
     height: 100%;
     display: flex;
@@ -55,15 +55,4 @@
     .simple-list-item {
         display: flex;
     }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $navbar-text: map-get($foreground, navbar-text);
-
-    :host.nav-namespace-title {
-        color: $navbar-text;
-    }
-
 }

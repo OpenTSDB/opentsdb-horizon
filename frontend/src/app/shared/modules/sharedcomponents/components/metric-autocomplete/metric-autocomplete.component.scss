@@ -17,7 +17,8 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@import 'loader-component';
+@import 'config';
+@import 'mixins';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-padding: map-get($widgets-common-config, edit-padding);
@@ -148,42 +149,6 @@ $filter-block-padding: 8px;
             @-moz-document url-prefix() {
                 .mat-list.mat-list-base {
                     overflow: auto;
-                }
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    // CDK ITEMS - panel for "multiple" autocomplete
-    .metric-autocomplete-cdk-panel.mat-menu-panel {
-        .metric-search-result {
-            .list-all {
-                border-right: 1px solid mat-color($foreground, divider);
-            }
-
-            .mat-list.mat-list-base {
-                .mat-list-item-content {
-                    .mat-icon {
-                        color: mat-color($foreground, link);
-                    }
-                }
-
-                .mat-list-item {
-                    &.is-selected {
-                        background-color: mat-color($foreground, link, .08);
-
-                        .mat-icon {
-                            color: mat-color($other, status-error);
-                        }
-                    }
-                }
-            }
-
-            .list-selected {
-                .selected-header {
-                    border-bottom: 1px solid mat-color($foreground, divider);
                 }
             }
         }

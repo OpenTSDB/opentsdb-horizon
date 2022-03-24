@@ -1,0 +1,5 @@
+@import './containers/user/user.theme';
+
+@mixin user-module-theme() {
+    @include user-container-component-theme();
+}

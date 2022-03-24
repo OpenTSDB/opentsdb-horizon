@@ -15,10 +15,6 @@
 // * limitations under the License.
 // *
 
-// * THEME-PICKER COMPONENT */
-
-@import 'loader-component';
-
 .nav-theme-picker {
     display: inline-flex;
     align-items: center;
@@ -45,27 +41,5 @@
         pointer-events: none;
         border-width: 6px;
         margin-left: -6px;
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    //.nav-theme-picker { }
-
-    // CDK items are outside of component namespace class - be sure to give them very unique names
-    .nav-bar-dropmenu.nav-bar-themepicker-menu {
-
-        // arrow
-        &::after {
-            border-color: rgba($white, 0);
-            border-bottom-color: mat-color($background, menu); // actual color of arrow
-        }
-
-        .mat-menu-item.is-active {
-            .mat-icon {
-                color: mat-color($accent, A200);
-            }
-        }
     }
 }

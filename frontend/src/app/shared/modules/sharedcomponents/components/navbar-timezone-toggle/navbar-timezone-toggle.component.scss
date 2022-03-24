@@ -17,7 +17,8 @@
 
 // * TIMEZONE TOGGLE COMPONENT */
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
 
 .navbar-timezone-toggle {
     display: inline-flex;
@@ -32,26 +33,6 @@
 
         .mat-ink-bar {
             height: 20px;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .navbar-timezone-toggle {
-        .timezone-toggle-options.sliding-button-group {
-            background-color: mat-color($background, navbar-button);
-
-            .mat-tab-link {
-                &,
-                &.mat-tab-label-active {
-                    color: mat-color($foreground, navbar-text);
-                }
-            }
-
-            .mat-ink-bar {
-                background-color: mat-color($foreground, navbar-text, .25);
-            }
         }
     }
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, HostBinding, Input,
-    OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+    OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -31,7 +31,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 @Component({
   selector: 'app-topn-widget',
   templateUrl: './topn-widget.component.html',
-  styleUrls: ['./topn-widget.component.scss']
+  styleUrls: ['./topn-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {

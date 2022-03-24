@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .dashboard-settings-toggle {
     display: inline-flex;
     align-items: center;
@@ -38,7 +36,4 @@
 }
 
 
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .dashboard-settings-toggle {}
-//}
+

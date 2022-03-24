@@ -142,13 +142,13 @@ export class TooltipComponentService {
             this.appRef.attachView(this._componentRef.hostView);
             document.body.appendChild(this._domElem);
         }
-
     }
 
     private detachComponent() {
         if (this._componentRef && this._domElem) {
-            this.appRef.detachView(this._componentRef.hostView);
+            // remove dom from body befreo appRef
             document.body.removeChild(this._domElem);
+            this.appRef.detachView(this._componentRef.hostView);
             this._componentRef.destroy();
         }
     }

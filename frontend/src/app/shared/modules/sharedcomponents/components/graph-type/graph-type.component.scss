@@ -15,7 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'config';
 
 $default-padding: map-get($widgets-common-config, default-padding);
 $edit-view-padding: map-get($widgets-common-config, edit-padding);
@@ -99,38 +99,6 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
         &.widget-icon-table::after {
             background-position: -75px -50px;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    .graph-type {
-        .mat-button-toggle-group{
-            border: 1px solid mat-color($foreground, divider, .08);
-
-            .mat-button-toggle + .mat-button-toggle {
-                border-left: 1px solid mat-color($foreground, divider, .08);
-            }
-
-            .mat-button-toggle-appearance-standard {
-                &.mat-button-toggle-checked {
-                    background: mat-color($background, card);
-                    position: relative;
-
-                    &::after {
-                        content: '';
-                        display: block;
-                        height: 2px;
-                        background-color: mat-color($background, ink-bar);
-                        position: absolute;
-                        top: 100%;
-                        left: 0;
-                        right: 0;
-                    }
-                }
-            }
         }
     }
 }

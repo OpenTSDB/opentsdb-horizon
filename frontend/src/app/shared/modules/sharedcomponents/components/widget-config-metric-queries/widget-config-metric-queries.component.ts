@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges,
-    ChangeDetectorRef, ViewChild
+    ChangeDetectorRef, ViewChild, ViewEncapsulation
 } from '@angular/core';
 
 import {
@@ -46,7 +46,8 @@ interface IMetricQueriesConfigOptions {
     // tslint:disable-next-line:component-selector
     selector: 'widget-config-metric-queries',
     templateUrl: './widget-config-metric-queries.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-metric-queries.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.widget-config-tab') private _hostClass = true;

@@ -15,7 +15,9 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import '~@angular/material/theming';
+@import 'typography';
+@import 'mixins';
 
 .metric-function-component {
     display: flex;
@@ -107,10 +109,6 @@
             }
         }
 
-
-
-
-
         &.readonly-mode {
             .mat-form-field-underline {
                 display: none;
@@ -199,42 +197,6 @@
                 // in the DOM
                 // so visibility:hidden is important
                 visibility: hidden;
-            }
-        }
-
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    .metric-function-component {
-        .mat-form-field {
-            .mat-form-field-prefix {
-                color: mat-color($foreground, text, .5)
-            }
-
-            .mat-form-field-underline {
-                background-color: mat-color($foreground, link);
-            }
-
-            &.mat-focused {
-                &:not(.readonly-mode) {
-                    background-color: mat-color($foreground, link, 0.04)
-                }
-
-                .mat-form-field-underline {
-                    background-color: mat-color($foreground, link);
-                }
-            }
-
-            .mat-form-field-suffix {
-                .mat-mini-fab {
-                    background-color: if($is-dark, $white, $black)
-                }
-            }
-
-            &.group-by-fx {
-                    border: 1px solid rgba($black, 0.04);
             }
         }
     }

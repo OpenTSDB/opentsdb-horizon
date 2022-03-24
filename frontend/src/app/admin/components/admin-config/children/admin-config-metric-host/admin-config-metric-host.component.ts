@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatInput, MatFormField } from '@angular/material';
 
 @Component({
     selector: 'app-admin-config-metric-host',
     templateUrl: './admin-config-metric-host.component.html',
-    styleUrls: ['./admin-config-metric-host.component.scss']
+    styleUrls: ['./admin-config-metric-host.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterViewInit {
 

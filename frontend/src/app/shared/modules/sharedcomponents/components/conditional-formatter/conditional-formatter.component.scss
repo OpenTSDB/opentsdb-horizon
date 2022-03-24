@@ -15,9 +15,7 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
-
-@import 'loader-component';
+@import 'mixins';
 
 .conditional-formatter {
     .mat-table {
@@ -84,9 +82,3 @@
 
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//  .conditional-formatter {}
-//}
-

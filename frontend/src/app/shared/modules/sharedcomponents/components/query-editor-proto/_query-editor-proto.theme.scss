@@ -1,0 +1,511 @@
+@mixin query-editor-proto-component-theme() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    // TODO: Brand color sounds like it needs to be in theme
+    $brand-color: if(
+        $is-dark,
+        mat-color($background, navbar, .85),
+        mat-color($background, navbar)
+    );
+
+    $brand-color-lighter: mat-color($background, navbar-alt);
+    $brand-color-inverse: mat-color($foreground, navbar-text);
+
+    $new-bg: if($is-dark, rgba($white, 0.25), #edeff4);// TODO: plug into theme
+
+    .query-editor-proto {
+        border: 1px solid $new-bg;
+        border-radius: 4px;
+
+        .namespace-wrapper {
+            background-color: if($is-dark, rgba($white, 0.04), $new-bg);
+        }
+
+        .namespace-bar.mat-toolbar {
+            background-color: if($is-dark, rgba($white, 0.04), $new-bg);
+
+            &.is-expanded {
+                box-shadow: inset 0 -1px 0 1px mat-color($background, card);
+            }
+
+            .query-index {
+                color: $brand-color-inverse;
+                background-color: $brand-color;
+            }
+
+            .toolbar-item {
+                .mat-select-arrow-wrapper {
+                    color: mat-color($foreground, link);
+                }
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .query-alias-edit-icon {
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+            }
+
+            .query-alias-label {
+                color: $brand-color-inverse;
+                background-color: $brand-color-lighter;
+            }
+        }
+
+        .metric-wrapper {
+            border-left: 1px solid rgba($black, 0.04);
+            border-right: 1px solid rgba($black, 0.04);
+
+            .common-tags {
+                background-color: if(
+                    $is-dark,
+                    rgba(255, 255, 255, 0.04),
+                    $new-bg
+                );
+
+                .common-tags-label {
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                }
+            }
+
+            .tags-selected-header {
+                border-bottom: 1px solid mat-color($background, card);
+            }
+
+            .tag-filter-detail {
+                .tagkey-item {
+                    .automode {
+                        color: rgba(0, 0, 0, 0.8);
+
+                        &.auto-mode {
+                            background-color: mat-color($other, dashboard-filter-auto-mode-bg);
+                            border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
+                        }
+
+                        &.manual-mode {
+                            background-color: mat-color($other, dashboard-filter-manual-mode-bg);
+                            border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
+                        }
+                    }
+                }
+            }
+
+            .mat-icon {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .vertical-line-spacer {
+            span {
+                background-color: mat-color($foreground, divider);
+            }
+        }
+
+        .metric-alias {
+            .display-name {
+                background-color: transparent;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text, .5),
+                    mat-color($background, navbar, .5)
+                );
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+
+                .alias-text.has-alias {
+                    color: mat-color($foreground, text);
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: mat-color($foreground, link, 0.1);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        $brand-color
+                    );
+                }
+            }
+
+            .alias-input-field {
+                .mat-form-field-prefix {
+                    color: mat-color($foreground, text, 0.5);
+                    background-color: mat-color($foreground, link, 0.1);
+                }
+
+                .mat-input-element {
+                    color: mat-color($foreground, text);
+                }
+            }
+        }
+
+        .visual-panel-dropdown-text {
+            color: if(
+                $is-dark,
+                mat-color($foreground, text, .5),
+                mat-color($background, navbar, .5)
+            );
+            margin-left: 4px;
+
+            &:hover {
+                background-color: mat-color($foreground, link, 0.1);
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text),
+                    mat-color($background, navbar)
+                );
+            }
+
+            .mat-icon {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .metric-row-data {
+            &.metric-index {
+                background-color: if(
+                    $is-dark,
+                    mat-color($background, navbar, 1),
+                    mat-color($background, navbar, 0.15)
+                );
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text),
+                    mat-color($background, navbar)
+                );
+
+                /* ▼▼▼ Not sure this is still needed - need to check */
+                .mat-flat-button {
+                    background: if(
+                        $is-dark,
+                        rgba($white, 0.08),
+                        rgba($black, 0.03)
+                    );
+
+                    .mat-select-arrow-wrapper {
+                        border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
+
+                        .mat-select-arrow {
+                            color: if(
+                                $is-dark,
+                                rgba(255, 255, 255, 0.7),
+                                rgba(0, 0, 0, 0.7)
+                            );
+                        }
+                    }
+                }
+            }
+
+            &.metric-name,
+            &.expression {
+                .display-name {
+                    background-color: transparent;
+
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+                }
+            }
+
+            &.tag-aggregator {
+                .tag-aggregator-wrapper {
+                    background-color: transparent;
+
+                    .aggregator-icon {
+                        color: mat-color($foreground, text, 0.8);
+                    }
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+                }
+            }
+
+            &.summarizer-selector {
+                .mat-button {
+                    color: mat-color($foreground, link);
+                }
+
+                .summarizer-selector-wrapper {
+                    border: 1px solid rgba($black, 0.04);
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+                }
+            }
+
+            &.custom-function {
+                background-color: transparent;
+
+                .custom-function-wrapper {
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+                }
+            }
+
+            &.add-function {
+                .mat-flat-button {
+                    background-color: transparent;
+
+                    .mat-icon {
+                        color: mat-color($foreground, link);
+                    }
+
+                    .mat-select-arrow-wrapper {
+                        .mat-select-arrow {
+                            color: if(
+                                $is-dark,
+                                rgba($white, 0.7),
+                                rgba($black, 0.7)
+                            );
+                        }
+                    }
+
+                    &:hover {
+                        background-color: mat-color($foreground, link, 0.1);
+                    }
+                }
+            }
+        }
+
+        // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
+        .metric-query-item.visual-highlight {
+            &,
+            & + .metric-query-item-visual {
+                background-color: rgba(map-get($denali-yellow, 200), 0.2); // TODO: plug into theme
+            }
+
+            & + .metric-query-item-visual {
+                border-bottom: 2px solid mat-color($foreground, link, .25);
+
+                .visual-panel-dropdown-text {
+                    background: mat-color($foreground, link, .25);
+                    color: mat-color($foreground, text);
+
+                    .color-chip {
+                        box-shadow: 0 0 0 2px $white;
+                    }
+
+                    .mat-select-arrow-wrapper .mat-select-arrow {
+                        color: mat-color($foreground, text, 0.54);
+                    }
+                }
+            }
+        }
+
+        // metric row has been disabled
+        .metric-query-item.row-disabled {
+            &,
+            & + .metric-query-item-visual {
+                background-color: if(
+                    $is-dark,
+                    rgba($white, 0.3),
+                    rgba($black, 0.03)
+                );
+            }
+        }
+
+        .metric-query-item:not(:first-of-type) {
+            border-top: 1px dotted mat-color($foreground, divider);
+        }
+
+        .metric-action-buttons {
+            .add-metric-button {
+                background-color: mat-color($primary, default, 0.15);
+            }
+        }
+    }
+
+    // CDK ITEMS
+    .function-selection-cdk-menu.mat-menu-panel {
+        .function-categories {
+            border-right: 1px solid mat-color($foreground, divider);
+
+            .mat-nav-list {
+                .mat-list-item.is-active {
+                    background-color: mat-color($primary, default, 0.06);
+                }
+            }
+        }
+
+        .function-category-help {
+            background: if(
+                $is-dark,
+                rgba(map-get($denali-brand-5, 100), .2), // TODO: plug into theme
+                rgba(map-get($denali-brand-5, 100), .5) // TODO: plug into theme
+            );
+            border-left: 1px solid mat-color($foreground, divider);
+
+            .help-title {
+            border-bottom: 1px solid mat-color($foreground, divider);
+            }
+        }
+    }
+
+
+    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
+    .cdk-drag.cdk-drag-preview {
+
+        .metric-alias {
+            .display-name {
+            background-color: transparent;
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text, .5),
+                    mat-color($background, navbar, .5)
+                );
+
+                .mat-icon {
+                    color: mat-color($foreground, link);
+                }
+
+                .alias-text.has-alias {
+                    color: mat-color($foreground, text);
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: mat-color($foreground, link, 0.1);
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        mat-color($background, navbar)
+                    );
+                }
+            }
+        }
+
+        .visual-panel-dropdown-text {
+            color: if(
+                $is-dark,
+                mat-color($foreground, text, .5),
+                mat-color($background, navbar, .5)
+            );
+            margin-left: 4px;
+
+            &:hover {
+                background-color: mat-color($foreground, link, 0.1);
+                color: if(
+                    $is-dark,
+                    mat-color($foreground, text),
+                    mat-color($background, navbar)
+                );
+            }
+
+            .mat-icon {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        // metric item (tr.mat-row)
+        &.metric-query-item.mat-row {
+
+            .metric-row-data {
+                &.metric-index {
+                    background-color: if(
+                        $is-dark,
+                        mat-color($background, navbar),
+                        mat-color($background, navbar, 0.15)
+                    );
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, text),
+                        mat-color($background, navbar)
+                    );
+
+                    /* ▼▼▼ Not sure this is still needed - need to check */
+                    .mat-flat-button {
+                        background: if(
+                            $is-dark,
+                            rgba($white, 0.08),
+                            rgba($black, 0.03)
+                        );
+
+                        .mat-select-arrow-wrapper {
+                            border-top: 1px solid if($is-dark, rgba($white, 0.25), rgba($black, 0.06));
+
+                            .mat-select-arrow {
+                                color: if(
+                                    $is-dark,
+                                    rgba($white, 0.7),
+                                    rgba($black, 0.7)
+                                );
+                            }
+                        }
+                    }
+                }
+
+                &.metric-name,
+                &.expression {
+                    .display-name {
+                        background-color: transparent;
+
+                        .mat-icon {
+                            color: mat-color($foreground, link);
+                        }
+
+                        &:hover {
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+
+                &.tag-aggregator {
+                    .tag-aggregator-wrapper {
+                        background-color: transparent;
+
+                        .aggregator-icon {
+                            color: mat-color($foreground, text, 0.8);
+                        }
+
+                        &:hover {
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+
+                &.summarizer-selector {
+                    .mat-button {
+                        color: mat-color($foreground, link);
+                    }
+
+                    .summarizer-selector-wrapper {
+                        border: 1px solid rgba($black, 0.04);
+
+                        &:hover {
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+
+                &.custom-function {
+                    background-color: transparent;
+
+                    .custom-function-wrapper {
+                        &:hover {
+                            background-color: mat-color($foreground, link, 0.1);
+                        }
+                    }
+                }
+
+                &.action {
+                    .action-icons .delete-metric.is-disabled .mat-icon {
+                        color: mat-color($foreground, disabled-text);
+                    }
+                }
+            }
+        }
+    }
+}
