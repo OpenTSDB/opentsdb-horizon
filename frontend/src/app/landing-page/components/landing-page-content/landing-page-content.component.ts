@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -35,7 +35,8 @@ import {
     // tslint:disable-next-line:component-selector
     selector: 'landing-page-content',
     templateUrl: './landing-page-content.component.html',
-    styleUrls: ['./landing-page-content.component.scss']
+    styleUrls: ['./landing-page-content.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
