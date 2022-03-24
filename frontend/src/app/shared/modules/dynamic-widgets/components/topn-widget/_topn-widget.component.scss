@@ -26,7 +26,7 @@
         map-get($cssText, --light-primary-text)
     );
 
-    :host.widget-panel-content.topnchart-widget {
+    .widget-panel-content.topnchart-widget {
 
         .widget-output {
 

@@ -1,5 +1,5 @@
 @mixin admin-container-component-theme() {
-    :host.app-admin.app-admin-container {
+    .app-admin.app-admin-container {
         background-color: mat-color($background, card);
     }
 }

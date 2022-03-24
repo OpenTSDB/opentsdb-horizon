@@ -19,9 +19,7 @@
 // * LANDING PAGE CONTAINER COMPONENT
 // *
 
-//@import 'loader-base';
-
-:host.landing-page-main {
+.landing-page-main {
     display: flex;
     flex: 1 1 100%;
 
