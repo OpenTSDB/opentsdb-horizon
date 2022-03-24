@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .period-over-period-preview {
     height: 200px;
     width: 100%;
@@ -76,10 +74,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    .period-over-period-preview { }
-//}
-
-

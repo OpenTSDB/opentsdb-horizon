@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'alert-details-transitions',
   templateUrl: './alert-details-transitions.component.html',
-  styleUrls: []
+  styleUrls: ['./alert-details-transitions.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AlertDetailsTransitionsComponent implements OnInit {
 

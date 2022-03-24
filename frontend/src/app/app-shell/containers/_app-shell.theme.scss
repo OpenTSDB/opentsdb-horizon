@@ -7,7 +7,7 @@
         mat-color($background, navbar)
     );
 
-    :host.app-shell {
+    .app-shell {
         .app-navigator-drawer {
             background-color: mat-color($background, card);
             border-top: 1px solid transparent;

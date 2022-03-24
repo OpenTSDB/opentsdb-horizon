@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .name-alert-dialog-component {
     .mat-dialog-content {
         overflow: initial;
@@ -40,9 +38,3 @@
         }
     }
 }
-
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-//    :host.name-alert-dialog-component {}
-//}

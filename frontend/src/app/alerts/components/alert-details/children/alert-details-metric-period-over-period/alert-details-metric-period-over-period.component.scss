@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .period-over-period {
 
     .sliding-window {
@@ -107,30 +105,6 @@
                 margin-left: 10px;
                 padding: 4px;
                 margin-right: 10px;
-            }
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    .period-over-period {
-
-        .blue-background {
-            background: mat-color($primary, default, 0.08);
-        }
-
-        .threshold-type {
-
-            .mat-button-toggle {
-                background: mat-color($primary, default, 0.08);
-            }
-
-            .mat-button-toggle-checked {
-                border: 2px solid blue; // TODO: plug into theme
-                border-radius: 3px;
-                background: white;
             }
         }
     }

@@ -1,0 +1,73 @@
+@mixin recipients-manager-component-theme() {
+
+    // CDK STUFF
+    // menu wrapper
+    // .mega-panel-cdk-panel.mat-menu-panel { }
+
+    // backdrop for menu dimmer
+    .mega-panel-cdk-backdrop {
+        background-color: rgba($black,0);
+    }
+
+    .mega-panel-cdk-backdrop.is-dim {
+        background-color: rgba($black, .2);
+    }
+
+    // contact controls WITHIN the CDK element
+    .mega-panel-contact-controls {
+        &:hover:not([disabled]) {
+            background: transparent;
+        }
+
+        .mat-toolbar {
+            background: transparent;
+            border-bottom: 1px solid mat-color($foreground, divider);
+        }
+
+        .panel-actions {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
+
+        .toolbar-actions,
+        .panel-actions{
+            color: mat-color($primary, default);
+
+            .mat-stroked-button:not([disabled]) {
+                border-color: currentColor;
+            }
+
+            .mat-icon,
+            .mat-icon:not([color]) {
+                color: mat-color($primary, default);
+            }
+        }
+
+        // LISTS
+        .existing-contacts {
+
+            .contact-list-type {
+
+                &:not(:last-child) {
+                    border-right: 1px solid mat-color($foreground, divider);
+                }
+
+                .contact-list-type-wrapper {
+
+                    .add-contact,
+                    .contact-item-actions {
+                        .mat-icon,
+                        .mat-icon:not([color]) {
+                            color: mat-color($primary, default);
+                        }
+                    }
+
+                    .mat-list .mat-list-item {
+                        &:hover {
+                            background: mat-color($primary, default, 0.08);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

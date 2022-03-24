@@ -20,7 +20,7 @@ import {
     OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy,
     SimpleChanges,
     HostBinding,
-    ViewChild, ElementRef, HostListener
+    ViewChild, ElementRef, HostListener, ViewEncapsulation
 } from '@angular/core';
 
 import { MatChipInputEvent, MatMenuTrigger, MatInput } from '@angular/material';
@@ -50,6 +50,7 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
     selector: 'snooze-details',
     templateUrl: './snooze-details.component.html',
     styleUrls: ['./snooze-details.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [
         { provide: DateAdapter, useClass:  MomentDateAdapter},
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

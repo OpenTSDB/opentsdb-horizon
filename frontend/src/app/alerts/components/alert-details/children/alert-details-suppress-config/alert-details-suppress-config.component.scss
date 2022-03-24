@@ -15,8 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
 .alert-details-suppress-config-component {
     .suppress-alert {
 
@@ -80,21 +78,5 @@
                 color: #448aff;
             }
         }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    .alert-details-suppress-config-component {
-
-            .display-name {
-                background-color: mat-color($foreground, link, 0.1);
-
-                .mat-icon {
-                    color: mat-color($foreground, link);
-                }
-
-            }
     }
 }

@@ -15,9 +15,10 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import "~@angular/material/theming";
+@import 'mixins';
 
-:host.snooze-alert-dialog-component {
+.snooze-alert-dialog-component {
     width: 100%;
     min-width: 600px;
     display: flex;
@@ -31,7 +32,6 @@
         flex: 1;
         height: 100%;
         max-height: 100%;
-
 
         .mat-card-header {
             &,
@@ -350,181 +350,85 @@
     }
 }
 
-@at-root {
-    .alert-options-cdk-panel.mat-menu-panel {
-        min-width: calc(65vw - 250px);
-        max-width: 100%;
-        height: 350px;
-        display: flex;
+// CDK ITEMS (these are at document root level)
+.alert-options-cdk-panel.mat-menu-panel {
+    min-width: calc(65vw - 250px);
+    max-width: 100%;
+    height: 350px;
+    display: flex;
 
-        .mat-menu-content {
+    .mat-menu-content {
+        width: 100%;
+        padding: 0;
+
+        .mega-panel-alert-list-controls {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+
+        .alert-list-controls {
+            display: flex;
+            flex: 1;
+        }
+
+        .mat-list.mat-list-base {
             width: 100%;
             padding: 0;
 
-            .mega-panel-alert-list-controls {
-                padding: 0;
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                max-width: 100%;
-                max-height: 100%;
-                cursor: pointer;
+            .mat-list-item {
+                padding-top: 4px;
+                padding-bottom:4px;
+                height: initial;
             }
+        }
+    }
 
-            .alert-list-controls {
-                display: flex;
-                flex: 1;
-            }
+    .mat-list-item-content {
+        align-items: flex-start;
 
-            .mat-list.mat-list-base {
-                width: 100%;
-                padding: 0;
-
-                .mat-list-item {
-                    padding-top: 4px;
-                    padding-bottom:4px;
-                    height: initial;
-                }
+        .add-alert-label {
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
             }
         }
 
-        .mat-list-item-content {
-            align-items: flex-start;
+        .alert-label-details {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            margin-left: 12px;
 
-            .add-alert-label {
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                }
-            }
-
-            .alert-label-details {
-                display: flex;
-                flex: 1;
-                flex-direction: column;
-                margin-left: 12px;
-
-                .type {
-                    line-height: 12px;
-                    font-size: 10px;
-                    text-transform: uppercase;
-                }
+            .type {
+                line-height: 12px;
+                font-size: 10px;
+                text-transform: uppercase;
             }
         }
     }
 }
 
-// CDK ITEMS (these are at document root level)
-@at-root {
-    .alert-options-cdk-panel-content {
+.alert-options-cdk-panel-content {
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    max-height: 100%;
+    cursor: pointer;
+}
+
+
+.snooze-alert-dialog-panel.cdk-overlay-pane {
+    width: 100%;
+    max-width: 600px !important;
+    min-width: 300px;
+
+    .mat-dialog-container {
         padding: 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        max-width: 100%;
-        max-height: 100%;
-        cursor: pointer;
     }
-
-
-    .snooze-alert-dialog-panel.cdk-overlay-pane {
-        width: 100%;
-        max-width: 600px !important;
-        min-width: 300px;
-
-        .mat-dialog-container {
-            padding: 0;
-        }
-    }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $cssVarMap: get-theme-css-variables($theme-name);
-
-    $link-color: mat-color($foreground, link);
-    $divider-color: mat-color($foreground, divider);
-
-    $card: mat-color($background, card);
-
-    $dygraph-tooltip-bg: if($is-dark, mat-color($background, menu), #f0f0f0); // TODO: plug into theme
-
-    // TODO: this converting to raw defeats the css variable approach.
-    // TODO: work on defining these colors in theme config
-    $menu-bg-raw: _mat-convert-variable-to-color(map-get($background, menu), $cssVarMap);
-    $dygraph-tooltip-border: if($is-dark, lighten($menu-bg-raw, 10%) , #cccccc); // TODO: plug into theme
-
-    $text-color: mat-color($foreground, text);
-
-    .snooze-alert-dialog-component {
-
-        .mat-dialog-title {
-            border-bottom: 1px solid mat-color($foreground, divider);
-        }
-
-        .mat-dialog-actions {
-            border-top: 1px solid mat-color($foreground, divider);
-        }
-
-        .preset-toggles {
-            .mat-button-toggle-group {
-                .mat-button-toggle {
-                    color: mat-color($primary, default);
-
-                    &.mat-button-toggle-checked {
-                        background-color: mat-color($primary, default, .08);
-                    }
-                }
-            }
-        }
-
-        .controls-wrapper {
-            .step-section-label {
-                border-top: 1px solid $divider-color;
-
-                .step-section-label-text {
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, navbar-text),
-                        mat-color($background, navbar)
-                    );
-                    background-color: if(
-                        $is-dark,
-                        mat-color($foreground, navbar-text, 0.15),
-                        mat-color($background, navbar, 0.15)
-                    );
-                    border-bottom-right-radius: 20px 24px;
-                }
-            }
-        }
-    }
-
-    // cdk items
-
-    .alert-options-cdk-panel.mat-menu-panel {
-
-        .mat-menu-content {
-            .mat-list.mat-list-base {
-                .mat-list-item {
-                    &:hover {
-                        background: mat-color($foreground, divider);
-                    }
-                }
-            }
-        }
-
-        .mat-list-item-content {
-
-            .add-alert-label {
-                color: mat-color($foreground, link);
-            }
-
-            .alert-label-details {
-                .type {
-                    color: mat-color($foreground, hint-text);
-                }
-            }
-        }
-    }
-
 }
