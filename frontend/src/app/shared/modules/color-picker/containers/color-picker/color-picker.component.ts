@@ -58,7 +58,7 @@ interface IColor {
 export class ColorPickerComponent implements OnInit {
     @HostBinding('class.color-picker-component') private _hostClass = true;
 
-    @ViewChild('contentForOtherModes') contentForOtherModes: ElementRef;
+    @ViewChild('contentForOtherModes', { static: false }) contentForOtherModes: ElementRef;
 
     /* Inputs */
     @Input() enablePalette = false;
