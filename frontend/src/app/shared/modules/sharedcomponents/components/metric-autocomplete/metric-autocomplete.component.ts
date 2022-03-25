@@ -57,10 +57,10 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     @Output() metricOutput = new EventEmitter();
     @Output() blur = new EventEmitter();
 
-    @ViewChild('metricSearchInput') metricSearchInput: ElementRef;
-    @ViewChild('metricAutoComplete') metricAutoCompleteCntrl: MatAutocomplete;
-    @ViewChild('metricSearchFormField', {read: ElementRef}) metricSearchFormField: ElementRef;
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+    @ViewChild('metricSearchInput', { static: false }) metricSearchInput: ElementRef;
+    @ViewChild('metricAutoComplete', { static: false }) metricAutoCompleteCntrl: MatAutocomplete;
+    @ViewChild('metricSearchFormField', { read: ElementRef, static: false }) metricSearchFormField: ElementRef;
+    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
     metricOptions = [];
     metricSearchControl: FormControl;

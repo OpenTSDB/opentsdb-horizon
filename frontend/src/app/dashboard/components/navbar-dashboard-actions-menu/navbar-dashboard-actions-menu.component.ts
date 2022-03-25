@@ -51,7 +51,7 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
     @Input() dbSettingsMeta: any = {};
 
     // dashboard action menu trigger
-    @ViewChild('actionMenuTrigger', {read: MatMenuTrigger}) actionMenuTrigger: MatMenuTrigger;
+    @ViewChild('actionMenuTrigger', { read: MatMenuTrigger, static: false }) actionMenuTrigger: MatMenuTrigger;
 
     get actionMenuIsOpen(): boolean {
         if (this.actionMenuTrigger) {

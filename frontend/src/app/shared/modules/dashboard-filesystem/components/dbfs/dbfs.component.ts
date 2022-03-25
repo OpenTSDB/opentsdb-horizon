@@ -166,7 +166,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
      curDashboardId: any = false;
 
     // VIEW CHILDREN
-    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
 
     // Inputs
     // tslint:disable-next-line:no-inferrable-types

@@ -86,9 +86,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @HostBinding('class.query-editor-proto') private _hostClass: boolean = true;
     // tslint:disable-next-line:no-inferrable-types
 
-    @ViewChild('addExpressionInput') addExpressionInput: ElementRef;
-    @ViewChild('editExpressionInput') editExpressionInput: ElementRef;
-    @ViewChild('confirmDeleteDialog', {read: TemplateRef}) confirmDeleteDialogRef: TemplateRef<any>;
+    @ViewChild('addExpressionInput', { static: false }) addExpressionInput: ElementRef;
+    @ViewChild('editExpressionInput', { static: false }) editExpressionInput: ElementRef;
+    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true }) confirmDeleteDialogRef: TemplateRef<any>;
 
 
     @Input() type;
@@ -101,11 +101,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     @Output() queryOutput = new EventEmitter;
 
-    @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
-    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
+    @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger, static: false }) tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger, static: false }) metricVisualPanelTrigger: MatMenuTrigger;
 
-    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger }) artifactsMenuTrigger: MatMenuTrigger;
-    @ViewChild('functionSelectionMenu', { read: MatMenu }) functionSelectionMenu: MatMenu;
+    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger, static: false }) artifactsMenuTrigger: MatMenuTrigger;
+    @ViewChild('functionSelectionMenu', { read: MatMenu, static: true }) functionSelectionMenu: MatMenu;
     @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
 
     // confirmDelete Dialog

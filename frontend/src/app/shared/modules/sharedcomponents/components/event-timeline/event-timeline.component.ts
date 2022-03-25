@@ -48,7 +48,7 @@ export class EventTimelineComponent implements OnInit, OnChanges {
     @Output() newBuckets: EventEmitter<any[]> = new EventEmitter();
     @Output() bucketClicked: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('eventsOverlayCanvas') eventsOverlayCanvas: ElementRef;
+    @ViewChild('eventsOverlayCanvas', { static: true }) eventsOverlayCanvas: ElementRef;
     context: CanvasRenderingContext2D;
 
     eventLocations: any = [];

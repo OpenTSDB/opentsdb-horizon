@@ -38,10 +38,10 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
     @HostBinding('class.dtp-time-picker') private _hostClass = true;
 
     /** View childs */
-    @ViewChild(TimeRangePickerComponent) timeRangePicker: TimeRangePickerComponent;
+    @ViewChild(TimeRangePickerComponent, { static: true }) timeRangePicker: TimeRangePickerComponent;
 
     // trigger for opening the menu
-    @ViewChild('timerangePickerMenuTrigger', {read: MatMenuTrigger}) trigger: MatMenuTrigger;
+    @ViewChild('timerangePickerMenuTrigger', { read: MatMenuTrigger, static: true }) trigger: MatMenuTrigger;
 
     get timerangePickerMenuIsOpen(): boolean {
         if (this.trigger) {

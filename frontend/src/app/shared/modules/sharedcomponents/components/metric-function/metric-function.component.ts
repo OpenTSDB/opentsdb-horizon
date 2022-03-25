@@ -72,7 +72,7 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
     return 200;
   }
 
-  @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+  @ViewChild(MatFormField, { read: ElementRef, static: false }) private formFieldEl: ElementRef;
 
   constructor() { }
 

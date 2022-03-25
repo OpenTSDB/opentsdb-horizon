@@ -49,8 +49,8 @@ export class UserComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
     // portal templates
-    @ViewChild('userListNavbarTmpl') userListNavbarTmpl: TemplateRef<any>;
-    @ViewChild('userDetailNavbarTmpl') userDetailNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userListNavbarTmpl', { static: true }) userListNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userDetailNavbarTmpl', { static: true }) userDetailNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     userNavbarPortal: TemplatePortal;

@@ -59,7 +59,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     /** Outputs */
     @Output() widgetChange = new EventEmitter;
 
-    @ViewChild('queriesContainer') private queriesContainer: ElementRef;
+    @ViewChild('queriesContainer', { static: true }) private queriesContainer: ElementRef;
 
 
     /** Local variables */

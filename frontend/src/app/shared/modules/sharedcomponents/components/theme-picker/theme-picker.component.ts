@@ -30,7 +30,7 @@ export class ThemePickerComponent implements OnInit {
 
     @HostBinding('class.nav-theme-picker') private _hostClass = true;
 
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
 
     @Output() themeChange = new EventEmitter<string>();
 

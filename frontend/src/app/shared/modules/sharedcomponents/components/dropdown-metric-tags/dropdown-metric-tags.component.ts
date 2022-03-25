@@ -44,8 +44,8 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
 
     @HostBinding('class.dropdown-metric-tags') private _hostClass = true;
 
-    @ViewChild(MatMenuTrigger) private trigger: MatMenuTrigger;
-    @ViewChild(MatMenu, {read: ElementRef}) private optionsMenu: ElementRef;
+    @ViewChild(MatMenuTrigger, { static: false }) private trigger: MatMenuTrigger;
+    @ViewChild(MatMenu, { read: ElementRef, static: true }) private optionsMenu: ElementRef;
 
     @Input() namespace: string;
     @Input() metric: any;

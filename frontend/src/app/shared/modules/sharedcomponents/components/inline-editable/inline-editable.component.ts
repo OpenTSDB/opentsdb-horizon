@@ -38,10 +38,10 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
     @Input() maxLength: number;
     @Input() showEditIcon: boolean = false;
     @Output() updatedValue: EventEmitter<any> = new EventEmitter();
-    @ViewChild('container') container: ElementRef;
-    @ViewChild(MatInput) inputControl: MatInput;
-    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+    @ViewChild('container', { static: true }) container: ElementRef;
+    @ViewChild(MatInput, { static: true }) inputControl: MatInput;
+    @ViewChild(MatInput, { read: ElementRef, static: true }) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef, static: true }) private formFieldEl: ElementRef;
 
     isRequired = true;
     isEditView = false;

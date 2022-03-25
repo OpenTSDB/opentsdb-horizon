@@ -42,8 +42,8 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
 
     @HostBinding('class.color-picker-hsv-selector') private _hostClass = true;
 
-    @ViewChild('colorBlock') _colorBlock: ElementRef;
-    @ViewChild('colorPicker') _colorPicker: ElementRef;
+    @ViewChild('colorBlock', { static: true }) _colorBlock: ElementRef;
+    @ViewChild('colorPicker', { static: true }) _colorPicker: ElementRef;
 
     @Input()
     get selectedColor(): string {

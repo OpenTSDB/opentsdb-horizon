@@ -102,7 +102,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     @HostBinding('class.alerts-container-component') private _hostClass = true;
 
     // @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
+    @ViewChild(MatPaginator, { static: false }) set paginator(paginator: MatPaginator) {
         if (paginator && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.paginator = paginator;
         }
@@ -122,7 +122,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild(MatSort) set dataSourceSort(sortor: MatSort) {
+    @ViewChild(MatSort, { static: false }) set dataSourceSort(sortor: MatSort) {
         if (sortor && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.sort = sortor;
         }
@@ -131,10 +131,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild('namespaceDropMenuTrigger', {read: ElementRef}) namespaceDropMenuTrigger: ElementRef;
+    @ViewChild('namespaceDropMenuTrigger', { read: ElementRef, static: false }) namespaceDropMenuTrigger: ElementRef;
     namespaceDropMenuTriggerWidth: string = '0px';
 
-    @ViewChild('confirmDeleteDialog', { read: TemplateRef }) confirmDeleteDialogRef: TemplateRef<any>;
+    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true }) confirmDeleteDialogRef: TemplateRef<any>;
 
     @Input() response;
 
@@ -237,8 +237,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     alertsFilterRegexp = new RegExp('.*');
     snoozeFilterRegexp = new RegExp('.*');
 
-    @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
-    @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
+    @ViewChild(AlertDetailsComponent, { static: false }) createAlertDialog: AlertDetailsComponent;
+    @ViewChild(SnoozeDetailsComponent, { static: false }) snoozeDetailsComp: SnoozeDetailsComponent;
 
     detailsView = false;
     list = 'alerts';
@@ -287,7 +287,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     error: any = false;
 
     // portal templates
-    @ViewChild('alertspageNavbarTmpl') alertspageNavbarTmpl: TemplateRef<any>;
+    @ViewChild('alertspageNavbarTmpl', { static: true }) alertspageNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     alertspageNavbarPortal: TemplatePortal;

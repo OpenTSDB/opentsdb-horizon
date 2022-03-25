@@ -83,7 +83,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
     shouldUpdateTimestamp: boolean = true;
     calendarButtonEntered = false;
 
-    @ViewChild('dateInput') el: ElementRef;
+    @ViewChild('dateInput', { static: true }) el: ElementRef;
 
     constructor(private utilsService: DateUtilsService, private formBuilder: FormBuilder) {
         this.dayNames = [];

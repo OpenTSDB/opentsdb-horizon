@@ -48,9 +48,9 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() mode = 'view'; // view/explore/edit
     @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('container') private container: ElementRef;
-    @ViewChild('chartLegend') private chartLegend: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('container', { static: true }) private container: ElementRef;
+    @ViewChild('chartLegend', { static: true }) private chartLegend: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;
