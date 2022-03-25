@@ -54,7 +54,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() readonly = true;
 
   @ViewChild('widgetOutputContainer', { static: true }) private widgetOutputContainer: ElementRef;
-  @ViewChild('widgetTitle') private widgetTitle: ElementRef;
+  @ViewChild('widgetTitle', { static: false }) private widgetTitle: ElementRef;
   @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
   @ViewChild('graphLegend', { static: true }) private dygraphLegend: ElementRef;
   @ViewChild('dygraph', { static: true }) private dygraph: ElementRef;
