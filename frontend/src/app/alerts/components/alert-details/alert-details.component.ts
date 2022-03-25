@@ -75,10 +75,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     @HostBinding('class.alert-details-component') private _hostClass = true;
 
     @ViewChild('graphOutput', { static: true }) private graphOutput: ElementRef;
-    @ViewChild('graphLegend') private dygraphLegend: ElementRef;
-    @ViewChild('eventSearchControl') private eventSearchControl: ElementRef;
+    @ViewChild('graphLegend', { static: false }) private dygraphLegend: ElementRef;
+    @ViewChild('eventSearchControl', { static: false }) private eventSearchControl: ElementRef;
     @ViewChild('alertDateTimeNavbarItemTmpl', { static: true }) alertDateTimeNavbarItemTmpl: TemplateRef<any>;
-    @ViewChild('periodOverPeriodForm') periodOverPeriodForm: AlertDetailsMetricPeriodOverPeriodComponent;
+    @ViewChild('periodOverPeriodForm', { static: false }) periodOverPeriodForm: AlertDetailsMetricPeriodOverPeriodComponent;
 
     @Input() response;
 
