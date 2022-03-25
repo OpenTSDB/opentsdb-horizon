@@ -66,8 +66,8 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
     @ViewChild('alertListMenuTrigger', { read: MatMenuTrigger, static: true }) private alertListMenuTrigger: MatMenuTrigger;
     @ViewChild('alertInput', { read: MatInput, static: true }) private alertInput: MatInput;
 
-    @ViewChild('datetimePickerStart') startTimeReference: DatepickerComponent;
-    @ViewChild('datetimePickerEnd') endTimeReference: DatepickerComponent;
+    @ViewChild('datetimePickerStart', { static: false }) startTimeReference: DatepickerComponent;
+    @ViewChild('datetimePickerEnd', { static: false }) endTimeReference: DatepickerComponent;
 
 
     @Input() viewMode: string = ''; // edit || view
