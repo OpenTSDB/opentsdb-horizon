@@ -14,7 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, OnDestroy, SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation, Renderer2 } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ElementRef,
+    Renderer,
+    ViewChild,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation
+} from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
