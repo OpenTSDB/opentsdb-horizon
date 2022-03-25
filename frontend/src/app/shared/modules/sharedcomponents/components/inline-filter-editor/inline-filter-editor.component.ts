@@ -31,7 +31,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';
 import { HttpService } from '../../../../../core/http/http.service';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IntercomService } from '../../../../../core/services/intercom.service';

@@ -4,7 +4,8 @@ import {
     OnInit, Provider, Renderer2, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatInput, MatFormField } from '@angular/material';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 
 const GENERIC_INPUT_CONTROL_VALUE_ACCESSOR: Provider = {

@@ -29,7 +29,8 @@ import { IslandTestComponent } from './components/island-test/island-test.compon
 import { EventStreamComponent } from './components/event-stream/event-stream.component';
 
 import { TimeseriesLegendComponent } from './components/timeseries-legend/timeseries-legend.component';
-import { MatTableModule, MatSortModule } from '@angular/material';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { InfoIslandToolbarComponent } from './components/info-island-toolbar/info-island-toolbar.component';
 import { HeatmapBucketDetailComponent } from './components/heatmap-bucket-detail/heatmap-bucket-detail.component';
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';

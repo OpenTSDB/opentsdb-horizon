@@ -39,7 +39,7 @@ import { map } from 'rxjs/operators';
 import { EMPTY_COLOR, coerceHexaColor, IDefaultColor, IColor, DEFAULT_COLORS } from '../../color-picker';
 import { ColorPickerService } from '../../services/color-picker.service';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
-import { MatCard } from '@angular/material';
+import { MatCard } from '@angular/material/card';
 import { ColorPickerSelectorComponent } from '../../components/color-picker-selector/color-picker-selector.component';
 
 /*interface IDefaultColor {

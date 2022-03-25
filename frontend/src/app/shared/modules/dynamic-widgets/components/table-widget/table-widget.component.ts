@@ -25,7 +25,8 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatPaginator } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime} from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';

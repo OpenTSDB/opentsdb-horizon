@@ -16,7 +16,9 @@
  */
 import { Component, OnInit, HostBinding, ElementRef, HostListener,
     Input, Output, EventEmitter, ViewChild, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { MatChipInputEvent, MatMenuTrigger, MatInput } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatInput } from '@angular/material/input';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Mode, RecipientType, Recipient } from './models';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';

@@ -32,12 +32,9 @@ import {
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent, MatTableDataSource } from '@angular/material';
-import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef
-} from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 import { Subscription, BehaviorSubject } from 'rxjs';

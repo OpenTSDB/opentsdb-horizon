@@ -19,9 +19,7 @@ import {
     ChangeDetectorRef, ViewChild, ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog, MatDialogConfig, MatDialogRef, DialogPosition
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 

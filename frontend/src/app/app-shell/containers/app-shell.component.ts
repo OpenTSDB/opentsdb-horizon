@@ -31,9 +31,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subscription} from 'rxjs';
 
-import {
-    MatDrawer
-} from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';

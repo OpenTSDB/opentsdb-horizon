@@ -26,9 +26,7 @@ import {
 
 import { FormControl, Validators } from '@angular/forms';
 
-import {
-    MatDialogRef
-} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     // tslint:disable-next-line:component-selector

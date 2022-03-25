@@ -20,7 +20,8 @@ import {
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 

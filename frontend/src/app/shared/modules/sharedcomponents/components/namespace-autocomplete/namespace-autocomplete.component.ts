@@ -32,7 +32,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith, debounceTime, switchMap, skip } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({

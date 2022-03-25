@@ -27,7 +27,7 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 
 @Component({
