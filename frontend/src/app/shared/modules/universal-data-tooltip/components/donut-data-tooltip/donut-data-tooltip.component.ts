@@ -33,7 +33,7 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
     @HostBinding('class.donut-data-tooltip') private _hostClass = true;
     // @HostBinding('class.hidden') public tooltipHidden = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef, static: false }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 

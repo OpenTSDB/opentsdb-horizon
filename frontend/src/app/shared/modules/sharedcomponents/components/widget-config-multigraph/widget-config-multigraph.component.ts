@@ -40,8 +40,8 @@ import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDestroy {
 
     @ViewChild('chartTable', { static: true }) chartTable: MatTable<any>;
-    @ViewChild('tagKeyInput', { read: ElementRef }) tagKeyInput: ElementRef;
-    @ViewChild('tagKeyInput', { read: MatAutocompleteTrigger }) tagKeyACTrigger: MatAutocompleteTrigger;
+    @ViewChild('tagKeyInput', { read: ElementRef, static: false }) tagKeyInput: ElementRef;
+    @ViewChild('tagKeyInput', { read: MatAutocompleteTrigger, static: false }) tagKeyACTrigger: MatAutocompleteTrigger;
 
     @HostBinding('class.widget-config-tab') private _hostClass = true;
     @HostBinding('class.multigraph-configuration') private _tabClass = true;

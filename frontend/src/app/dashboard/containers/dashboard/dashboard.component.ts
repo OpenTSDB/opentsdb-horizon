@@ -129,9 +129,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(NavigatorState.getDrawerOpen) drawerOpen$: Observable<any>;
     @Select(EventsState.GetEvents) events$: Observable<any>;
 
-    @ViewChild('tplVariablePanel') tplVariablePanel : TemplateVariablePanelComponent;
+    @ViewChild('tplVariablePanel', { static: false }) tplVariablePanel : TemplateVariablePanelComponent;
     // available widgets menu trigger
-    @ViewChild('availableWidgetsMenuTrigger', { read: MatMenuTrigger }) availableWidgetsMenuTrigger: MatMenuTrigger;
+    @ViewChild('availableWidgetsMenuTrigger', { read: MatMenuTrigger, static: false }) availableWidgetsMenuTrigger: MatMenuTrigger;
 
     get availableWidgetsMenuIsOpen(): boolean {
         if (this.availableWidgetsMenuTrigger) {
@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     @ViewChild(DboardContentComponent, { read: DboardContentComponent, static: true }) dbContent: DboardContentComponent;
 
-    @ViewChild(NavbarClipboardMenuComponent, { read: NavbarClipboardMenuComponent }) clipboardMenu: NavbarClipboardMenuComponent;
+    @ViewChild(NavbarClipboardMenuComponent, { read: NavbarClipboardMenuComponent, static: false }) clipboardMenu: NavbarClipboardMenuComponent;
 
     // portal placeholders
     dashboardNavbarPortal: TemplatePortal;
