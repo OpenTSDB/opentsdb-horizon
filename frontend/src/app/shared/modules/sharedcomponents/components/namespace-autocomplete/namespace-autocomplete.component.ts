@@ -51,8 +51,8 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
     @Input() initFocus = false;
     @Output() nschange = new EventEmitter();
     @Output() blur = new EventEmitter();
-    @ViewChild('namespaceInput') nsInput: ElementRef;
-    @ViewChild('trigger') trigger: MatAutocompleteTrigger;
+    @ViewChild('namespaceInput', { static: true }) nsInput: ElementRef;
+    @ViewChild('trigger', { static: true }) trigger: MatAutocompleteTrigger;
 
     visible = false;
     destroy = false;

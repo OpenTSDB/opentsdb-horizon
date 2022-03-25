@@ -69,9 +69,9 @@ export class TimeRangePickerComponent implements OnInit {
     @Output() dbToTChange = new EventEmitter();
     @Output() onError = new EventEmitter();
 
-    @ViewChild('daytimePickerStart') startTimeReference: DatepickerComponent;
-    @ViewChild('daytimePickerEnd') endTimeReference: DatepickerComponent;
-    @ViewChild('presetsDiv') presetsDiv: ElementRef;
+    @ViewChild('daytimePickerStart', { static: true }) startTimeReference: DatepickerComponent;
+    @ViewChild('daytimePickerEnd', { static: true }) endTimeReference: DatepickerComponent;
+    @ViewChild('presetsDiv', { static: true }) presetsDiv: ElementRef;
     @ViewChildren(MatMenuTrigger) triggers: QueryList<MatMenuTrigger>;
 
     private _startTime: string;

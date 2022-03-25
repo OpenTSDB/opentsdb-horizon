@@ -55,11 +55,11 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     @Input() widget: WidgetModel;
     @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild('dataTable', {read: MatTable}) dataTable: MatTable<any>;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild('dataTable', { read: MatTable, static: false }) dataTable: MatTable<any>;
 
     //global vars
     Object = Object;

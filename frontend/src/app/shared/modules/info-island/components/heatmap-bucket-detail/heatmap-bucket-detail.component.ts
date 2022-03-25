@@ -40,8 +40,8 @@ import * as moment from 'moment';
 export class HeatmapBucketDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     @HostBinding('class.heatmap-bucket-detail-component') private _hostClass = true;
 
-    @ViewChild('chartContainer') private chartContainer: ElementRef;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild('chartContainer', { static: true }) private chartContainer: ElementRef;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
     islandRef: InfoIslandComponent;
 

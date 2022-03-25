@@ -44,7 +44,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
     @Input() readonly = true;
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
 
     Object = Object;
     // tslint:disable:no-inferrable-types
@@ -112,7 +112,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     formErrors: any = {};
     meta: any = {};
 
-    @ViewChild('myCanvas') myCanvas: ElementRef;
+    @ViewChild('myCanvas', { static: true }) myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
 
     constructor(

@@ -33,7 +33,7 @@ import { MatAccordion, MatExpansionPanel } from '@angular/material';
 export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.event-stream') private _componentClass = true;
 
-    @ViewChild('eventAccordion', {read: MatAccordion}) private eventAccordion: MatAccordion;
+    @ViewChild('eventAccordion', { read: MatAccordion, static: true }) private eventAccordion: MatAccordion;
     @ViewChildren('eventPanel', {read: MatExpansionPanel}) eventPanels: QueryList<MatExpansionPanel>;
 
     buckets: any[] = [];

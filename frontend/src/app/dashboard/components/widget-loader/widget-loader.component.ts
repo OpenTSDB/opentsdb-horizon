@@ -97,10 +97,10 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     @Input() isNewDb: boolean = false;
     @Output() editComponent = new EventEmitter<any>();
 
-    @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+    @ViewChild(WidgetDirective, { static: true }) widgetContainer: WidgetDirective;
+    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
-    @ViewChild('islandPortalTest') islandPortalTest: TemplateRef<any>;
+    @ViewChild('islandPortalTest', { static: true }) islandPortalTest: TemplateRef<any>;
 
     _component: any = null;
     componentFactory: any = null;

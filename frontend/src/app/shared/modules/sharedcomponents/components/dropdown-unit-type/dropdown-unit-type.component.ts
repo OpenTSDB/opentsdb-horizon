@@ -39,7 +39,7 @@ export class DropdownUnitTypeComponent implements OnInit {
     @Output() onUnitChange = new EventEmitter;
 
     // menu data
-    @ViewChild(MatMenuTrigger) private menuTrigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger, { static: false }) private menuTrigger: MatMenuTrigger;
 
     timeUnits: Array<string> = ['nanoseconds', 'microseconds', 'milliseconds', 'seconds', 'minutes', 'hours', 'days', 'years'];
 
@@ -112,7 +112,7 @@ export class DropdownUnitTypeComponent implements OnInit {
     otherUnits: Array<string> = ['auto'];
 
     // custom unit in menu
-    @ViewChild('customUnit') customUnit: ElementRef;
+    @ViewChild('customUnit', { static: true }) customUnit: ElementRef;
 
     constructor() { }
 

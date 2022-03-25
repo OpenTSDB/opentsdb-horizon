@@ -53,7 +53,7 @@ export class NavigatorPanelComponent implements AfterViewInit {
 
     @ContentChildren(NavigatorPanelItemDirective) items: QueryList<NavigatorPanelItemDirective>;
     @ViewChildren(NavigatorPanelItemElement, { read: ElementRef }) private itemElements: QueryList<ElementRef>;
-    @ViewChild('navigatorPanel') private panel: ElementRef;
+    @ViewChild('navigatorPanel', { static: true }) private panel: ElementRef;
 
     @Input() timing = '200ms cubic-bezier(0.250, 0.460, 0.450, 0.940)';
 

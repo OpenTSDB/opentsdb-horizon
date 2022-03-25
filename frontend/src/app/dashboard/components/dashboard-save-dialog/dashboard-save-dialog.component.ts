@@ -85,7 +85,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     formReady: boolean = false;
 
     miniNavOpen: boolean = false;
-    @ViewChild(MatMenuTrigger, {read: MatMenuTrigger}) miniNavSelectTrigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger, { read: MatMenuTrigger, static: true }) miniNavSelectTrigger: MatMenuTrigger;
     private selectedSaveFolder: any;
 
     private subscription: Subscription = new Subscription();

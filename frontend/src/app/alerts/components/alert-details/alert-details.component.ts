@@ -77,11 +77,11 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
 export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     @HostBinding('class.alert-details-component') private _hostClass = true;
 
-    @ViewChild('graphOutput') private graphOutput: ElementRef;
-    @ViewChild('graphLegend') private dygraphLegend: ElementRef;
-    @ViewChild('eventSearchControl') private eventSearchControl: ElementRef;
-    @ViewChild('alertDateTimeNavbarItemTmpl') alertDateTimeNavbarItemTmpl: TemplateRef<any>;
-    @ViewChild('periodOverPeriodForm') periodOverPeriodForm: AlertDetailsMetricPeriodOverPeriodComponent;
+    @ViewChild('graphOutput', { static: true }) private graphOutput: ElementRef;
+    @ViewChild('graphLegend', { static: false }) private dygraphLegend: ElementRef;
+    @ViewChild('eventSearchControl', { static: false }) private eventSearchControl: ElementRef;
+    @ViewChild('alertDateTimeNavbarItemTmpl', { static: true }) alertDateTimeNavbarItemTmpl: TemplateRef<any>;
+    @ViewChild('periodOverPeriodForm', { static: false }) periodOverPeriodForm: AlertDetailsMetricPeriodOverPeriodComponent;
 
     @Input() response;
 

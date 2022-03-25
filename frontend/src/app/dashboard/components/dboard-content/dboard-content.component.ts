@@ -38,8 +38,8 @@ import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component'
 export class DboardContentComponent implements OnChanges {
   @HostBinding('class.app-dboard-content') private _hostClass = true;
 
-  @ViewChild(WidgetViewDirective) widgetViewContainer: WidgetViewDirective;
-  @ViewChild(GridsterComponent) gridster: GridsterComponent;
+  @ViewChild(WidgetViewDirective, { static: true }) widgetViewContainer: WidgetViewDirective;
+  @ViewChild(GridsterComponent, { static: false }) gridster: GridsterComponent;
 
   // widgetLoader Children
   @ViewChildren(WidgetLoaderComponent, {read: WidgetLoaderComponent}) widgetLoaders: QueryList<WidgetLoaderComponent>;
