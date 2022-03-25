@@ -98,7 +98,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     @HostBinding('class.alerts-container-component') private _hostClass = true;
 
     // @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
+    @ViewChild(MatPaginator, { static: false }) set paginator(paginator: MatPaginator) {
         if (paginator && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.paginator = paginator;
         }
@@ -118,7 +118,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild(MatSort) set dataSourceSort(sortor: MatSort) {
+    @ViewChild(MatSort, { static: false }) set dataSourceSort(sortor: MatSort) {
         if (sortor && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.sort = sortor;
         }
@@ -233,8 +233,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     alertsFilterRegexp = new RegExp('.*');
     snoozeFilterRegexp = new RegExp('.*');
 
-    @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
-    @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
+    @ViewChild(AlertDetailsComponent, { static: false }) createAlertDialog: AlertDetailsComponent;
+    @ViewChild(SnoozeDetailsComponent, { static: false }) snoozeDetailsComp: SnoozeDetailsComponent;
 
     detailsView = false;
     list = 'alerts';
@@ -1427,7 +1427,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     showAuraDialog(alertId, filters) {
-        if (!this.auraUrl) return; 
+        if (!this.auraUrl) return;
 
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         // dialogConf.width = '50%';
