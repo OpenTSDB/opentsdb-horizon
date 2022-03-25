@@ -32,7 +32,7 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
 
     @HostBinding('class.heatmap-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef, static: false }) public ttOutputEl: ElementRef;
 
     positionStrategy = 'sticky';
 

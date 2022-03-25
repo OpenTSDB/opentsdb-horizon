@@ -42,7 +42,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
     // selectedMetric: object;
     colorType: string;
 
-    @ViewChild(MatMenuTrigger) private menuTrigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger, { static: false }) private menuTrigger: MatMenuTrigger;
 
     timeUnits: Array<string> = ['milliseconds', 'seconds', 'minutes', 'hours', 'days', 'years'];
 
