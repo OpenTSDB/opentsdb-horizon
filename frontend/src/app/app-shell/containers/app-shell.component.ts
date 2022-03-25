@@ -94,8 +94,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     isAdminMember: boolean = false;
 
     // View Children
-    @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
-    @ViewChild(NavigatorSidenavComponent) private sideNav: NavigatorSidenavComponent;
+    @ViewChild('drawer', { read: MatDrawer, static: true }) private drawer: MatDrawer;
+    @ViewChild(NavigatorSidenavComponent, { static: true }) private sideNav: NavigatorSidenavComponent;
 
     activeNavSection = '';
     drawerMode = 'side'; // over | side;

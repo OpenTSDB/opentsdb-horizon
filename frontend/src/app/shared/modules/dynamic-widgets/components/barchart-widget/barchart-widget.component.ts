@@ -44,7 +44,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
     @Input() mode = 'view'; // view/explore/edit
     @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;

@@ -36,7 +36,7 @@ export class AdminComponent implements OnInit {
     adminNavbarPortal: TemplatePortal;
 
     // portal templates
-    @ViewChild('adminNavbarTmpl') adminNavbarTmpl: TemplateRef<any>;
+    @ViewChild('adminNavbarTmpl', { static: true }) adminNavbarTmpl: TemplateRef<any>;
 
     activeAdminSection: any = './';
     activeAdminSectionIndex = 0;

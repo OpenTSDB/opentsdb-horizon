@@ -59,11 +59,11 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     @HostBinding('class.info-island-component') private _hostClass = true;
 
-    @ViewChild('islandContainer', { read: ElementRef }) private _islandContainer: ElementRef;
+    @ViewChild('islandContainer', { read: ElementRef, static: true }) private _islandContainer: ElementRef;
 
-    @ViewChild('islandContainer', {read: CdkDrag }) _dragContainer: CdkDrag;
+    @ViewChild('islandContainer', { read: CdkDrag, static: true }) _dragContainer: CdkDrag;
 
-    @ViewChild('islandToolbar', {read: ViewContainerRef}) private _islandToolbar: ViewContainerRef;
+    @ViewChild('islandToolbar', { read: ViewContainerRef, static: true }) private _islandToolbar: ViewContainerRef;
     get islandToolbar(): ViewContainerRef {
         return this._islandToolbar;
     }

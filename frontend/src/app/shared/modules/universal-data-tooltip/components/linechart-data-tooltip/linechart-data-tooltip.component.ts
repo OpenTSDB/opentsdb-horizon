@@ -40,7 +40,7 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef, static: true }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 

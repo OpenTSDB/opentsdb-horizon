@@ -52,7 +52,7 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
     metaForm: FormGroup;
     metaFormSub: Subscription;
 
-    @ViewChild('newLabelInput') newLabelInput: ElementRef;
+    @ViewChild('newLabelInput', { static: true }) newLabelInput: ElementRef;
 
     constructor(
         private fb: FormBuilder

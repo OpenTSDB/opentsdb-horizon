@@ -75,9 +75,9 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
 
     allowedValuesInput: FormControl = new FormControl(); // form control for adding allowed value item
 
-    @ViewChild('filterValueInput', {read: MatAutocompleteTrigger}) valueTrigger: MatAutocompleteTrigger; // value autocomplete trigger
-    @ViewChild('filterValueInput') valueInput: ElementRef<HTMLInputElement>; // html element for allowedValuesInput.
-    @ViewChild('filterValueAuto') valueAutocomplete: MatAutocomplete; // autocomplete component for allowed values
+    @ViewChild('filterValueInput', { read: MatAutocompleteTrigger, static: true }) valueTrigger: MatAutocompleteTrigger; // value autocomplete trigger
+    @ViewChild('filterValueInput', { static: true }) valueInput: ElementRef<HTMLInputElement>; // html element for allowedValuesInput.
+    @ViewChild('filterValueAuto', { static: true }) valueAutocomplete: MatAutocomplete; // autocomplete component for allowed values
 
     constructor(
         private fb: FormBuilder,

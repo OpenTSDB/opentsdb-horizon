@@ -56,15 +56,15 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     @Input() readonly = true;
     @Output() widgetOut = new EventEmitter<any>();
 
-    @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
-    @ViewChild('widgetTitle') private widgetTitle: ElementRef;
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('graphLegend') private dygraphLegend: ElementRef;
-    @ViewChild('dygraph') private dygraph: ElementRef;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild('widgetOutputContainer', { static: true }) private widgetOutputContainer: ElementRef;
+    @ViewChild('widgetTitle', { static: false }) private widgetTitle: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('graphLegend', { static: true }) private dygraphLegend: ElementRef;
+    @ViewChild('dygraph', { static: false }) private dygraph: ElementRef;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-    @ViewChild('multigraphContainer', { read: ElementRef }) multigraphContainer: ElementRef;
-    @ViewChild('multigraphHeaderRow', { read: ElementRef }) multigraphHeaderRow: ElementRef;
+    @ViewChild('multigraphContainer', { read: ElementRef, static: true }) multigraphContainer: ElementRef;
+    @ViewChild('multigraphHeaderRow', { read: ElementRef, static: false }) multigraphHeaderRow: ElementRef;
 
     @ViewChildren('graphLegend', { read: ElementRef }) graphLegends: QueryList<ElementRef>;
     @ViewChildren('graphdiv', { read: ElementRef }) graphdivs: QueryList<ElementRef>;

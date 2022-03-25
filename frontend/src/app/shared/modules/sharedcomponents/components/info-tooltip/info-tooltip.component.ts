@@ -28,8 +28,8 @@ export class InfoTooltipComponent implements OnInit {
 
   @HostBinding('class.info-tooltip-component') _hostClass = true;
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild(MatMenu) tooltip: MatMenu;
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild(MatMenu, { static: true }) tooltip: MatMenu;
 
   @Input() fontSet: string = 'denali';
   @Input() fontIcon: string = 'd-information-circle';

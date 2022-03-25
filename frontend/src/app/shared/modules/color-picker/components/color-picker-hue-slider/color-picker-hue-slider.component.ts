@@ -58,8 +58,8 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
     @Output() hueChanged: any = new EventEmitter<any>();
 
-    @ViewChild('hueStrip') _hueStrip: ElementRef;
-    @ViewChild('hueSlider') _hueSlider: ElementRef;
+    @ViewChild('hueStrip', { static: true }) _hueStrip: ElementRef;
+    @ViewChild('hueSlider', { static: true }) _hueSlider: ElementRef;
 
     sliderLeft: any = 0;
 

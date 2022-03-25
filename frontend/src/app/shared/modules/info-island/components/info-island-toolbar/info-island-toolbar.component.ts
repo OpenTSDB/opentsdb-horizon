@@ -36,7 +36,7 @@ import { InfoIslandService } from '../../services/info-island.service';
 })
 export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @ViewChild('toolbarPlaceholder') toolbarTmplRef;
+    @ViewChild('toolbarPlaceholder', { static: true }) toolbarTmplRef;
 
     @Input() customClass = '';
 

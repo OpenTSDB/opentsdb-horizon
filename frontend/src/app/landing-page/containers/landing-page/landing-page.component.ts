@@ -30,7 +30,7 @@ export class LandingPageComponent implements OnInit {
     @HostBinding('class.landing-page-main') private _hostClass = true;
 
     // portal templates
-    @ViewChild('landingpageNavbarTmpl') landingpageNavbarTmpl: TemplateRef<any>;
+    @ViewChild('landingpageNavbarTmpl', { static: true }) landingpageNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     landingpageNavbarPortal: TemplatePortal;

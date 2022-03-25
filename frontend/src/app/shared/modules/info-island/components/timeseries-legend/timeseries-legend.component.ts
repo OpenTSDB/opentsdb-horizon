@@ -42,12 +42,12 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     @HostBinding('class.timeseries-legend-component') private _hostClass = true;
 
-    @ViewChild('legendTable', { read: MatTable }) private _legendTable: MatTable<any>;
-    @ViewChild('legendTable', { read: ElementRef }) private _legendTableEl: ElementRef<any>;
-    @ViewChild('legendTable', { read: CdkObserveContent }) private _legendTableObserve: CdkObserveContent;
-    @ViewChild('tsDataWrapper', { read: ElementRef }) private _tsDataWrapper: ElementRef<any>;
-    @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(CdkVirtualScrollViewport) viewportComponent: CdkVirtualScrollViewport;
+    @ViewChild('legendTable', { read: MatTable, static: true }) private _legendTable: MatTable<any>;
+    @ViewChild('legendTable', { read: ElementRef, static: true }) private _legendTableEl: ElementRef<any>;
+    @ViewChild('legendTable', { read: CdkObserveContent, static: true }) private _legendTableObserve: CdkObserveContent;
+    @ViewChild('tsDataWrapper', { read: ElementRef, static: true }) private _tsDataWrapper: ElementRef<any>;
+    @ViewChild(MatSort, { static: true }) sort: MatSort;
+    @ViewChild(CdkVirtualScrollViewport, { static: true }) viewportComponent: CdkVirtualScrollViewport;
 
     islandRef: InfoIslandComponent;
 

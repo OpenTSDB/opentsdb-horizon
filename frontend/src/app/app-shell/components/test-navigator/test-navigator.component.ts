@@ -40,7 +40,7 @@ export class TestNavigatorComponent implements OnInit {
 
     //@HostBinding('class.test-navigator') private _hostClass = true;
 
-    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';

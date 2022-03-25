@@ -41,8 +41,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     @HostBinding('class.alert-configuration-contacts-component') private _hostClass = true;
     constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService, private appConfig: AppConfigService ) { }
 
-    @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger }) private megaPanelTrigger: MatMenuTrigger;
-    @ViewChild('recipientInput', { read: MatInput }) private recipientInput: MatInput;
+    @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger, static: true }) private megaPanelTrigger: MatMenuTrigger;
+    @ViewChild('recipientInput', { read: MatInput, static: true }) private recipientInput: MatInput;
 
     @Input() namespace: string;
     @Input() selectedAlertRecipients: any;

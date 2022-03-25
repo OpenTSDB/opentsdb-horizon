@@ -69,7 +69,7 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
     @Output() navigationCancel: any = new EventEmitter<any>();
 
     // VIEW CHILDREN
-    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
 
     // SUBSCRIPTIONS
     private subscription: Subscription = new Subscription();

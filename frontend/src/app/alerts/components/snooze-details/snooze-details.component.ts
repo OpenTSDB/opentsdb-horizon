@@ -60,12 +60,12 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     @HostBinding('class.snooze-alert-dialog-component') private _hostclass = true;
 
-    @ViewChild('formDirective', {read: FormGroupDirective}) formDirective: FormGroupDirective;
-    @ViewChild('alertListMenu', { read: MatMenuTrigger }) private alertListMenuTrigger: MatMenuTrigger;
-    @ViewChild('alertInput', { read: MatInput }) private alertInput: MatInput;
+    @ViewChild('formDirective', { read: FormGroupDirective, static: false }) formDirective: FormGroupDirective;
+    @ViewChild('alertListMenu', { read: MatMenuTrigger, static: true }) private alertListMenuTrigger: MatMenuTrigger;
+    @ViewChild('alertInput', { read: MatInput, static: true }) private alertInput: MatInput;
 
-    @ViewChild('datetimePickerStart') startTimeReference: DatepickerComponent;
-    @ViewChild('datetimePickerEnd') endTimeReference: DatepickerComponent;
+    @ViewChild('datetimePickerStart', { static: false }) startTimeReference: DatepickerComponent;
+    @ViewChild('datetimePickerEnd', { static: false }) endTimeReference: DatepickerComponent;
 
 
     @Input() viewMode: string = ''; // edit || view

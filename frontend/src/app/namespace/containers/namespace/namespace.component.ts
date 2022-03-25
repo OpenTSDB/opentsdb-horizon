@@ -53,8 +53,8 @@ export class NamespaceComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
     // portal templates
-    @ViewChild('namespaceListNavbarTmpl') namespaceListNavbarTmpl: TemplateRef<any>;
-    @ViewChild('namespaceDetailNavbarTmpl') namespaceDetailNavbarTmpl: TemplateRef<any>;
+    @ViewChild('namespaceListNavbarTmpl', { static: true }) namespaceListNavbarTmpl: TemplateRef<any>;
+    @ViewChild('namespaceDetailNavbarTmpl', { static: true }) namespaceDetailNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     namespaceNavbarPortal: TemplatePortal;

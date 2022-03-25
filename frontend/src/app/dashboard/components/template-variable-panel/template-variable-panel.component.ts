@@ -54,7 +54,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
     @Input() tagKeysByNamespaces: string[];
     @Input() readonly = true;
     @Output() modeChange: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('focusEl') focusEl: ElementRef;
+    @ViewChild('focusEl', { static: true }) focusEl: ElementRef;
 
     editForm: FormGroup;
     listForm: FormGroup;

@@ -30,9 +30,9 @@ export class AdminConfigGenericInputComponent implements OnInit, AfterViewInit, 
     }
     @HostBinding('class.row-align') get horizontalAlignClass(): boolean { return this.horizontalAlign; }
 
-    @ViewChild(MatInput) inputControl: MatInput;
-    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+    @ViewChild(MatInput, { static: true }) inputControl: MatInput;
+    @ViewChild(MatInput, { read: ElementRef, static: true }) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef, static: true }) private formFieldEl: ElementRef;
 
     @Input() inputType: string = 'text'; // TODO: limit to the types with an enum, or possible templates
     @Input() inputPlaceholder: string = 'Enter value';
