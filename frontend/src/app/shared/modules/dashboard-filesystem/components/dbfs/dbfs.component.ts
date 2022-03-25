@@ -72,11 +72,9 @@ import {
     DbfsAddUserFav
 } from '../../state/dbfs-resources.state';
 
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { DBState, LoadDashboard } from '../../../../../dashboard/state';
-import {
-    MatTableDataSource
-} from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
 // tslint:disable-next-line: component-selector

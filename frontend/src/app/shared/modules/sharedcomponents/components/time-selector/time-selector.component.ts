@@ -16,7 +16,7 @@
  */
 import { Component, OnInit, ElementRef, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   // tslint:disable-next-line:component-selector

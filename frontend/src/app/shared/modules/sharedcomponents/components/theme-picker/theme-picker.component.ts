@@ -17,7 +17,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { MatMenu, MatMenuTrigger } from '@angular/material';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     // tslint:disable-next-line:component-selector

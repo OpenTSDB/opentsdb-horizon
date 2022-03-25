@@ -25,12 +25,8 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-    MatMenuTrigger
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 import { DashboardSaveDialogComponent } from '../dashboard-save-dialog/dashboard-save-dialog.component';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';

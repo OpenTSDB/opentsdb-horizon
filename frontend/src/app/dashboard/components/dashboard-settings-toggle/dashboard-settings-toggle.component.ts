@@ -18,9 +18,7 @@ import {
     Component, OnInit, HostBinding, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog, MatDialogConfig, MatDialogRef, DialogPosition
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 
 import { DashboardSettingsDialogComponent } from '../dashboard-settings-dialog/dashboard-settings-dialog.component';
 

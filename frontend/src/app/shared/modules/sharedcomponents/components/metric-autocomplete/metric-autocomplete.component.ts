@@ -28,7 +28,8 @@ import {
     OnDestroy,
     SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation
 } from '@angular/core';
-import { MatAutocomplete, MatMenuTrigger } from '@angular/material';
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';

@@ -19,7 +19,8 @@ import {
     ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatFormField, MatInput } from '@angular/material';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
     // tslint:disable-next-line: component-selector

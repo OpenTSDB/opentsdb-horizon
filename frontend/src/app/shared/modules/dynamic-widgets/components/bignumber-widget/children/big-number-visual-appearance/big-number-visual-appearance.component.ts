@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     // tslint:disable-next-line:component-selector

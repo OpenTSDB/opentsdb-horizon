@@ -25,7 +25,8 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatMenuTrigger } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';

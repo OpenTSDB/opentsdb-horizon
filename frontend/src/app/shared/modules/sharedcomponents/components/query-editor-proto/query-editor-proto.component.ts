@@ -33,13 +33,14 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { MatMenuTrigger, MatMenu } from '@angular/material';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 
 import {
     animate,

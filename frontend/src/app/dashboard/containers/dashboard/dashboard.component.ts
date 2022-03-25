@@ -77,10 +77,11 @@ import {
     DbfsUpdateFolder,
     DbfsRefreshFolder
 } from '../../../shared/modules/dashboard-filesystem/state';
-import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
+import { MatMenuTrigger, MenuPositionX } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';

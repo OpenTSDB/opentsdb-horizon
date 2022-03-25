@@ -23,7 +23,7 @@ import { TimeRangePickerOptions, ISelectedTime } from '../../models/models';
 import { } from '../time-picker/time-picker.component';
 import { DatepickerComponent } from '../date-picker-2/datepicker.component';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 const moment = momentNs;
 
