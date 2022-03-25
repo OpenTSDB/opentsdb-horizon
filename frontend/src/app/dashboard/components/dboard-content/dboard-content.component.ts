@@ -39,7 +39,7 @@ export class DboardContentComponent implements OnChanges {
   @HostBinding('class.app-dboard-content') private _hostClass = true;
 
   @ViewChild(WidgetViewDirective, { static: true }) widgetViewContainer: WidgetViewDirective;
-  @ViewChild(GridsterComponent) gridster: GridsterComponent;
+  @ViewChild(GridsterComponent, { static: false }) gridster: GridsterComponent;
 
   // widgetLoader Children
   @ViewChildren(WidgetLoaderComponent, {read: WidgetLoaderComponent}) widgetLoaders: QueryList<WidgetLoaderComponent>;
