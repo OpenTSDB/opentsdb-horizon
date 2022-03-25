@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, Inject, HostBinding, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({

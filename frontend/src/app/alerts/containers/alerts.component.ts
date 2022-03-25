@@ -30,15 +30,11 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Location } from '@angular/common';
-import {
-    MatPaginator,
-    MatTableDataSource,
-    MatSort,
-    MatDialog,
-    MatDialogRef,
-    MatDialogConfig,
-    MatSnackBar
-} from '@angular/material';
+import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { Observable, Subscription, Subject } from 'rxjs';
 import { delayWhen, filter, skip, distinctUntilChanged, debounce, debounceTime } from 'rxjs/operators';

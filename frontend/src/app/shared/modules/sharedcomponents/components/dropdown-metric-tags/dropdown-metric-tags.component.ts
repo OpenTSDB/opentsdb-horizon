@@ -28,7 +28,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { HttpService } from '../../../../../core/http/http.service';
-import { MatMenuTrigger, MatMenu } from '@angular/material';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { FormControl } from '@angular/forms';
 

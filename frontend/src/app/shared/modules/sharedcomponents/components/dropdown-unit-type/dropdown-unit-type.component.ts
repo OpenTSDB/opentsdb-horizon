@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostBinding, ViewEncapsulation } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 // NOTE: This component needs more work. Just don't have time at the moment.
 // NOTE: This feature is used in many places. So need to come back to it.

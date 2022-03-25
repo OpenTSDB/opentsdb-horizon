@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { MatAccordion, MatExpansionPanel } from '@angular/material';
+import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
     // tslint:disable-next-line:component-selector

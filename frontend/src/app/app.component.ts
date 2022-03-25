@@ -18,7 +18,7 @@
 import { Component, OnInit, HostBinding, OnDestroy, ViewEncapsulation} from '@angular/core';
 import { AuthState } from './shared/state/auth.state';
 import { Observable, interval, Subscription } from 'rxjs';
-import { MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Router,  NavigationEnd } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { AppConfigService } from './core/services/config.service';

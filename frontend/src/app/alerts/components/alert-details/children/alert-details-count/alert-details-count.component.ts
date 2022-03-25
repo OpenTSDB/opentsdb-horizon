@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, Input, HostBinding, ViewEncapsulation } from '@angular/core';
-import { MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { AppConfigService } from "../../../../../core/services/config.service";
 import { AuraDialogComponent } from '../../../../../shared/modules/sharedcomponents/components/aura-dialog/aura-dialog.component';
 

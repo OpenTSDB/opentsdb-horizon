@@ -23,7 +23,8 @@ import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { ClipboardCreate, ClipboardError, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, SetHideProgress, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
-import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
+import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
 
