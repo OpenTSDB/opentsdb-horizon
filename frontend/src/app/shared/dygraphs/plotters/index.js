@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+barChartPlotter = require('./barchart.js');
+multiColumnBarPlotter = require('./multicolumbarchart');
+heatmapPlotter = require('./heatmap.js')
+stackedAreaPlotter = require('./stackedarea.js');
 
-module.exports.barChartPlotter = require('./barchart.js');
-module.exports.multiColumnBarPlotter = require('./multicolumbarchart');
-module.exports.heatmapPlotter = require('./heatmap.js');
-module.exports.stackedAreaPlotter = require('./stackedarea.js');
+module.exports = { barChartPlotter, heatmapPlotter, stackedAreaPlotter };
