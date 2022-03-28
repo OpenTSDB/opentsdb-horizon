@@ -17,7 +17,6 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from './utils.service';
 import { DatatranformerService } from './datatranformer.service';
-import { _MatAutocompleteMixinBase } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -28,23 +27,23 @@ export class MultigraphService {
 
   constructor(private utils: UtilsService, private tranxService: DatatranformerService) { }
 
-  // for testing 
+  // for testing
   shuffle(array: any[]) {
     let currentIndex = array.length, temporaryValue, randomIndex;
-  
+
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-  
+
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
-  
+
       // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
     }
-  
+
     return array;
   }
 

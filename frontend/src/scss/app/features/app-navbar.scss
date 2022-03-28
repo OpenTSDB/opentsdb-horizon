@@ -115,7 +115,7 @@
                 }
 
                 .mat-ink-bar {
-                    background-color: at-color($foreground, navbar-text, .25);
+                    background-color: mat-color($foreground, navbar-text, .25);
                 }
             }
         }

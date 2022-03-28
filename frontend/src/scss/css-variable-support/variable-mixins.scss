@@ -24,7 +24,7 @@
                 @if (type_of($varValue) == string) {
                     #{$varName}: $varValue;
                 } @else {
-                    #{$varName}: #{$varValue};
+                    #{$varName}: #{inspect($varValue)};
                 }
             }
         }
