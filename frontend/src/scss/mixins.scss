@@ -93,6 +93,10 @@
 
 // Math
 @function power-number($number, $exp) {
+    @if (round($exp) != $exp) {
+        @return exp($exp * ln($number));
+    }
+
     $value: 1;
     @if $exp > 0 {
         @for $i from 1 through $exp {
@@ -104,6 +108,10 @@
         }
     }
     @return $value;
+}
+
+@function pow($number, $exponent) {
+    @return power-number($number, $exponent);
 }
 
 @function round-to-even-number($number) {
@@ -140,6 +148,54 @@
         @warn '#{ $mode } is undefined keyword.';
         @return $number;
     }
+}
+
+@function factorial($value) {
+    $result: 1;
+
+    @if $value == 0 {
+        @return $result;
+    }
+
+    @for $index from 1 through $value {
+        $result: $result * $index;
+    }
+
+    @return $result;
+}
+
+@function summation($iteratee, $input, $initial: 0, $limit: 100) {
+    $sum: 0;
+
+    @for $index from $initial to $limit {
+        $sum: $sum + call(get-function($iteratee), $input, $index);
+    }
+
+    @return $sum;
+}
+
+@function exp-maclaurin($x, $n) {
+    @return (pow($x, $n) / factorial($n));
+}
+
+@function exp($value) {
+    @return summation("exp-maclaurin", $value, 0, 100);
+}
+
+@function ln-maclaurin($x, $n) {
+    @return (pow(-1, $n + 1) / $n) * (pow($x - 1, $n));
+}
+
+@function ln($value) {
+    $ten-exp: 1;
+    $ln-ten: 2.30258509;
+
+    @while ($value > pow(10, $ten-exp)) {
+        $ten-exp: $ten-exp + 1;
+    }
+
+    @return summation(ln-maclaurin, $value / pow(10, $ten-exp), 1, 100) +
+        $ten-exp * $ln-ten;
 }
 
 // * Units
@@ -817,15 +873,13 @@
                 }
             }
 
-            .mat-mini-fab{
+            .mat-mini-fab {
                 width: 20px !important;
                 height: 20px !important;
                 line-height: 20px !important;
-
-
             }
 
-            .mat-icon-button{
+            .mat-icon-button {
                 width: 18px !important;
                 height: 18px !important;
                 line-height: 18px !important;
@@ -916,7 +970,7 @@
         }
 
         .mat-form-field-flex {
-            padding-top:4px;
+            padding-top: 4px;
         }
 
         .mat-form-field-infix {
@@ -932,7 +986,6 @@
             display: none;
             background-color: transparent;
         }
-
 
         &.readingy-mode:hover {
             .mat-form-field-suffix {
@@ -950,7 +1003,6 @@
                 height: initial;
                 visibility: initial;
             }
-
         }
 
         &.editing-mode {
@@ -971,7 +1023,6 @@
 }
 
 @mixin vertical-button-toggle-override($text, $color) {
-
     .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
         .mat-button-toggle {
             color: $text;
@@ -980,9 +1031,9 @@
         }
 
         .mat-button-toggle.mat-button-toggle-checked {
-           color: $color;
-           border: 0;
-           background-color: rgba($color, .1);
+            color: $color;
+            border: 0;
+            background-color: rgba($color, 0.1);
         }
     }
 }
