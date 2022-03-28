@@ -18,7 +18,6 @@
 import { ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { formArrayNameProvider } from '@angular/forms/src/directives/reactive_directives/form_group_name';
 import { AppConfigService } from '../../../core/services/config.service';
 import { Subscription } from 'rxjs';
 

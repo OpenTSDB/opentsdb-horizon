@@ -111,8 +111,7 @@
 @mixin horizon-mat-sidenav-theme($theme) {
     $isDark: map-get($theme, is-dark);
 
-    $drawer-backdrop-color: if
-        ($isDark, var(--light-primary-text), var(--dark-primary-text));
+    $drawer-backdrop-color: if($isDark, var(--light-primary-text), var(--dark-primary-text));
 
     .mat-drawer-backdrop.mat-drawer-shown {
         background-color: $drawer-backdrop-color;

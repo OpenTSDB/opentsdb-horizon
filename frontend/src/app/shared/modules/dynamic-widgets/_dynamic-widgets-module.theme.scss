@@ -21,9 +21,9 @@
 
 @import './components/status-widget/status-widget.theme';
 
-@import './components/table-widget/table-widget.component';
+@import './components/table-widget/table-widget.theme';
 
-@import './components/topn-widget/topn-widget.component';
+@import './components/topn-widget/topn-widget.theme';
 
 @mixin dynamic-widgets-module-theme() {
     @include barchart-widget-component-theme();
