@@ -62,6 +62,7 @@ const appInitializerFn = (appConfig: AppConfigService) => {
   };
 };
 
+@Injectable()
 export class CustomUrlSerializer implements UrlSerializer {
   private _defaultUrlSerializer: DefaultUrlSerializer = new DefaultUrlSerializer();
 

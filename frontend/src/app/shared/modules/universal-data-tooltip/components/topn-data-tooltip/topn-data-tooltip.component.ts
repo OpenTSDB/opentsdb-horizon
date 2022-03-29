@@ -30,7 +30,7 @@ export class TopnDataTooltipComponent extends DataTooltipComponent implements On
 
     @HostBinding('class.topn-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef, static: false }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 

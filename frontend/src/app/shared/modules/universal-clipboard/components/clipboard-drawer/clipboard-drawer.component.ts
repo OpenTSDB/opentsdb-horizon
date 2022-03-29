@@ -62,11 +62,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         return this.drawerState;
     }
 
-    @ViewChild(MatAccordion, { read: MatAccordion, static: false }) accordion: MatAccordion;
+    @ViewChild(MatAccordion, { read: MatAccordion }) accordion: MatAccordion;
     @ViewChildren(MatExpansionPanel, { read: MatExpansionPanel }) accordionItems: QueryList<MatExpansionPanel>;
 
-    @ViewChild('clipboardMoreMenuTrigger', { read: MatMenuTrigger, static: false }) clipboardMoreMenuTrigger: MatMenuTrigger;
-    @ViewChild('removeClipboardMenuTrigger', { read: MatMenuTrigger, static: false }) removeClipboardMenuTrigger: MatMenuTrigger;
+    @ViewChild('clipboardMoreMenuTrigger', { read: MatMenuTrigger }) clipboardMoreMenuTrigger: MatMenuTrigger;
+    @ViewChild('removeClipboardMenuTrigger', { read: MatMenuTrigger }) removeClipboardMenuTrigger: MatMenuTrigger;
 
     @ViewChildren('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) cbItemMoreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) cbItemRemoveTriggers: QueryList<MatMenuTrigger>;

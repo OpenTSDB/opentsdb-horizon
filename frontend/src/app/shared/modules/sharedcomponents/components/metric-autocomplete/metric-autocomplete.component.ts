@@ -14,20 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-    Component,
-    OnInit,
-    HostBinding,
-    Input,
-    Output,
-    EventEmitter,
-    ElementRef,
-    Renderer,
-    ViewChild,
-    OnChanges,
-    OnDestroy,
-    SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation
-} from '@angular/core';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, OnDestroy, SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation, Renderer2 } from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -58,10 +45,10 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     @Output() metricOutput = new EventEmitter();
     @Output() blur = new EventEmitter();
 
-    @ViewChild('metricSearchInput', { static: false }) metricSearchInput: ElementRef;
-    @ViewChild('metricAutoComplete', { static: false }) metricAutoCompleteCntrl: MatAutocomplete;
-    @ViewChild('metricSearchFormField', { read: ElementRef, static: false }) metricSearchFormField: ElementRef;
-    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
+    @ViewChild('metricSearchInput') metricSearchInput: ElementRef;
+    @ViewChild('metricAutoComplete') metricAutoCompleteCntrl: MatAutocomplete;
+    @ViewChild('metricSearchFormField', { read: ElementRef }) metricSearchFormField: ElementRef;
+    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
     metricOptions = [];
     metricSearchControl: FormControl;
