@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2, Injectable } from '@angular/core';
+import { OnInit, HostBinding, OnDestroy, ElementRef, Renderer2, Injectable, Directive } from '@angular/core';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 import { Subscription, Observable } from 'rxjs';
 import { TooltipDataService } from '../../services/tooltip-data.service';
 
+@Directive()
 @Injectable()
 export abstract class DataTooltipComponent implements OnInit, OnDestroy {
 

@@ -45,6 +45,7 @@ const TOOLTIP_TYPES: any = {
 /*@Injectable({
     providedIn: 'root'
 })*/
+@Injectable()
 export class TooltipComponentService {
 
     /* ELEMENTS */

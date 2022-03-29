@@ -98,7 +98,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     @Output() editComponent = new EventEmitter<any>();
 
     @ViewChild(WidgetDirective, { static: true }) widgetContainer: WidgetDirective;
-    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
     @ViewChild('islandPortalTest', { static: true }) islandPortalTest: TemplateRef<any>;
 
