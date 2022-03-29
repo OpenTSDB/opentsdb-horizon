@@ -30,7 +30,7 @@ import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.comp
 export class AdminPanelComponent implements OnInit {
     @HostBinding('class.admin-navigator') private _hostClass = true;
 
-    @ViewChild(NavigatorPanelComponent, { static: false }) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';
