@@ -32,7 +32,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 })
 export class AlertDetailsMetricPeriodOverPeriodPreviewComponent implements OnInit, OnChanges, OnDestroy {
   @HostBinding('class.period-over-period-preview') private _hostClass = true;
-  @ViewChild('queryPreview', { static: false }) queryPreview: ElementRef;
+  @ViewChild('queryPreview') queryPreview: ElementRef;
 
   constructor(
     private interCom: IntercomService,
