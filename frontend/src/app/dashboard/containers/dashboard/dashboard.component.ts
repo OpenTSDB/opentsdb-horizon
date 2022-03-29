@@ -129,9 +129,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Select(NavigatorState.getDrawerOpen) drawerOpen$: Observable<any>;
     @Select(EventsState.GetEvents) events$: Observable<any>;
 
-    @ViewChild('tplVariablePanel', { static: false }) tplVariablePanel : TemplateVariablePanelComponent;
+    @ViewChild('tplVariablePanel') tplVariablePanel : TemplateVariablePanelComponent;
     // available widgets menu trigger
-    @ViewChild('availableWidgetsMenuTrigger', { read: MatMenuTrigger, static: false }) availableWidgetsMenuTrigger: MatMenuTrigger;
+    @ViewChild('availableWidgetsMenuTrigger', { read: MatMenuTrigger }) availableWidgetsMenuTrigger: MatMenuTrigger;
 
     get availableWidgetsMenuIsOpen(): boolean {
         if (this.availableWidgetsMenuTrigger) {
