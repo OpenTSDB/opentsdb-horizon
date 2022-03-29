@@ -31,8 +31,8 @@ export class TimeSelectorComponent implements OnInit {
   constructor() { }
 
   @HostBinding('class.time-selector-component') private _hostClass = true;
-  @ViewChild('customTime', { static: false }) customTimeInput: ElementRef;
-  @ViewChild(MatMenuTrigger, { static: false }) private menuTrigger: MatMenuTrigger;
+  @ViewChild('customTime') customTimeInput: ElementRef;
+  @ViewChild(MatMenuTrigger) private menuTrigger: MatMenuTrigger;
 
   timeInSecondsAsNumber: number;
 
