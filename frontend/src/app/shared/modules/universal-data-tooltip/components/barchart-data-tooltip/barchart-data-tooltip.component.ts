@@ -32,7 +32,7 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
 
     @HostBinding('class.barchart-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef, static: false }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 
