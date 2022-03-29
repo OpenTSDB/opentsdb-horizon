@@ -98,7 +98,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     @HostBinding('class.alerts-container-component') private _hostClass = true;
 
     // @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatPaginator, { static: false }) set paginator(paginator: MatPaginator) {
+    @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
         if (paginator && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.paginator = paginator;
         }
@@ -118,7 +118,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild(MatSort, { static: false }) set dataSourceSort(sortor: MatSort) {
+    @ViewChild(MatSort) set dataSourceSort(sortor: MatSort) {
         if (sortor && this.list === 'alerts' && this.alertsDataSource) {
             this.alertsDataSource.sort = sortor;
         }
@@ -127,7 +127,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild('namespaceDropMenuTrigger', { read: ElementRef, static: false }) namespaceDropMenuTrigger: ElementRef;
+    @ViewChild('namespaceDropMenuTrigger', { read: ElementRef }) namespaceDropMenuTrigger: ElementRef;
     namespaceDropMenuTriggerWidth: string = '0px';
 
     @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true }) confirmDeleteDialogRef: TemplateRef<any>;
@@ -233,8 +233,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     alertsFilterRegexp = new RegExp('.*');
     snoozeFilterRegexp = new RegExp('.*');
 
-    @ViewChild(AlertDetailsComponent, { static: false }) createAlertDialog: AlertDetailsComponent;
-    @ViewChild(SnoozeDetailsComponent, { static: false }) snoozeDetailsComp: SnoozeDetailsComponent;
+    @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
+    @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
 
     detailsView = false;
     list = 'alerts';

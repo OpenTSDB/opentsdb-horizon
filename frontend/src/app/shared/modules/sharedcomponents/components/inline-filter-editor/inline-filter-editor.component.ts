@@ -56,10 +56,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @Output() filterOutput = new EventEmitter();
     @Output() closeModalOutput = new EventEmitter();
     @Output() tagExplicitMatchOutput = new EventEmitter();
-    @ViewChild('tagValueSearchInput', { static: false }) tagValueSearchInput: ElementRef;
-    @ViewChild('tagSearchInput', { static: false }) tagSearchInput: ElementRef;
-    @ViewChild('trigger', { read: MatMenuTrigger, static: false }) tagFilterMenuTrigger: MatMenuTrigger;
-    @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
+    @ViewChild('tagValueSearchInput') tagValueSearchInput: ElementRef;
+    @ViewChild('tagSearchInput') tagSearchInput: ElementRef;
+    @ViewChild('trigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('searchInput') searchInput: ElementRef;
 
     TAGVALUELEN = 100;
     namespace: string;
