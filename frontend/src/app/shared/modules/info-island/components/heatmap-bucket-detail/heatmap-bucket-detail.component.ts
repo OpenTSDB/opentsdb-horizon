@@ -42,7 +42,7 @@ export class HeatmapBucketDetailComponent implements OnInit, AfterViewInit, OnDe
     @HostBinding('class.heatmap-bucket-detail-component') private _hostClass = true;
 
     @ViewChild('chartContainer', { static: true }) private chartContainer: ElementRef;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatSort) sort: MatSort;
 
     islandRef: InfoIslandComponent;
 
