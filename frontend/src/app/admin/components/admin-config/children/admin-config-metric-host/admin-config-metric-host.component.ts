@@ -15,9 +15,9 @@ export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterV
     @HostBinding('class.editing-mode') private get tplEdit() { return this.editMode; };
     @HostBinding('class.reading-mode') private get tplRead() { return !this.editMode; };
 
-    @ViewChild(MatInput, { static: false }) inputControl: MatInput;
-    @ViewChild(MatInput, { read: ElementRef, static: false }) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, { read: ElementRef, static: false }) private formFieldEl: ElementRef;
+    @ViewChild(MatInput) inputControl: MatInput;
+    @ViewChild(MatInput, { read: ElementRef }) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef }) private formFieldEl: ElementRef;
 
     @Input() host: FormControl;
     @Input() index: number;

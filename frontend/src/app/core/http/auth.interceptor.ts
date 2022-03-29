@@ -30,6 +30,7 @@ import { tap, switchMap, catchError } from 'rxjs/operators';
 /*
     Checks the authentication failure and renews the authentication cookies if needed
 */
+@Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
     loginCheckInProgress = false;
