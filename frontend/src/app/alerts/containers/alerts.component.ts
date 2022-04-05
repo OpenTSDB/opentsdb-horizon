@@ -459,7 +459,10 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             for (let i = 0; i < this.alerts.length; i++ ) {
                 this.setAlertCount(i);
             }
-            this.alertsDataSource.data = this.alerts;
+            if (this.alertsDataSource && this.alertsDataSource.data) {
+                this.alertsDataSource.data = this.alerts;
+            }
+
         }));
 
         this.subscription.add(this.snoozes$.pipe(skip(1)).subscribe(snoozes => {

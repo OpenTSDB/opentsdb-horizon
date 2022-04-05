@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, StateContext, Selector, Action } from '@ngxs/store';
 
 export interface GridsterUnitSizeModel {
@@ -28,6 +29,7 @@ export class UpdateGridsterUnitSize {
     constructor(public readonly payload: any) {}
 }
 
+@Injectable()
 @State<GridsterUnitSizeModel>({
     name: 'ClientSize',
     defaults: {

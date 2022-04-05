@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import {
     State,
     StateContext,
@@ -39,6 +40,7 @@ export class GetSnoozeDetailsById {
 
 
 /* state define */
+@Injectable()
 @State<SnoozeStateModel>({
     name: 'Snooze',
     defaults: {

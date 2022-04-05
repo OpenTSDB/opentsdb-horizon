@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { catchError, map} from 'rxjs/operators';
 
@@ -202,6 +203,7 @@ export class SetHideProgress {
 
 
 // state
+@Injectable()
 @State<ClipboardResourceModel>({
     name: 'Clipboard',
     defaults: {

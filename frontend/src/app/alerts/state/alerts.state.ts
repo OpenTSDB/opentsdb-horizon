@@ -30,6 +30,7 @@ import { forkJoin } from 'rxjs';
 import { UtilsService } from '../../core/services/utils.service';
 import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
 import { Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 
 export interface AlertModel {
@@ -48,7 +49,7 @@ export interface AlertModel {
     created: any;
     modified: any;
     recipient: any;
-    recipientsKeys?: string[]; 
+    recipientsKeys?: string[];
     snoozed: boolean;
     disabled: boolean;
     alerting: boolean;
@@ -137,6 +138,7 @@ export class ClearNamespace {
 }
 
 /* state define */
+@Injectable()
 @State<AlertsStateModel>({
     name: 'Alerts',
     defaults: {
@@ -343,7 +345,7 @@ export class AlertsState {
             this.sub.unsubscribe();
         }
         this.sub = this.httpService.getAlerts(options).subscribe(
-            alerts => {                
+            alerts => {
                 ctx.patchState({ alerts: alerts});
                 if ( alerts.length ) {
                     ctx.dispatch(new LoadAlertsStats(options));

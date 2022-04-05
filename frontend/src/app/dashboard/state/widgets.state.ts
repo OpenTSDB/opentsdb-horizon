@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, StateContext, Action, Selector, createSelector } from '@ngxs/store';
 import { append, patch, removeItem, updateItem } from '@ngxs/store/operators';
 import { UtilsService } from '../../core/services/utils.service';
@@ -129,6 +130,7 @@ export class DeleteWidgets {
     constructor(public readonly wids: string[]) {}
 }
 
+@Injectable()
 @State<WidgetsModel>({
     name: 'Widgets',
     defaults: {

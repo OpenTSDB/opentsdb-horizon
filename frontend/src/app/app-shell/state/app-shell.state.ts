@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Injectable } from '@angular/core';
 import { State , Action, Selector, StateContext, Store} from '@ngxs/store';
 import { map, catchError } from 'rxjs/operators';
 
@@ -84,6 +86,7 @@ export class SSCreateUserProfileFail {
 
 
 /** Define State */
+@Injectable()
 @State<AppShellStateModel>({
     name: 'AppShell',
     defaults: {

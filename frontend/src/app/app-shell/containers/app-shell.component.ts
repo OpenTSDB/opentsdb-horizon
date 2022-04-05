@@ -253,8 +253,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 }
             }
         });
-
-        console.log('%cFUCKER', 'background: red; color: white; padding: 2px;');
     }
 
     ngOnInit() {

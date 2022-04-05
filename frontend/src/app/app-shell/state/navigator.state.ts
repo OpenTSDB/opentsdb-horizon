@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Injectable } from '@angular/core';
 import {
     State,
     Action,
@@ -88,6 +90,7 @@ export class SetSideNavOpen {
  * - resources
 */
 
+@Injectable()
 @State<NavigatorStateModel>({
     name: 'Navigator',
     defaults: {

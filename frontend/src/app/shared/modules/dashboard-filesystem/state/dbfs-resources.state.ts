@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
 import { map, tap, catchError, reduce } from 'rxjs/operators';
@@ -305,6 +306,7 @@ export class DbfsLoadUserRecentsSuccess {
 
 /** STATE */
 
+@Injectable()
 @State<DbfsResourcesModel>({
     name: 'DataResources',
     defaults: {
@@ -328,7 +330,6 @@ export class DbfsLoadUserRecentsSuccess {
         resourceAction: {}
     }
 })
-
 export class DbfsResourcesState {
     constructor(
         private utils: UtilsService,
