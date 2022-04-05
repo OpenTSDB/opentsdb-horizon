@@ -16,7 +16,7 @@
  */
 import { OnInit, OnChanges, OnDestroy, Directive,
     Input, Output, EventEmitter, ElementRef, SimpleChanges } from '@angular/core';
-import 'chart.js';
+import { Chart, ChartType } from 'chart.js';
 import customTooltip from '../../../chart.js/tooltip/custom-tooltip';
 import * as thresholdPlugin from '../../../chartjs-threshold-plugin/src/index';
 import { UnitConverterService } from '../../../../core/services/unit-converter.service';
