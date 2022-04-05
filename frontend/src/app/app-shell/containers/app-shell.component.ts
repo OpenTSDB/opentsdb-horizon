@@ -253,7 +253,6 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
                 }
             }
         });
-
     }
 
     ngOnInit() {

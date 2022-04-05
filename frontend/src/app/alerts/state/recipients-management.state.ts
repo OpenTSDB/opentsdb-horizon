@@ -17,6 +17,7 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
 export interface RecipientsModel {
     namespace: string;
@@ -121,6 +122,7 @@ export class DeleteRecipientFail {
     ) { }
 }
 
+@Injectable()
 @State<RecipientsManagamentStateModel>({
     name: 'Recipients',
     defaults: {
