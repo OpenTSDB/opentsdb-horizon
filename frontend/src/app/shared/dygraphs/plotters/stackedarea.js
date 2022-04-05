@@ -21,8 +21,7 @@ var utils = require("dygraphs/src/dygraph-utils");
 
 function stackedAreaPlotter(e) {
     //extracting and reducing the Dygraph.stackPoints_ function
-    var stackPoints = function (
-
+    stackPoints = function (
         points,
         cumulativeYval,
         seriesExtremes,
@@ -436,9 +435,7 @@ var DygraphLayoutCalcYNormal_ = function (axis, value, logscale) {
  * connectSeparatedPoints is true. When it's false, the predicate will
  * skip over points with missing yVals.
  */
-var DygraphCanvasRendererGetIteratorPredicate = function (
-    connectSeparatedPoints
-) {
+var DygraphCanvasRendererGetIteratorPredicate = function (connectSeparatedPoints) {
     return connectSeparatedPoints
         ? DygraphCanvasRendererPredicateThatSkipsEmptyPoints
         : null;

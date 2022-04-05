@@ -5,7 +5,6 @@
     "ng": "ng",
     "start": "ng build --watch --source-map --extract-css --aot",
     "startverbose": "ng build --watch --source-map --extract-css --aot --verbose",
-    "clidebug": "node --inspect ./node_modules/@angular/cli/bin/ng build --watch --source-map --extract-css --aot",
     "build": "ng build --prod --aot",
     "test": "ng test --watch=false --code-coverage && rm -rf ./node_modules/uws/*.node && rm -rf ./node_modules/node-sass/vendor/darwin-x64-57/binding.node && rm -rf ./node_modules/node-sass/vendor/linux-x64-57/binding.node",
     "lint": "ng lint",
@@ -19,7 +18,7 @@
     "@angular-devkit/build-optimizer": "^0.11.2",
     "@angular-devkit/core": "^9.1.15",
     "@angular/animations": "9.1.13",
-    "@angular/cdk": "8.2.3",
+    "@angular/cdk": "9.2.4",
     "@angular/cli": "9.1.15",
     "@angular/common": "9.1.13",
     "@angular/compiler": "^9.1.13",
@@ -29,13 +28,14 @@
     "@angular/flex-layout": "^9.0.0-beta.31",
     "@angular/forms": "9.1.13",
     "@angular/language-service": "9.1.13",
-    "@angular/material": "8.2.3",
-    "@angular/material-moment-adapter": "^8.2.3",
+    "@angular/material": "9.2.4",
+    "@angular/material-moment-adapter": "^9.2.4",
     "@angular/platform-browser": "9.1.13",
     "@angular/platform-browser-dynamic": "9.1.13",
     "@angular/router": "9.1.13",
     "@angular/service-worker": "9.1.13",
-    "@ngtools/webpack": "^7.3.1",
+    "@kurkle/color": "^0.1.9",
+    "@ngtools/webpack": "^9.1.15",
     "@ngxs/logger-plugin": "^3.4.3",
     "@ngxs/store": "^3.4.3",
     "@types/chart.js": "^2.9.35",
@@ -64,11 +64,19 @@
     "fast-deep-equal": "^2.0.1",
     "fs-extra": "^10.0.0",
     "hammerjs": "^2.0.8",
+<<<<<<< HEAD
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "jshint": "^2.13.4",
     "karma": "~5.0.0",
     "karma-chrome-launcher": "~3.1.0",
+=======
+    "jasmine-core": "^3.3.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "jshint": "^2.13.4",
+    "karma": "5.0.5",
+    "karma-chrome-launcher": "^2.2.0",
+>>>>>>> d2529e5f (last commit to get angular updated to version 9)
     "karma-cli": "^2.0.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
@@ -84,13 +92,11 @@
     "rxjs": "^6.4.0",
     "rxjs-tslint": "^0.1.6",
     "ts-node": "~7.0.1",
+    "tslib": "^1.10.0",
     "tslint": "^5.11.0",
     "typeface-ubuntu": "0.0.65",
     "typeface-ubuntu-mono": "0.0.54",
-    "typescript": "~3.8.3",
-    "zone.js": "~0.10.2"
-  },
-  "dependencies": {
-    "tslib": "^1.10.0"
+    "typescript": "3.6.4",
+    "zone.js": "~0.11.5"
   }
 }
