@@ -462,14 +462,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.setAlertCount(i);
             }
             if (this.alertsDataSource && this.alertsDataSource.data) {
-                if (this.alertSearch && this.alertSearch.value !== '') {
-                    let val = this.utils.regExpEscSpecialChars(this.alertSearch.value, ['[', '\\]']);
-                    let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
-                    this.setTableDataSource(filteredAlertValues);
-                } else {
-                    //this.alertsDataSource.data = this.alerts;
-                    this.setTableDataSource(this.alerts);
-                }
+                this.alertsDataSource.data = this.alerts;
             }
 
         }));
