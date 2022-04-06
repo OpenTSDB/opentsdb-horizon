@@ -22,7 +22,7 @@ describe('DashboardConverterService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DashboardConverterService = TestBed.get(DashboardConverterService);
+    const service: DashboardConverterService = TestBed.inject(DashboardConverterService);
     expect(service).toBeTruthy();
   });
 });

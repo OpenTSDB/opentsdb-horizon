@@ -22,7 +22,7 @@ describe('TooltipComponentService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TooltipComponentService = TestBed.get(TooltipComponentService);
+    const service: TooltipComponentService = TestBed.inject(TooltipComponentService);
     expect(service).toBeTruthy();
   });
 });

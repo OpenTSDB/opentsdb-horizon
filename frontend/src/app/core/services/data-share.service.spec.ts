@@ -22,7 +22,7 @@ describe('DataShareService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DataShareService = TestBed.get(DataShareService);
+    const service: DataShareService = TestBed.inject(DataShareService);
     expect(service).toBeTruthy();
   });
 });
