@@ -22,7 +22,7 @@ describe('OpenTSDBService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: OpenTSDBService = TestBed.get(OpenTSDBService);
+    const service: OpenTSDBService = TestBed.inject(OpenTSDBService);
     expect(service).toBeTruthy();
   });
 });

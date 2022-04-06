@@ -22,7 +22,7 @@ describe('ClipboardService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ClipboardService = TestBed.get(ClipboardService);
+    const service: ClipboardService = TestBed.inject(ClipboardService);
     expect(service).toBeTruthy();
   });
 });

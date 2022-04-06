@@ -22,7 +22,7 @@ describe('DomService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DomService = TestBed.get(DomService);
+    const service: DomService = TestBed.inject(DomService);
     expect(service).toBeTruthy();
   });
 });

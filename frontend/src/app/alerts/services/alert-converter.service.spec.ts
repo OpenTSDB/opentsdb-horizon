@@ -22,7 +22,7 @@ describe('AlertConverterService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: AlertConverterService = TestBed.get(AlertConverterService);
+    const service: AlertConverterService = TestBed.inject(AlertConverterService);
     expect(service).toBeTruthy();
   });
 });

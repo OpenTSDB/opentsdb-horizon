@@ -22,7 +22,7 @@ describe('MetaService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MetaService = TestBed.get(MetaService);
+    const service: MetaService = TestBed.inject(MetaService);
     expect(service).toBeTruthy();
   });
 });
