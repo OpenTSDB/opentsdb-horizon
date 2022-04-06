@@ -22,7 +22,7 @@ describe('GlobalErrorHandlerService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: GlobalErrorHandlerService = TestBed.get(GlobalErrorHandlerService);
+    const service: GlobalErrorHandlerService = TestBed.inject(GlobalErrorHandlerService);
     expect(service).toBeTruthy();
   });
 });
