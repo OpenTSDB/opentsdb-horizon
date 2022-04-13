@@ -77,7 +77,7 @@ import { DBState, LoadDashboard } from '../../../../../dashboard/state';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbfs',
     templateUrl: './dbfs.component.html',
     styleUrls: ['./dbfs.component.scss'],
@@ -111,15 +111,15 @@ export class DbfsComponent implements OnInit, OnDestroy {
     files: any = {};
 
     @Select(DbfsResourcesState.getDynamicLoaded) dynamicLoaded$: Observable<any>;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     usersListLoaded: boolean = false;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     namespacesListLoaded: boolean = false;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     userFavoritesListLoaded: boolean = false;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     userFrequentListLoaded: boolean = false;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     userRecentListLoaded: boolean = false;
 
     @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
@@ -152,7 +152,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     panelResources: any[] = [];
 
     @Select(DbfsPanelsState.getCurPanel) currentPanelIndex$: Observable<number>;
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     currentPanelIndex: number = 0;
 
     @Select(DbfsPanelsState.getPanelAction) panelAction$: Observable<any>;
@@ -167,11 +167,11 @@ export class DbfsComponent implements OnInit, OnDestroy {
     @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
 
     // Inputs
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() activeNavSection: string = '';
     @Input() drawerMode: any = 'over';
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() activeMediaQuery: string = '';
 
     // Outputs
@@ -181,7 +181,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     fileForm: FormGroup;
     folderForm: FormGroup;
 
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     bulkEdit: boolean = false;
     edit: any = {
         mode: '',

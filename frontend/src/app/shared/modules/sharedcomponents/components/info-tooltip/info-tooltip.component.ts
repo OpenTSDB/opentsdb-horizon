@@ -18,7 +18,7 @@ import { Component, OnInit, Input, HostBinding, ViewChild, HostListener, ViewEnc
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'info-tooltip',
   templateUrl: './info-tooltip.component.html',
   styleUrls: ['./info-tooltip.component.scss'],

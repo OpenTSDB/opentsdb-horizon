@@ -216,7 +216,7 @@ export class RecipientsState {
     @Action(UpdateRecipientSuccess)
     updateRecipientSuccess(ctx: StateContext<RecipientsManagamentStateModel>, recipient) {
         const state = ctx.getState();
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let recipients = {...state.recipients};
         recipients = this.modifyRecipient(recipient.data, recipients);
 
@@ -276,7 +276,7 @@ export class RecipientsState {
         const type = Object.keys(recipient)[0];
         let index = 0;
         const _namespaceAndRecipients = JSON.parse(JSON.stringify(namespaceAndRecipients));
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (let i = 0; i < _namespaceAndRecipients.recipients[type].length; i++) {
             if (_namespaceAndRecipients.recipients[type][i].id === recipient[type][0].id) {
                 index = i;
@@ -290,10 +290,10 @@ export class RecipientsState {
     modifyRecipient(recipient, namespaceAndRecipients): any {
         const type = Object.keys(recipient)[0];
         const _namespaceAndRecipients = JSON.parse(JSON.stringify(namespaceAndRecipients));
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (let i = 0; i < _namespaceAndRecipients.recipients[type].length; i++) {
             if (_namespaceAndRecipients.recipients[type][i].id === recipient[type][0].id) {
-                // tslint:disable-next-line:forin
+                // eslint-disable-next-line guard-for-in
                 for (let key in recipient[type][0] ) {
                     if (key.toLowerCase() !== 'namespace' &&
                         key.toLowerCase() !== 'type' &&

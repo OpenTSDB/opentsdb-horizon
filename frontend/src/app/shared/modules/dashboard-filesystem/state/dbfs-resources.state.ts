@@ -436,7 +436,7 @@ export class DbfsResourcesState {
             if (!state.folders[path]) {
                 return { notFound: true };
             }
-            // tslint:disable-next-line: prefer-const
+            // eslint-disable-next-line prefer-const
             let data = { ...state.folders[path] };
 
             if (data.personal) {
@@ -706,7 +706,7 @@ export class DbfsResourcesState {
         panelRoot.personal.push(recvFolder.fullPath);
 
         // USER Trash - add to root panel
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         const userTrash = response.personalFolder.subfolders.filter(item => item.fullPath === '/user/' + activeUser + '/trash');
         const userTrashIdx = response.personalFolder.subfolders.indexOf(userTrash[0]);
 

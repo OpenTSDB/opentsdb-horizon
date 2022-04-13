@@ -29,7 +29,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'name-alert-dialog',
     templateUrl: './name-alert-dialog.component.html',
     styleUrls: ['./name-alert-dialog.component.scss'],

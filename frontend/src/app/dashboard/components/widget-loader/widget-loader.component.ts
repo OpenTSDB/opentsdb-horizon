@@ -183,7 +183,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
                         if (portalDef.type === 'component') {
                             // component based
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                             const compRef = (portalDef.name) ? this.infoIslandService.getComponentToLoad(portalDef.name) : portalDef.reference;
                             componentOrTemplateRef = new ComponentPortal(compRef, null, this.infoIslandService.createInjector(dataToInject));
                         } else {

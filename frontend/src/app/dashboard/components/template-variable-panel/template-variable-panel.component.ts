@@ -37,7 +37,7 @@ import { HttpService } from '../../../core/http/http.service';
 import { moveItemInArray, CdkDragStart } from '@angular/cdk/drag-drop';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'template-variable-panel',
     templateUrl: './template-variable-panel.component.html',
     styleUrls: ['./template-variable-panel.component.scss'],
@@ -215,7 +215,7 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
         if (metrics.length) {
             query.metrics = metrics;
         } else {
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             query.namespaces = this.mode.view ? this.tplVariables.viewTplVariables.namespaces : this.tplVariables.editTplVariables.namespaces;
         }
         return query;
@@ -880,17 +880,17 @@ export class TemplateVariablePanelComponent implements OnInit, OnChanges, OnDest
 
         // input only (value)
         if (options && options.inputOnly && options.inputOnly === true) {
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             inputWidth = (!filter || filter.length === 0) ? minSize : (this.utils.calculateTextWidth(filter, fontSize, fontFace) + 40) + 'px';
             return inputWidth;
             // prefix only (alias)
         } else if (options && options.prefixOnly && options.prefixOnly === true) {
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             prefixWidth = (!alias || alias.length === 0) ? minSize : (this.utils.calculateTextWidth(alias, fontSize, fontFace) + 40) + 'px';
             return prefixWidth;
             // else, calculate both
         } else {
-            // tslint:disable-next-line: radix
+            // eslint-disable-next-line radix
             minSize = parseInt(minSize);
             inputWidth = (!filter || filter.length === 0) ? minSize : this.utils.calculateTextWidth(filter, fontSize, fontFace);
             prefixWidth = this.utils.calculateTextWidth(alias, fontSize, fontFace);

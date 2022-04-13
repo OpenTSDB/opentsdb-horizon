@@ -20,7 +20,7 @@ import * as moment from 'moment';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'activity-panel',
     templateUrl: './activity-panel.component.html',
     styleUrls: ['./activity-panel.component.scss'],

@@ -1,5 +1,3 @@
-// NOTE: EVENTUALLY REMOVE THIS FILE (this will be last to be removed)
-
 // **
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
@@ -27,14 +25,13 @@
 //* Primarily it is just to help reduce code duplication
 
 // [ STEP 1 ] - IMPORT APPLICATION STYLE MODULE SCSS
-@import 'shared/modules/universal-data-tooltip/universal-data-tooltip.style-module.scss';
+//@import '../shared/modules/universal-data-tooltip/universal-data-tooltip.style-module.scss';
+@import '../shared/modules/universal-data-tooltip/universal-data-tooltip-module.theme';
 
-// [ STEP 2 ] - ADD MODULE'S BASE MIXINS (aka structure)
-@mixin standalone-core() {
-    @include universal-data-tooltip-module-core();
-}
 
-// [ STEP 3 ] - ADD MODULES'S THEME MIXINS (aka look-n-feel)
+
 @mixin generate-standalone-theme ($theme-config) {
-    @include universal-data-tooltip-module-theme($theme-config);
+    @include init-component-variants() {
+        @include universal-data-tooltip-module-theme();
+    }
 }

@@ -33,7 +33,7 @@ import * as moment from 'moment';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'timeseries-legend-component',
     templateUrl: './timeseries-legend.component.html',
     styleUrls: ['./timeseries-legend.component.scss'],
@@ -391,7 +391,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         } else {
             for (const index in this.data.series) {
                 if (this.data.series[index]) {
-                    // tslint:disable-next-line: radix
+                    // eslint-disable-next-line radix
                     this.data.series[index]['srcIndex'] = parseInt(index);
                     this.data.series[index]['visible'] = this.currentWidgetOptions.visibility[this.data.series[index].srcIndex];
                 }

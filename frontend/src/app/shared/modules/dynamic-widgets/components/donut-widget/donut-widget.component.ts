@@ -33,7 +33,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'donut-widget',
     templateUrl: './donut-widget.component.html',
     styleUrls: ['./donut-widget.component.scss'],
@@ -145,7 +145,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                         } else if ((message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed)) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -271,7 +271,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : newSize.height + 60;
 
@@ -426,7 +426,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setVisualization(qIndex, mconfigs) {
         mconfigs.forEach((config, i) => {
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
         });
     }

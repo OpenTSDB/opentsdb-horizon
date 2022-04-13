@@ -48,9 +48,9 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
     Object = Object;
     private listenSub: Subscription;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isDataLoaded: boolean = false;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     isStackedGraph: boolean = false;
     // properties to pass to  chartjs chart directive
 
@@ -178,7 +178,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -426,7 +426,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 60;
         const outputSize = nativeEl.getBoundingClientRect();

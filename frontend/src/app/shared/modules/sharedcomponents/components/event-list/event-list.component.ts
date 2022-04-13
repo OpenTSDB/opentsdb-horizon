@@ -18,7 +18,7 @@ import { Component, OnInit, HostBinding, Input, SimpleChanges, OnChanges, ViewEn
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'event-list',
     templateUrl: './event-list.component.html',
     styleUrls: ['./event-list.component.scss'],

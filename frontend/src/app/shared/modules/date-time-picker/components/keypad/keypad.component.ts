@@ -17,7 +17,7 @@
 import { Component, OnInit, HostBinding, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'keypad',
     templateUrl: './keypad.component.html',
     styleUrls: ['./keypad.component.scss'],
@@ -27,9 +27,9 @@ export class KeypadComponent implements OnInit {
     @HostBinding('class.dtp-keypad') private _hostClass = true;
 
     @Output() amountSelected = new EventEmitter<String>();
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() disableKeysAt3: boolean = false;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() disableKeysAt9: boolean = false;
 
     @Input() preset: any;

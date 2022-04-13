@@ -18,7 +18,7 @@ import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild,
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'big-number-visual-appearance',
     templateUrl: './big-number-visual-appearance.component.html',
     styleUrls: ['./big-number-visual-appearance.component.scss'],
@@ -99,9 +99,9 @@ export class BignumberVisualAppearanceComponent implements OnInit {
     currencyUnits: Array<string> = ['usd'];
     otherUnits: Array<string> = ['auto'];
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     captionPlaceholder: string = 'Enter Caption {{tag.key}}';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     prefixDisabled: boolean = true;
 
     constructor() { }
@@ -241,7 +241,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
     }
 
     indicatorToggleChange() {
-        // tslint:disable-next-line:whitespace
+        // eslint-disable-next-line
         this.widget.settings.visual['changedIndicatorEnabled'] =!
         this.widget.settings.visual['changedIndicatorEnabled'];
     }

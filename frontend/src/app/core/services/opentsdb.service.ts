@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 import { Injectable } from '@angular/core';
 import { UtilsService } from './utils.service';
 import { AppConfigService } from './config.service';
@@ -458,7 +458,7 @@ export class OpenTSDBService {
                     this.handleTimeDiffFunction(idPrefix, subGraph, funs, i);
                     break;
                 case 'Rollup':
-                    // tslint:disable-next-line:prefer-const
+                    // eslint-disable-next-line prefer-const
                     let [ aggregator, ds ] = funs[i].val.split(',').map(d => d.trim());
                     if ( aggregator ) {
                         ds = ds || 'auto';

@@ -111,7 +111,7 @@ export class UtilsService {
                 const mid = queries[i].metrics[j].id;
                 if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.visible === true ) {
                     metricsVisibleLen++;
-                    // tslint:disable:max-line-length
+                    /* eslint-disable max-len */
                     if (!queries[i].metrics[j].settings.visual || queries[i].metrics[j].settings.visual.color === 'auto' || !queries[i].metrics[j].settings.visual.color) {
                         metricsVisibleAutoColorLen++;
                         metricsVisibleAutoColorIds.push(qid + '-' + mid);
@@ -674,7 +674,7 @@ export class UtilsService {
     }
 
     getMetricFromId(id, queries) {
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (let i in queries) {
             for (let j in queries[i].metrics) {
                 if (queries[i].metrics[j].id === id) {
@@ -686,7 +686,7 @@ export class UtilsService {
     }
 
     getMetricIndexFromId(id, queries) {
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (const i in queries) {
             for (const j in queries[i].metrics) {
                 if (queries[i].metrics[j].id === id) {
@@ -698,7 +698,7 @@ export class UtilsService {
     }
 
     getSourceIDAndTypeFromMetricID(metricId, queries) {
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (const i in queries) {
             const queryIndex = parseInt(i, 10) + 1;
             let metricIndex = 0;
@@ -713,10 +713,10 @@ export class UtilsService {
 
                 if (queries[i].metrics[j].id === metricId) {
                     if (queries[i].metrics[j].expression) {
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         return { id: 'q' + queryIndex + '_' + 'e' + expressionIndex, qIndex: queryIndex - 1, mIndex: metricIndex - 1, expression: true };
                     } else {
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         return { id: 'q' + queryIndex + '_' + 'm' + metricIndex, qIndex: queryIndex - 1, mIndex: metricIndex - 1, expression: false };
                     }
                 }
@@ -835,7 +835,7 @@ export class UtilsService {
 
   getEventBuckets(startTime, endTime, maxNumOfBuckets, events) {
     // startTime in milliseconds. ex: 1561670640000
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     const validBucketSizes = [1, 5, 10, 15, 30, 60, 60 * 2, 60 * 3, 60 * 4, 60 * 6, 60 * 12, 60 * 24, 60 * 48, 60 * 24 * 7, 60 * 24 * 14, 60 * 24 * 28, 60 * 24 * 28 * 3, 60 * 24 * 28 * 12]; // in minutes
     const duration = moment.duration(moment(endTime).diff(moment(startTime))).as('minutes');
     const minuteAsMilliseconds = 60 * 1000;

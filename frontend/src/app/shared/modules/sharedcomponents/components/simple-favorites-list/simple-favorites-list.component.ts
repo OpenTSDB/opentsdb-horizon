@@ -31,7 +31,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-favorites-list',
     templateUrl: './simple-favorites-list.component.html',
     styleUrls: ['./simple-favorites-list.component.scss'],

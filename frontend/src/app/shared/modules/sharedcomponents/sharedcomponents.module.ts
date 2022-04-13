@@ -30,7 +30,7 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
 /** public items from Sharedcomponents */
 
  // other components
- // tslint:disable:max-line-length
+ /* eslint-disable max-len */
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
 import { ResizableDirective } from '../directives/resizable.directive';

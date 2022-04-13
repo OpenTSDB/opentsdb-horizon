@@ -28,7 +28,7 @@ import * as d3 from 'd3';
 import { TooltipDataService } from '../../universal-data-tooltip/services/tooltip-data.service';
 
 @Directive({
-    // tslint:disable-next-line: directive-selector
+    // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '[dygraphsChart]'
 })
 export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
@@ -394,13 +394,13 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
             const range: any = yScale.invertExtent(bucket);
 
             ttData.timestamp = x;
-            // tslint:disable:max-line-length
+            /* eslint-disable max-len */
             ttData.timestampFormatted = options.labelsUTC ? moment(x).utc().format('YYYY/MM/DD HH:mm') : moment(x).format('YYYY/MM/DD HH:mm');
 
             const percentage = self.uConverter.convert((tooltipData.length / options.heatmap.nseries) * 100, '', '', { unit: '', precision: precision });
             ttData.affectedSeries = percentage + '% of Series, ' + tooltipData.length + ' of ' + options.heatmap.nseries;
             ttData.bucketRange = [range[0], range[1]];
-            // tslint:disable:max-line-length
+            /* eslint-disable max-len */
             ttData.color = !Array.isArray(options.heatmap.color) ? options.heatmap.color : options.heatmap.colorValueMap[tooltipData.length];
             ttData.percentage = percentage; // use this to calculate opacity of heatmap color;
 
@@ -454,7 +454,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                         if (!yRanges && n > 0 ) {
                             const actualStart = new Date(self.data.ts[0][0]).getTime() / 1000;
                             const actualEnd = new Date(self.data.ts[n - 1][0]).getTime() / 1000;
-                            // tslint:disable-next-line:max-line-length
+                            // eslint-disable-next-line max-len
                             self.zoomed.emit({ axis: 'x', start: minDate / 1000, end: maxDate / 1000, isZoomed: true, actualStart: actualStart, actualEnd: actualEnd });
                         } else if ( yRanges ) {
                             self.zoomed.emit( { axis: 'y', y: yRanges[0], y2: yRanges[1] });
@@ -596,7 +596,7 @@ export class DygraphsChartDirective implements OnInit, OnChanges, OnDestroy {
                                         tickData: { options: self.options, x: ts, bucket: bucket, data: hasData },
                                     });
                                 }
-                                // tslint:disable:max-line-length
+                                /* eslint-disable max-len */
                                 ctx.fillStyle = Array.isArray(g.user_attrs_.heatmap.color) || !hasData ? '#dddddd' : g.user_attrs_.heatmap.color;
                                 ctx.fillRect(x, y, width, height);
                                 ctx.strokeStyle = 'red';

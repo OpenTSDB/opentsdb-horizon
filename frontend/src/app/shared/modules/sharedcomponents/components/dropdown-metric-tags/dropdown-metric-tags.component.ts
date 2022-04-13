@@ -34,7 +34,7 @@ import { FormControl } from '@angular/forms';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dropdown-metric-tags',
     templateUrl: './dropdown-metric-tags.component.html',
     styleUrls: ['./dropdown-metric-tags.component.scss'],
@@ -72,7 +72,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     ) { }
 
     ngOnInit() {
-        // tslint:disable-next-line:arrow-return-shorthand
+        // eslint-disable-next-line arrow-body-style
         this.tagOptions = this.selected ? this.selected.map(d => { return { name: d }; }) : [];
 
         if (this.enableGroupBy === null || this.enableGroupBy === undefined) {

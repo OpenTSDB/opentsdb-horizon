@@ -26,7 +26,7 @@ import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-settings-toggle',
     templateUrl: './dashboard-settings-toggle.component.html',
     styleUrls: ['./dashboard-settings-toggle.component.scss'],

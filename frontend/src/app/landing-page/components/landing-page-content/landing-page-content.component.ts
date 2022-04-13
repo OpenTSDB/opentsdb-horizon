@@ -32,7 +32,7 @@ import {
 } from '../../../shared/modules/dashboard-filesystem/state';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'landing-page-content',
     templateUrl: './landing-page-content.component.html',
     styleUrls: ['./landing-page-content.component.scss'],
@@ -51,15 +51,15 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     /** Local variables */
 
     // TODO: this should be in user profile somewhere
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     showHero: boolean = true;
 
     // Search query string
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     searchQuery: string = '';
 
     // Selected search context
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     searchContext: string = 'dashboard';
 
     // options for the search context dropdown menu in the search field

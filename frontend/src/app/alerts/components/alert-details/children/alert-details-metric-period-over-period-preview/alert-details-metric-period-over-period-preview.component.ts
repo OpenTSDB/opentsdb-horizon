@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 import { Component, OnInit, Input, HostBinding, OnChanges, SimpleChanges, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy,
           Output, EventEmitter, ViewEncapsulation  } from '@angular/core';
 import * as deepEqual from 'fast-deep-equal';
@@ -24,7 +24,7 @@ import { InfoIslandService } from '../../../../../shared/modules/info-island/ser
 import { ComponentPortal } from '@angular/cdk/portal';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'alert-details-metric-period-over-period-preview',
   templateUrl: './alert-details-metric-period-over-period-preview.component.html',
   styleUrls: ['./alert-details-metric-period-over-period-preview.component.scss'],

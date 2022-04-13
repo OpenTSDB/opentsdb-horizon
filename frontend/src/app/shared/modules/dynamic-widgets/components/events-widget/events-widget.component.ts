@@ -22,7 +22,7 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'events-widget',
     templateUrl: './events-widget.component.html',
     styleUrls: ['./events-widget.component.scss'],
@@ -80,7 +80,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
                             this.widget.settings.time.zoomTime = message.payload.date;
                             this.getEvents();
                         }
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
                         this.isCustomZoomed = message.payload.date.isZoomed;
                         this.getEvents();

@@ -25,7 +25,7 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'metric-autocomplete',
     templateUrl: './metric-autocomplete.component.html',
     styleUrls: ['./metric-autocomplete.component.scss'],
@@ -36,10 +36,10 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     @HostBinding('class.metric-autocomplete') private _hostClass = true;
     @Input() namespace = '';
     @Input() filters = [];
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() multiple: boolean = false;
     @Input() metrics = [];
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() focus: boolean = true;
 
     @Output() metricOutput = new EventEmitter();
@@ -63,7 +63,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     isDestroying = false;
     metricSub: Subscription;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     firstRun: boolean = true;
     scrollDetect: any;
 

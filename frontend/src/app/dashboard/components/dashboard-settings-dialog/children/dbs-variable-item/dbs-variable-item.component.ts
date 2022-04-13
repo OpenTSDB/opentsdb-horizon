@@ -40,7 +40,7 @@ import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-variable-item',
     templateUrl: './dbs-variable-item.component.html',
     styleUrls: ['./dbs-variable-item.component.scss'],
@@ -64,7 +64,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     private allowedValuesInputSub: Subscription; // Allowed values input change subscription
 
     /** Local Variables */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private expectingIntercomData: boolean = false;
 
     /** Autocomplete variables */
