@@ -40,7 +40,7 @@ import { InfoIslandService } from '../../../info-island/services/info-island.ser
 import { ThemeService } from '../../../theme/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'linechart-widget',
     templateUrl: './linechart-widget.component.html',
     styleUrls: ['./linechart-widget.component.scss'],
@@ -188,7 +188,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsCount = 10000;
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
-    // tslint:disable-next-line: max-line-length
+    // eslint-disable-next-line max-len
     visibleSections: any = { 'queries': true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     formErrors: any = {};
     eventsError = '';
@@ -293,7 +293,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.resetYZoom();
                                 this.refreshData();
                             }
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                         } else if ((message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed)) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.resetYZoom();
@@ -567,9 +567,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             // override selections
             this.options.visibilityHash = chartOptions && chartOptions.visbilityHash ? chartOptions.visbilityHash : {};
             this.options.initZoom = { y: {}, y2: {} };
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             this.options.initZoom.y = chartOptions.axes && chartOptions.axes.y ? { ...this.options.axes.y, valueRange: chartOptions.axes.y } : null;
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? { ...this.options.axes.y2, valueRange: chartOptions.axes.y2 } : null;
         }
     }
@@ -606,7 +606,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const series = this.options.series;
         const table = [];
         this.legendDisplayColumns = ['color'].concat(this.widget.settings.legend.columns || []).concat(['name']);
-        // tslint:disable-next-line: forin
+        // eslint-disable-next-line guard-for-in
         for (const index in series) {
             let config;
             if (series.hasOwnProperty(index)) {
@@ -728,7 +728,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
                 let mids = [];
                 if (message.payload.visual.axis && (curtype === 'line')) {
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     mids = this.widget.queries[qindex].metrics.filter(d => ['area', 'bar'].includes(d.settings.visual.type)).map(d => d.id);
                 }
                 this.utilService.updateQueryVisual(this.widget, message.id, message.payload.mid, message.payload.visual, mids);
@@ -843,7 +843,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         const newSize = nativeEl.getBoundingClientRect();
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 70;
         // let newSize = outputSize;
@@ -902,7 +902,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             const multigraphSettings = this.widget.settings.multigraph;
 
             if (this.multigraphMode === 'freeflow') {
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.freeflowBreak = (multigraphSettings.gridOptions.viewportDisplay === 'custom') ? multigraphSettings.gridOptions.custom.y : 3;
             }
 
@@ -1170,7 +1170,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             }
         }
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if ((visual.type && ['bar', 'area'].includes(visual.type) && !isMetricMultiGraph) || visual.stacked || (curtype !== 'line' && visual.axis)) {
             if (visual.type === 'bar') {
                 visual.stacked = 'true';
@@ -1178,7 +1178,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             for (let i = 0; i < this.widget.queries.length; i++) {
                 for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
                     if (['area', 'bar'].includes(this.widget.queries[i].metrics[j].settings.visual.type)) {
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         this.widget.queries[i].metrics[j].settings.visual = { ...this.widget.queries[i].metrics[j].settings.visual, ...visual };
                     }
                 }
@@ -1377,7 +1377,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             // IF NOT OPEN, OPEN IT
 
             const islandTitle = this.widget.eventQueries[0].search ?
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 this.getEventCountInBuckets() + ' Events: ' + this.widget.eventQueries[0].namespace + ' - ' + this.widget.eventQueries[0].search :
                 this.getEventCountInBuckets() + ' Events: ' + this.widget.eventQueries[0].namespace;
 
@@ -1660,7 +1660,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             };
             if (multigraph) {
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
@@ -1676,13 +1676,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     originId: this.widget.id,
                     data: payload.data
                 };
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
                 const pos = this.elRef.nativeElement.getBoundingClientRect();
                 const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
                 const height = pos.height * (1 - heightMod) - 5;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {
                     ...widgetOptions, draggable: true,
                     originId: this.widget.id,

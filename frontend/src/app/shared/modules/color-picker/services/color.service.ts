@@ -34,7 +34,7 @@ export class ColorService {
         r /= 255, g /= 255, b /= 255;
 
         const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let h, s, l = (max + min) / 2;
 
         if (max === min) {
@@ -175,7 +175,7 @@ export class ColorService {
 
     hexToColorName(hexColor: string): string {
         let colorName = hexColor;
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         for (let color of DEFAULT_COLORS) {
             if (color.value === hexColor) {
                 colorName = color.text;

@@ -27,7 +27,7 @@ import { Subscription, Observable, interval, BehaviorSubject } from 'rxjs';
 import { take, withLatestFrom, filter } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'time-picker',
     templateUrl: './time-picker.component.html',
     styleUrls: ['./time-picker.component.scss'],
@@ -139,7 +139,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
 
     options: TimeRangePickerOptions;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     // _isOpen: boolean = false;
     refreshSubcription: Subscription;
     paused$ = new BehaviorSubject<boolean>(false);

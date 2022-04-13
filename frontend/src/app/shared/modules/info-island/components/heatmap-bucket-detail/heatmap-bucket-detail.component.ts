@@ -143,11 +143,11 @@ export class HeatmapBucketDetailComponent implements OnInit, AfterViewInit, OnDe
 
         const label = this.options.heatmap.metric;
         this.meta.metric = label.length > 50 ? label.substr(0, 48) + '..' : label;
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.meta.formattedTime = this.options.labelsUTC ? moment(payload.tickData.x).utc().format('MM/DD/YYYY h:mm a') : moment(payload.tickData.x).format('MM/DD/YYYY h:mm a');
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.meta.bucketNSeries = this.options.series[this.meta.bucket] && this.options.series[this.meta.bucket][this.meta.xTime] ? this.options.series[this.meta.bucket][this.meta.xTime].length : 0;
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.meta.bucketNSPercent = this.meta.bucketNSeries ? this.unitConvertor.convert((this.meta.bucketNSeries / this.options.heatmap.nseries) * 100, '', '', { unit: '', precision: 'auto' }) : 0;
         const range = yScale.invertExtent(this.meta.bucket);
         for (let i = 0; i < 2; i++) {
@@ -159,7 +159,7 @@ export class HeatmapBucketDetailComponent implements OnInit, AfterViewInit, OnDe
         const barData = [];
         for (let i = 1; i <= this.options.heatmap.buckets; i++) {
             const range = yScale.invertExtent(i);
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             barData.push({ label: i, value: this.options.series[i] && this.options.series[i][this.meta.xTime] ? this.options.series[i][this.meta.xTime].length : 0, start: range[0] });
             if (i === this.meta.bucket) {
                 barData[i - 1].color = '#227aec';
@@ -170,7 +170,7 @@ export class HeatmapBucketDetailComponent implements OnInit, AfterViewInit, OnDe
     }
 
     private setTableData() {
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         const data = this.options.series[this.meta.bucket] && this.options.series[this.meta.bucket][this.meta.xTime] ? this.options.series[this.meta.bucket][this.meta.xTime] : [];
         const format = this.options.axes.y.tickFormat;
         const precision = format.precision ? format.precision : 2;

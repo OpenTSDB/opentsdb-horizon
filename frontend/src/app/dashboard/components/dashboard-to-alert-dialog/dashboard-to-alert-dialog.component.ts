@@ -19,7 +19,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'dashboard-to-alert-dialog',
   templateUrl: './dashboard-to-alert-dialog.component.html',
   styleUrls: ['./dashboard-to-alert-dialog.component.scss'],

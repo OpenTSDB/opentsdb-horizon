@@ -18,7 +18,7 @@ import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewEncaps
 import { FormGroup , FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl} from '@angular/forms';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'widget-config-sorting',
   templateUrl: './widget-config-sorting.component.html',
   styleUrls: ['./widget-config-sorting.component.scss'],

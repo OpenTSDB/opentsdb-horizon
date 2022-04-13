@@ -28,7 +28,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-time',
     templateUrl: './widget-config-time.component.html',
     styleUrls: ['./widget-config-time.component.scss'],
@@ -358,7 +358,7 @@ export class WidgetConfigTimeComponent implements OnInit, OnDestroy, AfterViewIn
         const isCustomDownsample = this.widget.settings.time.downsample.value === 'custom' ? true : false;
         const customUnit = this.widget.settings.time.downsample.customUnit || this.customDownsampleUnit;
         let minInterval = (this.widget.settings.time.minInterval ?  this.widget.settings.time.minInterval : this.minInterval).trim();
-        // tslint:disable:max-line-length
+        /* eslint-disable max-len */
         let reportingInterval = ( this.widget.settings.time.reportingInterval ? this.widget.settings.time.reportingInterval : this.reportingInterval).trim();
         minInterval = minInterval.match(/^([0-9]+)(s|m|h)$/);
         reportingInterval = reportingInterval.match(/^([0-9]+)(s|m|h)$/);

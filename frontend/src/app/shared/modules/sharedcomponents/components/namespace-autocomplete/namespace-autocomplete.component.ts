@@ -36,7 +36,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'namespace-autocomplete',
     templateUrl: './namespace-autocomplete.component.html',
     styleUrls: ['./namespace-autocomplete.component.scss'],

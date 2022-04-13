@@ -48,7 +48,7 @@ import { catchError } from 'rxjs/operators';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbfs-mini-nav',
     templateUrl: './dbfs-mini-nav.component.html',
     styleUrls: ['./dbfs-mini-nav.component.scss'],
@@ -58,11 +58,11 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.mini-navigator-component') private _hostClass = true;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() mode: string = 'move'; // options: move, select, save
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() path: string = '';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() type: string = 'folder'; // 'folder' or 'file'
 
     @Output() directorySelected: any = new EventEmitter<any>();

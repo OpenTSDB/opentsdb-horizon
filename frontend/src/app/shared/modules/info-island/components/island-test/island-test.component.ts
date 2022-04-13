@@ -18,7 +18,7 @@ import { Component, OnInit, Input, Output, Inject, ViewEncapsulation } from '@an
 import { ISLAND_DATA } from '../../info-island.tokens';
 
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'island-test',
     templateUrl: './island-test.component.html',
     styleUrls: ['./island-test.component.scss'],

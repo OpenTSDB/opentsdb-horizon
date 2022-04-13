@@ -28,7 +28,7 @@ import * as moment from 'moment';
 export class DatatranformerService {
 
    REGDSID = /q?(\d+)?_?(m|e)(\d+).*/;
-  // tslint:disable:max-line-length
+  /* eslint-disable max-len */
   constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
 
   //ADDED: table data 

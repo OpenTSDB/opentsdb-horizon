@@ -120,7 +120,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     private pendingRecent: any = {};
 
     // first load flag
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private firstLoad: boolean = true;
 
     private routedApp: any = '';

@@ -219,7 +219,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     get guid(): string {
         if (!this._guid) {
             this._guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                // tslint:disable-next-line:no-bitwise
+                // eslint-disable-next-line no-bitwise
                 const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
@@ -245,7 +245,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // confirmDelete Dialog
     confirmDeleteDialog: MatDialogRef<TemplateRef<any>> | null;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     sparklineMenuOpen: boolean = false;
     sparklineDisplay: any = { label: '', value: '' };
     sparklineDisplayMenuOptions: any[] = [
@@ -275,7 +275,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     ];
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     namespaceDropMenuOpen: boolean = false;
     configLoaded$ = new Subject();
     auraUrl = '';
@@ -674,7 +674,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     this.store.dispatch(new CheckWriteAccess({ namespace: url[1].path, id: '_new_' }));
                 } else {
                     this.detailsView = false;
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     const ns = url[1] && url[1].path ? url[1].path : defaultNS;
                     this.setNamespace(ns);
                     this.infoIslandService.closeIsland();

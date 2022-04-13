@@ -17,7 +17,7 @@
 // borrowed from Dygraphs for RStudio
 // https://github.com/rstudio/dygraphs/blob/master/inst/plotters/stackedbarchart.js
 "use strict";
-
+var Dygraph = require("dygraphs/src/dygraph");
 var DygraphLayout = require("dygraphs/src/dygraph-layout");
 
 var barChartPlotter = function(e) {
@@ -199,5 +199,16 @@ var barChartPlotter = function(e) {
         }
     }
 }
+
+var DygraphLayoutCalcYNormal_ = function (axis, value, logscale) {
+    if (logscale) {
+        var x =
+            1.0 -
+            (utils.log10(value) - utils.log10(axis.minyval)) * axis.ylogscale;
+        return isFinite(x) ? x : NaN; // shim for v8 issue; see pull request 276
+    } else {
+        return 1.0 - (value - axis.minyval) * axis.yscale;
+    }
+};
 
 module.exports = barChartPlotter;

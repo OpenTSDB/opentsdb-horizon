@@ -22,7 +22,7 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 import * as deepEqual from 'fast-deep-equal';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'event-timeline',
     templateUrl: './event-timeline.component.html',
     styleUrls: ['./event-timeline.component.scss'],
@@ -90,7 +90,7 @@ export class EventTimelineComponent implements OnInit, OnChanges {
             this.buckets = this.util.getEventBuckets(this.startTime, this.endTime, this.width / this.iconWidth, this.events);
             const newBucketsIds = this.getEventIdsForBuckets([...this.buckets]);
 
-            // tslint:disable:prefer-const
+            /* eslint-disable prefer-const */
             for (let i = 0; i < this.buckets.length; i++) {
                 if (this.buckets[i].startTime >= this.startTime && this.buckets[i].startTime <= this.endTime) {
                     let xStart = (this.buckets[i].endTime - this.startTime) * this.getEventResolution();

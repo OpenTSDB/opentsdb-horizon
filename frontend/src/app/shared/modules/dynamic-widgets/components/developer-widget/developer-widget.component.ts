@@ -33,7 +33,7 @@ import {
 } from '../../../sharedcomponents/components';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'developer-widget',
     templateUrl: './developer-widget.component.html',
     styleUrls: ['./developer-widget.component.scss'],

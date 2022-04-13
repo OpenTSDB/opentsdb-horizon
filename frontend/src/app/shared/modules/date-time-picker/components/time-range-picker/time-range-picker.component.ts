@@ -28,7 +28,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 const moment = momentNs;
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'time-range-picker',
     templateUrl: './time-range-picker.component.html',
     styleUrls: ['./time-range-picker.component.scss'],
@@ -89,7 +89,7 @@ export class TimeRangePickerComponent implements OnInit {
 
     showApply: boolean;
     presetSelected: Preset;
-    presets: Preset[] = [ // tslint:disable:max-line-length
+    presets: Preset[] = [ /* eslint-disable max-len */
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.year),    buttonName: 'y',   abbr: this.utilsService.timeAbbr.year},
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.quarter), buttonName: 'qtr', abbr: 'qtr'},
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.month),   buttonName: 'mo',  abbr: this.utilsService.timeAbbr.month},

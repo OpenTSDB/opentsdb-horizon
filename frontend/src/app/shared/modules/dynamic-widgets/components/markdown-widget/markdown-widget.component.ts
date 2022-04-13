@@ -19,7 +19,7 @@ import { IntercomService, IMessage } from '../../../../../core/services/intercom
 import { Subscription, BehaviorSubject, of } from 'rxjs';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'markdown-widget',
   templateUrl: './markdown-widget.component.html',
   styleUrls: ['./markdown-widget.component.scss'],

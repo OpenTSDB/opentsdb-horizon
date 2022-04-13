@@ -64,7 +64,7 @@ import { AppConfigService } from "../../../core/services/config.service";
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'alert-details',
     templateUrl: './alert-details.component.html',
     styleUrls: ['./alert-details.component.scss'],
@@ -160,7 +160,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     thresholds: any = { };
     thresholdType: String = '';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     showThresholdAdvanced: boolean = false; // toggle in threshold form
 
     // FORM STUFF
@@ -272,7 +272,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     error: any;
     errorDialog: MatDialogRef<ErrorDialogComponent> | null;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     activeTabIndex: number = 0;
     private subscription: Subscription = new Subscription();
 
@@ -527,7 +527,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const warn = data.threshold.singleMetric.warnThreshold !== undefined ? data.threshold.singleMetric.warnThreshold : null;
         const recover = data.threshold.singleMetric.recoveryThreshold !== undefined ? data.threshold.singleMetric.recoveryThreshold : null;
         const notifyOnMissing = data.threshold.notifyOnMissing ? data.threshold.notifyOnMissing.toString() : 'false';
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const metricId = data.threshold.singleMetric.metricId ? this.utils.getMetricDropdownValue(data.queries.raw, data.threshold.singleMetric.metricId) : '';
         const [qindex, mindex] = metricId ? this.utils.getMetricIndexFromId(metricId, this.queries) : [null, null];
         this.alertForm = this.fb.group({
@@ -546,7 +546,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 singleMetric: this.fb.group({
                     queryIndex: data.threshold.singleMetric.queryIndex || -1 ,
                     queryType : data.threshold.singleMetric.queryType || 'tsdb',
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     metricId: [ metricId ],
                     badThreshold:  bad,
                     warnThreshold: warn,
@@ -554,7 +554,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     reportingInterval: data.threshold.singleMetric.reportingInterval || null,
                     recoveryThreshold: recover,
                     recoveryType: recover === null ? 'minimum' : 'specific',
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     slidingWindow : data.threshold.singleMetric.slidingWindow ? data.threshold.singleMetric.slidingWindow.toString() : this.defaultSlidingWindowSize,
                     comparisonOperator : data.threshold.singleMetric.comparisonOperator || 'above',
                     timeSampler : data.threshold.singleMetric.timeSampler || 'at_least_once'
@@ -598,7 +598,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
         }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['badThreshold'].valueChanges
             .pipe(
                 startWith(this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['badThreshold'].value),
@@ -624,7 +624,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
             }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['warnThreshold'].valueChanges
             .pipe(
                 startWith(this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['warnThreshold'].value),
@@ -649,7 +649,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
             }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryThreshold'].valueChanges.subscribe(val => {
             const recoveryType = this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].value;
             if ( val !== null && recoveryType === 'minimum' ) {
@@ -668,19 +668,19 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.prevTimeSampler = val;
         }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].valueChanges.subscribe(val => {
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.setThresholds('recovery', val === 'specific' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryThreshold'].value : '');
         }));
 
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['metricId'].valueChanges.subscribe(val => {
             this.metricIdChanged(val);
         }));
 
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['notifyOnMissing'].valueChanges.subscribe(val => {
             if ( val === 'true' ) {
                 this.alertForm.controls['threshold']['controls']['autoRecoveryInterval'].setValue('null');
@@ -762,7 +762,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             })
         });
         this.setTags();
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['badThreshold'].valueChanges
                 .subscribe( bad => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -772,7 +772,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             .setValue(transitions.filter(d => !d.toLowerCase().includes('bad') ));
                     }
                 }));
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['warnThreshold'].valueChanges
                 .subscribe( warn => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -781,7 +781,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             .setValue(transitions.filter(d => !d.toLowerCase().includes('warn') ));
                     }
                 }));
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['unknownThreshold'].valueChanges
                 .subscribe( unknown => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -844,7 +844,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             })
         });
         this.options.axes.y.valueRange[0] = 0;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.startTime =  this.dsTimeRange[this.slidingWindowToDSTimeRange(this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').value)].label;
         this.endTime = 'now';
         this.doEventQuery$.next(['list', 'count']);
@@ -852,7 +852,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.setTags();
 
         this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').valueChanges.subscribe(value => {
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.startTime =  this.dsTimeRange[this.slidingWindowToDSTimeRange(this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').value)].label;
             this.endTime = 'now';
             this.doEventQuery$.next(['list', 'count']);
@@ -1537,7 +1537,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             case 'UpdateQueryMetricVisual':
                 const qindex = this.queries.findIndex(d => d.id === message.id);
                 const mindex = this.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.queries[qindex].metrics[mindex].settings.visual = { ...this.queries[qindex].metrics[mindex].settings.visual, ...message.payload.visual };
                 this.refreshChart();
                 break;
@@ -1795,11 +1795,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                     data.threshold.suppress.reportingInterval = data.threshold.suppress.timeSampler !== 'all_of_the_times' ? null : this.suppressConfig.reportingInterval;
                 }
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.autoRecoveryInterval = data.threshold.autoRecoveryInterval !== 'null' ? data.threshold.autoRecoveryInterval : null;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.singleMetric.reportingInterval = data.threshold.singleMetric.timeSampler === 'all_of_the_times' && data.threshold.singleMetric.reportingInterval !== null ? data.threshold.singleMetric.reportingInterval : null;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.singleMetric.requiresFullWindow = data.threshold.singleMetric.reportingInterval ? true : false;
                 if (this.data.threshold.subType === 'periodOverPeriod') {
                     const dataThresholdCopy = {...data.threshold};
@@ -1842,7 +1842,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const queries = this.utils.deepClone(this.queries);
         for ( let i = 0; i < queries.length; i++ ) {
             for ( let j = 0; j < queries[i].metrics.length; j++ ) {
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 queries[i].metrics[j].settings.visual.visible =  !this.thresholdSingleMetricControls.metricId.value || queries[i].metrics[j].id === this.thresholdSingleMetricControls.metricId.value;
             }
         }

@@ -19,7 +19,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-general',
     templateUrl: './widget-config-general.component.html',
     styleUrls: ['./widget-config-general.component.scss'],

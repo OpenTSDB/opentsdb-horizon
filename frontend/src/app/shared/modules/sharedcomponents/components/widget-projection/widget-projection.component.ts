@@ -25,7 +25,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-projection',
     templateUrl: './widget-projection.component.html',
     styleUrls: ['./widget-projection.component.scss'],

@@ -49,7 +49,7 @@ interface ColorOption {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker-selector',
     templateUrl: './color-picker-selector.component.html',
     styleUrls: ['./color-picker-selector.component.scss'],
@@ -106,7 +106,7 @@ export class ColorPickerSelectorComponent
             this._selectedColor = isValidColor(value) ? value : '#000000' ;
         }
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _selectedColor: string = '';
 
     /**
@@ -119,7 +119,7 @@ export class ColorPickerSelectorComponent
     set hideHexForms(value: boolean) {
         this._hideHexForms = value;
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _hideHexForms: boolean = false;
 
     /**
@@ -140,7 +140,7 @@ export class ColorPickerSelectorComponent
     /**
      * RGBA current color
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _rgbaColor: string = 'rgba(255,0,0,1)';
 
     /**
@@ -166,13 +166,13 @@ export class ColorPickerSelectorComponent
     /**
      * Handle color of the text
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     textClass: string = 'black';
 
     /**
      * Validate if the mouse button is pressed
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     _isPressed: boolean = false;
 
     /**
@@ -311,7 +311,7 @@ export class ColorPickerSelectorComponent
 
         this._rgbValuesSub = this.rgbForm.valueChanges.subscribe(controls => {
             const data: string[] = [];
-            // tslint:disable-next-line:forin
+            // eslint-disable-next-line guard-for-in
             for (const key in controls) {
                 if (!controls[key] || controls[key] > 255) {
                     data.push('');

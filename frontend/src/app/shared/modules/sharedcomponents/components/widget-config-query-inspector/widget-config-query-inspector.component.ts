@@ -17,7 +17,7 @@
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-query-inspector',
     templateUrl: './widget-config-query-inspector.component.html',
     styleUrls: ['./widget-config-query-inspector.component.scss'],

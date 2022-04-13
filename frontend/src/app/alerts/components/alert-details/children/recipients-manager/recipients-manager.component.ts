@@ -23,16 +23,16 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Mode, RecipientType, Recipient } from './models';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
-    // tslint:disable:no-inferrable-types
-    // tslint:disable:prefer-const
-    // tslint:disable-next-line:component-selector
+    /* eslint-disable @typescript-eslint/no-inferrable-types */
+    /* eslint-disable prefer-const */
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'recipients-manager',
     templateUrl: './recipients-manager.component.html',
     styleUrls: ['./recipients-manager.component.scss'],
@@ -161,7 +161,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         this.nsRecipientSub = this._namespaceRecipients$.subscribe(data => {
             this.namespaceRecipients = [];
             const _data = JSON.parse(JSON.stringify(data));
-            // tslint:disable-next-line:forin
+            // eslint-disable-next-line guard-for-in
             for (let type in _data.recipients) {
                 let recipients = _data.recipients[type];
                 if (recipients) {
@@ -199,7 +199,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
         if (changes['selectedAlertRecipients']) {
             this.alertRecipients = [];
-            // tslint:disable-next-line:forin
+            // eslint-disable-next-line guard-for-in
             for (let type in this.selectedAlertRecipients) {
                 let alertRecipients = this.selectedAlertRecipients[type];
                 for (let recipient of alertRecipients) {
@@ -280,7 +280,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     editRecipientMode($event, recipient: any) {
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         this.recipientType = recipient.type;
         this.recipientsFormData[this.recipientType] = {...recipient};
         this.originalName = recipient.name;
@@ -402,7 +402,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             this.recipientType = RecipientType.email;
             this.recipientsFormData[this.recipientType].name = recipientName;
             this.saveCreatedRecipient(null);
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.addRecipientToAlertRecipients(null, this.recipientsFormData[this.recipientType].id, this.recipientsFormData[this.recipientType].name, this.recipientType);
           }
         }
@@ -519,7 +519,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     createDefaultRecipient(type: RecipientType): Recipient {
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let newRecipient: Recipient = {
             name: '',
             type: type,
@@ -537,7 +537,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     isEmailValid(email: string): boolean {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
     }
@@ -573,7 +573,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     getRecipients(type: RecipientType, filterOutAlertRecipients): Recipient[] {
-        // tslint:disable:prefer-const
+        /* eslint-disable prefer-const */
         let recipients = [];
         for (let recipient of this.namespaceRecipients) {
             if (filterOutAlertRecipients && recipient.type === type && !this.isAlertRecipient(recipient.name, recipient.type)) {
@@ -605,7 +605,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     forbiddenNameValidator(recipients: Array<Recipient>, currentRecipient): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = false;
-            // tslint:disable-next-line:prefer-const
+            // eslint-disable-next-line prefer-const
             for (let recipient of recipients) {
                 if (control.value.toLowerCase() === recipient.name.toLowerCase() && recipient.name !== currentRecipient.name) {
                     forbidden = true;
@@ -654,7 +654,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     updateValidators() {
-        // tslint:disable:max-line-length
+        /* eslint-disable max-len */
         this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
         this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
         this.httpEndpoint = new FormControl('', [this.urlValidator()]);

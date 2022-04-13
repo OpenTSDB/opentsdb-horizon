@@ -20,7 +20,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'donutchart-legend',
   templateUrl: './donutchart-legend.component.html',
   styleUrls: ['./donutchart-legend.component.scss'],

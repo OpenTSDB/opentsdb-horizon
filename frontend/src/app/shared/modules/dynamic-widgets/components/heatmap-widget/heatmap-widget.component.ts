@@ -37,7 +37,7 @@ import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { AppConfigService } from '../../../../../core/services/config.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
   selector: 'heatmap-widget',
   templateUrl: './heatmap-widget.component.html',
   styleUrls: ['./heatmap-widget.component.scss'],
@@ -186,7 +186,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                             this.widget.settings.time.zoomTime = message.payload.date;
                             this.refreshData();
                         }
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                         this.options.isCustomZoomed = message.payload.date.isZoomed;
                         this.refreshData();
@@ -513,7 +513,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
        const nativeEl = (this.mode !== 'view') ?
           this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
           : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
@@ -604,13 +604,13 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                 originId: this.widget.id,
                 data: payload.data
             };
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
             const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
             const pos = this.elRef.nativeElement.getBoundingClientRect();
             const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
             const height = pos.height * ( 1 - heightMod ) - 5;
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
                 originId: this.widget.id,
                 width: pos.width,

@@ -24,7 +24,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'event-stream',
     templateUrl: './event-stream.component.html',
     styleUrls: ['./event-stream.component.scss'],
@@ -92,7 +92,7 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
                 if (bucket.events.length > 1) {
                     bucket.displayTime = this.util.buildDisplayTime(bucket.endTime, this.startTime, this.endTime, true, this.timezone);
                 } else {
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     bucket.displayTime = this.util.buildDisplayTime(bucket.events[0].timestamp, this.startTime, this.endTime, true, this.timezone);
                 }
 
@@ -116,7 +116,7 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         /*if (changes && changes.buckets
             && changes.buckets.currentValue && changes.buckets.previousValue
             && changes.buckets.previousValue.length !== changes.buckets.currentValue.length) {

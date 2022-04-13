@@ -42,10 +42,10 @@ export class NavigatorSidenavComponent implements OnInit {
     @Input() readonly = true;
     @Output() activeNavChange: EventEmitter<any> = new EventEmitter();
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() drawerOpen: boolean = false;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() mediaQuery: string = '';
 
     navItems: any[] = [

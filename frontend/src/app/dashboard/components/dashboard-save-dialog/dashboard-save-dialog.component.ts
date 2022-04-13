@@ -37,7 +37,7 @@ import { DbfsState, DbfsResourcesState, DbfsLoadResources, DbfsLoadSubfolder } f
 import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-save-dialog',
     templateUrl: './dashboard-save-dialog.component.html',
     styleUrls: ['./dashboard-save-dialog.component.scss'],
@@ -82,7 +82,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     // listenSub: Subscription;
     error: any;
 
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     formReady: boolean = false;
 
     miniNavOpen: boolean = false;
@@ -227,7 +227,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
      * * NOTE: may not need anymore || modify?
      */
     namespaceKeydown(event: any) {
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         const nsIndex = this.namespaceOptions.findIndex((item: any) => item.name.toLowerCase() === this.saveForm['controls']['namespace'].value.toLowerCase().trim());
         if (this.saveForm['controls']['namespace'].valid && nsIndex >= 0) {
             this.saveForm['controls']['namespace'].setValue(this.namespaceOptions[nsIndex].name);

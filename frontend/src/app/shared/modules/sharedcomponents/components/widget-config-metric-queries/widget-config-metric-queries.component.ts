@@ -41,7 +41,7 @@ interface IMetricQueriesConfigOptions {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-metric-queries',
     templateUrl: './widget-config-metric-queries.component.html',
     styleUrls: ['./widget-config-metric-queries.component.scss'],

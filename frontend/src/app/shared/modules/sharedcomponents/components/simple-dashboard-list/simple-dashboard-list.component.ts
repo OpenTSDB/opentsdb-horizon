@@ -25,7 +25,7 @@ import { Observable, Subscription } from 'rxjs';
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-dashboard-list',
     templateUrl: './simple-dashboard-list.component.html',
     styleUrls: ['./simple-dashboard-list.component.scss'],

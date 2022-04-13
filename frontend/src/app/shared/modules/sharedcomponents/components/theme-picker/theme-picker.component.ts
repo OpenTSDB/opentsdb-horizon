@@ -20,7 +20,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'theme-picker',
     templateUrl: './theme-picker.component.html',
     styleUrls: ['./theme-picker.component.scss'],

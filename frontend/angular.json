@@ -23,6 +23,12 @@
                 "./src/scss"
               ]
             },
+            "allowedCommonJsDependencies": [
+                "hammerjs",
+                "dygraphs",
+                "css-element-queries",
+                "chart.js"
+            ],
             "assets": [
               "src/assets",
               "src/favicon.ico",
@@ -70,6 +76,7 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
+              "commonChunk": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -190,6 +197,9 @@
             "main": "src/app/horizon/horizon.main.ts",
             "tsConfig": "src/app/horizon/tsconfig.horizon.json",
             "polyfills": "src/polyfills.ts",
+            "allowedCommonJsDependencies": [
+                "dygraphs"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "./src/app/horizon",
