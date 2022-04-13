@@ -51,7 +51,7 @@ import {
 
 import { StatusWidgetComponent } from './components/status-widget/status-widget.component';
 import { MarkdownWidgetComponent } from './components/markdown-widget/markdown-widget.component';
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 import { MarkdownWidgetVisualAppearanceComponent } from './components/markdown-widget/children/markdown-widget-visual-appearance/markdown-widget-visual-appearance.component';
 import { TopnWidgetComponent } from './components/topn-widget/topn-widget.component';
 import { HeatmapWidgetComponent } from './components/heatmap-widget/heatmap-widget.component';

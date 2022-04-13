@@ -66,7 +66,7 @@ interface IQueryEditorOptions {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'query-editor-proto',
     templateUrl: './query-editor-proto.component.html',
     styleUrls: ['./query-editor-proto.component.scss'],
@@ -83,9 +83,9 @@ interface IQueryEditorOptions {
 
 export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @HostBinding('class.query-editor-proto') private _hostClass: boolean = true;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 
     @ViewChild('addExpressionInput') addExpressionInput: ElementRef;
     @ViewChild('editExpressionInput') editExpressionInput: ElementRef;
@@ -887,7 +887,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.queryChanges$ = new BehaviorSubject(false);
 
         this.queryChangeSub = this.queryChanges$
-            // tslint:disable-next-line:no-shadowed-variable
+            // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
             .subscribe(trigger => {
                 if (trigger) {
                     this.triggerQueryChanges();
@@ -958,27 +958,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             metrics.push({ indexLabel: indexLabel, type: isExpression ? 'expression' : 'metric', metric: this.query.metrics[i], visual: this.options.enableMultiMetricSelection ? this.query.metrics[i].settings.visual : this.widget.settings.visual });
         }
 
-        /*
-        this.getMetricsByType('metrics').forEach((metric, i) => {
-            metrics.push({ indexLabel: 'm' + (i + 1), type: 'metric', metric });
-            // tslint:disable:max-line-length
-            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                // metrics.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
-            }
-        });
-
-        // placeholder row for Add Metric form
-
-        // extract expressions only, then format with pre-constructed label, a type, and reference to the expression data
-        const expressions = [];
-        this.getMetricsByType('expression').forEach((metric, i) => {
-            expressions.push({ indexLabel: 'e' + (i + 1), type: 'expression', metric });
-            // tslint:disable:max-line-length
-            if ( this.options.enableMultiMetricSelection || metric.settings.visual.visible ) {
-                // expressions.push( { visual: this.options.enableMultiMetricSelection ? metric.settings.visual : this.widget.settings.visual, metric: metric});
-            }
-        });
-        */
+        /* eslint-disable , , , , , , , , , , , , , , , , , , , , , , , ,  */
 
         metrics.push({addMetric: true});
         // placeholder row for Add Expression form
@@ -1024,7 +1004,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         } else {
             const insertIndex = this.getMetricsLength('metrics');
             for (let i = 0; i < metrics.length; i++) {
-                // tslint:disable-next-line:no-shadowed-variable
+                // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
                 const id = this.utils.generateId(3, this.utils.getIDs( this.utils.getAllMetrics(this.queries)));
                 const oMetric = {
                     id: id,
@@ -1174,17 +1154,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
             for ( let i = 0; i < this.metricTableDataSource.data.length; i++ ) {
                 if ( this.metricTableDataSource.data[i].visual ) {
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                     } else if ( message.action === 'UpdateQueryVisual' && (newConfig.scheme || newConfig.color ||  newConfig.type ) ) {
                         this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
                         // set existing bar axis
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         if ( newConfig.type && ['area', 'bar'].includes(newConfig.type) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type)) {
                             this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...overrideConfig};
                         }
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     } else if ( message.action === 'UpdateQueryVisual' && newConfig.axis && (curtype !== 'line' || !this.metricTableDataSource.data[i].visual.type || this.metricTableDataSource.data[i].visual.type === 'line') )  {
                         this.metricTableDataSource.data[i].visual.axis = newConfig.axis;
                     }
@@ -1448,8 +1428,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         };
 
         this.query.metrics[metricIdx].functions.push(newFx);
-        // tslint:disable-next-line:max-line-length
-        // tslint:disable-next-line:no-shadowed-variable
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
         const trigger: MatMenuTrigger = <MatMenuTrigger>this.functionMenuTriggers.find((el, i) => i === this.currentFunctionMenuTriggerIdx);
         if (trigger) {
             trigger.closeMenu();

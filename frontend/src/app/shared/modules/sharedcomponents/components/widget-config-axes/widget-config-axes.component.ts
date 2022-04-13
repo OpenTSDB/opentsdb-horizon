@@ -23,7 +23,7 @@ import { debounceTime } from 'rxjs/operators';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-axes',
     templateUrl: './widget-config-axes.component.html',
     styleUrls: ['./widget-config-axes.component.scss'],
@@ -41,11 +41,11 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
     @Output() widgetChange = new EventEmitter;
 
     /** Local variables */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     y1AxisEnabled_label: string = 'enabled';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     y2AxisEnabled_label: string = 'disabled';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     // xAxisEnabled_label:  string = 'enabled';
     y1AxisEnabledToggleDisplay = true;
 

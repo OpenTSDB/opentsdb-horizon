@@ -46,7 +46,7 @@ interface IColor {
 }*/
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker',
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
@@ -102,7 +102,7 @@ export class ColorPickerComponent implements OnInit {
     selectedIndex = 0;
     colors = [];
 
-    // tslint:disable:no-inferrable-types
+    /* eslint-disable @typescript-eslint/no-inferrable-types */
     selectingCustomColor: boolean = false;
     _colorPickerSelectorHeight: number = 136;
     mode = 'palette';
@@ -249,7 +249,7 @@ export class ColorPickerComponent implements OnInit {
 
     colorToName(hexColor: string): string {
         let colorName = '';
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         for (let color of this.DefaultColors) {
             if (color.value === hexColor) {
                 colorName = color.text;
@@ -300,9 +300,9 @@ export class ColorPickerComponent implements OnInit {
     /**
      * Hex and RGB conversions
      */
-    // tslint:disable:no-var-keyword
-    // tslint:disable:prefer-const
-    // tslint:disable:no-bitwise
+    /* eslint-disable no-var */
+    /* eslint-disable prefer-const */
+    /* eslint-disable no-bitwise */
     hexToRgb(hex: string) {
         var bigint = parseInt(hex.substring(1), 16);
         var r = (bigint >> 16) & 255;
@@ -327,7 +327,7 @@ export class ColorPickerComponent implements OnInit {
     }
 
     rgbToHexHelper(r: string, g: string, b: string): string {
-        // tslint:disable-next-line:radix
+        // eslint-disable-next-line radix
         return '#' + this.componentToHex(parseInt(r)) + this.componentToHex(parseInt(g)) + this.componentToHex(parseInt(b));
     }
 

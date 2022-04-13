@@ -25,7 +25,7 @@ import {
 } from '@angular/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-json',
     templateUrl: './dbs-json.component.html',
     styleUrls: ['./dbs-json.component.scss'],

@@ -578,7 +578,7 @@ export class DashboardService {
     if (metrics.length) {
       query.metrics = metrics;
     } else {
-      // tslint:disable-next-line: max-line-length
+      // eslint-disable-next-line max-len
       query.namespaces = tplVariables.namespaces;
     }
     return query;

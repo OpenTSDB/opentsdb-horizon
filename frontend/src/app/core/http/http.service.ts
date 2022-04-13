@@ -399,7 +399,7 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable:prefer-const
+        /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
         let recipient: any = {... data};
@@ -416,7 +416,7 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable:prefer-const
+        /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
         let recipient: any = {... data};
@@ -428,13 +428,13 @@ export class HttpService {
 
     deleteRecipient(data: any) {
         const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact/delete';
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let serverData: any = {};
         serverData[data.type] = [];
         serverData[data.type][0] = { id: data.id };

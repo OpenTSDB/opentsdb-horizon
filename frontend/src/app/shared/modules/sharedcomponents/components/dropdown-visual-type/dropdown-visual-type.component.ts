@@ -17,7 +17,7 @@
 import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'dropdown-visual-type',
   templateUrl: './dropdown-visual-type.component.html',
   styleUrls: ['./dropdown-visual-type.component.scss'],

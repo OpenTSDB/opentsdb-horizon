@@ -19,7 +19,7 @@ import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'time-selector',
   templateUrl: './time-selector.component.html',
   styleUrls: ['./time-selector.component.scss'],

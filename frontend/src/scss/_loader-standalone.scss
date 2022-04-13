@@ -61,7 +61,7 @@ $typography-config: mat-typography-config();
 @include mat-core($typography-config);
 
 // APPLICATION CORE (structure)
-@include standalone-core();
+//@include standalone-core();
 
 // THEME RULES
 

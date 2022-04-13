@@ -21,7 +21,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 // NOTE: This feature is used in many places. So need to come back to it.
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dropdown-unit-type',
     templateUrl: './dropdown-unit-type.component.html',
     styleUrls: ['./dropdown-unit-type.component.scss'],

@@ -28,7 +28,7 @@ import {
 import { InfoIslandService } from '../../services/info-island.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'info-island-toolbar',
     templateUrl: './info-island-toolbar.component.html',
     styleUrls: ['./info-island-toolbar.component.scss'],

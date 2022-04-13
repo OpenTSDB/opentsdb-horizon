@@ -33,7 +33,7 @@ import {
 } from '../../../sharedcomponents/components';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'status-widget',
     templateUrl: './status-widget.component.html',
     styleUrls: ['./status-widget.component.scss'],

@@ -17,7 +17,7 @@
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 // import { IntercomService } from '../../../../../../core/services/intercom.service';
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'markdown-widget-visual-appearance',
   templateUrl: './markdown-widget-visual-appearance.component.html',
   styleUrls: ['./markdown-widget-visual-appearance.component.scss'],

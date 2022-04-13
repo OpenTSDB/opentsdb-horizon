@@ -28,7 +28,7 @@ import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@ang
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-variables',
     templateUrl: './dbs-variables.component.html',
     styleUrls: ['./dbs-variables.component.scss'],

@@ -32,15 +32,15 @@ import { animate, AnimationBuilder, AnimationFactory, AnimationPlayer, style } f
 import { NavigatorPanelItemDirective } from '../../directives/navigator-panel-item.directive';
 
 @Directive({
-    // tslint:disable-next-line:directive-selector
+    // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '.navigator-panel-item'
 })
-// tslint:disable-next-line:directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class NavigatorPanelItemElement {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navigator-panel',
     templateUrl: './navigator-panel.component.html',
     styleUrls: ['./navigator-panel.component.scss'],
@@ -58,9 +58,9 @@ export class NavigatorPanelComponent implements AfterViewInit {
     @Input() timing = '200ms cubic-bezier(0.250, 0.460, 0.450, 0.940)';
 
     private player: AnimationPlayer;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private currentSlide: number = 0;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private itemWidth: number = 300;
 
     panelWrapperStyle = {

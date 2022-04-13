@@ -19,7 +19,7 @@ import { ThemeService } from '../../../../../shared/modules/theme/services/theme
 import { take } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'settings-theme',
     templateUrl: './settings-theme.component.html',
     styleUrls: ['./settings-theme.component.scss'],

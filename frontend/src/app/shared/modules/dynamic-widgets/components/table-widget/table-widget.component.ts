@@ -40,7 +40,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 
 @Component({
-    //tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'table-widget',
     templateUrl: './table-widget.component.html',
     styleUrls: ['./table-widget.component.scss'],
@@ -154,7 +154,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -376,7 +376,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 10;
         const outputSize = nativeEl.getBoundingClientRect();
@@ -429,7 +429,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     setVisualization( configs ) {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widget.settings.visual = { ...this.widget.settings.visual, ...configs };
     }
 

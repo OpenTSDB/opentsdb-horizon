@@ -31,7 +31,7 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-meta',
     templateUrl: './dbs-meta.component.html',
     styleUrls: ['./dbs-meta.component.scss'],

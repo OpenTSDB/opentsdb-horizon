@@ -29,7 +29,7 @@ import { IMessage, IntercomService } from '../../../../../core/services/intercom
 import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'clipboard-drawer',
     templateUrl: './clipboard-drawer.component.html',
     styleUrls: ['./clipboard-drawer.component.scss'],

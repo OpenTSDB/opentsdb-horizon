@@ -26,7 +26,7 @@ import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'downsample',
     templateUrl: './downsample.component.html',
     styleUrls: ['./downsample.component.scss'],

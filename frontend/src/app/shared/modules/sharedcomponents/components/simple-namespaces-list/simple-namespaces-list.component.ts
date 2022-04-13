@@ -24,7 +24,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-namespaces-list',
     templateUrl: './simple-namespaces-list.component.html',
     styleUrls: ['./simple-namespaces-list.component.scss'],

@@ -1,4 +1,4 @@
-@import 'loader-component';
+@import '~@angular/material/theming';
 
 $type-config: mat-typography-config();
 $font-family: mat-font-family($type-config);

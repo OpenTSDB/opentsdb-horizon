@@ -118,20 +118,20 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
                 }
                 d = i(d.slice(1), 16);
                 if (n === 9 || n === 5) {
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.r = d >> 24 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.g = d >> 16 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.b = d >> 8 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.a = m((d & 255) / 0.255) / 1000;
                 } else {
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.r = d >> 16;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.g = d >> 8 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.b = d & 255;
                     x.a = -1;
                 }

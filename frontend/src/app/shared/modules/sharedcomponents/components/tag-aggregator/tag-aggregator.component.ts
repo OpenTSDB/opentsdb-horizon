@@ -19,7 +19,7 @@ import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'tag-aggregator',
     templateUrl: './tag-aggregator.component.html',
     styleUrls: ['./tag-aggregator.component.scss'],

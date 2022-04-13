@@ -72,7 +72,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
         let longText = '';
         // const dunit = this.unitService.getNormalizedUnit(max, unitOptions);
         for (let i = 0, len = dataset.length; i < len; i++) {
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             dataset[i].formattedValue = this.unitService.convert(dataset[i].value, unitOptions.unit, this.unitService.getNormalizedUnit(dataset[i].value, unitOptions), unitOptions);
             longText = longText.length > dataset[i].formattedValue.length ? longText : dataset[i].formattedValue;
         }
@@ -346,7 +346,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
 
             const d3YAxis = this.getAxisByPosition(yAxisConf.position);
             const yAxis = d3[d3YAxis](y)
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 .tickFormat((d, i) => self.unitService.convert(d, yAxisFormat.unit, self.unitService.getNormalizedUnit(d, yAxisFormat), yAxisFormat));
 
             const ytx = 0;
@@ -363,7 +363,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
             const xty = chartAreaHeight;
             const d3XAxis = this.getAxisByPosition(xAxisConf.position);
             const xAxis = d3[d3XAxis](x)
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 .tickFormat((d, i) => self.unitService.convert(d, xAxisFormat.unit, self.unitService.getNormalizedUnit(d, xAxisFormat), xAxisFormat));
             if (xAxisConf.display === undefined || xAxisConf.display) {
                 g.append('g')

@@ -39,7 +39,7 @@ import { NameAlertDialogComponent } from './components/name-alert-dialog/name-al
 import { AlertDetailsComponent } from './components/alert-details/alert-details.component';
 import { ResizableDirective } from '../shared/modules/directives/resizable.directive';
 import { DygraphsModule } from '../shared/modules/dygraphs/dygraphs.module';
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 import { AlertConfigurationContactsComponent } from './components/alert-details/children/recipients-manager/recipients-manager.component';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './components/alert-details/children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.component';
 import { AlertDetailsMetricPeriodOverPeriodPreviewComponent } from './components/alert-details/children/alert-details-metric-period-over-period-preview/alert-details-metric-period-over-period-preview.component';

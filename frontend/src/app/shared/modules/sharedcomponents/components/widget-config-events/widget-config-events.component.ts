@@ -20,7 +20,7 @@ import { debounceTime } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'widget-config-events',
   templateUrl: './widget-config-events.component.html',
   styleUrls: ['./widget-config-events.component.scss'],

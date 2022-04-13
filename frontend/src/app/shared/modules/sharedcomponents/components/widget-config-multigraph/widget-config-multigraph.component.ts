@@ -31,7 +31,7 @@ import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-multigraph',
     templateUrl: './widget-config-multigraph.component.html',
     styleUrls: ['./widget-config-multigraph.component.scss'],

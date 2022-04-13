@@ -28,7 +28,7 @@ export interface VisualizationData {
   }
 */
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-visual-appearance',
     templateUrl: './widget-config-visual-appearance.component.html',
     styleUrls: ['./widget-config-visual-appearance.component.scss'],

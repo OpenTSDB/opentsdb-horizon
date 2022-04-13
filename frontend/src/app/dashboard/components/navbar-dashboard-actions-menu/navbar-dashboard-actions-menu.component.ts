@@ -33,7 +33,7 @@ import { IntercomService, IMessage } from '../../../core/services/intercom.servi
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navbar-dashboard-actions-menu',
     templateUrl: './navbar-dashboard-actions-menu.component.html',
     styleUrls: ['./navbar-dashboard-actions-menu.component.scss'],
@@ -62,7 +62,7 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
     dashboardSaveDialog: MatDialogRef<DashboardSaveDialogComponent> | null;
 
     // NOTE: change this bool back to false
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() needsSaving: boolean = true; // false default, true triggers visibility
 
     constructor(

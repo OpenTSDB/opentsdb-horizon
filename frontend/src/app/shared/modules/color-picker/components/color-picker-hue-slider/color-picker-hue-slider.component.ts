@@ -33,7 +33,7 @@ import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker-hue-slider',
     templateUrl: './color-picker-hue-slider.component.html',
     styleUrls: ['./color-picker-hue-slider.component.scss'],
@@ -51,7 +51,7 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
         this._selectedColor = value || this.emptyColor;
         this.checkHueDifference();
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _selectedColor: string = '';
 
     private baseHsv: any = {};
@@ -63,7 +63,7 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
     sliderLeft: any = 0;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isSliding: boolean = false;
 
     constructor(

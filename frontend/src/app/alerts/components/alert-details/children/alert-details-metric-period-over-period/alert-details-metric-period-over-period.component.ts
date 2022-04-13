@@ -18,7 +18,7 @@ import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewEncaps
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 @Component({
   selector: 'alert-details-metric-period-over-period',
   templateUrl: './alert-details-metric-period-over-period.component.html',

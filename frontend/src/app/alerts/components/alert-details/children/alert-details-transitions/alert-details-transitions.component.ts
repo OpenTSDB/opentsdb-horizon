@@ -17,7 +17,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'alert-details-transitions',
   templateUrl: './alert-details-transitions.component.html',
   styleUrls: ['./alert-details-transitions.component.scss'],

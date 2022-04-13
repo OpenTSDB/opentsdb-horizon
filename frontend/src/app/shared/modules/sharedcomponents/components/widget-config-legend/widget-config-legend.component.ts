@@ -22,7 +22,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-legend',
     templateUrl: './widget-config-legend.component.html',
     styleUrls: ['./widget-config-legend.component.scss'],

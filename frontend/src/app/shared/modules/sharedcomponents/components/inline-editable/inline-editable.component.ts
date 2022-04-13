@@ -23,7 +23,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'inline-editable',
     templateUrl: './inline-editable.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -130,7 +130,7 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
 
     save() {
         // only save if no errors, not placeholder, and a change
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if (!this.fieldFormControl.errors && this.fieldFormControl.value !== this.placeholder && this.fieldValue !== this.fieldFormControl.value) {
             this.updatedValue.emit(this.fieldFormControl.value);
             this.fieldValue = this.fieldFormControl.value;

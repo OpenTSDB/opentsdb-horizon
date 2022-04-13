@@ -48,9 +48,9 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     Object = Object;
     private listenSub: Subscription;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isDataLoaded: boolean = false;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 
     options: any  = {
         direction: 'horizontal',
@@ -129,7 +129,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();

@@ -420,7 +420,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
                     }
-                    // tslint:disable:max-line-length
+                    /* eslint-disable max-len */
                     this.dbWdViewBackup = this.utilService.deepClone({ time: this.dbTime, tot: this.dbToT, downsample: this.dbDownsample, isDBZoomed: this.isDBZoomed });
                     // when click on view/edit mode, update db setting state of the mode
                     // need to setTimeout for next tick to change the mode
@@ -768,7 +768,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // reset from state when zoom out happens
                     let overrideOnly = false;
                     if ( message.payload.isZoomed ) {
-                        // tslint:disable:max-line-length
+                        /* eslint-disable max-len */
                         const start = this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone).unix();
                         const end = this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone).unix();
                         message.payload.start = message.payload.start !== -1 ? message.payload.start : start;
@@ -1007,7 +1007,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
-        // tslint:disable-next-line: no-shadowed-variable
+        // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
@@ -1130,7 +1130,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 } else {
                     // come from edit to view and there is urloverride, use those value
                     const tagOverrides = this.urlOverrideService.getTagOverrides() || {};
-                    // tslint:disable-next-line: forin
+                    // eslint-disable-next-line guard-for-in
                     for (let alias in tagOverrides) {
                         const idx = this.tplVariables.viewTplVariables.tvars.findIndex(t => t.alias === alias);
                         if (idx > -1) {

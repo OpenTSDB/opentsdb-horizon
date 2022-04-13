@@ -19,7 +19,7 @@ import { Directive, ElementRef, OnDestroy, OnInit, Input, } from '@angular/core'
 import { TooltipComponentService } from '../services/tooltip-component.service';
 
 @Directive({
-    // tslint:disable-next-line: directive-selector
+    // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '[ttMouseListener]'
 })
 export class TtMouseListenerDirective implements OnDestroy, OnInit {

@@ -25,7 +25,7 @@ import { Portal } from '@angular/cdk/portal';
 import { IntercomService } from '../../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'info-island',
     templateUrl: './info-island.component.html',
     styleUrls: ['./info-island.component.scss'],
@@ -168,7 +168,7 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
         }
         const elStyle = window.getComputedStyle(el),
 
-        // tslint:disable-next-line: deprecation
+        // eslint-disable-next-line import/no-deprecated
         transform = elStyle.transform || elStyle.webkitTransform;
 
         if (transform === 'none') {

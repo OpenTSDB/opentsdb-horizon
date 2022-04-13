@@ -21,7 +21,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-settings-dialog',
     templateUrl: './dashboard-settings-dialog.component.html',
     styleUrls: ['./dashboard-settings-dialog.component.scss'],
@@ -54,7 +54,7 @@ export class DashboardSettingsDialogComponent implements OnInit {
         }
     ];
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private pendingModifications: boolean = false;
 
     private pendingData: any = {};
