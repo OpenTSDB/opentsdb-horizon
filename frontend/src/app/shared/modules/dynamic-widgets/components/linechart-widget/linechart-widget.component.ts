@@ -1625,7 +1625,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     // event listener for dygraph to get latest tick data
     timeseriesTickListener(yIndex: number, xIndex: number, yKey: any, xKey: any, event: any) {
-        // this.logger.event('TIMESERIES TICK LISTENER', {yKey, xKey, multigraph: this.displayMultigraph, widget: this.widget, event});
+        //console.log('%cTIMESERIES TICK LISTENER', 'color: white; background: black;', {yKey, xKey, multigraph: this.displayMultigraph, widget: this.widget, event});
         let multigraph: any = null;
         if (this.displayMultigraph && this.multigraphEnabled) {
             multigraph = { yIndex, xIndex, y: yKey, x: xKey };
@@ -1684,9 +1684,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 const height = pos.height * (1 - heightMod) - 5;
                 // eslint-disable-next-line max-len
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {
-                    ...widgetOptions, draggable: true,
+                    ...widgetOptions,
+                    draggable: true,
                     originId: this.widget.id,
-                    width: pos.width, positionStrategy: 'connected',
+                    width: pos.width,
+                    positionStrategy: 'connected',
                     height: height
                 });
             }

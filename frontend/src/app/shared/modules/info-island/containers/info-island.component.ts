@@ -18,11 +18,15 @@ import { Component, OnInit, Inject, OnDestroy, HostBinding,
     AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
-import { Subject, Observable, Subscription } from 'rxjs';
+import { Subject, Observable, Subscription, fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 import { InfoIslandOptions } from '../services/info-island-options';
 import { CdkDrag} from '@angular/cdk/drag-drop';
 import { Portal } from '@angular/cdk/portal';
 import { IntercomService } from '../../../../core/services/intercom.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { InfoIslandService } from '../services/info-island.service';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -54,7 +58,9 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     constructor(
         private hostEl: ElementRef,
-        private interCom: IntercomService
+        private interCom: IntercomService,
+        private activatedRoute: ActivatedRoute,
+        private router: Router
     ) {}
 
     @HostBinding('class.info-island-component') private _hostClass = true;
@@ -101,6 +107,9 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
         transformMatrix: [0, 0, 0]
     };
 
+    winResizeDimCapture: boolean = false;
+    winResizeDeltas: any = {x: 0, y: 0};
+
     hostPosition: any;
 
     _mouseMoveEvent: any;
@@ -108,10 +117,52 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     portalRef: Portal<any>; // item to be displayed in island
 
-    ngOnInit() { }
+    private snapResizeObservable$: Observable<Event>;
+    private snapResizeSub: Subscription;
+
+    private isSnapWindow: boolean = false;
+    private userDragged: boolean = false;
+
+    ngOnInit() {
+
+        let pathParts = this.router.url.split('/');
+        if (pathParts[1] === 'snap') {
+            this.isSnapWindow = true;
+            this.snapshotWindowResizeSetup();
+        }
+    }
 
     ngAfterViewInit() {
         this.hostPosition = this.hostEl.nativeElement.getBoundingClientRect();
+    }
+
+    private snapshotWindowResizeSetup() {
+        this.snapResizeObservable$ = fromEvent(window, 'resize');
+
+        this.snapResizeSub = this.snapResizeObservable$.pipe(debounceTime(300)).subscribe( evt => {
+            // we only resize if the user hasn't dragged the island already
+            // if they dragged it, we are assuming they want it where it is at the size it is
+            if (!this.userDragged) {
+                const dbContent = document.querySelector(this.options.outerWrap);
+                const dbSize = this.options.widgetContainerRef.getBoundingClientRect();
+
+                this.options.width = dbSize.width;
+                this.hostEl.nativeElement.style.width = this.options.width + 'px';
+                this.hostPosition = this.hostEl.nativeElement.getBoundingClientRect();
+                const element = this._islandContainer.nativeElement;
+                element.style.width = this.options.width + 'px';
+
+                (<InfoIslandService>this.options.service)
+                    .updatePositionStrategy(
+                        this.options.widgetContainerRef,
+                        (<any>this.options).positionStrategy
+                    );
+
+                // reset the dim capture flag
+                this.winResizeDimCapture = false;
+            }
+        });
+
     }
 
     open(portalRef: Portal<any>, options: any) {
@@ -124,6 +175,12 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
         this.portalRef = portalRef;
         this.animationState = '*';
+
+        // check if it is edit mode... the layout and behavior is similar to snapshot
+        let editCheck = this.options.widgetContainerRef.closest('.edit-view-container');
+        if (editCheck) {
+            this.snapshotWindowResizeSetup();
+        }
     }
 
     close() {
@@ -143,7 +200,7 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
         }
     }
 
-    updateSize(size: DOMRect) {
+    updateSize(size: any) {
         if (size.width > this.options.width) {
 
             // check against outermost div content size
@@ -159,6 +216,10 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     /** window dragging */
 
     dragIslandWindow(event: any) { }
+
+    dragIslandWindowEnded(event: any) {
+        this.userDragged = true;
+    }
 
     /** Corner Resizing */
     private getTransformMatrix(el: any) {
@@ -306,6 +367,7 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     }
 
     dragResizeRelease(e: any) {
+        this.userDragged = true;
         // do something?
         this.interCom.responsePut({
             action: 'islandResizeComplete',
@@ -316,8 +378,12 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     /** On Destroy */
 
     ngOnDestroy() {
-        console.log('%cCONTAINER LEGEND DESTROY', 'color: white; background: red;');
-        //this.onCloseIsland.unsubscribe();
+        this.onCloseIsland.unsubscribe();
+
+        if (this.snapResizeSub) {
+            this.snapResizeSub.unsubscribe();
+        }
+
     }
 
 }

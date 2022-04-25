@@ -119,6 +119,8 @@ export class InfoIslandService {
         // merge options
         const optionsToPass = JSON.parse(JSON.stringify(this.DEFAULT_OPTIONS));
         Object.assign(optionsToPass, options);
+        optionsToPass.service = this;
+        optionsToPass.widgetContainerRef = widgetContainerRef;
 
         this.originId = options.originId;
 

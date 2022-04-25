@@ -19,5 +19,10 @@
       "es2018.regexp",
       "dom"
     ]
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false,
+    "fullTemplateTypeCheck": false,
+    "strictTemplates": true
   }
 }
