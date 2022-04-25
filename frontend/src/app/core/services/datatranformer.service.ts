@@ -361,6 +361,9 @@ export class DatatranformerService {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;
                 }
+                if ( hasToT) {
+                    colors[midExToT].reverse();
+                }
                 for ( let j = 0; j < n; j ++ ) {
                     const data = queryResults[i].data[j].NumericType;
                     const tags = queryResults[i].data[j].tags;
@@ -381,7 +384,7 @@ export class DatatranformerService {
                                     queryResults[i].data[j].metric : mLabel, ...tags},
                             aggregations: aggData,
                             group: vConfig.type ? vConfig.type : 'line',
-                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
+                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex,
                             stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
                             stackOrder: vConfig.stackOrder || 'asc',
                             connectMissingData: vConfig.connectMissingData === 'true' ? true : false
@@ -410,7 +413,7 @@ export class DatatranformerService {
                 // area/bar plotter draws the series from last to first
                 return  ( a.config.group.localeCompare(b.config.group) ||
                                     (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
-                                    ( a.config.group === 'line'  ? a.config.label.localeCompare(b.config.label) :
+                                    ( a.config.group === 'line'  ? (!hasToT ? a.config.label.localeCompare(b.config.label): b.config.label.localeCompare(a.config.label)) : // ToT: current week to be rendered last
                                     // the order is reverse as the area/bar plotter draws series from last to first
                                     (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0));
             });
