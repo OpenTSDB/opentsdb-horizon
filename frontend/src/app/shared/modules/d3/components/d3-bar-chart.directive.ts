@@ -100,8 +100,14 @@ export class D3BarChartDirective implements OnInit, OnChanges {
             const nValue = self.unitService.convert(d.value, unitOptions.unit, nunit, unitOptions);
             const sValue = self.unitService.convert(d.value, unitOptions.unit, tooltipUnitOptions, tooltipUnitOptions);
 
+            ;
+            let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+            let tcContrast = self.utils.findContrastColor(tmpColor);
+            let colorContrast: string = (tcContrast.type === 'white') ? 'rgb(255,255,255)' : 'rgb(0,0,0)';
+
             const ttData: any = {
                 color: (d.color && d.color.length > 0) ? d.color : false,
+                colorContrast: colorContrast,
                 label: d.label,
                 value: {
                     n: nValue,
@@ -246,6 +252,9 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 })
                 .style("position","relative")
                 .style("width","100%")
+                .on("mouseover", mouseover)
+                .on("mousemove", mousemove)
+                .on("mouseleave", mouseleave)
               .append("xhtml:div")
                 .attr("class", "text")
                 .style("height", "100%")
@@ -256,6 +265,11 @@ export class D3BarChartDirective implements OnInit, OnChanges {
                 .style("font-size", fontSize)
                 .style("line-height","1")
                 .style("color", "rgba(0, 0, 0, .85)")
+                /*.style("color", (d:any) => {
+                    let tmpColor = d.color === 'auto' ? '#000000' : d.color;
+                    let tcContrast = this.utils.findContrastColor(tmpColor);
+                    return (tcContrast.type === 'white') ? 'rgb(255,255,255)' : 'rgb(0,0,0)';
+                })*/
                 .style("background-color",(d: any) => {
                     let tmpColor = d.color === 'auto' ? '#000000' : d.color;
                     let tcContrast = this.utils.findContrastColor(tmpColor);
@@ -263,10 +277,7 @@ export class D3BarChartDirective implements OnInit, OnChanges {
 
                     return 'rgba(255, 255, 255, ' + opacity + ')';
                 })
-                .html((d: any) =>  d.label)
-                .on("mouseover", mouseover)
-                .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave);
+                .html((d: any) =>  d.label);
 
             bars.exit().remove();
         }, 200);

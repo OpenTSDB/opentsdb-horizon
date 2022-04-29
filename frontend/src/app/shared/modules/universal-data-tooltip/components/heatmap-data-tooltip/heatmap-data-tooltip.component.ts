@@ -61,7 +61,7 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
             // so we take opacity percentage, and lighten the color
             data.color = this.pSBC(percentage, data.color);
 
-            const contrast = this.utils.findContrastColor(data.color);
+            const contrast = data.color ? this.utils.findContrastColor(data.color) : '#000000';
             data.colorContrast = contrast.hex;
             return data;
         });
