@@ -378,12 +378,8 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     /** On Destroy */
 
     ngOnDestroy() {
-        this.onCloseIsland.unsubscribe();
-
-        if (this.snapResizeSub) {
-            this.snapResizeSub.unsubscribe();
-        }
-
+        console.log('%cCONTAINER LEGEND DESTROY', 'color: white; background: red;');
+        //this.onCloseIsland.unsubscribe();
     }
 
 }
