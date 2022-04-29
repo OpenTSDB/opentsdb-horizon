@@ -23,6 +23,10 @@
     transform-style: preserve-3d;
     backface-visibility: hidden;
 
+    &:not([style]) {
+        display: none;
+    }
+
     .color-chip {
         width: 12px;
         height: 12px;
