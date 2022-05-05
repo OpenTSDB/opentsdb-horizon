@@ -13,6 +13,10 @@
             color: mat-color($warn, default);
         }
 
+        .regexp {
+            background-color: if($is-dark, lighten($black, 20%), lighten($black, 90%));
+        }
+
         .variable-list-wrapper {
             .varlist {
                 .mat-form-field {
