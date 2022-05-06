@@ -14,19 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navbar-timezone-toggle',
     templateUrl: './navbar-timezone-toggle.component.html',
-    styleUrls: []
+    styleUrls: ['./navbar-timezone-toggle.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavbarTimezoneToggleComponent {
 
     @HostBinding('class.navbar-timezone-toggle') private _hostClass = true;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() timezone: string = 'local';
 
     @Output() change = new EventEmitter;

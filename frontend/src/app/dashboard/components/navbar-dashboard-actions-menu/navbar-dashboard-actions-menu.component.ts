@@ -21,25 +21,23 @@ import {
     Output,
     EventEmitter,
     HostBinding,
-    ViewChild
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-    MatMenuTrigger
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 import { DashboardSaveDialogComponent } from '../dashboard-save-dialog/dashboard-save-dialog.component';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navbar-dashboard-actions-menu',
     templateUrl: './navbar-dashboard-actions-menu.component.html',
-    styleUrls: []
+    styleUrls: ['./navbar-dashboard-actions-menu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavbarDashboardActionsMenuComponent implements OnInit {
 
@@ -49,7 +47,7 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
     @Input() dbSettingsMeta: any = {};
 
     // dashboard action menu trigger
-    @ViewChild('actionMenuTrigger', {read: MatMenuTrigger}) actionMenuTrigger: MatMenuTrigger;
+    @ViewChild('actionMenuTrigger', { read: MatMenuTrigger }) actionMenuTrigger: MatMenuTrigger;
 
     get actionMenuIsOpen(): boolean {
         if (this.actionMenuTrigger) {
@@ -64,7 +62,7 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
     dashboardSaveDialog: MatDialogRef<DashboardSaveDialogComponent> | null;
 
     // NOTE: change this bool back to false
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() needsSaving: boolean = true; // false default, true triggers visibility
 
     constructor(

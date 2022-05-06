@@ -28,7 +28,7 @@ import * as moment from 'moment';
 export class DatatranformerService {
 
    REGDSID = /q?(\d+)?_?(m|e)(\d+).*/;
-  // tslint:disable:max-line-length
+  /* eslint-disable max-len */
   constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
 
   //ADDED: table data 
@@ -68,7 +68,9 @@ export class DatatranformerService {
                 continue;
             }
 
-            timeSpecification = queryResults.timeSpecification;
+            if ( source !== 'summarizer' ) {
+                timeSpecification = queryResults.timeSpecification;
+            }
             const n = queryResults.data.length;
             const unit = vConfig.unit ? vConfig.unit : 'auto';
             const format = { unit: unit, precision: decimals, unitDisplay: true };
@@ -359,6 +361,9 @@ export class DatatranformerService {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;
                 }
+                if ( hasToT) {
+                    colors[midExToT].reverse();
+                }
                 for ( let j = 0; j < n; j ++ ) {
                     const data = queryResults[i].data[j].NumericType;
                     const tags = queryResults[i].data[j].tags;
@@ -379,7 +384,7 @@ export class DatatranformerService {
                                     queryResults[i].data[j].metric : mLabel, ...tags},
                             aggregations: aggData,
                             group: vConfig.type ? vConfig.type : 'line',
-                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex   + '-' + tot,
+                            order1:  vConfig.type !== 'line' ? '1' + '-' + qIndex + '-' + mIndex  : '0-' + qIndex + '-' + mIndex,
                             stackOrderBy: vConfig.type === 'line' ? 'label' : vConfig.stackOrderBy || 'min',
                             stackOrder: vConfig.stackOrder || 'asc',
                             connectMissingData: vConfig.connectMissingData === 'true' ? true : false
@@ -408,7 +413,7 @@ export class DatatranformerService {
                 // area/bar plotter draws the series from last to first
                 return  ( a.config.group.localeCompare(b.config.group) ||
                                     (a.config.order1.localeCompare(b.config.order1, 'en', { numeric: true, sensitivity: 'base' }))) ||
-                                    ( a.config.group === 'line'  ? a.config.label.localeCompare(b.config.label) :
+                                    ( a.config.group === 'line'  ? (!hasToT ? a.config.label.localeCompare(b.config.label): b.config.label.localeCompare(a.config.label)) : // ToT: current week to be rendered last
                                     // the order is reverse as the area/bar plotter draws series from last to first
                                     (a.config.aggregations ? ( a.config.group === 'line' || (a.config.group !== 'line' && a.config.stackOrder === 'desc') ? a.config.aggregations[a.config.stackOrderBy] - b.config.aggregations[b.config.stackOrderBy] : b.config.aggregations[b.config.stackOrderBy] - a.config.aggregations[a.config.stackOrderBy]) : 0));
             });
@@ -733,7 +738,7 @@ export class DatatranformerService {
 
     getLableFromMetricTags(label, tags, len= 70 ) {
         const regex = /\{\{([\w-.:\/]+)\}\}/ig
-        label = label.trim();
+        label = label ? label.trim() : '';
         const matches = label.match(regex);
         if ( matches ) {
             for ( let i = 0, len = matches.length; i < len; i++ ) {

@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'dropdown-line-weight',
-  templateUrl: './dropdown-line-weight.component.html',
-  styleUrls: []
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'dropdown-line-weight',
+    templateUrl: './dropdown-line-weight.component.html',
+    styleUrls: ['./dropdown-line-weight.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class DropdownLineWeightComponent {

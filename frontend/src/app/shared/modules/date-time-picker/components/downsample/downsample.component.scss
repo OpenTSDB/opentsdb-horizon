@@ -15,219 +15,167 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT
+.time-downsample-component {
+    flex-direction: column;
 
-@mixin time-downsample-component-base() {
-    .time-downsample-component {
-        flex-direction: column;
+    .advanced-toggle {
+        display: block;
+        margin-left: -16px;
+        margin-right: -16px;
+        line-height: 36px;
+        padding-left: 8px;
 
-        .advanced-toggle {
+        a {
+            text-decoration: underline;
+        }
+    }
+
+    &.advanced-open .advanced-toggle {
+        margin-bottom: 16px;
+    }
+
+    &.widget-config-tab .config-control:not(:last-child) {
+        margin-bottom: 8px;
+    }
+
+    .form-field-group {
+        display: inline-block;
+
+        .mat-form-field:not(:last-child) {
+            margin-right: 8px;
+        }
+    }
+
+    .form-field-group {
+        &.mat-select {
+            width: 200px;
+        }
+
+        .mat-select {
+            padding: 6px;
+            border-radius: 4px;
+            width: 180px;
+            //background-color: rgba(34, 122, 236, 0.08);
+        }
+    }
+
+
+    .config-control {
+        display: flex;
+        align-items: flex-start;
+
+        .mat-checkbox {
+            line-height: 24px;
+            margin-right: 24px;
+        }
+
+        &.aggregator-controls,
+        &.downsample-controls {
+            .mat-checkbox.mat-checkbox-checked {
+                line-height: 48px;
+            }
+        }
+
+        &.downsample-controls {
+            .form-field-group {
+                display: flex;
+
+                .custom-downsample {
+                    display: flex;
+                    padding-top: 5px;
+
+                    .mat-form-field-subscript-wrapper {
+                        overflow: initial;
+                        padding: 0;
+                    }
+                }
+
+                .mat-form-field,
+                .mat-select {
+                    width: 100px;
+                }
+            }
+        }
+
+        &.aggregator-controls {
+            .form-field-group {
+                .mat-form-field,
+                .mat-select {
+                    width: 115px;
+                }
+            }
+        }
+
+        &.time-over-time-controls {
             display: block;
-            margin-left: -16px;
-            margin-right: -16px;
-            line-height: 36px;
-            padding-left: 8px;
 
-            a {
-                text-decoration: underline;
-            }
-        }
-
-        &.advanced-open .advanced-toggle {
-            margin-bottom: 16px;
-        }
-
-        &.widget-config-tab .config-control:not(:last-child) {
-            margin-bottom: 8px;
-        }
-
-        .form-field-group {
-            display: inline-block;
-
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
-            }
-        }
-
-        .form-field-group {
-            &.mat-select {
-                width: 200px;
-            }
-
-            .mat-select {
-                padding: 6px;
-                border-radius: 4px;
-                width: 180px;
-                //background-color: rgba(34, 122, 236, 0.08);
-            }
-        }
-
-        /*.config-control > .label {
-            display: inline-block;
-            width: 150px;
-            vertical-align: top;
-            // margin-bottom: 10px;
-        }*/
-
-        .config-control {
-            display: flex;
-            align-items: flex-start;
-
-            .mat-checkbox {
-                line-height: 24px;
-                margin-right: 24px;
-            }
-
-            &.aggregator-controls,
-            &.downsample-controls {
-                .mat-checkbox.mat-checkbox-checked {
-                    line-height: 48px;
-                }
-            }
-
-            &.downsample-controls {
-                .form-field-group {
-                    display: flex;
-
-                    .custom-downsample {
-                        display: flex;
-                        padding-top: 5px;
-
-                        .mat-form-field-subscript-wrapper {
-                            overflow: initial;
-                            padding: 0;
-                        }
-                    }
-
-                    .mat-form-field,
-                    .mat-select {
-                        width: 100px;
-                    }
-                }
-            }
-
-            &.aggregator-controls {
-                .form-field-group {
-                    .mat-form-field,
-                    .mat-select {
-                        width: 115px;
-                    }
-                }
-            }
-            &.time-over-time-controls {
-                display: block;
-                .form-field-group {
-                    display: flex;
-                }
-            }
-        }
-
-        // .time-preset-options {}
-
-        .time-over-time-controls {
-            .mat-form-field:not(:last-child) {
-                margin-right: 16px;
-            }
-        }
-
-        .downsample-controls,
-        .aggregator-controls {
-            .mat-radio-button:not(:last-child) {
-                margin-right: 20px;
-            }
-
-            .mat-radio-group {
-                .mat-radio-label {
-                    flex-direction: column;
-                    justify-content: center;
-
-                    .mat-radio-label-content {
-                        padding-left: 0;
-                    }
-                }
-            }
-        }
-
-        /*.downsample-controls .custom-downsample {
-            margin-top: 10px;
-        }*/
-
-        .override-relative-time-controls,
-        .time-shift-controls,
-        .min-interval-controls,
-        .reporting-interval-controls,
-        .downsample-controls .custom-downsample {
-            .mat-form-field-infix {
-                border-top: 0;
-            }
-
-
-        }
-
-        .mat-radio-label-content {
-            line-height: 24px;
-            font-size: 12px;
-        }
-
-        .mat-button-toggle-group.mat-button-toggle-group-horizontal {
-            line-height: 24px;
-
-            .mat-button-toggle.mat-button-toggle-checked {
-                border-width: 1px;
-            }
-
-            .mat-button-toggle-button {
-                font-size: 12px;
-            }
-
-            .mat-button-toggle-label-content {
-                line-height: 24px;
-            }
-        }
-
-        .mat-form-field.mat-form-field-type-mat-select {
-            line-height: 24px;
-
-            .mat-form-field-infix {
-                padding: 0;
+            .form-field-group {
+                display: flex;
             }
         }
     }
-}
 
-@mixin time-downsample-component-theme($theme-config) {
+    .time-over-time-controls {
+        .mat-form-field:not(:last-child) {
+            margin-right: 16px;
+        }
+    }
 
-    @include variables-compatibility($theme-config) {
+    .downsample-controls,
+    .aggregator-controls {
 
-        $fill-background: mat-color($foreground, base, if($is-dark, 0.1, 0.04));
+        .mat-radio-button:not(:last-child) {
+            margin-right: 20px;
+        }
 
-        $divider: mat-color($foreground, divider);
-        $link: mat-color($foreground, link);
+        .mat-radio-group {
+            .mat-radio-label {
+                flex-direction: column;
+                justify-content: center;
 
-        .time-downsample-component {
-            // style rules here
-
-            .advanced-toggle {
-                a {
-                    color: mat-color($foreground, link);
+                .mat-radio-label-content {
+                    padding-left: 0;
                 }
             }
+        }
+    }
 
-            &.advanced-open {
-                .advanced-toggle {
-                    border-bottom: 2px solid mat-color($foreground, link, .25);
+    .override-relative-time-controls,
+    .time-shift-controls,
+    .min-interval-controls,
+    .reporting-interval-controls,
+    .downsample-controls .custom-downsample {
+        .mat-form-field-infix {
+            border-top: 0;
+        }
+    }
 
-                    .mat-button.mat-primary {
-                        .mat-button-focus-overlay {
-                            opacity: .04;
+    .mat-button-toggle-group.mat-button-toggle-group-horizontal {
+        line-height: 24px;
 
-                            &:hover {
-                                opacity: .08;
-                            }
-                        }
-                    }
-                }
-            }
+        .mat-button-toggle.mat-button-toggle-checked {
+            border-width: 1px;
+        }
+
+        .mat-button-toggle-button {
+            font-size: 12px;
+        }
+
+        .mat-button-toggle-label-content {
+            line-height: 24px;
+        }
+    }
+
+    .mat-radio-label-content {
+        line-height: 24px;
+        font-size: 12px;
+    }
+
+    .mat-form-field.mat-form-field-type-mat-select {
+        line-height: 24px;
+
+        .mat-form-field-infix {
+            padding: 0;
         }
     }
 }

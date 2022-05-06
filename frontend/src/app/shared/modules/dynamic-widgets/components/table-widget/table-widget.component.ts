@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, Input,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -25,7 +25,8 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatPaginator } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime} from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';
@@ -39,29 +40,31 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 
 @Component({
-    //tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'table-widget',
     templateUrl: './table-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./table-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
-    @HostBinding('class.widget-panel-content') private _hostClass = true; 
-    @HostBinding('class.table-widget') private _componentClass = true; 
+    @HostBinding('class.widget-panel-content') private _hostClass = true;
+    @HostBinding('class.table-widget') private _componentClass = true;
 
     @Input() mode = 'view'; // view/explore/edit
     @Input() widget: WidgetModel;
+    @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
     @ViewChild(MatSort) sort: MatSort;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild('dataTable', {read: MatTable}) dataTable: MatTable<any>;
+    @ViewChild('dataTable', { read: MatTable }) dataTable: MatTable<any>;
 
     //global vars
     Object = Object;
-    dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([{}]); 
+    dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([{}]);
     displayedColumns;
     displayedColumnsIds = [];
 
@@ -108,7 +111,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
         private appConfig: AppConfigService
     ) { }
 
-    ngOnInit() 
+    ngOnInit()
     {
         this.widget.settings.layout = this.widget.settings.layout || 'column';
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
@@ -151,7 +154,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -188,10 +191,10 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
                             this.setTimezone(message.payload.timezone);
                             const rawdata = message.payload.rawdata;
-                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata); 
+                            this.data = this.dataTransformer.openTSDBToTable(this.widget, this.options, rawdata);
                             this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
                             this.dataSource = new MatTableDataSource(this.data);
-                            this.displayedColumns = this.util.deepClone(this.options.displayColumns); 
+                            this.displayedColumns = this.util.deepClone(this.options.displayColumns);
                             this.displayedColumnsIds = [...this.displayedColumns.map(d => d.id)];
                             this.cdRef.detectChanges();
                             if ( this.sort ) {
@@ -339,7 +342,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
 
     sortingDataAccessor(data, colId)  {
         switch (colId) {
-          case 'metric': 
+          case 'metric':
           case 'tag':
               return data[colId];
           default: return parseFloat(data[colId+':raw']);
@@ -373,8 +376,8 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod 
+        // eslint-disable-next-line max-len
+        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 10;
         const outputSize = nativeEl.getBoundingClientRect();
         if (this.mode !== 'view') {
@@ -426,7 +429,7 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     setVisualization( configs ) {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widget.settings.visual = { ...this.widget.settings.visual, ...configs };
     }
 

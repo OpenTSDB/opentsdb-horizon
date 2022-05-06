@@ -19,27 +19,35 @@
 // * ADMIN CONTAINER COMPONENT
 // *
 
- @import 'loader-base';
-
- :host.app-admin.app-admin-container {
+.app-admin.app-admin-container {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
-    min-height: 100%;
+    overflow: hidden;
 
     router-outlet + * {
         display: flex;
         flex: 1 1 100%;
     }
- }
 
- // CDK items (if any)
+    .admin-tab-navigation {
+        .mat-tab-link.mat-tab-label-active:not(.mat-tab-disabled) {
+            opacity: 1;
+        }
 
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    :host.app-admin.app-admin-container {
-        background-color: mat-color($background, card);
+        .mat-tab-link .mat-icon {
+            margin-right: 8px;
+        }
     }
-
 }
+
+.app-admin-section {
+    position: relative;
+    overflow: overlay;
+    //padding: 12px 24px;
+}
+
+
+// CDK items (if any)
+
+

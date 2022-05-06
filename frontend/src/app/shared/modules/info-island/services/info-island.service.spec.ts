@@ -22,7 +22,7 @@ describe('InfoIslandService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: InfoIslandService = TestBed.get(InfoIslandService);
+    const service: InfoIslandService = TestBed.inject(InfoIslandService);
     expect(service).toBeTruthy();
   });
 });

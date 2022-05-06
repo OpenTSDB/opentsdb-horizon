@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { IntercomService } from '../../../core/services/intercom.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppConfigService } from '../../../core/services/config.service';
 
 import {
@@ -32,10 +32,11 @@ import {
 } from '../../../shared/modules/dashboard-filesystem/state';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'landing-page-content',
     templateUrl: './landing-page-content.component.html',
-    styleUrls: ['./landing-page-content.component.scss']
+    styleUrls: ['./landing-page-content.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
@@ -50,15 +51,15 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     /** Local variables */
 
     // TODO: this should be in user profile somewhere
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     showHero: boolean = true;
 
     // Search query string
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     searchQuery: string = '';
 
     // Selected search context
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     searchContext: string = 'dashboard';
 
     // options for the search context dropdown menu in the search field

@@ -1,0 +1,75 @@
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatInput, MatFormField } from '@angular/material';
+
+@Component({
+    selector: 'app-admin-config-generic-input',
+    templateUrl: './admin-config-generic-input.component.html',
+    styleUrls: ['./admin-config-generic-input.component.scss']
+})
+export class AdminConfigGenericInputComponent implements OnInit, OnChanges, AfterViewInit {
+
+    @HostBinding('class') classAttribute: string = 'app-admin-config-generic-input form-group';
+    @HostBinding('class.row-align') get horizontalAlignClass(): boolean { return this.horizontalAlign; }
+
+    @ViewChild(MatInput) inputControl: MatInput;
+    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+
+    @Input() inputFormControl: FormControl;
+    @Input() inputType: string = 'text';
+    @Input() inputPlaceholder: string = 'Enter value';
+    @Input() inputLabel: string;
+
+    @Input() hasErrors: boolean = false;
+    @Input() errors: any;
+
+    // should label and input be aligned in row?
+    // true: aligns label and input on same line
+    // false: label aligns above input (default)
+    @Input() horizontalAlign: boolean = false;
+
+    inputValue: any;
+
+    constructor(
+        private renderer: Renderer2,
+        private eRef: ElementRef
+    ) { }
+
+    ngOnInit() {
+        setTimeout(() => {
+            console.log('INPUT FORM CONTROL', this.inputFormControl);
+            this.inputValue = this.inputFormControl.value;
+        }, 200);
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.fixAutoWidth();
+        }, 200);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.hostValue && changes.inputValue.currentValue) {
+            this.inputValue = changes.inputValue.currentValue;
+            // when dashboard load, this one is undefined
+            if (this.inputFormControl) {
+                this.inputFormControl.setValue(this.inputValue);
+            }
+            this.fixAutoWidth();
+        }
+    }
+
+    private fixAutoWidth() {
+
+            // NOTE: this is for the autosizing of the function inputs
+            // NOTE: css uses the data-value attribute to correctly size item
+            // set the initial data-value
+            // needs to live on the .mat-form-field-infix
+            // aka, the wrapper around the actual input field
+            const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+            formFieldInfix.dataset.value = this.inputValue;
+
+    }
+
+}

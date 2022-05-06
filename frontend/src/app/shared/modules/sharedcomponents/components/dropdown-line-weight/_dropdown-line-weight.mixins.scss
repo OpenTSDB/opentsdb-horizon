@@ -1,0 +1,35 @@
+// UTILITY MIXINS
+@mixin dropdown-line-weight-preview() {
+    .line-weight-preview {
+        display: inline-flex;
+        align-items: center;
+        width: 20px;
+        max-width: 20px;
+        flex: 1;
+        margin-right: 8px;
+
+        span {
+            border-bottom-style: solid;
+            display: inline-block;
+            width: 100%;
+            height: 1px;
+        }
+    }
+}
+
+@mixin dropdown-line-weight-preview-theme($text, $color) {
+    // theme part
+    .line-weight-preview {
+        span {
+            border-bottom-color: $text;
+        }
+    }
+
+    .mat-button-toggle.mat-button-toggle-checked {
+        .line-weight-preview {
+            span {
+                border-bottom-color: $color;
+            }
+        }
+    }
+}

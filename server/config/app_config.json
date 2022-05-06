@@ -1,8 +1,15 @@
 {
     "name"  : "OpenTSDB",
     "production": true,
+    "readonly": false,
     "queryParams": null,
     "debugLevel": "ERROR",
+    "uiBranding": {
+        "logo": {
+            "imageUrl": "/assets/horizon-logo-icon-only.png",
+            "homeUrl": "/main"
+        }
+    },
     "tsdbCacheMode": null,
     "tsdbSource": null,
     "tsdb_host": "<%tsdb endpoint%>",
@@ -26,7 +33,7 @@
         },
         "oc": {
             "enable": false,
-            "onboardUrl": "<% OC onboad url %>",
+            "onboardUrl": "<% OC onboard url %>",
             "guideUrl": "<% OC guide url %>"
         },
         "http": {
@@ -34,8 +41,20 @@
         },
         "email": {
             "enable": true
+        },
+        "pagerduty": {
+            "enable": false,
+            "guideUrl": "<% pagerduty guide url %>"
         }
       }
+    },
+    "widget": {
+        "downloadQuery": {
+            "examples": [
+                "<% query example 1 (curl?) %>",
+                "<% query example 2 (CLI?) %>"
+            ]
+        }
     },
     "alert_history_url": "<% alert log history url %>",
     "helpLinks": [
@@ -53,5 +72,12 @@
     "namespace": {
         "enabled": false,
         "default": "_default"
+    },
+    "auth": {
+        "loginURL": "/login",
+        "heartbeatURL": "/heartbeat",
+        "heartbeatImgURL": "/heartbeatimg",
+        "heartbeatInterval": 600
     }
 }
+

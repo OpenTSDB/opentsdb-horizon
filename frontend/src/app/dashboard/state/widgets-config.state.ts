@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 // this is just schema for what a config should be
@@ -45,6 +46,7 @@ export class LoadWidgetsConfig {
 
 /* the idea is hash object with id => config */
 
+@Injectable()
 @State<any>({
     name: 'Configs',
     defaults: []
@@ -54,7 +56,7 @@ export class WidgetsConfigState {
 
     @Selector() static getWidgetsConfig(state: any) {
         return state;
-    } 
+    }
 
     @Action(LoadWidgetsConfig)
     loadWidgetsConfig(ctx: StateContext<any>, { payload }: LoadWidgetsConfig) {

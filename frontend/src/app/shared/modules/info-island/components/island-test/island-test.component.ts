@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, Inject, ViewEncapsulation } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'island-test',
     templateUrl: './island-test.component.html',
-    styleUrls: []
+    styleUrls: ['./island-test.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IslandTestComponent implements OnInit {
 

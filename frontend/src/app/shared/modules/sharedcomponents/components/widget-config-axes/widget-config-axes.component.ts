@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -22,14 +22,12 @@ import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 
-
-import { isDefaultChangeDetectionStrategy } from '@angular/core/src/change_detection/constants';
-
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-axes',
     templateUrl: './widget-config-axes.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-axes.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
@@ -43,11 +41,11 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
     @Output() widgetChange = new EventEmitter;
 
     /** Local variables */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     y1AxisEnabled_label: string = 'enabled';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     y2AxisEnabled_label: string = 'disabled';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     // xAxisEnabled_label:  string = 'enabled';
     y1AxisEnabledToggleDisplay = true;
 

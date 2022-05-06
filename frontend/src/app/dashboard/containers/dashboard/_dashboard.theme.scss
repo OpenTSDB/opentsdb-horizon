@@ -1,0 +1,105 @@
+@mixin dashboard-container-component-theme() {
+
+    $close-button-background: mat-color($accent, A400);
+    $close-button-text: mat-color($foreground, navbar-text);
+    $navbar-background: mat-color($background, navbar);
+
+    $disabled-text: map-get($foreground, disabled-text);
+
+    .nav-add-new-widget,
+    .nav-dashboard-actions,
+    .nav-refresh-icon,
+    .nav-explore-close,
+    .nav-dashboard-template-var-trigger {
+        .mat-raised-button,
+        .mat-flat-button {
+            background-color: mat-color($background, navbar-button);
+            color: mat-color($foreground, navbar-text);
+
+            &:hover {
+                background-color: mat-color($background, navbar-button-hover);
+            }
+        }
+    }
+    .nav-title-readonly {
+        color: $navbar-background;
+    }
+
+    // cdk items
+    .controls-bar {
+        .batch-controls-wrap {
+            border-bottom: 1px solid mat-color($foreground, divider);
+
+            .batch-toggle {
+                background: mat-color($primary, default, 0.08);
+            }
+
+            .batch-select,
+            .batch-copy,
+            .batch-trash {
+                color: mat-color($foreground, link);
+
+                &[disabled] {
+                    color: $disabled-text;
+                }
+            }
+
+            .batch-select.is-checked {
+                color: mat-color($accent, default);
+            }
+        }
+    }
+
+    .mat-flat-button {
+        &.save-dashboard-button {
+            background-color: mat-color($other, status-success);
+            color: mat-color($other, status-success-contrast);
+        }
+    }
+
+    .dashboard-available-widgets-menu {
+        &::after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: mat-color($background, menu); // actual color of arrow
+        }
+
+        .widget-types {
+            .widget-type-selector {
+                // need a background color here
+                background-color: mat-color($other, widget-icons-background);
+
+                &:hover {
+                    background-color: mat-color($other, widget-icons-background-hover);
+                }
+            }
+
+            .widget-type-label {
+                color: mat-color($foreground, text);
+            }
+        }
+    }
+
+    .app-navbar .inline-editable,
+    .app-navbar .mat-toolbar .inline-editable {
+        .mat-form-field {
+            &.readonly-mode {
+                &:hover {
+                    background-color: rgba($white, 0.25) !important;
+                }
+            }
+
+            &.editing-mode {
+                background-color: rgba($white, 0.25) !important;
+            }
+        }
+    }
+
+    $success-bg: mat-color($other, status-success);
+    $success-txt: mat-color($other, status-success-contrast);
+
+    .mat-snack-bar-container.success-notification {
+        color: $success-txt;
+        background: $success-bg;
+        box-shadow: 2px 2px 6px $black;
+    }
+}

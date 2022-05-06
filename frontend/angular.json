@@ -11,6 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "../server/public",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -18,10 +19,16 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/scss",
-                "src"
+                "./src",
+                "./src/scss"
               ]
             },
+            "allowedCommonJsDependencies": [
+                "hammerjs",
+                "dygraphs",
+                "css-element-queries",
+                "chart.js"
+            ],
             "assets": [
               "src/assets",
               "src/favicon.ico",
@@ -46,17 +53,30 @@
                     "bundleName": "dygraph"
                 }
             ],
+            "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true,
+                "vendor": false
+            },
             "scripts": [
-              "node_modules/marked/lib/marked.js"
+              "node_modules/marked/marked.min.js"
             ]
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
+              "commonChunk": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -106,6 +126,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
+            "stylePreprocessorOptions": {
+                "includePaths": [
+                  "./src",
+                  "./src/scss"
+                ]
+              },
             "styles": [
                 {
                     "input": "src/styles.scss",
@@ -156,13 +182,84 @@
           }
         }
       }
+    },
+    "horizon": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "aot": true,
+            "outputPath": "/Users/cesler/Stuffz/HORIZON",
+            "index": "src/app/horizon/index.html",
+            "main": "src/app/horizon/horizon.main.ts",
+            "tsConfig": "src/app/horizon/tsconfig.horizon.json",
+            "polyfills": "src/polyfills.ts",
+            "allowedCommonJsDependencies": [
+                "dygraphs"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./src/app/horizon",
+                "./src/app",
+                "./src/scss"
+              ]
+            },
+            "styles": [
+              {
+                "input": "src/standalone.scss",
+                "bundleName": "styles"
+              }
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "styles": [
+                {
+                  "input": "src/standalone.scss",
+                  "bundleName": "styles"
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "frontend",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
-      "styleext": "scss"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "app"

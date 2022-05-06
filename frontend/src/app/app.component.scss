@@ -18,7 +18,7 @@
 // ** APP COMPONENT*/
  @import 'loader-base';
 
- :host.app-root {
+ .app-root {
      display: flex;
      flex: 1 1 100%;
      flex-direction: column;
@@ -37,6 +37,7 @@
         flex-direction: column;
         align-self: center;
         padding-top: 35px;
+
         li {
             height: 30px;
             font-size: 1.25em;
@@ -45,11 +46,6 @@
  }
 
 // * THEME VARIANTS
-@include init-component-variants() {
-
-    $divider: map-get($foreground, divider);
-
-    //:host.app-root {
-    // styles here
-    //}
- }
+//@include init-component-variants() {
+//  .app-root {}
+//}

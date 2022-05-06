@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Injectable } from '@angular/core';
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
 
@@ -36,6 +38,7 @@ export class DbfsInitialized {
 }
 
 /** State */
+@Injectable()
 @State<DbfsStateModel>({
     name: 'DBFS',
     defaults: {

@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'dropdown-line-type',
   templateUrl: './dropdown-line-type.component.html',
-  styleUrls: []
+  styleUrls: ['./dropdown-line-type.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DropdownLineTypeComponent {
     @HostBinding('class.dropdown-line-type') private _hostClass = true;

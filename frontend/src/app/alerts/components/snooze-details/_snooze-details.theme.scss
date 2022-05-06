@@ -1,0 +1,90 @@
+@mixin snooze-details-component-theme() {
+
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+    $link-color: mat-color($foreground, link);
+    $divider-color: mat-color($foreground, divider);
+
+    $card: mat-color($background, card);
+
+    $dygraph-tooltip-bg: if($is-dark, mat-color($background, menu), #f0f0f0); // TODO: plug into theme
+
+    // TODO: this converting to raw defeats the css variable approach.
+    // TODO: work on defining these colors in theme config
+    $menu-bg-raw: _mat-convert-variable-to-color(map-get($background, menu), $cssVarMap);
+    $dygraph-tooltip-border: if($is-dark, lighten($menu-bg-raw, 10%) , #cccccc); // TODO: plug into theme
+
+    $text-color: mat-color($foreground, text);
+
+    .snooze-alert-dialog-component {
+
+        .mat-dialog-title {
+            border-bottom: 1px solid mat-color($foreground, divider);
+        }
+
+        .mat-dialog-actions {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
+
+        .preset-toggles {
+            .mat-button-toggle-group {
+                .mat-button-toggle {
+                    color: mat-color($primary, default);
+
+                    &.mat-button-toggle-checked {
+                        background-color: mat-color($primary, default, .08);
+                    }
+                }
+            }
+        }
+
+        .controls-wrapper {
+            .step-section-label {
+                border-top: 1px solid $divider-color;
+
+                .step-section-label-text {
+                    color: if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text),
+                        mat-color($background, navbar)
+                    );
+                    background-color: if(
+                        $is-dark,
+                        mat-color($foreground, navbar-text, 0.15),
+                        mat-color($background, navbar, 0.15)
+                    );
+                    border-bottom-right-radius: 20px 24px;
+                }
+            }
+        }
+    }
+
+    // cdk items
+
+    .alert-options-cdk-panel.mat-menu-panel {
+
+        .mat-menu-content {
+            .mat-list.mat-list-base {
+                .mat-list-item {
+                    &:hover {
+                        background: mat-color($foreground, divider);
+                    }
+                }
+            }
+        }
+
+        .mat-list-item-content {
+
+            .add-alert-label {
+                color: mat-color($foreground, link);
+            }
+
+            .alert-label-details {
+                .type {
+                    color: mat-color($foreground, hint-text);
+                }
+            }
+        }
+    }
+
+}

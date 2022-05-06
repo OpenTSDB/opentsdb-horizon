@@ -20,16 +20,17 @@ import {
     HostBinding,
     Input,
     OnInit,
-    Output, ViewChild, ElementRef
+    Output, ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'test-navigator',
     templateUrl: './test-navigator.component.html',
     styleUrls: ['./test-navigator.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     host: {
         '[class.test-navigator]': 'true',
         '[class.panel-content]': 'true'
@@ -39,7 +40,7 @@ export class TestNavigatorComponent implements OnInit {
 
     //@HostBinding('class.test-navigator') private _hostClass = true;
 
-    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';

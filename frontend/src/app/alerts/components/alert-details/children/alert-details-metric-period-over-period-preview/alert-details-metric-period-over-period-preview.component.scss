@@ -15,82 +15,62 @@
 // * limitations under the License.
 // *
 
-@mixin alert-details-metric-period-over-period-preview-component-base() {
+.period-over-period-preview {
+    height: 200px;
+    width: 100%;
+    // display: flex;
 
-    .period-over-period-preview {
-        height: 200px;
-        width: 100%;
-        // display: flex;
+    .headers {
+        display: flex;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        justify-content: space-around;
+        font-weight: bold;
+        span {
+            width : 50%;
+            text-align: center;
+        }
+        .snapshot {
+            display: block;
+            float: right;
+            margin-right: 30px;
+            .mat-flat-button {
+                line-height: 24px;
+                font-size: 12px;
+                min-width: 24px;
+                background: transparent;
+                padding: 0px;
 
-        .headers {
-            display: flex;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            justify-content: space-around;
-            font-weight: bold;
-            span {
-                width : 50%;
-                text-align: center;
-            }
-            .snapshot {
-                display: block;
-                float: right;
-                margin-right: 30px;
-                .mat-flat-button {
-                    line-height: 24px;
-                    font-size: 12px;
-                    min-width: 24px;
-                    background: transparent;
-                    padding: 0px;
-
-                    .mat-icon {
-                        font-size: 24px;
-                        display: inline-flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
+                .mat-icon {
+                    font-size: 24px;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
                 }
-            }
-        }
-
-        .graphs {
-            display: flex;
-
-            .query-preview {
-                margin-right: 10px;
-                margin-bottom: 10px;
-            }
-
-            .threshold-preview {
-                margin-left: 10px;
-                margin-bottom: 10px;
-            }
-        }
-
-        .preview-placeholder {
-            height: 150px;
-            padding: 10px;
-
-            .gif-spinner {
-                margin-left: 10px;
             }
         }
     }
 
+    .graphs {
+        display: flex;
+
+        .query-preview {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .threshold-preview {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    }
+
+    .preview-placeholder {
+        height: 150px;
+        padding: 10px;
+
+        .gif-spinner {
+            margin-left: 10px;
+        }
+    }
 }
-
-@mixin alert-details-metric-period-over-period-preview-component-theme($theme-config) {
-    // * Theme config parts
-    //$primary: map-get($theme-config, primary);
-    //$accent: map-get($theme-config, accent);
-    //$warn: map-get($theme-config, warn);
-    //$foreground: map-get($theme-config, foreground);
-    //$background: map-get($theme-config, background);
-    //$other: map-get($theme-config, other);
-    //$is-dark: map-get($theme-config, is-dark);
-
-    .period-over-period-preview { }
-
-}
-
-

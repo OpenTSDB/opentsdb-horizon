@@ -23,17 +23,19 @@ import {
     Input,
     Output,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-meta',
     templateUrl: './dbs-meta.component.html',
-    styleUrls: []
+    styleUrls: ['./dbs-meta.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsMetaComponent implements OnInit, OnDestroy {
 
@@ -50,7 +52,7 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
     metaForm: FormGroup;
     metaFormSub: Subscription;
 
-    @ViewChild('newLabelInput') newLabelInput: ElementRef;
+    @ViewChild('newLabelInput', { static: true }) newLabelInput: ElementRef;
 
     constructor(
         private fb: FormBuilder

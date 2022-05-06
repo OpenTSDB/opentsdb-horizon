@@ -1,0 +1,10 @@
+@mixin settings-panel-component-theme() {
+    // * THEME VARIANTS
+    //@include init-component-variants() {
+        .settings-navigator {
+            .panel-toolbar {
+                color: mat-color($foreground, navbar-text);
+            }
+        }
+    //}
+}

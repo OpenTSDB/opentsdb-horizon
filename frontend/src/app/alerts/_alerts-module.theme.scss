@@ -1,0 +1,29 @@
+// NOTE: commentted items that have no theme
+
+@import './containers/alerts.theme';
+
+@import './components/alert-details/alert-details.theme';
+@import './components/alert-details/children/alert-details-count/alert-details-count.theme';
+@import './components/alert-details/children/alert-details-metric-period-over-period/alert-details-metric-period-over-period.theme';
+//@import './components/alert-details/children/alert-details-metric-period-over-period-preview/alert-details-metric-period-over-period-preview.theme';
+@import './components/alert-details/children/alert-details-suppress-config/alert-details-suppress-config.theme';
+//@import './components/alert-details/children/alert-details-transitions/alert-details-transitions.theme';
+@import './components/alert-details/children/recipients-manager/recipients-manager.theme';
+
+//@import './components/name-alert-dialog/name-alert-dialog.theme';
+@import './components/snooze-details/snooze-details.theme';
+
+@mixin alerts-module-theme() {
+    @include alerts-container-component-theme();
+
+    @include alert-details-component-theme();
+    @include alert-details-count-component-theme();
+    @include alert-details-metric-period-over-period-component-theme();
+    //@include alert-details-metric-period-over-period-preview-component-theme();
+    @include alert-details-suppress-config-component-theme();
+    //@include alert-details-transitions-component-theme();
+    @include recipients-manager-component-theme();
+
+    //@include name-alert-dialog-component-theme();
+    @include snooze-details-component-theme();
+}

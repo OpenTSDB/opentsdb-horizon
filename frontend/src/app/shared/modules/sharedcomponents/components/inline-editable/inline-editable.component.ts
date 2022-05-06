@@ -16,17 +16,19 @@
  */
 import {
     Component, Input, EventEmitter, Output, ViewChild, Renderer2,
-    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit
+    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatFormField, MatInput } from '@angular/material';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'inline-editable',
     templateUrl: './inline-editable.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: []
+    styleUrls: ['./inline-editable.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
@@ -37,10 +39,10 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
     @Input() maxLength: number;
     @Input() showEditIcon: boolean = false;
     @Output() updatedValue: EventEmitter<any> = new EventEmitter();
-    @ViewChild('container') container: ElementRef;
-    @ViewChild(MatInput) inputControl: MatInput;
-    @ViewChild(MatInput, {read: ElementRef}) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+    @ViewChild('container', { static: true }) container: ElementRef;
+    @ViewChild(MatInput, { static: true }) inputControl: MatInput;
+    @ViewChild(MatInput, { read: ElementRef, static: true }) inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef, static: true }) private formFieldEl: ElementRef;
 
     isRequired = true;
     isEditView = false;
@@ -128,7 +130,7 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
 
     save() {
         // only save if no errors, not placeholder, and a change
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if (!this.fieldFormControl.errors && this.fieldFormControl.value !== this.placeholder && this.fieldValue !== this.fieldFormControl.value) {
             this.updatedValue.emit(this.fieldFormControl.value);
             this.fieldValue = this.fieldFormControl.value;

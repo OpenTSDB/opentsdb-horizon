@@ -21,7 +21,8 @@ import {
     OnDestroy,
     Renderer2,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
@@ -29,15 +30,17 @@ import { TooltipDataService, TooltipData } from '../../services/tooltip-data.ser
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'linechart-data-tooltip',
-    templateUrl: './linechart-data-tooltip.component.html'
+    templateUrl: './linechart-data-tooltip.component.html',
+    styleUrls: ['./linechart-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef, static: true }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 

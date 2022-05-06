@@ -15,24 +15,16 @@
 // * limitations under the License.
 // *
 
-@mixin status-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    // .widget-panel-content.status-widget { }
+//$default-padding: map-get($widgets-common-config, default-padding);
+//$edit-view-padding: map-get($widgets-common-config, edit-padding);
+//$tab-width: map-get($widgets-common-config, tab-width);
+//$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    // when we are in edit view
-    // .edit-view-container.is-active {
-    //    .widget-panel-content.status-widget { }
-    // }
-}
+//.widget-panel-content.status-widget { }
 
-@mixin status-widget-component-theme($theme-config) {
 
-    @include variables-compatibility($theme-config) {
-        //.widget-panel-content.status-widget { }
-    }
-
-}
+// when we are in edit view
+//.edit-view-container.is-active {
+//    .widget-panel-content.status-widget { }
+//}

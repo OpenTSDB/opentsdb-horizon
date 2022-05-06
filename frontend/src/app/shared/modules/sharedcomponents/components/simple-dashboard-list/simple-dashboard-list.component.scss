@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@mixin simple-dashboard-list-component-base() {
 
-}
+//.widget-panel-content.simple-dashboard-list {}
 
-@mixin simple-dashboard-list-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // styles here
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+// styles here
+//}

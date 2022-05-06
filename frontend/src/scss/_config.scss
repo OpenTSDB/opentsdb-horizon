@@ -1,0 +1,99 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **************************************
+// * CONFIGURATION
+// * define some variables or maps here
+// **************************************/
+
+// NOTE: if you are looking for theme configuration, please see scss/themes and scss/theming.scss
+
+// default dark/light class names
+$dark-theme-selector: ".dark-variant" !default;
+$light-theme-selector: ".light-variant" !default;
+
+$base-font-size: 10px;
+
+$black: #000000;
+$white: #ffffff;
+
+$graph-colors: (
+    "black":        #000000,
+    "gray":         #808080,
+    "slategray":    #708090,
+    "maroon":       #800000,
+    "red":          #f1443c,
+    "pink":         #e62364,
+    "fuchsia":      #ff00ff,
+    "purple":       #9a2ead,
+    "indigo":       #4b0082,
+    "navy":         #000080,
+    "blue":         #0000ff,
+    "cyan":         #1ebbd1,
+    "aqua":         #00ffff,
+    "teal":         #008080,
+    "olive":        #808000,
+    "green":        #008000,
+    "limegreen":    #32cd32,
+    "lime":         #00ff00,
+    "yellow":       #fde84d,
+    "amber":        #fdbf2e,
+    "orange":       #ffa500,
+    "orangered":    #ff4500,
+    "white":        #ffffff
+);
+
+$navbar-config: (
+    'navbar-height': 48px,
+    'logo-height': 32px,
+    'sn-light': #374a5a,
+    'sn-dark': #233244,
+    'sn-light-text': #86929c,
+    'sn-dark-text': #c1c5ca,
+    'sn-seperator': #4b5c6a,
+    'sn-active': #2974d8
+);
+
+// Responsiveness
+
+// The container horizontal gap, which acts as the offset for breakpoints
+$gap: 64px !default;
+
+// 960, 1152, and 1344 have been chosen because they are divisible by both 12 and 16
+$tablet: 769px !default;
+
+// 960px container + 4rem
+$desktop: 960px + (2 * $gap) !default;
+
+// 1152px container + 4rem
+$widescreen: 1152px + (2 * $gap) !default;
+$widescreen-enabled: true !default;
+
+// 1344px container + 4rem
+$fullhd: 1344px + (2 * $gap) !default;
+$fullhd-enabled: true !default;
+
+$widgets-common-config: (
+    default-padding: 14px,
+    edit-padding: 10px,
+    tab-width: initial,
+    action-bar-height: 30px,
+    output-radius: 4px,
+    widget-output-height: 318px,
+    edit-toolbar-height: 50px,
+    edit-toolbar-border-width: 2px
+);

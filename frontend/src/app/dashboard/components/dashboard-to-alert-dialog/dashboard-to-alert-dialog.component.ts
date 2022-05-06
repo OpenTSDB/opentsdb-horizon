@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding, AfterViewInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit, Inject, HostBinding, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'dashboard-to-alert-dialog',
   templateUrl: './dashboard-to-alert-dialog.component.html',
-  styleUrls: []
+  styleUrls: ['./dashboard-to-alert-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DashboardToAlertDialogComponent implements OnInit, AfterViewInit {
   @HostBinding('class.dashboard-to-alert-dialog') private _hostClass = true;

@@ -1,0 +1,73 @@
+@mixin app-shell-container-theme() {
+    // * Theme config parts
+
+    $drawer-text: if(
+        $is-dark,
+        mat-color($foreground, navbar-text),
+        mat-color($background, navbar)
+    );
+
+    .app-shell {
+        .app-navigator-drawer {
+            background-color: mat-color($background, card);
+            border-top: 1px solid transparent;
+            color: $drawer-text;
+            @if ($is-dark) {
+                filter: brighten(1.1);
+                * {
+                    filter: brighten(1);
+                }
+            }
+
+            ::ng-deep .panel-content .mat-toolbar.panel-toolbar {
+                background: transparent;
+                border-bottom: 1px solid mat-color($foreground, divider);
+                color: $drawer-text;
+            }
+        }
+
+        .messaging-bar {
+            &.is-error-type,
+            &.is-info-type,
+            &.is-success-type,
+            &.is-warning-type {
+                .message-icon {
+                    background-color: rgba($white, 0.8);
+                }
+
+                .message-text {
+                    background-color: rgba($white, 0.8);
+                    color: mat-color($foreground, text);
+                }
+            }
+
+            &.is-error-type {
+                background-color: mat-color($other, status-error);
+                color: mat-color($other, status-error-contrast);
+
+                .message-icon { color: mat-color($other, status-error); }
+            }
+
+            &.is-info-type {
+                background-color: mat-color($other, status-info);
+                color: mat-color($other, status-info-contrast);
+
+                .message-icon { color: mat-color($other, status-info); }
+            }
+
+            &.is-success-type {
+                background-color: mat-color($other, status-success);
+                color: mat-color($other, status-success-contrast);
+
+                .message-icon { color: mat-color($other, status-success); }
+            }
+
+            &.is-warning-type {
+                background-color: mat-color($other, status-warning);
+                color: mat-color($other, status-warning-contrast);
+
+                .message-icon { color: mat-color($other, status-warning); }
+            }
+        }
+    }
+}

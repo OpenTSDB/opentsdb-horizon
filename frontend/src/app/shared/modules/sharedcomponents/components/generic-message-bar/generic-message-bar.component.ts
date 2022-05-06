@@ -21,17 +21,19 @@ import {
     Input,
     Output,
     EventEmitter,
-    HostBinding
+    HostBinding,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'generic-message-bar',
     templateUrl: './generic-message-bar.component.html',
-    styleUrls: []
+    styleUrls: ['./generic-message-bar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class GenericMessageBarComponent implements OnInit, OnDestroy {
 
@@ -49,7 +51,7 @@ export class GenericMessageBarComponent implements OnInit, OnDestroy {
     data: any = {
         message: 'this is a test message'
     };
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     messageType: string = 'error';
 
     get isVisible() {

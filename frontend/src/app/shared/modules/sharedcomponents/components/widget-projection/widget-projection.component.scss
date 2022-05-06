@@ -15,133 +15,82 @@
 // * limitations under the License.
 // *
 
-@mixin widget-projection-component-base() {
-    .widget-projection {
-        display: flex;
-        flex: 1 1 100%;
+.widget-projection {
+    display: flex;
+    flex: 1 1 100%;
 
-        .mat-card {
-            padding: initial;
-        }
+    .mat-card {
+        padding: initial;
+    }
 
-        .panel-heading {
+    .panel-heading {
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        top: 0;
+        cursor: move;
+        max-height: 24px;
+        flex: 1 1 24px;
+        min-height: 24px;
+
+        .panel-title {
             display: inline-block;
-            position: relative;
-            width: 100%;
-            top: 0;
-            cursor: move;
-            max-height: 24px;
-            flex: 1 1 24px;
-            min-height: 24px;
-
-            .panel-title {
-                display: inline-block;
-                padding: 2px;
-                margin-left: auto;
-                margin-right: auto;
-                font-size: 12px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                padding: 0 10px;
-                font-weight: 500;
-            }
-        }
-
-        .mat-toolbar,
-        .mat-toolbar-row {
-            font-size: 1.1em;
-            height: 24px;
-            min-height: 24px !important;
-            //border-bottom: 1px solid #dfdfdf;
+            padding: 2px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 12px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 0 10px;
             font-weight: 500;
-        }
-
-        .mat-toolbar {
-            -webkit-transition: background 500ms;
-            transition: background 500ms;
-        }
-
-        .mat-toolbar-row {
-            //@include mat-elevation(1);
-            padding: initial;
-        }
-
-        .mat-icon-button {
-            &,
-            .mat-icon {
-                width: 28px;
-                height: 28px;
-            }
-
-            &,
-            .mat-button-wrapper {
-                line-height: 28px;
-            }
-
-            .mat-icon {
-                font-size: 18px;
-                line-height: 24px;
-            }
-        }
-
-
-
-        // .mat-card-content.panel-body
-        .panel-body {
-            // padding: 0 10px 10px;
-            display: flex;
-
-            .panel-heading {
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 9;
-            }
         }
     }
 
-}
+    .mat-toolbar,
+    .mat-toolbar-row {
+        font-size: 1.1em;
+        height: 24px;
+        min-height: 24px !important;
+        font-weight: 500;
+    }
 
-@mixin widget-projection-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        .widget-projection {
-            .mat-card {
-                box-shadow: none;
-                background-color: mat-color($background, card);
-                border: 1px solid rgba($black, 0.08);
+    .mat-toolbar {
+        -webkit-transition: background 500ms;
+        transition: background 500ms;
+    }
 
-                .panel-body .panel-heading {
-                    background-color: transparent;
-                    display: none;
+    .mat-toolbar-row {
+        padding: initial;
+    }
 
-                    & {
-                        @include transition(background-color 0.2s ease-in-out);
-                    }
+    .mat-icon-button {
+        &,
+        .mat-icon {
+            width: 28px;
+            height: 28px;
+        }
 
+        &,
+        .mat-button-wrapper {
+            line-height: 28px;
+        }
 
+        .mat-icon {
+            font-size: 18px;
+            line-height: 24px;
+        }
+    }
 
-                    .mat-toolbar {
-                        @include transition(none);
-                        background: transparent;
+    .panel-body {
+        // padding: 0 10px 10px;
+        display: flex;
 
-                        .mat-icon-button {
-                            @include opacity(.5);
-                        }
-                    }
-
-                    &:hover {
-                        //background-color: rgba(map-get($accent, A700), .1);
-                        background-color: mat-color($background, card-header);
-
-                        .mat-toolbar {
-                            .mat-icon-button {
-                                @include opacity(1);
-                            }
-                        }
-                    }
-                }
-            }
+        .panel-heading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;
         }
     }
 }

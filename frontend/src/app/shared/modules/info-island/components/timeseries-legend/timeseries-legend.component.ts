@@ -15,35 +15,40 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit
+    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit, ViewEncapsulation
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
-import { Subscription } from 'rxjs';
-import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
+import { fromEvent, Subscription } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { I } from '@angular/cdk/keycodes';
-import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
+import { TableItemSizeDirective, TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { ResizeSensor} from 'css-element-queries';
-
+import * as moment from 'moment';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'timeseries-legend-component',
     templateUrl: './timeseries-legend.component.html',
-    styleUrls: []
+    styleUrls: ['./timeseries-legend.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterContentInit {
 
     @HostBinding('class.timeseries-legend-component') private _hostClass = true;
 
-    @ViewChild('legendTable', { read: MatTable }) private _legendTable: MatTable<any>;
-    @ViewChild('legendTable', { read: ElementRef }) private _legendTableEl: ElementRef<any>;
-    @ViewChild('legendTable', { read: CdkObserveContent }) private _legendTableObserve: CdkObserveContent;
-    @ViewChild('tsDataWrapper', { read: ElementRef }) private _tsDataWrapper: ElementRef<any>;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild('legendTable', { read: MatTable, static: true }) private _legendTable: MatTable<any>;
+    @ViewChild('legendTable', { read: ElementRef, static: true }) private _legendTableEl: ElementRef<any>;
+    @ViewChild('legendTable', { read: CdkObserveContent, static: true }) private _legendTableObserve: CdkObserveContent;
+    @ViewChild('tsDataWrapper', { read: ElementRef, static: true }) private _tsDataWrapper: ElementRef<any>;
+    @ViewChild(MatSort, { static: true }) sort: MatSort;
+    @ViewChild(CdkVirtualScrollViewport, { static: true }) viewportComponent: CdkVirtualScrollViewport;
 
     islandRef: InfoIslandComponent;
 
@@ -98,7 +103,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         private utilsService: UtilsService,
         @Inject(ISLAND_DATA) private _islandData: any
     ) {
-        // this.console.ng('[TSL] Constructor', { ISLAND_DATA: _islandData });
+        //console.log('[TSL] Constructor', { ISLAND_DATA: _islandData });
         // Set initial incoming data (data from first click that opens island)
         this.currentWidgetId = _islandData.originId;
         if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.component_type) {
@@ -143,12 +148,20 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         this.logScaleY2 = (widgetAxes.y2 && widgetAxes.y2.hasOwnProperty('logscale')) ? widgetAxes.y2.logscale : false;
 
         // set subscriptions
+        this.subscription.add(this.interCom.responseGet().subscribe(message => {
+            switch (message.action) {
+                case 'islandResizeComplete':
+                    // island got resized... need to tell virtual scrollport to check size
+                    this.viewportComponent.checkViewportSize();
+                    break;
+                default:
+                    break;
+            }
+        }));
+
         this.subscription.add(this.interCom.requestListen().subscribe(message => {
             // this.console.intercom('[TSL] RequestListen', {message});
             switch (message.action) {
-                case 'islandResizeComplete':
-                    console.log('%cRESIZE COMPLETE', 'color: white; background: green; padding: 2px;')
-                    break;
                 case 'tsLegendWidgetOptionsUpdate':
                     //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
                     this.currentWidgetOptions = message.payload.options;
@@ -378,7 +391,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         } else {
             for (const index in this.data.series) {
                 if (this.data.series[index]) {
-                    // tslint:disable-next-line: radix
+                    // eslint-disable-next-line radix
                     this.data.series[index]['srcIndex'] = parseInt(index);
                     this.data.series[index]['visible'] = this.currentWidgetOptions.visibility[this.data.series[index].srcIndex];
                 }
@@ -825,6 +838,133 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         }
     }
 
+    // data -> CSV
+
+    // initiates CSV download
+    saveLegendDataCSV() {
+
+        let csvContent = this.getLegendCSV();
+        //console.log('CSV CONTENT', csvContent);
+
+        let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA') + '.csv';
+
+        // see: https://stackoverflow.com/a/24922761/1810361
+        // for the Blob download snippet
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        let navigator = window.navigator;
+
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+
+    // initiates copying CSV to clipboard
+    copyLegendDataCSV() {
+
+        let csvContent = this.getLegendCSV();
+        //console.log('CSV CONTENT', csvContent);
+
+        // see: https://stackoverflow.com/a/49121680/1810361
+        // for this quick copy to clipboard snippet
+        // NOTE: need to upgrade to angular CDK clipboard service once we go to NG9+
+        const selBox = document.createElement('textarea');
+        selBox.style.position = 'fixed';
+        selBox.style.left = '0';
+        selBox.style.top = '0';
+        selBox.style.opacity = '0';
+        selBox.value = csvContent;
+        document.body.appendChild(selBox);
+        selBox.focus();
+        selBox.select();
+        document.execCommand('copy');
+        document.body.removeChild(selBox);
+    }
+
+    // formats legend data into CSV format
+    private getLegendCSV(): any {
+        let csvContent = '';
+        // get headers
+        let columns: any[] = [...this.tableColumns];
+        columns.shift();
+        // add headers to first line
+        csvContent += columns.join(',') + '\n';
+
+        // get legend data
+        let data = this.getVisibleLegendItems();
+        console.log('DATA', data);
+
+        // loop through data and add relevant items to csvContent
+        data.forEach((item: any) => {
+            // first is always metric
+            let rowData = '';
+            columns.forEach(col => {
+                if ( col === 'metric' ) {
+                    rowData += this.formattedMetricLabel(item) + ',';
+                } else if ( col === 'value' ) {
+                    rowData += (typeof(item.formattedValue) === 'string') ? item.formattedValue.trim() : item.formattedValue;
+                } else {
+                    rowData += ((item.series.tags[col] === undefined) ? 'n/a' : item.series.tags[col]) + ',';
+                }
+            });
+            csvContent += rowData + '\n';
+        });
+
+        this.parseCSVDataToConsole(csvContent);
+
+        return csvContent;
+    }
+
+    // gets only the legend items that are checked (visible)
+    private getVisibleLegendItems(): any[] {
+        let toShow: number[] = [];
+        let dataItems: any[];
+
+        // get the indexes of items that are visible
+        for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
+            const itemVis = this.currentWidgetOptions.visibility[i];
+            if (itemVis === true) {
+                toShow.push(i);
+            }
+        }
+
+        // filter table data to only return visible (checked) items
+        dataItems = this.tableDataSource.data.filter((item: any) => toShow.includes(item.srcIndex)).map((item: any) => item);
+
+        return dataItems;
+    }
+
+    // utility to print out the CSV data to console
+    private parseCSVDataToConsole(data){
+        let lbreak = data.split('\n');
+        let columns = lbreak.shift().split(',');
+        if (lbreak[lbreak.length-1].trim().length === 0) {
+            lbreak.pop();
+        }
+        let csvData = [];
+
+        lbreak.forEach(res => {
+            let items = res.split(',');
+            let resObj = {};
+            items.forEach((item, i) => {
+                resObj[columns[i]] = item;
+            });
+            csvData.push(resObj);
+        });
+        console.table(csvData);
+    }
+
     @HostListener('document:keydown.shift', ['$event'])
     onShiftKeydown(e) {
         this.shiftModifierKey = true;
@@ -842,6 +982,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     /** OnDestory - Always Last */
     ngOnDestroy() {
+        console.log('%cTS LEGEND DESTROY', 'color: white; background: red;');
         this.subscription.unsubscribe();
         this._legendTableObserve.ngOnDestroy();
 

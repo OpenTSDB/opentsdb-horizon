@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, Inject, OnDestroy, HostBinding,
-    AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, ViewContainerRef} from '@angular/core';
+    AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Subject, Observable, Subscription } from 'rxjs';
@@ -25,10 +25,11 @@ import { Portal } from '@angular/cdk/portal';
 import { IntercomService } from '../../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'info-island',
     templateUrl: './info-island.component.html',
-    styleUrls: [],
+    styleUrls: ['./info-island.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger('infoIslandAnimation', [
             state(
@@ -58,11 +59,11 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     @HostBinding('class.info-island-component') private _hostClass = true;
 
-    @ViewChild('islandContainer', { read: ElementRef }) private _islandContainer: ElementRef;
+    @ViewChild('islandContainer', { read: ElementRef, static: true }) private _islandContainer: ElementRef;
 
-    @ViewChild('islandContainer', {read: CdkDrag }) _dragContainer: CdkDrag;
+    @ViewChild('islandContainer', { read: CdkDrag, static: true }) _dragContainer: CdkDrag;
 
-    @ViewChild('islandToolbar', {read: ViewContainerRef}) private _islandToolbar: ViewContainerRef;
+    @ViewChild('islandToolbar', { read: ViewContainerRef, static: true }) private _islandToolbar: ViewContainerRef;
     get islandToolbar(): ViewContainerRef {
         return this._islandToolbar;
     }
@@ -167,7 +168,7 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
         }
         const elStyle = window.getComputedStyle(el),
 
-        // tslint:disable-next-line: deprecation
+        // eslint-disable-next-line import/no-deprecated
         transform = elStyle.transform || elStyle.webkitTransform;
 
         if (transform === 'none') {
@@ -315,7 +316,8 @@ export class InfoIslandComponent implements OnInit, OnDestroy, AfterViewInit  {
     /** On Destroy */
 
     ngOnDestroy() {
-        this.onCloseIsland.unsubscribe();
+        console.log('%cCONTAINER LEGEND DESTROY', 'color: white; background: red;');
+        //this.onCloseIsland.unsubscribe();
     }
 
 }

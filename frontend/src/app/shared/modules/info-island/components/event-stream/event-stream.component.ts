@@ -14,25 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDestroy, Inject, ViewChild, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDestroy, Inject, ViewChild, ViewChildren, QueryList, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { Subscription } from 'rxjs';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { MatAccordion, MatExpansionPanel } from '@angular/material';
+import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'event-stream',
     templateUrl: './event-stream.component.html',
-    styleUrls: []
+    styleUrls: ['./event-stream.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.event-stream') private _componentClass = true;
 
-    @ViewChild('eventAccordion', {read: MatAccordion}) private eventAccordion: MatAccordion;
+    @ViewChild('eventAccordion', { read: MatAccordion, static: true }) private eventAccordion: MatAccordion;
     @ViewChildren('eventPanel', {read: MatExpansionPanel}) eventPanels: QueryList<MatExpansionPanel>;
 
     buckets: any[] = [];
@@ -91,7 +92,7 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
                 if (bucket.events.length > 1) {
                     bucket.displayTime = this.util.buildDisplayTime(bucket.endTime, this.startTime, this.endTime, true, this.timezone);
                 } else {
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     bucket.displayTime = this.util.buildDisplayTime(bucket.events[0].timestamp, this.startTime, this.endTime, true, this.timezone);
                 }
 
@@ -115,7 +116,7 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         /*if (changes && changes.buckets
             && changes.buckets.currentValue && changes.buckets.previousValue
             && changes.buckets.previousValue.length !== changes.buckets.currentValue.length) {

@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
 
 import * as moment from 'moment';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'activity-panel',
     templateUrl: './activity-panel.component.html',
-    styleUrls: ['./activity-panel.component.scss']
+    styleUrls: ['./activity-panel.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ActivityPanelComponent implements OnInit {
     @HostBinding('class.activity-panel') private _hostClass = true;

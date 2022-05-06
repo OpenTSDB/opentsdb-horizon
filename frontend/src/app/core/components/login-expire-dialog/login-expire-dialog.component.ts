@@ -17,6 +17,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { SetAuth } from '../../../shared/state/auth.state';
+import { AppConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-login-warning-dialog',
@@ -24,15 +25,17 @@ import { SetAuth } from '../../../shared/state/auth.state';
 })
 export class LoginExpireDialogComponent {
 
-    constructor(private store: Store) { }
+    constructor(private store: Store, private configService: AppConfigService) { }
 
     login() {
+        const authConfig = this.configService.getConfig().auth || {}; 
+        const loginURL = authConfig.loginURL || '/';
         const self = this;
         const w = 600;
         const h = 700;
         const left = (window.screen.width - w) / 2;
         const top = (window.screen.height - h) / 4;
-        const win = window.open('/login', 'childWin', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+        const win = window.open( loginURL, 'childWin', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
         window.onmessage = function(e) {
             if ( e.data === 'login-success' ) {
                 self.store.dispatch(new SetAuth('valid'));

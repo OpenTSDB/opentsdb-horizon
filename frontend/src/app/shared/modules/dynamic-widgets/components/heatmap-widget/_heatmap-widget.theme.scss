@@ -1,0 +1,23 @@
+@mixin heatmap-widget-component-theme() {
+
+    $dygraph-tooltip-bg: if(
+        $is-dark,
+        mat-color($background, menu),
+        #f0f0f0 // TODO: plug into theme
+    );
+    $dygraph-tooltip-border: if(
+        $is-dark,
+        mat-color($background, menu, .85),
+        #cccccc // TODO: plug into theme
+    );
+
+    .widget-panel-content.heatmap-widget {
+
+        .widget-output {
+            .dygraph-legend {
+                background: $dygraph-tooltip-bg;
+                border: 1px solid $dygraph-tooltip-border;
+            }
+        }
+    }
+}

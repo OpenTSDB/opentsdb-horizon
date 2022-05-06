@@ -22,19 +22,21 @@ import {
     OnInit,
     ViewChild,
     ViewContainerRef,
-    Input
+    Input,
+    ViewEncapsulation
 } from '@angular/core';
 import { InfoIslandService } from '../../services/info-island.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'info-island-toolbar',
     templateUrl: './info-island-toolbar.component.html',
-    styleUrls: []
+    styleUrls: ['./info-island-toolbar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @ViewChild('toolbarPlaceholder') toolbarTmplRef;
+    @ViewChild('toolbarPlaceholder', { static: true }) toolbarTmplRef;
 
     @Input() customClass = '';
 

@@ -15,211 +15,138 @@
 // * limitations under the License.
 // *
 
-@mixin topn-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+@import 'config';
 
-    .widget-panel-content.topnchart-widget {
-        flex: 1;
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+.widget-panel-content.topnchart-widget {
+    flex: 1;
+    display: flex;
+    padding-top: 20px;
+
+    .widget-title {
+        flex-direction: row;
+        box-sizing: border-box;
         display: flex;
-        padding-top: 20px;
+        flex: 1 0 30px;
+        max-height: 30px;
+    }
 
-        .widget-title {
-            flex-direction: row;
-            box-sizing: border-box;
-            display: flex;
-            flex: 1 0 30px;
-            max-height: 30px;
+    .widget-output {
+        width: 100%;
+        display: flex;
+
+
+        .loading-spinner,
+        .gif-spinner {
+            position: absolute;
+            left: 5px;
+            bottom: 5px;
+            z-index: 1;
         }
 
-        .widget-output {
-            width: 100%;
-            display: flex;
+        .apply-tpl-status {
+            position: absolute;
+            right: -5px;
+            top: 0px;
+            z-index: 1;
 
-
-            .loading-spinner,
-            .gif-spinner {
-                position: absolute;
-                left: 5px;
-                bottom: 5px;
-                z-index: 1;
-            }
-
-            .apply-tpl-status {
-                position: absolute;
-                right: -5px;
-                top: 0px;
-                z-index: 1;
-
-                .mat-icon {
-                    font-size: 16px;
-                }
-            }
-
-            .error,
-            .debug {
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                z-index: 1;
-                width: 30px;
-                height: 30px;
-            }
-
-            /* tooltip */
-            .tooltip{
-                display: none;
-                font-size: 12px;
-                padding: 5px;
-                position: absolute;
-                min-width: 100px;
-                z-index: 10;
-                top:10px;
-                left: 10px;
-                border-radius: 3px;
-                white-space: nowrap;
+            .mat-icon {
+                font-size: 16px;
             }
         }
-        #container {
-            box-sizing: border-box;
-            padding: 0px 0px 0px 0px;
-            display:inline-block;
-            width: 100%;
+
+        .error,
+        .debug {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+        }
+
+        /* tooltip */
+        .tooltip{
+            display: none;
+            font-size: 12px;
+            padding: 5px;
+            position: absolute;
+            min-width: 100px;
+            z-index: 10;
+            top:10px;
+            left: 10px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+    }
+    #container {
+        box-sizing: border-box;
+        padding: 0px 0px 0px 0px;
+        display:inline-block;
+        width: 100%;
+        overflow: overlay;
+
+        text {
+            font-family: 'Ubuntu';
+        }
+
+        .bar {
+            cursor: pointer;
+        }
+
+        .yaxis {
+            font-size: 1em;
+            font-family: ubuntu;
+            text-anchor: end;
+        }
+
+        .yaxis path,
+        .yaxis line {
+            fill: none;
+            display: none;
+        }
+
+        .label {
+            cursor: pointer;
+        }
+
+        .chart {
+            flex: 1;
+            position: relative;
             overflow: overlay;
-
-            text {
-                font-family: 'Ubuntu';
-            }
-
-            .bar {
-                cursor: pointer;
-            }
-
-            .yaxis {
-                font-size: 1em;
-                font-family: ubuntu;
-                text-anchor: end;
-            }
-
-            .yaxis path,
-            .yaxis line {
-                fill: none;
-                display: none;
-            }
-
-            .label {
-                cursor: pointer;
-            }
-
-            .chart {
-                flex: 1;
-                position: relative;
-                overflow: overlay;
-                align-items: center;
-            }
-
-            @-moz-document url-prefix() {
-                .chart {
-                    overflow: auto;
-                }
-            }
-
-            .chart svg {
-                width: 100%;
-                height: 100%;
-            }
+            align-items: center;
         }
 
         @-moz-document url-prefix() {
-            #container {
+            .chart {
                 overflow: auto;
             }
         }
+
+        .chart svg {
+            width: 100%;
+            height: 100%;
+        }
     }
 
-    // when we are in edit view
-    .edit-view-container.is-active {
-        .widget-panel-content.topnchart-widget {
-            #container {
-                margin: 0px 0px 0px 0px;
-                align-items: flex-end;
-                justify-content: start;
-            }
+    @-moz-document url-prefix() {
+        #container {
+            overflow: auto;
         }
     }
 }
 
-@mixin topn-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        $theme-name: map-get($theme-config, theme-name);
-        $cssText: get-theme-css-text($theme-name);
-
-        $bar-default-fill: if(
-            $is-dark,
-            map-get($denali-sky, 200), // TODO: plug into theme
-            #dff0ff // TODO: plug into theme
-        );
-
-        $tooltip-bg: if(
-            $is-dark,
-            mat-color($background, menu),
-            #f0f0f0 // TODO: plug into theme
-        );
-
-        $tooltip-border: if(
-            $is-dark,
-            mat-color($background, menu-border),
-            #cccccc // TODO: plug into theme
-        );
-
-        $tooltip-text: if(
-            $is-dark,
-            map-get($cssText, --dark-primary-text),
-            map-get($cssText, --light-primary-text)
-        );
-
-        .widget-panel-content.topnchart-widget {
-
-            .widget-output {
-
-                .apply-tpl-status {
-                    .mat-icon {
-                        color: rgb(216, 216, 215); // TODO: plug into theme
-                    }
-                }
-
-                .error{
-                    color: red; // TODO: plug into theme
-                }
-
-                .debug{
-                    color: rgb(75, 9, 228); // TODO: plug into theme
-                }
-
-                /* tooltip */
-                .tooltip{
-                    background: $tooltip-bg;
-                    box-shadow: 0 0 5px rgba(0,0,0,.6); // TODO: plug into theme
-                    color: $tooltip-text;
-                    border: 1px solid $tooltip-border;
-                }
-            }
-
-            #container {
-
-                .bar {
-                    fill: $bar-default-fill;
-                }
-
-                .label {
-                    fill: #333; // TODO: plug into theme
-                }
-            }
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.topnchart-widget {
+        #container {
+            margin: 0px 0px 0px 0px;
+            align-items: flex-end;
+            justify-content: start;
         }
     }
 }
-

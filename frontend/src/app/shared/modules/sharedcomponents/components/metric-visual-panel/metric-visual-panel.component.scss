@@ -15,232 +15,118 @@
 // * limitations under the License.
 // *
 
-@mixin metric-visual-panel-component-base() {
+.metric-visual-panel {
 
-    .metric-visual-panel {
+    .metric-visual-panel-card {
+        min-width: 640px;
 
-        .metric-visual-panel-card {
-            min-width: 640px;
+        .mat-card-header,
+        .mat-card-footer {
+            padding: 8px 16px;
+        }
 
-            .mat-card-header,
-            .mat-card-footer {
-                padding: 8px 16px;
-            }
+        .mat-card-header {
+            margin: -16px -16px 0 -16px;
+            align-items: center;
 
-            .mat-card-header {
-                margin: -16px -16px 0 -16px;
-                align-items: center;
-
-                .mat-card-header-text {
-                    display: none;
-                }
-            }
-
-            .mat-card-header,
-            .mat-card-footer,
-            .visual-style-type {
-                display: flex;
-                align-items: center;
-            }
-
-            .visual-style-type {
-                > :first-child {
-                    margin-right: 6px;
-                }
-            }
-
-            .mat-card-content {
-                display: flex;
-            }
-
-            .vis-conf-col {
-                display: flex;
-                flex-direction: column;
-                flex: 1;
-                margin: 5px 8px;
-                white-space: nowrap;
-
-                &:first-of-type {
-                    margin-left: 0;
-                }
-
-                &:last-of-type {
-                    margin-right: 0;
-                }
-
-                &.has-columns {
-                    flex-direction: row;
-                    align-items: stretch;
-                }
-
-                &.is-bn-or-tn {
-
-                    .column:not(:last-child) {
-                        margin-right: 12px;
-                    }
-
-                    .column:not(:first-child) {
-                        flex: 1;
-                    }
-
-                    .column:first-of-type {
-                        display: flex;
-                        flex-direction: column;
-                    }
-                }
-            }
-            .sort-toggle {
-                height: 30px;
-                margin: 5px 0px 0px 10px;
-                .mat-button-toggle-label-content {
-                    height: 20px;
-                }
+            .mat-card-header-text {
+                display: none;
             }
         }
 
-        .vertical-radio-group.mat-radio-group {
-            flex-direction: column;
+        .mat-card-header,
+        .mat-card-footer,
+        .visual-style-type {
             display: flex;
+            align-items: center;
+        }
 
-            .mat-radio-button {
-                margin: 4px 0;
-
-                &:first-child {
-                    margin-top: 8px;
-                }
+        .visual-style-type {
+            > :first-child {
+                margin-right: 6px;
             }
         }
 
-        .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
-            //border: none;
-            align-items: stretch;
-
-            .mat-button-toggle {
-                flex: 1;
-            }
-
-            .mat-button-toggle-label-content {
-                line-height: 30px;
-                // padding: 0px;
-            }
-            .mat-button-toggle + .mat-button-toggle {
-                border-left: none;
-            }
+        .mat-card-content {
+            display: flex;
         }
 
-        /*.color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
-            border: none;
+        .vis-conf-col {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            margin: 5px 8px;
+            white-space: nowrap;
 
-            .mat-button-toggle {
-                color: #227aec;
-                background: transparent;
+            &:first-of-type {
+                margin-left: 0;
             }
 
-            .mat-button-toggle-checked {
-                color: #000;
+            &:last-of-type {
+                margin-right: 0;
             }
 
-            .mat-button-toggle-label-content {
-                line-height: 30px;
-                // padding: 0px;
+            &.has-columns {
+                flex-direction: row;
+                align-items: stretch;
             }
-            .mat-button-toggle + .mat-button-toggle {
-                border-left: none;
-            }
-        }
 
-        .table-visual-settings{
-            .has-columns {
-                display: flex;
-                // padding: $flex-gap/2;
+            &.is-bn-or-tn {
 
                 .column:not(:last-child) {
-                    flex: 1;
-                    padding-right: 10px;
-                    border-right: 1px solid #dfdfdf;
+                    margin-right: 12px;
                 }
-                .column:last-child {
-                    padding-left: 10px;
+
+                .column:not(:first-child) {
+                    flex: 1;
+                }
+
+                .column:first-of-type {
+                    display: flex;
+                    flex-direction: column;
                 }
             }
-        }*/
+        }
+        .sort-toggle {
+            height: 30px;
+            margin: 5px 0px 0px 10px;
+            .mat-button-toggle-label-content {
+                height: 20px;
+            }
+        }
     }
 
-    .mat-menu-panel.metric-visual-panel-wrapper {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+    .vertical-radio-group.mat-radio-group {
+        flex-direction: column;
+        display: flex;
+
+        .mat-radio-button {
+            margin: 4px 0;
+
+            &:first-child {
+                margin-top: 8px;
+            }
+        }
+    }
+
+    .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        align-items: stretch;
+
+        .mat-button-toggle {
+            flex: 1;
+        }
+
+        .mat-button-toggle-label-content {
+            line-height: 30px;
+        }
+        .mat-button-toggle + .mat-button-toggle {
+            border-left: none;
+        }
     }
 }
 
-@mixin metric-visual-panel-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        // TODO: Brand color sounds like it needs to be in theme
-        $brand-color: if(
-            $is-dark,
-            mat-color($background, navbar, .85),
-            mat-color($background, navbar)
-        );
-
-        $brand-color-lighter: mat-color($background, navbar-alt);
-        $brand-color-inverse: mat-color($foreground, navbar-text);
-
-
-        .metric-visual-panel {
-            .metric-visual-panel-card {
-                .mat-card-header {
-                    border-bottom: 1px solid mat-color($foreground, divider);
-                }
-
-                .mat-card-footer {
-                    border-top: 1px solid mat-color($foreground, divider);
-                }
-
-                .mat-stroked-button[color="primary"] {
-                    border-color: mat-color($foreground, link);
-                }
-
-                // reset the color picker border and background
-                .color-picker-component {
-                    .color-picker-component-control.card {
-                        background: transparent;
-                        border-top: 0;
-                    }
-                }
-
-                .vertical-radio-group.mat-radio-group {
-                    .mat-radio-button {
-                        .mat-radio-container {
-                            .mat-radio-outer-circle {
-                                border-color: mat-color($foreground, link)
-                            }
-
-                            .mat-radio-inner-circle {
-                                background-color: mat-color($foreground, link);
-                            }
-                        }
-                    }
-                }
-            }
-
-            .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
-                border-color: mat-color($primary, default);
-
-                .mat-button {
-                    color: mat-color($primary, default);
-                }
-
-                .mat-button-toggle.mat-button-toggle-checked {
-                    .mat-button {
-                        background-color: mat-color($primary, default);
-                        color: mat-color($primary, default-contrast);
-                    }
-                }
-            }
-        }
-
-        .mat-menu-panel.metric-visual-panel-wrapper {
-            border-top: 2px solid mat-color($foreground, link, .25);
-        }
-    }
+// CDK items
+.mat-menu-panel.metric-visual-panel-wrapper {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }

@@ -15,29 +15,21 @@
 // * limitations under the License.
 // *
 
-@mixin navbar-dashboard-actions-menu-component-base() {
-    .navbar-dashboard-actions-menu {
-        display: inline-flex;
-    }
+@import 'mixins';
 
-    // CDK ITEMS
-    .dashboard-actions-menu.mat-menu-panel {
-        .mat-menu-item {
-            font-size: 12px;
-            height: 26px;
-            line-height: 26px;
-
-            .mat-icon {
-                @include sizeDenaliIcon(16px);
-            }
-        }
-    }
+.navbar-dashboard-actions-menu {
+    display: inline-flex;
 }
 
-@mixin navbar-dashboard-actions-menu-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+// CDK ITEMS
+.dashboard-actions-menu.mat-menu-panel {
+    .mat-menu-item {
+        font-size: 12px;
+        height: 26px;
+        line-height: 26px;
 
-        // cdk items
-        //.dashboard-actions-menu {}
+        .mat-icon {
+            @include sizeDenaliIcon(16px);
+        }
     }
 }

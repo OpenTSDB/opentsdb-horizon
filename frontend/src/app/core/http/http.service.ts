@@ -399,7 +399,7 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable:prefer-const
+        /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
         let recipient: any = {... data};
@@ -416,7 +416,7 @@ export class HttpService {
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable:prefer-const
+        /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
         let recipient: any = {... data};
@@ -428,13 +428,13 @@ export class HttpService {
 
     deleteRecipient(data: any) {
         const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact/delete';
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
             observe: 'response' as 'response'
         };
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let serverData: any = {};
         serverData[data.type] = [];
         serverData[data.type][0] = { id: data.id };
@@ -467,37 +467,19 @@ export class HttpService {
             'Content-Type': 'application/json',
           });
 
-        const statusQuery = this.openTSDBService.buildStatusQuery(options);
         const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/alert';
+        return this.http.get(apiUrl, { headers, withCredentials: true })
+                            
+    }
+
+    getAlertsStats(options): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+          });
+
+        const statusQuery = this.openTSDBService.buildStatusQuery(options);
         const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
-            return forkJoin([
-                    this.http.get(apiUrl, { headers, withCredentials: true })
-                            .pipe(catchError(error => of( { error : error } ) )),
-                    this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
-                            .pipe(catchError(error => of( { error : error } ) ))
-                ]).pipe(
-                    switchMap( (res: any) => {
-                        if ( res[0].error ) {
-                            return throwError(res[0].error);
-                        }
-                        const alertCounts = {};
-                        if ( res[1].error === undefined && res[1].results ) {
-                            const sData = res[1].results[0].data;
-                            for ( let i = 0; i < sData.length; i++ ) {
-                                const alertId = parseInt(sData[i].tags._alert_id, 10);
-                                alertCounts[alertId] = sData[i].summary;
-                            }
-                        }
-                        // set the status counts
-                        const defCounts = { bad: 0, warn: 0, good: 0, unknown: 0, missing: 0 };
-                        for ( let i = 0; i < res[0].length; i++ ) {
-                            const alertId = res[0][i].id;
-                            const counts = alertCounts[alertId] ? alertCounts[alertId] : {};
-                            res[0][i] = { ...res[0][i], ...defCounts,  ...counts };
-                        }
-                        return of(res[0]);
-                    })
-                );
+        return this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
     }
 
     deleteAlerts(namespace, payload): Observable<any> {

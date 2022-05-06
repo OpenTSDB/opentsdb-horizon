@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostBinding, HostListener, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ClipboardService } from '../../services/clipboard.service';
 import { Observable, Subscription } from 'rxjs';
@@ -23,15 +23,17 @@ import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { ClipboardCreate, ClipboardError, ClipboardLoad, ClipboardRemove, ClipboardRemoveItems, ClipboardResourceInitialize, SetClipboardActive, SetHideProgress, UniversalClipboardState } from '../../state/clipboard.state';
 import { FormControl, Validators } from '@angular/forms';
-import { MatAccordion, MatExpansionPanel, MatMenuTrigger } from '@angular/material';
+import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
 import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'clipboard-drawer',
     templateUrl: './clipboard-drawer.component.html',
     styleUrls: ['./clipboard-drawer.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger('toggleDrawer', [
             state('closed', style({
@@ -60,11 +62,11 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy, OnChanges {
         return this.drawerState;
     }
 
-    @ViewChild(MatAccordion, {read: MatAccordion}) accordion: MatAccordion;
+    @ViewChild(MatAccordion, { read: MatAccordion }) accordion: MatAccordion;
     @ViewChildren(MatExpansionPanel, { read: MatExpansionPanel }) accordionItems: QueryList<MatExpansionPanel>;
 
-    @ViewChild('clipboardMoreMenuTrigger', {read: MatMenuTrigger}) clipboardMoreMenuTrigger: MatMenuTrigger;
-    @ViewChild('removeClipboardMenuTrigger', {read: MatMenuTrigger}) removeClipboardMenuTrigger: MatMenuTrigger;
+    @ViewChild('clipboardMoreMenuTrigger', { read: MatMenuTrigger }) clipboardMoreMenuTrigger: MatMenuTrigger;
+    @ViewChild('removeClipboardMenuTrigger', { read: MatMenuTrigger }) removeClipboardMenuTrigger: MatMenuTrigger;
 
     @ViewChildren('clipboardItemMoreMenuTrigger', {read: MatMenuTrigger}) cbItemMoreTriggers: QueryList<MatMenuTrigger>;
     @ViewChildren('removeClipboardItemMenuTrigger', {read: MatMenuTrigger}) cbItemRemoveTriggers: QueryList<MatMenuTrigger>;

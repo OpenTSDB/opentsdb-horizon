@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
- <mat-card class="snooze-configuration-wrapper mat-elevation-z0">
+<mat-card class="snooze-configuration-wrapper mat-elevation-z0">
     <div class="controls-wrapper">
         <div class="snooze-control-steps" [formGroup]="snoozeForm">
             <div class="step-section snooze-section is-visible">
@@ -38,7 +38,7 @@
                                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                         [matChipInputAddOnBlur]="true" autocomplete="off" #alertInput>
                                     <span class="mega-panel-trigger" [matMenuTriggerFor]="alertListMenu"
-                                        #alertListMenu></span>
+                                        #alertListMenuTrigger></span>
                                 </mat-chip-list>
                             </mat-form-field>
                             <mat-error *ngIf="snoozeForm.errors && snoozeForm.errors.required">Please select the

@@ -1,0 +1,1056 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+// **************************************
+// * FUNCTIONS & MIXINS
+// * Functions at top
+// * Mixins at bottom
+// **************************************
+
+//
+// Functions
+//
+
+// strings
+// see: https://stackoverflow.com/questions/32376461/how-to-split-a-string-into-two-lists-of-numbers-in-sass
+@function str-split($string, $separator) {
+    // empty array/list
+    $split-arr: ();
+    // first index of separator in string
+    $index: str-index($string, $separator);
+    // loop through string
+    @while $index != null {
+        // get the substring from the first character to the separator
+        $item: str-slice($string, 1, $index - 1);
+        // push item to array
+        $split-arr: append($split-arr, $item);
+        // remove item and separator from string
+        $string: str-slice($string, $index + 1);
+        // find new index of separator
+        $index: str-index($string, $separator);
+    }
+    // add the remaining string to list (the last item)
+    $split-arr: append($split-arr, $string);
+
+    @return $split-arr;
+}
+
+// convert string to number
+@function to-number($value) {
+    @if type-of($value) == "number" {
+        @return $value;
+    } @else if type-of($value) != "string" {
+        @error 'Value for `to-number` should be a number or a string.';
+    }
+
+    $result: 0;
+    $digits: 0;
+    $minus: str-slice($value, 1, 1) == "-";
+    $numbers: (
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+    );
+
+    @for $i from if($minus, 2, 1) through str-length($value) {
+        $character: str-slice($value, $i, $i);
+
+        @if (index(map-keys($numbers), $character) or $character == ".") {
+            @if $character == "." {
+                $digits: 1;
+            } @else if $digits == 0 {
+                $result: $result * 10 + map-get($numbers, $character);
+            } @else {
+                $digits: $digits * 10;
+                $result: $result + map-get($numbers, $character) / $digits;
+            }
+        }
+    }
+
+    @return if($minus, -$result, $result);
+}
+
+// Math
+@function power-number($number, $exp) {
+    @if (round($exp) != $exp) {
+        @return exp($exp * ln($number));
+    }
+
+    $value: 1;
+    @if $exp > 0 {
+        @for $i from 1 through $exp {
+            $value: $value * $number;
+        }
+    } @else if $exp < 0 {
+        @for $i from 1 through -$exp {
+            $value: $value / $number;
+        }
+    }
+    @return $value;
+}
+
+@function pow($number, $exponent) {
+    @return power-number($number, $exponent);
+}
+
+@function round-to-even-number($number) {
+    @return floor($number / 2) * 2;
+}
+
+@function decimal-round($number, $digits: 0, $mode: round) {
+    $n: 1;
+    // $number must be a number
+    @if type-of($number) != number {
+        @warn '#{ $number } is not a number.';
+        @return $number;
+    }
+    // $digits must be a unitless number
+    @if type-of($digits) != number {
+        @warn '#{ $digits } is not a number.';
+        @return $number;
+    } @else if not unitless($digits) {
+        @warn '#{ $digits } has a unit.';
+        @return $number;
+    }
+    @if $digits > 0 {
+        @for $i from 1 through $digits {
+            $n: $n * 10;
+        }
+    }
+    @if $mode == round {
+        @return round($number * $n) / $n;
+    } @else if $mode == ceil {
+        @return ceil($number * $n) / $n;
+    } @else if $mode == floor {
+        @return floor($number * $n) / $n;
+    } @else {
+        @warn '#{ $mode } is undefined keyword.';
+        @return $number;
+    }
+}
+
+@function factorial($value) {
+    $result: 1;
+
+    @if $value == 0 {
+        @return $result;
+    }
+
+    @for $index from 1 through $value {
+        $result: $result * $index;
+    }
+
+    @return $result;
+}
+
+@function summation($iteratee, $input, $initial: 0, $limit: 100) {
+    $sum: 0;
+
+    @for $index from $initial to $limit {
+        $sum: $sum + call(get-function($iteratee), $input, $index);
+    }
+
+    @return $sum;
+}
+
+@function exp-maclaurin($x, $n) {
+    @return (pow($x, $n) / factorial($n));
+}
+
+@function exp($value) {
+    @return summation("exp-maclaurin", $value, 0, 100);
+}
+
+@function ln-maclaurin($x, $n) {
+    @return (pow(-1, $n + 1) / $n) * (pow($x - 1, $n));
+}
+
+@function ln($value) {
+    $ten-exp: 1;
+    $ln-ten: 2.30258509;
+
+    @while ($value > pow(10, $ten-exp)) {
+        $ten-exp: $ten-exp + 1;
+    }
+
+    @return summation(ln-maclaurin, $value / pow(10, $ten-exp), 1, 100) +
+        $ten-exp * $ln-ten;
+}
+
+// * Units
+@function em($pixels, $context: $body-size) {
+    @if (unitless($pixels)) {
+        $pixels: $pixels * 1px;
+    }
+
+    @if (unitless($context)) {
+        $context: $context * 1px;
+    }
+
+    @return $pixels / $context * 1em;
+}
+
+@function remove-unit($number) {
+    @if type-of($number) == "number" and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+    @return $number;
+}
+
+// * color functions
+@function color-luminance($color) {
+    $colors: (
+        "red": red($color),
+        "green": green($color),
+        "blue": blue($color),
+    );
+
+    @each $name, $value in $colors {
+        $adjusted: 0;
+        $value: $value / 255;
+
+        @if $value < 0.03928 {
+            $value: $value / 12.92;
+        } @else {
+            $value: ($value + 0.055) / 1.055;
+            $value: power-number($value, 2.4);
+        }
+        $colors: map-merge(
+            $colors,
+            (
+                $name: $value,
+            )
+        );
+    }
+    @return (map-get($colors, "red") * 0.2126) +
+        (map-get($colors, "green") * 0.7152) +
+        (map-get($colors, "blue") * 0.0722);
+}
+
+@function find-color-invert($color) {
+    @if (color-luminance($color) > 0.55) {
+        @return rgba($black, 0.95);
+    } @else {
+        @return rgba($white, 0.95);
+    }
+}
+
+@function rgba-to-hex($rgba, $clearAlpha: false) {
+    $colorCode: (
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+    );
+
+    // 255 / 100 = 2.55
+    // 10 / 16 = 0.625
+
+    $alpha: alpha($rgba);
+
+    // ============================================= RED ================================
+    $redStr: ""+ (red($rgba) / 16);
+
+    $index: str-index($redStr, ".");
+    // add decimal number incase it does not have and update index
+    @if $index == null {
+        $redStr: $redStr + ".0";
+        $index: str-index($redStr, ".");
+    }
+
+    // @debug $redStr '========================================================';
+
+    $redInteger: to-number(str-slice($redStr, 0, $index - 1));
+    $redDecimal: decimal-round(
+        to-number(str-slice($redStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // ============================================= GREEN ============================
+    $greenStr: ""+ (green($rgba) / 16);
+
+    $index: str-index($greenStr, ".");
+    // add decimal number incase it does not have and
+    @if $index == null {
+        $greenStr: $greenStr + ".0";
+        $index: str-index($greenStr, ".");
+    }
+
+    $greenInteger: to-number(str-slice($greenStr, 0, $index - 1));
+    $greenDecimal: decimal-round(
+        to-number(str-slice($greenStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // ============================================= BLUE ============================
+    $blueStr: ""+ (blue($rgba) / 16);
+
+    $index: str-index($blueStr, ".");
+    // add decimal number incase it does not have and
+    @if $index == null {
+        $blueStr: $blueStr + ".0";
+        $index: str-index($blueStr, ".");
+    }
+
+    $blueInteger: to-number(str-slice($blueStr, 0, $index - 1));
+    $blueDecimal: decimal-round(
+        to-number(str-slice($blueStr, $index + 1, $index + 1)) / 0.625
+    );
+
+    // if interger is 16 sent decimal should be 0
+
+    //@debug 'blue: '+ $blueStr +'  interter: '+ $blueInteger +' decimal: '+ $blueDecimal;
+    // $blue:  blue($rgba) / 2.55;
+
+    // ============================================= ALPHA ============================
+    $alphaStr: "" + decimal-round((($alpha * 100) * 2.55) /16);
+
+    $index: str-index($alphaStr, ".");
+
+    @if $index == null {
+        $alphaStr: $alphaStr + ".0";
+        $index: str-index($alphaStr, ".");
+    }
+
+    //@debug 'alphaStr: '+ decimal-round(to-number($alphaStr))  ;
+
+    $alphaInteger: "" + to-number(str-slice($alphaStr, 0, $index - 1));
+
+    $index: str-index($alphaInteger, ".");
+    @if $index == null {
+        $alphaInteger: $alphaInteger + ".0";
+        $index: str-index($alphaInteger, ".");
+    }
+    $alphaInteger: to-number(str-slice($alphaStr, 0, $index - 1));
+
+    $alphaDecimal: to-number(
+        str-slice(
+            "" +
+                to-number(
+                    str-slice($alphaStr, $index + 1, str-length($alphaStr))
+                ) / 0.625,
+            0,
+            2
+        )
+    );
+
+    // @debug 'Integer: ==== '+$alphaInteger;
+    // @debug 'Decimal: ==== '+$alphaDecimal;
+
+    @if $clearAlpha == false {
+        @return unquote(
+            "#" + nth($colorCode, $redInteger + 1) +
+                nth($colorCode, $redDecimal + 1) +
+                nth($colorCode, $greenInteger + 1) +
+                nth($colorCode, $greenDecimal + 1) +
+                nth($colorCode, $blueInteger + 1) +
+                nth($colorCode, $blueDecimal + 1) +
+                nth($colorCode, $alphaInteger + 1) +
+                nth($colorCode, $alphaDecimal + 1)
+        );
+    } @else {
+        @return unquote(
+            "#" + nth($colorCode, $redInteger + 1) +
+                nth($colorCode, $redDecimal + 1) +
+                nth($colorCode, $greenInteger + 1) +
+                nth($colorCode, $greenDecimal + 1) +
+                nth($colorCode, $blueInteger + 1) +
+                nth($colorCode, $blueDecimal + 1)
+        );
+    }
+}
+
+//
+// Mixins
+//
+
+@mixin md-icon-size($size: 24px) {
+    font-size: $size;
+    height: $size;
+    width: $size;
+}
+
+%overlay {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+@mixin overlay($offset: 0) {
+    @extend %overlay;
+    @if $offset != 0 {
+        bottom: $offset;
+        left: $offset;
+        right: $offset;
+        top: $offset;
+    }
+}
+
+%unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@mixin unselectable() {
+    @extend %unselectable;
+}
+
+@mixin mat-input-as-dropdown() {
+    .mat-form-field-wrapper .mat-form-field-infix {
+        display: flex;
+        align-items: baseline;
+
+        .mat-select-arrow-wrapper {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+@mixin clearfix() {
+    &::after {
+        clear: both;
+        content: " ";
+        display: table;
+    }
+}
+
+%block {
+    &:not(:last-child) {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@mixin block() {
+    @extend %block;
+}
+
+@mixin has-scroller() {
+    position: relative;
+    overflow: hidden;
+}
+
+@mixin is-scroller() {
+    @include overlay;
+    overflow: overlay;
+}
+
+@mixin overflow-touch() {
+    -webkit-overflow-scrolling: touch;
+}
+
+@mixin opacity($trans) {
+    filter: alpha(opactiy=($trans * 100));
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$trans * 100})";
+    -moz-opacity: $trans;
+    -khtml-opacity: $trans;
+    opacity: $trans;
+}
+
+@mixin base-effects() {
+    @include opacity(1);
+    @include transition(all 0.18s ease-out 0.18s);
+}
+
+// * Transitions
+@mixin transition($args...) {
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    -ms-transition: $args;
+    -o-transition: $args;
+    transition: $args;
+}
+
+@mixin transition-property($args...) {
+    -webkit-transition-property: $args;
+    -moz-transition-property: $args;
+    -ms-transition-property: $args;
+    -o-transition-property: $args;
+    transition-property: $args;
+}
+
+@mixin transition-duration($args) {
+    -webkit-transition-duration: $args;
+    -moz-transition-duration: $args;
+    -ms-transition-duration: $args;
+    -o-transition-duration: $args;
+    transition-duration: $args;
+}
+
+@mixin transition-timing-function($args) {
+    -webkit-transition-timing-function: $args;
+    -moz-transition-timing-function: $args;
+    -ms-transition-timing-function: $args;
+    -o-transition-timing-function: $args;
+    transition-timing-function: $args;
+}
+
+@mixin transform($val) {
+    -webkit-transform: $val;
+    -moz-transform: $val;
+    -ms-transform: $val;
+    transform: $val;
+}
+
+@mixin transform-origin($val) {
+    -webkit-transform-origin: $val;
+    -moz-transform-origin: $val;
+    -ms-transform-origin: $val;
+    transform-origin: $val;
+}
+
+// * GRADIENTS
+
+// Horizontal gradient, from left to right
+//
+// Creates two color stops, start and end, by specifying a color and position for each color stop.
+// Color stops are not available in IE9 and below.
+@mixin gradient-horizontal(
+    $start-color: #555,
+    $end-color: #333,
+    $start-percent: 0%,
+    $end-percent: 100%
+) {
+    background-image: -webkit-linear-gradient(
+        left,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        left,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Opera 12
+    background-image: linear-gradient(
+        to right,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=1); // IE9 and down
+}
+
+// Vertical gradient, from top to bottom
+//
+// Creates two color stops, start and end, by specifying a color and position for each color stop.
+// Color stops are not available in IE9 and below.
+@mixin gradient-vertical(
+    $start-color: #555,
+    $end-color: #333,
+    $start-percent: 0%,
+    $end-percent: 100%
+) {
+    background-image: -webkit-linear-gradient(
+        top,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        top,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Opera 12
+    background-image: linear-gradient(
+        to bottom,
+        $start-color $start-percent,
+        $end-color $end-percent
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down
+}
+
+// * directional gradient, default angle 45deg
+//
+// Creates two color stops
+@mixin gradient-directional($start-color: #555, $end-color: #333, $deg: 45deg) {
+    background-repeat: repeat-x;
+    background-image: -webkit-linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Opera 12
+    background-image: linear-gradient(
+        $deg,
+        $start-color,
+        $end-color
+    ); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+}
+
+@mixin gradient-horizontal-three-colors(
+    $start-color: #00b3ee,
+    $mid-color: #7a43b6,
+    $color-stop: 50%,
+    $end-color: #c3325f
+) {
+    background-image: -webkit-linear-gradient(
+        left,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: -o-linear-gradient(
+        left,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: linear-gradient(
+        to right,
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-repeat: no-repeat;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=1); // IE9 and down, gets no color-stop at all for proper fallback
+}
+
+@mixin gradient-vertical-three-colors(
+    $start-color: #00b3ee,
+    $mid-color: #7a43b6,
+    $color-stop: 50%,
+    $end-color: #c3325f
+) {
+    background-image: -webkit-linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: -o-linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-image: linear-gradient(
+        $start-color,
+        $mid-color $color-stop,
+        $end-color
+    );
+    background-repeat: no-repeat;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down, gets no color-stop at all for proper fallback
+}
+
+@mixin gradient-radial($inner-color: #555, $outer-color: #333) {
+    background-image: -webkit-radial-gradient(
+        circle,
+        $inner-color,
+        $outer-color
+    );
+    background-image: radial-gradient(circle, $inner-color, $outer-color);
+    background-repeat: no-repeat;
+}
+
+@mixin gradient-striped($color: rgba(255, 255, 255, 0.15), $angle: 45deg) {
+    background-image: -webkit-linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
+    background-image: -o-linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
+    background-image: linear-gradient(
+        $angle,
+        $color 25%,
+        transparent 25%,
+        transparent 50%,
+        $color 50%,
+        $color 75%,
+        transparent 75%,
+        transparent
+    );
+}
+
+// * custom scrollbars
+// NOTE: this works primarily in webkit browsers
+@mixin scrollbars(
+    $track-color: rgba(0, 0, 0, 0.1),
+    $thumb-color: rgba(0, 0, 0, 0.4),
+    $width: 10px,
+    $thumb-radius: 4px
+) {
+    &::-webkit-scrollbar {
+        &:vertical {
+            width: $width;
+        }
+
+        &:horizontal {
+            height: $width;
+        }
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: $track-color;
+        border-radius: 0;
+        padding: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: $thumb-radius;
+        background-color: $thumb-color;
+    }
+}
+
+// Responsiveness
+
+@mixin from($device) {
+    @media screen and (min-width: $device) {
+        @content;
+    }
+}
+
+@mixin until($device) {
+    @media screen and (max-width: $device - 1px) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media screen and (max-width: $tablet - 1px) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media screen and (min-width: $tablet), print {
+        @content;
+    }
+}
+
+@mixin tablet-only {
+    @media screen and (min-width: $tablet) and (max-width: $desktop - 1px) {
+        @content;
+    }
+}
+
+@mixin touch {
+    @media screen and (max-width: $desktop - 1px) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media screen and (min-width: $desktop) {
+        @content;
+    }
+}
+
+@mixin desktop-only {
+    @if $widescreen-enabled {
+        @media screen and (min-width: $desktop) and (max-width: $widescreen - 1px) {
+            @content;
+        }
+    }
+}
+
+@mixin until-widescreen {
+    @if $widescreen-enabled {
+        @media screen and (max-width: $widescreen - 1px) {
+            @content;
+        }
+    }
+}
+
+@mixin widescreen {
+    @if $widescreen-enabled {
+        @media screen and (min-width: $widescreen) {
+            @content;
+        }
+    }
+}
+
+@mixin widescreen-only {
+    @if $widescreen-enabled and $fullhd-enabled {
+        @media screen and (min-width: $widescreen) and (max-width: $fullhd - 1px) {
+            @content;
+        }
+    }
+}
+
+@mixin until-fullhd {
+    @if $fullhd-enabled {
+        @media screen and (max-width: $fullhd - 1px) {
+            @content;
+        }
+    }
+}
+
+@mixin fullhd {
+    @if $fullhd-enabled {
+        @media screen and (min-width: $fullhd) {
+            @content;
+        }
+    }
+}
+
+@mixin sizeDenaliIcon($size: 24px) {
+    width: $size;
+    height: $size;
+    line-height: 1;
+    font-size: $size;
+}
+
+/* Following style is to get
+    the input to smartly grow
+    using a css-grid and
+    data-attributes.
+
+    It IS dependant on
+    one-line js on input
+    <input type="text" oninput="this.parentNode.dataset.value = this.value">
+
+    inspired by:
+    https://codepen.io/shshaw/pen/c72208b279d750f1ab46b6a45bbd04d7
+    */
+@mixin inputAutoWidth {
+    .mat-form-field {
+        width: auto;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+
+        .mat-form-field-suffix {
+            .mat-mini-fab,
+            .mat-icon-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .mat-button-wrapper {
+                    padding: 0;
+                    display: flex;
+                }
+            }
+
+            .mat-mini-fab {
+                width: 20px !important;
+                height: 20px !important;
+                line-height: 20px !important;
+            }
+
+            .mat-icon-button {
+                width: 18px !important;
+                height: 18px !important;
+                line-height: 18px !important;
+            }
+
+            .mat-icon {
+                width: 16px !important;
+                height: 16px !important;
+                line-height: 16px !important;
+                font-size: 16px !important;
+            }
+        }
+
+        // grid wrapper
+        .mat-form-field-flex {
+            width: auto;
+            display: inline-grid;
+            align-items: center;
+        }
+
+        // grid column assignment
+        .mat-form-field-prefix {
+            grid-column: 1;
+        }
+
+        .mat-form-field-infix {
+            padding: 0;
+            min-height: 18px;
+
+            &,
+            &::after {
+                grid-column: 2;
+            }
+        }
+
+        .mat-form-field-suffix {
+            grid-column: 3;
+            padding: 0 4px 0 0;
+        }
+
+        // input and pseudo element sizing
+        // infix needs auto to smartly resize
+        // from pseudo element
+        .mat-form-field-infix {
+            width: auto;
+            grid-area: 1/2;
+            align-self: initial;
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+
+            // NOTE: input needs size="1"
+            .mat-input-element {
+                width: 100%;
+                padding: 0 4px;
+            }
+
+            &::after {
+                // make it have same font/padding as input
+                // this causes it to take up the same space
+                font-family: inherit;
+                padding: 0 4px;
+                grid-area: 1/2;
+                // disable height
+                height: 0;
+                // width dependant on content
+                width: auto;
+                resize: none;
+                overflow: hidden;
+                // but we want a min-width so input still accessible
+                min-width: 2em;
+                // content
+                content: attr(data-value);
+                white-space: pre-wrap;
+                // we don't want it to show
+                // but we want it to still push
+                // in the DOM
+                // so visibility:hidden is important
+                visibility: hidden;
+            }
+        }
+
+        // adjustments
+        .mat-form-field-wrapper {
+            padding-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .mat-form-field-flex {
+            padding-top: 4px;
+        }
+
+        .mat-form-field-infix {
+            border-top-width: 0;
+        }
+
+        .mat-form-field-underline {
+            top: 100%;
+            background-color: transparent;
+        }
+
+        .mat-form-field-suffix {
+            display: none;
+            background-color: transparent;
+        }
+
+        &.readingy-mode:hover {
+            .mat-form-field-suffix {
+                display: flex;
+            }
+        }
+
+        &.reading-mode {
+            .mat-input-element {
+                height: 0;
+                visibility: hidden;
+                display: none;
+            }
+            .mat-form-field-infix::after {
+                height: initial;
+                visibility: initial;
+            }
+        }
+
+        &.editing-mode {
+            .mat-input-element {
+                height: initial;
+                visibility: initial;
+                display: block;
+            }
+            .mat-form-field-suffix {
+                display: flex;
+            }
+            .mat-form-field-infix::after {
+                height: 0;
+                visibility: hidden;
+            }
+        }
+    }
+}
+
+@mixin vertical-button-toggle-override($text, $color) {
+    .mat-button-toggle-group-vertical.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+        .mat-button-toggle {
+            color: $text;
+            border: 0;
+            background: transparent;
+        }
+
+        .mat-button-toggle.mat-button-toggle-checked {
+            color: $color;
+            border: 0;
+            background-color: rgba($color, 0.1);
+        }
+    }
+}
+
+// * for debugging sass maps
+@mixin debug-map($map) {
+    @at-root {
+        @debug-map {
+            __tostring__: inspect($map);
+            __length__: length($map);
+            __depth__: depth($map);
+            __keys__: map-keys($map);
+            __properties__ {
+                @each $key, $value in $map {
+                    #{'(' + type-of($value) + ') ' + $key}: inspect($value);
+                }
+            }
+        }
+    }
+}

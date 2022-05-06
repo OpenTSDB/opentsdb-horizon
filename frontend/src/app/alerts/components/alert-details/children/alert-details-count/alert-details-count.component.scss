@@ -15,135 +15,58 @@
 // * limitations under the License.
 // *
 
-@mixin alert-details-count-component-base() {
+.alert-details-count {
+    position: relative;
+    top: 0px;
+    margin-right: -5px;
 
-    .alert-details-count {
-        position: relative;
-        top: 0px;
-        margin-right: -5px;
+    .mat-header-row {
+        height: 31px;
+    }
 
-        .mat-header-row {
-            height: 31px;
+    .mat-row {
+        height: 32px;
+    }
+
+    .mat-cell {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .mat-header-cell {
+        padding: 0px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .cdk-column-bad,
+    .cdk-column-warn,
+    .cdk-column-good,
+    .cdk-column-unknown,
+    .cdk-column-missing,
+    .cdk-column-snoozed {
+        text-align: right;
+
+        .count-empty {
+            width: 100%;
+            display: inline-block;
+            text-align: center;
         }
 
-        .mat-row {
-            height: 32px;
-        }
-
-        .mat-cell {
-            padding-left: 1px;
-            padding-right: 1px;
-        }
-
-        .mat-header-cell {
-            padding: 0px;
-            padding-left: 1px;
-            padding-right: 1px;
-        }
-
-        .cdk-column-bad,
-        .cdk-column-warn,
-        .cdk-column-good,
-        .cdk-column-unknown,
-        .cdk-column-missing,
-        .cdk-column-snoozed {
-            text-align: right;
-
-            .count-empty {
-                width: 100%;
-                display: inline-block;
-                text-align: center;
-            }
-
-            .count-amount {
-                padding: 2px;
-                cursor: pointer;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 4px;
-                font-size: 12px;
-                padding: 3px 6px;
-                outline: none;
-            }
-        }
-
-        .header {
-            padding: 4px;
-            font-weight: normal
+        .count-amount {
+            padding: 2px;
+            cursor: pointer;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 3px 6px;
+            outline: none;
         }
     }
-}
 
-@mixin alert-details-count-component-theme($theme-config) {
-    // * Theme config parts
-    $primary: map-get($theme-config, primary);
-    $accent: map-get($theme-config, accent);
-    $warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    $background: map-get($theme-config, background);
-    $other: map-get($theme-config, other);
-    $is-dark: map-get($theme-config, is-dark);
-
-    //$divider: map-get($foreground, divider);
-    //$status: map-get($theme-config, status);
-
-    .alert-details-count {
-
-        .mat-table {
-            box-shadow: none;
-            border-left: solid 1px lightgray; // TODO: plug into theme
-            border-right: solid 1px lightgray; // TODO: plug into theme
-        }
-
-        .mat-header-row {
-            border-bottom: none;
-        }
-
-        .cdk-column-good {
-            .count-amount {
-                background-color: mat-color($other, status-success);
-            }
-        }
-
-        .cdk-column-bad {
-            .count-amount {
-                background-color: mat-color($other, status-error);
-            }
-        }
-
-        .cdk-column-warn {
-            .count-amount {
-                background-color: mat-color($other, status-warning);
-            }
-        }
-
-        .cdk-column-unknown {
-            .count-amount {
-                background-color: map-get($denali-grey, 400); // TODO: plug into theme
-            }
-        }
-
-        .cdk-column-missing {
-            .count-amount {
-                background-color: map-get($denali-blue, 400); // TODO: plug into theme
-            }
-        }
-
-        .cdk-column-bad,
-        .cdk-column-warn,
-        .cdk-column-good,
-        .cdk-column-unknown,
-        .cdk-column-missing,
-        .cdk-column-snoozed {
-            .count-empty {
-                color: if(
-                    $is-dark,
-                    rgba($white, .25),
-                    rgba($black, .25)
-                );
-            }
-        }
+    .header {
+        padding: 4px;
+        font-weight: normal
     }
 }
-
-

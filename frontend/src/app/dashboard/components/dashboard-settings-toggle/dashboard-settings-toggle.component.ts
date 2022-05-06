@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, HostBinding, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges
+    Component, OnInit, HostBinding, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog, MatDialogConfig, MatDialogRef, DialogPosition
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 
 import { DashboardSettingsDialogComponent } from '../dashboard-settings-dialog/dashboard-settings-dialog.component';
 
@@ -28,10 +26,11 @@ import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-settings-toggle',
     templateUrl: './dashboard-settings-toggle.component.html',
-    styleUrls: []
+    styleUrls: ['./dashboard-settings-toggle.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardSettingsToggleComponent implements OnInit, OnDestroy {
 

@@ -14,15 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Inject, OnInit, HostBinding } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, DialogPosition, MatSort, MatTableDataSource } from '@angular/material';
+import { Component, Inject, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, DialogPosition } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-settings-dialog',
     templateUrl: './dashboard-settings-dialog.component.html',
-    styleUrls: []
+    styleUrls: ['./dashboard-settings-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardSettingsDialogComponent implements OnInit {
     @HostBinding('class.dashboard-settings-dialog') private _hostClass = true;
@@ -51,7 +54,7 @@ export class DashboardSettingsDialogComponent implements OnInit {
         }
     ];
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private pendingModifications: boolean = false;
 
     private pendingData: any = {};

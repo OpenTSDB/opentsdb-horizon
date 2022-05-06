@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, createSelector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { UtilsService } from '../../core/services/utils.service';
@@ -53,6 +54,7 @@ export class ClearWidgetsData {
 
 
 
+@Injectable()
 @State<RawDataModel>({
     name: 'Rawdata',
     defaults: {

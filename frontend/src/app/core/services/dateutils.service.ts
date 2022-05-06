@@ -19,7 +19,7 @@ import * as momentNs from 'moment';
 import {Moment, unitOfTime, duration} from 'moment';
 
 const moment = momentNs;
-// tslint:disable:no-inferrable-types
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 const maxUnixTimestamp: number = 1000000000000; // 11/16/5138
 const minUnixTimestamp: number = 1000000000;    // 09/08/2001
 const minYear: number = 1970;                   // for relative time
@@ -159,6 +159,10 @@ export class DateUtilsService {
     return _moment;
   }
 
+  isRelativeTime(time) {
+    return this.relativeTimeToMoment(time) || this.timeToTime(time) || time.toLowerCase() === 'now';
+  }
+
   getTimeAmount(relativeTime: string): number {
     const number: number = Number(relativeTime.match(/\d+/));
     return number;
@@ -166,7 +170,7 @@ export class DateUtilsService {
 
   getTimeUnitAbbr(relativeTime: string): string {
     relativeTime = relativeTime.toLowerCase().trim();
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let timeUnitAbbr: string = '';
 
     // check if user input contains a valid time unit abbr

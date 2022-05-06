@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, OnDestroy, OnChanges, SimpleChanges,
-    HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef
+    HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
@@ -25,20 +25,21 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable } from '@angular/material/table';
 import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import * as deepEqual from 'fast-deep-equal';
 import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-multigraph',
     templateUrl: './widget-config-multigraph.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-multigraph.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDestroy {
 
-    @ViewChild('chartTable') chartTable: MatTable<any>;
+    @ViewChild('chartTable', { static: true }) chartTable: MatTable<any>;
     @ViewChild('tagKeyInput', { read: ElementRef }) tagKeyInput: ElementRef;
     @ViewChild('tagKeyInput', { read: MatAutocompleteTrigger }) tagKeyACTrigger: MatAutocompleteTrigger;
 

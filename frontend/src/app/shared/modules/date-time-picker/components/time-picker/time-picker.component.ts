@@ -17,30 +17,31 @@
 import {
     Component, OnInit, OnChanges, OnDestroy, ViewChild, Input, Output,
     EventEmitter, AfterViewChecked,
-    ChangeDetectorRef, HostBinding, SimpleChanges, HostListener
+    ChangeDetectorRef, HostBinding, SimpleChanges, HostListener, ViewEncapsulation
 } from '@angular/core';
 import { TimeRangePickerComponent } from '../time-range-picker/time-range-picker.component';
 import { TimeRangePickerOptions, ISelectedTime } from '../../models/models';
-import { MatMenuTrigger, MenuPositionX } from '@angular/material';
+import { MatMenuTrigger, MenuPositionX } from '@angular/material/menu';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, Observable, interval, BehaviorSubject } from 'rxjs';
 import { take, withLatestFrom, filter } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'time-picker',
     templateUrl: './time-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./time-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges, OnDestroy {
     @HostBinding('class.dtp-time-picker') private _hostClass = true;
 
     /** View childs */
-    @ViewChild(TimeRangePickerComponent) timeRangePicker: TimeRangePickerComponent;
+    @ViewChild(TimeRangePickerComponent, { static: true }) timeRangePicker: TimeRangePickerComponent;
 
     // trigger for opening the menu
-    @ViewChild('timerangePickerMenuTrigger', {read: MatMenuTrigger}) trigger: MatMenuTrigger;
+    @ViewChild('timerangePickerMenuTrigger', { read: MatMenuTrigger, static: true }) trigger: MatMenuTrigger;
 
     get timerangePickerMenuIsOpen(): boolean {
         if (this.trigger) {
@@ -138,7 +139,7 @@ export class TimePickerComponent implements AfterViewChecked, OnInit, OnChanges,
 
 
     options: TimeRangePickerOptions;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     // _isOpen: boolean = false;
     refreshSubcription: Subscription;
     paused$ = new BehaviorSubject<boolean>(false);

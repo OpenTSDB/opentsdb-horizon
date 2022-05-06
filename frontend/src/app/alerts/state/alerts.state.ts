@@ -29,7 +29,8 @@ import { forkJoin } from 'rxjs';
 
 import { UtilsService } from '../../core/services/utils.service';
 import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 
 export interface AlertModel {
@@ -47,6 +48,8 @@ export interface AlertModel {
     contacts: any[];
     created: any;
     modified: any;
+    recipient: any;
+    recipientsKeys?: string[];
     snoozed: boolean;
     disabled: boolean;
     alerting: boolean;
@@ -63,6 +66,7 @@ export interface AlertsStateModel {
     actionResponse: any;
     actionStatus: string;
     alerts: AlertModel[];
+    stats: any;
     snoozes: any[];
     alertTypeFilter: string;
     editItem: any;
@@ -84,6 +88,11 @@ export class SetNamespace {
 
 export class LoadAlerts {
     static readonly type = '[Alerts] Load Alerts';
+    constructor(public options: any) {}
+}
+
+export class LoadAlertsStats {
+    static readonly type = '[Alerts] Load Alerts Stats';
     constructor(public options: any) {}
 }
 
@@ -129,6 +138,7 @@ export class ClearNamespace {
 }
 
 /* state define */
+@Injectable()
 @State<AlertsStateModel>({
     name: 'Alerts',
     defaults: {
@@ -144,6 +154,7 @@ export class ClearNamespace {
         saveError: {}, // handles dialog create/update error
         actionResponse: {},
         alerts: [],
+        stats: {},
         snoozes: [],
         actionStatus: '',
         alertTypeFilter: 'all', // all, alerting, snoozed, disabled
@@ -153,6 +164,8 @@ export class ClearNamespace {
 })
 
 export class AlertsState {
+    sub: Subscription;
+    sub2: Subscription;
     constructor(
         private httpService: HttpService,
         private alertsService: AlertsService,
@@ -214,6 +227,11 @@ export class AlertsState {
     @Selector()
     static getAlerts(state: AlertsStateModel) {
         return state.alerts;
+    }
+
+    @Selector()
+    static getAlertsStats(state: AlertsStateModel) {
+        return state.stats;
     }
 
     @Selector()
@@ -323,9 +341,39 @@ export class AlertsState {
     @Action(LoadAlerts)
     loadAlerts(ctx: StateContext<AlertsStateModel>, { options }: LoadAlerts) {
         ctx.patchState({ actionStatus: 'save-progress', error: {}});
-        return this.httpService.getAlerts(options).subscribe(
+        if ( this.sub ) {
+            this.sub.unsubscribe();
+        }
+        this.sub = this.httpService.getAlerts(options).subscribe(
             alerts => {
                 ctx.patchState({ alerts: alerts});
+                if ( alerts.length ) {
+                    ctx.dispatch(new LoadAlertsStats(options));
+                }
+            },
+            error => {
+                ctx.patchState({ error: error });
+            }
+        );
+
+    }
+
+    @Action(LoadAlertsStats)
+    loadAlertsStats(ctx: StateContext<AlertsStateModel>, { options }: LoadAlertsStats) {
+        if ( this.sub2 ) {
+            this.sub2.unsubscribe();
+        }
+        this.sub2 =  this.httpService.getAlertsStats(options).subscribe(
+            res => {
+                const alertCounts = {};
+                if ( res.error === undefined && res.results ) {
+                    const sData = res.results[0].data;
+                    for ( let i = 0; i < sData.length; i++ ) {
+                        const alertId = parseInt(sData[i].tags._alert_id, 10);
+                        alertCounts[alertId] = sData[i].summary;
+                    }
+                }
+                ctx.patchState({ stats: alertCounts});
             },
             error => {
                 ctx.patchState({ error: error });
@@ -340,7 +388,6 @@ export class AlertsState {
         return this.httpService.saveAlert(namespace, payload).subscribe(
             res => {
                 ctx.patchState({ actionStatus: payload.data[0].id ? 'update-success' : 'add-success', saveError: null});
-                ctx.dispatch(new LoadAlerts({namespace: namespace}));
             },
             error => {
                 ctx.patchState({ actionStatus: payload.data[0].id ? 'update-failed' : 'add-failed', saveError: error });

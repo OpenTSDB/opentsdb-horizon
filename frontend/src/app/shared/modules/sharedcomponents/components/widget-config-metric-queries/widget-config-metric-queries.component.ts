@@ -16,12 +16,10 @@
  */
 import {
     Component, OnInit, HostBinding, Input, Output, ElementRef, EventEmitter, OnDestroy, OnChanges, SimpleChanges,
-    ChangeDetectorRef, ViewChild
+    ChangeDetectorRef, ViewChild, ViewEncapsulation
 } from '@angular/core';
 
-import {
-    MatDialog, MatDialogConfig, MatDialogRef, DialogPosition
-} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 
@@ -43,10 +41,11 @@ interface IMetricQueriesConfigOptions {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-metric-queries',
     templateUrl: './widget-config-metric-queries.component.html',
-    styleUrls: []
+    styleUrls: ['./widget-config-metric-queries.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
@@ -58,7 +57,7 @@ export class WidgetConfigMetricQueriesComponent implements OnInit, OnDestroy, On
     /** Outputs */
     @Output() widgetChange = new EventEmitter;
 
-    @ViewChild('queriesContainer') private queriesContainer: ElementRef;
+    @ViewChild('queriesContainer', { static: true }) private queriesContainer: ElementRef;
 
 
     /** Local variables */

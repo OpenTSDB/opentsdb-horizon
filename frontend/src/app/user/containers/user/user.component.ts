@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
@@ -27,7 +27,8 @@ import { DbfsLoadTopFolder, DbfsLoadUsersList, DbfsResourcesState, DbfsState } f
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
-    styleUrls: ['./user.component.scss']
+    styleUrls: ['./user.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class UserComponent implements OnInit, OnDestroy {
 
@@ -48,8 +49,8 @@ export class UserComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
     // portal templates
-    @ViewChild('userListNavbarTmpl') userListNavbarTmpl: TemplateRef<any>;
-    @ViewChild('userDetailNavbarTmpl') userDetailNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userListNavbarTmpl', { static: true }) userListNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userDetailNavbarTmpl', { static: true }) userDetailNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     userNavbarPortal: TemplatePortal;

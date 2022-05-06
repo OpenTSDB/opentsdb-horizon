@@ -26,17 +26,15 @@ import {
     Output,
     Input,
     ChangeDetectorRef,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
 import { ElementQueries, ResizeSensor} from 'css-element-queries';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent, MatTableDataSource } from '@angular/material';
-import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef
-} from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -66,19 +64,20 @@ import { AppConfigService } from "../../../core/services/config.service";
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'alert-details',
     templateUrl: './alert-details.component.html',
-    styleUrls: ['./alert-details.component.scss']
+    styleUrls: ['./alert-details.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     @HostBinding('class.alert-details-component') private _hostClass = true;
 
-    @ViewChild('graphOutput') private graphOutput: ElementRef;
+    @ViewChild('graphOutput', { static: true }) private graphOutput: ElementRef;
     @ViewChild('graphLegend') private dygraphLegend: ElementRef;
     @ViewChild('eventSearchControl') private eventSearchControl: ElementRef;
-    @ViewChild('alertDateTimeNavbarItemTmpl') alertDateTimeNavbarItemTmpl: TemplateRef<any>;
+    @ViewChild('alertDateTimeNavbarItemTmpl', { static: true }) alertDateTimeNavbarItemTmpl: TemplateRef<any>;
     @ViewChild('periodOverPeriodForm') periodOverPeriodForm: AlertDetailsMetricPeriodOverPeriodComponent;
 
     @Input() response;
@@ -161,7 +160,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
 
     thresholds: any = { };
     thresholdType: String = '';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     showThresholdAdvanced: boolean = false; // toggle in threshold form
 
     // FORM STUFF
@@ -273,7 +272,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     error: any;
     errorDialog: MatDialogRef<ErrorDialogComponent> | null;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     activeTabIndex: number = 0;
     private subscription: Subscription = new Subscription();
 
@@ -289,6 +288,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     events: any = [];
     startTime;
     endTime;
+    timeZone = 'local';
+    autoRefresh = {'auto': 0, 'duration': 60 };
     prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
@@ -526,7 +527,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const warn = data.threshold.singleMetric.warnThreshold !== undefined ? data.threshold.singleMetric.warnThreshold : null;
         const recover = data.threshold.singleMetric.recoveryThreshold !== undefined ? data.threshold.singleMetric.recoveryThreshold : null;
         const notifyOnMissing = data.threshold.notifyOnMissing ? data.threshold.notifyOnMissing.toString() : 'false';
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const metricId = data.threshold.singleMetric.metricId ? this.utils.getMetricDropdownValue(data.queries.raw, data.threshold.singleMetric.metricId) : '';
         const [qindex, mindex] = metricId ? this.utils.getMetricIndexFromId(metricId, this.queries) : [null, null];
         this.alertForm = this.fb.group({
@@ -545,7 +546,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 singleMetric: this.fb.group({
                     queryIndex: data.threshold.singleMetric.queryIndex || -1 ,
                     queryType : data.threshold.singleMetric.queryType || 'tsdb',
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     metricId: [ metricId ],
                     badThreshold:  bad,
                     warnThreshold: warn,
@@ -553,7 +554,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     reportingInterval: data.threshold.singleMetric.reportingInterval || null,
                     recoveryThreshold: recover,
                     recoveryType: recover === null ? 'minimum' : 'specific',
-                    // tslint:disable-next-line:max-line-length
+                    // eslint-disable-next-line max-len
                     slidingWindow : data.threshold.singleMetric.slidingWindow ? data.threshold.singleMetric.slidingWindow.toString() : this.defaultSlidingWindowSize,
                     comparisonOperator : data.threshold.singleMetric.comparisonOperator || 'above',
                     timeSampler : data.threshold.singleMetric.timeSampler || 'at_least_once'
@@ -570,7 +571,9 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.prevTimeSampler = data.threshold.singleMetric.timeSampler || 'at_least_once';
@@ -595,7 +598,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
         }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['badThreshold'].valueChanges
             .pipe(
                 startWith(this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['badThreshold'].value),
@@ -621,7 +624,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
             }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['warnThreshold'].valueChanges
             .pipe(
                 startWith(this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['warnThreshold'].value),
@@ -646,7 +649,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
             }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryThreshold'].valueChanges.subscribe(val => {
             const recoveryType = this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].value;
             if ( val !== null && recoveryType === 'minimum' ) {
@@ -665,19 +668,19 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.prevTimeSampler = val;
         }));
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryType'].valueChanges.subscribe(val => {
             this.thresholdSingleMetricControls['recoveryThreshold'].setErrors(null);
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.setThresholds('recovery', val === 'specific' ? this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['recoveryThreshold'].value : '');
         }));
 
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['metricId'].valueChanges.subscribe(val => {
             this.metricIdChanged(val);
         }));
 
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['notifyOnMissing'].valueChanges.subscribe(val => {
             if ( val === 'true' ) {
                 this.alertForm.controls['threshold']['controls']['autoRecoveryInterval'].setValue('null');
@@ -753,11 +756,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 // OC conditional values
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.setTags();
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['badThreshold'].valueChanges
                 .subscribe( bad => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -767,7 +772,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             .setValue(transitions.filter(d => !d.toLowerCase().includes('bad') ));
                     }
                 }));
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['warnThreshold'].valueChanges
                 .subscribe( warn => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -776,7 +781,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                             .setValue(transitions.filter(d => !d.toLowerCase().includes('warn') ));
                     }
                 }));
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.subscription.add(<Subscription>this.alertForm.controls['threshold']['controls']['healthCheck']['controls']['unknownThreshold'].valueChanges
                 .subscribe( unknown => {
                     const transitions = this.alertForm['controls'].notification.get('transitionsToNotify').value;
@@ -833,11 +838,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 opsgenieTags: this.fb.array(data.notification.opsgenieTags || []),
                 runbookId: data.notification.runbookId || '',
                 ocSeverity: data.notification.ocSeverity || this.defaultOCSeverity,
-                ocTier: data.notification.ocTier || this.defaultOCTier
+                ocTier: data.notification.ocTier || this.defaultOCTier,
+                // PagerDuty conditional values
+                pagerdutyAutoClose: data.notification.pagerdutyAutoClose || false
             })
         });
         this.options.axes.y.valueRange[0] = 0;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.startTime =  this.dsTimeRange[this.slidingWindowToDSTimeRange(this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').value)].label;
         this.endTime = 'now';
         this.doEventQuery$.next(['list', 'count']);
@@ -845,7 +852,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         this.setTags();
 
         this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').valueChanges.subscribe(value => {
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.startTime =  this.dsTimeRange[this.slidingWindowToDSTimeRange(this.alertForm.get('threshold').get('eventAlert').get('slidingWindow').value)].label;
             this.endTime = 'now';
             this.doEventQuery$.next(['list', 'count']);
@@ -1006,7 +1013,29 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     };
                     this.reloadData();
                 break;
+            case 'SetAutoRefreshConfig':
+                this.autoRefresh = {...message.payload};
+                break;
+            case 'RefreshDashboard':
+                this.refresh();
+                break;
         }
+    }
+
+    refresh() {
+        if ( this.data.type === 'event') {
+            this.doEventQuery$.next(['list', 'count']);
+        } else if ( this.data.type === 'simple' ) {
+            this.reloadData();
+        }
+        this.getCount();
+    }
+
+    setTimezone(e: any) {
+        this.startTime = this.dateUtil.isRelativeTime(this.startTime) ? this.startTime : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.startTime, this.timeZone).unix().toString(), e);
+        this.endTime = this.dateUtil.isRelativeTime(this.endTime) ? this.endTime : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(this.endTime, this.timeZone).unix().toString(), e);
+        this.timeZone = e;
+        this.refreshChart();
     }
 
     validateSingleMetricThresholds(group) {
@@ -1016,6 +1045,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const recoveryStateCntrl = this.thresholdSingleMetricControls['recoveryThreshold'];
         const reportingIntervalCntrl = this.thresholdSingleMetricControls['reportingInterval'];
         const requiresFullWindowCntrl = this.thresholdSingleMetricControls['requiresFullWindow'];
+        const autoRecoveryIntervalCntrl = this.thresholdControls['autoRecoveryInterval'];
 
         const recoveryMode = this.thresholdRecoveryType;
         const bad = badStateCntrl.value;
@@ -1058,6 +1088,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 recoveryStateCntrl.setErrors({ 'invalid': true });
             }
         }
+
+        autoRecoveryIntervalCntrl.setErrors(null);
+        if ( autoRecoveryIntervalCntrl.value !== null && parseInt(autoRecoveryIntervalCntrl.value) <= parseInt(slidingWindowCntrl.value) ) {
+            this.showThresholdAdvanced = true;
+            autoRecoveryIntervalCntrl.setErrors({ 'invalid': true });
+        }
+
     }
 
     validateHealthCheckForm() {
@@ -1249,8 +1286,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
             const startTime = new Date(this.chartData.ts[0][0]).getTime() / 1000;
             const endTime = new Date(this.chartData.ts[n - 1][0]).getTime() / 1000;
-            this.startTime = Math.floor(zConfig.start) <= startTime ? this.startTime : this.dateUtil.timestampToTime(zConfig.start, 'local');
-            this.endTime = Math.ceil(zConfig.end) >= endTime ? this.endTime : this.dateUtil.timestampToTime(zConfig.end, 'local');
+            this.startTime = Math.floor(zConfig.start) <= startTime ? this.startTime : this.dateUtil.timestampToTime(zConfig.start, this.timeZone);
+            this.endTime = Math.ceil(zConfig.end) >= endTime ? this.endTime : this.dateUtil.timestampToTime(zConfig.end, this.timeZone);
         } else if ( !zConfig.isZoomed && zConfig.axis === 'x' ) {
             this.startTime = this.prevDateRange.startTime;
             this.endTime = this.prevDateRange.endTime;
@@ -1277,8 +1314,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             }
         };
         this.queryTime = {
-            start: this.dateUtil.timeToMoment(this.startTime, 'local').valueOf(),
-            end: this.dateUtil.timeToMoment(this.endTime, 'local').valueOf()
+            start: this.dateUtil.timeToMoment(this.startTime, this.timeZone).valueOf(),
+            end: this.dateUtil.timeToMoment(this.endTime, this.timeZone).valueOf()
         };
         const queries = {};
 
@@ -1433,6 +1470,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         }
         config.queries = queries;
         this.options.labels = ['x'];
+        this.options.labelsUTC = this.timeZone === 'utc' ? true : false;
         const data = this.dataTransformer.openTSDBToDygraph(config, this.options, [[0]], this.queryData);
         this.setChartYMax();
         this.chartData = { ts: data };
@@ -1499,7 +1537,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             case 'UpdateQueryMetricVisual':
                 const qindex = this.queries.findIndex(d => d.id === message.id);
                 const mindex = this.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.queries[qindex].metrics[mindex].settings.visual = { ...this.queries[qindex].metrics[mindex].settings.visual, ...message.payload.visual };
                 this.refreshChart();
                 break;
@@ -1757,11 +1795,11 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                     }
                     data.threshold.suppress.reportingInterval = data.threshold.suppress.timeSampler !== 'all_of_the_times' ? null : this.suppressConfig.reportingInterval;
                 }
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.autoRecoveryInterval = data.threshold.autoRecoveryInterval !== 'null' ? data.threshold.autoRecoveryInterval : null;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.singleMetric.reportingInterval = data.threshold.singleMetric.timeSampler === 'all_of_the_times' && data.threshold.singleMetric.reportingInterval !== null ? data.threshold.singleMetric.reportingInterval : null;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 data.threshold.singleMetric.requiresFullWindow = data.threshold.singleMetric.reportingInterval ? true : false;
                 if (this.data.threshold.subType === 'periodOverPeriod') {
                     const dataThresholdCopy = {...data.threshold};
@@ -1804,7 +1842,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         const queries = this.utils.deepClone(this.queries);
         for ( let i = 0; i < queries.length; i++ ) {
             for ( let j = 0; j < queries[i].metrics.length; j++ ) {
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 queries[i].metrics[j].settings.visual.visible =  !this.thresholdSingleMetricControls.metricId.value || queries[i].metrics[j].id === this.thresholdSingleMetricControls.metricId.value;
             }
         }
@@ -1814,7 +1852,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
                 time:  {
                     start: this.queryTime.start / 1000,
                     end: this.queryTime.end / 1000,
-                    zone: 'local'
+                    zone: this.timeZone
                 },
                 meta : {
                     title: this.data.name
@@ -1879,7 +1917,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
         } else {
             // emit with no event
             this.configChange.emit({
-                action: 'CancelEdit'
+                action: 'CancelEdit',
+                namespace: this.data.namespace
             });
         }
     }
@@ -1992,6 +2031,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             this.alertForm['controls'].notification.get('opsgenieAutoClose').setValue(false);
             this.alertForm.get('notification')['controls']['opsgenieTags'] = this.fb.array([]);
         }
+
+        if (this.notificationRecipients.value.pagerduty && !event.pagerduty) {
+            this.alertForm['controls'].notification.get('pagerdutyAutoClose').setValue(false);
+        }
         this.notificationRecipients.setValue(event);
 
     }
@@ -2075,7 +2118,8 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             slack: 'Slack',
             http: 'Webhook',
             oc: 'OC',
-            email: 'Email'
+            email: 'Email',
+            pagerduty: 'PagerDuty'
         }
         return types[type];
     }

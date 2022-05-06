@@ -14,20 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, HostBinding, ViewChild, HostListener } from '@angular/core';
-import { MatMenuTrigger, MatMenu } from '@angular/material';
+import { Component, OnInit, Input, HostBinding, ViewChild, HostListener, ViewEncapsulation } from '@angular/core';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'info-tooltip',
-  templateUrl: './info-tooltip.component.html'
+  templateUrl: './info-tooltip.component.html',
+  styleUrls: ['./info-tooltip.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class InfoTooltipComponent implements OnInit {
 
   @HostBinding('class.info-tooltip-component') _hostClass = true;
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild(MatMenu) tooltip: MatMenu;
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild(MatMenu, { static: true }) tooltip: MatMenu;
 
   @Input() fontSet: string = 'denali';
   @Input() fontIcon: string = 'd-information-circle';

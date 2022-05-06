@@ -19,20 +19,8 @@
 // * ADMIN NAMESPACES COMPONENT
 // *
 
- @import 'loader-base';
-
-:host.app-admin-section.app-admin-namespaces {
+.app-admin-section.app-admin-namespaces {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
-    min-height: 100%;
  }
-
- // CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-section.app-admin-namespaces {
-        background-color: mat-color($background, card);
-    }
-}

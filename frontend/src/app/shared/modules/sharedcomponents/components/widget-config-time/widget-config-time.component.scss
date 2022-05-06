@@ -15,160 +15,151 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
+.widget-config-tab.time-configuration {
 
-@mixin widget-config-time-component-base() {
-    .widget-config-tab.time-configuration {
+    .form-field-group {
+        display: inline-block;
 
-        .form-field-group {
-            display: inline-block;
+        .mat-form-field:not(:last-child) {
+            margin-right: 8px;
+        }
+    }
 
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
+    .form-field-group {
+        &.mat-select {
+            width: 200px;
+        }
+
+        .mat-select {
+            padding: 6px;
+            border-radius: 4px;
+            width: 180px;
+        }
+    }
+
+    .columned-controls {
+        display: flex;
+        margin-bottom: 16px;
+
+        .config-control:not(:first-child) {
+            .label {
+                width: auto;
+                margin-right: 16px;
             }
         }
 
+        .config-control:not(:last-child) {
+            margin-right: 30px;
+            margin-bottom: initial;
+        }
+    }
+
+    .config-control > .label {
+        display: inline-block;
+        width: 150px;
+        vertical-align: top;
+    }
+
+    .time-over-time-controls {
+        .mat-form-field:not(:last-child) {
+            margin-right: 8px;
+        }
+    }
+
+    .downsample-controls,
+    .aggregator-controls {
+        .mat-radio-button:not(:last-child) {
+            margin-right: 20px;
+        }
+
+        .mat-radio-group {
+            .mat-radio-label {
+                flex-direction: column;
+                justify-content: center;
+
+                .mat-radio-label-content {
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+
+    .downsample-controls,
+    .aggregator-controls,
+    .min-interval-controls,
+    .reporting-interval-controls {
+        display: flex;
+
+        .label {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: initial;
+        }
+    }
+
+    .override-relative-time-controls,
+    .time-shift-controls,
+    .min-interval-controls,
+    .reporting-interval-controls,
+    .downsample-controls .custom-downsample {
+        .mat-form-field-infix {
+            border-top: 0;
+        }
+    }
+
+    .override-time-controls {
+        align-items: baseline;
+        .calendar-container {
+            position: absolute;
+        }
+    }
+
+    .downsample-controls {
+
         .form-field-group {
-            &.mat-select {
-                width: 200px;
+            display: flex;
+
+            .mat-form-field {
+                width: 108px;
             }
 
             .mat-select {
-                padding: 6px;
-                border-radius: 4px;
-                width: 180px;
-                //background-color: rgba(34, 122, 236, 0.08);
+                width: 100px;
             }
         }
 
-        .columned-controls {
-            display: flex;
-            margin-bottom: 16px;
+        .custom-downsample {
+            margin-top: 10px;
 
-            .config-control:not(:first-child) {
-                .label {
-                    width: auto;
-                    margin-right: 16px;
-                }
-            }
-
-            .config-control:not(:last-child) {
-                margin-right: 30px;
-                margin-bottom: initial;
+            .mat-form-field {
+                width: 60px;
             }
         }
+    }
 
-        .config-control > .label {
-            display: inline-block;
-            width: 150px;
-            vertical-align: top;
-            // margin-bottom: 10px;
-        }
+    .aggregator-controls {
+        .form-field-group {
+            .mat-form-field {
+                width: 68px;
+            }
 
-        // .time-preset-options {}
-
-        .time-over-time-controls {
-            .mat-form-field:not(:last-child) {
-                margin-right: 8px;
+            .mat-select {
+                width: 60px;
             }
         }
+    }
 
-        .downsample-controls,
-        .aggregator-controls {
-            .mat-radio-button:not(:last-child) {
-                margin-right: 20px;
-            }
-
-            .mat-radio-group {
-                .mat-radio-label {
-                    flex-direction: column;
-                    justify-content: center;
-
-                    .mat-radio-label-content {
-                        padding-left: 0;
-                    }
-                }
-            }
-        }
-
-        .downsample-controls,
-        .aggregator-controls,
-        .min-interval-controls,
-        .reporting-interval-controls {
-            display: flex;
-
-            .label {
-                display: inline-flex;
-                align-items: center;
-                vertical-align: initial;
-            }
-        }
-
-        .override-relative-time-controls,
-        .time-shift-controls,
-        .min-interval-controls,
-        .reporting-interval-controls,
-        .downsample-controls .custom-downsample {
-            .mat-form-field-infix {
-                border-top: 0;
-            }
-        }
-
-        .override-time-controls {
-            align-items: baseline;
-            .calendar-container {
-                position: absolute;
-            }
-        }
-
-        .downsample-controls {
-
-            .form-field-group {
-                display: flex;
-
-                .mat-form-field {
-                    width: 108px;
-                }
-
-                .mat-select {
-                    width: 100px;
-                }
-            }
-
-            .custom-downsample {
-                margin-top: 10px;
-
-                .mat-form-field {
-                    width: 60px;
-                }
-            }
-        }
-
-        .aggregator-controls {
-            .form-field-group {
-                .mat-form-field {
-                    width: 68px;
-                }
-
-                .mat-select {
-                    width: 60px;
-                }
-            }
-        }
-
-        .min-interval-controls,
-        .reporting-interval-controls {
-            .form-field-group {
-                .mat-form-field {
-                    width: 60px;
-                }
+    .min-interval-controls,
+    .reporting-interval-controls {
+        .form-field-group {
+            .mat-form-field {
+                width: 60px;
             }
         }
     }
 }
 
-@mixin widget-config-time-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        //.widget-config-tab.time-configuration {}
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+//  .widget-config-tab.time-configuration {}
+//}

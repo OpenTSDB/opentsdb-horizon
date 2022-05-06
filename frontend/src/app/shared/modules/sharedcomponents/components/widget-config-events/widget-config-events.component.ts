@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { debounceTime } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'widget-config-events',
   templateUrl: './widget-config-events.component.html',
-  styleUrls: ['./widget-config-events.component.scss']
+  styleUrls: ['./widget-config-events.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigEventsComponent implements OnInit {
 

@@ -18,7 +18,8 @@ import {
     Component,
     OnInit,
     HostBinding,
-    OnDestroy
+    OnDestroy,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -26,13 +27,15 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-favorites-list',
-    templateUrl: './simple-favorites-list.component.html'
+    templateUrl: './simple-favorites-list.component.html',
+    styleUrls: ['./simple-favorites-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
 

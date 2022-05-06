@@ -15,20 +15,6 @@
 // * limitations under the License.
 // *
 
-@import 'loader-base';
+//.app-user {}
 
-:host.app-user {}
 
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $navbar-text: map-get($foreground, navbar-text);
-
-    .nav-user-title {
-        color: $navbar-text;
-    }
-
-    :host.app-user {
-
-    }
-}

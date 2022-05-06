@@ -15,49 +15,33 @@
 // * limitations under the License.
 // *
 
-@mixin time-selector-component-base() {
-    .time-selector-component {
+.time-selector-component {
+    .edit-mode {
+        width: 125px;
 
-        .view-mode { }
+        .time-button {
+            width: 100%;
 
-        .edit-mode {
-            width: 125px;
-            .time-button {
-                width: 100%;
+            .mat-button-wrapper {
+                display: flex;
+                justify-content: space-between;
 
-                .mat-button-wrapper {
-                    display: flex;
-                    justify-content: space-between;
-
-                    .mat-select-arrow-wrapper {
-                        align-self: center;
-                    }
+                .mat-select-arrow-wrapper {
+                    align-self: center;
                 }
             }
         }
     }
-
-    .cdk-time-menu {
-        .mat-menu-item {
-            height: 36px;
-            line-height: 36px;
-        }
-
-        .cdk-custom-time {
-            height: 60px;
-            line-height: 48px;
-        }
-    }
 }
 
-@mixin time-selector-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        .time-selector-component {
+.cdk-time-menu {
+    .mat-menu-item {
+        height: 36px;
+        line-height: 36px;
+    }
 
-            .time-button {
-                background-color: mat-color($primary, default, 0.08)
-            }
-
-        }
+    .cdk-custom-time {
+        height: 60px;
+        line-height: 48px;
     }
 }

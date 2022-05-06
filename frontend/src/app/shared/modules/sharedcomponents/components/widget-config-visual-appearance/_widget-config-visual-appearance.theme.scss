@@ -1,0 +1,40 @@
+@mixin widget-config-visual-appearance-component-theme() {
+
+    $input-bg: mat-color($primary, default, 0.08);
+
+    .widget-config-tab.visual-appearance-configuration {
+        // style rules here
+
+        .mat-table {
+            .metric-group-row {
+                background-color: mat-color($background, app-bar);
+            }
+        }
+
+        .column.display-modifier-container {
+            .display-modifier {
+                background-color: $input-bg;
+            }
+
+            .mat-button-toggle {
+                color: mat-color($foreground, link);
+            }
+
+            .mat-button-toggle-checked {
+                background: mat-color($background, card);
+                color: mat-color($foreground, text);
+            }
+        }
+
+        .table-type-selector {
+            $table-bg-file: if(
+                $is-dark,
+                '/assets/table-types-dtheme-sprite.png',
+                '/assets/table-types-ltheme-sprite.png'
+            );
+            [class^="table-"] {
+                background-image: url($table-bg-file);
+            }
+        }
+    }
+}

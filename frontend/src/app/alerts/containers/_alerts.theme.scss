@@ -1,0 +1,265 @@
+@mixin alerts-container-component-theme() {
+    $theme-variant: if($is-dark, 'dark', 'light');
+
+    $primary-default: mat-color($primary, default);
+
+    $status-error: mat-color($other, status-error);
+    $status-warning: mat-color($other, status-warning);
+    $status-success: mat-color($other, status-success);
+
+    $link: mat-color($foreground, link);
+    $disabled: mat-color($foreground, disabled);
+    $header-chip-text: $white;
+    $divider: mat-color($foreground, divider);
+
+    $card-bg: mat-color($background, card);
+    $border-color: mat-color($foreground, dividers);
+
+    $brand-color: mat-color($background, navbar);
+    $brand-color-inverse: mat-color($foreground, navbar-text);
+
+    .alerts-container-component {
+        background-color: $card-bg;
+
+        .create-alert-control {
+            .mat-flat-button.mat-primary {
+                background-color: mat-color($primary, 800);
+                color: mat-color($primary, "800-contrast");
+            }
+        }
+
+        .alerts-main-controls {
+            box-shadow: inset 0 -1px 0 0 $border-color;
+
+            .namespace-selector {
+                min-width: 250px;
+
+                .mat-button {
+                    background-color: mat-color($primary, default, 0.08);
+
+                    .control-label {
+                        color: $disabled;
+                    }
+
+                    .mat-icon {
+                        color: $link;
+                    }
+
+                    &:hover {
+                        box-shadow: inset 0 -2px 0 0 mat-color($primary, default, .3);
+                    }
+
+                    &.menu-open {
+                        box-shadow: inset 0 -2px 0 0 $primary-default;
+                    }
+                }
+            }
+
+            .alert-filter-input {
+                .mat-form-field {
+                    .mat-form-field-suffix {
+                        .mat-icon {
+                            color: $link;
+                        }
+                    }
+                }
+            }
+        }
+
+        //chips
+        .header-chip {
+            &.is-error::before {
+                background-color: $status-error;
+            }
+
+            &.is-warning::before {
+                background-color: $status-warning;
+            }
+
+            &.is-good::before {
+                background-color: $status-success;
+            }
+
+            &.is-unknown::before {
+                background-color: mat-color($denali-grey, 400);
+            }
+
+            &.is-missing::before {
+                background-color: mat-color($denali-blue, 400);
+            }
+
+            &.is-snoozed::before {
+                background-color: mat-color($denali-purple, 500);
+            }
+        }
+
+        .group-label-chip {
+            background: if($is-dark, rgba($white, 0.35), rgba($black, 0.08));
+            color: if($is-dark, rgba($black ,0.8), rgba($black ,0.5));
+        }
+
+        .batch-controls-toolbar.mat-toolbar {
+            background: transparent;
+
+            .batch-select-control {
+                .mat-checkbox-frame {
+                    border-color: $link;
+                }
+
+                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                    background-color: $link;
+                }
+            }
+        }
+
+        // common table styles
+        .common-table-result.mat-table {
+            tr.mat-row:last-child {
+                td.mat-cell{
+                    border-bottom: 0;
+                }
+            }
+        }
+
+        // alerts results container
+        .alert-results {
+            .alert-results-wrapper {
+                .mat-paginator {
+                    border-top: 1px solid $divider;
+                }
+            }
+        }
+
+        // alerts table
+        .alerts-result-table.mat-table {
+
+            .cdk-column-select {
+                .mat-checkbox-frame {
+                    border-color: $link;
+                }
+
+                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                    background-color: $link;
+                }
+            }
+
+            .cdk-column-good  .count-amount {
+                background-color: $status-success;
+            }
+
+            .cdk-column-bad .count-amount {
+                background-color: $status-error;
+            }
+
+            .cdk-column-warn .count-amount {
+                background-color: $status-warning;
+            }
+
+            .cdk-column-unknown .count-amount {
+                background-color: mat-color($denali-grey, 400);
+            }
+
+            .cdk-column-missing .count-amount {
+                background-color: mat-color($denali-blue, 400);
+            }
+
+            .cdk-column-name {
+                .edit-actions-wrapper {
+                    .mat-button {
+                        color: $link;
+                    }
+                }
+            }
+
+            .cdk-column-contacts {
+                .contact-icon-strip {
+                    color: if($is-dark, $brand-color-inverse, $brand-color);
+                }
+            }
+        }
+
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed {
+            .count-empty {
+                color: if(
+                    $is-dark,
+                    rgba($white, .25),
+                    rgba($black, .25)
+                );
+            }
+        }
+
+        // disabled state
+        .mat-row.is-disabled {
+            background-color: mat-color($foreground, divider, .05);
+
+            // disabled state
+            .mat-row.is-disabled {
+                background-color: mat-color($foreground, divider, .05);
+
+                .group-label-chip {
+                    opacity: .6
+                }
+
+                .mat-cell {
+                    color: mat-color($foreground, divider, .25);
+                }
+
+                .cdk-column-select {
+                    .mat-checkbox-frame {
+                        border-color: mat-color($foreground, divider, .25);
+                    }
+
+                    .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+                        background-color: mat-color($foreground, divider, .25);
+                    }
+                }
+
+                .cdk-column-contacts {
+                    .contact-icon-strip {
+                        background-color: transparent;
+                        color: if($is-dark, mat-color($foreground, navbar-text, .25), mat-color($foreground, divider, .25));
+                    }
+                }
+            }
+        }
+    }
+
+    // cdk items
+    .namespace-selector-menu {
+        border: 1px solid $divider;
+
+        .filter-all-namespaces {
+            border-bottom: 1px solid $divider;
+        }
+    }
+
+    .alert-contacts-menu.mat-menu-panel {
+        border: 1px solid $divider;
+
+        .contacts-wrapper {
+            .contact-list-type {
+                &:not(:last-child) {
+                    border-right: 1px solid $divider;
+                }
+            }
+        }
+    }
+
+    .create-alert-menu {
+        border: 1px solid $divider;
+
+        .alert-type-label {
+            color: $link;
+        }
+    }
+
+    .sparkline-display-cdk-menu.mat-menu-panel {
+        border-top: 2px solid $primary-default;
+    }
+
+}

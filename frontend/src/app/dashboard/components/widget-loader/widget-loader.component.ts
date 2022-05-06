@@ -17,14 +17,14 @@
 import {
     Type, Component, OnInit, Input, Output, ViewChild,
     ComponentFactoryResolver, EventEmitter,
-    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef
+    OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, TemplateRef, ViewEncapsulation
 } from '@angular/core';
 import { WidgetService } from '../../../core/services/widget.service';
 import { WidgetDirective } from '../../directives/widget.directive';
 import { WidgetComponentModel } from '../../widgets/models/widgetcomponent';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
-import { MatMenu, MatMenuTrigger } from '@angular/material';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 import { WidgetDeleteDialogComponent } from '../widget-delete-dialog/widget-delete-dialog.component';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
@@ -38,7 +38,8 @@ import domtoimage from 'dom-to-image-more';
     selector: 'app-widget-loader',
     templateUrl: './widget-loader.component.html',
     styleUrls: ['./widget-loader.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class WidgetLoaderComponent implements OnInit, OnChanges {
     @HostBinding('class.widget-loader') private hostClass = true;
@@ -96,10 +97,10 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     @Input() isNewDb: boolean = false;
     @Output() editComponent = new EventEmitter<any>();
 
-    @ViewChild(WidgetDirective) widgetContainer: WidgetDirective;
+    @ViewChild(WidgetDirective, { static: true }) widgetContainer: WidgetDirective;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-    @ViewChild('islandPortalTest') islandPortalTest: TemplateRef<any>;
+    @ViewChild('islandPortalTest', { static: true }) islandPortalTest: TemplateRef<any>;
 
     _component: any = null;
     componentFactory: any = null;
@@ -116,6 +117,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
     @Input() batchSelector: boolean = false;
 
     @Input() batchSelected: boolean = false;
+    @Input() readonly = true;
 
     constructor(
         private widgetService: WidgetService,
@@ -181,7 +183,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
 
                         if (portalDef.type === 'component') {
                             // component based
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                             const compRef = (portalDef.name) ? this.infoIslandService.getComponentToLoad(portalDef.name) : portalDef.reference;
                             componentOrTemplateRef = new ComponentPortal(compRef, null, this.infoIslandService.createInjector(dataToInject));
                         } else {
@@ -202,7 +204,7 @@ export class WidgetLoaderComponent implements OnInit, OnChanges {
         }));
         const config = this.appConfig.getConfig();
         this.canOverrideTime = config.modules && config.modules.dashboard && config.modules.dashboard.widget && config.modules.dashboard.widget.overrideTime  !== undefined  ? config.modules.dashboard.widget.overrideTime : true;
-        
+
     }
 
     ngOnChanges(changes: SimpleChanges) {

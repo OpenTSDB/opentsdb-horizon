@@ -6,28 +6,44 @@
 
 var app = require('../index');
 var debug = require('debug')('server:server');
-var https = require('https');
-var fs = require('fs');
 var path = require('path');
+var port = process.env.PORT || 4443;
+var server;
 
-var sslPath = '.ssh/yamas/';
+var enableTls = process.env.USE_TLS || 'true';
+var sslPath = '.ssh/opentsdb/';
 
-/**
- * Get port from environment and store in Express.
- */
-var port = 4443;
-app.set('port', port);
+if(enableTls === 'true'){
+  var https = require('https');
+  var fs = require('fs');
+  
+  /**
+   * Get port from environment and store in Express.
+   * */
+  app.set('port', port);
+  
+  /**
+   * Create HTTPS server.
+   */
+  var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.key'), 'utf8');
+  var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.crt'), 'utf8');
 
-/**
- * Create HTTP server.
- */
-
-var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.yamas.key'), 'utf8');
-var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.yamas.crt'), 'utf8');
-
-var credentials = { key: privateKey, cert: certificate };
-
-var server = https.createServer(credentials, app);
+  var credentials = { key: privateKey, cert: certificate };
+  
+  server = https.createServer(credentials, app);
+}else{
+  var http = require('http');
+  
+  /**
+   * Get port from environment and store in Express.
+   * */
+  app.set('port', port);
+  
+  /**
+   * Create HTTP server.
+   */
+  server = http.createServer(app);
+}
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -15,306 +15,280 @@
 // * limitations under the License.
 // *
 
-@mixin linechart-widget-component-base() {
+@import 'config';
 
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    .widget-panel-content.linechart-widget {
-        flex: 1;
+.widget-panel-content.linechart-widget {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+
+    .widget-configuration-wrapper {
+        border-radius: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
-        padding-top: 20px;
+        flex: 1;
+        height: 100%;
+        max-height: 100%;
+        max-width: 100%;
 
-        .widget-configuration-wrapper {
-            border-radius: 0;
+
+        &.mat-card {
+            border: none;
+        }
+
+        .widget-controls-container {
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            height: 100%;
-            max-height: 100%;
-            max-width: 100%;
-
-
-            &.mat-card {
-                border: none;
-            }
-
-            .widget-controls-container {
-                padding: 0;
-                overflow: hidden;
-            }
-
-            .step-section.multigraph-section {
-                .step-section-content {
-                    padding: 0 8px;
-                }
-            }
+            overflow: hidden;
         }
 
-        .hide {
-            display: none;
-        }
-
-        // Don't have padding for line-charts
-        .widget-output {
-            padding: 0;
-            width: 100%;
-
-            .dygraph-legend {
-                display: none;
-                z-index: 1000;
-                padding: 4px;
-                min-width:250px;
-                width: 300px;
-                position: absolute;
-                border-radius: 5px;
-                font-size: 12px;
-                font-family: Monaco, monospace;
+        .step-section.multigraph-section {
+            .step-section-content {
+                padding: 0 8px;
             }
-
-            .dygraph-label,
-            .dygraph-axis-label {
-                color: slategrey; // TODO: plug into theme
-                font-size: 12px;
-                // font-family: Monaco, monospace;
-                font-family: Helvetica Neue, Helvetica;
-            }
-
-            .dygraph-ylabel {
-                font-weight: 400;
-            }
-
-            .graph-legend {
-                display: none;
-                position: initial; // override dygraph style
-                list-style: none;
-                height: 100%;
-                overflow: overlay;
-                z-index: 0;
-                align-items: flex-start;
-
-                .mat-table {
-                    font-family: Monaco, monospace;
-                    background-color: inherit;
-                    .nowrap {
-                        white-space: nowrap;
-                    }
-                }
-            }
-
-            @-moz-document url-prefix() {
-                .graph-legend {
-                    overflow: auto;
-                }
-            }
-
-            .loading-spinner,
-            .gif-spinner {
-                position: absolute;
-                left: 5px;
-                bottom: 5px;
-                z-index: 1;
-            }
-
-            .apply-tpl-status {
-                position: absolute;
-                right: -5px;
-                top: 0px;
-                z-index: 1;
-
-                .mat-icon {
-                    font-size: 16px;
-                    color: rgb(216, 216, 215); // TODO: plug into theme
-                }
-            }
-
-            .error{
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                z-index: 1;
-                width: 30px;
-                height: 30px;
-                color: red; // TODO: // Plug into theme
-            }
-
-            .debug{
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                z-index: 1;
-                width: 30px;
-                height: 30px;
-                color: rgb(75, 9, 228); // TODO: plug into theme
-            }
-
-            // now for positioning of legend
-            &.display-legend-top,
-            &.display-legend-right,
-            &.display-legend-bottom,
-            &.display-legend-left {
-                .graph-legend {
-                    display: flex;
-                    flex: 1;
-                    align-items: flex-start;
-
-                    .line-series{
-                        display: inline-flex;
-                        width:10px;
-                        height: 10px;
-                        margin-right: 5px;
-                    }
-                }
-            }
-
-            &.display-legend-top{
-                .graph-cell {
-                    flex-direction: column-reverse;
-                }
-                .graph-legend {
-                    margin-bottom: 6px;
-                }
-            }
-
-            &.display-legend-right {
-                .graph-cell {
-                    flex-direction: row;
-                    align-items: flex-start;
-                }
-            }
-
-            &.display-legend-bottom {
-                .graph-cell {
-                    flex-direction: column;
-                }
-            }
-
-            &.display-legend-left {
-                .graph-cell {
-                    flex-direction: row-reverse;
-                    align-items: flex-start;
-                }
-            }
-
-            &.display-legend-left,
-            &.display-legend-right,
-            &.display-legend-top,
-            &.display-legend-bottom {
-                .graph-legend {
-                    table {
-                        // flex: 1;
-                    }
-
-                    tr {
-                        cursor: pointer;
-                    }
-
-                    .mat-column-series {
-                        width: 12px;
-                        max-width: 12px;
-                    }
-
-                    .mat-row, .mat-header-row {
-                        height: 10px;
-                        line-height: 12px;
-                    }
-
-                    .mat-cell, .mat-header-cell {
-                        padding: 0px 8px;
-                        font-size: 9px;
-                        border-bottom-width: 0px;
-                    }
-
-                    .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
-                        text-align: right;
-                    }
-                }
-            }
-        }
-
-        .events {
-            max-height: 500px;
-        }
-
-        .events-overlay {
-            padding-left: 2px;
-            padding-top: 6px;
-             event-timeline {
-                display: inline;
-            }
-        }
-
-        .events-config {
-            max-height: 200px;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            width: 100%;
-            .event-result-title {
-                font-weight: bold;
-                padding-left: 10px;
-            }
-        }
-
-        .disabled-message {
-            padding: 10px;
-        }
-
-        // fixes the initial sort arrow
-        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   {
-            opacity: 1 !important;
         }
     }
 
-     // when we are in edit view
-     .edit-view-container.is-active {
-        .widget-panel-content.linechart-widget {
-            .widget-output-container {
-                // background: yellowgreen;
-                // display: block;
-                // flex: 1 1 auto;
-                // height: 50%;
-                // max-height: calc(100% - 200px);
-            }
+    .hide {
+        display: none;
+    }
+
+    // Don't have padding for line-charts
+    .widget-output {
+        padding: 0;
+        width: 100%;
+
+        .dygraph-legend {
+            display: none;
+            z-index: 1000;
+            padding: 4px;
+            min-width:250px;
+            width: 300px;
+            position: absolute;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: Monaco, monospace;
         }
 
-        .event-preview-list-wrapper {
+        .dygraph-label,
+        .dygraph-axis-label {
+            color: slategrey; // TODO: plug into theme
+            font-size: 12px;
+            // font-family: Monaco, monospace;
+            font-family: Helvetica Neue, Helvetica;
+        }
+
+        .dygraph-ylabel {
+            font-weight: 400;
+        }
+
+        .graph-legend {
+            display: none;
+            position: initial; // override dygraph style
+            list-style: none;
+            height: 100%;
             overflow: overlay;
+            z-index: 0;
+            align-items: flex-start;
+
+            .mat-table {
+                font-family: Monaco, monospace;
+                background-color: inherit;
+                .nowrap {
+                    white-space: nowrap;
+                }
+            }
         }
 
         @-moz-document url-prefix() {
-            .event-preview-list-wrapper {
+            .graph-legend {
                 overflow: auto;
             }
         }
+
+        .loading-spinner,
+        .gif-spinner {
+            position: absolute;
+            left: 5px;
+            bottom: 5px;
+            z-index: 1;
+        }
+
+        .apply-tpl-status {
+            position: absolute;
+            right: -5px;
+            top: 0px;
+            z-index: 1;
+
+            .mat-icon {
+                font-size: 16px;
+                color: rgb(216, 216, 215); // TODO: plug into theme
+            }
+        }
+
+        .error{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            color: red; // TODO: // Plug into theme
+        }
+
+        .debug{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            color: rgb(75, 9, 228); // TODO: plug into theme
+        }
+
+        // now for positioning of legend
+        &.display-legend-top,
+        &.display-legend-right,
+        &.display-legend-bottom,
+        &.display-legend-left {
+            .graph-legend {
+                display: flex;
+                flex: 1;
+                align-items: flex-start;
+
+                .line-series{
+                    display: inline-flex;
+                    width:10px;
+                    height: 10px;
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        &.display-legend-top{
+            .graph-cell {
+                flex-direction: column-reverse;
+            }
+            .graph-legend {
+                margin-bottom: 6px;
+            }
+        }
+
+        &.display-legend-right {
+            .graph-cell {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        &.display-legend-bottom {
+            .graph-cell {
+                flex-direction: column;
+            }
+        }
+
+        &.display-legend-left {
+            .graph-cell {
+                flex-direction: row-reverse;
+                align-items: flex-start;
+            }
+        }
+
+        &.display-legend-left,
+        &.display-legend-right,
+        &.display-legend-top,
+        &.display-legend-bottom {
+            .graph-legend {
+                table {
+                    // flex: 1;
+                }
+
+                tr {
+                    cursor: pointer;
+                }
+
+                .mat-column-series {
+                    width: 12px;
+                    max-width: 12px;
+                }
+
+                .mat-row, .mat-header-row {
+                    height: 10px;
+                    line-height: 12px;
+                }
+
+                .mat-cell, .mat-header-cell {
+                    padding: 0px 8px;
+                    font-size: 9px;
+                    border-bottom-width: 0px;
+                }
+
+                .mat-column-min, .mat-column-max, .mat-column-avg, .mat-column-sum,  .mat-column-last {
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    .events {
+        max-height: 500px;
+    }
+
+    .events-overlay {
+        padding-left: 2px;
+        padding-top: 6px;
+            event-timeline {
+            display: inline;
+        }
+    }
+
+    .events-config {
+        max-height: 200px;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        width: 100%;
+        .event-result-title {
+            font-weight: bold;
+            padding-left: 10px;
+        }
+    }
+
+    .disabled-message {
+        padding: 10px;
+    }
+
+    // fixes the initial sort arrow
+    .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow   {
+        opacity: 1 !important;
     }
 }
 
-@mixin linechart-widget-component-theme($theme-config) {
+// when we are in edit view
+.edit-view-container.is-active {
+    .widget-panel-content.linechart-widget {
+        .widget-output-container {
+            // background: yellowgreen;
+            // display: block;
+            // flex: 1 1 auto;
+            // height: 50%;
+            // max-height: calc(100% - 200px);
+        }
+    }
 
-    @include variables-compatibility($theme-config) {
-        $dygraph-tooltip-bg: if(
-            $is-dark,
-            mat-color($background, menu),
-            #f0f0f0
-        );
-        $dygraph-tooltip-border: if(
-            $is-dark,
-            mat-color($background, menu),
-            #cccccc // TODO: plug into theme
-        );
+    .event-preview-list-wrapper {
+        overflow: overlay;
+    }
 
-        .widget-panel-content.linechart-widget {
-            .widget-output {
-                .dygraph-legend {
-                    background: $dygraph-tooltip-bg;
-                    border: 1px solid $dygraph-tooltip-border;
-                }
-            }
+    @-moz-document url-prefix() {
+        .event-preview-list-wrapper {
+            overflow: auto;
         }
     }
 }

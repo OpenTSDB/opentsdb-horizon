@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
     selector: 'app-admin-themes',
     templateUrl: './admin-themes.component.html',
-    styleUrls: ['./admin-themes.component.scss']
+    styleUrls: ['./admin-themes.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminThemesComponent implements OnInit {
 

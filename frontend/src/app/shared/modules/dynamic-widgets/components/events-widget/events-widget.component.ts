@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription } from 'rxjs';
 
@@ -22,10 +22,11 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'events-widget',
     templateUrl: './events-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./events-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
@@ -41,6 +42,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
     /** Inputs */
     @Input() mode = 'view'; // view/edit
     @Input() widget: any; // includes query
+    @Input() readonly = true;
 
     /** Local Variables */
     events: any[] = [];
@@ -78,7 +80,7 @@ export class EventsWidgetComponent implements OnInit, OnDestroy, OnChanges {
                             this.widget.settings.time.zoomTime = message.payload.date;
                             this.getEvents();
                         }
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
                         this.isCustomZoomed = message.payload.date.isZoomed;
                         this.getEvents();

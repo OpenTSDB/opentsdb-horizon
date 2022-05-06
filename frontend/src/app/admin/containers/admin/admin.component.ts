@@ -16,7 +16,7 @@
  */
 
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -26,7 +26,8 @@ import { filter, findIndex } from 'rxjs/operators';
 @Component({
     selector: 'app-admin-container',
     templateUrl: './admin.component.html',
-    styleUrls: ['./admin.component.scss']
+    styleUrls: ['./admin.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminComponent implements OnInit {
     @HostBinding('class') classAttribute: string = 'app-admin app-admin-container';
@@ -35,10 +36,10 @@ export class AdminComponent implements OnInit {
     adminNavbarPortal: TemplatePortal;
 
     // portal templates
-    @ViewChild('adminNavbarTmpl') adminNavbarTmpl: TemplateRef<any>;
+    @ViewChild('adminNavbarTmpl', { static: true }) adminNavbarTmpl: TemplateRef<any>;
 
     activeAdminSection: any = './';
-    activeAdminSectionIndex = -1;
+    activeAdminSectionIndex = 0;
 
     // admin sections
     adminSectionLinks: any[] = [

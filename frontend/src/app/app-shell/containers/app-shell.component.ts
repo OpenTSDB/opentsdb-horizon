@@ -23,16 +23,15 @@ import {
     Input,
     OnChanges,
     SimpleChanges,
-    Inject
+    Inject,
+    ViewEncapsulation
 } from '@angular/core';
 import { Location, DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { Observable, Subscription} from 'rxjs';
 
-import {
-    MatDrawer
-} from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
 import { IntercomService, IMessage } from '../../core/services/intercom.service';
@@ -57,14 +56,16 @@ import {
     UpdateNavigatorSideNav
 } from '../state/navigator.state';
 
-import { filter, map } from 'rxjs/operators';
+import { filter, map, reduce, withLatestFrom } from 'rxjs/operators';
 import { ThemeService } from '../../shared/modules/theme/services/theme.service';
 import { ResetDBtoDefault } from '../../dashboard/state';
+import { AppConfigService } from '../../core/services/config.service'
 
 @Component({
     selector: 'app-shell',
     templateUrl: './app-shell.component.html',
-    styleUrls: [ './app-shell.component.scss' ]
+    styleUrls: [ './app-shell.component.scss' ],
+    encapsulation: ViewEncapsulation.None
 })
 export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -91,8 +92,8 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     isAdminMember: boolean = false;
 
     // View Children
-    @ViewChild('drawer', { read: MatDrawer }) private drawer: MatDrawer;
-    @ViewChild(NavigatorSidenavComponent) private sideNav: NavigatorSidenavComponent;
+    @ViewChild('drawer', { read: MatDrawer, static: true }) private drawer: MatDrawer;
+    @ViewChild(NavigatorSidenavComponent, { static: true }) private sideNav: NavigatorSidenavComponent;
 
     activeNavSection = '';
     drawerMode = 'side'; // over | side;
@@ -119,12 +120,13 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
     private pendingRecent: any = {};
 
     // first load flag
-    // tslint:disable-next-line: no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private firstLoad: boolean = true;
 
     private routedApp: any = '';
 
     clipboardAvailable = false;
+    readonly = false;
 
     constructor(
         private interCom: IntercomService,
@@ -133,9 +135,12 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private location: Location,
         private themeService: ThemeService,
+        private appConfig: AppConfigService,
         @Inject(DOCUMENT) private document: any
     ) {
 
+        this.readonly = this.appConfig.getConfig().readonly;
+        if ( this.readonly ) return;
         // prefetch the navigator first data
         this.store.dispatch(new DbfsLoadResources()).pipe(
             map(rs => {
@@ -252,6 +257,7 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
 
+        if ( this.readonly ) return;
         /*this.subscription.add(this.themeService.getActiveTheme().subscribe( theme => {
             this.setAppTheme(theme);
         }));*/

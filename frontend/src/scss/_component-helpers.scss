@@ -1,0 +1,103 @@
+
+$theme-name: null !global;
+$primary: null !global;
+$accent: null !global;
+$warn: null !global;
+$success: null !global;
+$danger: null !global;
+$foreground: null !global;
+$background: null !global;
+$other: null !global;
+$scrollbar: null !global;
+$is-dark: null !global;
+
+$variant-options: (
+    'light',
+    'dark'
+);
+
+// This mixin will be used in the new way
+@mixin init-component-variants() {
+    @each $tname, $variants in $app-themes {
+        $theme-name: $tname !global;
+        //@debug 'VARIANTS: ' + #{$variants};
+        @at-root [theme="#{$theme-name}"] {
+
+            @each $theme-variant in $variant-options {
+
+                $theme-variant: $theme-variant !global;
+
+                $theme-config: map-get($variants, $theme-variant);
+
+                // * Theme config parts
+                // we make them global, so @content can access them
+                $primary: map-get($theme-config, primary) !global;
+                $accent: map-get($theme-config, accent) !global;
+                $warn: map-get($theme-config, warn) !global;
+                $success: map-get($theme-config, success) !global;
+                $danger: map-get($theme-config, danger) !global;
+                $foreground: map-get($theme-config, foreground) !global;
+                $background: map-get($theme-config, background) !global;
+                $other: map-get($theme-config, other) !global;
+                $scrollbar: map-get($theme-config, scrollbar) !global;
+                $is-dark: map-get($theme-config, is-dark) !global;
+
+                //@debug 'ACCENT: ' + #{$accent};
+
+                &[variant="#{$theme-variant}"] {
+                    @content;
+                }
+
+                // reset theme config parts
+                $primary: null !global;
+                $accent: null !global;
+                $warn: null !global;
+                $success: null !global;
+                $danger: null !global;
+                $foreground: null !global;
+                $background: null !global;
+                $other: null !global;
+                $scrollbar: null !global;
+                $is-dark: null !global;
+                $theme-variant: null !global;
+            }
+        }
+        // reset theme global theme-name variable
+        $theme-name: null !global;
+    }
+}
+
+@mixin cdk-nested-css-theme-fix($theme-name, $theme-variant) {
+    // hack to get styles to apply to cdk items that are injected in dom outside of _nghost
+    // yes, two ng-deeps are required to make this work. They basically nullify _nghost and _ngcontent from being applied to styles
+    @at-root {
+        ::ng-deep {
+            [theme="#{$theme-name}"][variant="#{$theme-variant}"] ::ng-deep {
+                @content;
+            }
+        }
+    }
+}
+
+// temporary mixin to support the old styles till we get them all converted to the new way
+// NOTE: this mixin will eventually go away
+@mixin variables-compatibility($theme-config) {
+
+    $theme-name: map-get($theme-config, theme-name);
+
+    // * Theme config parts
+    // we make them global, so @content can access them
+    $primary: map-get($theme-config, primary) !global;
+    $accent: map-get($theme-config, accent) !global;
+    $warn: map-get($theme-config, warn) !global;
+    $success: map-get($theme-config, success) !global;
+    $danger: map-get($theme-config, danger) !global;
+    $foreground: map-get($theme-config, foreground) !global;
+    $background: map-get($theme-config, background) !global;
+    $other: map-get($theme-config, other) !global;
+    $scrollbar: map-get($theme-config, scrollbar) !global;
+    $is-dark: map-get($theme-config, is-dark) !global;
+
+    @content;
+
+}

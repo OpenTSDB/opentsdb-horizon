@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, ViewChild, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding, ViewChildren, QueryList
+    Component, OnInit, ViewChild, Input, Output, EventEmitter, HostListener, ElementRef, HostBinding, ViewChildren, QueryList, ViewEncapsulation
 } from '@angular/core';
 import { Moment } from 'moment';
 import * as momentNs from 'moment';
@@ -23,15 +23,16 @@ import { TimeRangePickerOptions, ISelectedTime } from '../../models/models';
 import { } from '../time-picker/time-picker.component';
 import { DatepickerComponent } from '../date-picker-2/datepicker.component';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 const moment = momentNs;
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'time-range-picker',
     templateUrl: './time-range-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./time-range-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class TimeRangePickerComponent implements OnInit {
@@ -68,9 +69,9 @@ export class TimeRangePickerComponent implements OnInit {
     @Output() dbToTChange = new EventEmitter();
     @Output() onError = new EventEmitter();
 
-    @ViewChild('daytimePickerStart') startTimeReference: DatepickerComponent;
-    @ViewChild('daytimePickerEnd') endTimeReference: DatepickerComponent;
-    @ViewChild('presetsDiv') presetsDiv: ElementRef;
+    @ViewChild('daytimePickerStart', { static: true }) startTimeReference: DatepickerComponent;
+    @ViewChild('daytimePickerEnd', { static: true }) endTimeReference: DatepickerComponent;
+    @ViewChild('presetsDiv', { static: true }) presetsDiv: ElementRef;
     @ViewChildren(MatMenuTrigger) triggers: QueryList<MatMenuTrigger>;
 
     private _startTime: string;
@@ -88,7 +89,7 @@ export class TimeRangePickerComponent implements OnInit {
 
     showApply: boolean;
     presetSelected: Preset;
-    presets: Preset[] = [ // tslint:disable:max-line-length
+    presets: Preset[] = [ /* eslint-disable max-len */
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.year),    buttonName: 'y',   abbr: this.utilsService.timeAbbr.year},
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.quarter), buttonName: 'qtr', abbr: 'qtr'},
                           {name: this.utilsService.abbrToTime(this.utilsService.timeAbbr.month),   buttonName: 'mo',  abbr: this.utilsService.timeAbbr.month},

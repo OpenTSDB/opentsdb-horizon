@@ -144,7 +144,7 @@
                                 <query-editor-proto [label]="'Q' + (index + 1)" [query]="query" [queries]="queries"
                                     [widget]="{queries: queries}"
                                     [options]="{
-                                        enableNamesapce: enableNamespace,
+                                        enableNamespace: enableNamespace,
                                         metaSource: data.type === 'healthcheck' ? 'aurastatus:check' : 'meta',
                                         enableMultipleQueries: data.type === 'simple',
                                         enableMetric: data.type === 'simple',
@@ -313,7 +313,7 @@
                                             </div>
                                             <div class="sentence-item">
                                                     <time-selector [timeInSeconds]="alertForm.value.threshold.singleMetric.slidingWindow" (newTimeInSeconds)="newSingleMetricTimeWindowSelected($event)"></time-selector>
-                                                    <div>breach(s) the above thresholds {{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? ' and a value is reported every' : ''}}</div>
+                                                    <div>breach(es) the above thresholds {{ alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times' ? ' and a value is reported every' : ''}}</div>
                                             </div>
 
                                             <div class="sentence-item" *ngIf="alertForm.value.threshold.singleMetric.timeSampler === 'all_of_the_times'">
@@ -388,6 +388,12 @@
                                                         <mat-form-field appearance="fill" floatLabel="never">
                                                             <mat-select placeholder="Never" formControlName="autoRecoveryInterval" disableOptionCentering>
                                                                 <mat-option value="null">Never</mat-option>
+                                                                <mat-option value="300">after 5 mins</mat-option>
+                                                                <mat-option value="600">after 10 mins</mat-option>
+                                                                <mat-option value="900">after 15 mins</mat-option>
+                                                                <mat-option value="1200">after 20 mins</mat-option>
+                                                                <mat-option value="1800">after 30 mins</mat-option>
+                                                                <mat-option value="2700">after 45 mins</mat-option>
                                                                 <mat-option value="3600">after 1 hour</mat-option>
                                                                 <mat-option value="7200">after 2 hours</mat-option>
                                                                 <mat-option value="14400">after 4 hours</mat-option>
@@ -398,6 +404,9 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                         <span class="form-label"><strong> if no data arrives.</strong></span>
+                                                    </div>
+                                                    <div *ngIf="thresholdControls.autoRecoveryInterval.errors && thresholdControls.autoRecoveryInterval.errors.invalid">
+                                                        <mat-error>Recovery interval should be double or more of the sliding window value</mat-error>
                                                     </div>
                                                     <div>
                                                         <mat-hint class="info-hint">Select "Do not notify" on missing data to enable auto recovery options.</mat-hint>
@@ -711,6 +720,15 @@
                                         </mat-form-field>
                                 </div>
                             </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <mat-checkbox formControlName="pagerdutyAutoClose" value="true"></mat-checkbox>
+                                        <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for PagerDuty. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -830,25 +848,25 @@
                         </div>
 
                         <div class="form-group alert-labels">
-                                <div class="form-label vertical-center"><strong>Labels</strong></div>
-                                <mat-form-field appearance="fill" color="primary" floatLabel="never">
-                                    <mat-chip-list class="filter-values-list" #labelChipList>
-                                        <mat-chip *ngFor="let val of notificationLabelValues['controls']; let n=index"
-                                            (removed)="removeNotificationLabelValue(n)">
-                                            <span>{{val.value}}</span>
-                                            <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
-                                        </mat-chip>
-                                        <input
-                                            placeholder="Enter value(s) seperated by commas"
-                                            #notificationLabelValueInput
-                                            [matChipInputFor]="labelChipList"
-                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                            [matChipInputAddOnBlur]="true"
-                                            (matChipInputTokenEnd)="addNotificationLabelValue($event)"
-                                            autocomplete="off">
-                                    </mat-chip-list>
-                                </mat-form-field>
-                            </div>
+                            <div class="form-label vertical-center"><strong>Labels</strong></div>
+                            <mat-form-field appearance="fill" color="primary" floatLabel="never">
+                                <mat-chip-list class="filter-values-list" #labelChipList>
+                                    <mat-chip *ngFor="let val of notificationLabelValues['controls']; let n=index"
+                                        (removed)="removeNotificationLabelValue(n)">
+                                        <span>{{val.value}}</span>
+                                        <mat-icon matChipRemove fontSet="denali" fontIcon="d-close"></mat-icon>
+                                    </mat-chip>
+                                    <input
+                                        placeholder="Enter value(s) seperated by commas"
+                                        #notificationLabelValueInput
+                                        [matChipInputFor]="labelChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="true"
+                                        (matChipInputTokenEnd)="addNotificationLabelValue($event)"
+                                        autocomplete="off">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
 
                         <div class="oc-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.oc">
                             <mat-divider></mat-divider>
@@ -928,9 +946,18 @@
                                                 autocomplete="off">
                                         </mat-chip-list>
                                     </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <mat-checkbox formControlName="pagerdutyAutoClose" value="true"></mat-checkbox>
+                                        <mat-hint class="info-hint">Enabling AutoClose will ignore `Send one notification per` setting for PagerDuty. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
 
 
@@ -1185,6 +1212,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="pager-duty-specific-fields" *ngIf="notificationRecipientsValue && notificationRecipientsValue.pagerduty">
+                                <div class="form-group alert-pagerduty-autoclose">
+                                    <div class="form-label vertical-center"><strong>PagerDuty AutoClose</strong></div>
+                                    <div class="pagerduty-autoclose-flag">
+                                        <span>{{ data.notification.pagerdutyAutoClose === true ? 'Yes' : 'No' }}</span>
+                                        <mat-hint class="info-hint" *ngIf="data.notification.pagerdutyAutoClose === true">Enabling AutoClose will ignore `Send one notification per` setting for Paferduty. Alerts will be sent per unique tag set.</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="step-section misc-details  is-visible" *ngIf="data.id">
@@ -1353,14 +1389,18 @@ This simulates the output of the query editor - minus a few events and buttons
 <div class="navbar-item" *ngIf="data.type === 'simple' || data.type === 'event'">
         <time-picker class="navbar-item nav-date-time-picker"
             (newChange)="handleTimePickerChanges($event)"
-            [timezone]="'local'"
+            [timezone]="timeZone"
             [startTime]="startTime"
             [endTime]="endTime"
             [downsample]=" data.type === 'simple' ? downsample: null"
             [tot]="null"
-            [config]="{enableSync: false, enableRefresh: false}"
+            [refresh]="autoRefresh"
+            [config]="{enableSync: false, enableRefresh: true}"
             [xPosition]="menuXAlignValue">
         </time-picker>
+        <span class="navbar-item nav-timezone-toggle" *ngIf="data.type === 'simple'">
+            <navbar-timezone-toggle [timezone]="timeZone" (change)="setTimezone($event);"></navbar-timezone-toggle>
+        </span>
     </div>
     <div class="navbar-item">
         <help-links></help-links>

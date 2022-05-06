@@ -18,13 +18,12 @@
     <span widget-view-container></span>
 </div>
 
-<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage has-scroller" fxFlex="1 1 {{viewEditMode ? '1px' : '100%'}}" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
-    <div class="is-scroller">
+<div *ngIf="dashboardMode!== 'snap'" class="gridster-stage" [style.visibility]="viewEditMode ? 'hidden' : 'visible'">
         <ngx-gridster #gridster class="dashboard"
             [options]="gridsterOptions"
             (optionsChange)="breakpointChange($event)"
             (reflow)="gridsterFlow($event)"
-            [draggableOptions]="{ handlerClass: 'panel-heading' }">
+            [draggableOptions]="{ handlerClass: 'panel-heading', scroll: true }">
 
             <ngx-gridster-item #itemComp class="gridster-item prevent-animation" id="{{widget.id}}"
                 *ngFor="let widget of widgets; let idx = index; trackBy: trackByWidget"
@@ -34,6 +33,7 @@
                 [(yMd)]="widget.gridPos.yMd" [(ySm)]="widget.gridPos.ySm"
                 [(wMd)]="widget.gridPos.wMd" [wSm]="widget.gridPos.wSm"
                 [(hMd)]="widget.gridPos.hMd" [hSm]="widget.gridPos.hSm"
+                [dragAndDrop]="true"
                 [(w)]="widget.gridPos.w"
                 [(h)]="widget.gridPos.h"
                 (end)="gridEventEnd($event)">
@@ -41,9 +41,9 @@
                 (editComponent)="editComponent($event)"
                 [batchSelector]="batchControlsToggle"
                 [batchSelected]="batchSelectedItems[widget.id]"
-                [widget]="widget"
+                [widget]="deepClone(widget)"
+                [readonly]="readonly"
                 [isNewDb]="dbid === '_new_'"></app-widget-loader>
             </ngx-gridster-item>
         </ngx-gridster>
-    </div>
 </div>

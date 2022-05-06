@@ -1,0 +1,26 @@
+@import 'loader-component';
+
+@import '../app/app.theme';
+
+@import '../app/admin/admin-module.theme';
+@import '../app/alerts/alerts-module.theme';
+@import '../app/app-shell/app-shell-module.theme';
+@import '../app/dashboard/dashboard-module.theme';
+@import '../app/landing-page/landing-page-module.theme';
+@import '../app/namespace/namespace-module.theme';
+@import '../app/user/user-module.theme';
+@import '../app/shared/shared-module.theme';
+
+@mixin init-component-themes() {
+    @include init-component-variants() {
+        @include app-component-theme();
+        @include admin-module-theme();
+        @include alerts-module-theme();
+        @include app-shell-module-theme();
+        @include dashboard-module-theme();
+        @include landing-page-module-theme();
+        @include namespace-module-theme();
+        @include user-module-theme();
+        @include shared-module-theme();
+    }
+}

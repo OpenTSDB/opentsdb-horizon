@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 import { Component, OnInit, HostBinding, Input,
-    OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+    OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, BehaviorSubject} from 'rxjs';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { debounceTime } from 'rxjs/operators';
@@ -31,7 +31,8 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 @Component({
   selector: 'app-topn-widget',
   templateUrl: './topn-widget.component.html',
-  styleUrls: ['./topn-widget.component.scss']
+  styleUrls: ['./topn-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -40,15 +41,16 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('container') private container: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('container', { static: true }) private container: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isDataLoaded: boolean = false;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 
     options: any  = {
         direction: 'horizontal',
@@ -127,7 +129,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();

@@ -39,7 +39,7 @@ export class URLOverrideService {
             if ( this.overrides['time']['start'] ) {
                 const t = this.overrides['time']['start'];
                 const m = this.dateUtil.timeToMoment(t, otz);
-                // tslint:disable:max-line-length
+                /* eslint-disable max-len */
                 this.overrides['time']['start'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
             }
             if ( this.overrides['time']['end'] ) {
@@ -144,7 +144,7 @@ export class URLOverrideService {
         
     }
 
-    initialize() {
+    initialize(options = null ) {
         const url = this.getLocationURLandQueryParams();
         let otherParams = {};
         for (const k in url['queryParams']) {
@@ -173,7 +173,7 @@ export class URLOverrideService {
                     otherParams[k] = v;
             }
         }
-        if (Object.keys(otherParams).length > 0) {
+        if ( options && options.dbOverride && Object.keys(otherParams).length > 0) {
             this.applyURLParamsToDB(otherParams);
         }
     }
@@ -191,7 +191,7 @@ export class URLOverrideService {
         url.queryParams = decodeQueryParams;
         let tags: any = {};
         if (params.start) {
-            // tslint:disable:max-line-length
+            /* eslint-disable max-len */
             url['queryParams']['__start'] = params.start.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.start) ? params.start : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.start, params.zone).unix().toString(), 'UTC', 'YYYYMMDDTHHmmss');
         }
         if (params.end) {

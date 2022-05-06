@@ -1,0 +1,50 @@
+@mixin color-picker-container-component-theme() {
+
+    .color-picker-component {
+        .color-picker-flex {
+            background-color: mat-color($primary, default, 0.08);
+        }
+
+        .select-arrow-wrapper {
+            .select-arrow {
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        ///// OLD STYLES /////
+        .mat-raised-button {
+            background: #f3f6fe; // TODO: plug into theme
+        }
+    }
+
+    // CDK OVERLAY ITEM / EMBEDDED CONTROL
+    .color-picker-component-control {
+        content: "#{$theme-name}#{$theme-variant}";
+        &.card {
+            background: mat-color($background, menu);
+            border-top: 2px solid mat-color($primary, default);
+        }
+
+        .grey-outline {
+            //for white color on palette
+            border: 2px solid if($is-dark, transparent, lightgray); // TODO: plug into theme
+        }
+
+        .isSelected {
+            border: 2px solid mat-color($primary, default);
+        }
+
+        .toggle {
+            border-top: 1px solid mat-color($foreground, divider);
+            color: mat-color($primary, default);
+        }
+
+        .palette-container {
+            .palette-item:hover,
+            .palette-item.selected {
+                border: 2px solid mat-color($primary, default);
+            }
+        }
+    }
+
+}

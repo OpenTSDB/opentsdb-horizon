@@ -15,9 +15,7 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
-
-:host.navigator-panel {
+.navigator-panel {
     display: flex;
     flex: 1;
 
@@ -46,9 +44,3 @@
         flex-direction: column;
     }
 }
-
-// * THEME VARIANTS
-//@include init-component-variants() {
-    //:host.navigator-panel {
-    //}
-//}

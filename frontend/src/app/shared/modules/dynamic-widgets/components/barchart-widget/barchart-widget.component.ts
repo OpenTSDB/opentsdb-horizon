@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit, OnChanges, AfterViewInit, ChangeDetectorRef,
-    SimpleChanges, HostBinding, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+    SimpleChanges, HostBinding, Input, OnDestroy, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -25,7 +25,7 @@ import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { AppConfigService } from '../../../../../core/services/config.service';
@@ -34,6 +34,7 @@ import { AppConfigService } from '../../../../../core/services/config.service';
   selector: 'app-barchart-widget',
   templateUrl: './barchart-widget.component.html',
   styleUrls: ['./barchart-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
@@ -41,14 +42,15 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
 
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isDataLoaded: boolean = false;
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     isStackedGraph: boolean = false;
     // properties to pass to  chartjs chart directive
 
@@ -176,7 +178,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -424,7 +426,7 @@ export class BarchartWidgetComponent implements OnInit, OnChanges, OnDestroy, Af
             this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
                                                                 : nativeEl.getBoundingClientRect().height + 60;
         const outputSize = nativeEl.getBoundingClientRect();

@@ -1,0 +1,12 @@
+@mixin widget-config-events-component-theme() {
+    $chip-bg: rgba(map-get($primary, default), .1);
+
+    .widget-config-events {
+        .search {
+            .search-input {
+                background: $chip-bg;
+
+            }
+        }
+    }
+}

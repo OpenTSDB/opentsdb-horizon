@@ -27,7 +27,7 @@ import { InfoIslandService } from '../../../info-island/services/info-island.ser
 import { Subscription } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { BehaviorSubject } from 'rxjs';
@@ -36,15 +36,13 @@ import { debounceTime } from 'rxjs/operators';
 import { heatmapPlotter } from '../../../../dygraphs/plotters';
 import { AppConfigService } from '../../../../../core/services/config.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-
-
 @Component({
-// tslint:disable-next-line: component-selector
+// eslint-disable-next-line @angular-eslint/component-selector
   selector: 'heatmap-widget',
   templateUrl: './heatmap-widget.component.html',
   styleUrls: ['./heatmap-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -53,12 +51,13 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() widget: WidgetModel;
   @Input() mode = 'view'; // view/explore/edit
+  @Input() readonly = true;
 
-  @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
+  @ViewChild('widgetOutputContainer', { static: true }) private widgetOutputContainer: ElementRef;
   @ViewChild('widgetTitle') private widgetTitle: ElementRef;
-  @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-  @ViewChild('graphLegend') private dygraphLegend: ElementRef;
-  @ViewChild('dygraph') private dygraph: ElementRef;
+  @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+  @ViewChild('graphLegend', { static: true }) private dygraphLegend: ElementRef;
+  @ViewChild('dygraph', { static: true }) private dygraph: ElementRef;
 
   Object = Object;
   private listenSub: Subscription;
@@ -187,7 +186,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                             this.widget.settings.time.zoomTime = message.payload.date;
                             this.refreshData();
                         }
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
                         this.options.isCustomZoomed = message.payload.date.isZoomed;
                         this.refreshData();
@@ -514,7 +513,7 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
        const nativeEl = (this.mode !== 'view') ?
           this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
           : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 60;
        const newSize = nativeEl.getBoundingClientRect();
@@ -605,13 +604,13 @@ export class HeatmapWidgetComponent implements OnInit, AfterViewInit, OnDestroy 
                 originId: this.widget.id,
                 data: payload.data
             };
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
             const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
             const pos = this.elRef.nativeElement.getBoundingClientRect();
             const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
             const height = pos.height * ( 1 - heightMod ) - 5;
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {...widgetOptions, draggable: true,
                 originId: this.widget.id,
                 width: pos.width,

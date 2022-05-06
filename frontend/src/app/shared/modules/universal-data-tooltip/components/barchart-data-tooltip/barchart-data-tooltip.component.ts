@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -24,7 +24,9 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     selector: 'barchart-data-tooltip',
-    templateUrl: './barchart-data-tooltip.component.html'
+    templateUrl: './barchart-data-tooltip.component.html',
+    styleUrls: ['./barchart-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class BarchartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 

@@ -17,168 +17,147 @@
 // TODO: THIS FILE NEEDS TO BE CLEANED UP
 // TODO: THIS FILE NEEDS TO BE CLEANED UP
 // TODO: THIS FILE NEEDS TO BE CLEANED UP
-@mixin markdown-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    .markdown-widget {
+@import 'config';
+
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
+
+.markdown-widget {
+    height: 100%;
+    max-width: 100%;
+    padding-top: 0px;
+
+    // Dynamically added classes
+    .top-margin {
+        margin-top: 20px;
+    }
+
+    .monospace {
+        font-family: monospace;
+    }
+
+    .main-container {
         height: 100%;
-        max-width: 100%;
-        padding-top: 0px;
+        display: flex;
+        flex-direction: row-reverse;
 
-        // Dynamically added classes
-        .top-margin {
-            margin-top: 20px;
-        }
+        .inputArea {
+            // editor for users to type
+            min-width: 100%;
+            height: calc(100% - 20px);
 
-        .monospace {
-            font-family: monospace;
-        }
+            .mat-form-field-wrapper {
+                height: 100%;
 
-        .main-container {
-            height: 100%;
-            display: flex;
-            flex-direction: row-reverse;
-
-            .inputArea {
-                // editor for users to type
-                min-width: 100%;
-                height: calc(100% - 20px);
-
-                .mat-form-field-wrapper {
+                .mat-form-field-flex {
                     height: 100%;
 
-                    .mat-form-field-flex {
+                    .mat-form-field-infix {
                         height: 100%;
 
-                        .mat-form-field-infix {
+                        .mat-form-field-label {
+                            // 'Type here' placeholder
+                            padding-left: 5px;
+                        }
+
+                        textarea {
                             height: 100%;
-
-                            .mat-form-field-label {
-                                // 'Type here' placeholder
-                                padding-left: 5px;
-                            }
-
-                            textarea {
-                                height: 100%;
-                                font-size: 12px;
-                            }
+                            font-size: 12px;
                         }
                     }
-                }
-            }
-
-            .markdown-note {
-                // hyperlink to markdown reference
-                padding-left: 10px;
-            }
-
-            .widget-output-container {
-                max-height: 100%;
-                overflow-x: hidden;
-
-                .widget-output {
-                    &.notCentered {
-                        align-items: flex-start;
-                    }
-
-                    height: 100%;
-                }
-            }
-
-            .widget-output {
-                // MARKDOWN FORMATTING
-                overflow: overlay;
-
-                .widget-container {
-                    padding-left: 4px;
-                    padding-top: 15px;
-                    width: 100%;
-
-                    .preview {
-                        opacity: 0.5;
-                        display: block;
-                        width: 150%;
-                        height: 150%;
-
-                        transform: rotate(-45deg);
-                        content: attr(data-watermark);
-                        line-height: 3em;
-                        letter-spacing: 2px;
-                        color: red;
-                    }
-
-                    // NOTE: Markdown styles are moved to a globally commmon style sheet
-                    // since it is likely used in more than one use case
-                    // see src/app/app.common.scss
-
-                }
-            }
-
-            @-moz-document url-prefix() {
-                .widget-output {
-                    overflow: auto;
-                }
-            }
-
-            .widget-configs {
-
-                .mat-tab-body-wrapper {
-                    mat-tab-body {
-                        &.mat-tab-body {
-                            // border: none;
-
-                            .mat-tab-body-content {
-                                display: block;
-                            }
-                        }
-                    }
-                }
-
-                .mat-tab-labels {
-                    display: block;
                 }
             }
         }
 
-        .widget-actions {
-            padding: 10px;
+        .markdown-note {
+            // hyperlink to markdown reference
+            padding-left: 10px;
+        }
 
-            button {
-                margin-right: 10px;
+        .widget-output-container {
+            max-height: 100%;
+            overflow-x: hidden;
+
+            .widget-output {
+                &.notCentered {
+                    align-items: flex-start;
+                }
+
+                height: 100%;
+            }
+        }
+
+        .widget-output {
+            // MARKDOWN FORMATTING
+            overflow: overlay;
+
+            .widget-container {
+                padding-left: 4px;
+                padding-top: 15px;
+                width: 100%;
+
+                .preview {
+                    opacity: 0.5;
+                    display: block;
+                    width: 150%;
+                    height: 150%;
+
+                    transform: rotate(-45deg);
+                    content: attr(data-watermark);
+                    line-height: 3em;
+                    letter-spacing: 2px;
+                    color: red;
+                }
+
+                // NOTE: Markdown styles are moved to a globally commmon style sheet
+                // since it is likely used in more than one use case
+                // see src/app/app.common.scss
+
+            }
+        }
+
+        @-moz-document url-prefix() {
+            .widget-output {
+                overflow: auto;
+            }
+        }
+
+        .widget-configs {
+            .mat-tab-body-wrapper {
+                mat-tab-body {
+                    &.mat-tab-body {
+                        // border: none;
+
+                        .mat-tab-body-content {
+                            display: block;
+                        }
+                    }
+                }
+            }
+
+            .mat-tab-labels {
+                display: block;
             }
         }
     }
-    .edit-view-container.is-active {
-        .widget-panel-content.markdown-widget {
-            .widget-output-container,
-            .widget-controls-container {
-                flex: 1 1 50%;
-            }
+
+    .widget-actions {
+        padding: 10px;
+
+        button {
+            margin-right: 10px;
         }
     }
 }
 
-@mixin markdown-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        textarea {
-            background: if($is-dark, $black, $white);
-            color: if($is-dark, $white, $black);
-        }
-
-        .markdown-note {
-            background: mat-color($background, background);
-            color: if($is-dark, $white, $black);
-            border: none;
-
-            a:visited {
-                color: if($is-dark, $white, $black);
-            }
+.edit-view-container.is-active {
+    .widget-panel-content.markdown-widget {
+        .widget-output-container,
+        .widget-controls-container {
+            flex: 1 1 50%;
         }
     }
-
 }

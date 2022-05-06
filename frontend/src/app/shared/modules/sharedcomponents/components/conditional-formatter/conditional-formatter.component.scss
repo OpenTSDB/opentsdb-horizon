@@ -15,80 +15,70 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
+@import 'mixins';
 
-@mixin conditional-formatter-component-base() {
-    .conditional-formatter {
-        .mat-table {
-            width: 100%;
-            .mat-header-row {
-                height: 30px;
-                border-bottom: 1px solid #0000001f; // TODO: plug into theme
-            }
+.conditional-formatter {
+    .mat-table {
+        width: 100%;
 
-            .mat-header-cell {
-                text-transform: uppercase;
+        .mat-header-row {
+            height: 30px;
+            border-bottom: 1px solid #0000001f; // TODO: plug into theme
+        }
 
-                &:first-child {
-                    padding-left: 10px;
-                }
-            }
+        .mat-header-cell {
+            text-transform: uppercase;
 
-            .mat-row {
-                height: 50px;
-                border-bottom: 1px solid #0000001f; // TODO: plug into theme
-                .mat-cell:first-child {
-                    width: 70%;
-                }
-                .mat-cell {
-                    line-height: 1;
-                }
-
+            &:first-child {
+                padding-left: 10px;
             }
         }
 
-        .text {
-            padding: 10px;
-        }
+        .mat-row {
+            height: 50px;
+            border-bottom: 1px solid #0000001f; // TODO: plug into theme
+            .mat-cell:first-child {
+                width: 70%;
+            }
+            .mat-cell {
+                line-height: 1;
+            }
 
-        .operator {
-            width: 12%;
-            min-width: 50px;
         }
+    }
 
-        .value {
-            width: 25%;
-            min-width: 100px
+    .text {
+        padding: 10px;
+    }
+
+    .operator {
+        width: 12%;
+        min-width: 50px;
+    }
+
+    .value {
+        width: 25%;
+        min-width: 100px
+    }
+
+    .trash-button {
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
         }
+    }
 
-        .trash-button {
+    .action {
+        margin-top: 20px;
+
+        .mat-stroked-button {
+            line-height: 24px;
+            font-size: 12px;
+
             .mat-icon {
                 @include sizeDenaliIcon(14px);
+                margin-right: 4px;
             }
-        }
-
-        .action {
-            margin-top: 20px;
-
-            .mat-stroked-button {
-                line-height: 24px;
-                font-size: 12px;
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                    margin-right: 4px;
-                }
-            }
-
         }
 
     }
 }
-
-@mixin conditional-formatter-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        //.conditional-formatter {}
-    }
-}
-

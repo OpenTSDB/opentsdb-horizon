@@ -1,0 +1,14 @@
+@import './containers/landing-page/landing-page.theme';
+
+@import './components/activity-panel/activity-panel.theme';
+@import './components/landing-page-content/landing-page-content.theme';
+@import './components/pin-panel/pin-panel.theme';
+@import './components/search-results-content/search-results-content.theme';
+
+@mixin landing-page-module-theme() {
+    @include landing-page-container-component-theme();
+    @include activity-panel-component-theme();
+    @include landing-page-content-component-theme();
+    @include pin-panel-component-theme();
+    @include search-results-content-component-theme();
+}

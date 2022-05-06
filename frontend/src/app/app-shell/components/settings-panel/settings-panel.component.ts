@@ -20,16 +20,17 @@ import {
     HostBinding,
     Input,
     OnInit,
-    Output, ViewChild, ElementRef
+    Output, ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'settings-panel',
     templateUrl: './settings-panel.component.html',
     styleUrls: ['./settings-panel.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     host: {
         '[class.settings-navigator]': 'true',
         '[class.panel-content]': 'true'

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
 import { map, tap, catchError, reduce } from 'rxjs/operators';
@@ -166,6 +167,22 @@ export class DbfsUpdateFolderSuccess {
     ) { }
 }
 
+export class DbfsRefreshFolder {
+    public static type = '[DBFS Resources] Refresh Folder';
+    constructor(
+        public readonly fullPath: any,
+        public readonly resourceAction: any
+    ) { }
+}
+
+export class DbfsRefreshFolderSuccess {
+    public static type = '[DBFS Resources] Refresh Folder SUCCESS';
+    constructor(
+        public readonly response: any,
+        public readonly args: any
+    ) { }
+}
+
 export class DbfsUpdateFile {
     public static type = '[DBFS Resources] Update File';
     constructor(
@@ -289,6 +306,7 @@ export class DbfsLoadUserRecentsSuccess {
 
 /** STATE */
 
+@Injectable()
 @State<DbfsResourcesModel>({
     name: 'DataResources',
     defaults: {
@@ -312,7 +330,6 @@ export class DbfsLoadUserRecentsSuccess {
         resourceAction: {}
     }
 })
-
 export class DbfsResourcesState {
     constructor(
         private utils: UtilsService,
@@ -419,7 +436,7 @@ export class DbfsResourcesState {
             if (!state.folders[path]) {
                 return { notFound: true };
             }
-            // tslint:disable-next-line: prefer-const
+            // eslint-disable-next-line prefer-const
             let data = { ...state.folders[path] };
 
             if (data.personal) {
@@ -689,7 +706,7 @@ export class DbfsResourcesState {
         panelRoot.personal.push(recvFolder.fullPath);
 
         // USER Trash - add to root panel
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         const userTrash = response.personalFolder.subfolders.filter(item => item.fullPath === '/user/' + activeUser + '/trash');
         const userTrashIdx = response.personalFolder.subfolders.indexOf(userTrash[0]);
 
@@ -1187,6 +1204,7 @@ export class DbfsResourcesState {
         const folder = this.dbfsUtils.normalizeFolder(response);
         folders[folder.fullPath] = folder;
 
+
         // update parent (if we have it cached)
         if (folders[folder.parentPath]) {
             if (!folders[folder.parentPath].subfolders) {
@@ -1207,6 +1225,71 @@ export class DbfsResourcesState {
             files,
             resourceAction: args.resourceAction
         });
+    }
+
+    @Action(DbfsRefreshFolder)
+    refreshFolder(ctx: StateContext<DbfsResourcesModel>, {fullPath, resourceAction}: DbfsRefreshFolder) {
+        let originDetails = this.dbfsUtils.detailsByFullPath(fullPath);
+        const args = {
+            originDetails,
+            resourceAction
+        };
+
+        let topFolder: any = false;
+
+        if (originDetails.topFolder) {
+            topFolder = { type: originDetails.type };
+            topFolder.value = (topFolder.type === 'user') ? 'user.' + originDetails.typeKey : originDetails.typeKey;
+        }
+
+        return this.service.getFolderByPath(fullPath, topFolder).pipe(
+            map((payload: any) => {
+                ctx.dispatch(new DbfsRefreshFolderSuccess(payload, args));
+            }),
+            catchError(error => ctx.dispatch(new DbfsResourcesError(error, 'Refresh Folder')))
+        );
+    }
+
+
+
+    @Action(DbfsRefreshFolderSuccess)
+    refreshFolderSuccess(ctx: StateContext<DbfsResourcesModel>, { response, args }: DbfsRefreshFolderSuccess) {
+        const state = ctx.getState();
+
+        const folders = JSON.parse(JSON.stringify({ ...state.folders }));
+        const files = JSON.parse(JSON.stringify({ ...state.files }));
+
+        // get keys of folders and files that may contain the original path
+        const folderKeys = Object.keys(folders).filter(item => item.includes(args.originDetails.fullPath));
+        const fileKeys = Object.keys(files).filter(item => item.includes(args.originDetails.fullPath));
+
+        // remove from origin parent folder subfolders
+        const opfIdx = folders[args.originDetails.parentPath].subfolders.indexOf(args.originDetails.fullPath);
+        folders[args.originDetails.parentPath].subfolders.splice(opfIdx, 1);
+
+        // remove cache of children folders
+        if (folderKeys.length > 0) {
+            for (const key of folderKeys) {
+                if (folders[key]) {
+                    delete folders[key];
+                }
+            }
+        }
+
+        // remove cache of children files
+        if (fileKeys.length > 0) {
+            for (const key of fileKeys) {
+                if (files[key]) {
+                    delete files[key];
+                }
+            }
+        }
+
+        if (args.originDetails.topFolder) {
+            ctx.dispatch(new DbfsLoadTopFolderSuccess(response, args));
+        } else {
+            ctx.dispatch(new DbfsLoadSubfolderSuccess(response, args.resourceAction))
+        }
     }
 
     /* Files */

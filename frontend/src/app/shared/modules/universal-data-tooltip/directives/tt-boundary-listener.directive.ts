@@ -18,7 +18,7 @@ import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { TooltipComponentService } from '../services/tooltip-component.service';
 
 @Directive({
-    // tslint:disable-next-line: directive-selector
+    // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '[ttBoundaryListener]'
 })
 export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
