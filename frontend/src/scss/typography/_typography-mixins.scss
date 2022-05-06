@@ -1,0 +1,95 @@
+// **
+// * This file is part of OpenTSDB.
+// * Copyright (C) 2021  Yahoo.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+
+@mixin setBaseFontSize($base: 14px) {
+    @at-root {
+        html {
+            font-size: $base;
+        }
+    }
+}
+
+@mixin generate-typeface-imports($config) {
+    $family: map-get($config, family);
+    $font-path: map-get($config, path);
+    $fonts: map-get($config, fonts);
+
+    @each $font-tyle, $font-config in $fonts {
+
+        $style: map-get($font-config, style);
+        $weight: map-get($font-config, weight);
+        $local: map-get($font-config, local);
+        $local2: map-get($font-config, local2);
+        $file-prefix: map-get($font-config, file-prefix);
+        $woff-path: '#{$font-path}/#{$file-prefix}.woff';
+        $woff2-path: '#{$font-path}/#{$file-prefix}.woff2';
+
+
+        /* #{$family} - #{$weight} #{$style} */
+        @font-face {
+            font-family: $family;
+            font-style: $style;
+            font-display: swap;
+            font-weight: $weight;
+            src:
+              local('#{$local}'),
+              local('#{$local2}'),
+              url('#{$woff2-path}') format('woff2'), /* Super Modern Browsers */
+              url('#{$woff-path}') format('woff'); /* Modern Browsers */
+          }
+    }
+}
+
+@function generate-material-compatible-typography-config($config){
+
+    $font-family:   map-get($config, font-family);
+    $weight-maps:   map-get($config, fontweight-map);
+
+    $display-4:     mat-typography-level(112px, 112px, map-get($weight-maps, light));
+    $display-3:     mat-typography-level(56px, 56px, map-get($weight-maps, regular));
+    $display-2:     mat-typography-level(45px, 48px, map-get($weight-maps, regular));
+    $display-1:     mat-typography-level(34px, 40px, map-get($weight-maps, regular));
+    $headline:      mat-typography-level(24px, 32px, map-get($weight-maps, regular));
+    $title:         mat-typography-level(20px, 32px, map-get($weight-maps, medium));
+    $subheading-2:  mat-typography-level(16px, 28px, map-get($weight-maps, regular));
+    $subheading-1:  mat-typography-level(15px, 24px, map-get($weight-maps, regular));
+    $body-2:        mat-typography-level(14px, 24px, map-get($weight-maps, medium));
+    $body-1:        mat-typography-level(14px, 20px, map-get($weight-maps, regular));
+    $caption:       mat-typography-level(12px, 20px, map-get($weight-maps, regular));
+    $button:        mat-typography-level(14px, 14px, map-get($weight-maps, medium));
+
+    // Line-height must be unit-less fraction of the font-size.
+    $input:         mat-typography-level(inherit, 1.125, map-get($weight-maps, regular));
+
+
+    @return mat-typography-config(
+        $font-family,
+        $display-4,
+        $display-3,
+        $display-2,
+        $display-1,
+        $headline,
+        $title,
+        $subheading-2,
+        $subheading-1,
+        $body-2,
+        $body-1,
+        $caption,
+        $button,
+        $input
+      );
+}

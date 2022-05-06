@@ -1,0 +1,17 @@
+@mixin dbs-variables-component-theme() {
+    $bg-color: mat-color($background, background);
+
+    .dbs-variables-component {
+        .template-variable-list {
+
+            // all template items are disabled;
+            &.is-disabled {
+                .template-variable-item {
+                    .settings-control {
+                        background-color: $bg-color;
+                    }
+                }
+            }
+        }
+    }
+}

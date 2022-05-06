@@ -15,200 +15,164 @@
 // * limitations under the License.
 // *
 
-@mixin heatmap-bucket-detail-component-base() {
-    .heatmap-bucket-detail-component {
-        min-height: 100%;
+@import '~@angular/material/theming';
+@import 'typography';
+
+.heatmap-bucket-detail-component {
+    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+
+    .bucket-meta {
+        padding-left: 5px;
+        max-height: 20px;
+        min-width: 100%;
+    }
+
+    .bucket-detail {
         display: flex;
-        flex: 1;
-        flex-wrap: wrap;
+        flex: 1 1 100%;
+        flex-direction: row;
+        height: calc(100% - 20px);
 
-        .bucket-meta {
-            padding-left: 5px;
-            max-height: 20px;
-            min-width: 100%;
+        .column {
+            flex: 0 0 50%;
+            height: 100%;
         }
 
-        .bucket-detail {
-            display: flex;
-            flex: 1 1 100%;
-            flex-direction: row;
-            height: calc(100% - 20px);
+        .chartContainer {
+            position: relative;
+            overflow: overlay;
+        }
 
-            .column {
-                // display: inline-flex;
-                // flex-direction: column;
-                flex: 0 0 50%;
-                height: 100%;
-            }
-
-            .ts-data-wrapper {
-                // flex: 1;
-                //max-width: 50%;
-                // width: calc(100% - 20px);
-            }
-
+        @-moz-document url-prefix() {
             .chartContainer {
-                position: relative;
-                overflow: overlay;
-            }
-
-            @-moz-document url-prefix() {
-                .chartContainer {
-                    overflow: auto;
-                }
-            }
-
-            // .chart { }
-            .chart svg {
-                width: 100%;
+                overflow: auto;
             }
         }
 
-
-        .ts-legend-table {
-            min-width: 100%;
-
-            .mat-header-row .mat-header-cell {
-                font-size: 12px;
-                font-weight: 600;
-            }
-
-            .mat-row .mat-cell {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
-                font-size: 12px;
-            }
-
-            .mat-header-row,
-            .mat-row {
-                height: auto;
-
-                .mat-header-cell,
-                .mat-cell {
-                    &:first-child {
-                        flex: initial;
-                        max-width: 35px;
-                        width: 35px;
-                    }
-                }
-
-            }
-
-            .mat-header-row .mat-header-cell,
-            .mat-row .mat-cell {
-                padding-top: 4px;
-                padding-bottom: 4px;
-                padding-left: 4px;
-                padding-right: 4px;
-                white-space: nowrap;
-
-                &:first-of-type {
-                    padding-left: 8px;
-                }
-
-                &:last-of-type {
-                    padding-right: 8px;
-                }
-
-                // value column is right aligned
-                &.mat-column-value {
-                    text-align: right;
-                }
-            }
-
-            .mat-header-cell.mat-column-value .mat-sort-header-container {
-                justify-content: flex-end;
-            }
-
-            .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow{ opacity: 1 !important; }
-
-            .mat-cell.tag-highlight {
-                cursor: pointer;
-            }
-        }
-
-        .color-chip {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: currentColor;
-            display: inline-block;
-            margin-right: 4px;
-        }
-
-        text {
-            font-family: 'Ubuntu';
-        }
-
-        .bar {
-            fill: #dff0ff;
-            cursor: pointer;
-        }
-
-        .yaxis, .xaxis {
-            font-size: 12px;
-            font-family: ubuntu;
-            text-anchor: end;
-        }
-        .yaxis path,
-        .yaxis line,
-        .xaxis path,
-        .xaxis line, {
-            fill: none;
-            stroke: #aaa;
-        }
-        .axisLabel {
-            color: #777;
-            font-size: 12px;
-        }
-
-        .label {
-            cursor: pointer;
-            fill: #333;
-        }
-        /* tooltip */
-        .tooltip{
-            background: #eee;
-            box-shadow: 0 0 5px #999999;
-            color: #333;
-            display: none;
-            font-size: 12px;
-            padding: 5px;
-            position: absolute;
-            min-width: 100px;
-            z-index: 10;
-            top:10px;
-            left: 10px;
+        .chart svg {
+            width: 100%;
         }
     }
-}
 
-@mixin heatmap-bucket-detail-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
 
-        $cdk-window-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
+    .ts-legend-table {
+        min-width: 100%;
 
-        .heatmap-bucket-detail-component {
-            .ts-legend-toolbar {
-                color: $white;
-                background-color: $black;
+        .mat-header-row .mat-header-cell {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mat-row .mat-cell {
+            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            font-size: 12px;
+        }
+
+        .mat-header-row,
+        .mat-row {
+            height: auto;
+
+            .mat-header-cell,
+            .mat-cell {
+                &:first-child {
+                    flex: initial;
+                    max-width: 35px;
+                    width: 35px;
+                }
             }
 
-            .ts-legend-table {
-                background: $cdk-window-bg;
+        }
 
-                .mat-sort-header-container.mat-sort-header-sorted {
-                    color: #c09853; // TODO: plug into theme
+        .mat-header-row .mat-header-cell,
+        .mat-row .mat-cell {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-left: 4px;
+            padding-right: 4px;
+            white-space: nowrap;
 
-                    .mat-sort-header-arrow {
-                        color: darken(#c09853, 15%); // TODO: plug into theme
-                    }
-                }
+            &:first-of-type {
+                padding-left: 8px;
+            }
 
-                .mat-row:hover {
-                    background-color: mat-color($primary, default, .15);
-                }
+            &:last-of-type {
+                padding-right: 8px;
+            }
 
+            // value column is right aligned
+            &.mat-column-value {
+                text-align: right;
             }
         }
+
+        .mat-header-cell.mat-column-value .mat-sort-header-container {
+            justify-content: flex-end;
+        }
+
+        .mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow{ opacity: 1 !important; }
+
+        .mat-cell.tag-highlight {
+            cursor: pointer;
+        }
+    }
+
+    .color-chip {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: currentColor;
+        display: inline-block;
+        margin-right: 4px;
+    }
+
+    text {
+        font-family: 'Ubuntu';
+    }
+
+    .bar {
+        fill: #dff0ff;
+        cursor: pointer;
+    }
+
+    .yaxis, .xaxis {
+        font-size: 12px;
+        font-family: ubuntu;
+        text-anchor: end;
+    }
+
+    .yaxis path,
+    .yaxis line,
+    .xaxis path,
+    .xaxis line {
+        fill: none;
+        stroke: #aaa;
+    }
+
+    .axisLabel {
+        color: #777;
+        font-size: 12px;
+    }
+
+    .label {
+        cursor: pointer;
+        fill: #333;
+    }
+
+    /* tooltip */
+    .tooltip{
+        background: #eee;
+        box-shadow: 0 0 5px #999999;
+        color: #333;
+        display: none;
+        font-size: 12px;
+        padding: 5px;
+        position: absolute;
+        min-width: 100px;
+        z-index: 10;
+        top:10px;
+        left: 10px;
     }
 }

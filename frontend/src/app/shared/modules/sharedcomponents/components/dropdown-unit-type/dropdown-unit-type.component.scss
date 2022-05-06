@@ -15,18 +15,17 @@
 // * limitations under the License.
 // *
 
-@mixin dropdown-unit-type-component-base() {
-    .dropdown-unit-type {
-        @include mat-input-as-dropdown();
+@import 'mixins';
 
-        .mat-select-arrow-wrapper {
-            cursor: pointer;
-        }
+.dropdown-unit-type {
+    @include mat-input-as-dropdown();
+
+    .mat-select-arrow-wrapper {
+        cursor: pointer;
     }
 }
 
-@mixin dropdown-unit-type-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // styles here
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+// styles here
+//}

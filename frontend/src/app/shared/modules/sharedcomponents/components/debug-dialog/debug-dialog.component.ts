@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-debug-dialog',
   templateUrl: './debug-dialog.component.html',
   styleUrls: ['./debug-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DebugDialogComponent implements OnInit {
     log: any;
@@ -30,8 +31,8 @@ export class DebugDialogComponent implements OnInit {
         public dialogRef: MatDialogRef<DebugDialogComponent>,
         private domSanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) public dialogData: any
-    ) { 
-      
+    ) {
+
       this.log = '<table>';
       var i = 0;
       dialogData.log.forEach(element => {
@@ -50,13 +51,13 @@ export class DebugDialogComponent implements OnInit {
     ngOnInit() {
     }
 
-    copyText() { 
+    copyText() {
       let listener = (e: ClipboardEvent) => {
         let clipboard = e.clipboardData || window["clipboardData"];
         clipboard.setData("text", JSON.stringify(this.dialogData));
         e.preventDefault();
       };
-  
+
       document.addEventListener("copy", listener, false)
       document.execCommand("copy");
       document.removeEventListener("copy", listener, false);

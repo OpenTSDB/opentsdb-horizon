@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { MatMenu, MatMenuTrigger } from '@angular/material';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'theme-picker',
     templateUrl: './theme-picker.component.html',
-    styleUrls: []
+    styleUrls: ['./theme-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ThemePickerComponent implements OnInit {
 
     @HostBinding('class.nav-theme-picker') private _hostClass = true;
 
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+    @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
 
     @Output() themeChange = new EventEmitter<string>();
 

@@ -1,0 +1,7 @@
+@import './components/clipboard-drawer/clipboard-drawer.theme';
+@import './components/navbar-clipboard-menu/navbar-clipboard-menu.theme';
+
+@mixin universal-clipboard-module-theme() {
+    @include clipboard-drawer-component-theme();
+    @include navbar-clipboard-menu-component-theme();
+}

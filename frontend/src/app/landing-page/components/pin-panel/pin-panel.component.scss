@@ -19,9 +19,7 @@
 // * PIN PANEL COMPONENT
 // *
 
- @import 'loader-base';
-
-:host.pin-panel {
+.pin-panel {
     display: flex;
     flex-direction: column;
 
@@ -55,12 +53,4 @@
             }
         }
     }
-}
-
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    //:host.pin-panel { }
-
 }

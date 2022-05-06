@@ -1,0 +1,66 @@
+@mixin big-number-visual-appearance-component-theme() {
+
+    $chip-bg: mat-color($primary, default, .1);
+
+    $input-background: mat-color($primary, default);
+
+    .big-number-visual-appearance {
+
+        .is-selected {
+            background-color: white;
+            border-left: 3px solid #18BDED;
+        }
+
+        .labels-container {
+
+            .mat-button-toggle-group {
+                .mat-button-toggle {
+                    background-color: mat-color($primary, default, 0.08);
+                }
+
+                .mat-button-toggle-checked {
+                    background-color: mat-color($primary, default, 0.18);
+                }
+
+                .mat-button-toggle-disabled {
+                    background-color: mat-color($primary, default, 0.08);
+
+                    &.mat-button-toggle-checked {
+                        background-color: mat-color($primary, default, 0.14);
+                    }
+                }
+            }
+        }
+
+        .color-container {
+            .mat-button-toggle {
+                border-bottom: 2px solid transparent;
+                background-color: transparent;
+                color: #18BDED;
+                box-shadow: none;
+            }
+
+            .mat-button-toggle-checked {
+                border-bottom: 2px solid  #18BDED;
+                color: black;
+            }
+
+            .color-picker-container {
+                border: 1px solid lightgrey;
+            }
+
+            .card {
+                border-top: none;
+            }
+        }
+    }
+
+    // CDK menu for custom unit
+    .custom-unit-menu-item {
+        background-color: $chip-bg;
+
+        .mat-menu-ripple {
+            background-color: $chip-bg;
+        }
+    }
+}

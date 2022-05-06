@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, ChangeDetectorRef,
-    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit
+    Input, OnDestroy, ViewChild, ElementRef, AfterViewInit, ViewEncapsulation
 } from '@angular/core';
 
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
@@ -25,7 +25,7 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { debounceTime } from 'rxjs/operators';
@@ -33,10 +33,11 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'donut-widget',
     templateUrl: './donut-widget.component.html',
-    styleUrls: ['./donut-widget.component.scss']
+    styleUrls: ['./donut-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -45,10 +46,11 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
 
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('container') private container: ElementRef;
-    @ViewChild('chartLegend') private chartLegend: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('container', { static: true }) private container: ElementRef;
+    @ViewChild('chartLegend', { static: true }) private chartLegend: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;
@@ -143,7 +145,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                                 this.widget.settings.time.zoomTime = message.payload.date;
                                 this.refreshData();
                             }
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                         } else if ((message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed)) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.refreshData();
@@ -269,7 +271,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         const heightMod = 0.55;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : newSize.height + 60;
 
@@ -424,7 +426,7 @@ export class DonutWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setVisualization(qIndex, mconfigs) {
         mconfigs.forEach((config, i) => {
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             this.widget.queries[qIndex].metrics[i].settings.visual = { ...this.widget.queries[qIndex].metrics[i].settings.visual, ...config };
         });
     }

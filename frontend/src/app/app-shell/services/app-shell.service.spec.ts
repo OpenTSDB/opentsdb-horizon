@@ -22,7 +22,7 @@ describe('AppShellService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: AppShellService = TestBed.get(AppShellService);
+    const service: AppShellService = TestBed.inject(AppShellService);
     expect(service).toBeTruthy();
   });
 });

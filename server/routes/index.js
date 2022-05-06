@@ -22,6 +22,7 @@ router.get("/login", function (req, res) {
 });
 
 router.get("/heartbeat", function (req, res) {
+  res.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
   res.status(200).json({"status":"ok"});
 });
 

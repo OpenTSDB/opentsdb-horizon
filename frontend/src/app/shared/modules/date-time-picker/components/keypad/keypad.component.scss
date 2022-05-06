@@ -15,35 +15,20 @@
 // * limitations under the License.
 // *
 
-@mixin keypad-component-base() {
+.dtp-keypad {
 
-    .dtp-keypad {
+    .mat-button {
 
-        .mat-button {
-
-            min-width: 0px;
-            padding-left: 10px;
-            padding-right: 10px;
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
-
-        mat-grid-list {
-            display:flex;
-            justify-content:center;
-        }
+        min-width: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 0px;
+        padding-bottom: 0px;
     }
-    // CDK ITEMS HERE
-}
 
-@mixin keypad-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        .dtp-keypad {
-            .mat-button {
-                background-color: map-get($background, default);
-                //   color: map-get($primary, default-invert);
-            }
-        }
+    mat-grid-list {
+        display:flex;
+        justify-content:center;
     }
+
 }

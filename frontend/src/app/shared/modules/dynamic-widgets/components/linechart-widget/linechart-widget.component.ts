@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, HostBinding, Input, EventEmitter,
-    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output
+    OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChildren, QueryList, Output, ViewEncapsulation
 } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
@@ -27,7 +27,7 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
 import { Subscription, Observable } from 'rxjs';
 import { WidgetModel, Axis } from '../../../../../dashboard/state/widgets.state';
 import { IDygraphOptions } from '../../../dygraphs/IDygraphOptions';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { BehaviorSubject } from 'rxjs';
@@ -39,12 +39,12 @@ import { AppConfigService } from '../../../../../core/services/config.service';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
 import { ThemeService } from '../../../theme/services/theme.service';
 import { ComponentPortal } from '@angular/cdk/portal';
-
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'linechart-widget',
     templateUrl: './linechart-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./linechart-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -53,16 +53,17 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     @Input() widget: WidgetModel;
     @Input() mode = 'view'; // view/explore/edit
+    @Input() readonly = true;
     @Output() widgetOut = new EventEmitter<any>();
 
-    @ViewChild('widgetOutputContainer') private widgetOutputContainer: ElementRef;
+    @ViewChild('widgetOutputContainer', { static: true }) private widgetOutputContainer: ElementRef;
     @ViewChild('widgetTitle') private widgetTitle: ElementRef;
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
-    @ViewChild('graphLegend') private dygraphLegend: ElementRef;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('graphLegend', { static: true }) private dygraphLegend: ElementRef;
     @ViewChild('dygraph') private dygraph: ElementRef;
     @ViewChild(MatSort) sort: MatSort;
 
-    @ViewChild('multigraphContainer', { read: ElementRef }) multigraphContainer: ElementRef;
+    @ViewChild('multigraphContainer', { read: ElementRef, static: true }) multigraphContainer: ElementRef;
     @ViewChild('multigraphHeaderRow', { read: ElementRef }) multigraphHeaderRow: ElementRef;
 
     @ViewChildren('graphLegend', { read: ElementRef }) graphLegends: QueryList<ElementRef>;
@@ -160,7 +161,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     multigraphColumns: string[] = [];
     freeflowBreak = 1;
     graphData: any = {}; // { y: { x: { ts: [[0]] }}};
-    graphRowLabelMarginLeft: 0;
+    graphRowLabelMarginLeft = 0;
+
+    multigraphContainerMinWidth: any = 'initial';
 
     // TIMESERIES LEGEND
     // tsHighlightData: any = {};
@@ -185,7 +188,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
     eventsCount = 10000;
     eventsLoading: boolean = false;
     axisLabelsWidth = 55;
-    // tslint:disable-next-line: max-line-length
+    // eslint-disable-next-line max-len
     visibleSections: any = { 'queries': true, 'time': false, 'axes': false, 'legend': false, 'multigraph': false, 'events': false };
     formErrors: any = {};
     eventsError = '';
@@ -244,7 +247,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             };
             this.options.theme = themeType;
             this.cdRef.markForCheck();
-            this.refreshData(false);
+            if ( this.isDataLoaded ) {
+                this.refreshData(false);
+            }
         }));
 
         // subscribe to event stream
@@ -288,7 +293,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 this.resetYZoom();
                                 this.refreshData();
                             }
-                            // tslint:disable-next-line: max-line-length
+                            // eslint-disable-next-line max-len
                         } else if ((message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed)) {
                             this.options.isCustomZoomed = message.payload.date.isZoomed;
                             this.resetYZoom();
@@ -506,7 +511,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 }
                                 // this is for initial load before scroll event on widget
                                 this.applyMultiLazyLoad();
-                            });
+                            }, 200);
                         }
                         break;
                     case 'getUpdatedWidgetConfig':
@@ -562,10 +567,10 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             // override selections
             this.options.visibilityHash = chartOptions && chartOptions.visbilityHash ? chartOptions.visbilityHash : {};
             this.options.initZoom = { y: {}, y2: {} };
-            // tslint:disable-next-line: max-line-length
+            // eslint-disable-next-line max-len
             this.options.initZoom.y = chartOptions.axes && chartOptions.axes.y ? { ...this.options.axes.y, valueRange: chartOptions.axes.y } : null;
-            // tslint:disable-next-line: max-line-length
-            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? { ...this.options.axes.y2, valueRange: chartOptions.axes.y } : null;
+            // eslint-disable-next-line max-len
+            this.options.initZoom.y2 = chartOptions.axes && chartOptions.axes.y2 ? { ...this.options.axes.y2, valueRange: chartOptions.axes.y2 } : null;
         }
     }
 
@@ -601,7 +606,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
         const series = this.options.series;
         const table = [];
         this.legendDisplayColumns = ['color'].concat(this.widget.settings.legend.columns || []).concat(['name']);
-        // tslint:disable-next-line: forin
+        // eslint-disable-next-line guard-for-in
         for (const index in series) {
             let config;
             if (series.hasOwnProperty(index)) {
@@ -723,7 +728,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
                 let mids = [];
                 if (message.payload.visual.axis && (curtype === 'line')) {
-                    // tslint:disable-next-line: max-line-length
+                    // eslint-disable-next-line max-len
                     mids = this.widget.queries[qindex].metrics.filter(d => ['area', 'bar'].includes(d.settings.visual.type)).map(d => d.id);
                 }
                 this.utilService.updateQueryVisual(this.widget, message.id, message.payload.mid, message.payload.visual, mids);
@@ -838,7 +843,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
         const newSize = nativeEl.getBoundingClientRect();
         const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
             : this.widgetOutputElement.nativeElement.getBoundingClientRect().height + 70;
         // let newSize = outputSize;
@@ -897,7 +902,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             const multigraphSettings = this.widget.settings.multigraph;
 
             if (this.multigraphMode === 'freeflow') {
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.freeflowBreak = (multigraphSettings.gridOptions.viewportDisplay === 'custom') ? multigraphSettings.gridOptions.custom.y : 3;
             }
 
@@ -1018,11 +1023,11 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             const chartAxisID = axisKeys[i] === 'y1' ? 'y' : axisKeys[i] === 'y2' ? 'y2' : 'x';
             const axis = this.options.axes[chartAxisID];
             axis.valueRange = [null, null];
-            if (!isNaN(parseFloat(config.min))) {
+            if (!isNaN(parseFloat(config.min)) && ( config.scale !== 'logscale' || config.min !== '0') ) {
                 axis.valueRange[0] = config.min;
             }
             const max = parseFloat(config.max);
-            if (!isNaN(max)) {
+            if (!isNaN(max) && ( config.scale !== 'logscale' || config.max !== '0') ) {
                 axis.valueRange[1] = max + max * 0.0001;
             }
 
@@ -1165,7 +1170,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             }
         }
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if ((visual.type && ['bar', 'area'].includes(visual.type) && !isMetricMultiGraph) || visual.stacked || (curtype !== 'line' && visual.axis)) {
             if (visual.type === 'bar') {
                 visual.stacked = 'true';
@@ -1173,7 +1178,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             for (let i = 0; i < this.widget.queries.length; i++) {
                 for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
                     if (['area', 'bar'].includes(this.widget.queries[i].metrics[j].settings.visual.type)) {
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         this.widget.queries[i].metrics[j].settings.visual = { ...this.widget.queries[i].metrics[j].settings.visual, ...visual };
                     }
                 }
@@ -1210,7 +1215,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'getEventData',
-                payload: { eventQueries: this.widget.eventQueries, settings: this.widget.settings, limit: this.eventsCount }
+                payload: { eventQueries: this.utilService.deepClone(this.widget.eventQueries), settings: this.widget.settings, limit: this.eventsCount }
             });
         }
     }
@@ -1226,9 +1231,9 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
 
     setEventQuerySearch(search: string) {
         // todo: set correctly
-        const deepClone = JSON.parse(JSON.stringify(this.widget));
-        deepClone.eventQueries[0].search = search;
-        this.widget.eventQueries = [...deepClone.eventQueries];
+        // const deepClone = JSON.parse(JSON.stringify(this.widget));
+        // deepClone.eventQueries[0].search = search;
+        this.widget.eventQueries[0].search = search;
         this.getEvents();
     }
 
@@ -1372,7 +1377,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             // IF NOT OPEN, OPEN IT
 
             const islandTitle = this.widget.eventQueries[0].search ?
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 this.getEventCountInBuckets() + ' Events: ' + this.widget.eventQueries[0].namespace + ' - ' + this.widget.eventQueries[0].search :
                 this.getEventCountInBuckets() + ' Events: ' + this.widget.eventQueries[0].namespace;
 
@@ -1655,7 +1660,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                 }
             };
             if (multigraph) {
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 payload.options.overlayRefEl = (this.multigraphContainer.nativeElement).querySelector('.graph-cell-' + yIndex + '-' + xIndex);
             }
             // this goes to widgetLoader
@@ -1671,13 +1676,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                     originId: this.widget.id,
                     data: payload.data
                 };
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 const compRef = this.iiService.getComponentToLoad(payload.portalDef.name);
                 const componentOrTemplateRef = new ComponentPortal(compRef, null, this.iiService.createInjector(dataToInject));
                 const pos = this.elRef.nativeElement.getBoundingClientRect();
                 const heightMod = this.mode === 'edit' ? 0.6 : 0.7;
                 const height = pos.height * (1 - heightMod) - 5;
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 this.iiService.openIsland(this.widgetOutputContainer.nativeElement, componentOrTemplateRef, {
                     ...widgetOptions, draggable: true,
                     originId: this.widget.id,
@@ -1723,6 +1728,13 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
             return false;
         });
         this.inViewport = { ...temp };
+
+        if (this.displayMultigraph && this.multigraphMode === 'grid' && this.multigraphColumns.length > 0) {
+            this.multigraphContainerMinWidth = ((this.size.width * this.multigraphColumns.length) - 6);
+        } else {
+            this.multigraphContainerMinWidth = 'initial';
+        }
+
         this.cdRef.detectChanges();
     }
 

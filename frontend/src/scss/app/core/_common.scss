@@ -1,0 +1,24 @@
+// html,
+body {
+    @include mat-typography-level-to-styles(
+        map-get($app-fontface-config, sans),
+        body-1
+    );
+}
+
+// IMAGE PRELOADING
+:root:before {
+    content: url(/assets/widget-icon-sprite.png);
+    /* partial fallback */
+    // background-image: url(/assets/spinner-26x26.gif);
+    visibility: hidden;
+    position: absolute;
+    left: -999em;
+}
+
+// * THEME VARIANTS
+@include init-component-variants() {
+    &.mat-app-background {
+        background-color: mat-color($background, background);
+    }
+}

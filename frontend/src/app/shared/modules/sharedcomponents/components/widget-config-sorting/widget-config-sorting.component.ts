@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
 import { FormGroup , FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl} from '@angular/forms';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'widget-config-sorting',
   templateUrl: './widget-config-sorting.component.html',
-  styleUrls: ['./widget-config-sorting.component.scss']
+  styleUrls: ['./widget-config-sorting.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetConfigSortingComponent implements OnInit {
 
-  @HostBinding('class') private _hostClass = true;
+  @HostBinding('class.widget-config-sorting') private _hostClass = true;
 
   /** Inputs */
   @Input() widget: any;
@@ -57,7 +58,7 @@ export class WidgetConfigSortingComponent implements OnInit {
       this.limitForm.setValue( {limitInput: this.limit});
     }
 
-    this.decimals = this.widget.settings.visual.decimals !== undefined ? this.widget.settings.visual.decimals : 2; 
+    this.decimals = this.widget.settings.visual.decimals !== undefined ? this.widget.settings.visual.decimals : 2;
 }
 
   // convenience getter for easy access to form fields

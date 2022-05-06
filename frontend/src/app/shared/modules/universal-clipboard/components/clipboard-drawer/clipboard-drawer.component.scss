@@ -15,12 +15,14 @@
 // * limitations under the License.
 // *
 
-@import "loader-base";
+@import '~@angular/material/theming';
+@import 'config';
+@import 'mixins';
 
 $navbar-height: map-get($navbar-config, "navbar-height");
 $logo-height: map-get($navbar-config, "logo-height");
 
-:host.clipboard-drawer {
+.clipboard-drawer {
     @include mat-elevation(3);
     overflow: hidden;
     position: relative;
@@ -66,16 +68,14 @@ $logo-height: map-get($navbar-config, "logo-height");
             justify-content: center;
         }
 
-        ::ng-deep {
-            .mat-toolbar-row {
-                padding: 0;
-            }
+        .mat-toolbar-row {
+            padding: 0;
+        }
 
-            &.mat-toolbar-multiple-rows,
-            &.mat-toolbar-single-row {
-                min-height: $navbar-height !important;
-                height: $navbar-height;
-            }
+        &.mat-toolbar-multiple-rows,
+        &.mat-toolbar-single-row {
+            min-height: $navbar-height !important;
+            height: $navbar-height;
         }
     }
 
@@ -86,16 +86,14 @@ $logo-height: map-get($navbar-config, "logo-height");
         .mat-form-field {
             width: 100%;
 
-            ::ng-deep {
-                .mat-form-field-wrapper {
-                    padding-bottom: 0;
-                }
-
-                .mat-form-field-underline {
-                    top: 100%;
-                }
+            .mat-form-field-wrapper {
+                padding-bottom: 0;
             }
-        }
+
+            .mat-form-field-underline {
+                top: 100%;
+            }
+    }
     }
 
     .mat-icon {
@@ -111,23 +109,21 @@ $logo-height: map-get($navbar-config, "logo-height");
         width: 24px;
         height: 24px;
 
-        ::ng-deep {
-            .mat-button-wrapper {
-                line-height: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        .mat-button-wrapper {
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-            .mat-icon {
-                line-height: 1;
-                width: 24px;
-                height: 24px;
-                font-size: 18px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        .mat-icon {
+            line-height: 1;
+            width: 24px;
+            height: 24px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 
@@ -183,7 +179,7 @@ $logo-height: map-get($navbar-config, "logo-height");
         .input-control .mat-form-field {
             width: 100%;
 
-            ::ng-deep .mat-form-field-subscript-wrapper {
+            .mat-form-field-subscript-wrapper {
                 top: 100%;
             }
         }
@@ -202,7 +198,7 @@ $logo-height: map-get($navbar-config, "logo-height");
             border-bottom-left-radius: 0;
         }
 
-        ::ng-deep .mat-expansion-panel-header {
+        .mat-expansion-panel-header {
             padding: 0 6px;
 
             .mat-content {
@@ -231,7 +227,7 @@ $logo-height: map-get($navbar-config, "logo-height");
             }
         }
 
-        ::ng-deep .mat-expansion-panel-content {
+        .mat-expansion-panel-content {
             .mat-expansion-panel-body {
                 // padding: 0 12px 6px;
                 padding: 0;
@@ -267,7 +263,7 @@ $logo-height: map-get($navbar-config, "logo-height");
             }
         }
 
-        ::ng-deep .mat-expansion-panel-header-title {
+        .mat-expansion-panel-header-title {
             margin-right: 0;
 
             .item-select-control,
@@ -346,211 +342,54 @@ $logo-height: map-get($navbar-config, "logo-height");
 }
 
 // CDK ITEMS (these are at document root level)
-@at-root ::ng-deep {
-    .confirmation-menu.mat-menu-panel {
-        .mat-menu-content,
-        .confirmation-card.mat-card {
-            padding: 0;
-            font-size: 12px;
-            font-weight: 300;
-        }
 
-        .confirmation-card.mat-card {
-            .mat-card-content {
-                padding: 16px;
-                margin: 0;
-            }
-
-            .mat-card-actions {
-                padding: 0;
-                margin: 0;
-                display: flex;
-
-                .mat-button {
-                    flex: 1;
-                    border-radius: 0;
-                    margin: 0;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(12px);
-                    margin-right: 6px;
-                }
-            }
-        }
+.confirmation-menu.mat-menu-panel {
+    .mat-menu-content,
+    .confirmation-card.mat-card {
+        padding: 0;
+        font-size: 12px;
+        font-weight: 300;
     }
 
-    .clipboard-action-menu,
-    .clipboard-item-action-menu {
-        .mat-menu-content:not(:empty) {
-            padding: 8px;
+    .confirmation-card.mat-card {
+        .mat-card-content {
+            padding: 16px;
+            margin: 0;
         }
 
-        .mat-menu-item {
-            font-size: 12px;
-            font-weight: 300;
-            height: 24px;
-            line-height: 24px;
+        .mat-card-actions {
+            padding: 0;
+            margin: 0;
+            display: flex;
+
+            .mat-button {
+                flex: 1;
+                border-radius: 0;
+                margin: 0;
+            }
 
             .mat-icon {
                 @include sizeDenaliIcon(12px);
+                margin-right: 6px;
             }
         }
     }
 }
 
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    $cssVarMap: get-theme-css-variables($theme-name);
-
-    /* navbar config */
-    // TODO: need to get this navbar config into theme somehow
-    $sn-light: map-get($navbar-config, sn-light);
-    $sn-dark: map-get($navbar-config, sn-dark);
-    $sn-light-text: map-get($navbar-config, sn-light-text);
-    $sn-dark-text: map-get($navbar-config, sn-dark-text);
-    $sn-seperator: map-get($navbar-config, sn-seperator);
-    $sn-active: map-get($navbar-config, sn-active);
-
-    $menu-background: mat-color($background, card);
-    $menu-background-raw-value: _mat-convert-variable-to-color(map-get($background, card), $cssVarMap);
-    $menu-background-hover: find-color-invert($menu-background-raw-value);
-
-    $link: mat-color($foreground, link);
-    $link-raw-value: _mat-convert-variable-to-color(map-get($foreground, link), $cssVarMap);
-    $link-inverse: find-color-invert($link-raw-value);
-
-    :host.clipboard-drawer {
-        background: mat-color($background, card);
-
-        .progress-indicator {
-            color: rgba($white, 0.85);
-            background: mat-color($other, status-success);
-            border-bottom: 1px solid mat-color($foreground, divider);
-            border-top: 1px solid mat-color($foreground, divider);
-        }
-
-        .clipboard-header.mat-toolbar {
-            // background: mat-color($background, navbar, .5);
-            border-bottom: 1px solid mat-color($foreground, divider, 0.07);
-            color: if(
-                $is-dark,
-                mat-color($foreground, navbar-text),
-                mat-color($background, navbar)
-            );
-
-            .nav-item.icon-nav {
-                background: if(
-                    $is-dark,
-                    mat-color($background, navbar, 0.5),
-                    mat-color($background, navbar, 0.1)
-                );
-            }
-
-            .nav-item.icon-nav:not(:last-child) {
-                border-right: 1px solid mat-color($foreground, divider, 0.07);
-            }
-
-            .nav-item:hover {
-                background: if(
-                    $is-dark,
-                    mat-color($background, navbar, 0.1),
-                    mat-color($background, navbar, 0.2)
-                );
-                cursor: pointer;
-            }
-
-            .nav-item.icon-nav.is-active {
-                background: transparent;
-                color: if(
-                    $is-dark,
-                    mat-color($foreground, navbar-text),
-                    mat-color($background, navbar)
-                );
-            }
-
-            &.is-master-panel {
-                .header-label {
-                    color: mat-color($background, navbar, 0.85);
-                }
-            }
-        }
-
-        .clipboard-item-list {
-            border-top: 1px solid mat-color($foreground, divider);
-        }
-
-        .clipboard-item.mat-expansion-panel {
-            ::ng-deep .mat-expansion-panel-header {
-                .clipboard-item-menu-trigger {
-                    background: rgba($black, 0.1);
-                }
-            }
-        }
+.clipboard-action-menu,
+.clipboard-item-action-menu {
+    .mat-menu-content:not(:empty) {
+        padding: 8px;
     }
 
+    .mat-menu-item {
+        font-size: 12px;
+        font-weight: 300;
+        height: 24px;
+        line-height: 24px;
 
-    // cdk items
-    ::ng-deep {
-        .confirmation-menu.mat-menu-panel {
-            .confirmation-card.mat-card {
-                box-shadow: none;
-
-                .mat-card-actions {
-                    border-top: 1px solid mat-color($foreground, divider);
-
-                    .mat-button:not(:last-child) {
-                        border-right: 1px solid mat-color($foreground, divider);
-                    }
-
-                    .mat-button.confirm-button {
-                        .mat-icon {
-                            color: mat-color($other, status-success);
-                        }
-                    }
-
-                    .mat-button.cancel-button {
-                        .mat-icon {
-                            color: mat-color($other, status-error);
-                        }
-                    }
-                }
-            }
-        }
-
-        .clipboard-action-menu,
-        .clipboard-item-action-menu {
-            background-color: if(
-                $is-dark,
-                lighten($menu-background-raw-value, 15%),
-                $menu-background
-            );
-            border: 1px solid mat-color($background, navbar, 0.15);
-
-            .mat-menu-item {
-                color: if(
-                    $is-dark,
-                    mat-color($foreground, navbar-text, .85),
-                    mat-color($background, navbar, .85)
-                );
-
-                .mat-icon {
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, navbar-text, 0.5),
-                        mat-color($background, navbar, 0.5)
-                    );
-                }
-
-                &:hover {
-                    background-color: if(
-                        $is-dark,
-                        rgba($menu-background-hover, 0.12),
-                        rgba($menu-background-hover, 0.08)
-                    );
-                }
-            }
+        .mat-icon {
+            @include sizeDenaliIcon(12px);
         }
     }
 }

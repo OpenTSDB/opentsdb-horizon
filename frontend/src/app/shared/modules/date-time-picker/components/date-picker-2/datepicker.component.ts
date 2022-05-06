@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, ElementRef, ViewChild, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
@@ -22,14 +22,15 @@ import { FormBuilder, ValidatorFn, AbstractControl, FormControl} from '@angular/
 import { HostBinding } from '@angular/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'datepicker2',
     templateUrl: 'datepicker.component.html',
     styleUrls: ['datepicker.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DatepickerComponent implements OnInit, OnChanges {
-    // tslint:disable:no-inferrable-types
-    // tslint:disable:no-output-on-prefix
+    /* eslint-disable @typescript-eslint/no-inferrable-types */
+    /* eslint-disable @angular-eslint/no-output-on-prefix */
     @Input('date')
     set date(value: string) {
         this._date = value.trim();
@@ -82,7 +83,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
     shouldUpdateTimestamp: boolean = true;
     calendarButtonEntered = false;
 
-    @ViewChild('dateInput') el: ElementRef;
+    @ViewChild('dateInput', { static: true }) el: ElementRef;
 
     constructor(private utilsService: DateUtilsService, private formBuilder: FormBuilder) {
         this.dayNames = [];
@@ -160,9 +161,9 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     toggleDisplay() {
         if (!this.displayDayCalendar) { // toggling to month view
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const diff: Number = Number(this.monthCalendarTitle) - this.utilsService.timeToMoment(this.tempUnixTimestamp.toString(), this.timezone).year();
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const tempUnix: Number = this.utilsService.timeToMoment(this.tempUnixTimestamp.toString(), this.timezone).add(Number(diff), 'year').unix();
             const tempMoment: Moment = this.utilsService.timeToMoment(tempUnix.toString(), this.timezone);
 
@@ -234,13 +235,13 @@ export class DatepickerComponent implements OnInit, OnChanges {
                     isFuture: (Number(_moment.format('YYYYMMDD'))) > now,
                     isToday: (Number(_moment.format('YYYYMMDD'))) === now,
                     enabled:
-                        // tslint:disable-next-line:max-line-length
+                        // eslint-disable-next-line max-len
                         ( this.options.enableFuture || (Number(_moment.format('YYYYMMDD')) <= now) && Number(_moment.format('YYYYMMDD')) > 20010909),
                     selected: Number(_moment.format('YYYYMMDD')) === selected && this.isDateValid,
                     currentMonth : true
                 });
             } else if (i > moment(date).endOf('M').date()) { // next month
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 _moment = moment(nextMonth.year().toString() + '-' + (nextMonth.month() + 1).toString() + '-' + (i - date.endOf('M').date()).toString(), 'YYYY-M-D');
                 this.weeks[week.toString()].push({
                     day: i - date.endOf('M').date(),
@@ -253,7 +254,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
                     currentMonth : false
                 });
             } else { // last month
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 _moment = moment(lastMonth.year().toString() + '-' + (lastMonth.month() + 1).toString() + '-' + (lastMonth.endOf('M').date() - (0 - i)).toString(), 'YYYY-M-D');
                 this.weeks[week.toString()].push({
                     day: lastMonth.endOf('M').date() - (0 - i),
@@ -292,7 +293,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
                 text: startOfYear.format('MMMM'),
                 isCurrentMonth: now === Number(startOfYear.format('YYYYMM')),
                 isDisabled: Number(startOfYear.format('YYYYMM')) > now || Number(startOfYear.format('YYYYMM')) < 200110,
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 isSelected: Number(this.utilsService.timeToMoment(this.unixTimestamp.toString(), this.timezone).format('YYYYMM')) ===  Number(startOfYear.format('YYYYMM')),
             });
 
@@ -346,7 +347,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     prev(): void {
         if (this.displayDayCalendar) { // month
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const tempDate: Moment = this.utilsService.timeToMoment(moment.unix(Number(this.tempUnixTimestamp)).subtract(1, 'M').unix().toString(), this.timezone);
             if (tempDate) {
                 this.tempUnixTimestamp = tempDate.unix();
@@ -354,7 +355,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
             }
 
         } else { // year
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const tempDate: Moment = this.utilsService.timeToMoment(moment.unix(Number(this.tempUnixTimestamp)).subtract(1, 'year').unix().toString(), this.timezone);
             if (tempDate) {
                 this.generateYearCalendar(tempDate);
@@ -365,7 +366,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     next(): void {
         if (this.displayDayCalendar) { // month
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const tempDate: Moment = this.utilsService.timeToMoment(moment.unix(Number(this.tempUnixTimestamp)).add(1, 'M').unix().toString(), this.timezone);
 
             if (tempDate) {
@@ -374,7 +375,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
             }
 
         } else { // year
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             const tempDate: Moment = this.utilsService.timeToMoment(moment.unix(Number(this.tempUnixTimestamp)).add(1, 'year').unix().toString(), this.timezone);
             if (tempDate) {
                 this.generateYearCalendar(tempDate);
@@ -404,7 +405,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
     }
 
     monthSelected(monthIndex: string) { // 0 represents Jan
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const monthMoment = moment(this.monthCalendarTitle.toString() + '-' + (monthIndex + 1).toString() + '-' + '1'.toString(), 'YYYY-M-D');
         this.toggleDisplay();
         this.tempUnixTimestamp = monthMoment.unix();

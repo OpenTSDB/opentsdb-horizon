@@ -15,203 +15,121 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
+@import '~@angular/material/theming';
 
-@mixin big-number-visual-appearance-component-base() {
+.big-number-visual-appearance {
+    //margin-left: 0px;
 
-    .big-number-visual-appearance {
-        //margin-left: 0px;
+    &.has-columns .column {
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
 
-        &.has-columns .column {
+        // column title/label
+        .mat-body-strong {
+            //border-bottom: 1px solid black;
+            margin-bottom: 8px;
+        }
+
+        // individual columns - specific width
+        &.labels-container {
+            flex: 1 1 calc(100% - 10px);
+            margin-right: 30px;
+        }
+
+        &.color-container {
+            margin-right: 5px;
+            // flex: 1 0 calc(20% - 10px);
+        }
+    }
+
+    .labels-container {
+
+        .config-control {
             display: flex;
-            flex-direction: column;
-            padding-left: 10px;
+            justify-content: center;
+            align-items: center;
 
-            // column title/label
-            .mat-body-strong {
-                //border-bottom: 1px solid black;
-                margin-bottom: 8px;
+            > .mat-label {
+                width: 150px;
+                display: inline-flex;
+                line-height: 24px;
             }
 
-            // individual columns - specific width
-            &.labels-container {
-                flex: 1 1 calc(100% - 10px);
-                margin-right: 30px;
-            }
-
-            &.color-container {
-                margin-right: 5px;
-                // flex: 1 0 calc(20% - 10px);
-            }
-
-            // &.options-container {
-            //     flex: 1 0 calc(20% - 10px);
-            // }
-        }
-
-        .labels-container {
-
-            .config-control {
+            dropdown-unit-type  {
                 display: flex;
-                justify-content: center;
-                align-items: center;
-
-                > .mat-label {
-                    width: 150px;
-                    display: inline-flex;
-                    line-height: 24px;
-                }
-
-                dropdown-unit-type  {
-                    display: flex;
-                }
-
-                .mat-form-field {
-                    flex: 1;
-                    max-width: 180px;
-
-                    &.has-right-items {
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-
-                    .mat-form-field-infix {
-                        //display: flex;
-                        //padding: 0 0 0 8px;
-                    }
-
-                    .mat-input-element {
-                        flex: 1;
-                    }
-                }
-
-                .mat-button-toggle-group {
-                    @include mat-elevation(0);
-                    border-radius: 0;
-                    border: none;
-                    margin-left: 8px;
-
-                    .mat-button-toggle-label-content {
-                        line-height: 1.125;
-                        padding: 8px 16px;
-                    }
-
-                    .mat-icon {
-                        font-size: 14px;
-                        width: initial;
-                        height: initial;
-                    }
-                }
             }
 
-        }
+            .mat-form-field {
+                flex: 1;
+                max-width: 180px;
 
-        .color-container {
+                &.has-right-items {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
 
-            .color-picker-control {
-                width: 186px;
+                .mat-input-element {
+                    flex: 1;
+                }
             }
 
             .mat-button-toggle-group {
-                box-shadow: none;
+                @include mat-elevation(0);
+                border-radius: 0;
                 border: none;
+                margin-left: 8px;
 
                 .mat-button-toggle-label-content {
-                    line-height: 32px;
+                    line-height: 1.125;
+                    padding: 8px 16px;
                 }
 
-                .mat-button-toggle {
-                    height: 32px;
-
-                    button { // background button
-                        width: 108px;
-                    }
-                }
-
-                #text {
-                    width: 78px;
-                }
-
-                #text-button {
-                    width: 78px;
-                }
-            }
-
-            .card {
-                &.cp{
-                    // margin-left: 12px;
-                    background: transparent;
+                .mat-icon {
+                    font-size: 14px;
+                    width: initial;
+                    height: initial;
                 }
             }
         }
+
     }
-}
 
-@mixin big-number-visual-appearance-component-theme($theme-config) {
+    .color-container {
 
-    @include variables-compatibility($theme-config) {
+        .color-picker-control {
+            width: 186px;
+        }
 
-        $chip-bg: mat-color($primary, default, .1);
+        .mat-button-toggle-group {
+            box-shadow: none;
+            border: none;
 
-        $input-background: mat-color($primary, default);
-
-        .big-number-visual-appearance {
-
-            .is-selected {
-                background-color: white;
-                border-left: 3px solid #18BDED;
+            .mat-button-toggle-label-content {
+                line-height: 32px;
             }
 
-            .labels-container {
+            .mat-button-toggle {
+                height: 32px;
 
-                .mat-button-toggle-group {
-                    .mat-button-toggle {
-                        background-color: mat-color($primary, default, 0.08);
-                    }
-
-                    .mat-button-toggle-checked {
-                        background-color: mat-color($primary, default, 0.18);
-                    }
-
-                    .mat-button-toggle-disabled {
-                        background-color: mat-color($primary, default, 0.08);
-
-                        &.mat-button-toggle-checked {
-                            background-color: mat-color($primary, default, 0.14);
-                        }
-                    }
+                button { // background button
+                    width: 108px;
                 }
             }
 
-            .color-container {
-                .mat-button-toggle {
-                    border-bottom: 2px solid transparent;
-                    background-color: transparent;
-                    color: #18BDED;
-                    box-shadow: none;
-                }
+            #text {
+                width: 78px;
+            }
 
-                .mat-button-toggle-checked {
-                    border-bottom: 2px solid  #18BDED;
-                    color: black;
-                }
-
-                .color-picker-container {
-                    border: 1px solid lightgrey;
-                }
-
-                .card {
-                    border-top: none;
-                }
+            #text-button {
+                width: 78px;
             }
         }
 
-        // CDK menu for custom unit
-        .custom-unit-menu-item {
-            background-color: $chip-bg;
-
-            .mat-menu-ripple {
-                background-color: $chip-bg;
+        .card {
+            &.cp{
+                // margin-left: 12px;
+                background: transparent;
             }
         }
     }

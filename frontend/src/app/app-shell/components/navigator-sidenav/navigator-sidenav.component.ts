@@ -14,20 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
+ import {
     Component,
     OnInit,
     Input,
     Output,
     EventEmitter,
-    HostBinding
+    HostBinding,
+    ViewEncapsulation
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppConfigService } from '../../../core/services/config.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-navigator-sidenav',
     templateUrl: './navigator-sidenav.component.html',
-    styleUrls: [ './navigator-sidenav.component.scss' ]
+    styleUrls: [ './navigator-sidenav.component.scss' ],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavigatorSidenavComponent implements OnInit {
 
@@ -35,12 +39,13 @@ export class NavigatorSidenavComponent implements OnInit {
 
     @Input() adminMember: boolean = false;
     @Input() activeNav: any = {};
+    @Input() readonly = true;
     @Output() activeNavChange: EventEmitter<any> = new EventEmitter();
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() drawerOpen: boolean = false;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() mediaQuery: string = '';
 
     navItems: any[] = [
@@ -52,9 +57,26 @@ export class NavigatorSidenavComponent implements OnInit {
         { section: 'admin',             label: 'Admin',             icon: 'd-user-secure', requiresUserAdmin: true }
     ];
 
+    brandingImageUrl: any =  '/assets/horizon-logo-icon-only.png'; // path to the image file. We will default to one in public assets folder
+    private brandingHomeUrl = '/main'; // href path that you go to if you click on the logo. We default to main
+
     constructor(
-        private router: Router
-    ) { }
+        private router: Router,
+        private appConfig: AppConfigService,
+        private domSanitizer: DomSanitizer,
+    ) {
+        const config = this.appConfig.getConfig();
+        if (config.uiBranding && config.uiBranding.logo) {
+            const brandingConfig = config.uiBranding.logo;
+            if (brandingConfig.imageUrl) {
+                this.brandingImageUrl = brandingConfig.imageUrl;
+            }
+            if (brandingConfig.homeUrl) {
+                this.brandingHomeUrl = brandingConfig.homeUrl;
+            }
+        }
+        this.brandingImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.brandingImageUrl);
+    }
 
     ngOnInit() { }
 
@@ -72,7 +94,11 @@ export class NavigatorSidenavComponent implements OnInit {
     }
 
     gotoMain() {
-        this.router.navigate(['/main']);
+        this.router.navigate([this.brandingHomeUrl]);
+    }
+
+    getBrandLogo() {
+        return this.domSanitizer.bypassSecurityTrustResourceUrl(this.brandingImageUrl);
     }
 
 }

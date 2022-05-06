@@ -1,0 +1,23 @@
+@import './containers/admin/admin.theme';
+@import './components/admin-config/admin-config.theme';
+@import './components/admin-config/children/admin-config-alert-endpoint/admin-config-alert-endpoint.theme';
+@import './components/admin-config/children/admin-config-generic-input/admin-config-generic-input.theme';
+@import './components/admin-config/children/admin-config-help-link/admin-config-help-link.theme';
+@import './components/admin-config/children/admin-config-metric-host/admin-config-metric-host.theme';
+@import './components/admin-default/admin-default.theme';
+@import './components/admin-namespaces/admin-namespaces.theme';
+@import './components/admin-themes/admin-themes.theme';
+@import './components/admin-users/admin-users.theme';
+
+@mixin admin-module-theme() {
+    @include admin-container-component-theme();
+    @include admin-config-component-theme();
+    @include admin-config-alert-endpoint-component-theme();
+    @include admin-config-generic-input-component-theme();
+    @include admin-config-help-link-component-theme();
+    @include admin-config-metric-host-component-theme();
+    @include admin-default-component-theme();
+    @include admin-namespaces-component-theme();
+    @include admin-themes-component-theme();
+    @include admin-users-component-theme();
+}

@@ -15,19 +15,6 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
+//.widget-config-tab.query-inspector-configuration {}
 
-@mixin widget-config-query-inspector-component-base() {
-    .widget-config-tab.query-inspector-configuration {
-        // style rules here
-    }
-}
 
-@mixin widget-config-query-inspector-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        .widget-config-tab.query-inspector-configuration {
-            // style rules here
-        }
-    }
-}

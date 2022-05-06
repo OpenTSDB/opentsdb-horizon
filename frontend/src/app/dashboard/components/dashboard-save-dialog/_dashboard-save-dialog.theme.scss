@@ -1,0 +1,31 @@
+@mixin dashboard-save-dialog-component-theme() {
+
+    $divider: mat-color($foreground, divider);
+
+    .dashboard-save-dialog {
+        .mat-dialog-title {
+            background-color: mat-color($other, status-success);
+            color: mat-color($other, status-success-contrast);
+        }
+    }
+
+    // CDK Items
+
+    // backdrop
+    .dashboard-save-dialog-backdrop {
+        background-color: mat-color($foreground, disabled);
+    }
+
+    // panel
+    .dashboard-save-dialog-panel {
+
+        .mat-dialog-title {
+            border-bottom: 1px solid $divider;
+        }
+
+        .mat-dialog-actions {
+            background-color: $divider;
+        }
+
+    }
+}

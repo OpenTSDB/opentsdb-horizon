@@ -15,175 +15,104 @@
 // * limitations under the License.
 // *
 
-@mixin placeholder-widget-component-base() {
+@import 'config';
 
-    // TODO: get this common config items into the themes
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+// TODO: get this common config items into the themes
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    .widget-panel-content.placeholder-widget {
-        overflow-y: auto;
+.widget-panel-content.placeholder-widget {
+    overflow-y: auto;
 
-        // selector icons for the base
-        .widget-types {
-            margin-top: 20px;
+    // selector icons for the base
+    .widget-types {
+        margin-top: 20px;
 
-            .widget-type-selector {
-                padding: 8px 16px 0 16px;
-                width: 110px;
+        .widget-type-selector {
+            padding: 8px 16px 0 16px;
+            width: 110px;
 
-                &:not(:last-child) {
-                    margin-right: 12px;
-                    margin-bottom: 12px;
+            &:not(:last-child) {
+                margin-right: 12px;
+                margin-bottom: 12px;
+            }
+
+            .mat-button-wrapper {
+                display: inline-flex;
+                flex-direction: column;
+            }
+
+            .widget-type-label,
+            .widget-type-icon {
+                width: 100%;
+                line-height: 32px;
+            }
+
+            //.widget-type-label {}
+
+            .widget-type-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+
+                &::after {
+                    content: '';
+                    display: block;
+                    overflow: hidden;
+                    width: 50px;
+                    height: 50px;
+                    background-repeat: no-repeat;
+                    background-size: 200px; // four columns of icons * 50px = 200px
+                    background-image: url(/assets/widget-icon-sprite.png);
                 }
 
-                .mat-button-wrapper {
-                    display: inline-flex;
-                    flex-direction: column;
+                &.widget-icon-bar-graph::after {
+                    background-position: -50px 0px;
                 }
 
-                .widget-type-label,
-                .widget-type-icon {
-                    width: 100%;
-                    line-height: 32px;
+                &.widget-icon-area-graph::after {
+                    background-position: 0px 0px;
                 }
 
-                //.widget-type-label {}
+                &.widget-icon-line-chart::after {
+                    background-position: -100px -50px
+                }
 
-                .widget-type-icon {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
+                &.widget-icon-heatmap::after {
+                    background-position: -50px -50px
+                }
 
-                    &::after {
-                        content: '';
-                        display: block;
-                        overflow: hidden;
-                        width: 50px;
-                        height: 50px;
-                        background-repeat: no-repeat;
-                        background-size: 200px; // four columns of icons * 50px = 200px
-                        background-image: url(/assets/widget-icon-sprite.png);
-                    }
+                &.widget-icon-topn-chart::after {
+                    background-position: -150px -50px
+                }
 
-                    &.widget-icon-bar-graph::after {
-                        background-position: -50px 0px;
-                    }
+                &.widget-icon-big-number::after {
+                    background-position: -100px 0px;
+                }
 
-                    &.widget-icon-area-graph::after {
-                        background-position: 0px 0px;
-                    }
+                &.widget-icon-donut-chart::after {
+                    background-position: 0px -50px;
+                }
 
-                    &.widget-icon-line-chart::after {
-                        background-position: -100px -50px
-                    }
+                &.widget-icon-statuses::after {
+                    background-position: -150px 0px;
+                }
 
-                    &.widget-icon-heatmap::after {
-                        background-position: -50px -50px
-                    }
+                &.widget-icon-notes::after {
+                    background-position: 0px -100px;
+                }
 
-                    &.widget-icon-topn-chart::after {
-                        background-position: -150px -50px
-                    }
+                &.widget-icon-events::after {
+                    background-position: -50px -100px;
+                }
 
-                    &.widget-icon-big-number::after {
-                        background-position: -100px 0px;
-                    }
-
-                    &.widget-icon-donut-chart::after {
-                        background-position: 0px -50px;
-                    }
-
-                    &.widget-icon-statuses::after {
-                        background-position: -150px 0px;
-                    }
-
-                    &.widget-icon-notes::after {
-                        background-position: 0px -100px;
-                    }
-
-                    &.widget-icon-events::after {
-                        background-position: -50px -100px;
-                    }
-
-                    &.widget-icon-table::after {
-                        background-position: -150px -100px;
-                    }
-                    /*&::after {
-                        content: '';
-                        display: block;
-                        width: 50px;
-                        height: 50px;
-                        background-repeat: no-repeat;
-                        background-position: 50% 50%;
-                        background-size: 100%;
-                    }
-
-                    &.widget-icon-bar-graph::after {
-                        background-image: url(/assets/widget-icon-bar-graph.png);
-                    }
-
-                    &.widget-icon-area-graph::after {
-                        background-image: url(/assets/widget-icon-area-graph.png);
-                    }
-
-                    &.widget-icon-line-chart::after {
-                        background-image: url(/assets/widget-icon-line-chart.png);
-                    }
-                    &.widget-icon-heatmap::after {
-                        background-image: url(/assets/widget-icon-heatmap.png);
-                    }
-
-                    &.widget-icon-topn-chart::after {
-                        background-image: url(/assets/widget-icon-topn-chart.png);
-                    }
-
-                    &.widget-icon-big-number::after {
-                        background-image: url(/assets/widget-icon-big-number.png);
-                    }
-
-                    &.widget-icon-donut-chart::after {
-                        background-image: url(/assets/widget-icon-donut-chart.png);
-                    }
-
-                    &.widget-icon-statuses::after {
-                        background-image: url(/assets/widget-icon-statuses.png);
-                    }
-
-                    &.widget-icon-notes::after {
-                        background-image: url(/assets/widget-icon-notes.png);
-                    }*/
+                &.widget-icon-table::after {
+                    background-position: -150px -100px;
                 }
             }
         }
     }
-}
-
-@mixin placeholder-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        .widget-panel-content.placeholder-widget {
-
-            .widget-types {
-                .widget-type-selector {
-                    // need a background color here
-                    background-color: mat-color($other, widget-icons-background);
-
-                    &:hover {
-                        background-color: mat-color($other, widget-icons-background-hover);
-                    }
-                }
-
-                .widget-type-label {
-                    color: mat-color($foreground, text);
-                }
-            }
-
-        }
-    }
-
 }

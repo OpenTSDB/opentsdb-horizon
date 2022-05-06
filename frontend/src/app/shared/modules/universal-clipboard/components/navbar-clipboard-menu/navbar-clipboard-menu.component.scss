@@ -15,9 +15,9 @@
 // * limitations under the License.
 // *
 
-@import 'loader-base';
+@import 'mixins';
 
-:host.navbar-clipboard-menu.navbar-item {
+.navbar-clipboard-menu.navbar-item {
     height: 100%;
     margin-right: -16px;
 
@@ -32,38 +32,20 @@
         line-height: 24px;
     }
 
+    .mat-flat-button:not(:last-child) {
+        margin-right: 8px;
+    }
+
     .mat-icon {
         @include sizeDenaliIcon(18px);
     }
 }
 
-@at-root ::ng-deep {
-    .app-navbar {
-        .mat-toolbar.explore,
-        .mat-toolbar.snapshot {
-            .navbar-clipboard-menu.navbar-item {
-                display: none;
-            }
+.app-navbar {
+    .mat-toolbar.explore,
+    .mat-toolbar.snapshot {
+        .navbar-clipboard-menu.navbar-item {
+            display: none;
         }
     }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.navbar-clipboard-menu {
-        &.is-open {
-            background: rgba($white, .2);
-            color: mat-color($foreground, navbar-text);
-
-            box-shadow:
-                inset 0 -3px 0 -1px mat-color($foreground, navbar-text),
-                inset 3px 0px 0 -1px mat-color($foreground, navbar-text),
-                inset 0 1px 0 1px mat-color($foreground, navbar-text);
-
-            &:hover {
-                background: rgba($white, .28);
-            }
-        }
-    }
-
 }

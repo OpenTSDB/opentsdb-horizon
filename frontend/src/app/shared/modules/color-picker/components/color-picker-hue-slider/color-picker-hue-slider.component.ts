@@ -26,16 +26,18 @@ import {
     ElementRef,
     Renderer2,
     ViewChild,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker-hue-slider',
     templateUrl: './color-picker-hue-slider.component.html',
-    styleUrls: []
+    styleUrls: ['./color-picker-hue-slider.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
 
@@ -49,19 +51,19 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
         this._selectedColor = value || this.emptyColor;
         this.checkHueDifference();
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _selectedColor: string = '';
 
     private baseHsv: any = {};
 
     @Output() hueChanged: any = new EventEmitter<any>();
 
-    @ViewChild('hueStrip') _hueStrip: ElementRef;
-    @ViewChild('hueSlider') _hueSlider: ElementRef;
+    @ViewChild('hueStrip', { static: true }) _hueStrip: ElementRef;
+    @ViewChild('hueSlider', { static: true }) _hueSlider: ElementRef;
 
     sliderLeft: any = 0;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private isSliding: boolean = false;
 
     constructor(

@@ -1,0 +1,26 @@
+@mixin admin-config-help-link-component-theme() {
+    .app-admin-config-help-link {
+        .help-link-wrap {
+            .mat-button {
+                color: mat-color($foreground, link);
+            }
+        }
+
+        .help-link-edit-wrap {
+            border: 1px solid mat-color($foreground, divider);
+            background: mat-color($background, menu);
+
+            .actions {
+                .mat-flat-button.apply {
+                    background-color: mat-color($success, default);
+                    color: mat-color($success, default-contrast);
+                }
+
+                .mat-flat-button.cancel {
+                    background-color: mat-color($primary, default);
+                    color: mat-color($primary, default-contrast);
+                }
+            }
+        }
+    }
+}

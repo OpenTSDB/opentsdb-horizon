@@ -15,104 +15,75 @@
 // * limitations under the License.
 // *
 
-@mixin tag-aggregator-component-base() {
-    .tag-aggregator-component {
-        display: flex;
-        align-items: stretch;
+@import 'mixins';
 
-        .mat-button {
-            line-height: 32px;
+.tag-aggregator-component {
+    display: flex;
+    align-items: stretch;
 
-            .mat-button-wrapper {
+    .mat-button {
+        line-height: 32px;
+
+        .mat-button-wrapper {
+            display: flex;
+
+            .mat-select-arrow-wrapper {
                 display: flex;
-
-                .mat-select-arrow-wrapper {
-                    display: flex;
-                    align-items: center;
-                }
-            }
-
-        }
-    }
-
-    // cdk items
-    .tag-aggregator-cdk-menu.mat-menu-panel {
-        min-width: initial;
-        max-width: initial;
-        display: flex;
-
-        .mat-menu-content {
-            padding: 0;
-
-            > div {
-                display: flex;
-            }
-
-            .mat-menu-item {
-                height: 32px;
-                line-height: 32px;
-            }
-
-            .aggregator-help {
-                display: flex;
-                flex-direction: column;
-                min-width: 250px;
-                max-width: 250px;
-                max-height: 160px;
-
-                .help-title {
-                    display: flex;
-                    align-items: center;
-                    justify-content: flex-start;
-                    padding: 4px 8px;
-
-                    span:not(:last-child) {
-                        margin-right: 6px;
-                    }
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(12px);
-                    }
-                }
-
-                .help-description {
-                    flex: 1;
-                    overflow: auto;
-                    padding: 4px 8px;
-                    font-size: 12px;
-
-                    p {
-                        margin-bottom: 8px;
-                    }
-                }
+                align-items: center;
             }
         }
+
     }
 }
 
-@mixin tag-aggregator-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+// cdk items
+.tag-aggregator-cdk-menu.mat-menu-panel {
+    min-width: initial;
+    max-width: initial;
+    display: flex;
 
-        .tag-aggregator-component {
-            .mat-button {
-                color: mat-color($foreground, link);
-            }
+    .mat-menu-content {
+        padding: 0;
+
+        > div {
+            display: flex;
         }
 
-        // cdk items
-        .tag-aggregator-cdk-menu.mat-menu-panel {
-            .mat-menu-content {
-                .aggregator-help {
-                    background: if(
-                        $is-dark,
-                        mat-color($denali-brand-5, 100, .2),
-                        mat-color($denali-brand-5, 100, .5)
-                    );
-                    border-left: 1px solid mat-color($foreground, divider);
+        .mat-menu-item {
+            height: 32px;
+            line-height: 32px;
+        }
 
-                    .help-title {
-                    border-bottom: 1px solid mat-color($foreground, divider);
-                    }
+        .aggregator-help {
+            display: flex;
+            flex-direction: column;
+            min-width: 250px;
+            max-width: 250px;
+            max-height: 160px;
+
+            .help-title {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 4px 8px;
+
+                span:not(:last-child) {
+                    margin-right: 6px;
+                }
+
+                .mat-icon {
+                    @include sizeDenaliIcon(12px);
+                }
+            }
+
+            .help-description {
+                flex: 1;
+                overflow: auto;
+                padding: 4px 8px;
+                font-size: 12px;
+
+                p {
+                    margin-bottom: 8px;
                 }
             }
         }

@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
 @Component({
   selector: 'admin-panel',
   templateUrl: './admin-panel.component.html',
   styleUrls: ['./admin-panel.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   host: {
       '[class.admin-navigator]': 'true',
       '[class.panel-content]': 'true'
   }
 })
 export class AdminPanelComponent implements OnInit {
-    //@HostBinding('class.admin-navigator') private _hostClass = true;
+    @HostBinding('class.admin-navigator') private _hostClass = true;
 
     @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
 

@@ -126,7 +126,7 @@ export class WidgetService {
         let hasVisible = false;
         const source = widget.settings.component_type;
         widget.settings.component_type = type;
-        // tslint:disable:max-line-length
+        /* eslint-disable max-len */
         const needRefresh = type === 'BignumberWidgetComponent' || !( series.includes(source) && series.includes(type) || summary.includes(source) && summary.includes(type));
         // query override
         for (let i = 0;  i < queries.length; i++) {

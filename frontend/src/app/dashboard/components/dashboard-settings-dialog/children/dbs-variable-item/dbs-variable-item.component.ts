@@ -25,11 +25,13 @@ import {
     EventEmitter,
     HostBinding,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 import { Observable } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';
@@ -38,10 +40,11 @@ import { Subscription } from 'rxjs';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-variable-item',
     templateUrl: './dbs-variable-item.component.html',
-    styleUrls: []
+    styleUrls: ['./dbs-variable-item.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DbsVariableItemComponent implements OnInit, OnDestroy {
 
@@ -61,7 +64,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     private allowedValuesInputSub: Subscription; // Allowed values input change subscription
 
     /** Local Variables */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private expectingIntercomData: boolean = false;
 
     /** Autocomplete variables */
@@ -73,9 +76,9 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
 
     allowedValuesInput: FormControl = new FormControl(); // form control for adding allowed value item
 
-    @ViewChild('filterValueInput', {read: MatAutocompleteTrigger}) valueTrigger: MatAutocompleteTrigger; // value autocomplete trigger
-    @ViewChild('filterValueInput') valueInput: ElementRef<HTMLInputElement>; // html element for allowedValuesInput.
-    @ViewChild('filterValueAuto') valueAutocomplete: MatAutocomplete; // autocomplete component for allowed values
+    @ViewChild('filterValueInput', { read: MatAutocompleteTrigger, static: true }) valueTrigger: MatAutocompleteTrigger; // value autocomplete trigger
+    @ViewChild('filterValueInput', { static: true }) valueInput: ElementRef<HTMLInputElement>; // html element for allowedValuesInput.
+    @ViewChild('filterValueAuto', { static: true }) valueAutocomplete: MatAutocomplete; // autocomplete component for allowed values
 
     constructor(
         private fb: FormBuilder,

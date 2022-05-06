@@ -49,7 +49,7 @@ import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/h
     ]
 })
 export class UniversalDataTooltipModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<UniversalDataTooltipModule> {
         return {
             ngModule: UniversalDataTooltipModule,
             providers: [

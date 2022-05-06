@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
 
@@ -95,6 +96,7 @@ export class DbfsChangePanelTab {
 }
 
 /** STATE */
+@Injectable()
 @State<DbfsPanelsModel>({
     name: 'NavPanels',
     defaults: {
@@ -125,7 +127,6 @@ export class DbfsChangePanelTab {
         initialized: false
     }
 })
-
 export class DbfsPanelsState {
     constructor(
         private utils: UtilsService

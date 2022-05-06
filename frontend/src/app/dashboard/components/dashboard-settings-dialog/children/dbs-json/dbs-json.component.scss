@@ -15,12 +15,4 @@
 // * limitations under the License.
 // *
 
-@mixin dbs-json-component-base() {
-
-}
-
-@mixin dbs-json-component-theme($theme-config) {
-    //@include variables-compatibility($theme-config) {
-    // CSS HERE
-    //}
-}
+//.dbs-json-component {}

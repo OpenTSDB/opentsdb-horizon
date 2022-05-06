@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -24,14 +24,16 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     selector: 'donut-data-tooltip',
-    templateUrl: './donut-data-tooltip.component.html'
+    templateUrl: './donut-data-tooltip.component.html',
+    styleUrls: ['./donut-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DonutDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.donut-data-tooltip') private _hostClass = true;
     // @HostBinding('class.hidden') public tooltipHidden = true;
 
-    @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
     positionStrategy: string = 'sticky';
 

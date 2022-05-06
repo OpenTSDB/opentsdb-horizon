@@ -15,26 +15,20 @@
 // * limitations under the License.
 // *
 
-@mixin event-timeline-component-base() {
-
-    .event-timeline {
-
-        .tooltip{
-            position: absolute;
-            z-index: 10;
-            border: 1px solid black;
-            border-radius: 5px;
-            background: lightgrey;
-            padding: 3px;
-            max-height: 200px;
-            max-width: 300px;
-        }
-
+.event-timeline {
+    .tooltip{
+        position: absolute;
+        z-index: 10;
+        border: 1px solid black;
+        border-radius: 5px;
+        background: lightgrey;
+        padding: 3px;
+        max-height: 200px;
+        max-width: 300px;
     }
 }
 
-@mixin event-timeline-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        // styles here
-    }
-}
+// * THEME VARIANTS
+//@include init-component-variants() {
+// styles here
+//}

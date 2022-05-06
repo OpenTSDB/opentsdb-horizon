@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
 import { ThemeService } from '../../../../../shared/modules/theme/services/theme.service';
 import { take } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'settings-theme',
     templateUrl: './settings-theme.component.html',
-    styleUrls: ['./settings-theme.component.scss']
+    styleUrls: ['./settings-theme.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SettingsThemeComponent implements OnInit {
 

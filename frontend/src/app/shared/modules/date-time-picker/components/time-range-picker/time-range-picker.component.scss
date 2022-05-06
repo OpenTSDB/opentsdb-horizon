@@ -15,191 +15,142 @@
 // * limitations under the License.
 // *
 
-@mixin time-range-picker-component-base() {
+@import 'mixins';
 
-    .preset-picker-menu {
-        position: relative;
-        margin-left: -25%;
+.preset-picker-menu {
+    position: relative;
+    margin-left: -25%;
 
-        &.mat-menu-panel {
-            overflow: initial;
-        }
-
-        .mat-menu-content {
-            padding: 0px;
-        }
-
-        // arrow
-        &::after {
-            bottom: 100%;
-            left: calc(50% - 3px);
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-            border-width: 6px;
-            margin-left: -6px;
-            z-index: 2;
-        }
-
+    &.mat-menu-panel {
+        overflow: initial;
     }
 
-    .dtp-time-range-picker {
-        .mat-card {
-            justify-content: center;
-        }
+    .mat-menu-content {
+        padding: 0px;
+    }
 
-        .custom-time-range {
-            h2 {
-                height: 32px;
-                line-height: 32px;
-                font-size: 90%;
-            }
-        }
+    // arrow
+    &::after {
+        bottom: 100%;
+        left: calc(50% - 3px);
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-width: 6px;
+        margin-left: -6px;
+        z-index: 2;
+    }
 
-        .presets {
+}
 
-            h2 {
-                height: 24px;
-                line-height: 24px;
-                font-size: 90%;
-            }
+.dtp-time-range-picker {
+    .mat-card {
+        justify-content: center;
+    }
 
-            .preset-button {
-                margin-right: 2px;
-            }
-
-            .mat-stroked-button {
-                width: 15px;
-                //border: transparent;
-            }
-
-            .mat-raised-button,
-            .mat-flat-button {
-                border-radius: 0;
-
-                min-width: initial;
-                width: 100%;
-            }
-        }
-
-        .dp-time-header {
-            font-size: 20px
-        }
-
-        .dtpicker-start {
-            margin-bottom: 15px;
-            width: 256px;
-        }
-
-        .dtpicker-end {
-            width: 256px;
-        }
-
-        #button-apply {
-            //margin-top: 10px;
-
-        }
-
-        .dtp-action-controls {
-            margin-top: 10px;
-            padding-top: 10px;
-
-            .mat-button,
-            .mat-stroked-button,
-            .mat-raised-button {
-                margin-right: 10px;
-            }
-        }
-
-        .start-input {
-            margin-right: 5px;
-        }
-
-        .end-input {
-            margin-left: 5px;
-        }
-
-        .time-ranges {
-            .date-picker-component {
-                &:first-child {
-                    margin-right: 5px;
-                }
-                &:last-child {
-                    margin-left: 5px;
-                }
-            }
+    .custom-time-range {
+        h2 {
+            height: 32px;
+            line-height: 32px;
+            font-size: 90%;
         }
     }
 
-    // mobile media query
-    @include until(600px) {
-        .dtp-time-range-picker {
-            .time-ranges {
-                .date-picker-component {
-                    &:first-child,
-                    &:last-child {
-                        margin: 0;
-                    }
-                }
+    .presets {
+
+        h2 {
+            height: 24px;
+            line-height: 24px;
+            font-size: 90%;
+        }
+
+        .preset-button {
+            margin-right: 2px;
+        }
+
+        .mat-stroked-button {
+            width: 15px;
+            //border: transparent;
+        }
+
+        .mat-raised-button,
+        .mat-flat-button {
+            border-radius: 0;
+
+            min-width: initial;
+            width: 100%;
+        }
+    }
+
+    .dp-time-header {
+        font-size: 20px
+    }
+
+    .dtpicker-start {
+        margin-bottom: 15px;
+        width: 256px;
+    }
+
+    .dtpicker-end {
+        width: 256px;
+    }
+
+    .dtp-action-controls {
+        margin-top: 10px;
+        padding-top: 10px;
+
+        .mat-button,
+        .mat-stroked-button,
+        .mat-raised-button {
+            margin-right: 10px;
+        }
+    }
+
+    .start-input {
+        margin-right: 5px;
+    }
+
+    .end-input {
+        margin-left: 5px;
+    }
+
+    .time-ranges {
+        .date-picker-component {
+            &:first-child {
+                margin-right: 5px;
             }
-
-            .dtp-action-controls {
-                .mat-button,
-                .mat-stroked-button,
-                .mat-raised-button {
-                    margin-right: 0;
-                    justify-content: space-between;
-
-                    &:last-child {
-                        margin-left: 10px;
-                    }
-                }
+            &:last-child {
+                margin-left: 5px;
             }
         }
     }
 }
 
-@mixin time-range-picker-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-
-        .dtp-time-range-picker {
-
-            .wrapper {
-                //background: map-get($background, background);
-                background: transparent;
-            }
-
-            .is-selected {
-                background-color: mat-color($accent, default);
-            }
-
-            .dtp-action-controls {
-                border-top: 1px solid mat-color($foreground, divider);
-            }
-
-            .time-preset-button {
-                // background-color: mat-color($primary, 100);
-                background-color: mat-color($primary, default, 0.15);
-                // color: mat-color($primary, '100-contrast');
-                color: mat-color($foreground, link);
-
-                &.is-selected {
-                    background-color: mat-color($primary, default);
-                    color: mat-color($primary, 'default-contrast')
+// mobile media query
+@include until(600px) {
+    .dtp-time-range-picker {
+        .time-ranges {
+            .date-picker-component {
+                &:first-child,
+                &:last-child {
+                    margin: 0;
                 }
             }
         }
 
-        .preset-picker-menu {
-            border: 1px solid mat-color($primary, default);
+        .dtp-action-controls {
+            .mat-button,
+            .mat-stroked-button,
+            .mat-raised-button {
+                margin-right: 0;
+                justify-content: space-between;
 
-            &::after {
-                border-color: rgba($white, 0);
-                border-bottom-color: mat-color($background, menu); // actual color of arrow
+                &:last-child {
+                    margin-left: 10px;
+                }
             }
         }
     }

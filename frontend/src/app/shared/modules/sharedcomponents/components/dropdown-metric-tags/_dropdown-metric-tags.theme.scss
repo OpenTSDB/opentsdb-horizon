@@ -1,0 +1,7 @@
+@mixin dropdown-metric-tags-component-theme() {
+    .dropdown-metric-tags {
+        .mat-button {
+            color: map-get($foreground, link);
+        }
+    }
+}

@@ -1,0 +1,8 @@
+@mixin keypad-component-theme() {
+    .dtp-keypad {
+        .mat-button {
+            background-color: map-get($background, default);
+            //   color: map-get($primary, default-invert);
+        }
+    }
+}

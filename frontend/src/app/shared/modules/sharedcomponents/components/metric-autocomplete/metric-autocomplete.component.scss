@@ -17,178 +17,138 @@
 
 // * WIDGET CONFIG COMPONENT */
 
-@mixin metric-autocomplete-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-padding: map-get($widgets-common-config, edit-padding);
+@import 'config';
+@import 'mixins';
 
-    $row-size: 40px;
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-padding: map-get($widgets-common-config, edit-padding);
 
-    $filter-block-padding: 8px;
+$row-size: 40px;
 
-    .metric-autocomplete {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        z-index: 2;
-        width: inherit;
+$filter-block-padding: 8px;
 
+.metric-autocomplete {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    z-index: 2;
+    width: inherit;
+
+}
+
+// CDK ITEMS - panel for "multiple" autocomplete
+.metric-autocomplete-cdk-panel.mat-menu-panel {
+    //max-width: 400px;
+    max-width: initial;
+    min-width: initial;
+    width: 100%;
+    min-height: 50px;
+    overflow: hidden;
+
+    .mat-menu-content:not(:empty) {
+        padding: 0px;
     }
 
-    // CDK ITEMS - panel for "multiple" autocomplete
-    .metric-autocomplete-cdk-panel.mat-menu-panel {
-        //max-width: 400px;
-        max-width: initial;
-        min-width: initial;
-        width: 100%;
-        min-height: 50px;
+    .mat-menu-content {
+        display: flex;
+    }
+
+    .first-run-progress {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 32px;
+    }
+
+    .metric-search-result {
+        display: flex;
         overflow: hidden;
+        max-height: 260px;
+        width:100%;
+        height: 100%;
 
-        .mat-menu-content:not(:empty) {
-            padding: 0px;
+        .list {
+            width: 100%;
+            display: flex;
+            max-height: 100%;
         }
 
-        .mat-menu-content {
-            display: flex;
-        }
-
-        .first-run-progress {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 200px;
-            height: 32px;
-        }
-
-        .metric-search-result {
-            display: flex;
-            overflow: hidden;
-            max-height: 260px;
-            width:100%;
+        .list-all,
+        .list-selected {
             height: 100%;
+        }
 
-            .list {
-                width: 100%;
-                display: flex;
-                max-height: 100%;
-            }
+        .list-all {
+            overflow: overlay;
+        }
 
-            .list-all,
-            .list-selected {
-                height: 100%;
-            }
-
+        @-moz-document url-prefix() {
             .list-all {
-                overflow: overlay;
+                overflow: auto;
+            }
+        }
+
+        .mat-list.mat-list-base {
+            padding-top: 0;
+            margin-bottom: 24px;
+
+            .mat-list-item {
+                height: 24px;
             }
 
-            @-moz-document url-prefix() {
-                .list-all {
-                    overflow: auto;
+            .mat-list-item-content {
+                font-size: 14px;
+                white-space: nowrap;
+                word-break: keep-all;
+
+                .mat-icon {
+                    @include sizeDenaliIcon(10px);
+                }
+
+                .mat-icon:first-of-type {
+                    margin-right: 6px
+                }
+            }
+        }
+
+        .list-selected {
+            display: flex;
+            flex-direction: column;
+
+            .selected-header {
+                display: flex;
+                align-items: center;
+                font-size: 12px;
+                padding: 4px 8px 4px 16px;
+
+                > strong {
+                    flex: 1;
+                    margin-right: 12px
+                }
+
+                .mat-flat-button {
+                    font-size: 12px;
+                    min-width: auto;
+                    line-height: 16px;
+                    padding: 0 6px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(12px);
+                        margin-right: 5px;
+                    }
                 }
             }
 
             .mat-list.mat-list-base {
-                padding-top: 0;
-                margin-bottom: 24px;
-
-                .mat-list-item {
-                    height: 24px;
-                }
-
-                .mat-list-item-content {
-                    font-size: 14px;
-                    white-space: nowrap;
-                    word-break: keep-all;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(10px);
-                    }
-
-                    .mat-icon:first-of-type {
-                        margin-right: 6px
-                    }
-                }
+                width: 100%;
+                max-height: 100%;
+                overflow: overlay;
             }
 
-            .list-selected {
-                display: flex;
-                flex-direction: column;
-
-                .selected-header {
-                    display: flex;
-                    align-items: center;
-                    font-size: 12px;
-                    padding: 4px 8px 4px 16px;
-
-                    > strong {
-                        flex: 1;
-                        margin-right: 12px
-                    }
-
-                    .mat-flat-button {
-                        font-size: 12px;
-                        min-width: auto;
-                        line-height: 16px;
-                        padding: 0 6px;
-
-                        .mat-icon {
-                            @include sizeDenaliIcon(12px);
-                            margin-right: 5px;
-                        }
-                    }
-                }
-
+            @-moz-document url-prefix() {
                 .mat-list.mat-list-base {
-                    width: 100%;
-                    max-height: 100%;
-                    overflow: overlay;
-                }
-
-                @-moz-document url-prefix() {
-                    .mat-list.mat-list-base {
-                        overflow: auto;
-                    }
-                }
-            }
-        }
-    }
-}
-
-@mixin metric-autocomplete-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        // CDK ITEMS - panel for "multiple" autocomplete
-
-        .metric-autocomplete-cdk-panel.mat-menu-panel {
-
-            .metric-search-result {
-
-                .list-all {
-                    border-right: 1px solid mat-color($foreground, divider);
-                }
-
-                .mat-list.mat-list-base {
-                    .mat-list-item-content {
-                        .mat-icon {
-                            color: mat-color($foreground, link);
-                        }
-                    }
-
-                    .mat-list-item {
-                        &.is-selected {
-                            background-color: mat-color($foreground, link, .08);
-
-                            .mat-icon {
-                                color: mat-color($other, status-error);
-                            }
-                        }
-                    }
-                }
-
-                .list-selected {
-                    .selected-header {
-                        border-bottom: 1px solid mat-color($foreground, divider);
-                    }
+                    overflow: auto;
                 }
             }
         }

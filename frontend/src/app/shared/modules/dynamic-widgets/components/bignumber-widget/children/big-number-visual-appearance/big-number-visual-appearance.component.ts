@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'big-number-visual-appearance',
     templateUrl: './big-number-visual-appearance.component.html',
-    styleUrls: []
+    styleUrls: ['./big-number-visual-appearance.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class BignumberVisualAppearanceComponent implements OnInit {
@@ -54,7 +55,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'tebibyte': 'TiB - tebibyte (1024 GiB)',
         'pebibyte': 'PiB - pebibyte (1024 TiB)',
         'exibyte' : 'EiB - exibyte  (1024 PiB)'
-    }; 
+    };
 
     decimalDataUnitsKeys: Array<string> = ['decbyte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte', 'exabyte'];
     decimalDataUnits: { [key:string] : string; } = {
@@ -79,7 +80,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'mebibyte/s': 'MiB/s (1024 KiB/s)',
         'gibibyte/s': 'GiB/s (1024 MiB/s)',
         'tebibyte/s': 'TiB/s (1024 GiB/s)'
-    }; 
+    };
 
     decimalDataRateKeys: Array<string> = ['decbps', 'kbps', 'mbps', 'gbps', 'tbps', 'decbyte/s', 'kilobyte/s', 'megabyte/s', 'gigabyte/s', 'terabyte/s'];
     decimalDataRateUnits: { [key:string] : string; } = {
@@ -93,14 +94,14 @@ export class BignumberVisualAppearanceComponent implements OnInit {
         'megabyte/s': 'MB/s (1000 kB/s)',
         'gigabyte/s': 'GB/s (1000 MB/s)',
         'terabyte/s': 'TB/s (1000 GB/s)'
-    }; 
+    };
 
     currencyUnits: Array<string> = ['usd'];
     otherUnits: Array<string> = ['auto'];
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     captionPlaceholder: string = 'Enter Caption {{tag.key}}';
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     prefixDisabled: boolean = true;
 
     constructor() { }
@@ -240,7 +241,7 @@ export class BignumberVisualAppearanceComponent implements OnInit {
     }
 
     indicatorToggleChange() {
-        // tslint:disable-next-line:whitespace
+        // eslint-disable-next-line
         this.widget.settings.visual['changedIndicatorEnabled'] =!
         this.widget.settings.visual['changedIndicatorEnabled'];
     }

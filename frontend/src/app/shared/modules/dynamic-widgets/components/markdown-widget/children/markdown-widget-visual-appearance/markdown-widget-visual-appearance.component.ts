@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 // import { IntercomService } from '../../../../../../core/services/intercom.service';
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'markdown-widget-visual-appearance',
   templateUrl: './markdown-widget-visual-appearance.component.html',
-  styleUrls: []
+  styleUrls: ['./markdown-widget-visual-appearance.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MarkdownWidgetVisualAppearanceComponent implements OnInit {
   @HostBinding('class.markdown-visual-appearance-widget') private _hostClass = true;

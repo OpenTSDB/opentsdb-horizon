@@ -1,0 +1,434 @@
+// see: https://github.com/zbirizdo/material-css-vars
+// MAT-COLOR: Main material override to make it work
+//
+// Requires '~angular/material/themeing' to be loaded first
+
+@function mat-color($palette, $hue: default, $opacity: null) {
+    @if type-of($hue) == number and $hue >= 0 and $hue <= 1 {
+        @return mat-color($palette, default, $hue);
+    }
+
+    //@debug 'PALETTE ' #{$palette} + '--' + #{$hue};
+    //@debug 'HUE ' #{$hue};
+
+    $color: map-get($palette, $hue);
+
+    //@debug "COLOR: " + #{$color};
+    //@debug "TYPE OF: " + type-of($color);
+
+    $rgba: #000000;
+
+    @if type-of($color) == color {
+        $rgba: rgba($color, if($opacity == null, opacity($color), $opacity));
+    } @else {
+        $rgbCheck: str-slice($color, 1, 3);
+        @if $rgbCheck == "rgb" {
+            $rbga: $color;
+        } @else {
+
+            $default-opacity: if($opacity == null, 1, $opacity);
+            $inner-var-alpha-str: null;
+
+            @if type-of($color) == string {
+                $inner-var-alpha-str: str-slice($color, 5, -2) + "-alpha";
+            }
+            // if we have a corresponding alpha variable use it (if $opacity is null)
+            @if ($inner-var-alpha-str != null and map_get($default-theme-css-variables, $inner-var-alpha-str) and $opacity == null) {
+                $rgba: rgba($color, _mat-css-str-replace($color, ")", "-alpha)"));
+            } @else {
+                $rgba: rgba($color, $default-opacity);
+            }
+        }
+    }
+    @return $rgba;
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+// also needs to be overwritten, as otherwise we end up with opacity and alpha value
+@mixin mat-ripple-theme($theme) {
+    $foreground: map_get($theme, foreground);
+    $foreground-base: map_get($foreground, base);
+
+    .mat-ripple-element {
+        // if it's a color, rgba just works.
+        // If it's a variable, rgba works because all color variables should be 3 comma separated numbers
+        background-color: rgba($foreground-base, $mat-ripple-color-opacity);
+    }
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+// The material mixin passes an opacity to mat-color and also adds opacity to the element if the background-color is not of type 'color'.
+// This would cause the opacity to get applied twice, resulting in a ripple that is almost invisible.
+// Instead, we will trust that mat-color handles opacity correctly.
+@mixin _mat-button-ripple-background($palette, $hue, $opacity) {
+    $background-color: mat-color($palette, $hue, $opacity);
+    background-color: $background-color;
+}
+
+// see: https://github.com/zbirizdo/material-css-vars
+@mixin mat-css-other-overwrites {
+    .mat-button-focus-overlay {
+        background: RGBA(var(--palette-foreground-base), 1);
+    }
+    .mat-checkbox .mat-ripple-element {
+        background-color: RGB(var(--palette-foreground-base));
+    }
+    .mat-option.mat-option-disabled {
+        color: rgba(var(--palette-foreground-hint-text), 0.38);
+    }
+}
+
+// Custom fixes for some material component mixins that don't like css variables
+@mixin horizon-material-theme-overrides($theme) {
+    @include horizon-mat-badge-theme($theme);
+    @include horizon-mat-sidenav-theme($theme);
+    @include horizon-mat-datepicker-theme($theme);
+}
+
+@mixin horizon-mat-badge-theme($theme) {
+    $foreground: map-get($theme, foreground);
+    $isDark: map-get($theme, is-dark);
+
+    .mat-badge-disabled {
+        .mat-badge-content {
+            $badge-opacity: if(
+                $isDark,
+                var(--palette-background-disabled-button-dark-alpha),
+                var(--palette-background-disabled-button-alpha)
+            );
+
+            $badge-color: mat-color(
+                $foreground,
+                disabled-button,
+                $badge-opacity
+            );
+
+            background: $badge-color;
+        }
+    }
+}
+
+@mixin horizon-mat-sidenav-theme($theme) {
+    $isDark: map-get($theme, is-dark);
+
+    $drawer-backdrop-color: if($isDark, var(--light-primary-text), var(--dark-primary-text));
+
+    .mat-drawer-backdrop.mat-drawer-shown {
+        background-color: $drawer-backdrop-color;
+    }
+}
+
+@mixin _horizon-mat-datepicker-color($palette) {
+    $fade-amount: $mat-datepicker-selected-fade-amount;
+    $color: mat-color($palette, $fade-amount);
+
+    .mat-calendar-body-disabled > .mat-calendar-body-selected {
+        background-color: $color;
+    }
+}
+
+@mixin horizon-mat-datepicker-theme($theme) {
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    .mat-calendar-body-disabled
+        > .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+        border-color: mat-color(
+            $foreground,
+            hint-text,
+            $mat-datepicker-today-fade-amount
+        );
+    }
+
+    @include _horizon-mat-datepicker-color(map-get($theme, primary));
+
+    .mat-datepicker-content {
+        &.mat-accent {
+            @include _horizon-mat-datepicker-color(map-get($theme, accent));
+        }
+
+        &.mat-warn {
+            @include _horizon-mat-datepicker-color(map-get($theme, warn));
+        }
+    }
+}
+
+//
+// HARD Material MIXIN overrides
+// These mixins use sass functions we can't easily fake or override easy.
+// Easier to just override the whole mixin to fix the problem areas.
+//
+// These are modified mixins from the generated material mixins at '~angular/material/theming'
+// raw mixins are located at material components: https://github.com/angular/components
+//
+
+// modified from https://github.com/angular/components
+@mixin mat-badge-theme($theme) {
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $primary: map-get($theme, primary);
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+
+    .mat-badge-content {
+        color: mat-color($primary, default-contrast);
+        background: mat-color($primary);
+    }
+
+    .mat-badge-accent {
+        .mat-badge-content {
+            background: mat-color($accent);
+            color: mat-color($accent, default-contrast);
+        }
+    }
+
+    .mat-badge-warn {
+        .mat-badge-content {
+            color: mat-color($warn, default-contrast);
+            background: mat-color($warn);
+        }
+    }
+
+    .mat-badge {
+        position: relative;
+    }
+
+    .mat-badge-hidden {
+        .mat-badge-content {
+            display: none;
+        }
+    }
+
+    .mat-badge-disabled {
+        .mat-badge-content {
+            color: mat-color($foreground, disabled-text);
+        }
+    }
+
+    .mat-badge-content {
+        position: absolute;
+        text-align: center;
+        display: inline-block;
+        border-radius: 50%;
+        transition: transform 200ms ease-in-out;
+        transform: scale(0.6);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        pointer-events: none;
+    }
+
+    // The active class is added after the element is added
+    // so it can animate scale to default
+    .mat-badge-content.mat-badge-active {
+        // Scale to `none` instead of `1` to avoid blurry text in some browsers.
+        transform: none;
+    }
+
+    .mat-badge-small {
+        @include _mat-badge-size($mat-badge-small-size);
+    }
+    .mat-badge-medium {
+        @include _mat-badge-size($mat-badge-default-size);
+    }
+    .mat-badge-large {
+        @include _mat-badge-size($mat-badge-large-size);
+    }
+}
+
+// modified from https://github.com/angular/components
+@mixin mat-sort-theme($theme) {
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+
+    .mat-sort-header-arrow {
+        // Because the arrow is made up of multiple elements that are stacked on top of each other,
+        // we can't use the semi-trasparent color from the theme directly. We convert it into a solid
+        // color by taking the opacity from the rgba value and using the value to determine the
+        // percentage of the background to put into foreground when mixing the colors together.
+
+        $text-color: mat-color($foreground, secondary-text);
+        color: $text-color;
+    }
+}
+
+// modified from https://github.com/angular/components
+@mixin _mat-datepicker-color($palette) {
+    .mat-calendar-body-selected {
+        background-color: mat-color($palette);
+        color: mat-color($palette, default-contrast);
+    }
+
+    .mat-calendar-body-disabled > .mat-calendar-body-selected {
+        //background-color: fade-out(mat-color($palette), $mat-datepicker-selected-fade-amount);
+        background-color: RGBA(
+            mat-color($palette),
+            $mat-datepicker-selected-fade-amount
+        );
+    }
+
+    .mat-calendar-body-today.mat-calendar-body-selected {
+        box-shadow: inset 0 0 0 $mat-datepicker-selected-today-box-shadow-width
+            mat-color($palette, default-contrast);
+    }
+}
+
+// modified from https://github.com/angular/components
+@mixin mat-datepicker-theme($theme) {
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    .mat-calendar-arrow {
+        border-top-color: mat-color($foreground, icon);
+    }
+
+    // The prev/next buttons need a bit more specificity to
+    // avoid being overwritten by the .mat-icon-button.
+    .mat-datepicker-toggle,
+    .mat-datepicker-content .mat-calendar-next-button,
+    .mat-datepicker-content .mat-calendar-previous-button {
+        color: mat-color($foreground, icon);
+    }
+
+    .mat-calendar-table-header {
+        color: mat-color($foreground, hint-text);
+    }
+
+    .mat-calendar-table-header-divider::after {
+        background: mat-color($foreground, divider);
+    }
+
+    .mat-calendar-body-label {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .mat-calendar-body-cell-content {
+        color: mat-color($foreground, text);
+        border-color: transparent;
+    }
+
+    .mat-calendar-body-disabled
+        > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+        color: mat-color($foreground, disabled-text);
+    }
+
+    .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover,
+    .cdk-keyboard-focused .mat-calendar-body-active,
+    .cdk-program-focused .mat-calendar-body-active {
+        & > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+            background-color: mat-color($background, hover);
+        }
+    }
+
+    .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+        // Note: though it's not text, the border is a hint about the fact that this is today's date,
+        // so we use the hint color.
+        border-color: mat-color($foreground, hint-text);
+    }
+
+    .mat-calendar-body-disabled
+        > .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+        border-color: RGBA(
+            mat-color($foreground, hint-text),
+            $mat-datepicker-today-fade-amount
+        );
+    }
+
+    @include _mat-datepicker-color(map-get($theme, primary));
+
+    .mat-datepicker-content {
+        @include _mat-theme-elevation(4, $theme);
+        background-color: mat-color($background, card);
+        color: mat-color($foreground, text);
+
+        &.mat-accent {
+            @include _mat-datepicker-color(map-get($theme, accent));
+        }
+
+        &.mat-warn {
+            @include _mat-datepicker-color(map-get($theme, warn));
+        }
+    }
+
+    .mat-datepicker-content-touch {
+        @include _mat-theme-elevation(0, $theme);
+    }
+
+    .mat-datepicker-toggle-active {
+        color: mat-color(map-get($theme, primary));
+
+        &.mat-accent {
+            color: mat-color(map-get($theme, accent));
+        }
+
+        &.mat-warn {
+            color: mat-color(map-get($theme, warn));
+        }
+    }
+}
+
+// modified from https://github.com/angular/components
+@mixin mat-sidenav-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+    $theme-name: map-get($theme, theme-name);
+    $cssVarMap: get-theme-css-variables($theme-name);
+
+
+    // We use invert() here to have the darken the background color expected to be used. If the
+    // background is light, we use a dark backdrop. If the background is dark,
+    // we use a light backdrop.
+    $backdrop-color: _mat-list-to-color-type(map-get($cssVarMap,_mat-var-unwrap(map-get($background, card))));
+
+    $drawer-backdrop-color: invert(rgba($backdrop-color, 0.6));
+    $drawer-background-color: mat-color($background, dialog);
+    $drawer-container-background-color:  mat-color($background, background);
+    $drawer-push-background-color: mat-color($background, dialog);
+    $drawer-side-border: solid 1px mat-color($foreground, divider);
+
+    .mat-drawer-container {
+      background-color: $drawer-container-background-color;
+      color: mat-color($foreground, text);
+    }
+
+    .mat-drawer {
+      background-color: $drawer-background-color;
+      color: mat-color($foreground, text);
+
+      &.mat-drawer-push {
+        background-color: $drawer-push-background-color;
+      }
+
+      &:not(.mat-drawer-side) {
+        // The elevation of z-16 is noted in the design specifications.
+        // See https://material.io/design/components/navigation-drawer.html
+        @include _mat-theme-elevation(16, $theme);
+      }
+    }
+
+    .mat-drawer-side {
+      border-right: $drawer-side-border;
+
+      &.mat-drawer-end {
+        border-left: $drawer-side-border;
+        border-right: none;
+      }
+    }
+
+    [dir='rtl'] .mat-drawer-side {
+      border-left: $drawer-side-border;
+      border-right: none;
+
+      &.mat-drawer-end {
+        border-left: none;
+        border-right: $drawer-side-border;
+      }
+    }
+
+    .mat-drawer-backdrop.mat-drawer-shown {
+      background-color: $drawer-backdrop-color;
+    }
+  }

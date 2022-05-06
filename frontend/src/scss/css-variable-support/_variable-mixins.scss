@@ -1,0 +1,163 @@
+// utility to add css-variables to document :root
+// with theme compatibility
+//
+// based on _mat-css-root from angular-css-vars
+// see: https://github.com/zbirizdo/material-css-vars
+@mixin root-variables($varMap: null, $theme-name: null) {
+
+    $defaultCheck: to-lower-case($theme-name);
+
+    @if ($theme-name and $defaultCheck != 'default') {
+        //@at-root :root .#{$theme-name}-theme,
+        @at-root :root [theme="#{$theme-name}"] {
+            @each $varName, $varValue in $varMap {
+                @if (type_of($varValue) == string) {
+                    #{$varName}: $varValue;
+                } @else {
+                    #{$varName}: #{$varValue};
+                }
+            }
+        }
+    } @else {
+        @at-root :root {
+            @each $varName, $varValue in $varMap {
+                @if (type_of($varValue) == string) {
+                    #{$varName}: $varValue;
+                } @else {
+                    #{$varName}: #{inspect($varValue)};
+                }
+            }
+        }
+    }
+}
+
+@mixin standalone-root-variables($varMap: null, $theme-name: null) {
+
+    $defaultCheck: to-lower-case($theme-name);
+
+    @at-root :root {
+        @each $varName, $varValue in $varMap {
+            @if (type_of($varValue) == string) {
+                #{$varName}: $varValue;
+            } @else {
+                #{$varName}: #{$varValue};
+            }
+        }
+    }
+
+}
+
+@mixin init-mat-theme($theme-name) {
+    $defaultCheck: to-lower-case($theme-name);
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    // set global variable so passed-in content can use the theme
+    $mat-css-theme: $light-theme !global;
+
+    @if ($theme-name and $defaultCheck != 'default') {
+        // OTHER THEMES
+        //@at-root .#{$theme-name}-theme,
+        @at-root [theme="#{$theme-name}"] {
+            &[variant="light"] {
+                @include angular-material-theme($light-theme);
+                @content;
+            }
+
+            @if $dark-theme-selector {
+                $mat-css-theme: $dark-theme !global;
+                //&#{$dark-theme-selector},
+                &[variant="dark"] {
+                    @include angular-material-theme($dark-theme);
+                    @content;
+                }
+            }
+        }
+    } @else {
+        // DEFAULT theme
+        @at-root {
+            @include angular-material-theme($light-theme);
+            @content;
+
+            @if $dark-theme-selector {
+                $mat-css-theme: $dark-theme !global;
+                //#{$dark-theme-selector},
+                [variant="dark"] {
+                    @include angular-material-theme($dark-theme);
+                    @content;
+                }
+            }
+        }
+    }
+
+    // reset
+    $mat-css-theme: null !global;
+}
+
+@mixin init-mat-standalone-theme($theme-name) {
+    $defaultCheck: to-lower-case($theme-name);
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    // set global variable so passed-in content can use the theme
+    $mat-css-theme: $light-theme !global;
+
+    // DEFAULT theme
+    @at-root {
+        @include standalone-angular-material-theme($light-theme);
+        @include generate-standalone-theme($light-theme); // TODO: remove this after moving to new style system
+        @content;
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+            [variant="dark"] {
+                @include standalone-angular-material-theme($dark-theme);
+                @include generate-standalone-theme($dark-theme); // TODO: remove this after moving to new style system
+                @content;
+            }
+        }
+    }
+
+    // reset
+    $mat-css-theme: null !global;
+}
+
+@mixin standalone-angular-material-theme($theme) {
+    @include mat-core-theme($theme);
+    //@include mat-autocomplete-theme($theme);
+    //@include mat-badge-theme($theme);
+    //@include mat-bottom-sheet-theme($theme);
+    //@include mat-button-theme($theme);
+    //@include mat-button-toggle-theme($theme);
+    //@include mat-card-theme($theme);
+    //@include mat-checkbox-theme($theme);
+    //@include mat-chips-theme($theme);
+    //@include mat-table-theme($theme);
+    //@include mat-datepicker-theme($theme);
+    //@include mat-dialog-theme($theme);
+    //@include mat-divider-theme($theme);
+    //@include mat-expansion-panel-theme($theme);
+    //@include mat-form-field-theme($theme);
+    //@include mat-grid-list-theme($theme);
+    //@include mat-icon-theme($theme);
+    //@include mat-input-theme($theme);
+    //@include mat-list-theme($theme);
+    //@include mat-menu-theme($theme);
+    //@include mat-paginator-theme($theme);
+    //@include mat-progress-bar-theme($theme);
+    //@include mat-progress-spinner-theme($theme);
+    //@include mat-radio-theme($theme);
+    //@include mat-select-theme($theme);
+    //@include mat-sidenav-theme($theme);
+    //@include mat-slide-toggle-theme($theme);
+    //@include mat-slider-theme($theme);
+    //@include mat-stepper-theme($theme);
+    //@include mat-sort-theme($theme);
+    //@include mat-tabs-theme($theme);
+    //@include mat-toolbar-theme($theme);
+    //@include mat-tooltip-theme($theme);
+    //@include mat-tree-theme($theme);
+    //@include mat-snack-bar-theme($theme);
+  }

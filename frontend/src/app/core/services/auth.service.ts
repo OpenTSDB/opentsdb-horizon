@@ -21,10 +21,11 @@ import { SetAuth } from '../../shared/state/auth.state';
 import { Observable , of} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { DbfsState } from '../../shared/modules/dashboard-filesystem/state/dbfs.state';
+import { AppConfigService } from './config.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private http: HttpClient, private store: Store) {}
+    constructor(private http: HttpClient, private store: Store, private appConfig: AppConfigService ) {}
 
     /*
         renews the cookie.
@@ -32,9 +33,10 @@ export class AuthService {
     */
     canCookieRenewed() {
         const self = this;
+        const authConfig = this.appConfig.getConfig().auth;
         return new Observable((observer) => {
             const image = new Image();
-            image.src = '/heartbeatimg?t=' + new Date().getTime();
+            image.src = authConfig.heartbeatImgURL + '?t=' + new Date().getTime();
             image.onload = function() {
                 observer.next('cookie-renewed');
                 self.store.dispatch(new SetAuth('valid'));
@@ -54,25 +56,33 @@ export class AuthService {
     getCookieStatus(heartbeat= false) {
         const user = this.store.selectSnapshot(DbfsState.getUser());
         const self = this;
+        const authConfig = this.appConfig.getConfig().auth;
         self.store.dispatch(new SetAuth('unknown'));
-        return this.http.get('/heartbeat?userid='+ (user ? user.alias : ''))
-            .pipe(
-                map(
-                    (res) => {
-                        if ( !heartbeat ) {
-                            self.store.dispatch(new SetAuth('valid'));
+        if ( authConfig.heartbeatURL ) {
+            return this.http.get( authConfig.heartbeatURL, { withCredentials: true } )
+                .pipe(
+                    map(
+                        (res) => {
+                            if ( !heartbeat ) {
+                                self.store.dispatch(new SetAuth('valid'));
+                            }
+                            return 'cookie-valid';
                         }
-                        return of('cookie-valid');
-                    }
-                ),
-                catchError(
-                    error => {
-                        if ( !heartbeat && error.status === 401 ) {
-                            return this.canCookieRenewed();
+                    ),
+                    catchError(
+                        error => {
+                            if ( !heartbeat && error.status === 403 && authConfig.heartbeatImgURL ) {
+                                return this.canCookieRenewed();
+                            } else if ( !heartbeat && error.status === 403 && !authConfig.heartbeatImgURL ) {
+                                self.store.dispatch(new SetAuth('invalid'));
+                                return of('cookie-invalid');
+                            }
+                            return of('cookie-check-error');
                         }
-                        return of('cookie-check-error');
-                    }
-                )
-            );
+                    )
+                );
+        } else {
+            return of('cookie-check-error');
+        }
     }
 }

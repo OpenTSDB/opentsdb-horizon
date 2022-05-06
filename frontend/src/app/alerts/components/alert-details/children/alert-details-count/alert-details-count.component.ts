@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
-import { MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material';
+import { Component, OnInit, Input, HostBinding, ViewEncapsulation } from '@angular/core';
+import { MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { AppConfigService } from "../../../../../core/services/config.service";
 import { AuraDialogComponent } from '../../../../../shared/modules/sharedcomponents/components/aura-dialog/aura-dialog.component';
 
 @Component({
   selector: 'alert-details-count',
   templateUrl: './alert-details-count.component.html',
-  styleUrls: []
+  styleUrls: ['./alert-details-count.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AlertDetailsCountComponent implements OnInit {
 

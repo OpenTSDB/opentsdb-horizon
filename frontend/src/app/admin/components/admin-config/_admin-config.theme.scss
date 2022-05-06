@@ -1,0 +1,19 @@
+@mixin admin-config-component-theme() {
+    .app-admin-section.app-admin-config {
+        background-color: mat-color($background, card);
+
+        .action-controls {
+            border-top: 1px solid mat-color($foreground, divider);
+        }
+
+        .config-section-endpoints {
+            .metric-hosts-list {
+                border: 1px solid mat-color($foreground, divider);
+            }
+        }
+
+        .add-new-metric-host {
+            color: mat-color($foreground, link);
+        }
+    }
+}

@@ -25,23 +25,25 @@ import {
     ElementRef,
     Renderer2,
     ViewChild,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker-hsv-selector',
     templateUrl: './color-picker-hsv-selector.component.html',
-    styleUrls: ['./color-picker-hsv-selector.component.scss']
+    styleUrls: ['./color-picker-hsv-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
 
     @HostBinding('class.color-picker-hsv-selector') private _hostClass = true;
 
-    @ViewChild('colorBlock') _colorBlock: ElementRef;
-    @ViewChild('colorPicker') _colorPicker: ElementRef;
+    @ViewChild('colorBlock', { static: true }) _colorBlock: ElementRef;
+    @ViewChild('colorPicker', { static: true }) _colorPicker: ElementRef;
 
     @Input()
     get selectedColor(): string {
@@ -51,16 +53,16 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
         this._selectedColor = value || this.emptyColor;
         this.checkBaseColorDifference();
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _selectedColor: string = '';
 
     @Output() colorChanged: any = new EventEmitter<any>();
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     baseColor: string = '#000000';
     baseHsv: any = {};
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     isDragging: boolean = false;
 
     constructor(

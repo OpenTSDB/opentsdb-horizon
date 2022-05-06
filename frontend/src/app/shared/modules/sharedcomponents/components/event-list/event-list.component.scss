@@ -15,215 +15,158 @@
 // * limitations under the License.
 // *
 
-@mixin event-list-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+@import '~@angular/material/theming';
+@import 'config';
+@import 'typography';
+@import 'mixins';
 
-    $mono-fontface: map-get($app-fontface-config, mono);
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-    .event-list .event-stream-list {
+$mono-fontface: map-get($app-fontface-config, mono);
 
-        .event-panel.mat-expansion-panel {
-            @include mat-elevation(0);
+.event-list .event-stream-list {
+
+    .event-panel.mat-expansion-panel {
+        @include mat-elevation(0);
+        border-radius: 0;
+
+        .mat-expansion-panel-header {
+            flex-direction: row-reverse;
+            cursor: pointer;
             border-radius: 0;
+            line-height: 16px;
+            padding-left: 12px;
 
-            .mat-expansion-panel-header {
-                flex-direction: row-reverse;
-                cursor: pointer;
-                border-radius: 0;
-                line-height: 16px;
-                padding-left: 12px;
+            .mat-expansion-indicator {
+                margin-right: 12px;
+                margin-top: -6px;
+            }
+        }
 
-                .mat-expansion-indicator {
-                    margin-right: 12px;
-                    margin-top: -6px;
+        .mat-expansion-panel-header-title {
+            font-size: mat-font-size($mono-fontface, body-1);
+
+            .event-time {
+                font-family: mat-font-family($mono-fontface);
+                margin-right: 5px;
+                width: 80px;
+            }
+
+            .event-source {
+                margin-right: 5px;
+            }
+
+            .event-title {
+                white-space: nowrap;
+            }
+
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0;
+            font-size: 12px;
+
+            .tag-key {
+                font-weight: bold;
+            }
+
+            .tag-value {
+                padding-left: 4px;
+                font-family: mat-font-family($mono-fontface);
+                word-break: break-all;
+            }
+
+            fieldset {
+                border-radius: 5px;
+                padding: 5px;
+            }
+
+            legend {
+                padding-left: 2px;
+                padding-right: 2px;
+            }
+
+            .event-summary {
+                padding: 0px 24px 8px 30px;
+
+                .event-tags {
+                    .event-tag {
+                        float: left;
+                        margin-left: 5px;
+                        margin-bottom: 6px;
+                        padding-left: 5px;
+                        padding-right: 5px;
+                        // padding-bottom: 5px;
+                    }
+                }
+
+                .event-properties {
+
+                    .event-property {
+                        float: left;
+                        margin-left: 5px;
+                        margin-bottom: 6px;
+                        padding-left: 5px;
+                        padding-right: 5px;
+                        // padding-bottom: 5px;
+                    }
+                }
+
+                .event-message {
+                    margin-top: 5px;
                 }
             }
 
-            .mat-expansion-panel-header-title {
-                font-size: mat-font-size($mono-fontface, body-1);
+            .event-details-text-wrapper {
 
-                .event-time {
+                .event-details-text {
+                    margin-left: 10px;
+                    padding-bottom: 5px;
+                }
+
+                .mat-button {
+                    min-width: initial;
+                    padding: 0 4px;
+                    line-height: initial;
+                    margin: 4px 0 4px -4px;
+
+                    font-size: 12px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(12px);
+                        margin-left: 6px;
+                    }
+                }
+
+                .event-details-text {
+                    // padding: 6px;
+                    border-radius: 4px;
                     font-family: mat-font-family($mono-fontface);
-                    margin-right: 5px;
-                    width: 80px;
-                }
-
-                .event-source {
-                    margin-right: 5px;
-                }
-
-                .event-title {
-                    white-space: nowrap;
-                }
-
-            }
-
-            .mat-expansion-panel-body {
-                padding: 0;
-                font-size: 12px;
-
-                .tag-key {
-                    font-weight: bold;
-                }
-
-                .tag-value {
-                    padding-left: 4px;
-                    font-family: mat-font-family($mono-fontface);
-                    word-break: break-all;
-                }
-
-                fieldset {
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-
-                legend {
-                    padding-left: 2px;
-                    padding-right: 2px;
-                }
-
-                .event-summary {
-                    padding: 0px 24px 8px 30px;
-
-                    .event-tags {
-                        .event-tag {
-                            float: left;
-                            margin-left: 5px;
-                            margin-bottom: 6px;
-                            padding-left: 5px;
-                            padding-right: 5px;
-                            // padding-bottom: 5px;
-                        }
-                    }
-
-                    .event-properties {
-
-                        .event-property {
-                            float: left;
-                            margin-left: 5px;
-                            margin-bottom: 6px;
-                            padding-left: 5px;
-                            padding-right: 5px;
-                            // padding-bottom: 5px;
-                        }
-                    }
-
-                    .event-message {
-                        margin-top: 5px;
-                    }
-                }
-
-                .event-details-text-wrapper {
-
-                    .event-details-text {
-                        margin-left: 10px;
-                        padding-bottom: 5px;
-                    }
-
-                    .mat-button {
-                        min-width: initial;
-                        padding: 0 4px;
-                        line-height: initial;
-                        margin: 4px 0 4px -4px;
-
-                        font-size: 12px;
-
-                        .mat-icon {
-                            @include sizeDenaliIcon(12px);
-                            margin-left: 6px;
-                        }
-                    }
-
-                    .event-details-text {
-                        // padding: 6px;
-                        border-radius: 4px;
-                        font-family: mat-font-family($mono-fontface);
-                        font-size: 12px;
-                        line-height: 12px;
-                        margin-top: 2px;
-                    }
-                }
-            }
-
-            // when event-panel (accordion item) is open
-            &.mat-expanded {
-                .mat-expansion-panel-header {
-                    // font-weight: bold;
-                    .mat-expansion-indicator {
-                        margin-top: 2px;
-                    }
+                    font-size: 12px;
+                    line-height: 12px;
+                    margin-top: 2px;
                 }
             }
         }
-    }
 
-    .event-list {
-        .no-events-message {
-            padding-top: 5px;
-            padding-left: 10px;
+        // when event-panel (accordion item) is open
+        &.mat-expanded {
+            .mat-expansion-panel-header {
+                // font-weight: bold;
+                .mat-expansion-indicator {
+                    margin-top: 2px;
+                }
+            }
         }
     }
 }
 
-@mixin event-list-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        .event-list {
-            .event-panel.mat-expansion-panel {
-                .mat-expansion-panel-header {
-                    &:hover {
-                        background: mat-color($foreground, darker-divider);
-                    }
-                }
-
-                .mat-expansion-panel-body {
-
-                    fieldset {
-                        background: if(
-                            $is-dark,
-                            mat-color($background, background),
-                            $white
-                        );
-                        border: if(
-                            $is-dark,
-                            1px solid $black,
-                            1px solid #e0e0e0 // TODO: plug into theme
-                        );
-                    }
-
-                    .event-summary {
-                        background: mat-color($foreground, lighter-divider);
-
-                        &:not(:last-child) {
-                            border-bottom: 1px solid mat-color($foreground, lighter-divider);
-                        }
-                    }
-
-                    .event-tag {
-                        background: mat-color($foreground, lighter-divider);
-                        border-radius: 5px;
-                    }
-
-                    .event-property {
-                        background: mat-color($foreground, lighter-divider);
-                        border-radius: 5px;
-                    }
-                }
-
-                // when event-panel (accordion item) is open
-                &.mat-expanded {
-                    .mat-expansion-panel-header {
-                        background: mat-color($foreground, lighter-divider);
-                    }
-
-                    .mat-expansion-panel-body {
-                        border-bottom: 1px solid mat-color($foreground, divider);
-                    }
-                }
-            }
-        }
+.event-list {
+    .no-events-message {
+        padding-top: 5px;
+        padding-left: 10px;
     }
 }

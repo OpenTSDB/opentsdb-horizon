@@ -15,94 +15,68 @@
 // * limitations under the License.
 // *
 
-@mixin alert-details-suppress-config-component-base() {
+.alert-details-suppress-config-component {
+    .suppress-alert {
 
-    .alert-details-suppress-config-component {
-        .suppress-alert {
+        .sentence-chain-form {
+            margin-bottom: 5px;
+        }
+        .sentence-item {
+            display: inline-flex;
+            align-items: center;
+            height: 36px;
 
-            .sentence-chain-form {
-                margin-bottom: 5px;
-            }
-            .sentence-item {
-                display: inline-flex;
-                align-items: center;
-                height: 36px;
-
-                &:not(:last-child) {
-                    margin-right: 8px;
-                }
-
-                &.metric {
-                    max-width: 300px;
-                }
-                &.threshold,
-                &.reporting-interval {
-                    position: relative;
-                    .mat-form-field {
-                        width: 70px;
-                    }
-                    .mat-error {
-                        position: absolute;
-                        top: 100%;
-                        white-space: nowrap;
-                    }
-                }
-            }
-            .is-fullwindow {
-                margin: 8px 0px;
-            }
-            &.read-only {
-                opacity: 0.5;
-                pointer-events: none;
+            &:not(:last-child) {
+                margin-right: 8px;
             }
 
-            .display-name {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                height: 32px;
-                cursor: pointer;
-                border-radius: 4px;
-
-                span {
-                    flex: 1;
-                    padding-left: 6px;
-                    text-overflow: ellipsis;
-                    display: inline-block;
-                    overflow: hidden;
+            &.metric {
+                max-width: 300px;
+            }
+            &.threshold,
+            &.reporting-interval {
+                position: relative;
+                .mat-form-field {
+                    width: 70px;
                 }
-                .mat-icon {
-                    width: 16px;
-                    height: 16px;
-                    font-size: 12px;
-                    line-height: 16px;
-                    margin-left: 2px;
-                    color: #448aff;
+                .mat-error {
+                    position: absolute;
+                    top: 100%;
+                    white-space: nowrap;
                 }
             }
         }
-    }
-}
+        .is-fullwindow {
+            margin: 8px 0px;
+        }
+        &.read-only {
+            opacity: 0.5;
+            pointer-events: none;
+        }
 
-@mixin alert-details-suppress-config-component-theme($theme-config) {
-    // * Theme config parts
-    //$primary: map-get($theme-config, primary);
-    //$accent: map-get($theme-config, accent);
-    //$warn: map-get($theme-config, warn);
-    $foreground: map-get($theme-config, foreground);
-    //$background: map-get($theme-config, background);
-    //$other: map-get($theme-config, other);
-    //$is-dark: map-get($theme-config, is-dark);
+        .display-name {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            height: 32px;
+            cursor: pointer;
+            border-radius: 4px;
 
-    .alert-details-suppress-config-component {
-
-            .display-name {
-                background-color: mat-color($foreground, link, 0.1);
-
-                .mat-icon {
-                    color: mat-color($foreground, link);
-                }
-
+            span {
+                flex: 1;
+                padding-left: 6px;
+                text-overflow: ellipsis;
+                display: inline-block;
+                overflow: hidden;
             }
+            .mat-icon {
+                width: 16px;
+                height: 16px;
+                font-size: 12px;
+                line-height: 16px;
+                margin-left: 2px;
+                color: #448aff;
+            }
+        }
     }
 }

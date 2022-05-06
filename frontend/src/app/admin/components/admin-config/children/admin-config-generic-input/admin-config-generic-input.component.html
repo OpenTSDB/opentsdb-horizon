@@ -1,0 +1,17 @@
+<div class="form-label" *ngIf="inputLabel">
+    <span>{{inputLabel}}</span>
+</div>
+<div class="form-control-wrap auto-width">
+    <mat-form-field
+        appearance="fill"
+        floatLabel="never"
+        [ngClass]="{'mat-form-field-invalid': hasErrors}">
+        <input matInput autocomplete="off"
+            oninput="this.parentNode.dataset.value = this.value"
+            [value]="inputValue"
+            [formControl]="inputValueControl"
+            [type]="inputType"
+            [placeholder]="inputPlaceholder">
+    </mat-form-field>
+    <mat-error *ngIf="hasErrors">{{errorMsg || 'There was an error'}}</mat-error>
+</div>

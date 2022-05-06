@@ -19,20 +19,8 @@
 // * ADMIN THEMES COMPONENT
 // *
 
- @import 'loader-base';
-
- :host.app-admin-section.app-admin-themes {
+.app-admin-section.app-admin-themes {
     display: flex;
     flex: 1 1 100%;
     flex-direction: column;
-    min-height: 100%;
- }
-
- // CDK items (if any)
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    :host.app-admin-section.app-admin-themes{
-        background-color: mat-color($background, card);
-    }
 }

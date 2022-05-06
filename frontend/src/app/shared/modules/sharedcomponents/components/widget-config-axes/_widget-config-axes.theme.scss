@@ -1,0 +1,14 @@
+@mixin widget-config-axes-component-theme() {
+
+    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
+
+    .widget-config-tab.axes-configuration {
+        // style rules here
+
+        .mat-form-field.inline-hint {
+            .mat-hint {
+                color: mat-color($foreground, hint-text);
+            }
+        }
+    }
+}

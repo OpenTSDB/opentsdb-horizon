@@ -1,0 +1,33 @@
+@mixin landing-page-content-component-theme() {
+    .landing-page-content {
+        border-right: 2px solid mat-color($foreground, divider);
+
+        .landing-page-hero {
+            background-color: mat-color($background, card);
+        }
+
+        .landing-page-utilities {
+
+            .mat-toolbar {
+                background: transparent;
+            }
+
+            .search-utility {
+                background-color: mat-color($background, card);
+
+                .search-query-form-field {
+                    .mat-icon {
+                        color: mat-color($primary, default);
+                    }
+
+                    .mat-form-field-underline {
+
+                        .mat-form-field-ripple {
+                            background-color: mat-color($primary, default);
+                        }
+                    }
+                }
+            }
+        }
+    }
+ }

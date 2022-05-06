@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, OnDestroy, ElementRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { Subscription, BehaviorSubject, of } from 'rxjs';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'markdown-widget',
   templateUrl: './markdown-widget.component.html',
-  styleUrls: []
+  styleUrls: ['./markdown-widget.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   @HostBinding('class.widget-panel-content') private _hostClass = true;
@@ -35,6 +36,7 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
   /** Inputs */
   @Input() mode = 'view'; // view/edit
   @Input() widget: any;
+  @Input() readonly = true;
 
   isDataRefreshRequired = false;
 

@@ -26,21 +26,22 @@ import {
     ViewChild,
     ElementRef,
     HostBinding,
-    HostListener
+    HostListener,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith, debounceTime, switchMap, skip } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'namespace-autocomplete',
     templateUrl: './namespace-autocomplete.component.html',
-    styleUrls: []
+    styleUrls: ['./namespace-autocomplete.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
-
 export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.namespace-autocomplete-component') private _hostClass = true;
@@ -50,8 +51,8 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
     @Input() initFocus = false;
     @Output() nschange = new EventEmitter();
     @Output() blur = new EventEmitter();
-    @ViewChild('namespaceInput') nsInput: ElementRef;
-    @ViewChild('trigger') trigger: MatAutocompleteTrigger;
+    @ViewChild('namespaceInput', { static: true }) nsInput: ElementRef;
+    @ViewChild('trigger', { static: true }) trigger: MatAutocompleteTrigger;
 
     visible = false;
     destroy = false;

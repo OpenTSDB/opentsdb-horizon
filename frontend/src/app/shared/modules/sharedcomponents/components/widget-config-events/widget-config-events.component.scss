@@ -15,60 +15,42 @@
 // * limitations under the License.
 // *
 
-@mixin widget-config-events-component-base() {
+.widget-config-events {
+    padding: 10px;
+    width: 100%;
 
-    .widget-config-events {
-        padding: 10px;
+    .namespace {
+        margin-top: 10px;
+    }
+
+    .search {
+        margin-top: 10px;
         width: 100%;
 
-        .namespace {
-            margin-top: 10px;
-        }
-
-        .search {
-            margin-top: 10px;
+        .search-input {
+            display: block;
             width: 100%;
+            padding-left: 5px;
+        }
 
-            .search-input {
-                display: block;
-                width: 100%;
-                padding-left: 5px;
-            }
+        .info-hint {
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            font-size: 10px;
+            margin-left: 8px;
 
-            .info-hint {
-                height: 32px;
-                display: inline-flex;
-                align-items: center;
+            .mat-icon {
                 font-size: 10px;
-                margin-left: 8px;
+                width: 8px;
+                height: 10px;
 
-                .mat-icon {
-                    font-size: 10px;
-                    width: 8px;
-                    height: 10px;
-
-                    &:first-child {
-                        margin-right: 6px;
-                    }
+                &:first-child {
+                    margin-right: 6px;
                 }
             }
         }
     }
 }
 
-@mixin widget-config-events-component-theme($theme-config) {
 
-    @include variables-compatibility($theme-config) {
-        $chip-bg: rgba(map-get($primary, default), .1);
-
-        .widget-config-events {
-
-            .search {
-                .search-input {
-                    background: $chip-bg;
-
-                }
-            }
-        }
-    }
-}

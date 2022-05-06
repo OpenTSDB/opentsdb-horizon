@@ -34,6 +34,7 @@ import {
     Renderer2,
     SimpleChanges,
     ViewChild,
+    ViewEncapsulation,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -48,10 +49,11 @@ interface ColorOption {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'color-picker-selector',
     templateUrl: './color-picker-selector.component.html',
-    styleUrls: [],
+    styleUrls: ['./color-picker-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -104,7 +106,7 @@ export class ColorPickerSelectorComponent
             this._selectedColor = isValidColor(value) ? value : '#000000' ;
         }
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _selectedColor: string = '';
 
     /**
@@ -117,7 +119,7 @@ export class ColorPickerSelectorComponent
     set hideHexForms(value: boolean) {
         this._hideHexForms = value;
     }
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _hideHexForms: boolean = false;
 
     /**
@@ -138,7 +140,7 @@ export class ColorPickerSelectorComponent
     /**
      * RGBA current color
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     private _rgbaColor: string = 'rgba(255,0,0,1)';
 
     /**
@@ -164,13 +166,13 @@ export class ColorPickerSelectorComponent
     /**
      * Handle color of the text
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     textClass: string = 'black';
 
     /**
      * Validate if the mouse button is pressed
      */
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     _isPressed: boolean = false;
 
     /**
@@ -194,9 +196,9 @@ export class ColorPickerSelectorComponent
      */
     heightOfComponent: number;
 
-    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' }, 
-        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' }, 
-        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' }, 
+    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' },
+        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' },
+        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' },
         { hex: '#800080', rgb: [128,0,128], name:'Purple' }, { hex: '#FFFF00', rgb: [255, 255, 0], name:'Yellow' }, { hex: '#FF0000', rgb: [255, 0, 0], name:'Red' }, { hex: '#A52A2A', rgb: [165, 42, 42], name:'Brown' }
     ];
 
@@ -309,7 +311,7 @@ export class ColorPickerSelectorComponent
 
         this._rgbValuesSub = this.rgbForm.valueChanges.subscribe(controls => {
             const data: string[] = [];
-            // tslint:disable-next-line:forin
+            // eslint-disable-next-line guard-for-in
             for (const key in controls) {
                 if (!controls[key] || controls[key] > 255) {
                     data.push('');

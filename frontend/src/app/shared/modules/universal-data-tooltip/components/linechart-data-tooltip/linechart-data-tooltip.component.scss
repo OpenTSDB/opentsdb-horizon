@@ -15,57 +15,7 @@
 // * limitations under the License.
 // *
 
-@mixin linechart-data-tooltip-component-base() {
-
-    .linechart-data-tooltip {
-        .tooltip-output {
-            /*.value-marker {
-                display: flex;
-
-                span {
-                    display: inline-block;
-                    padding: 2px 8px;
-                    font-size: 14px;
-
-                    &.value {
-                        font-weight: bold;
-                    }
-
-                    &.time {
-                        flex: 1;
-                    }
-                }
-            }
-            .other-data {
-                padding: 2px 4px 0 4px;
-                // margin-top: 2px;
-                font-size: 10px;
-
-                p {
-                    display: inline-block;
-
-                    &:not(:last-child) {
-                        margin-right: 12px;
-                    }
-                }
-            }*/
-        }
-    }
-}
-
-@mixin linechart-data-tooltip-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-
-        $primary-accent-contrast: mat-color($primary, "A100-contrast");
-        $vm-text: if($is-dark, $black, $primary-accent-contrast);
-
-        .linechart-data-tooltip {
-            .tooltip-output {
-                .value-marker,
-                .other-data {
-                    color: $vm-text;
-                }
-            }
-        }
-    }
-}
+//.linechart-data-tooltip {
+//    .tooltip-output {
+//    }
+//}

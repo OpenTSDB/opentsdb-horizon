@@ -15,28 +15,22 @@
 // * limitations under the License.
 // *
 
-@mixin dbs-meta-component-base() {
+.dbs-meta-component {
+    .settings-control {
+        width: 500px;
 
-    .dbs-meta-component {
-        .settings-control {
-            width: 500px;
-
-            &:not(:last-child) {
-                margin-bottom: 24px;
-            }
+        &:not(:last-child) {
+            margin-bottom: 24px;
         }
+    }
 
-        .dashboard-labels-control {
-            .mat-form-field-flex {
-                align-items: center;
-                justify-content: center;
-            }
+    .dashboard-labels-control {
+        .mat-form-field-flex {
+            align-items: center;
+            justify-content: center;
         }
     }
 }
 
-@mixin dbs-meta-component-theme($theme-config) {
-    //@include variables-compatibility($theme-config) {
-    // CSS HERE
-    //}
-}
+
+

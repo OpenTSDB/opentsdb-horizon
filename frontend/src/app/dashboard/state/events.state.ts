@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { map, catchError } from 'rxjs/operators';
@@ -116,6 +117,7 @@ export class SetEventsTimeZone {
 // }
 
 
+@Injectable()
 @State<EventsStateModel>({
     name: 'Events',
     defaults: {

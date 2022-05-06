@@ -15,106 +15,46 @@
 // * limitations under the License.
 // *
 
-@mixin generic-message-bar-component-base() {
-    .generic-message-bar {
-        display: none;
-        width: 100%;
+.generic-message-bar {
+    display: none;
+    width: 100%;
 
-        &.show-message {
-            display: flex;
-            flex: 1 1 48px;
-            min-height: 48px;
+    &.show-message {
+        display: flex;
+        flex: 1 1 48px;
+        min-height: 48px;
+    }
+
+    .generic-message-bar-wrapper {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .generic-message-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        border-radius: 4px;
+        padding: 8px 16px;
+
+        .message-type {
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-right: 8px;
         }
 
-        .generic-message-bar-wrapper {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
+        .mat-icon {
+            font-weight: 400;
+            margin-right: 8px;
         }
+    }
 
-        .generic-message-item {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            border-radius: 4px;
-            padding: 8px 16px;
-
-            .message-type {
-                text-transform: uppercase;
-                font-weight: 500;
-                margin-right: 8px;
-            }
-
-            .mat-icon {
-                font-weight: 400;
-                margin-right: 8px;
-            }
-        }
-
-        .close-action {
-            margin-left: 8px;
-        }
+    .close-action {
+        margin-left: 8px;
     }
 }
 
-@mixin generic-message-bar-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
 
-        .generic-message-bar {
-            .generic-message-item {
-                color: rgba($black, 0.85);
-                background-color: rgba($white, .9);
-            }
-
-            &.is-error {
-                background-color: mat-color($other, status-error);
-                color: mat-color($other, status-error-contrast);
-
-                .generic-message-item {
-                    .mat-icon,
-                    .message-type {
-                        color: mat-color($other, status-error);
-                    }
-                }
-            }
-
-            &.is-warning {
-                background-color:mat-color($other, status-warning);
-                color: mat-color($other, status-warning-contrast);
-
-                .generic-message-item {
-                    .mat-icon,
-                    .message-type {
-                        color: mat-color($other, status-warning);
-                    }
-                }
-            }
-
-            &.is-success {
-                background-color: mat-color($other, status-success);
-                color: mat-color($other, status-success-contrast);
-
-                .generic-message-item {
-                    .mat-icon,
-                    .message-type {
-                        color: mat-color($other, status-success);
-                    }
-                }
-            }
-
-            &.is-info {
-                background-color: mat-color($other, status-info);
-                color: mat-color($other, status-info-contrast);
-
-                .generic-message-item {
-                    .mat-icon,
-                    .message-type {
-                        color: mat-color($other, status-info);
-                    }
-                }
-            }
-        }
-    }
-}

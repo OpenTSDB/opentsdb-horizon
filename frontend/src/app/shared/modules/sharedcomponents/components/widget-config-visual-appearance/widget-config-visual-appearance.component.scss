@@ -15,408 +15,278 @@
 // * limitations under the License.
 // *
 
-// * WIDGET CONFIG COMPONENT */
+.widget-config-tab.visual-appearance-configuration {
+    // style rules here
 
-@mixin widget-config-visual-appearance-component-base() {
-    .widget-config-tab.visual-appearance-configuration {
-        // style rules here
+    form {
+        display: block;
+    }
 
-        form {
-            display: block;
-        }
+    .mat-table {
+        width: 100%;
+    }
+
+    .column {
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .column.linechart-container {
+        padding-left: 0;
+        padding-right: 0;
 
         .mat-table {
-            width: 100%;
-        }
+            .mat-header-row {
+                height: 30px;
+            }
 
-        .column {
-            display: inline-flex;
-            flex-direction: column;
-        }
+            .mat-header-cell {
+                text-transform: uppercase;
+            }
 
-        .column.linechart-container {
-            padding-left: 0;
-            padding-right: 0;
+            .mat-column-index {
+                padding: 0 8px;
+                width:30px;
+            }
 
-            .mat-table {
-                .mat-header-row {
+            .metric-group-row {
+                height: 40px;
+
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 14px;
+                }
+
+                // column specific
+                .mat-column-metric {
+                    font-weight: 500;
+                }
+            }
+
+            .mat-row {
+                height: 30px;
+
+                .mat-cell {
+                    line-height: 1;
+                }
+
+                // specific columns
+                .mat-column-index div {
+                    padding: 5px;
+                    background: #cccccc;
+                    font-weight: 500;
+                    width: 30px;
                     height: 30px;
                 }
+                .mat-column-metric {
+                    .mat-form-field {
+                        .mat-hint {
+                            display: none;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
 
-                .mat-header-cell {
-                    text-transform: uppercase;
-                }
+                        // modifiers
 
-                .mat-column-index {
-                    padding: 0 8px;
-                    width:30px;
-                }
-
-                .metric-group-row {
-                    height: 40px;
-
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 14px;
-                    }
-
-                    // column specific
-
-
-                    .mat-column-metric {
-                        font-weight: 500;
-                    }
-                }
-
-                .mat-row {
-                    height: 30px;
-
-                    .mat-cell {
-                        line-height: 1;
-                    }
-
-                    // specific columns
-                    .mat-column-index div {
-                        padding: 5px;
-                        background: #cccccc;
-                        font-weight: 500;
-                        width: 30px;
-                        height: 30px;
-                    }
-                    .mat-column-metric {
-                        .mat-form-field {
+                        &:hover,
+                        &.mat-focused {
                             .mat-hint {
-                                display: none;
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                            }
-
-                            // modifiers
-
-                            &:hover,
-                            &.mat-focused {
-                                .mat-hint {
-                                    display: block;
-                                }
+                                display: block;
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        .stack-order-container {
-            flex: 1 1 120px;
-            margin-left: 8px;
-            .config-control .mat-label {
-                font-size: 12px;
-                font-weight: 500;
-                color: rgba(0, 0, 0, 0.8)
-            }
+    .stack-order-container {
+        flex: 1 1 120px;
+        margin-left: 8px;
+        .config-control .mat-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.8)
+        }
+    }
+
+    .donut-chart-visual-container,
+    .bar-chart-visual-container {
+        display: flex;
+        .mat-label {
+            width: 150px;
+            display: inline-block;
+        }
+        .mat-icon {
+            margin-right: 8px;
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
+        }
+    }
+
+    .table-widget-visual-container{
+        .mat-label {
+            width: 150px;
+            display: inline-block;
+        }
+    }
+
+    .column.barchart-container,
+    .column.circlechart-container,
+    .column.topnchart-container,
+    .column.stackbars-container,
+    .column.stacks-container {
+        padding-left: 30px;
+
+        .config-control:first-child {
+            margin-bottom: 0;
         }
 
-        .donut-chart-visual-container,
-        .bar-chart-visual-container {
-            display: flex;
-            .mat-label {
-                width: 150px;
-                display: inline-block;
+
+        .mat-table {
+            .mat-header-row {
+                height: 30px;
             }
-            .mat-icon {
-                margin-right: 8px;
-                width: 14px;
-                height: 14px;
-                font-size: 14px;
-            }
-        }
+            .mat-row {
+                border-bottom: 0;
 
-        .table-widget-visual-container{
-            .mat-label {
-                width: 150px;
-                display: inline-block;
-            }
-        }
-
-        .column.barchart-container,
-        .column.circlechart-container,
-        .column.topnchart-container,
-        .column.stackbars-container,
-        .column.stacks-container {
-            padding-left: 30px;
-
-            .config-control:first-child {
-                margin-bottom: 0;
-            }
-
-
-            .mat-table {
-                .mat-header-row {
-                    height: 30px;
+                .mat-cell {
+                    padding: 8px;
+                    overflow: initial
                 }
-                .mat-row {
-                    border-bottom: 0;
 
-                    .mat-cell {
-                        padding: 8px;
-                        overflow: initial
-                    }
+                .mat-cell:first-child {
+                    padding-left: 0;
+                }
 
-                    .mat-cell:first-child {
-                        padding-left: 0;
-                    }
+                .mat-cell:last-child {
+                    width: 100%;
+                }
 
-                    .mat-cell:last-child {
+                .mat-cell:not(:last-child) {
+                    flex: initial;
+                }
+
+                // specific columns
+                .mat-column-settings-visual-label {
+                    width: 300px;
+
+                    .mat-form-field {
                         width: 100%;
                     }
-
-                    .mat-cell:not(:last-child) {
-                        flex: initial;
-                    }
-
-                    // specific columns
-                    .mat-column-settings-visual-label {
-                        width: 300px;
-
-                        .mat-form-field {
-                            width: 100%;
-                        }
-                    }
-                }
-            }
-
-            .mat-form-field {
-                .mat-form-field-subscript-wrapper {
-                    overflow: initial;
-
-                    .mat-hint {
-                        white-space: nowrap;
-                    }
                 }
             }
         }
 
-        .column.topnchart-container {
-            .config-control {
-                margin-top: 10px;
-            }
-        }
+        .mat-form-field {
+            .mat-form-field-subscript-wrapper {
+                overflow: initial;
 
-        .column.topnchart-container {
-            padding-left: 0px;
-            flex: 0 0 25%;
-        }
-
-        .column.heatmap-metric-settings {
-            padding-right: 20px;
-            flex: 0 0 75%;
-        }
-
-        .column.heatmap-unit-settings {
-            .config-control {
-                margin-top: 20px;
-                margin-bottom: 25px;
-                color: rgba(0, 0, 0, 0.54);
-                font-weight: 450;
-            }
-        }
-
-        .column.stackbars-container {
-            flex: 1 1 450px;
-        }
-
-        .conditional-formatter {
-            margin-left: 25px;
-        }
-
-        /* specific controls */
-
-        // display modifier
-
-
-        ////// OLD STYLES //////
-        /*.column {
-            display: inline-flex;
-            flex-direction: row;
-        }
-        .column:nth-child(n+2):nth-last-child(n+2) {
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-
-        .column:first-child {
-            width:200px;
-            padding-right: 30px;
-            flex-direction: column;
-        }
-
-        .column:last-child {
-            padding-left: 30px;
-            width: calc(100% - 250px);
-        }
-
-        .display-label {
-            display: block;
-            padding: 10px 5px;
-        }
-
-        mat-button-toggle-group {
-            background: #f0f4fe;
-            padding:10px 10px;
-        }
-
-        mat-button-toggle-group.display-toggle-group {
-            flex-direction: column;
-        }
-
-        mat-button-toggle {
-            display: block;
-            width:150px;
-            color: #84b6f1;
-        }
-
-        mat-button-toggle .mat-button-toggle-label-content {
-            display: block;
-            padding: 3px 3px;
-        }
-
-        mat-row, mat-header-row, mat-footer-row {
-            border-bottom-width: 1px;
-        }
-
-        .mat-button-toggle-checked {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        mat-cell {
-            padding-top: 5px;
-            width:300px;
-        }
-
-        mat-row mat-cell:first-child {
-            width:100px;
-            flex: initial;
-        }
-
-        mat-table {
-            width: 100%;
-        }
-        */
-
-        .form-group {
-            display: flex;
-            align-items: flex-start;
-
-            &:not(:last-child),
-            &:not(.select-threshold-type) {
-                margin-bottom: 12px;
-            }
-
-            .form-label,
-            .toggle-wrap {
-                height: 32px;
-                width: 180px;
-                min-width: 180px;
-                margin-right: 16px;
-                line-height: 1.2;
-                // text-align: right;
-                font-size: 12px;
-            }
-
-
-
-            .form-control-wrap {
-                width: 100%;
-                max-width: 60%;
-                display: flex;
-                flex-direction: column;
-
-                &.auto-width {
-                    width: initial;
-                    max-width: initial;
-                }
-            }
-
-        }
-
-        .table-type-selector {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            [class^="table-"] {
-                height: 92px;
-                width: 131px;
-                background-repeat: no-repeat;
-                background-size: 450px;
-                // background-image is handled by theme
-            }
-            .table-time-metrics-tags {
-                background-position: 0px 0px;
-                &:hover,
-                &.selected-table-type {
-                    background-position: 0 -105px;
-                }
-            }
-            .table-tags-metrics {
-                background-position: -160px 0px;
-                &:hover,
-                &.selected-table-type {
-                    background-position: -160px -105px;
-                }
-            }
-            .table-metrics-tags {
-                width: 145px;
-                background-position: -305px 0px;
-                &:hover,
-                &.selected-table-type {
-                    background-position: -305px -105px;
+                .mat-hint {
+                    white-space: nowrap;
                 }
             }
         }
-
     }
-}
 
-@mixin widget-config-visual-appearance-component-theme($theme-config) {
+    .column.topnchart-container {
+        .config-control {
+            margin-top: 10px;
+        }
+    }
 
-    @include variables-compatibility($theme-config) {
-        $input-bg: mat-color($primary, default, 0.08);
+    .column.topnchart-container {
+        padding-left: 0px;
+        flex: 0 0 25%;
+    }
 
-        .widget-config-tab.visual-appearance-configuration {
-            // style rules here
+    .column.heatmap-metric-settings {
+        padding-right: 20px;
+        flex: 0 0 75%;
+    }
 
-            .mat-table {
-                .metric-group-row {
-                    background-color: mat-color($background, app-bar);
-                }
+    .column.heatmap-unit-settings {
+        .config-control {
+            margin-top: 20px;
+            margin-bottom: 25px;
+            color: rgba(0, 0, 0, 0.54);
+            font-weight: 450;
+        }
+    }
+
+    .column.stackbars-container {
+        flex: 1 1 450px;
+    }
+
+    .conditional-formatter {
+        margin-left: 25px;
+    }
+
+    .form-group {
+        display: flex;
+        align-items: flex-start;
+
+        &:not(:last-child),
+        &:not(.select-threshold-type) {
+            margin-bottom: 12px;
+        }
+
+        .form-label,
+        .toggle-wrap {
+            height: 32px;
+            width: 180px;
+            min-width: 180px;
+            margin-right: 16px;
+            line-height: 1.2;
+            font-size: 12px;
+        }
+
+        .form-control-wrap {
+            width: 100%;
+            max-width: 60%;
+            display: flex;
+            flex-direction: column;
+
+            &.auto-width {
+                width: initial;
+                max-width: initial;
             }
+        }
+    }
 
-            .column.display-modifier-container {
-                .display-modifier {
-                    background-color: $input-bg;
-                }
-
-                .mat-button-toggle {
-                    color: mat-color($foreground, link);
-                }
-
-                .mat-button-toggle-checked {
-                    background: mat-color($background, card);
-                    color: mat-color($foreground, text);
-                }
+    .table-type-selector {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        [class^="table-"] {
+            height: 92px;
+            width: 131px;
+            background-repeat: no-repeat;
+            background-size: 450px;
+        }
+        .table-time-metrics-tags {
+            background-position: 0px 0px;
+            &:hover,
+            &.selected-table-type {
+                background-position: 0 -105px;
             }
-
-            .table-type-selector {
-                $table-bg-file: if(
-                    $is-dark,
-                    '/assets/table-types-dtheme-sprite.png',
-                    '/assets/table-types-ltheme-sprite.png'
-                );
-                [class^="table-"] {
-                    background-image: url($table-bg-file);
-                }
+        }
+        .table-tags-metrics {
+            background-position: -160px 0px;
+            &:hover,
+            &.selected-table-type {
+                background-position: -160px -105px;
+            }
+        }
+        .table-metrics-tags {
+            width: 145px;
+            background-position: -305px 0px;
+            &:hover,
+            &.selected-table-type {
+                background-position: -305px -105px;
             }
         }
     }

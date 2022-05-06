@@ -24,19 +24,21 @@ import { WidgetViewDirective } from '../../directives/widgetview.directive';
 import { WidgetComponentModel } from '../../widgets/models/widgetcomponent';
 import { DashboardService } from '../../services/dashboard.service';
 import { WidgetService } from '../../../core/services/widget.service';
+import { UtilsService } from '../../../core/services/utils.service';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 import { WidgetLoaderComponent } from '../widget-loader/widget-loader.component';
 
 @Component({
   selector: 'app-dboard-content',
   templateUrl: './dboard-content.component.html',
+  styleUrls: ['./dboard-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class DboardContentComponent implements OnChanges {
   @HostBinding('class.app-dboard-content') private _hostClass = true;
 
-  @ViewChild(WidgetViewDirective) widgetViewContainer: WidgetViewDirective;
+  @ViewChild(WidgetViewDirective, { static: true }) widgetViewContainer: WidgetViewDirective;
   @ViewChild(GridsterComponent) gridster: GridsterComponent;
 
   // widgetLoader Children
@@ -49,7 +51,7 @@ export class DboardContentComponent implements OnChanges {
   @Input() rerender: any;
   @Input() dashboardMode: string;
   @Input() dbid: any;
-
+  @Input() readonly = true;
   @Input() batchControlsToggle: boolean = false;
   @Input() batchSelectedItems: any = {};
 
@@ -105,6 +107,7 @@ export class DboardContentComponent implements OnChanges {
     private widgetService: WidgetService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private interCom: IntercomService,
+    private utils: UtilsService,
     private cdRef: ChangeDetectorRef
   ) { }
 
@@ -153,6 +156,10 @@ export class DboardContentComponent implements OnChanges {
     this.loadComponent(comp);
   }
 
+  deepClone(o) {
+    return this.utils.deepClone(o);
+  }
+
   loadComponent(comp: any) {
     const mode = !comp.mode ? 'edit' : comp.mode;
     // get the view container
@@ -167,6 +174,7 @@ export class DboardContentComponent implements OnChanges {
     // assign @input widget
     (<WidgetComponentModel>component.instance).widget = editWidget;
     (<WidgetComponentModel>component.instance).mode =  mode;
+    (<WidgetComponentModel>component.instance).readonly =  this.readonly;
   }
 
   // change ratio when breakpoint hits

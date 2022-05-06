@@ -16,7 +16,7 @@
  */
 import {
     Component, OnInit, OnDestroy, HostBinding, ViewChild,
-    TemplateRef, ChangeDetectorRef, ElementRef, HostListener,
+    TemplateRef, ChangeDetectorRef, ElementRef, HostListener, ViewEncapsulation,
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,6 @@ import { QueryService } from '../../../core/services/query.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { IntercomService, IMessage } from '../../../core/services/intercom.service';
 import { Store, Select } from '@ngxs/store';
-import { AuthState } from '../../../shared/state/auth.state';
 import { skip } from 'rxjs/operators';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
@@ -35,6 +34,7 @@ import { WidgetService } from '../../../core/services/widget.service';
 import { DateUtilsService } from '../../../core/services/dateutils.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { AppConfigService } from '../../../core/services/config.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { DBState, LoadDashboard, SaveDashboard, LoadSnapshot, SaveSnapshot, DeleteDashboardSuccess, DeleteDashboardFail, SetDashboardStatus } from '../../state/dashboard.state';
 
 import { WidgetsState,
@@ -73,12 +73,15 @@ import {
     DbfsDeleteDashboard,
     DbfsResourcesState,
     DbfsRemoveUserFav,
-    DbfsAddUserFav
+    DbfsAddUserFav,
+    DbfsUpdateFolder,
+    DbfsRefreshFolder
 } from '../../../shared/modules/dashboard-filesystem/state';
-import { MatMenuTrigger, MenuPositionX, MatSnackBar } from '@angular/material';
+import { MatMenuTrigger, MenuPositionX } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardDeleteDialogComponent } from '../../components/dashboard-delete-dialog/dashboard-delete-dialog.component';
 import { DashboardToAlertDialogComponent} from '../../components/dashboard-to-alert-dialog/dashboard-to-alert-dialog.component';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 
 import { HttpService } from '../../../core/http/http.service';
 import { DbfsUtilsService } from '../../../shared/modules/dashboard-filesystem/services/dbfs-utils.service';
@@ -98,13 +101,13 @@ import { NavbarClipboardMenuComponent } from '../../../shared/modules/universal-
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss']
+    styleUrls: ['./dashboard.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.app-dashboard') private hostClass = true;
 
-    @Select(AuthState.getAuth) auth$: Observable<string>;
     @Select(DBSettingsState.getDashboardSettings) dbSettings$: Observable<any>;
     @Select(DbfsState.getUserFolderData()) userFolderData$: Observable<any>;
     @Select(DBState.getDashboardFriendlyPath) dbPath$: Observable<string>;
@@ -138,11 +141,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     // portal templates
-    @ViewChild('dashboardNavbarTmpl') dashboardNavbarTmpl: TemplateRef<any>;
+    @ViewChild('dashboardNavbarTmpl', { static: true }) dashboardNavbarTmpl: TemplateRef<any>;
 
-    @ViewChild(DboardContentComponent, {read: DboardContentComponent}) dbContent: DboardContentComponent;
+    @ViewChild(DboardContentComponent, { read: DboardContentComponent, static: true }) dbContent: DboardContentComponent;
 
-    @ViewChild(NavbarClipboardMenuComponent, {read: NavbarClipboardMenuComponent}) clipboardMenu: NavbarClipboardMenuComponent;
+    @ViewChild(NavbarClipboardMenuComponent, { read: NavbarClipboardMenuComponent }) clipboardMenu: NavbarClipboardMenuComponent;
 
     // portal placeholders
     dashboardNavbarPortal: TemplatePortal;
@@ -259,6 +262,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     oldMeta = {};
     oldWidgets = [];
 
+    fullPath = '';
+    oldFullPath = '';
+
     // used to determine db write access (and display popup for unsaved changes)
     dbOwner: string = ''; // /namespace/admin
     user: string = '';    // /user/admin
@@ -279,6 +285,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     newFromClipboard: boolean = false;
     newFromClipboardItems: any[] = [];
+    readonly = true;
 
     constructor(
         private store: Store,
@@ -302,14 +309,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private dataShare: DataShareService,
         private iiService: InfoIslandService,
         private localStorageService: LocalStorageService,
-        private appConfig: AppConfigService
+        private appConfig: AppConfigService,
+        private auth : AuthService
     ) { }
 
     ngOnInit() {
         // load the namespaces user has access to
         // this.store.dispatch(new LoadUserNamespaces());
 
-        this.urlOverrideService.initialize();
+        this.urlOverrideService.initialize( { dbOverride: true } );
+        this.readonly = this.appConfig.getConfig().readonly;
         // handle route for dashboardModule
         this.subscription.add(this.activatedRoute.url.subscribe(url => {
             this.widgets = [];
@@ -331,6 +340,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.newWidget = null;
             if (url.length === 1 && url[0].path === '_new_') {
                 this.dbid = '_new_';
+                if ( this.readonly ) {
+                    this.router.navigate(['error']);
+                 }
                 // CHECK if New from clipboard
                 if (this.newFromClipboard) {
                     this.store.dispatch(new LoadDashboard(this.dbid, this.newFromClipboardItems));
@@ -408,7 +420,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (message.id) {
                         this.wData[this.editViewModeMeta.id] = this.wData[message.id];
                     }
-                    // tslint:disable:max-line-length
+                    /* eslint-disable max-len */
                     this.dbWdViewBackup = this.utilService.deepClone({ time: this.dbTime, tot: this.dbToT, downsample: this.dbDownsample, isDBZoomed: this.isDBZoomed });
                     // when click on view/edit mode, update db setting state of the mode
                     // need to setTimeout for next tick to change the mode
@@ -441,7 +453,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
                     this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
-                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.gridster-stage');
                     cloneWidgetEndPos = (cloneWidget.gridPos.y + cloneWidget.gridPos.h) * this.gridsterUnitSize.height;
                     containerPos = gridsterContainerEl.getBoundingClientRect();
                     if (cloneWidgetEndPos > containerPos.height) {
@@ -489,7 +501,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // const copyWidgets = this.utilService.deepClone(this.widgets);
                     this.store.dispatch(new UpdateWidgets(this.utilService.deepClone(this.widgets)));
                     this.rerender = { 'reload': true };
-                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.is-scroller');
+                    gridsterContainerEl = this.elRef.nativeElement.querySelector('.gridster-stage');
                     cloneWidgetEndPos = batchGridPosOffset * this.gridsterUnitSize.height;
                     containerPos = gridsterContainerEl.getBoundingClientRect();
                     if (cloneWidgetEndPos > containerPos.height) {
@@ -626,7 +638,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         }
                     }
                     if ( dbState.Settings.tplVariables ) {
-                        dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']'));
+                        dbState.Settings.tplVariables.tvars = this.tplVariables.viewTplVariables.tvars.filter(d => aliases.includes('[' +  d.alias + ']') || aliases.includes('![' +  d.alias + ']'));
                     }
                     delete message.payload.widget.settings.time.overrideTime;
                     dbState.Widgets.widgets = [message.payload.widget];
@@ -649,14 +661,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 case 'dashboardSaveRequest':
                     // DashboardSaveRequest comes from the save button
                     // we just need to update the title of dashboard
+
                     if ( this.snapshot ) {
                         this.store.dispatch(new UpdateWidgets([this.newWidget]));
                     }
+
                     if (message.payload.updateFirst === true) {
                         this.store.dispatch(new UpdateDashboardTitle(message.payload.name));
                     }
+
                     let dbcontent2 = this.store.selectSnapshot(DBState);
                     dbcontent2 = this.dbService.getStorableFormatFromDBState(dbcontent2);
+
                     const payload2: any = {
                         'name': dbcontent2.settings.meta.title,
                         'content': dbcontent2
@@ -670,7 +686,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     if (this.dbid !== '_new_') {
                         payload2.id = this.dbid;
                     }
-                    this.store.dispatch(new SaveDashboard(this.dbid, payload2));
+
+                    this.store.dispatch(new SaveDashboard(this.dbid, payload2)).subscribe(() => {
+                        if (this.oldFullPath.length > 0) {
+                            const oldDbFile: any = this.store.selectSnapshot(DbfsResourcesState.getFile(this.oldFullPath));
+
+                            // if the title has changed, that affects the URL and the DBFS side navigation...
+                            // if there is a difference in titles, lets refresh the DBFS parent folder
+                            if (oldDbFile.name !== dbcontent2.settings.meta.title) {
+                                let folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(oldDbFile.parentPath));
+                                this.store.dispatch(new DbfsRefreshFolder(folder.fullPath, {}));
+                            }
+                        }
+                    });
 
                     break;
                 case 'updateTemplateVariables':
@@ -740,7 +768,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // reset from state when zoom out happens
                     let overrideOnly = false;
                     if ( message.payload.isZoomed ) {
-                        // tslint:disable:max-line-length
+                        /* eslint-disable max-len */
                         const start = this.dateUtil.timeToMoment(this.dbTime.start, this.dbTime.zone).unix();
                         const end = this.dateUtil.timeToMoment(this.dbTime.end, this.dbTime.zone).unix();
                         message.payload.start = message.payload.start !== -1 ? message.payload.start : start;
@@ -889,6 +917,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             if (path && path.startsWith('/_new_')) {
                 this.dbOwner = this.user;
+                this.oldFullPath = this.fullPath;
+                this.fullPath = '';
             }
 
             // we only need to check of path returned from configdb is not _new_,
@@ -913,6 +943,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // if the save was on a NEW dashboard, lets tell the navigator to update
                     if (path !== '/_new_' && path !== undefined) {
                         const fullPath = '/' + path.split('/').slice(2).join('/'); // strip off the id part of the url
+                        this.oldFullPath = this.fullPath;
+                        this.fullPath = fullPath;
                         const details = this.dbfsUtils.detailsByFullPath(fullPath);
                         const parentDetails = this.dbfsUtils.detailsByFullPath(details.parentPath);
                         if (parentDetails.topFolder) {
@@ -930,6 +962,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.checkUserFavoritedSub = this.checkUserFavorited$.subscribe(val => {
                         this.isUserFavorited = val;
                     });
+                }else {
+                    const fullPath = '/' + path.split('/').slice(2).join('/');
+                    this.oldFullPath = this.fullPath;
+                    this.fullPath = fullPath;
                 }
             }
         }));
@@ -971,7 +1007,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
-        // tslint:disable-next-line: no-shadowed-variable
+        // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
         this.subscription.add(this.widgets$.subscribe((widgets) => {
             const dbstate = this.store.selectSnapshot(DBState);
             if (dbstate.loaded) {
@@ -1018,7 +1054,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             // close the clipboard
             if (mode === 'explore' || mode === 'edit') {
-                if (this.clipboardMenu.getDrawerState() === 'opened') {
+                if (this.clipboardMenu && this.clipboardMenu.getDrawerState() === 'opened') {
                     this.clipboardMenu.toggleDrawerState({});
                 }
             }
@@ -1094,7 +1130,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 } else {
                     // come from edit to view and there is urloverride, use those value
                     const tagOverrides = this.urlOverrideService.getTagOverrides() || {};
-                    // tslint:disable-next-line: forin
+                    // eslint-disable-next-line guard-for-in
                     for (let alias in tagOverrides) {
                         const idx = this.tplVariables.viewTplVariables.tvars.findIndex(t => t.alias === alias);
                         if (idx > -1) {
@@ -1139,12 +1175,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         }));
 
-        // NOTE: we do nothing with this subscription... do we need it?
-        this.subscription.add(this.auth$.subscribe(auth => {
-            if (auth === 'invalid') {
-                // do something?
-            }
-        }));
 
         // skip the first time this drawer loaded
         this.subscription.add(this.drawerOpen$.pipe(skip(1)).subscribe(sideNav => {
@@ -1250,15 +1280,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         for (let i = 0; i < this.widgets.length; i++) {
             const queries = this.widgets[i].queries;
-            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' )  {
-                const search = this.widgets[i].eventQueries[0].search;
-                if ( this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
+            if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' || this.widgets[i].settings.component_type === 'LinechartWidgetComponent' )  {
+                const search = this.widgets[i].eventQueries ? this.widgets[i].eventQueries[0].search : '';
+                if ( this.widgets[i].eventQueries && this.widgets[i].eventQueries[0].namespace  && search !== this.applyTplVarsToEventQuery(search) ) {
                     this.handleEventQueryPayload({
                             id: this.widgets[i].id,
                             payload: this.utilService.deepClone({eventQueries: this.widgets[i].eventQueries })
                         });
                 }
-                continue;
+                if ( this.widgets[i].settings.component_type === 'EventsWidgetComponent' ) {
+                    continue;
+                }
             }
             for (let j = 0; j < queries.length; j++) {
                 if (tvars.length > 0) {
@@ -1928,11 +1960,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     openDashboardDeleteDialog() {
         const dialogConf: MatDialogConfig = new MatDialogConfig();
-        // dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
-        // dialogConf.hasBackdrop = true;
-        // dialogConf.panelClass = 'dashboard-delete-dialog-panel';
-        dialogConf.width = '400px';
-        dialogConf.height = '300px';
+        dialogConf.backdropClass = 'dashboard-delete-dialog-backdrop';
+        dialogConf.hasBackdrop = true;
+        dialogConf.panelClass = 'dashboard-delete-dialog-panel';
+        //dialogConf.width = '400px';
+        //dialogConf.height = '300px';
         dialogConf.autoFocus = true;
         dialogConf.data = {};
 
@@ -2007,14 +2039,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
     }
 
+    buildDownloadQueryHelpString() {
+        const tsdb_host = this.appConfig.getConfig().tsdb_host;
+        let msg = 'API URL: ' + tsdb_host + '/api/query/graph\n\n' +
+                  'HEADER:\n' +
+                  'Content-Type: application/json\n\n';
+
+        const examples = this.appConfig.getConfig().widget.downloadQuery.examples;
+        for(let i = 0; i < examples.length; ++i) {
+            msg += examples[i] + '\n\n';
+        }
+
+        return msg;
+    }
+
     downloadDataQuery(message) {
         const ts = new Date().getTime();
         const query = this.getQuery(message);
         const wd = message.payload;
-        const data = 'API URL: https://metrics.yamas.ouroath.com:443/api/query/graph\n\n' +
-                    'HEADER:\n' +
-                    'Content-Type: application/json\n\n' +
-                    'CURL: curl -ki --cert /var/lib/sia/certs/<CERT>.cert.pem --key /var/lib/sia/keys/<KEY>.key.pem -X POST -d@<QUERY>.json -H \'Content-Type: application/json\' \'https://metrics.yamas.ouroath.com/api/query/graph\'\n\n' +
+        const data = this.buildDownloadQueryHelpString() +
                     'QUERY:\n' + JSON.stringify(query);
 
         const file = new Blob([data], {type: 'text/text'});

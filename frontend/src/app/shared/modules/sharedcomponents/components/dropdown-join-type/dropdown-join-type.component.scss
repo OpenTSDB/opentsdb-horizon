@@ -15,47 +15,35 @@
 // * limitations under the License.
 // *
 
-@mixin dropdown-join-type-component-base() {
-    .dropdown-join-type {
-        display: flex;
-        align-items: stretch;
+.dropdown-join-type {
+    display: flex;
+    align-items: stretch;
 
-        .mat-button {
-            line-height: 32px;
+    .mat-button {
+        line-height: 32px;
 
-            .mat-button-wrapper {
+        .mat-button-wrapper {
+            display: flex;
+
+            .mat-select-arrow-wrapper {
                 display: flex;
-
-                .mat-select-arrow-wrapper {
-                    display: flex;
-                    align-items: center;
-                }
-            }
-
-        }
-    }
-
-    // cdk items
-    .dropdown-join-type-cdk-menu.mat-menu-panel {
-        min-width: initial;
-
-        .mat-menu-content {
-            padding: 0;
-
-            .mat-menu-item {
-                height: 32px;
-                line-height: 32px;
+                align-items: center;
             }
         }
+
     }
 }
 
-@mixin dropdown-join-type-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        .dropdown-join-type {
-            .mat-button {
-                color: mat-color($foreground, link);
-            }
+// cdk items
+.dropdown-join-type-cdk-menu.mat-menu-panel {
+    min-width: initial;
+
+    .mat-menu-content {
+        padding: 0;
+
+        .mat-menu-item {
+            height: 32px;
+            line-height: 32px;
         }
     }
 }

@@ -15,128 +15,90 @@
 // * limitations under the License.
 // *
 
-@mixin graph-type-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+@import 'config';
 
-    .graph-type {
-        .widget-type-icon {
-            width: 100%;
-            line-height: 25px;
-        }
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-        .mat-button-toggle-group{
-            overflow: initial;
+.graph-type {
+    .widget-type-icon {
+        width: 100%;
+        line-height: 25px;
+    }
 
-            .mat-button-toggle {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+    .mat-button-toggle-group{
+        overflow: initial;
 
-                &::first-child {
-                    border-top-left-radius: 4px;
-                    border-bottom-left-radius: 4px;
-                }
-
-                &::last-child {
-                    border-top-right-radius: 4px;
-                    border-bottom-right-radius: 4px;
-                }
-            }
-
-            .mat-button-toggle-button {
-                display: inline-flex;
-
-                .mat-button-toggle-focus-overlay {
-                    border-bottom: solid 25px;
-                }
-            }
-
-            /*.mat-button-toggle-checked {
-                box-shadow: inset 0 -2px 0 blue;
-                background: white;
-            }*/
-        }
-
-        .widget-type-icon {
-            display: flex;
+        .mat-button-toggle {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
 
-            &::after {
-                content: '';
-                display: block;
-                overflow: hidden;
-                width: 25px;
-                height: 25px;
-                background-repeat: no-repeat;
-                background-size: 100px; // four columns of icons * 25px = 00px
-                background-image: url(/assets/widget-icon-sprite.png);
+            &::first-child {
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
             }
 
-            &.widget-icon-bar-graph::after {
-                background-position: -25px 0px;
+            &::last-child {
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
             }
+        }
 
-            &.widget-icon-line-chart::after {
-                background-position: -50px -25px
-            }
+        .mat-button-toggle-button {
+            display: inline-flex;
 
-            &.widget-icon-heatmap::after {
-                background-position: -25px -25px
-            }
-
-            &.widget-icon-topn-chart::after {
-                background-position: -75px -25px
-            }
-
-            &.widget-icon-big-number::after {
-                background-position: -50px 0px;
-            }
-
-            &.widget-icon-donut-chart::after {
-                background-position: 0px -25px;
-            }
-
-            &.widget-icon-table::after {
-                background-position: -75px -50px;
+            .mat-button-toggle-focus-overlay {
+                border-bottom: solid 25px;
             }
         }
     }
-}
 
-@mixin graph-type-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+    .widget-type-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
 
-        .graph-type {
-            .mat-button-toggle-group{
-                border: 1px solid mat-color($foreground, divider, .08);
+        &::after {
+            content: '';
+            display: block;
+            overflow: hidden;
+            width: 25px;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-size: 100px; // four columns of icons * 25px = 00px
+            background-image: url(/assets/widget-icon-sprite.png);
+        }
 
-                .mat-button-toggle + .mat-button-toggle {
-                    border-left: 1px solid mat-color($foreground, divider, .08);
-                }
+        &.widget-icon-bar-graph::after {
+            background-position: -25px 0px;
+        }
 
-                .mat-button-toggle-appearance-standard {
-                    &.mat-button-toggle-checked {
-                        background: mat-color($background, card);
-                        position: relative;
+        &.widget-icon-line-chart::after {
+            background-position: -50px -25px
+        }
 
-                        &::after {
-                            content: '';
-                            display: block;
-                            height: 2px;
-                            background-color: mat-color($background, ink-bar);
-                            position: absolute;
-                            top: 100%;
-                            left: 0;
-                            right: 0;
-                        }
-                    }
-                }
-            }
+        &.widget-icon-heatmap::after {
+            background-position: -25px -25px
+        }
+
+        &.widget-icon-topn-chart::after {
+            background-position: -75px -25px
+        }
+
+        &.widget-icon-big-number::after {
+            background-position: -50px 0px;
+        }
+
+        &.widget-icon-donut-chart::after {
+            background-position: 0px -25px;
+        }
+
+        &.widget-icon-table::after {
+            background-position: -75px -50px;
         }
     }
 }

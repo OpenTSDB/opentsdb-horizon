@@ -15,79 +15,46 @@
 // * limitations under the License.
 // *
 
-@mixin dashboard-to-alert-dialog-component-base() {
-    .dashboard-to-alert-dialog {
+.dashboard-to-alert-dialog {
 
-        .header {
-            text-align: center;
-            position: sticky;
-            top: 0;
-            left: 0;
-            font-size: 16px;
-            z-index: 1;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+    .header {
+        text-align: center;
+        position: sticky;
+        top: 0;
+        left: 0;
+        font-size: 16px;
+        z-index: 1;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
 
-        .namespace-list {
-            &.mat-nav-list {
-                width: 500px;
-                height: 300px;
-                overflow-y: scroll;
-            }
-        }
-
-        .footer {
-            text-align: center;
-            position: sticky;
-            bottom: 0;
-            left: 0;
-            z-index: 1;
-            padding: 0px;
-
-        }
-
-        .mat-nav-list {
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            padding: 0px;
-
-            .ns-item {
-                &.mat-list-item {
-                    height: 32px
-                }
-            }
+    .namespace-list {
+        &.mat-nav-list {
+            width: 500px;
+            height: 300px;
+            overflow-y: scroll;
         }
     }
-}
 
-@mixin dashboard-to-alert-dialog-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+    .footer {
+        text-align: center;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        padding: 0px;
 
-        $bg: mat-color($background, background);
+    }
 
-        .dashboard-to-alert-dialog  {
+    .mat-nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        padding: 0px;
 
-            .header {
-                background: if(
-                    $is-dark,
-                    #3E4955, // TODO: plug these values into theme
-                    #E1E5E5  // TODO: plug these values into theme
-                );
-            }
-
-            .footer {
-                border-top: 1px solid if(
-                    $is-dark,
-                    $black,
-                    #3E4955     // TODO: plug these values into theme
-                );
-                background: if(
-                    $is-dark,
-                    $bg,
-                    $white
-                );
+        .ns-item {
+            &.mat-list-item {
+                height: 32px
             }
         }
     }

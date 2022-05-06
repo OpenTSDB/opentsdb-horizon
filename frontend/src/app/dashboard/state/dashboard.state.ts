@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State , Action, Selector, StateContext, createSelector, Store } from '@ngxs/store';
 import { UserSettingsState } from './user.settings.state';
 import { DBSettingsState, UpdateMeta } from './settings.state';
@@ -142,6 +143,7 @@ export class ResetDBtoDefault {
 
 /* state define */
 
+@Injectable()
 @State<DBStateModel>({
     name: 'Dashboard',
     defaults: {

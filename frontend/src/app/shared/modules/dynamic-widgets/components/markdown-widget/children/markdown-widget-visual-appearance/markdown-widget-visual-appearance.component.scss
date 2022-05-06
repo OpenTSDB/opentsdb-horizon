@@ -15,51 +15,43 @@
 // * limitations under the License.
 // *
 
-@mixin markdown-visual-appearance-widget-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-view-padding: map-get($widgets-common-config, edit-padding);
-    $tab-width: map-get($widgets-common-config, tab-width);
-    $action-bar-height: map-get($widgets-common-config, action-bar-height);
+@import 'config';
 
-    .markdown-visual-appearance-widget {
-        .container {
-            display: flex;
-            padding: 10px;
-            padding-top: 15px;
-            flex-direction: row;
-        }
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-view-padding: map-get($widgets-common-config, edit-padding);
+$tab-width: map-get($widgets-common-config, tab-width);
+$action-bar-height: map-get($widgets-common-config, action-bar-height);
 
-        .monospace {
-            .mat-slide-toggle {
-                .mat-slide-toggle-label {
-                    .mat-slide-toggle-content {
-                        font-family: monospace;
-                    }
+.markdown-visual-appearance-widget {
+    .container {
+        display: flex;
+        padding: 10px;
+        padding-top: 15px;
+        flex-direction: row;
+    }
+
+    .monospace {
+        .mat-slide-toggle {
+            .mat-slide-toggle-label {
+                .mat-slide-toggle-content {
+                    font-family: monospace;
                 }
             }
         }
-
-        .labels {
-            text-align: right
-        }
-
-        .label {
-            height: 31px;
-            margin-bottom: 5px;
-            padding-right: 10px;
-        }
-
-        .selector {
-            height: 31px;
-            margin-bottom: 5px;
-        }
-    }
-}
-
-@mixin markdown-visual-appearance-widget-component-theme($theme-config) {
-
-    @include variables-compatibility($theme-config) {
-        //.markdown-visual-appearance-widget {}
     }
 
+    .labels {
+        text-align: right
+    }
+
+    .label {
+        height: 31px;
+        margin-bottom: 5px;
+        padding-right: 10px;
+    }
+
+    .selector {
+        height: 31px;
+        margin-bottom: 5px;
+    }
 }

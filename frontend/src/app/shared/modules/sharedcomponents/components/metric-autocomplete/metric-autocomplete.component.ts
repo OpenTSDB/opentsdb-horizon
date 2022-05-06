@@ -14,21 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-    Component,
-    OnInit,
-    HostBinding,
-    Input,
-    Output,
-    EventEmitter,
-    ElementRef,
-    Renderer,
-    ViewChild,
-    OnChanges,
-    OnDestroy,
-    SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef
-} from '@angular/core';
-import { MatAutocomplete, MatMenuTrigger } from '@angular/material';
+import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, OnDestroy, SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation, Renderer2 } from '@angular/core';
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';
@@ -37,20 +25,21 @@ import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'metric-autocomplete',
     templateUrl: './metric-autocomplete.component.html',
-    styleUrls: ['./metric-autocomplete.component.scss']
+    styleUrls: ['./metric-autocomplete.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.metric-autocomplete') private _hostClass = true;
     @Input() namespace = '';
     @Input() filters = [];
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() multiple: boolean = false;
     @Input() metrics = [];
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @Input() focus: boolean = true;
 
     @Output() metricOutput = new EventEmitter();
@@ -58,7 +47,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
 
     @ViewChild('metricSearchInput') metricSearchInput: ElementRef;
     @ViewChild('metricAutoComplete') metricAutoCompleteCntrl: MatAutocomplete;
-    @ViewChild('metricSearchFormField', {read: ElementRef}) metricSearchFormField: ElementRef;
+    @ViewChild('metricSearchFormField', { read: ElementRef }) metricSearchFormField: ElementRef;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
     metricOptions = [];
@@ -74,7 +63,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     isDestroying = false;
     metricSub: Subscription;
 
-    // tslint:disable-next-line:no-inferrable-types
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     firstRun: boolean = true;
     scrollDetect: any;
 

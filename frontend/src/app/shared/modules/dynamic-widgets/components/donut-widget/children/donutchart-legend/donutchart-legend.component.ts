@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit,  HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit,  HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'donutchart-legend',
   templateUrl: './donutchart-legend.component.html',
-  styleUrls: []
+  styleUrls: ['./donutchart-legend.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DonutchartLegendComponent implements OnInit {
 

@@ -1,0 +1,9 @@
+@mixin namespace-container-component-theme() {
+
+    $navbar-text: map-get($foreground, navbar-text);
+
+    .nav-namespace-title {
+        color: $navbar-text;
+    }
+
+}

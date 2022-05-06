@@ -15,56 +15,23 @@
 // * limitations under the License.
 // *
 
-@mixin info-tooltip-component-base() {
+@import 'mixins';
 
-    .info-tooltip-component {
-        .info-tooltip-trigger {
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
+.info-tooltip-component {
+    .info-tooltip-trigger {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
 
-            .mat-icon {
-                @include sizeDenaliIcon(14px);
-            }
-        }
-    }
-
-    // cdk items
-    .mat-menu-panel.info-tooltip {
-        .mat-menu-content:not(:empty) {
-            padding: 8px;
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
         }
     }
 }
 
-@mixin info-tooltip-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        $theme-name: map-get($theme-config, theme-name);
-        $text: get-theme-css-text($theme-name);
-
-        $tooltip-bg: if(
-            $is-dark,
-            mat-color($background, menu),
-            #f0f0f0
-        );
-
-        $tooltip-border: if(
-            $is-dark,
-            mat-color($background, menu-border),
-            #cccccc
-        );
-
-        $tooltip-text: if(
-            $is-dark,
-            map-get($text, --dark-primary-text),
-            map-get($text, --light-primary-text)
-        );
-
-        //cdk items
-        .mat-menu-panel.info-tooltip {
-            background-color: $tooltip-bg;
-            border: 1px solid $tooltip-border;
-            color: $tooltip-text;
-        }
+// cdk items
+.mat-menu-panel.info-tooltip {
+    .mat-menu-content:not(:empty) {
+        padding: 8px;
     }
 }

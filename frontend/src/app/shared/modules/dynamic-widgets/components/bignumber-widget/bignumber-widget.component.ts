@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, ViewChild, ElementRef, OnDestroy,  AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostBinding, Input, ViewChild, ElementRef, OnDestroy,  AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -22,16 +22,17 @@ import { DateUtilsService } from '../../../../../core/services/dateutils.service
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'bignumber-widget',
     templateUrl: './bignumber-widget.component.html',
-    styleUrls: []
+    styleUrls: ['./bignumber-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -42,11 +43,12 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     /** Inputs */
     @Input() widget: any;
     @Input() mode = 'view'; // view/explore/edit
-    @ViewChild('widgetoutput') private widgetOutputElement: ElementRef;
+    @Input() readonly = true;
+    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
 
     Object = Object;
-    // tslint:disable:no-inferrable-types
-    // tslint:disable:prefer-const
+    /* eslint-disable @typescript-eslint/no-inferrable-types */
+    /* eslint-disable prefer-const */
     private listenSub: Subscription;
     private isDataLoaded: boolean = false;
 
@@ -110,7 +112,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     formErrors: any = {};
     meta: any = {};
 
-    @ViewChild('myCanvas') myCanvas: ElementRef;
+    @ViewChild('myCanvas', { static: true }) myCanvas: ElementRef;
     public context: CanvasRenderingContext2D;
 
     constructor(
@@ -159,7 +161,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
                         this.widget.settings.time.zoomTime = message.payload.date;
                         this.refreshData();
                     }
-                // tslint:disable-next-line: max-line-length
+                // eslint-disable-next-line max-len
                 } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.isCustomZoomed && !message.payload.date.isZoomed) ) {
                     this.isCustomZoomed = message.payload.date.isZoomed;
                     this.refreshData();
@@ -251,7 +253,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
             this.setSize();
         });
 
-        // tslint:disable-next-line:no-unused-expression
+        // eslint-disable-next-line no-unused-expressions, @typescript-eslint/no-unused-expressions
         this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
             this.newSize$.next(dummyFlag);
         });
@@ -260,14 +262,14 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     setSize() {
         // if edit mode, use the widgetOutputEl. If in dashboard mode, go up out of the component,
         // and read the size of the first element above the componentHostEl
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const nativeEl = (this.mode !== 'view') ? ( !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement
                                                 : this.widgetOutputElement.nativeElement) : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
 
         const outputSize = nativeEl.getBoundingClientRect();
         const heightMod = 0.55;
         this.widgetWidth = outputSize.width;
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.widgetHeight = this.mode !== 'view' && !this.isEditContainerResized && this.widget.queries[0].metrics.length ? outputSize.height * heightMod - 60 : outputSize.height;
         if (this.data) {
             this.determineFontSizePercent(this.widgetWidth, this.widgetHeight);
@@ -280,7 +282,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     getVisibleMetricId() {
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (let i in this.widget.queries) {
             for (let j in this.widget.queries[i].metrics) {
                 if (this.widget.queries[i].metrics[j].settings.visual.visible) {
@@ -307,7 +309,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
             const responseAggregatorValues = metricData.NumericSummaryType.data[0][key];
             let summarizer = this.util.getSummarizerForMetric(metricId, this.widget.queries);
             this.aggregatorValues = [responseAggregatorValues[responseAggregators.indexOf(summarizer)]];
-            // tslint:disable:max-line-length
+            /* eslint-disable max-len */
             this.bigNumber = this.UN.getNoramilizedValue(this.aggregatorValues[0], {unit: this.widget.settings.visual.unit, precision: this.widget.settings.visual.precision});
 
             // SET LOCAL VARIABLES
@@ -384,7 +386,7 @@ export class BignumberWidgetComponent implements OnInit, OnDestroy, AfterViewIni
 
         let bigNumberWithOtherLabelsWidth: number = 0;
         let captionLabelWidth: number = 0;
-        // tslint:disable:max-line-length
+        /* eslint-disable max-len */
         let prefixWidth = this.getWidthOfText(this.shortenString(this.widget.settings.visual.prefix, this.maxLabelLength), this.widget.settings.visual.prefixSize);
         let unitWidth = this.getWidthOfText(this.shortenString(this.bigNumber.unit, this.maxLabelLength), this.widget.settings.visual.unitSize);
 

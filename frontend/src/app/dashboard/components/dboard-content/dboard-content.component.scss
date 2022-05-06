@@ -17,90 +17,86 @@
 
 //* DBOARD-CONTEMT COMPONENT */
 
-@mixin dboard-content-component-base() {
-    .app-dboard-content {
+.app-dboard-content {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    h1 {
         position: relative;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-
-        h1 {
-            position: relative;
-            flex: 0;
-            font-size: 22px;
-            padding: 0 20px;
-            height: 50px;
-            margin: 0;
-        }
-
-        .omnibar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            position: relative;
-            flex: 0;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .toolbar {
-            position: relative;
-            padding-left: 10px;
-        }
-
-        .widgetbar {
-            position: relative;
-            padding: 10px 0;
-            width: 275px;
-        }
-
-        .main-content {
-            //width: 100%;
-            flex: 1 0px;
-            display: flex;
-            flex-direction: column;
-            overflow: overlay;
-        }
-
-        @-moz-document url-prefix() {
-            .main-content {
-                overflow: auto;
-            }
-        }
-
-        .dashboard {
-            //flex: 1 1 auto;
-            //overflow: auto; --> disbable x scrolling
-            width: 100%;
-        }
-
-        .gridster-stage {
-            .is-scroller {
-                //@include is-scroller();
-                padding: 10px;
-            }
-        }
-
-        .edit-view-container {
-            &.is-active {
-                &,
-                .widget-panel-content {
-                    flex: 1 1 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
-        }
-
+        flex: 0;
+        font-size: 22px;
+        padding: 0 20px;
+        height: 50px;
+        margin: 0;
     }
 
+    .omnibar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        position: relative;
+        flex: 0;
+        width: 100%;
+        overflow: hidden;
+    }
 
-}
+    .toolbar {
+        position: relative;
+        padding-left: 10px;
+    }
 
-@mixin dboard-content-component-theme($theme-config) {
+    .widgetbar {
+        position: relative;
+        padding: 10px 0;
+        width: 275px;
+    }
 
-    @include variables-compatibility($theme-config) {
-        // .app-dboard-content {}
+    .main-content {
+        //width: 100%;
+        flex: 1 0px;
+        display: flex;
+        flex-direction: column;
+        overflow: overlay;
+    }
+
+    @-moz-document url-prefix() {
+        .main-content {
+            overflow: auto;
+        }
+    }
+
+    .dashboard {
+        //flex: 1 1 auto;
+        //overflow: auto; --> disbable x scrolling
+        width: 100%;
+    }
+
+    .gridster-stage {
+        width: 100%;
+        flex: 1 0px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: overlay;
+        padding: 10px;
+
+        .is-scroller {
+            //@include is-scroller();
+            padding: 10px;
+        }
+    }
+
+    .edit-view-container {
+        &.is-active {
+            &,
+            .widget-panel-content {
+                flex: 1 1 100%;
+                display: flex;
+                flex-direction: column;
+            }
+        }
     }
 
 }

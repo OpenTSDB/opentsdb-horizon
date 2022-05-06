@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-search-results-content',
   templateUrl: './search-results-content.component.html',
-  styleUrls: ['./search-results-content.component.scss']
+  styleUrls: ['./search-results-content.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SearchResultsContentComponent implements OnInit {
 

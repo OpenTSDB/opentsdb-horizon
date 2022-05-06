@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -24,13 +24,15 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
     selector: 'heatmap-data-tooltip',
-    templateUrl: './heatmap-data-tooltip.component.html'
+    templateUrl: './heatmap-data-tooltip.component.html',
+    styleUrls: ['./heatmap-data-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class HeatmapDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.heatmap-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', {read: ElementRef}) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
 
     positionStrategy = 'sticky';
 
@@ -59,7 +61,7 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
             // so we take opacity percentage, and lighten the color
             data.color = this.pSBC(percentage, data.color);
 
-            const contrast = this.utils.findContrastColor(data.color);
+            const contrast = data.color ? this.utils.findContrastColor(data.color) : '#000000';
             data.colorContrast = contrast.hex;
             return data;
         });
@@ -116,20 +118,20 @@ export class HeatmapDataTooltipComponent extends DataTooltipComponent implements
                 }
                 d = i(d.slice(1), 16);
                 if (n === 9 || n === 5) {
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.r = d >> 24 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.g = d >> 16 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.b = d >> 8 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.a = m((d & 255) / 0.255) / 1000;
                 } else {
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.r = d >> 16;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.g = d >> 8 & 255;
-                    // tslint:disable-next-line: no-bitwise
+                    // eslint-disable-next-line no-bitwise
                     x.b = d & 255;
                     x.a = -1;
                 }

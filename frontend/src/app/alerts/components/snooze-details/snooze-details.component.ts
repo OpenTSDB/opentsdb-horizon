@@ -20,10 +20,12 @@ import {
     OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy,
     SimpleChanges,
     HostBinding,
-    ViewChild, ElementRef, HostListener
+    ViewChild, ElementRef, HostListener, ViewEncapsulation
 } from '@angular/core';
 
-import { MatChipInputEvent, MatMenuTrigger, MatInput } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatInput } from '@angular/material/input';
+import { MatMenuTrigger } from '@angular/material/menu';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 
 
@@ -46,10 +48,11 @@ import { InfoIslandService } from '../../../shared/modules/info-island/services/
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'snooze-details',
     templateUrl: './snooze-details.component.html',
-    styleUrls: [],
+    styleUrls: ['./snooze-details.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [
         { provide: DateAdapter, useClass:  MomentDateAdapter},
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
@@ -59,9 +62,9 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     @HostBinding('class.snooze-alert-dialog-component') private _hostclass = true;
 
-    @ViewChild('formDirective', {read: FormGroupDirective}) formDirective: FormGroupDirective;
-    @ViewChild('alertListMenu', { read: MatMenuTrigger }) private alertListMenuTrigger: MatMenuTrigger;
-    @ViewChild('alertInput', { read: MatInput }) private alertInput: MatInput;
+    @ViewChild('formDirective', { read: FormGroupDirective }) formDirective: FormGroupDirective;
+    @ViewChild('alertListMenuTrigger', { read: MatMenuTrigger, static: true }) private alertListMenuTrigger: MatMenuTrigger;
+    @ViewChild('alertInput', { read: MatInput, static: true }) private alertInput: MatInput;
 
     @ViewChild('datetimePickerStart') startTimeReference: DatepickerComponent;
     @ViewChild('datetimePickerEnd') endTimeReference: DatepickerComponent;
@@ -165,9 +168,9 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
         data = Object.assign({}, def, data);
 
         this.snoozeForm = this.fb.group({
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             startTime: data.startTime ? moment(data.startTime).format('MM/DD/YYYY h:mm a') : moment().format('MM/DD/YYYY h:mm a'),
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             endTime: data.endTime ? moment(data.endTime).format('MM/DD/YYYY h:mm a') : moment().add(1, 'hours').format('MM/DD/YYYY h:mm a'),
             reason: data.reason || ''
         });
@@ -178,7 +181,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         this.dateType = data.id !== '_new_' ? 'custom' : 'preset';
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const filters = data.filter && Object.keys(data.filter).length ? this.utils.getFiltersTsdbToLocal(data.filter) : [];
         this.setQuery({ namespace: this.data.namespace, filters: filters} );
     }

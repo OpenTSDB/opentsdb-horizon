@@ -1,0 +1,19 @@
+@import './modules/color-picker/color-picker-module.theme';
+@import './modules/dashboard-filesystem/dashboard-file-system-module.theme';
+@import './modules/date-time-picker/date-time-picker-module.theme';
+@import './modules/dynamic-widgets/dynamic-widgets-module.theme';
+@import './modules/info-island/info-island-module.theme';
+@import './modules/universal-clipboard/universal-clipboard-module.theme';
+@import './modules/universal-data-tooltip/universal-data-tooltip-module.theme';
+@import './modules/sharedcomponents/sharedcomponents-module.theme';
+
+@mixin shared-module-theme() {
+    @include color-picker-module-theme();
+    @include dashboard-file-system-module-theme();
+    @include date-time-picker-module-theme();
+    @include dynamic-widgets-module-theme();
+    @include info-island-module-theme();
+    @include universal-clipboard-module-theme();
+    @include universal-data-tooltip-module-theme();
+    @include sharedcomponents-module-theme();
+}

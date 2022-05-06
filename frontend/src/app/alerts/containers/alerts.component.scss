@@ -15,12 +15,13 @@
 // * limitations under the License.
 // *
 
-@import 'loader-component';
+@import 'mixins';
+@import 'config';
 
 $status-labels: ('bad', 'warn', 'good', 'unknown', 'missing', 'snoozed');
 $header-chip-size: 8px;
 
-:host.alerts-container-component {
+.alerts-container-component {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -46,32 +47,31 @@ $header-chip-size: 8px;
                 width: 100%;
                 display: inline-flex;
 
-                ::ng-deep {
-                    .mat-button-wrapper {
-                        display: flex;
-                        flex: 1;
-                        align-items: center;
+                .mat-button-wrapper {
+                    display: flex;
+                    flex: 1;
+                    align-items: center;
 
-                        .control-label {
-                            margin-right: 8px;
-                            font-weight: 400;
-                        }
-
-                        .selected-namespace {
-                            flex: 1;
-                            margin-right: 8px;
-                            text-align: left;
-                        }
-
-                        .mat-icon {
-                            @include sizeDenaliIcon(18px);
-                        }
+                    .control-label {
+                        margin-right: 8px;
+                        font-weight: 400;
                     }
 
-                    &:hover .mat-button-focus-overlay {
-                        opacity: 0;
+                    .selected-namespace {
+                        flex: 1;
+                        margin-right: 8px;
+                        text-align: left;
+                    }
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(18px);
                     }
                 }
+
+                &:hover .mat-button-focus-overlay {
+                    opacity: 0;
+                }
+
 
                 &:hover,
                 &.menu-open {
@@ -89,17 +89,15 @@ $header-chip-size: 8px;
                 width: 100%;
                 line-height: 1.45;
 
-                ::ng-deep {
-                    .mat-form-field-flex {
-                        align-items: center;
-                    }
+                .mat-form-field-flex {
+                    align-items: center;
+                }
 
-                    .mat-form-field-suffix {
-                        margin-right: 8px;
+                .mat-form-field-suffix {
+                    margin-right: 8px;
 
-                        .mat-icon {
-                            @include sizeDenaliIcon(18px);
-                        }
+                    .mat-icon {
+                        @include sizeDenaliIcon(18px);
                     }
                 }
             }
@@ -163,13 +161,14 @@ $header-chip-size: 8px;
         text-align:center;
         padding: 2px;
     }
-        .group-label-chip {
-            border-radius: 4px;
-            font-size: 10px;
-            padding: 0 6px;
-            margin: 2px 4px;
-            outline: none;
-        }
+
+    .group-label-chip {
+        border-radius: 4px;
+        font-size: 10px;
+        padding: 0 6px;
+        margin: 2px 4px;
+        outline: none;
+    }
 
     // common wrapper styles
     .common-results {
@@ -196,6 +195,7 @@ $header-chip-size: 8px;
 
             .mat-paginator {
                 padding: 0 16px;
+                min-height: 60px;
             }
         }
     }
@@ -255,225 +255,209 @@ $header-chip-size: 8px;
             }
         }
 
-        ::ng-deep {
-            tr.mat-header-row,
-            tr.mat-footer-row,
-            tr.mat-row {
-                height: 36px;
-            }
 
-            .mat-header-cell {
-                &,
-                .mat-sort-header-button {
-                    user-select: none;
-                    text-transform: uppercase;
+        tr.mat-header-row,
+        tr.mat-footer-row,
+        tr.mat-row {
+            height: 36px;
+        }
+
+        .mat-header-cell {
+            &,
+            .mat-sort-header-button {
+                user-select: none;
+                text-transform: uppercase;
+            }
+        }
+
+        td.mat-cell,
+        td.mat-footer-cell,
+        th.mat-header-cell {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        td.mat-cell:last-of-type,
+        td.mat-footer-cell:last-of-type,
+        th.mat-header-cell:last-of-type {
+            padding-right: 8px;
+        }
+
+        td.mat-cell {
+            font-size: 12px;
+            vertical-align: text-top;
+
+            @each $item in $status-labels {
+                &.cdk-column-#{$item} {
+                    text-align: right;
                 }
             }
+        }
 
-            td.mat-cell,
-            td.mat-footer-cell,
-            th.mat-header-cell {
-                padding-left: 8px;
-                padding-right: 8px;
-            }
+        .cdk-column-select {
+            overflow: initial;
+            position: relative;
+        }
 
-            td.mat-cell:last-of-type,
-            td.mat-footer-cell:last-of-type,
-            th.mat-header-cell:last-of-type {
-                padding-right: 8px;
-            }
+        .cdk-column-contacts {
 
-            td.mat-cell {
-                font-size: 12px;
-                vertical-align: text-top;
-
-                @each $item in $status-labels {
-                    &.cdk-column-#{$item} {
-                        text-align: right;
-                    }
-                }
-            }
-
-            .cdk-column-select {
-                overflow: initial;
-                position: relative;
-            }
-
-            .cdk-column-contacts {
-
-                .contacts-menu-trigger {
-                    .mat-icon {
-                        margin-right: 6px;
-                        width: 18px;
-                        height: 18px;
-                        font-size: 18px;
-                    }
-                }
-            }
-
-            .cdk-column-select,
-            .cdk-column-bad,
-            .cdk-column-warn,
-            .cdk-column-good,
-            .cdk-column-unknown,
-            .cdk-column-missing,
-            .cdk-column-snoozed,
-            .cdk-column-sparkline {
-                width: 1%;
-            }
-
-            .cdk-column-bad,
-            .cdk-column-warn,
-            .cdk-column-good,
-            .cdk-column-unknown,
-            .cdk-column-missing,
-            .cdk-column-snoozed {
-                text-align: right;
-
-                .count-empty {
-                    margin-right: 24px;
-                }
-
-                // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
-                .count-amount {
-                    margin-right: 24px;
-                    padding: 2px;
-                    cursor: pointer;
-                    color: #ffffff;
-                    text-decoration: none;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    padding: 3px 6px;
-                    outline: none;
-                }
-            }
-
-            .cdk-column-alertGroupingRules {
-                .mat-chip-list-wrapper {
-                    margin: initial;
-                }
-            }
-
-            .mat-cell.cdk-column-alertGroupingRules {
-                padding-top: 2px;
-                padding-bottom: 2px;
-            }
-
-            /*
-            .cdk-column-sparkline {
-                text-align: right;
-
-                .sparkline-wrapper {
-                    width: 100px;
-                    background: #eee;
-                    display: block;
-                    padding: 4px;
-                    text-align: center;
-                }
-
-                .sparkline-display-menu-trigger.mat-button {
-                    min-width: initial;
-                    padding: 0 6px;
-                }
-            }*/
-
-            .cdk-column-type {
-                width: 125px;
-            }
-
-            .cdk-column-contacts {
-                width: 100px;
-                text-align: center;
-                padding-left: 16px;
-                padding-right: 16px;
-
-                .contact-icon-strip {
-                    display: inline-flex;
-                    padding: 4px 4px 6px;
-                    cursor: pointer;
-
-                    .mat-icon {
-                        width: 12px;
-                        height: 12px;
-
-                        &:not(:last-child) {
-                            margin-right: 4px;
-                        }
-                    }
-                }
-            }
-
-            .cdk-column-modified {
-                width: 130px;
-            }
-
-            .cdk-column-actions {
-                width: 176px;
-
-                .mat-icon-button .mat-icon {
+            .contacts-menu-trigger {
+                .mat-icon {
+                    margin-right: 6px;
                     width: 18px;
                     height: 18px;
                     font-size: 18px;
-                    line-height: 18px;
                 }
             }
+        }
 
-            .cdk-column-name {
-                position: relative;
+        .cdk-column-select,
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed,
+        .cdk-column-sparkline {
+            width: 1%;
+        }
 
-                span.alert-name {
-                    display: inline-block;
-                    margin: 12px 0;
-                }
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed {
+            text-align: right;
+
+            .count-empty {
+                margin-right: 24px;
             }
 
-            tr.mat-row:hover {
-                .cdk-column-name {
-                    .edit-actions-wrapper {
-                        pointer-events: initial;
-                        opacity: 1;
+            // need to pad it a bit with margin to offset the sort arrow, and line it up with header text
+            .count-amount {
+                margin-right: 24px;
+                padding: 2px;
+                cursor: pointer;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 12px;
+                padding: 3px 6px;
+                outline: none;
+            }
+        }
+
+        .cdk-column-alertGroupingRules {
+            .mat-chip-list-wrapper {
+                margin: initial;
+            }
+        }
+
+        .mat-cell.cdk-column-alertGroupingRules {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        .cdk-column-type {
+            width: 125px;
+        }
+
+        .cdk-column-contacts {
+            width: 100px;
+            text-align: center;
+            padding-left: 16px;
+            padding-right: 16px;
+
+            .contact-icon-strip {
+                display: inline-flex;
+                padding: 4px 4px 6px;
+                cursor: pointer;
+
+                .mat-icon {
+                    width: 12px;
+                    height: 12px;
+                    background-size: cover;
+                    &:not(:last-child) {
+                        margin-right: 4px;
+                    }
+
+                    .mat-icon.contact-email {
+                        background-image: url(/assets/email-contact.svg);
+                    }
+                    .mat-icon.contact-http {
+                        background-image: url(/assets/http-contact.svg);
+                    }
+                    .mat-icon.contact-oc {
+                        background-image: url(/assets/oc-contact.svg);
+                    }
+                    .mat-icon.contact-opsgenie {
+                        background-image: url(/assets/opsgenie-contact.svg);
+                    }
+                    .mat-icon.contact-slack {
+                        background-image: url(/assets/slack-contact.svg);
                     }
                 }
-            }
 
-            // for batch editing
-            tr.mat-header-row.is-batch-editing {
-                .mat-header-cell:nth-child(n+2) {
-                    pointer-events: none;
-                    opacity: 0;
+                .mat-icon.contact-email {
+                    background-image: url(/assets/email-contact.svg);
                 }
+                .mat-icon.contact-http {
+                    background-image: url(/assets/http-contact.svg);
+                }
+                .mat-icon.contact-oc {
+                    background-image: url(/assets/oc-contact.svg);
+                }
+                .mat-icon.contact-opsgenie {
+                    background-image: url(/assets/opsgenie-contact.svg);
+                }
+                .mat-icon.contact-slack {
+                    background-image: url(/assets/slack-contact.svg);
+                }
+            }
+        }
+
+        .cdk-column-modified {
+            width: 130px;
+        }
+
+        .cdk-column-actions {
+            width: 176px;
+
+            .mat-icon-button .mat-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 18px;
+                line-height: 18px;
+            }
+        }
+
+        .cdk-column-name {
+            position: relative;
+
+            span.alert-name {
+                display: inline-block;
+                margin: 12px 0;
+            }
+        }
+
+        tr.mat-row:hover {
+            .cdk-column-name {
+                .edit-actions-wrapper {
+                    pointer-events: initial;
+                    opacity: 1;
+                }
+            }
+        }
+
+        // for batch editing
+        tr.mat-header-row.is-batch-editing {
+            .mat-header-cell:nth-child(n+2) {
+                pointer-events: none;
+                opacity: 0;
             }
         }
     }
-
-    // alert results container
-    /*.alert-results {
-        .alert-results-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            padding: 0;
-            overflow: hidden;
-
-            .alert-results-body {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                max-width: 100%;
-
-                .message {
-                    font-weight: 500;
-                    height: 30px;
-                    text-align:center;
-                    padding: 4px;
-                }
-            }
-
-            .mat-paginator {
-                padding: 0 16px;
-            }
-        }
-    }*/
 
     // alerts result specific table styles
     .alerts-result-table.mat-table {
@@ -518,42 +502,41 @@ $header-chip-size: 8px;
             }
         }
 
-        ::ng-deep {
-            .cdk-column-select,
-            .cdk-column-bad,
-            .cdk-column-warn,
-            .cdk-column-good,
-            .cdk-column-unknown,
-            .cdk-column-missing,
-            .cdk-column-snoozed,
-            .cdk-column-sparkline {
-                width: 1%;
-            }
-
-            .cdk-column-bad,
-            .cdk-column-warn,
-            .cdk-column-good,
-            .cdk-column-unknown,
-            .cdk-column-missing,
-            .cdk-column-snoozed {
-                text-align: right;
-            }
-
-            .cdk-column-type {
-                width: 125px;
-            }
-
-            .cdk-column-contacts {
-                width: 100px;
-                text-align: center;
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-
-            .cdk-column-modified {
-                width: 130px;
-            }
+        .cdk-column-select,
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed,
+        .cdk-column-sparkline {
+            width: 1%;
         }
+
+        .cdk-column-bad,
+        .cdk-column-warn,
+        .cdk-column-good,
+        .cdk-column-unknown,
+        .cdk-column-missing,
+        .cdk-column-snoozed {
+            text-align: right;
+        }
+
+        .cdk-column-type {
+            width: 125px;
+        }
+
+        .cdk-column-contacts {
+            width: 100px;
+            text-align: center;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .cdk-column-modified {
+            width: 130px;
+        }
+
     }
 
     // snooze results container
@@ -595,36 +578,35 @@ $header-chip-size: 8px;
             }
         }
 
-        ::ng-deep {
-            .cdk-column-select {
-                width: 1%;
-            }
+        .cdk-column-select {
+            width: 1%;
+        }
 
-            .cdk-column-modified,
-            .cdk-column-createdBy {
-                width: 120px;
-            }
+        .cdk-column-modified,
+        .cdk-column-createdBy {
+            width: 120px;
+        }
 
-            .cdk-column-scope {
-                width: 55%;
-            }
+        .cdk-column-scope {
+            width: 55%;
+        }
 
-            .cdk-column-reason {
-                width: 18%;
-            }
+        .cdk-column-reason {
+            width: 18%;
+        }
 
-            .alerts-filters-list-item {
-                .mat-list-item-content {
-                    padding: 0;
-                    flex: 1;
-                }
+        .alerts-filters-list-item {
+            .mat-list-item-content {
+                padding: 0;
+                flex: 1;
             }
         }
+
     }
 }
 
 // CDK ITEMS (these are at document root level)
-@at-root ::ng-deep {
+@at-root {
     .alert-contacts-menu.mat-menu-panel {
         min-width: initial;
         max-width: initial;
@@ -748,275 +730,4 @@ $header-chip-size: 8px;
             text-align: right;
         }
     }
-}
-
-// * THEME VARIANTS
-@include init-component-variants() {
-    $theme-variant: if($is-dark, 'dark', 'light');
-
-    $primary-default: mat-color($primary, default);
-
-    $status-error: mat-color($other, status-error);
-    $status-warning: mat-color($other, status-warning);
-    $status-success: mat-color($other, status-success);
-
-    $link: mat-color($foreground, link);
-    $disabled: mat-color($foreground, disabled);
-    $header-chip-text: $white;
-    $divider: mat-color($foreground, divider);
-
-    $card-bg: mat-color($background, card);
-    $border-color: mat-color($foreground, dividers);
-
-    $brand-color: mat-color($background, navbar);
-    $brand-color-inverse: mat-color($foreground, navbar-text);
-
-    //@debug 'PRIMARY ' + #{$primary};
-
-    :host.alerts-container-component {
-        background-color: $card-bg;
-
-        .create-alert-control {
-            .mat-flat-button.mat-primary {
-                background-color: mat-color($primary, 800);
-                color: mat-color($primary, "800-contrast");
-            }
-        }
-
-        .alerts-main-controls {
-            box-shadow: inset 0 -1px 0 0 $border-color;
-
-            .namespace-selector {
-                min-width: 250px;
-
-                .mat-button {
-                    background-color: mat-color($primary, default, 0.08);
-
-                    .control-label {
-                        color: $disabled;
-                    }
-
-                    .mat-icon {
-                        color: $link;
-                    }
-
-                    &:hover {
-                        box-shadow: inset 0 -2px 0 0 mat-color($primary, default, .3);
-                    }
-
-                    &.menu-open {
-                        box-shadow: inset 0 -2px 0 0 $primary-default;
-                    }
-                }
-            }
-
-            .alert-filter-input {
-                .mat-form-field {
-                    .mat-form-field-suffix {
-                        .mat-icon {
-                            color: $link;
-                        }
-                    }
-                }
-            }
-        }
-
-        //chips
-        .header-chip {
-            &.is-error::before {
-                background-color: $status-error;
-            }
-
-            &.is-warning::before {
-                background-color: $status-warning;
-            }
-
-            &.is-good::before {
-                background-color: $status-success;
-            }
-
-            &.is-unknown::before {
-                background-color: mat-color($denali-grey, 400);
-            }
-
-            &.is-missing::before {
-                background-color: mat-color($denali-blue, 400);
-            }
-
-            &.is-snoozed::before {
-                background-color: mat-color($denali-purple, 500);
-            }
-        }
-
-        .group-label-chip {
-            background: if($is-dark, rgba($white, 0.35), rgba($black, 0.08));
-            color: if($is-dark, rgba($black ,0.8), rgba($black ,0.5));
-        }
-
-        .batch-controls-toolbar.mat-toolbar {
-            background: transparent;
-
-            .batch-select-control {
-                .mat-checkbox-frame {
-                    border-color: $link;
-                }
-
-                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-                    background-color: $link;
-                }
-            }
-        }
-
-        // common table styles
-        .common-table-result.mat-table ::ng-deep {
-            tr.mat-row:last-child {
-                td.mat-cell{
-                    border-bottom: 0;
-                }
-            }
-        }
-
-        // alerts results container
-        .alert-results {
-            .alert-results-wrapper {
-                .mat-paginator {
-                    border-top: 1px solid $divider;
-                }
-            }
-        }
-
-        // alerts table
-        .alerts-result-table.mat-table ::ng-deep {
-
-            .cdk-column-select {
-                .mat-checkbox-frame {
-                    border-color: $link;
-                }
-
-                .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-                    background-color: $link;
-                }
-            }
-
-            .cdk-column-good  .count-amount {
-                background-color: $status-success;
-            }
-
-            .cdk-column-bad .count-amount {
-                background-color: $status-error;
-            }
-
-            .cdk-column-warn .count-amount {
-                background-color: $status-warning;
-            }
-
-            .cdk-column-unknown .count-amount {
-                background-color: mat-color($denali-grey, 400);
-            }
-
-            .cdk-column-missing .count-amount {
-                background-color: mat-color($denali-blue, 400);
-            }
-
-            .cdk-column-name {
-                .edit-actions-wrapper {
-                    .mat-button {
-                        color: $link;
-                    }
-                }
-            }
-
-            .cdk-column-contacts {
-                .contact-icon-strip {
-                    color: if($is-dark, $brand-color-inverse, $brand-color);
-                }
-            }
-        }
-
-        .cdk-column-bad,
-        .cdk-column-warn,
-        .cdk-column-good,
-        .cdk-column-unknown,
-        .cdk-column-missing,
-        .cdk-column-snoozed {
-            .count-empty {
-                color: if(
-                    $is-dark,
-                    rgba($white, .25),
-                    rgba($black, .25)
-                );
-            }
-        }
-
-        // disabled state
-        .mat-row.is-disabled {
-            background-color: mat-color($foreground, divider, .05);
-
-            // disabled state
-            .mat-row.is-disabled {
-                background-color: mat-color($foreground, divider, .05);
-
-                .group-label-chip {
-                    opacity: .6
-                }
-
-                .mat-cell {
-                    color: mat-color($foreground, divider, .25);
-                }
-
-                .cdk-column-select {
-                    .mat-checkbox-frame {
-                        border-color: mat-color($foreground, divider, .25);
-                    }
-
-                    .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-                        background-color: mat-color($foreground, divider, .25);
-                    }
-                }
-
-                .cdk-column-contacts {
-                    .contact-icon-strip {
-                        background-color: transparent;
-                        color: if($is-dark, mat-color($foreground, navbar-text, .25), mat-color($foreground, divider, .25));
-                    }
-                }
-            }
-        }
-    }
-
-    // cdk items
-    ::ng-deep {
-        .namespace-selector-menu {
-            border: 1px solid $divider;
-
-            .filter-all-namespaces {
-                border-bottom: 1px solid $divider;
-            }
-        }
-
-        .alert-contacts-menu.mat-menu-panel {
-            border: 1px solid $divider;
-
-            .contacts-wrapper {
-                .contact-list-type {
-                    &:not(:last-child) {
-                        border-right: 1px solid $divider;
-                    }
-                }
-            }
-        }
-
-        .create-alert-menu {
-            border: 1px solid $divider;
-
-            .alert-type-label {
-                color: $link;
-            }
-        }
-
-        .sparkline-display-cdk-menu.mat-menu-panel {
-            border-top: 2px solid $primary-default;
-        }
-    }
-
 }

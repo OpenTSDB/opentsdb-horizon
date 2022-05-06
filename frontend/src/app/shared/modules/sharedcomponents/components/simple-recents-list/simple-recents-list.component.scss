@@ -15,95 +15,48 @@
 // * limitations under the License.
 // *
 
-@mixin simple-recents-list-component-base() {
-    .widget-panel-content.simple-recents-list {
-        .has-scroller {
-            flex: 1;
-            max-width: 100%;
-            max-height: 100%;
+@import '~@angular/material/theming';
 
-            .is-scroller {
-                padding: 0;
-            }
-        }
+.widget-panel-content.simple-recents-list {
+    .has-scroller {
+        flex: 1;
+        max-width: 100%;
+        max-height: 100%;
 
-        .mat-table {
-            @include mat-elevation(0);
-            width: 100%;
-
-            tr.mat-header-row {
-                height: 32px;
-            }
-
-            td.mat-cell {
-                cursor: pointer;
-
-                &:first-of-type {
-                    width: 100%;
-                }
-
-                &:last-of-type {
-                    white-space: nowrap;
-                }
-
-                .recent-labels {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: stretch;
-                    justify-content: stretch;
-
-                    .root-path {
-                        font-size: 10px;
-                    }
-                }
-            }
+        .is-scroller {
+            padding: 0;
         }
     }
-}
 
-@mixin simple-recents-list-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
+    .mat-table {
+        @include mat-elevation(0);
+        width: 100%;
 
-        $row-hover-bg: if(
-            $is-dark,
-            mat-color($primary, 50, .05),
-            mat-color($primary, 50)
-        );
+        tr.mat-header-row {
+            height: 32px;
+        }
 
-        $table-header-bg: if(
-            $is-dark,
-            mat-color($foreground, divider, .15),
-            mat-color($foreground, divider)
-        );
+        td.mat-cell {
+            cursor: pointer;
 
-        .widget-panel-content.simple-recents-list {
-            .mat-table {
-                tr.mat-header-row {
-                    background: $table-header-bg;
-                }
+            &:first-of-type {
+                width: 100%;
+            }
 
-                tr.mat-row {
-                    &:hover {
-                        background-color: $row-hover-bg;
-                    }
-                }
+            &:last-of-type {
+                white-space: nowrap;
+            }
 
-                td.mat-cell {
+            .recent-labels {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: stretch;
 
-                    .recent-labels {
-
-                        .dashboard-name {
-                            color: mat-color($foreground, link);
-                        }
-
-                        .root-path,
-                        .visited-date,
-                        .visited-time {
-                            color: mat-color($foreground, text, .7);
-                        }
-                    }
+                .root-path {
+                    font-size: 10px;
                 }
             }
         }

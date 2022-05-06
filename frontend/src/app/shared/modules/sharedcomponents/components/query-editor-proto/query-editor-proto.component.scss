@@ -15,1030 +15,646 @@
 // * limitations under the License.
 // *
 
-@mixin query-editor-proto-component-base() {
-    $default-padding: map-get($widgets-common-config, default-padding);
-    $edit-padding: map-get($widgets-common-config, edit-padding);
-
-    $row-size: 40px;
-
-    $filter-block-padding: 8px;
-
-    .query-editor-proto {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
-        .namespace-bar.mat-toolbar {
-            font-size: 12px;
-            height: $row-size;
-            min-height: $row-size;
-            padding: 0;
-            align-items: stretch; // mat-toolbar already has display: flex;
-
-            .toolbar-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                &:not(:first-child) {
-                    padding-right: 8px;
-                }
-
-                &.displayed-namespace {
-                    .namespace-value {
-                        cursor: text;
-                    }
-
-                    .mat-select-arrow-wrapper {
-                        cursor: pointer;
-                    }
-                }
-            }
-
-            .title {
-                padding-left: 16px;
-                // text-transform: uppercase;
-                font-weight: mat-font-weight(
-                    map-get($app-fontface-config, sans),
-                    display-4
-                );
-            }
-
-            .namespace-value {
-                font-weight: mat-font-weight(
-                    map-get($app-fontface-config, sans),
-                    body-2
-                );
-                font-size: mat-font-size(
-                    map-get($app-fontface-config, sans),
-                    subheading-2
-                );
-            }
-
-            .query-index {
-                font-weight: mat-font-weight(
-                    map-get($app-fontface-config, sans),
-                    body-2
-                );
-                width: $row-size;
-                height: $row-size;
-                border-top-left-radius: 4px;
-                position: relative;
-
-                .query-disabled-label {
-                    position: absolute;
-                    left: 0;
-                    bottom: 0;
-                    right: 0;
-                    width: 100%;
-                    height: 14px;
-                    line-height: 12px;
-                    margin-left: -1px;
-                    padding: 2px;
-                    text-transform: uppercase;
-                    font-size: 8px;
-                    color: white; // TODO: add to theme
-                    background: rgba(255, 255, 255, 0.25); // TODO: add to theme
-                }
-
-                .query-alias-edit-icon {
-                    margin-left: 8px;
-                    padding: 0 2px;
-                    display: flex;
-                    align-items: center;
-                    background-color: rgba(255,255,255,.4); // TODO: add to theme
-                    cursor: pointer;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(12px);
-                        margin-top: -2px;
-                    }
-
-                    &:hover {
-                        background-color: rgba(255,255,255,.5); // TODO: add to theme
-                    }
-                }
-
-                .query-alias-label {
-                    position: absolute;
-                    top: -12px;
-                    left: 0;
-                    min-width: 100%;
-                    font-size: 12px;
-                    line-height: 12px;
-                    display: flex;
-
-                    .query-alias-text {
-                        padding: 2px 8px;
-                        display: inline-block;
-                    }
-
-                }
-
-            }
-
-            .query-alias-edit-form {
-                .mat-form-field {
-                    align-self: flex-end;
-                }
-                .mat-button {
-                    margin-left: 4px;
-                }
-            }
-
-            .action-icons {
-                .mat-icon-button {
-                    width: 20px;
-                    height: 20px;
-                    line-height: 20px;
-                }
-
-                .mat-icon {
-                    font-size: 16px;
-                }
-            }
-        }
-
-        .metric-wrapper {
-            position: relative;
-            overflow: overlay;
-            padding: 10px;
-
-            .common-tags {
-                display: flex;
-                align-items: stretch;
-                padding: 4px 0;
-                margin-bottom: 5px;
-                border-radius: 2px;
-
-                .common-tags-label {
-                    font-weight: 500;
-                }
-
-                .common-tags-wrapper {
-                    //border-radius: 2px;
-                    position: relative;
-                    flex: 1;
-                    // margin-left: 10px;
-
-                    .add-tag-filter-button.mat-button {
-                        line-height: 24px;
-                        font-size: 12px;
-                    }
-
-                    .tag-filter-menu-trigger,
-                    .metric-visual-panel-trigger {
-                        position: absolute;
-                        top: -1px;
-                        left: -1px;
-                        right: -1px;
-                    }
-                }
-            }
-
-            .tags-selected {
-                .tags-selected-header {
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                    padding: 0 $filter-block-padding 4px $filter-block-padding;
-                    font-size: mat-font-size(
-                        map-get($app-fontface-config, sans),
-                        caption
-                    );
-                    line-height: 24px;
-
-                    // Only match selected tags label
-                    .explicit-match {
-                        padding-left: 8px;
-                    }
-                    .mat-checkbox-inner-container {
-                        margin-right: 4px;
-                    }
-
-                    .mat-icon-button {
-                        width: 24px;
-                        height: 24px;
-                        line-height: 24px;
-                        margin-left: 4px;
-
-                        .mat-icon {
-                            @include sizeDenaliIcon(14px);
-                        }
-                    }
-                }
-
-                .tag-filter-rows {
-                    padding: 0;
-                }
-
-                .tag {
-                    display: flex;
-                    width: initial;
-                    height: initial;
-                    min-height: 24px;
-                    margin: 2px $filter-block-padding;
-                    // border-radius: 4px;
-                    // border: 0;
-                    font-size: mat-font-size(
-                        map-get($app-fontface-config, sans),
-                        caption
-                    );
-
-                    &:last-of-type {
-                        margin-bottom: 0;
-                    }
-
-                    &:first-of-type {
-                        margin-top: 4px;
-                    }
-
-                    .mat-list-item-content {
-                        padding: 0;
-                        flex: 1;
-                    }
-
-                    .tag-filter-detail {
-                        min-width: 0;
-                        //max-width: 85%;
-                        display: flex;
-                        //flex-direction: column;
-                        flex: 1;
-
-                        strong {
-                            margin-right: 6px;
-                        }
-
-                        .tagkey-item {
-                            display: flex;
-                            align-items: stretch;
-                            flex-wrap: wrap;
-
-                            span {
-                                padding: 2px 4px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        @-moz-document url-prefix() {
-            .metric-wrapper {
-                overflow: auto;
-            }
-        }
-
-        .vertical-line-spacer {
-            height: 16px;
-            width: 6px;
-            position: relative;
-            display: inline-block;
-            margin-top: 4px;
-
-            span {
-                display: block;
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 3px;
-                width: 1px;
-                height: 16px;
-            }
-        }
-
-        .query-metric-table.mat-table {
-            padding: 4px;
-
-            tr.mat-footer-row,
-            tr.mat-row {
-                height: initial;
-            }
-
-            td.mat-cell,
-            td.mat-footer-cell,
-            th.mat-header-cell {
-                vertical-align: top;
-                padding: 4px 8px 0;
-                border-bottom: 0px;
-
-                &:first-of-type {
-                    vertical-align: middle;
-                    padding-left: 0px;
-                }
-
-                &:last-of-type {
-                    padding-right: 8px;
-                    width: 50px;
-                }
-            }
-
-            .cdk-column-metric-index {
-                max-width: 50px;
-                width: 50px;
-                font-weight: 500;
-
-                input[type="radio"] {
-                    margin-right: 5px;
-                }
-            }
-
-            .cdk-column-alias {
-                white-space: nowrap;
-            }
-
-            // .cdk-column-name {}
-
-            .cdk-column-modifiers {
-                flex: 1;
-            }
-
-            .mat-header-row {
-                display: none;
-            }
-
-            .mat-header-row,
-            .mat-row {
-                min-height: initial;
-            }
-
-            .mat-cell {
-                min-height: initial;
-            }
-
-            .mat-cell.cdk-column-metric-row-data {
-                width: 100%;
-            }
-
-            .metric-row1-data, .metric-row2-data {
-                display: flex;
-                width: 100%;
-            }
-
-            .metric-row1-data > div, .metric-row2-data  > div {
-                display: table-cell;
-            }
-
-            .metric-row-data {
-                height: inherit;
-                // margin-right: 8px;
-                // margin-bottom: 4px;
-                min-height: inherit;
-                display: inline-flex;
-                align-items: center;
-                white-space: nowrap;
-
-                &.metric-index {
-                    padding: 3px;
-                    border-radius: 3px;
-                    cursor: pointer;
-
-                    .label {
-                        display: inline-flex;
-                        align-items: center;
-                    }
-
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 16px;
-                        margin-right: 4px;
-                    }
-                }
-
-                &.metric-name,
-                &.alias,
-                &.expression {
-                    width: 100%;
-
-                    .display-name {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-                        cursor: pointer;
-                        border-radius: 4px;
-
-                        span {
-                            flex: 1;
-                            padding-left: 6px;
-                            text-overflow: ellipsis;
-                            display: inline-block;
-                            overflow: hidden;
-                        }
-
-                        .alias-text {
-                            color: #999; // TODO: move color to theme section
-                            padding: 0px;
-                        }
-                        .mat-icon {
-                            width: 16px;
-                            height: 16px;
-                            font-size: 12px;
-                            line-height: 16px;
-                            margin-left: 2px;
-                            opacity: 0;
-                            transition: opacity 200ms ease-in-out;
-                        }
-
-                        &:hover {
-                            .mat-icon {
-                                opacity: 1;
-                            }
-                        }
-                    }
-
-                    .mat-form-field {
-                        width: 100%;
-                    }
-                }
-
-                &.metric-name.is-adding {
-                    width: 400px;
-                }
-
-                &.metric-index.is-adding {
-                    margin-right: 8px;
-                    width: 40px;
-                    min-width: 40px;
-                    justify-content: center;
-                }
-
-                &.expression.is-adding {
-                    width: 600px;
-                }
-
-                // is this used??
-                &.aggregator {
-                    button {
-                        line-height: 25px;
-                    }
-                    span {
-                        margin-left: 5px;
-                    }
-                }
-
-                &.tag-aggregator {
-                    .tag-aggregator-wrapper {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-                        border-radius: 4px;
-
-                        .aggregator-icon {
-                            @include sizeDenaliIcon(14px);
-
-                            & + .by-spacer {
-                                margin-left: 4px;
-                            }
-                        }
-
-                        .tag-aggregator-component,
-                        .dropdown-metric-tags {
-                            .mat-button {
-                                padding: 0 8px;
-                                width: initial;
-
-                                .button-label {
-                                    padding: 0 8px;
-                                }
-                            }
-                        }
-
-                        .tag-aggregator-component {
-                            align-self: stretch;
-                        }
-
-                        .dropdown-metric-tags {
-                            padding-right: 0;
-                        }
-
-                        .by-spacer {
-                            // padding: 0 6px;
-                        }
-                    }
-                }
-
-                &.summarizer-selector {
-                    .summarizer-selector-wrapper {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-
-                        .summarizer-title {
-                            padding-left: 5px;
-                            padding-right: 5px;
-                        }
-
-                        .mat-button {
-                            line-height: 32px;
-
-                            .mat-button-wrapper {
-                                display: flex;
-
-                                .mat-select-arrow-wrapper {
-                                    display: flex;
-                                    align-items: center;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                &.custom-function {
-                    margin-left: 5px;
-                    border-radius: 4px;
-
-                    .custom-function-wrapper {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-                        border-radius: 4px;
-
-                        .metric-function-component {
-                            align-self: stretch;
-                        }
-                    }
-                }
-
-                &.add-function {
-                    margin-left: 5px;
-                    display: inline-flex;
-                    align-items: center;
-                    min-height: 32px;
-
-                    .mat-flat-button {
-                        padding: 0;
-                        min-width: 24px;
-                        //height: 24px;
-                        line-height: 32px;
-                        height: 32px;
-                        padding-left: 6px;
-
-                        &,
-                        .mat-button-wrapper {
-                            line-height: 24px;
-                        }
-
-                        .mat-button-wrapper {
-                            display: flex;
-                            align-items: center;
-                        }
-
-                        .mat-icon {
-                            font-size: 20px;
-                            width: 18px;
-                            height: 18px;
-                        }
-                    }
-
-                    .mat-mini-fab {
-                        @include mat-elevation(2);
-                        width: 18px;
-                        height: 18px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-
-                        .mat-button-wrapper {
-                            padding: 0;
-                        }
-
-                        .mat-icon {
-                            width: 16px;
-                            height: 16px;
-                            font-size: 16px;
-                            margin-left: -1px;
-                            margin-top: -2px;
-                        }
-                    }
-                }
-
-                &.expression-options {
-                    input {
-                        margin-right: 8px;
-                    }
-                }
-                &.action {
-                    visibility: hidden;
-                }
-            }
-
-            tr.mat-row.add-query-item {
-                .metric-row-data {
-                    margin-bottom: 0;
-                }
-            }
-
-            tr.metric-query-item:hover .metric-row-data.action {
-                visibility: visible;
-            }
-
-            // modifiers
-            tr.mat-row.add-query-item.is-hidden {
-                td.mat-cell,
-                td.mat-footer-cell,
-                th.mat-header-cell {
-                    padding: 0;
-                    border-bottom-width: 0;
-                }
-            }
-
-            .metric-alias,
-            .visual-panel-dropdown-text {
-                cursor: pointer;
-
-                font-size: 12px;
-                padding: 0 4px;
-            }
-
-            .visual-panel-dropdown-text {
-                padding: 0 4px;
-
-                .color-chip {
-                    width: 10px;
-                    height: 10px;
-                    display: inline-block;
-                    margin-right: 6px;
-                }
-
-                span:not(:empty) {
-                    margin-right: 4px;
-
-                    .color-chip {
-                        margin-left: 4px;
-                    }
-                }
-
-                span:empty:not(.color-chip) {
-                    display: none;
-                }
-
-                .mat-icon {
-                    @include sizeDenaliIcon(14px);
-                }
-            }
-
-            .metric-alias {
-                margin-left: 10px;
-
-                .display-name {
-                    padding: 0 4px;
-
-                    .mat-icon {
-                        @include sizeDenaliIcon(14px);
-                        margin-left: 8px;
-                    }
-                }
-
-                .alias-input-field {
-                    .mat-form-field-prefix {
-                        align-self: stretch;
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 0 4px;
-                    }
-                }
-            }
-        }
-        .metric-action-buttons {
+@import '~@angular/material/theming';
+@import 'config';
+@import 'mixins';
+@import 'typography';
+
+$default-padding: map-get($widgets-common-config, default-padding);
+$edit-padding: map-get($widgets-common-config, edit-padding);
+
+$row-size: 40px;
+
+$filter-block-padding: 8px;
+
+.query-editor-proto {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .namespace-bar.mat-toolbar {
+        font-size: 12px;
+        height: $row-size;
+        min-height: $row-size;
+        padding: 0;
+        align-items: stretch; // mat-toolbar already has display: flex;
+
+        .toolbar-item {
             display: flex;
             align-items: center;
-            padding: 0;
-            margin-top: 10px;
+            justify-content: center;
 
-            .mat-icon-button,
-            .mat-stroked-button,
-            .mat-button {
-                margin-right: 6px;
-                line-height: 24px;
-                font-size: 12px;
+            &:not(:first-child) {
+                padding-right: 8px;
+            }
 
-                .mat-icon {
-                    margin-right: 5px;
-                    @include sizeDenaliIcon(12px);
+            &.displayed-namespace {
+                .namespace-value {
+                    cursor: text;
+                }
+
+                .mat-select-arrow-wrapper {
+                    cursor: pointer;
                 }
             }
         }
 
-        .metric-list-wrapper {
-            display: flex;
-            flex-direction: column;
-            // min-height: 32px;
+        .title {
+            padding-left: 16px;
+            // text-transform: uppercase;
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                display-4
+            );
         }
 
-        $mat-select-arrow-size: 5px !default;
-        $mat-select-arrow-margin: 4px !default;
-        $mat-select-panel-max-height: 256px !default;
-        $mat-select-item-height: 3em !default;
-
-        $mat-select-placeholder-arrow-space: 2 *
-            ($mat-select-arrow-size + $mat-select-arrow-margin);
-
-        .mat-select-arrow-wrapper {
-            display: table-cell;
-            vertical-align: middle;
-
-            // When used in a box appearance form-field the arrow should be shifted up 50%.
-            .mat-form-field-appearance-fill & {
-                transform: translateY(-50%);
-            }
-
-            // When used in a outline form-field the arrow should be shifted up 25%.
-            .mat-form-field-appearance-outline & {
-                transform: translateY(-25%);
-            }
-
-            // When used in a standard appearance form-field the arrow should be shifted up 50%,
-            // but only if it's not empty and it has a label.
-            .mat-form-field-appearance-standard.mat-form-field-has-label
-                .mat-select:not(.mat-select-empty)
-                & {
-                transform: translateY(-50%);
-            }
-
-            // Animate the arrow position, but only when the transitioning to empty (animate the arrow down)
-            // This is in line with the mat-form-field label animation
-            .mat-form-field-appearance-standard .mat-select.mat-select-empty & {
-                transition: transform $swift-ease-out-duration
-                    $swift-ease-out-timing-function;
-            }
-
-            ._mat-animation-noopable.mat-form-field-appearance-standard
-                .mat-select.mat-select-empty
-                & {
-                transition: none;
-            }
+        .namespace-value {
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                body-2
+            );
+            font-size: mat-font-size(
+                map-get($app-fontface-config, sans),
+                subheading-2
+            );
         }
 
-        .mat-select-arrow {
-            width: 0;
-            height: 0;
-            border-left: $mat-select-arrow-size solid transparent;
-            border-right: $mat-select-arrow-size solid transparent;
-            border-top: $mat-select-arrow-size solid;
-            margin: 0 $mat-select-arrow-margin;
-        }
+        .query-index {
+            font-weight: mat-font-weight(
+                map-get($app-fontface-config, sans),
+                body-2
+            );
+            width: $row-size;
+            height: $row-size;
+            border-top-left-radius: 4px;
+            position: relative;
 
-        // HOST MODIFIERS
-        &.can-disable-metrics {
-            .metric-list-item {
-                .metric-row-data {
-                    &.metric-index {
-                        min-width: 60px;
-                        width: 60px;
-
-                        .mat-flat-button {
-                            min-width: 60px;
-                        }
-                    }
-                }
-            }
-        }
-
-        // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
-        .metric-query-item.visual-highlight {
-
-            & + .metric-query-item-visual {
-
-                .visual-panel-dropdown-text {
-                    border-top-left-radius: 4px;
-                    border-top-right-radius: 4px;
-                }
-            }
-        }
-
-        // metric row is disabled
-        .metric-query-item.row-disabled {
-
-            & {
-
-                //.mat-cell.cdk-column-metric-index.mat-column-metric-index,
-                .mat-cell.cdk-column-modifiers.mat-column-modifiers,
-                .metric-row-data.tag-aggregator,
-                .mat-cell.cdk-column-name.mat-column-name{
-                    position: relative;
-                    filter: grayscale(100%);
-                    opacity: .85;
-                }
-            }
-
-            & + .metric-query-item-visual {
-                filter: grayscale(100%);
-
-                .mat-cell {
-                    opacity: 0.85;
-                }
-            }
-        }
-
-        // query disabled
-        .namespace-wrapper.query-disabled {
-            & + .metric-wrapper {
-                //filter: grayscale(100%);
-                //opacity: .85;
-                //pointer-events: none;
-
-                .common-tags,
-                .metric-action-buttons // add metric/expression buttons
-                {
-                    filter: grayscale(100%);
-                    opacity: .85;
-                    pointer-events: none;
-                }
-
-                .mat-cell.cdk-column-metric-index.mat-column-metric-index,
-                .mat-cell.cdk-column-modifiers.mat-column-modifiers,
-                .mat-cell.cdk-column-name.mat-column-name{
-                    position: relative;
-                    filter: grayscale(100%);
-                    opacity: .85;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        display: block;
-
-                    }
-                }
-
-                .metric-row-data.action {
-                    .cdk-drag-handle,
-                    .clone-metric {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
-
-    // CDK ITEMS
-
-    .tag-filters-menu-wrapper.mat-menu-panel {
-        max-width: 100%;
-        width: calc(100vw - 118px);
-
-        .mat-menu-content:not(:empty) {
-            padding: 0px;
-        }
-    }
-
-    .metric-visual-panel-wrapper.mat-menu-panel {
-        max-width: 980px;
-        padding: 0px;
-
-        .mat-menu-content:not(:empty) {
-            padding: 0;
-        }
-    }
-
-    .function-selection-cdk-menu.mat-menu-panel {
-        min-width: 400px;
-        max-width: initial;
-        display: flex;
-
-        .mat-menu-content:not(:empty) {
-            padding: 0px;
-            flex: 1;
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-            max-width: 100%;
-            max-height: 100%;
-
-            div:first-child {
+            .query-disabled-label {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                right: 0;
                 width: 100%;
+                height: 14px;
+                line-height: 12px;
+                margin-left: -1px;
+                padding: 2px;
+                text-transform: uppercase;
+                font-size: 8px;
+                color: white; // TODO: add to theme
+                background: rgba(255, 255, 255, 0.25); // TODO: add to theme
             }
-        }
 
-        .function-selection-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-            max-width: 100%;
-            max-height: 100%;
-            width: 100%;
-        }
-
-        .function-categories,
-        .function-category-items {
-            flex: 1;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-
-        .function-categories {
-            max-width: 150px;
-            min-width: 100px;
-        }
-
-        .function-category-items {
-            min-width: 250px;
-        }
-
-        .function-category-help {
-            min-width: 250px;
-            max-width: 250px;
-        }
-
-        .function-category-help {
-            display: flex;
-            flex-direction: column;
-
-            .help-title {
+            .query-alias-edit-icon {
+                margin-left: 8px;
+                padding: 0 2px;
                 display: flex;
                 align-items: center;
-                justify-content: flex-start;
-                padding: 4px 8px;
-
-                span:not(:last-child) {
-                    margin-right: 6px;
-                }
+                background-color: rgba(255,255,255,.4); // TODO: add to theme
+                cursor: pointer;
 
                 .mat-icon {
                     @include sizeDenaliIcon(12px);
+                    margin-top: -2px;
+                }
+
+                &:hover {
+                    background-color: rgba(255,255,255,.5); // TODO: add to theme
                 }
             }
 
-            .help-description {
-                flex: 1;
-                overflow: auto;
-                padding: 4px 8px;
+            .query-alias-label {
+                position: absolute;
+                top: -12px;
+                left: 0;
+                min-width: 100%;
                 font-size: 12px;
+                line-height: 12px;
+                display: flex;
 
-                p {
-                    margin-bottom: 8px;
+                .query-alias-text {
+                    padding: 2px 8px;
+                    display: inline-block;
                 }
+
+            }
+
+        }
+
+        .query-alias-edit-form {
+            .mat-form-field {
+                align-self: flex-end;
+            }
+            .mat-button {
+                margin-left: 4px;
             }
         }
-
-        .mat-list-base .mat-list-item {
-            height: 32px;
-            line-height: 32px;
-            font-size: 14px;
-            white-space: nowrap;
-
-            .mat-icon {
-                @include sizeDenaliIcon(14px);
-            }
-        }
-    }
-
-    .metric-action-cdk-menu.mat-menu-panel {
-        .mat-menu-item {
-            height: 32px;
-            line-height: 32px;
-            font-size: 14px;
-
-            .mat-icon {
-                @include sizeDenaliIcon(14px);
-            }
-        }
-    }
-
-    .metrics-list-cdk-menu.mat-menu-panel {
-        width: 400px;
-        height: 300px;
-        .mat-menu-content {
-            padding-bottom: 0px;
-        }
-        .metric-list {
-            height: 255px;
-        }
-        .action-buttons {
-            text-align: end;
-        }
-
-    }
-
-    // CDK DRAG ITEM IS PLACED AT BODY LEVEL
-    .cdk-drag.cdk-drag-preview {
 
         .action-icons {
-            float: right;
-
             .mat-icon-button {
-                width: 30px;
-                height: 30px;
-                line-height: 30px;
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
             }
 
             .mat-icon {
                 font-size: 16px;
             }
         }
+    }
+
+    .metric-wrapper {
+        position: relative;
+        overflow: overlay;
+        padding: 10px;
+
+        .common-tags {
+            display: flex;
+            align-items: stretch;
+            padding: 4px 0;
+            margin-bottom: 5px;
+            border-radius: 2px;
+
+            .common-tags-label {
+                font-weight: 500;
+            }
+
+            .common-tags-wrapper {
+                //border-radius: 2px;
+                position: relative;
+                flex: 1;
+                // margin-left: 10px;
+
+                .add-tag-filter-button.mat-button {
+                    line-height: 24px;
+                    font-size: 12px;
+                }
+
+                .tag-filter-menu-trigger,
+                .metric-visual-panel-trigger {
+                    position: absolute;
+                    top: -1px;
+                    left: -1px;
+                    right: -1px;
+                }
+            }
+        }
+
+        .tags-selected {
+            .tags-selected-header {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 0 $filter-block-padding 4px $filter-block-padding;
+                font-size: mat-font-size(
+                    map-get($app-fontface-config, sans),
+                    caption
+                );
+                line-height: 24px;
+
+                // Only match selected tags label
+                .explicit-match {
+                    padding-left: 8px;
+                }
+                .mat-checkbox-inner-container {
+                    margin-right: 4px;
+                }
+
+                .mat-icon-button {
+                    width: 24px;
+                    height: 24px;
+                    line-height: 24px;
+                    margin-left: 4px;
+
+                    .mat-icon {
+                        @include sizeDenaliIcon(14px);
+                    }
+                }
+            }
+
+            .tag-filter-rows {
+                padding: 0;
+            }
+
+            .tag {
+                display: flex;
+                width: initial;
+                height: initial;
+                min-height: 24px;
+                margin: 2px $filter-block-padding;
+                // border-radius: 4px;
+                // border: 0;
+                font-size: mat-font-size(
+                    map-get($app-fontface-config, sans),
+                    caption
+                );
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+
+                &:first-of-type {
+                    margin-top: 4px;
+                }
+
+                .mat-list-item-content {
+                    padding: 0;
+                    flex: 1;
+                }
+
+                .tag-filter-detail {
+                    min-width: 0;
+                    //max-width: 85%;
+                    display: flex;
+                    //flex-direction: column;
+                    flex: 1;
+
+                    strong {
+                        margin-right: 6px;
+                    }
+
+                    .tagkey-item {
+                        display: flex;
+                        align-items: stretch;
+                        flex-wrap: wrap;
+
+                        span {
+                            padding: 2px 4px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @-moz-document url-prefix() {
+        .metric-wrapper {
+            overflow: auto;
+        }
+    }
+
+    .vertical-line-spacer {
+        height: 16px;
+        width: 6px;
+        position: relative;
+        display: inline-block;
+        margin-top: 4px;
+
+        span {
+            display: block;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 3px;
+            width: 1px;
+            height: 16px;
+        }
+    }
+
+    .query-metric-table.mat-table {
+        padding: 4px;
+
+        tr.mat-footer-row,
+        tr.mat-row {
+            height: initial;
+        }
+
+        td.mat-cell,
+        td.mat-footer-cell,
+        th.mat-header-cell {
+            vertical-align: top;
+            padding: 4px 8px 0;
+            border-bottom: 0px;
+
+            &:first-of-type {
+                vertical-align: middle;
+                padding-left: 0px;
+            }
+
+            &:last-of-type {
+                padding-right: 8px;
+                width: 50px;
+            }
+        }
+
+        .cdk-column-metric-index {
+            max-width: 50px;
+            width: 50px;
+            font-weight: 500;
+
+            input[type="radio"] {
+                margin-right: 5px;
+            }
+        }
+
+        .cdk-column-alias {
+            white-space: nowrap;
+        }
+
+        // .cdk-column-name {}
+
+        .cdk-column-modifiers {
+            flex: 1;
+        }
+
+        .mat-header-row {
+            display: none;
+        }
+
+        .mat-header-row,
+        .mat-row {
+            min-height: initial;
+        }
+
+        .mat-cell {
+            min-height: initial;
+        }
+
+        .mat-cell.cdk-column-metric-row-data {
+            width: 100%;
+        }
+
+        .metric-row1-data, .metric-row2-data {
+            display: flex;
+            width: 100%;
+        }
+
+        .metric-row1-data > div, .metric-row2-data  > div {
+            display: table-cell;
+        }
+
+        .metric-row-data {
+            height: inherit;
+            // margin-right: 8px;
+            // margin-bottom: 4px;
+            min-height: inherit;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+
+            &.metric-index {
+                padding: 3px;
+                border-radius: 3px;
+                cursor: pointer;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
+                }
+
+                .mat-icon {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 16px;
+                    margin-right: 4px;
+                }
+            }
+
+            &.metric-name,
+            &.alias,
+            &.expression {
+                width: 100%;
+
+                .display-name {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+                    cursor: pointer;
+                    border-radius: 4px;
+
+                    span {
+                        flex: 1;
+                        padding-left: 6px;
+                        text-overflow: ellipsis;
+                        display: inline-block;
+                        overflow: hidden;
+                    }
+
+                    .alias-text {
+                        color: #999; // TODO: move color to theme section
+                        padding: 0px;
+                    }
+                    .mat-icon {
+                        width: 16px;
+                        height: 16px;
+                        font-size: 12px;
+                        line-height: 16px;
+                        margin-left: 2px;
+                        opacity: 0;
+                        transition: opacity 200ms ease-in-out;
+                    }
+
+                    &:hover {
+                        .mat-icon {
+                            opacity: 1;
+                        }
+                    }
+                }
+
+                .mat-form-field {
+                    width: 100%;
+                }
+            }
+
+            &.metric-name.is-adding {
+                width: 400px;
+            }
+
+            &.metric-index.is-adding {
+                margin-right: 8px;
+                width: 40px;
+                min-width: 40px;
+                justify-content: center;
+            }
+
+            &.expression.is-adding {
+                width: 600px;
+            }
+
+            // is this used??
+            &.aggregator {
+                button {
+                    line-height: 25px;
+                }
+                span {
+                    margin-left: 5px;
+                }
+            }
+
+            &.tag-aggregator {
+                .tag-aggregator-wrapper {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+                    border-radius: 4px;
+
+                    .aggregator-icon {
+                        @include sizeDenaliIcon(14px);
+
+                        & + .by-spacer {
+                            margin-left: 4px;
+                        }
+                    }
+
+                    .tag-aggregator-component,
+                    .dropdown-metric-tags {
+                        .mat-button {
+                            padding: 0 8px;
+                            width: initial;
+
+                            .button-label {
+                                padding: 0 8px;
+                            }
+                        }
+                    }
+
+                    .tag-aggregator-component {
+                        align-self: stretch;
+                    }
+
+                    .dropdown-metric-tags {
+                        padding-right: 0;
+                    }
+
+                    .by-spacer {
+                        // padding: 0 6px;
+                    }
+                }
+            }
+
+            &.summarizer-selector {
+                .summarizer-selector-wrapper {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+
+                    .summarizer-title {
+                        padding-left: 5px;
+                        padding-right: 5px;
+                    }
+
+                    .mat-button {
+                        line-height: 32px;
+
+                        .mat-button-wrapper {
+                            display: flex;
+
+                            .mat-select-arrow-wrapper {
+                                display: flex;
+                                align-items: center;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.custom-function {
+                margin-left: 5px;
+                border-radius: 4px;
+
+                .custom-function-wrapper {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+                    border-radius: 4px;
+
+                    .metric-function-component {
+                        align-self: stretch;
+                    }
+                }
+            }
+
+            &.add-function {
+                margin-left: 5px;
+                display: inline-flex;
+                align-items: center;
+                min-height: 32px;
+
+                .mat-flat-button {
+                    padding: 0;
+                    min-width: 24px;
+                    //height: 24px;
+                    line-height: 32px;
+                    height: 32px;
+                    padding-left: 6px;
+
+                    &,
+                    .mat-button-wrapper {
+                        line-height: 24px;
+                    }
+
+                    .mat-button-wrapper {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .mat-icon {
+                        font-size: 20px;
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+
+                .mat-mini-fab {
+                    @include mat-elevation(2);
+                    width: 18px;
+                    height: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .mat-button-wrapper {
+                        padding: 0;
+                    }
+
+                    .mat-icon {
+                        width: 16px;
+                        height: 16px;
+                        font-size: 16px;
+                        margin-left: -1px;
+                        margin-top: -2px;
+                    }
+                }
+            }
+
+            &.expression-options {
+                input {
+                    margin-right: 8px;
+                }
+            }
+            &.action {
+                visibility: hidden;
+            }
+        }
+
+        tr.mat-row.add-query-item {
+            .metric-row-data {
+                margin-bottom: 0;
+            }
+        }
+
+        tr.metric-query-item:hover .metric-row-data.action {
+            visibility: visible;
+        }
+
+        // modifiers
+        tr.mat-row.add-query-item.is-hidden {
+            td.mat-cell,
+            td.mat-footer-cell,
+            th.mat-header-cell {
+                padding: 0;
+                border-bottom-width: 0;
+            }
+        }
 
         .metric-alias,
         .visual-panel-dropdown-text {
             cursor: pointer;
+
             font-size: 12px;
             padding: 0 4px;
         }
@@ -1091,789 +707,642 @@
                 }
             }
         }
+    }
+    .metric-action-buttons {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin-top: 10px;
 
-        .toolbar-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .mat-icon-button,
+        .mat-stroked-button,
+        .mat-button {
+            margin-right: 6px;
+            line-height: 24px;
+            font-size: 12px;
 
             .mat-icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+                margin-right: 5px;
+                @include sizeDenaliIcon(12px);
             }
+        }
+    }
 
-            strong {
-                padding-left: 20px;
+    .metric-list-wrapper {
+        display: flex;
+        flex-direction: column;
+        // min-height: 32px;
+    }
+
+    $mat-select-arrow-size: 5px !default;
+    $mat-select-arrow-margin: 4px !default;
+    $mat-select-panel-max-height: 256px !default;
+    $mat-select-item-height: 3em !default;
+
+    $mat-select-placeholder-arrow-space: 2 *
+        ($mat-select-arrow-size + $mat-select-arrow-margin);
+
+    .mat-select-arrow-wrapper {
+        display: table-cell;
+        vertical-align: middle;
+
+        // When used in a box appearance form-field the arrow should be shifted up 50%.
+        .mat-form-field-appearance-fill & {
+            transform: translateY(-50%);
+        }
+
+        // When used in a outline form-field the arrow should be shifted up 25%.
+        .mat-form-field-appearance-outline & {
+            transform: translateY(-25%);
+        }
+
+        // When used in a standard appearance form-field the arrow should be shifted up 50%,
+        // but only if it's not empty and it has a label.
+        .mat-form-field-appearance-standard.mat-form-field-has-label
+            .mat-select:not(.mat-select-empty)
+            & {
+            transform: translateY(-50%);
+        }
+
+        // Animate the arrow position, but only when the transitioning to empty (animate the arrow down)
+        // This is in line with the mat-form-field label animation
+        .mat-form-field-appearance-standard .mat-select.mat-select-empty & {
+            transition: transform $swift-ease-out-duration
+                $swift-ease-out-timing-function;
+        }
+
+        ._mat-animation-noopable.mat-form-field-appearance-standard
+            .mat-select.mat-select-empty
+            & {
+            transition: none;
+        }
+    }
+
+    .mat-select-arrow {
+        width: 0;
+        height: 0;
+        border-left: $mat-select-arrow-size solid transparent;
+        border-right: $mat-select-arrow-size solid transparent;
+        border-top: $mat-select-arrow-size solid;
+        margin: 0 $mat-select-arrow-margin;
+    }
+
+    // HOST MODIFIERS
+    &.can-disable-metrics {
+        .metric-list-item {
+            .metric-row-data {
+                &.metric-index {
+                    min-width: 60px;
+                    width: 60px;
+
+                    .mat-flat-button {
+                        min-width: 60px;
+                    }
+                }
+            }
+        }
+    }
+
+    // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
+    .metric-query-item.visual-highlight {
+
+        & + .metric-query-item-visual {
+
+            .visual-panel-dropdown-text {
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
+        }
+    }
+
+    // metric row is disabled
+    .metric-query-item.row-disabled {
+
+        & {
+
+            //.mat-cell.cdk-column-metric-index.mat-column-metric-index,
+            .mat-cell.cdk-column-modifiers.mat-column-modifiers,
+            .metric-row-data.tag-aggregator,
+            .mat-cell.cdk-column-name.mat-column-name{
+                position: relative;
+                filter: grayscale(100%);
+                opacity: .85;
             }
         }
 
-
-
-        // query item (div)
-        &.query-metric-row {
-
-        }
-
-        // metric item (tr.mat-row)
-        &.metric-query-item.mat-row {
-            height: initial;
-
-            td.mat-cell {
-                vertical-align: top;
-                padding: 0;
-                border-bottom: 0px;
-
-                &:first-of-type {
-                    vertical-align: middle;
-                    padding-left: 0px;
-                }
-
-                &:last-of-type {
-                    padding-right: 8px;
-                    width: 50px;
-                }
-            }
-
-            .cdk-column-metric-index {
-                max-width: 50px;
-                width: 50px;
-                font-weight: 500;
-                padding-left: 4px;
-
-                input[type="radio"] {
-                    margin-right: 5px;
-                }
-            }
-
-            .cdk-column-alias {
-                white-space: nowrap;
-            }
-
-            // .cdk-column-name {}
-
-            .cdk-column-modifiers {
-                flex: 1;
-            }
-
-            .mat-header-row {
-                display: none;
-            }
-
-            .mat-header-row,
-            .mat-row {
-                min-height: initial;
-            }
+        & + .metric-query-item-visual {
+            filter: grayscale(100%);
 
             .mat-cell {
-                min-height: initial;
-            }
-
-            .mat-cell.cdk-column-metric-row-data {
-                width: 100%;
-            }
-
-            .metric-row1-data, .metric-row2-data {
-                display: flex;
-                width: 100%;
-            }
-
-            .metric-row1-data > div, .metric-row2-data  > div {
-                display: table-cell;
-            }
-
-            .metric-row-data {
-                height: inherit;
-                // margin-right: 8px;
-                // margin-bottom: 4px;
-                min-height: inherit;
-                display: inline-flex;
-                align-items: center;
-                white-space: nowrap;
-
-                &.metric-index {
-                    padding: 3px;
-                    border-radius: 3px;
-                    cursor: pointer;
-
-                    .label {
-                        display: inline-flex;
-                        align-items: center;
-                    }
-
-                    .mat-icon {
-                        width: 14px;
-                        height: 14px;
-                        font-size: 16px;
-                        margin-right: 4px;
-                    }
-                }
-
-                &.metric-name,
-                &.alias,
-                &.expression {
-                    width: 100%;
-
-                    .display-name {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-                        cursor: pointer;
-                        border-radius: 4px;
-
-                        span {
-                            flex: 1;
-                            padding-left: 6px;
-                            text-overflow: ellipsis;
-                            display: inline-block;
-                            overflow: hidden;
-                        }
-
-                        .alias-text {
-                            color: #999; // TODO: move color to theme section
-                            padding: 0px;
-                        }
-                        .mat-icon {
-                            width: 16px;
-                            height: 16px;
-                            font-size: 12px;
-                            line-height: 16px;
-                            margin-left: 2px;
-                            opacity: 0;
-                            transition: opacity 200ms ease-in-out;
-                        }
-
-                        &:hover {
-                            .mat-icon {
-                                opacity: 1;
-                            }
-                        }
-                    }
-
-                    .mat-form-field {
-                        width: 100%;
-                    }
-                }
-
-                &.tag-aggregator {
-                    .tag-aggregator-wrapper {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-                        border-radius: 4px;
-
-                        .aggregator-icon {
-                            @include sizeDenaliIcon(14px);
-
-                            & + .by-spacer {
-                                margin-left: 4px;
-                            }
-                        }
-
-                        .tag-aggregator-component,
-                        .dropdown-metric-tags {
-                            .mat-button {
-                                padding: 0 8px;
-                                width: initial;
-
-                                .button-label {
-                                    padding: 0 8px;
-                                }
-                            }
-                        }
-
-                        .tag-aggregator-component {
-                            align-self: stretch;
-                        }
-
-                        .dropdown-metric-tags {
-                            padding-right: 0;
-                        }
-                    }
-                }
-
-                &.summarizer-selector {
-                    .summarizer-selector-wrapper {
-                        width: 100%;
-                        display: flex;
-                        align-items: center;
-                        height: 32px;
-
-                        .summarizer-title {
-                            padding-left: 5px;
-                            padding-right: 5px;
-                        }
-
-                        .mat-button {
-                            line-height: 32px;
-
-                            .mat-button-wrapper {
-                                display: flex;
-
-                                .mat-select-arrow-wrapper {
-                                    display: flex;
-                                    align-items: center;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                &.custom-function,
-                &.add-function {
-                    display: none;
-                }
-
-
+                opacity: 0.85;
             }
         }
+    }
 
-        .metric-action-buttons {
-            display: flex;
-            align-items: center;
-            padding: 0;
-            margin-top: 10px;
+    // query disabled
+    .namespace-wrapper.query-disabled {
+        & + .metric-wrapper {
+            //filter: grayscale(100%);
+            //opacity: .85;
+            //pointer-events: none;
 
-            .mat-icon-button,
-            .mat-stroked-button,
-            .mat-button {
-                margin-right: 6px;
-                line-height: 24px;
-                font-size: 12px;
+            .common-tags,
+            .metric-action-buttons // add metric/expression buttons
+            {
+                filter: grayscale(100%);
+                opacity: .85;
+                pointer-events: none;
+            }
 
-                .mat-icon {
-                    margin-right: 5px;
-                    @include sizeDenaliIcon(12px);
+            .mat-cell.cdk-column-metric-index.mat-column-metric-index,
+            .mat-cell.cdk-column-modifiers.mat-column-modifiers,
+            .mat-cell.cdk-column-name.mat-column-name{
+                position: relative;
+                filter: grayscale(100%);
+                opacity: .85;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    display: block;
+
+                }
+            }
+
+            .metric-row-data.action {
+                .cdk-drag-handle,
+                .clone-metric {
+                    display: none;
                 }
             }
         }
     }
 }
 
-// TODO: This mixin needs a major rehaul to get it to use theme values.
-// There are too many raw values added in this mixin only
+// CDK ITEMS
 
-@mixin query-editor-proto-component-theme($theme-config) {
-    $theme-name: map-get($theme-config, theme-name);
-    $cssVarMap: get-theme-css-variables($theme-name);
+.tag-filters-menu-wrapper.mat-menu-panel {
+    max-width: 100%;
+    width: calc(100vw - 118px);
 
-    @include variables-compatibility($theme-config) {
+    .mat-menu-content:not(:empty) {
+        padding: 0px;
+    }
+}
 
-        // TODO: Brand color sounds like it needs to be in theme
-        $brand-color: if(
-            $is-dark,
-            mat-color($background, navbar, .85),
-            mat-color($background, navbar)
-        );
+.metric-visual-panel-wrapper.mat-menu-panel {
+    max-width: 980px;
+    padding: 0px;
 
-        $brand-color-lighter: mat-color($background, navbar-alt);
-        $brand-color-inverse: mat-color($foreground, navbar-text);
+    .mat-menu-content:not(:empty) {
+        padding: 0;
+    }
+}
 
-        $new-bg: if($is-dark, rgba($white, 0.25), #edeff4);// TODO: plug into theme
+.function-selection-cdk-menu.mat-menu-panel {
+    min-width: 400px;
+    max-width: initial;
+    display: flex;
 
-        .query-editor-proto {
-            border: 1px solid $new-bg;
-            border-radius: 4px;
+    .mat-menu-content:not(:empty) {
+        padding: 0px;
+        flex: 1;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        max-width: 100%;
+        max-height: 100%;
 
-            .namespace-wrapper {
-                background-color: if($is-dark, rgba($white, 0.04), $new-bg);
+        div:first-child {
+            width: 100%;
+        }
+    }
+
+    .function-selection-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+    }
+
+    .function-categories,
+    .function-category-items {
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .function-categories {
+        max-width: 150px;
+        min-width: 100px;
+    }
+
+    .function-category-items {
+        min-width: 250px;
+    }
+
+    .function-category-help {
+        min-width: 250px;
+        max-width: 250px;
+    }
+
+    .function-category-help {
+        display: flex;
+        flex-direction: column;
+
+        .help-title {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px 8px;
+
+            span:not(:last-child) {
+                margin-right: 6px;
             }
 
-            .namespace-bar.mat-toolbar {
-                background-color: if($is-dark, rgba($white, 0.04), $new-bg);
+            .mat-icon {
+                @include sizeDenaliIcon(12px);
+            }
+        }
 
-                &.is-expanded {
-                    box-shadow: inset 0 -1px 0 1px mat-color($background, card);
-                }
+        .help-description {
+            flex: 1;
+            overflow: auto;
+            padding: 4px 8px;
+            font-size: 12px;
 
-                .query-index {
-                    color: $brand-color-inverse;
-                    background-color: $brand-color;
-                }
+            p {
+                margin-bottom: 8px;
+            }
+        }
+    }
 
-                .toolbar-item {
-                    .mat-select-arrow-wrapper {
-                        color: mat-color($foreground, link);
-                    }
-                    .mat-icon {
-                        color: mat-color($foreground, link);
-                    }
-                }
+    .mat-list-base .mat-list-item {
+        height: 32px;
+        line-height: 32px;
+        font-size: 14px;
+        white-space: nowrap;
 
-                .query-alias-edit-icon {
-                    .mat-icon {
-                        color: mat-color($foreground, link);
-                    }
-                }
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
+    }
+}
 
-                .query-alias-label {
-                    color: $brand-color-inverse;
-                    background-color: $brand-color-lighter;
-                }
+.metric-action-cdk-menu.mat-menu-panel {
+    .mat-menu-item {
+        height: 32px;
+        line-height: 32px;
+        font-size: 14px;
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
+    }
+}
+
+.metrics-list-cdk-menu.mat-menu-panel {
+    width: 400px;
+    height: 300px;
+    .mat-menu-content {
+        padding-bottom: 0px;
+    }
+    .metric-list {
+        height: 255px;
+    }
+    .action-buttons {
+        text-align: end;
+    }
+
+}
+
+// CDK DRAG ITEM IS PLACED AT BODY LEVEL
+.cdk-drag.cdk-drag-preview {
+
+    .action-icons {
+        float: right;
+
+        .mat-icon-button {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .mat-icon {
+            font-size: 16px;
+        }
+    }
+
+    .metric-alias,
+    .visual-panel-dropdown-text {
+        cursor: pointer;
+        font-size: 12px;
+        padding: 0 4px;
+    }
+
+    .visual-panel-dropdown-text {
+        padding: 0 4px;
+
+        .color-chip {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        span:not(:empty) {
+            margin-right: 4px;
+
+            .color-chip {
+                margin-left: 4px;
+            }
+        }
+
+        span:empty:not(.color-chip) {
+            display: none;
+        }
+
+        .mat-icon {
+            @include sizeDenaliIcon(14px);
+        }
+    }
+
+    .metric-alias {
+        margin-left: 10px;
+
+        .display-name {
+            padding: 0 4px;
+
+            .mat-icon {
+                @include sizeDenaliIcon(14px);
+                margin-left: 8px;
+            }
+        }
+
+        .alias-input-field {
+            .mat-form-field-prefix {
+                align-self: stretch;
+                display: inline-flex;
+                align-items: center;
+                padding: 0 4px;
+            }
+        }
+    }
+
+    .toolbar-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .mat-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        strong {
+            padding-left: 20px;
+        }
+    }
+
+    // metric item (tr.mat-row)
+    &.metric-query-item.mat-row {
+        height: initial;
+
+        td.mat-cell {
+            vertical-align: top;
+            padding: 0;
+            border-bottom: 0px;
+
+            &:first-of-type {
+                vertical-align: middle;
+                padding-left: 0px;
             }
 
-            .metric-wrapper {
-                border-left: 1px solid rgba($black, 0.04);
-                border-right: 1px solid rgba($black, 0.04);
+            &:last-of-type {
+                padding-right: 8px;
+                width: 50px;
+            }
+        }
 
-                .common-tags {
-                    //background-color: if($is-dark, rgba($brand-color, 0.4), rgba($brand-color, 0.15));
-                    background-color: if(
-                        $is-dark,
-                        rgba(255, 255, 255, 0.04),
-                        $new-bg
-                    );
+        .cdk-column-metric-index {
+            max-width: 50px;
+            width: 50px;
+            font-weight: 500;
+            padding-left: 4px;
 
-                    .common-tags-label {
-                        color: if($is-dark, $brand-color-inverse, $brand-color);
-                    }
+            input[type="radio"] {
+                margin-right: 5px;
+            }
+        }
 
-                    .common-tags-wrapper {
-                        // background: mat-color($background, card);
-                    }
-                }
+        .cdk-column-alias {
+            white-space: nowrap;
+        }
 
-                .tags-selected-header {
-                    border-bottom: 1px solid mat-color($background, card);
-                }
+        // .cdk-column-name {}
 
-                .tag-filter-detail {
-                    .tagkey-item {
-                        .automode {
-                            color: rgba(0, 0, 0, 0.8);
+        .cdk-column-modifiers {
+            flex: 1;
+        }
 
-                            &.auto-mode {
-                                background-color: mat-color($other, dashboard-filter-auto-mode-bg);
-                                border: 1px solid mat-color($other, dashboard-filter-auto-mode-border-color);
-                            }
+        .mat-header-row {
+            display: none;
+        }
 
-                            &.manual-mode {
-                                background-color: mat-color($other, dashboard-filter-manual-mode-bg);
-                                border: 1px solid mat-color($other, dashboard-filter-manual-mode-border-color);
-                            }
-                        }
-                    }
+        .mat-header-row,
+        .mat-row {
+            min-height: initial;
+        }
+
+        .mat-cell {
+            min-height: initial;
+        }
+
+        .mat-cell.cdk-column-metric-row-data {
+            width: 100%;
+        }
+
+        .metric-row1-data, .metric-row2-data {
+            display: flex;
+            width: 100%;
+        }
+
+        .metric-row1-data > div, .metric-row2-data  > div {
+            display: table-cell;
+        }
+
+        .metric-row-data {
+            height: inherit;
+            // margin-right: 8px;
+            // margin-bottom: 4px;
+            min-height: inherit;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+
+            &.metric-index {
+                padding: 3px;
+                border-radius: 3px;
+                cursor: pointer;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
                 }
 
                 .mat-icon {
-                    color: mat-color($foreground, link);
+                    width: 14px;
+                    height: 14px;
+                    font-size: 16px;
+                    margin-right: 4px;
                 }
             }
 
-            .vertical-line-spacer {
-                span {
-                    background-color: mat-color($foreground, divider);
-                }
-            }
+            &.metric-name,
+            &.alias,
+            &.expression {
+                width: 100%;
 
-            .metric-alias {
                 .display-name {
-                    // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                    background-color: transparent;
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, text, .5),
-                        mat-color($background, navbar, .5)
-                    );
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+                    cursor: pointer;
+                    border-radius: 4px;
 
-                    .mat-icon {
-                        color: mat-color($foreground, link);
+                    span {
+                        flex: 1;
+                        padding-left: 6px;
+                        text-overflow: ellipsis;
+                        display: inline-block;
+                        overflow: hidden;
                     }
 
-                    .alias-text.has-alias {
-                        color: mat-color($foreground, text);
-                        font-weight: bold;
+                    .alias-text {
+                        color: #999; // TODO: move color to theme section
+                        padding: 0px;
+                    }
+                    .mat-icon {
+                        width: 16px;
+                        height: 16px;
+                        font-size: 12px;
+                        line-height: 16px;
+                        margin-left: 2px;
+                        opacity: 0;
+                        transition: opacity 200ms ease-in-out;
                     }
 
                     &:hover {
-                        background-color: mat-color($foreground, link, 0.1);
-                        color: if(
-                            $is-dark,
-                            mat-color($foreground, text),
-                            $brand-color
-                        );
+                        .mat-icon {
+                            opacity: 1;
+                        }
                     }
                 }
 
-                .alias-input-field {
-                    .mat-form-field-prefix {
-                        color: mat-color($foreground, text, 0.5);
-                        background-color: mat-color($foreground, link, 0.1);
-                    }
-
-                    .mat-input-element {
-                        color: mat-color($foreground, text);
-                    }
+                .mat-form-field {
+                    width: 100%;
                 }
             }
 
-            .visual-panel-dropdown-text {
-                color: if(
-                    $is-dark,
-                    mat-color($foreground, text, .5),
-                    mat-color($background, navbar, .5)
-                );
-                margin-left: 4px;
+            &.tag-aggregator {
+                .tag-aggregator-wrapper {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
+                    border-radius: 4px;
 
-                &:hover {
-                    background-color: mat-color($foreground, link, 0.1);
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, text),
-                        mat-color($background, navbar)
-                    );
-                }
+                    .aggregator-icon {
+                        @include sizeDenaliIcon(14px);
 
-                .mat-icon {
-                    color: mat-color($foreground, link);
-                }
+                        & + .by-spacer {
+                            margin-left: 4px;
+                        }
+                    }
 
+                    .tag-aggregator-component,
+                    .dropdown-metric-tags {
+                        .mat-button {
+                            padding: 0 8px;
+                            width: initial;
 
-            }
-
-            .metric-row-data {
-                &.metric-index {
-                    background-color: if(
-                        $is-dark,
-                        mat-color($background, navbar, 1),
-                        mat-color($background, navbar, 0.15)
-                    );
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, text),
-                        mat-color($background, navbar)
-                    );
-
-                    /* ▼▼▼ Not sure this is still needed - need to check */
-                    .mat-flat-button {
-                        background: if(
-                            $is-dark,
-                            rgba($white, 0.08),
-                            rgba($black, 0.03)
-                        );
-
-                        .mat-select-arrow-wrapper {
-                            border-top: 1px solid if($is-dark, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.06));
-
-                            .mat-select-arrow {
-                                color: if(
-                                    $is-dark,
-                                    rgba(255, 255, 255, 0.7),
-                                    rgba(0, 0, 0, 0.7)
-                                );
+                            .button-label {
+                                padding: 0 8px;
                             }
                         }
                     }
-                }
 
-                &.metric-name,
-                // &.alias,
-                &.expression {
-                    .display-name {
-                        // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                        background-color: transparent;
+                    .tag-aggregator-component {
+                        align-self: stretch;
+                    }
 
-                        .mat-icon {
-                            color: mat-color($foreground, link);
-                        }
-
-                        &:hover {
-                            background-color: mat-color($foreground, link, 0.1);
-                        }
+                    .dropdown-metric-tags {
+                        padding-right: 0;
                     }
                 }
+            }
 
-                &.tag-aggregator {
-                    .tag-aggregator-wrapper {
-                        // background-color: if($is-dark, rgba(255,255,255,0.04), $new-bg);
-                        background-color: transparent;
+            &.summarizer-selector {
+                .summarizer-selector-wrapper {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    height: 32px;
 
-                        .aggregator-icon {
-                            color: mat-color($foreground, text, 0.8);
-                        }
-
-                        &:hover {
-                            background-color: mat-color($foreground, link, 0.1);
-                        }
+                    .summarizer-title {
+                        padding-left: 5px;
+                        padding-right: 5px;
                     }
-                }
 
-                &.summarizer-selector {
                     .mat-button {
-                        color: mat-color($foreground, link);
-                    }
+                        line-height: 32px;
 
-                    .summarizer-selector-wrapper {
-                        border: 1px solid rgba($black, 0.04);
-
-                        &:hover {
-                            background-color: mat-color($foreground, link, 0.1);
-                        }
-                    }
-                }
-
-                &.custom-function {
-                    background-color: transparent;
-
-                    .custom-function-wrapper {
-
-                        &:hover {
-                            background-color: mat-color($foreground, link, 0.1);
-                        }
-                    }
-                }
-
-                &.add-function {
-                    .mat-flat-button {
-                        background-color: transparent;
-
-                        .mat-icon {
-                            color: mat-color($foreground, link);
-                        }
-
-                        .mat-select-arrow-wrapper {
-                            .mat-select-arrow {
-                                color: if(
-                                    $is-dark,
-                                    rgba($white, 0.7),
-                                    rgba($black, 0.7)
-                                );
-                            }
-                        }
-
-                        &:hover {
-                            background-color: mat-color($foreground, link, 0.1);
-                        }
-                    }
-                }
-            }
-
-            // highlight metric-row when action applies to that row (like using the visual appearance dropdown)
-            .metric-query-item.visual-highlight {
-                &,
-                & + .metric-query-item-visual {
-                    background-color: rgba(map-get($denali-yellow, 200), 0.2); // TODO: plug into theme
-                }
-
-                & + .metric-query-item-visual {
-                    border-bottom: 2px solid mat-color($foreground, link, .25);
-
-                    .visual-panel-dropdown-text {
-                        background: mat-color($foreground, link, .25);
-                        color: mat-color($foreground, text);
-
-                        .color-chip {
-                            box-shadow: 0 0 0 2px $white;
-                        }
-
-                        .mat-select-arrow-wrapper .mat-select-arrow {
-                            color: mat-color($foreground, text, 0.54);
-                        }
-                    }
-                }
-            }
-
-            // metric row has been disabled
-            .metric-query-item.row-disabled {
-                &,
-                & + .metric-query-item-visual {
-                    background-color: if(
-                        $is-dark,
-                        rgba($white, 0.3),
-                        rgba($black, 0.03)
-                    );
-                }
-            }
-
-            .metric-query-item:not(:first-of-type) {
-                border-top: 1px dotted mat-color($foreground, divider);
-            }
-
-            .metric-action-buttons {
-                .add-metric-button {
-                    background-color: mat-color($primary, default, 0.15);
-                }
-            }
-        }
-
-        // CDK ITEMS
-        .function-selection-cdk-menu.mat-menu-panel {
-            .function-categories {
-                border-right: 1px solid mat-color($foreground, divider);
-
-                .mat-nav-list {
-                    .mat-list-item.is-active {
-                        background-color: mat-color($primary, default, 0.06);
-                    }
-                }
-            }
-
-            .function-category-help {
-                background: if(
-                    $is-dark,
-                    rgba(map-get($denali-brand-5, 100), .2), // TODO: plug into theme
-                    rgba(map-get($denali-brand-5, 100), .5) // TODO: plug into theme
-                );
-                border-left: 1px solid mat-color($foreground, divider);
-
-                .help-title {
-                border-bottom: 1px solid mat-color($foreground, divider);
-                }
-            }
-        }
-
-
-        // CDK DRAG ITEM IS PLACED AT BODY LEVEL
-        .cdk-drag.cdk-drag-preview {
-
-            .metric-alias {
-                .display-name {
-                background-color: transparent;
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, text, .5),
-                        mat-color($background, navbar, .5)
-                    );
-
-                    .mat-icon {
-                        color: mat-color($foreground, link);
-                    }
-
-                    .alias-text.has-alias {
-                        color: mat-color($foreground, text);
-                        font-weight: bold;
-                    }
-
-                    &:hover {
-                        background-color: mat-color($foreground, link, 0.1);
-                        color: if(
-                            $is-dark,
-                            mat-color($foreground, text),
-                            mat-color($background, navbar)
-                        );
-                    }
-                }
-            }
-
-            .visual-panel-dropdown-text {
-                color: if(
-                    $is-dark,
-                    mat-color($foreground, text, .5),
-                    mat-color($background, navbar, .5)
-                );
-                margin-left: 4px;
-
-                &:hover {
-                    background-color: mat-color($foreground, link, 0.1);
-                    color: if(
-                        $is-dark,
-                        mat-color($foreground, text),
-                        mat-color($background, navbar)
-                    );
-                }
-
-                .mat-icon {
-                    color: mat-color($foreground, link);
-                }
-            }
-
-            // query item (div)
-            //&.query-metric-row { }
-
-            // metric item (tr.mat-row)
-            &.metric-query-item.mat-row {
-
-                .metric-row-data {
-                    &.metric-index {
-                        background-color: if(
-                            $is-dark,
-                            mat-color($background, navbar),
-                            mat-color($background, navbar, 0.15)
-                        );
-                        color: if(
-                            $is-dark,
-                            mat-color($foreground, text),
-                            mat-color($background, navbar)
-                        );
-
-                        /* ▼▼▼ Not sure this is still needed - need to check */
-                        .mat-flat-button {
-                            background: if(
-                                $is-dark,
-                                rgba($white, 0.08),
-                                rgba($black, 0.03)
-                            );
+                        .mat-button-wrapper {
+                            display: flex;
 
                             .mat-select-arrow-wrapper {
-                                border-top: 1px solid if($is-dark, rgba($white, 0.25), rgba($black, 0.06));
-
-                                .mat-select-arrow {
-                                    color: if(
-                                        $is-dark,
-                                        rgba($white, 0.7),
-                                        rgba($black, 0.7)
-                                    );
-                                }
-                            }
-                        }
-                    }
-
-                    &.metric-name,
-                    &.expression {
-                        .display-name {
-                            background-color: transparent;
-
-                            .mat-icon {
-                                color: mat-color($foreground, link);
-                            }
-
-                            &:hover {
-                                background-color: mat-color($foreground, link, 0.1);
-                            }
-                        }
-                    }
-
-                    &.tag-aggregator {
-                        .tag-aggregator-wrapper {
-                            background-color: transparent;
-
-                            .aggregator-icon {
-                                color: mat-color($foreground, text, 0.8);
-                            }
-
-                            &:hover {
-                                background-color: mat-color($foreground, link, 0.1);
-                            }
-                        }
-                    }
-
-                    &.summarizer-selector {
-                        .mat-button {
-                            color: mat-color($foreground, link);
-                        }
-
-                        .summarizer-selector-wrapper {
-                            border: 1px solid rgba($black, 0.04);
-
-                            &:hover {
-                                background-color: mat-color($foreground, link, 0.1);
-                            }
-                        }
-                    }
-
-                    &.custom-function {
-                        background-color: transparent;
-
-                        .custom-function-wrapper {
-
-                            &:hover {
-                                background-color: mat-color($foreground, link, 0.1);
+                                display: flex;
+                                align-items: center;
                             }
                         }
                     }
                 }
+            }
+
+            &.custom-function,
+            &.add-function {
+                display: none;
+            }
+
+
+        }
+    }
+
+    .metric-action-buttons {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin-top: 10px;
+
+        .mat-icon-button,
+        .mat-stroked-button,
+        .mat-button {
+            margin-right: 6px;
+            line-height: 24px;
+            font-size: 12px;
+
+            .mat-icon {
+                margin-right: 5px;
+                @include sizeDenaliIcon(12px);
             }
         }
     }

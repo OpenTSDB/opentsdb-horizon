@@ -19,9 +19,7 @@
 // * LANDING PAGE CONTENT COMPONENT
 // *
 
- @import 'loader-base';
-
-:host.landing-page-content {
+.landing-page-content {
     position: relative;
     height: 100%;
     width: 100%;
@@ -249,40 +247,3 @@
         }
     }
 }
-
-// * THEME VARIANTS
-@include init-component-variants() {
-
-    :host.landing-page-content {
-        border-right: 2px solid mat-color($foreground, divider);
-
-        .landing-page-hero {
-            background-color: mat-color($background, card);
-        }
-
-        .landing-page-utilities {
-
-            .mat-toolbar {
-                background: transparent;
-            }
-
-            .search-utility {
-                background-color: mat-color($background, card);
-
-                .search-query-form-field {
-                    .mat-icon {
-                        color: mat-color($primary, default);
-                    }
-
-                    .mat-form-field-underline {
-
-                        .mat-form-field-ripple {
-                            background-color: mat-color($primary, default);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
- }

@@ -32,6 +32,7 @@ export interface DygraphOptionsAxis {
     independentTicks?: true;
     digitsAfterDecimal?: number;
     axisLabelWidth?: number;
+    axisLabelFontSize?: number;
     pixelsPerLabel?: number;
 }
 

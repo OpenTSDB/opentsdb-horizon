@@ -23,15 +23,17 @@ import {
     EventEmitter,
     ViewChild,
     ElementRef,
-    AfterViewInit
+    AfterViewInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
-import { MatFormField } from '@angular/material';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'metric-function',
   templateUrl: './metric-function.component.html',
-  styleUrls: []
+  styleUrls: ['./metric-function.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MetricFunctionComponent implements OnInit, AfterViewInit {
 
@@ -70,7 +72,7 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
     return 200;
   }
 
-  @ViewChild(MatFormField, {read: ElementRef}) private formFieldEl: ElementRef;
+  @ViewChild(MatFormField, { read: ElementRef }) private formFieldEl: ElementRef;
 
   constructor() { }
 

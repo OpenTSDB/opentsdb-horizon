@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding, ViewEncapsulation } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dropdown-join-type',
     templateUrl: './dropdown-join-type.component.html',
+    styleUrls: ['./dropdown-join-type.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => DropdownJoinTypeComponent),

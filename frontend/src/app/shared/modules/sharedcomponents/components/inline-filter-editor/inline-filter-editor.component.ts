@@ -24,14 +24,14 @@ import {
     ElementRef,
     ViewChild,
     OnDestroy,
-    HostListener, ChangeDetectorRef
+    HostListener, ChangeDetectorRef, ViewEncapsulation
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';
 import { HttpService } from '../../../../../core/http/http.service';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IntercomService } from '../../../../../core/services/intercom.service';
@@ -41,10 +41,11 @@ import { UtilsService } from '../../../../../core/services/utils.service';
 
 
 @Component({
-    // tslint:disable-next-line: component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'inline-filter-editor',
     templateUrl: './inline-filter-editor.component.html',
-    styleUrls: ['./inline-filter-editor.component.scss']
+    styleUrls: ['./inline-filter-editor.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     @HostBinding('class.inline-filter-editor') private _hostClass = true;
@@ -264,7 +265,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                 this.cdRef.detectChanges();
                 this.searchSub = this.httpService.getTagKeysAndTagValuesByNamespace(query, this.options.metaSource)
                     .subscribe(res => {
-                        // tslint:disable:max-line-length
+                        /* eslint-disable max-len */
                         this.searchResults = { tagKeys: Object.keys(res.tagKeysAndValues).sort(this.utils.sortAlphaNum), tagKeysAndValues: res.tagKeysAndValues };
                         this.basicSearch = false;
                         this.cdRef.detectChanges();
@@ -366,7 +367,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
             tagValSearch = search;
         }
         this.selectedTag = tag;
-        // tslint:disable:max-line-length
+        /* eslint-disable max-len */
         this.tagValueSearchControl.setValue(tagValSearch, {emitEvent: search && this.searchResults.tagKeysAndValues[tag].values.length ? false : true });
         this.tagValueSearch = search && this.searchResults.tagKeysAndValues[tag].values.length ? false : true;
         this.filteredTagValues = search && this.searchResults.tagKeysAndValues[tag].values.length ? this.searchResults.tagKeysAndValues[tag].values : [];

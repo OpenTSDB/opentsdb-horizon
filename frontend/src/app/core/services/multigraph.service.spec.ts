@@ -22,7 +22,7 @@ describe('MultigraphService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MultigraphService = TestBed.get(MultigraphService);
+    const service: MultigraphService = TestBed.inject(MultigraphService);
     expect(service).toBeTruthy();
   });
 });

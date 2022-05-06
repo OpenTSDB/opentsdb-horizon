@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding, ViewEncapsulation } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'tag-aggregator',
     templateUrl: './tag-aggregator.component.html',
-    styleUrls: [],
+    styleUrls: ['./tag-aggregator.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => TagAggregatorComponent),
@@ -96,7 +97,7 @@ export class TagAggregatorComponent implements OnInit {
     defaultAggregator = 'sum';
     selectedIndex = -1;
 
-    selectedAggregatorHelpIndex = -1;
+    selectedAggregatorHelpObj: any = {};
 
     subscription: Subscription;
 
@@ -122,7 +123,7 @@ export class TagAggregatorComponent implements OnInit {
         this.selectedIndex = this.aggregatorOptions.findIndex(item => item.value === this.value);
     }
 
-    setSelectedAggregatorHelpIndex(idx: number) {
-        this.selectedAggregatorHelpIndex = idx;
+    setAggregatorHelpObject(obj: any) {
+        this.selectedAggregatorHelpObj = obj;
     }
 }

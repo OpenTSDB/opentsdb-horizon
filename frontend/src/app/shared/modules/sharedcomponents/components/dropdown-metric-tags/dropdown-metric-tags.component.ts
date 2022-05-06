@@ -24,26 +24,28 @@ import {
     EventEmitter,
     HostBinding,
     ViewChild,
-    ElementRef
+    ElementRef,
+    ViewEncapsulation
 } from '@angular/core';
 import { HttpService } from '../../../../../core/http/http.service';
-import { MatMenuTrigger, MatMenu } from '@angular/material';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { FormControl } from '@angular/forms';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dropdown-metric-tags',
     templateUrl: './dropdown-metric-tags.component.html',
-    styleUrls: []
+    styleUrls: ['./dropdown-metric-tags.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DropdownMetricTagsComponent implements OnInit, OnChanges {
 
     @HostBinding('class.dropdown-metric-tags') private _hostClass = true;
 
     @ViewChild(MatMenuTrigger) private trigger: MatMenuTrigger;
-    @ViewChild(MatMenu, {read: ElementRef}) private optionsMenu: ElementRef;
+    @ViewChild(MatMenu, { read: ElementRef, static: true }) private optionsMenu: ElementRef;
 
     @Input() namespace: string;
     @Input() metric: any;
@@ -70,7 +72,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     ) { }
 
     ngOnInit() {
-        // tslint:disable-next-line:arrow-return-shorthand
+        // eslint-disable-next-line arrow-body-style
         this.tagOptions = this.selected ? this.selected.map(d => { return { name: d }; }) : [];
 
         if (this.enableGroupBy === null || this.enableGroupBy === undefined) {
@@ -100,7 +102,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
             this.filteredTagOptions = this.tagOptions;
             this.triggerMenu();
         } else if (load ) {
-            if ( !this.namespace || !this.metric ) {
+            if ( !this.metric ) {
                 this.tagOptions = [];
                 this.filteredTagOptions = this.tagOptions;
                 this.triggerMenu();

@@ -15,137 +15,46 @@
 // * limitations under the License.
 // *
 
-@mixin dropdown-line-type-component-base() {
-    .dropdown-line-type {
-        display: inline-block;
+@import 'dropdown-line-type.mixins.scss';
 
-        @include dropdown-line-type-preview();
+.dropdown-line-type {
+    display: inline-block;
 
-        .mat-form-field {
-            .mat-form-field-infix {
-                display: flex;
-                width: initial;
-            }
-        }
+    @include dropdown-line-type-preview();
 
-        .mat-select {
+    .mat-form-field {
+        .mat-form-field-infix {
             display: flex;
+            width: initial;
+        }
+    }
 
-            .mat-select-trigger {
-                .mat-select-value-text {
+    .mat-select {
+        display: flex;
+
+        .mat-select-trigger {
+            .mat-select-value-text {
+                display: flex;
+                flex: 1;
+
+                .trigger-value-display {
                     display: flex;
-                    flex: 1;
-
-                    .trigger-value-display {
-                        display: flex;
-                    }
-                }
-
-                .mat-select-arrow-wrapper {
-                    margin-left: 8px;
                 }
             }
-        }
-    }
 
-    // CDK ITEMS
-    .dropdown-line-type-options {
-        .mat-select-content {
-            .mat-option-text {
-                display: inline-flex;
-                @include dropdown-line-type-preview();
+            .mat-select-arrow-wrapper {
+                margin-left: 8px;
             }
         }
     }
 }
 
-@mixin dropdown-line-type-component-theme($theme-config) {
-    @include variables-compatibility($theme-config) {
-        $theme-name: map-get($theme-config, theme-name);
-        $cssVarMap: get-theme-css-variables($theme-name);
-
-        $line-selected-color-raw: _mat-convert-variable-to-color(map-get($foreground, link), $cssVarMap);
-        $line-normal-color-raw: _mat-convert-variable-to-color(map-get($foreground, text), $cssVarMap);
-
-        .dropdown-line-type {
-            @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
-            @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
-        }
-
-        // CDK ITEMS
-        .dropdown-line-type-options {
-            .mat-select-content {
-                .mat-option {
-                    @include vertical-button-toggle-override($line-normal-color-raw, $line-selected-color-raw);
-                    @include dropdown-line-type-preview-theme($line-normal-color-raw, $line-selected-color-raw);
-                }
-            }
-        }
-    }
-}
-
-// UTILITY MIXINS
-@mixin dropdown-line-type-preview() {
-    .line-type-preview {
-        display: inline-flex;
-        align-items: center;
-        width: 21px;
-        max-width: 21px;
-        flex: 1;
-        margin-right: 8px;
-
-        span {
-            border-bottom-width: 2px;
-            display: inline-block;
-            flex: 1;
-            height: 1px;
-            max-height: 1px;
-        }
-
-        // modifiers
-        &.line-type-solid {
-            span {
-                border-bottom-style: solid;
-            }
-        }
-
-        &.line-type-dotted {
-            span {
-                border-bottom-style: dotted;
-            }
-        }
-
-        &.line-type-dashed {
-            span {
-                border-bottom-style: dashed;
-            }
-        }
-
-        &.line-type-dot-dashed {
-            span:first-child {
-                border-bottom-style: dotted;
-                margin-right: 2px;
-            }
-            span:last-child {
-                border-bottom-style: dashed;
-            }
-        }
-    }
-}
-
-@mixin dropdown-line-type-preview-theme($text, $color) {
-    // theme part
-    .line-type-preview {
-        span {
-            border-bottom-color: $text;
-        }
-    }
-
-    .mat-button-toggle.mat-button-toggle-checked {
-        .line-type-preview {
-            span {
-                border-bottom-color: $color;
-            }
+// CDK ITEMS
+.dropdown-line-type-options {
+    .mat-select-content {
+        .mat-option-text {
+            display: inline-flex;
+            @include dropdown-line-type-preview();
         }
     }
 }
