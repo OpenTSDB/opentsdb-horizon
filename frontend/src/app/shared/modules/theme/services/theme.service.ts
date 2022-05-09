@@ -149,7 +149,7 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     private themeOption(name: any) {
-        console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
+        //console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
         if (name === 'default') {
             name = 'horizon';
         }
