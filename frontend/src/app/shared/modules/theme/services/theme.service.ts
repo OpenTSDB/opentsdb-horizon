@@ -77,7 +77,7 @@ export class ThemeService implements OnInit, OnDestroy {
         if (this.localStorage$.hasKey('settings.theme') && this.localStorage$.hasKey('settings.variant')) {
             let themeCheck = this.localStorage$.getLocal('settings.theme');
             let variantCheck = this.localStorage$.getLocal('settings.variant');
-            console.log('%cTHEME/VARIANT CHECK', 'background: red; color: white; padding: 2px;', themeCheck, variantCheck);
+            //console.log('%cTHEME/VARIANT CHECK', 'background: red; color: white; padding: 2px;', themeCheck, variantCheck);
             this.setActiveTheme(
                 this.themeOption(this.localStorage$.getLocal('settings.theme')).value,
                 (themeCheck === 'default') ? false : true
@@ -108,7 +108,7 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     public setActiveTheme($theme: string, ignoreLocal: boolean = false) {
-        console.log('%cSET ACTIVE THEME', 'color: white; background: purple;', $theme );
+        //console.log('%cSET ACTIVE THEME', 'color: white; background: purple;', $theme );
         if (!ignoreLocal) {
             this.localStorage$.setLocal('settings.theme', $theme);
         }
@@ -129,7 +129,7 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     public setActiveVariant($variant: string, ignoreLocal: boolean = false) {
-        console.log('%cSET ACTIVE VARIANT', 'color: white; background: purple;', $variant );
+        //console.log('%cSET ACTIVE VARIANT', 'color: white; background: purple;', $variant );
         if (!ignoreLocal) {
             this.localStorage$.setLocal('settings.variant', $variant);
         }
@@ -149,7 +149,7 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     private themeOption(name: any) {
-        console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
+        //console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
         if (name === 'default') {
             name = 'horizon';
         }
@@ -162,7 +162,7 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     private variantOption(name: any) {
-        console.log('%cVARIANT OPTION', 'color: white; background: purple;', name );
+        //console.log('%cVARIANT OPTION', 'color: white; background: purple;', name );
         if (name !== 'light' && name !== 'dark') {
             name = 'light';
         }
