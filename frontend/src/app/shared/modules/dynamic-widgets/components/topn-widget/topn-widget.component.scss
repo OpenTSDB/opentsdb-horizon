@@ -112,6 +112,7 @@ $action-bar-height: map-get($widgets-common-config, action-bar-height);
 
         .label {
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .chart {
