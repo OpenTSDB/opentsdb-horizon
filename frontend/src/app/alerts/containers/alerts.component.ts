@@ -373,7 +373,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
             try {
                 this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-                this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+                let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
+                this.setTableDataSource(filteredAlertValues);
             } catch(e) {
                 console.info(e);
             }
@@ -460,7 +461,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.setAlertCount(i);
             }
             if (this.alertsDataSource && this.alertsDataSource.data) {
-                this.alertsDataSource.data = this.alerts;
+                if (this.alertSearch && this.alertSearch.value !== '') {
+                    let val = this.utils.regExpEscSpecialChars(this.alertSearch.value, ['[', '\\]']);
+                    let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
+                    this.setTableDataSource(filteredAlertValues);
+                } else {
+                    //this.alertsDataSource.data = this.alerts;
+                    this.setTableDataSource(this.alerts);
+                }
             }
 
         }));
@@ -1330,10 +1338,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     retriggerAlertSearch() {
+
         const val = this.alertSearch.value;
-        if (this.list === 'alerts' && this.alertSearch) {
-            this.alertSearchDebounceTime = 0;
-            this.alertSearch.setValue(val);
+
+        if (val !== null) {
+            if (this.list === 'alerts' && this.alertSearch) {
+                this.alertSearchDebounceTime = 0;
+                this.alertSearch.setValue(val);
+            }
         }
     }
 
