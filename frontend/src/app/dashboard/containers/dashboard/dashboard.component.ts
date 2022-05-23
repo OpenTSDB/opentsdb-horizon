@@ -1017,10 +1017,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.widgets = this.utilService.deepClone(widgets);
                     if (!this.snapshot) {
                         this.widgets.sort((a, b) => a.gridPos.y - b.gridPos.y || a.gridPos.x - b.gridPos.x);
-                        // set oldWidgets when widgets is not empty and oldWidgets is empty
-                        if (this.widgets.length && this.oldWidgets.length === 0) {
-                            this.oldWidgets = [...this.widgets];
-                        }
                         // batch
                         for (let i = 0; i < this.widgets.length; i++) {
                             let item: any = this.widgets[i];
