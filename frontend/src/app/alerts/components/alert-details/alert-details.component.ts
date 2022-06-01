@@ -289,7 +289,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     startTime;
     endTime;
     timeZone = 'local';
-    autoRefresh = {'auto': 0, 'duration': 60 };
+    autoRefresh = {'auto': 0, 'duration': 0 };
     prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
