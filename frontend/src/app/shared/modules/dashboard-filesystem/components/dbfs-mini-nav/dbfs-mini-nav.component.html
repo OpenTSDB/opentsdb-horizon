@@ -56,22 +56,12 @@
     <div class="mini-navigator-folders">
         <mat-nav-list class="folder-list">
             <ng-container *ngFor="let folder of panel.subfolders; let i = index;">
-                <ng-container *ngIf="mode === 'save'">
-                    <mat-list-item class="folder-nav-item"
-                        *ngIf="folders[folder] && (folders[folder].name !== '_clipboard_' && !folders[folder].trashFolder && !folders[folder].noDisplay)"
-                        [ngClass]="{'is-selected': selected === folders[folder].fullPath}"
-                        (click)="$event.stopPropagation(); folderAction('gotoFolder', folders[folder], $event); ">
-                        <ng-container *ngTemplateOutlet="miniNavItem;context:{folder: folders[folder]}"></ng-container>
-                    </mat-list-item>
-                </ng-container>
-                <ng-container *ngIf="mode !== 'save'">
-                    <mat-list-item class="folder-nav-item"
-                        *ngIf="folders[folder] && !folders[folder].noDisplay"
-                        [ngClass]="{'is-selected': selected === folders[folder].fullPath}"
-                        (click)="$event.stopPropagation(); folderAction('gotoFolder', folders[folder], $event);">
-                        <ng-container *ngTemplateOutlet="miniNavItem;context:{folder: folders[folder]}"></ng-container>
-                    </mat-list-item>
-                </ng-container>
+                <mat-list-item class="folder-nav-item"
+                    *ngIf="folders[folder] && !folders[folder].noDisplay"
+                    [ngClass]="{'is-selected': selected === folders[folder].fullPath}"
+                    (click)="$event.stopPropagation(); folderAction('gotoFolder', folders[folder], $event);">
+                    <ng-container *ngTemplateOutlet="miniNavItem;context:{folder: folders[folder]}"></ng-container>
+                </mat-list-item>
             </ng-container>
         </mat-nav-list>
     </div>

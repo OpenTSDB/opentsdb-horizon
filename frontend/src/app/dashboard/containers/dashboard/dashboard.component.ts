@@ -324,7 +324,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.widgets = [];
             this.wData = {};
             this.meta = {};
-            this.wdMetaData = {}
+            this.wdMetaData = {};
             this.isDbTagsLoaded = false;
             this.isDBScopeLoaded = false;
             this.variablePanelMode = { view: true };
@@ -472,7 +472,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // get existing Ids
                     let excludedIds: any[] = this.utilService.getIDs(this.widgets);
 
-                    for(let i = 0; i < clipboardWidgets.length; i++) {
+                    for (let i = 0; i < clipboardWidgets.length; i++) {
                         // get rid of clipboard meta
                         delete clipboardWidgets[i].settings.clipboardMeta;
                         // generate new widget id
@@ -510,7 +510,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         }, 100);
                     }
 
-                    for(let i = 0; i < clipboardWidgets.length; i++) {
+                    for (let i = 0; i < clipboardWidgets.length; i++) {
                         this.updateTplVariableForCloneDelete( clipboardWidgets[i], 'clone');
                     }
 
@@ -962,7 +962,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.checkUserFavoritedSub = this.checkUserFavorited$.subscribe(val => {
                         this.isUserFavorited = val;
                     });
-                }else {
+                } else {
                     const fullPath = '/' + path.split('/').slice(2).join('/');
                     this.oldFullPath = this.fullPath;
                     this.fullPath = fullPath;
