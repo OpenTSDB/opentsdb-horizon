@@ -357,7 +357,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     ngOnInit() {
 
         this.urlOverrideService.initialize();
-        this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
+        this.auraUrl = this.appConfig.getConfig().auraUI ? this.appConfig.getConfig().auraUI+ '/#/aura/newquery' : '';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
         const config = this.appConfig.getConfig();
@@ -1414,6 +1414,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     showAuraDialog(alertId, filters) {
+        if (!this.auraUrl) return; 
+
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         // dialogConf.width = '50%';
         dialogConf.minWidth = '1200px';

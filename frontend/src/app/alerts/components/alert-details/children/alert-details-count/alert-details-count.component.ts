@@ -40,10 +40,12 @@ export class AlertDetailsCountComponent implements OnInit {
   auraDialog: MatDialogRef<AuraDialogComponent> | null;
 
   ngOnInit() {
-    this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
-  }
+    this.auraUrl = this.appConfig.getConfig().auraUI ? this.appConfig.getConfig().auraUI+ '/#/aura/newquery' : '';
+   }
 
   showAuraDialog(filters) {
+    if (!this.auraUrl) return; 
+
     const dialogConf: MatDialogConfig = new MatDialogConfig();
     // dialogConf.width = '50%';
     dialogConf.minWidth = '1200px';

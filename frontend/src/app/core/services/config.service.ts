@@ -43,9 +43,6 @@ export class AppConfigService {
           if ( !data.metaApi ) {
             this.errors.push("Meta endpoint is invalid");
           }
-          if ( !data.auraUI ) {
-            this.errors.push("Aura UI endpoint is invalid");
-          }
           if ( !this.errors.length ) {
             this.appConfig = {...environment, ...data};
           }
