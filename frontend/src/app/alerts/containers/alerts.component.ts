@@ -278,6 +278,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     namespaceDropMenuOpen: boolean = false;
     configLoaded$ = new Subject();
+    webUrl = '';
     auraUrl = '';
 
     error: any = false;
@@ -355,7 +356,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngOnInit() {
-
+        this.webUrl = this.appConfig.getConfig().webUI;
         this.urlOverrideService.initialize();
         this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
         this.alertSearch = new FormControl();
@@ -1089,7 +1090,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             name: 'Alert from widget ' + payload.widget.settings.title,
             queries: {},
             notification: {
-                body: 'Created from dashboard: ' + 'https://yamas.ouroath.com/d/' + payload.dashboardId
+                body: 'Created from dashboard: ' + this.webUrl + '/d/' + payload.dashboardId
             },
             createdFrom: {
                 dashboardId: payload.dashboardId,
