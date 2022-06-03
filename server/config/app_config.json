@@ -20,7 +20,7 @@
     ],
     "configdb": "<% configdb endpoint %>",
     "metaApi": "<% meta endpoint %>",
-    "auraUI": "<% Aura UI endpoint %>",
+    "auraUI": "<% Aura UI endpoint %> | empty when disabled",
     "alert": {
         "recipient": {
             "opsgenie": {
