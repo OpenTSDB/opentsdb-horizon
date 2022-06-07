@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdminDefaultComponent } from './admin-default.component';
 
@@ -23,7 +23,7 @@ describe('AdminDefaultComponent', () => {
   let component: AdminDefaultComponent;
   let fixture: ComponentFixture<AdminDefaultComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdminDefaultComponent ]
     })

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InlineEditableComponent } from './inline-editable.component';
 
@@ -22,7 +22,7 @@ describe('InlineEditableComponent', () => {
   let component: InlineEditableComponent;
   let fixture: ComponentFixture<InlineEditableComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InlineEditableComponent ]
     })

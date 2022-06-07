@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MetricVisualPanelComponent } from './metric-visual-panel.component';
 
@@ -22,7 +22,7 @@ describe('MetricVisualPanelComponent', () => {
   let component: MetricVisualPanelComponent;
   let fixture: ComponentFixture<MetricVisualPanelComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MetricVisualPanelComponent ]
     })

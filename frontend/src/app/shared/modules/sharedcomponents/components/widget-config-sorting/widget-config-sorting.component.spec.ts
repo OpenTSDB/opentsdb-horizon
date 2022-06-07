@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigSortingComponent } from './widget-config-sorting.component';
 
@@ -22,7 +22,7 @@ describe('WidgetConfigSortingComponent', () => {
   let component: WidgetConfigSortingComponent;
   let fixture: ComponentFixture<WidgetConfigSortingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetConfigSortingComponent ]
     })
