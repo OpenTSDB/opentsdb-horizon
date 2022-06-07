@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AlertDetailsSuppressConfigComponent } from './alert-details-suppress-config.component';
 
@@ -22,7 +22,7 @@ describe('AlertDetailsSuppressConfigComponent', () => {
   let component: AlertDetailsSuppressConfigComponent;
   let fixture: ComponentFixture<AlertDetailsSuppressConfigComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AlertDetailsSuppressConfigComponent ]
     })

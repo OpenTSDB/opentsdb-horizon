@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavbarTimezoneToggleComponent } from './navbar-timezone-toggle.component';
 
@@ -22,7 +22,7 @@ describe('NavbarTimezoneToggleComponent', () => {
   let component: NavbarTimezoneToggleComponent;
   let fixture: ComponentFixture<NavbarTimezoneToggleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NavbarTimezoneToggleComponent ]
     })
