@@ -37,7 +37,7 @@
     "@angular/router": "10.2.5",
     "@angular/service-worker": "10.2.5",
     "@kurkle/color": "^0.1.9",
-    "@ngtools/webpack": "^12.2.17",
+    "@ngtools/webpack": "^11.2.19",
     "@ngxs/logger-plugin": "^3.4.3",
     "@ngxs/store": "^3.4.3",
     "@types/chart.js": "^2.9.35",
