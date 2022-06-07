@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SettingsThemeComponent } from './settings-theme.component';
 
@@ -22,7 +22,7 @@ describe('SettingsThemeComponent', () => {
   let component: SettingsThemeComponent;
   let fixture: ComponentFixture<SettingsThemeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SettingsThemeComponent ]
     })
