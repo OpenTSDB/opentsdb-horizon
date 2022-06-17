@@ -25,8 +25,10 @@ if(enableTls === 'true'){
   /**
    * Create HTTPS server.
    */
-  var privateKey = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.key'), 'utf8');
-  var certificate = fs.readFileSync(path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.crt'), 'utf8');
+  var privateKeyPath = process.env.SSL_PRIVATE_KEY_PATH || path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.key')
+  var certificateKeyPath = process.env.SSL_CERTIFICATE_PATH || path.resolve(process.env.HOME, sslPath, 'dev.opentsdb.crt')
+  var privateKey =  fs.readFileSync(privateKeyPath, 'utf8');
+  var certificate = fs.readFileSync(certificateKeyPath, 'utf8');
 
   var credentials = { key: privateKey, cert: certificate };
   
