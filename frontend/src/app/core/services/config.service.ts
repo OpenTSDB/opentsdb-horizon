@@ -37,14 +37,14 @@ export class AppConfigService {
           if ( !data.tsdb_host && ( !data.tsdb_hosts || !data.tsdb_hosts.length ) ) {
             this.errors.push("TSDB endpoint is invalid");
           }
+          if ( !data.webUI ) {
+            this.errors.push("Web UI endpoint is invalid");
+          }
           if ( !data.configdb ) {
             this.errors.push("Configdb endpoint is invalid");
           }
           if ( !data.metaApi ) {
             this.errors.push("Meta endpoint is invalid");
-          }
-          if ( !data.auraUI ) {
-            this.errors.push("Aura UI endpoint is invalid");
           }
           if ( !this.errors.length ) {
             this.appConfig = {...environment, ...data};

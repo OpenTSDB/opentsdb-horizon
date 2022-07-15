@@ -18,6 +18,7 @@
         "<%tsdb endpoint b%>",
         "<%tsdb endpoint c%>"
     ],
+    "webUI": "<% webui endpoint %>",
     "configdb": "<% configdb endpoint %>",
     "metaApi": "<% meta endpoint %>",
     "auraUI": "<% Aura UI endpoint %>",
