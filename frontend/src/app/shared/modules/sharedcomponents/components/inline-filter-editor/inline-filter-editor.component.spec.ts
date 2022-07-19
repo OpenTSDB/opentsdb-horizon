@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InlineFilterEditorComponent } from './inline-filter-editor.component';
 
@@ -22,7 +22,7 @@ describe('InlineFilterEditorComponent', () => {
   let component: InlineFilterEditorComponent;
   let fixture: ComponentFixture<InlineFilterEditorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InlineFilterEditorComponent ]
     })
