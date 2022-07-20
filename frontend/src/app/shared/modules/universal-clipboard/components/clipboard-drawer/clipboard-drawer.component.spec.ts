@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClipboardDrawerComponent } from './clipboard-drawer.component';
 
@@ -22,7 +22,7 @@ describe('ClipboardDrawerComponent', () => {
   let component: ClipboardDrawerComponent;
   let fixture: ComponentFixture<ClipboardDrawerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ClipboardDrawerComponent ]
     })

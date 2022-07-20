@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdminConfigComponent } from './admin-config.component';
 
@@ -23,7 +23,7 @@ describe('AdminConfigComponent', () => {
   let component: AdminConfigComponent;
   let fixture: ComponentFixture<AdminConfigComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdminConfigComponent ]
     })

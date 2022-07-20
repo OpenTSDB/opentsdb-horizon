@@ -24,10 +24,10 @@
               ]
             },
             "allowedCommonJsDependencies": [
-                "hammerjs",
-                "dygraphs",
-                "css-element-queries",
-                "chart.js"
+              "hammerjs",
+              "dygraphs",
+              "css-element-queries",
+              "chart.js"
             ],
             "assets": [
               "src/assets",
@@ -44,20 +44,22 @@
               }
             ],
             "styles": [
-                {
-                    "input": "src/styles.scss",
-                    "bundleName": "styles"
-                },
-                {
-                    "input": "./node_modules/dygraphs/dist/dygraph.css",
-                    "bundleName": "dygraph"
-                }
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles",
+                "inject": true
+              },
+              {
+                "input": "./node_modules/dygraphs/dist/dygraph.css",
+                "bundleName": "dygraph",
+                "inject": true
+              }
             ],
             "sourceMap": {
-                "hidden": true,
-                "scripts": true,
-                "styles": true,
-                "vendor": false
+              "hidden": true,
+              "scripts": true,
+              "styles": true,
+              "vendor": false
             },
             "scripts": [
               "node_modules/marked/marked.min.js"
@@ -74,7 +76,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "commonChunk": false,
               "aot": true,
@@ -90,12 +91,14 @@
               ],
               "styles": [
                 {
-                    "input": "src/styles.scss",
-                    "bundleName": "styles"
+                  "input": "src/styles.scss",
+                  "bundleName": "styles",
+                  "inject": true
                 },
                 {
-                    "input": "./node_modules/dygraphs/dist/dygraph.css",
-                    "bundleName": "dygraph"
+                  "input": "./node_modules/dygraphs/dist/dygraph.css",
+                  "bundleName": "dygraph",
+                  "inject": true
                 }
               ]
             }
@@ -127,16 +130,17 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "stylePreprocessorOptions": {
-                "includePaths": [
-                  "./src",
-                  "./src/scss"
-                ]
-              },
+              "includePaths": [
+                "./src",
+                "./src/scss"
+              ]
+            },
             "styles": [
-                {
-                    "input": "src/styles.scss",
-                    "bundleName": "styles"
-                }
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles",
+                "inject": true
+              }
             ],
             "assets": [
               "src/assets",
@@ -198,7 +202,7 @@
             "tsConfig": "src/app/horizon/tsconfig.horizon.json",
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
-                "dygraphs"
+              "dygraphs"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -210,12 +214,14 @@
             "styles": [
               {
                 "input": "src/standalone.scss",
-                "bundleName": "styles"
+                "bundleName": "styles",
+                "inject": true
               }
             ],
             "scripts": [
               {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
+                "input": "node_modules/document-register-element/build/document-register-element.js",
+                "inject": true
               }
             ]
           },
@@ -230,7 +236,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -246,7 +251,8 @@
               "styles": [
                 {
                   "input": "src/standalone.scss",
-                  "bundleName": "styles"
+                  "bundleName": "styles",
+                  "inject": true
                 }
               ]
             }

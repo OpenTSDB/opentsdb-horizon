@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './alert-details-metric-period-over-period.component';
 
@@ -22,7 +22,7 @@ describe('AlertDetailsMetricPeriodOverPeriodComponent', () => {
   let component: AlertDetailsMetricPeriodOverPeriodComponent;
   let fixture: ComponentFixture<AlertDetailsMetricPeriodOverPeriodComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AlertDetailsMetricPeriodOverPeriodComponent ]
     })

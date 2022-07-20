@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LinechartDataTooltipComponent } from './linechart-data-tooltip.component';
 
@@ -22,7 +22,7 @@ describe('LinechartDataTooltipComponent', () => {
   let component: LinechartDataTooltipComponent;
   let fixture: ComponentFixture<LinechartDataTooltipComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LinechartDataTooltipComponent ]
     })

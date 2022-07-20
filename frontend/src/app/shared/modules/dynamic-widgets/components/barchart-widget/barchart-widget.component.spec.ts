@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BarchartWidgetComponent } from './barchart-widget.component';
 
@@ -22,7 +22,7 @@ describe('BarchartWidgetComponent', () => {
   let component: BarchartWidgetComponent;
   let fixture: ComponentFixture<BarchartWidgetComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ BarchartWidgetComponent ]
     })

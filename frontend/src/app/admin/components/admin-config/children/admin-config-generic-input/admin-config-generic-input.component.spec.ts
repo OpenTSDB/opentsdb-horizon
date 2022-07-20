@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdminConfigGenericInputComponent } from './admin-config-generic-input.component';
 
@@ -6,7 +6,7 @@ describe('AdminConfigGenericInputComponent', () => {
   let component: AdminConfigGenericInputComponent;
   let fixture: ComponentFixture<AdminConfigGenericInputComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdminConfigGenericInputComponent ]
     })

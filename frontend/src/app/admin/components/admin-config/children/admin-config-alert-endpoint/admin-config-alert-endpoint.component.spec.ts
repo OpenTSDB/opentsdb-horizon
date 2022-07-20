@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdminConfigAlertEndpointComponent } from './admin-config-alert-endpoint.component';
 
@@ -6,7 +6,7 @@ describe('AdminConfigAlertEndpointComponent', () => {
   let component: AdminConfigAlertEndpointComponent;
   let fixture: ComponentFixture<AdminConfigAlertEndpointComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdminConfigAlertEndpointComponent ]
     })

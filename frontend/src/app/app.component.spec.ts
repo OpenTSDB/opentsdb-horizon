@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 // import { RouterModule } from '@angular/router';
 // import { AppComponent } from './app.component';
 // import { NavbarComponent } from './shared/modules/navbar/components/navbar/navbar.component';
@@ -35,7 +35,7 @@ describe('AppComponent', () => {
 
   // just flag to run test again
   
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     // const fixture = TestBed.createComponent(AppComponent);
     // const app = fixture.debugElement.componentInstance;
     expect(true);

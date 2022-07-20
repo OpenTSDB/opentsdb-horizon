@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SimpleFavoritesListComponent } from './simple-favorites-list.component';
 
@@ -22,7 +22,7 @@ describe('SimpleFavoritesListComponent', () => {
   let component: SimpleFavoritesListComponent;
   let fixture: ComponentFixture<SimpleFavoritesListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SimpleFavoritesListComponent ]
     })
