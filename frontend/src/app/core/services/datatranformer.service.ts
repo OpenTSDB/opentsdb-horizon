@@ -367,7 +367,7 @@ export class DatatranformerService {
                     colors[midExToT] = this.util.getColorsFromScheme(vConfig.scheme, midExToTNSeries[midExToT]);
                     schemeMeta[mid] = true;
                 }
-                if ( hasToT) {
+                if ( hasToT && colors[midExToT] ) {
                     colors[midExToT].reverse();
                 }
                 for ( let j = 0; j < n; j ++ ) {
