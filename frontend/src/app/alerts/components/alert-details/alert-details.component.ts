@@ -289,7 +289,7 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     startTime;
     endTime;
     timeZone = 'local';
-    autoRefresh = {'auto': 0, 'duration': 60 };
+    autoRefresh = {'auto': 0, 'duration': 0 };
     prevTimeSampler = null;
     downsample = { aggregators: [''], customUnit: '', customValue: '', value: 'auto'};
     prevDateRange: any = null;
@@ -457,11 +457,13 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
     newSingleMetricTimeWindowSelected(timeInSeconds: string) {
         this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['slidingWindow'].setValue(timeInSeconds);
         this.data.threshold.singleMetric.slidingWindow = timeInSeconds;
+        this.reloadData();
     }
 
     setSingleMetricReportingInterval(timeInSeconds: string) {
         this.alertForm.controls['threshold']['controls']['singleMetric']['controls']['reportingInterval'].setValue(timeInSeconds);
         this.data.threshold.singleMetric.reportingInterval = timeInSeconds;
+        this.reloadData();
     }
 
     periodOverPeriodChanged(periodOverPeriodConfig) {

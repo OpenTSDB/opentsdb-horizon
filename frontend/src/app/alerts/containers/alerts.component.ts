@@ -278,6 +278,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     namespaceDropMenuOpen: boolean = false;
     configLoaded$ = new Subject();
+    webUrl = '';
     auraUrl = '';
 
     error: any = false;
@@ -355,9 +356,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngOnInit() {
-
+        this.webUrl = this.appConfig.getConfig().webUI;
         this.urlOverrideService.initialize();
-        this.auraUrl = this.appConfig.getConfig().auraUI + '/#/aura/newquery';
+        this.auraUrl = this.appConfig.getConfig().auraUI ? this.appConfig.getConfig().auraUI+ '/#/aura/newquery' : '';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
         const config = this.appConfig.getConfig();
@@ -373,7 +374,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
             try {
                 this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-                this.setTableDataSource(this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts));
+                let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
+                this.setTableDataSource(filteredAlertValues);
             } catch(e) {
                 console.info(e);
             }
@@ -460,7 +462,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 this.setAlertCount(i);
             }
             if (this.alertsDataSource && this.alertsDataSource.data) {
-                this.alertsDataSource.data = this.alerts;
+                if (this.alertSearch && this.alertSearch.value !== '') {
+                    let val = this.utils.regExpEscSpecialChars(this.alertSearch.value, ['[', '\\]']);
+                    let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
+                    this.setTableDataSource(filteredAlertValues);
+                } else {
+                    //this.alertsDataSource.data = this.alerts;
+                    this.setTableDataSource(this.alerts);
+                }
             }
 
         }));
@@ -1089,7 +1098,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             name: 'Alert from widget ' + payload.widget.settings.title,
             queries: {},
             notification: {
-                body: 'Created from dashboard: ' + 'https://yamas.ouroath.com/d/' + payload.dashboardId
+                body: 'Created from dashboard: ' + this.webUrl + '/d/' + payload.dashboardId
             },
             createdFrom: {
                 dashboardId: payload.dashboardId,
@@ -1330,10 +1339,14 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     retriggerAlertSearch() {
+
         const val = this.alertSearch.value;
-        if (this.list === 'alerts' && this.alertSearch) {
-            this.alertSearchDebounceTime = 0;
-            this.alertSearch.setValue(val);
+
+        if (val !== null) {
+            if (this.list === 'alerts' && this.alertSearch) {
+                this.alertSearchDebounceTime = 0;
+                this.alertSearch.setValue(val);
+            }
         }
     }
 
@@ -1414,6 +1427,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     showAuraDialog(alertId, filters) {
+        if (!this.auraUrl) return; 
+
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         // dialogConf.width = '50%';
         dialogConf.minWidth = '1200px';

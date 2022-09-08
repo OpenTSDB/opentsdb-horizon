@@ -337,7 +337,8 @@
     @include _mat-datepicker-color(map-get($theme, primary));
 
     .mat-datepicker-content {
-        @include _mat-theme-elevation(4, $theme);
+        //@include _mat-theme-elevation(4, $theme);
+        @include _mat-theme-overridable-elevation(4, $theme);
         background-color: mat-color($background, card);
         color: mat-color($foreground, text);
 
@@ -351,7 +352,8 @@
     }
 
     .mat-datepicker-content-touch {
-        @include _mat-theme-elevation(0, $theme);
+        //@include _mat-theme-elevation(0, $theme);
+        @include _mat-theme-overridable-elevation(0, $theme);
     }
 
     .mat-datepicker-toggle-active {
@@ -405,7 +407,8 @@
       &:not(.mat-drawer-side) {
         // The elevation of z-16 is noted in the design specifications.
         // See https://material.io/design/components/navigation-drawer.html
-        @include _mat-theme-elevation(16, $theme);
+        //@include _mat-theme-elevation(16, $theme);
+        @include _mat-theme-overridable-elevation(16, $theme);
       }
     }
 

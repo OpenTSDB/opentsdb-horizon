@@ -31,7 +31,7 @@ export class DatatranformerService {
   /* eslint-disable max-len */
   constructor(private util: UtilsService, private unit: UnitConverterService ) {  }
 
-  //ADDED: table data 
+  //ADDED: table data
   openTSDBToTable(widget, options, result: any): any {
 
     const mSeconds = { 's': 1, 'm': 60, 'h': 3600, 'd': 86400 };
@@ -43,7 +43,7 @@ export class DatatranformerService {
     const visual = widget.settings.visual;
     const summary = visual.layout === 'metrics:tags' || visual.layout === 'tags:metrics';
     const decimals = !visual.decimals || visual.decimals.toString().trim() === 'auto' ? 2 : visual.decimals;
-    
+
 
     const displayColumns = {};
     const colLabelLen = 40;
@@ -81,10 +81,10 @@ export class DatatranformerService {
                 const mLabel = this.util.getWidgetMetricDefaultLabel(widget.queries, qIndex, mIndex);
                 const metric = !mConfig.expression ? queryResults.data[j].metric : mLabel
                 let label = vConfig.label ? vConfig.label : metric;
-                
+
                 const tagLabel = this.getLableFromMetricTags('', { metric: '', ...tags}) || 'All';
                 const id = mLabel + ( tagLabel ? ':' + tagLabel : '' );
-                
+
                     if ( summary ) {
                         label = this.getLableFromMetricTags(label, { metric: metric, ...tags});
                         const colId = visual.layout == 'metrics:tags' ? tagLabel : mLabel;
@@ -98,19 +98,19 @@ export class DatatranformerService {
                         data = data.data[0];
                         const ts = Object.keys(data)[0];
                         const index = aggs.indexOf(summarizer);
-                        
+
                         const dunit = this.unit.getNormalizedUnit(data[ts][index], format);
-                        
+
                         objData[rowId][colId] = this.unit.convert(data[ts][index], format.unit, dunit, format) ;
                         objData[rowId][colId + ':raw'] = data[ts][index];
                     } else {
                         label = this.getLableFromMetricTags(vConfig.label, { metric: metric, ...tags});
                         displayColumns[id] = {id: id, label: label, shortLabel: label.length > colLabelLen ? label.substr(0, colLabelLen - 2) + '..' : label };
-                        objData[id] = { rawdata:data, data: data.map(d => { 
+                        objData[id] = { rawdata:data, data: data.map(d => {
                             const dunit = this.unit.getNormalizedUnit(d, format);
                             return this.unit.convert(d, format.unit, dunit, format);
                         }), config: vConfig };
-                        
+
                     }
 
             }
@@ -241,6 +241,7 @@ export class DatatranformerService {
         const mConfig = gConfig && gConfig.metrics[mIndex] ? gConfig.metrics[mIndex] : null;
         const vConfig = mConfig && mConfig.settings ? mConfig.settings.visual : {};
         queryResultsObj[i] = Object.assign( {}, queryResultsObj[i], {visualType: vConfig.type || 'line', mid} );
+
         if ( gConfig && gConfig.settings.visual.visible && vConfig.visible ) {
             if (!dict[mid]) {
                 dict[mid] = { hashes: {}, summarizer: {}};
@@ -294,7 +295,7 @@ export class DatatranformerService {
             }
         }
     }
-    const queryResults: any[] = Object.values(queryResultsObj);
+    let queryResults: any[] = Object.values(queryResultsObj);
     // if no series return right away
     if ( totalSeries === 0 ) {
         return [];
@@ -316,6 +317,11 @@ export class DatatranformerService {
     for ( let i = 0; i < ts.length; i++ ) {
         normalizedData[i] = Array( totalSeries + 1 ).fill(null);
         normalizedData[i][0] = new Date(parseInt(ts[i], 10));
+    }
+
+    if (hasToT) {
+        // Time Over Time, reverse order so oldest gets output below others
+        queryResults = queryResults.reverse();
     }
 
     queryResults.sort((a, b) => a.mid.localeCompare(b.mid));

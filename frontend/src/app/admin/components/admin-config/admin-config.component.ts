@@ -87,6 +87,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
         let endpoints = this.fb.group({
             tsdb_host: this.configValues.tsdb_host || '',
             tsdb_hosts: new FormArray([]),
+            webUI: this.configValues.webUI || '',
             configdb: this.configValues.configdb || '',
             metaApi: this.configValues.metaApi || '',
             auraUI: this.configValues.auraUI || ''
