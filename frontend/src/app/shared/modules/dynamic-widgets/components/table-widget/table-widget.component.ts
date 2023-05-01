@@ -575,8 +575,8 @@ export class TableWidgetComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     unsetMetricSummarizer() {
-        if ( this.widget.settings.visual.layout !== 'metric:tags' ) {
-            for (let i = 0; i < this.widget.queries.length; i++ ) {
+        if (this.widget.settings.visual.layout !== 'metrics:tags' && this.widget.settings.visual.layout !== 'tags:metrics') {
+            for (let i = 0; i < this.widget.queries.length; i++) {
                 for (const metric of this.widget.queries[i].metrics) {
                     if (metric.summarizer) {
                         delete metric.summarizer;
