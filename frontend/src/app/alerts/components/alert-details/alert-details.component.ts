@@ -1330,8 +1330,10 @@ export class AlertDetailsComponent implements OnInit, OnDestroy, AfterContentIni
             const query: any = JSON.parse(JSON.stringify(this.queries[i]));
             if ( fx ) {
                 for ( let j =0; j < query.metrics.length; j++ ) {
-                    query.metrics[j].functions = query.metrics[j].functions || [];
-                    query.metrics[j].functions.push(fx);
+                    if ( query.metrics[j].id === this.thresholdSingleMetricControls.metricId.value ) {
+                        query.metrics[j].functions = query.metrics[j].functions || [];
+                        query.metrics[j].functions.push(fx);
+                    }
                 }
             }
             if (query.namespace && query.metrics.length) {
