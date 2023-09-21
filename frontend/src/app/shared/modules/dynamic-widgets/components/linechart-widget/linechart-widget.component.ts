@@ -424,7 +424,7 @@ export class LinechartWidgetComponent implements OnInit, AfterViewInit, OnDestro
                                 // fill out tag values from rawdata
                                 let results = this.multiService.fillMultiTagValues(this.widget, this.multiConf, rawdata);
                                 results = this.multiService.removeEmptyRowsColumns(results);
-                                const maxGraphs = 100;
+                                const maxGraphs = this.appConfig.getConfig().widget.multigraph.defaultMaxGraphs;
                                 const rowKeys = this.getGraphDataObjectKeys(results);
                                 const colKeys = rowKeys.length ? this.getGraphDataObjectKeys(results[rowKeys[0]]) : [];
                                 const maxCols = colKeys.length <= maxGraphs ? colKeys.length : maxGraphs;
