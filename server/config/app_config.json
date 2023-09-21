@@ -55,6 +55,9 @@
                 "<% query example 1 (curl?) %>",
                 "<% query example 2 (CLI?) %>"
             ]
+        },
+        "multigraph": {
+            "defaultMaxGraphs": 100
         }
     },
     "alert_history_url": "<% alert log history url %>",
