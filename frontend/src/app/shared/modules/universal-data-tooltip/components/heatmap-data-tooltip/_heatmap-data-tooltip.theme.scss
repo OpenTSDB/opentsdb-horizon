@@ -1,6 +1,7 @@
+@use '~@angular/material' as mat;
 @mixin heatmap-data-tooltip-component-theme() {
 
-    $primary-accent-contrast: mat-color($primary, A100-contrast);
+    $primary-accent-contrast: mat.get-color-from-palette($primary, A100-contrast);
     $vm-text: if($is-dark, $black, $primary-accent-contrast);
 
     .heatmap-data-tooltip {

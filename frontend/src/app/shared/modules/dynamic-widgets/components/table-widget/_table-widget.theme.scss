@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @mixin table-widget-component-theme() {
 
-    $card-background: mat-color($background, card);
-    $ink-bar-color: mat-color($background, ink-bar);
+    $card-background: mat.get-color-from-palette($background, card);
+    $ink-bar-color: mat.get-color-from-palette($background, ink-bar);
 
     .widget-panel-content.table-widget {
 
@@ -26,7 +27,7 @@
         }
 
         .widget-output {
-            background-color: mat-color($background, card);
+            background-color: mat.get-color-from-palette($background, card);
         }
 
         .mat-cell {

@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import '~@angular/material/theming';
 @import 'config';
 @import 'typography';
 @import 'mixins';
@@ -30,7 +30,7 @@ $mono-fontface: map-get($app-fontface-config, mono);
 .event-list .event-stream-list {
 
     .event-panel.mat-expansion-panel {
-        @include mat-elevation(0);
+        @include mat.elevation(0);
         border-radius: 0;
 
         .mat-expansion-panel-header {
@@ -47,10 +47,10 @@ $mono-fontface: map-get($app-fontface-config, mono);
         }
 
         .mat-expansion-panel-header-title {
-            font-size: mat-font-size($mono-fontface, body-1);
+            font-size: mat.font-size($mono-fontface, body-1);
 
             .event-time {
-                font-family: mat-font-family($mono-fontface);
+                font-family: mat.font-family($mono-fontface);
                 margin-right: 5px;
                 width: 80px;
             }
@@ -75,7 +75,7 @@ $mono-fontface: map-get($app-fontface-config, mono);
 
             .tag-value {
                 padding-left: 4px;
-                font-family: mat-font-family($mono-fontface);
+                font-family: mat.font-family($mono-fontface);
                 word-break: break-all;
             }
 
@@ -144,7 +144,7 @@ $mono-fontface: map-get($app-fontface-config, mono);
                 .event-details-text {
                     // padding: 6px;
                     border-radius: 4px;
-                    font-family: mat-font-family($mono-fontface);
+                    font-family: mat.font-family($mono-fontface);
                     font-size: 12px;
                     line-height: 12px;
                     margin-top: 2px;

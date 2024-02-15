@@ -1,30 +1,31 @@
+@use '~@angular/material' as mat;
 @mixin alerts-container-component-theme() {
     $theme-variant: if($is-dark, 'dark', 'light');
 
-    $primary-default: mat-color($primary, default);
+    $primary-default: mat.get-color-from-palette($primary, default);
 
-    $status-error: mat-color($other, status-error);
-    $status-warning: mat-color($other, status-warning);
-    $status-success: mat-color($other, status-success);
+    $status-error: mat.get-color-from-palette($other, status-error);
+    $status-warning: mat.get-color-from-palette($other, status-warning);
+    $status-success: mat.get-color-from-palette($other, status-success);
 
-    $link: mat-color($foreground, link);
-    $disabled: mat-color($foreground, disabled);
+    $link: mat.get-color-from-palette($foreground, link);
+    $disabled: mat.get-color-from-palette($foreground, disabled);
     $header-chip-text: $white;
-    $divider: mat-color($foreground, divider);
+    $divider: mat.get-color-from-palette($foreground, divider);
 
-    $card-bg: mat-color($background, card);
-    $border-color: mat-color($foreground, dividers);
+    $card-bg: mat.get-color-from-palette($background, card);
+    $border-color: mat.get-color-from-palette($foreground, dividers);
 
-    $brand-color: mat-color($background, navbar);
-    $brand-color-inverse: mat-color($foreground, navbar-text);
+    $brand-color: mat.get-color-from-palette($background, navbar);
+    $brand-color-inverse: mat.get-color-from-palette($foreground, navbar-text);
 
     .alerts-container-component {
         background-color: $card-bg;
 
         .create-alert-control {
             .mat-flat-button.mat-primary {
-                background-color: mat-color($primary, 800);
-                color: mat-color($primary, "800-contrast");
+                background-color: mat.get-color-from-palette($primary, 800);
+                color: mat.get-color-from-palette($primary, "800-contrast");
             }
         }
 
@@ -35,7 +36,7 @@
                 min-width: 250px;
 
                 .mat-button {
-                    background-color: mat-color($primary, default, 0.08);
+                    background-color: mat.get-color-from-palette($primary, default, 0.08);
 
                     .control-label {
                         color: $disabled;
@@ -46,7 +47,7 @@
                     }
 
                     &:hover {
-                        box-shadow: inset 0 -2px 0 0 mat-color($primary, default, .3);
+                        box-shadow: inset 0 -2px 0 0 mat.get-color-from-palette($primary, default, .3);
                     }
 
                     &.menu-open {
@@ -81,15 +82,15 @@
             }
 
             &.is-unknown::before {
-                background-color: mat-color($denali-grey, 400);
+                background-color: mat.get-color-from-palette($denali-grey, 400);
             }
 
             &.is-missing::before {
-                background-color: mat-color($denali-blue, 400);
+                background-color: mat.get-color-from-palette($denali-blue, 400);
             }
 
             &.is-snoozed::before {
-                background-color: mat-color($denali-purple, 500);
+                background-color: mat.get-color-from-palette($denali-purple, 500);
             }
         }
 
@@ -156,11 +157,11 @@
             }
 
             .cdk-column-unknown .count-amount {
-                background-color: mat-color($denali-grey, 400);
+                background-color: mat.get-color-from-palette($denali-grey, 400);
             }
 
             .cdk-column-missing .count-amount {
-                background-color: mat-color($denali-blue, 400);
+                background-color: mat.get-color-from-palette($denali-blue, 400);
             }
 
             .cdk-column-name {
@@ -195,34 +196,34 @@
 
         // disabled state
         .mat-row.is-disabled {
-            background-color: mat-color($foreground, divider, .05);
+            background-color: mat.get-color-from-palette($foreground, divider, .05);
 
             // disabled state
             .mat-row.is-disabled {
-                background-color: mat-color($foreground, divider, .05);
+                background-color: mat.get-color-from-palette($foreground, divider, .05);
 
                 .group-label-chip {
                     opacity: .6
                 }
 
                 .mat-cell {
-                    color: mat-color($foreground, divider, .25);
+                    color: mat.get-color-from-palette($foreground, divider, .25);
                 }
 
                 .cdk-column-select {
                     .mat-checkbox-frame {
-                        border-color: mat-color($foreground, divider, .25);
+                        border-color: mat.get-color-from-palette($foreground, divider, .25);
                     }
 
                     .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-                        background-color: mat-color($foreground, divider, .25);
+                        background-color: mat.get-color-from-palette($foreground, divider, .25);
                     }
                 }
 
                 .cdk-column-contacts {
                     .contact-icon-strip {
                         background-color: transparent;
-                        color: if($is-dark, mat-color($foreground, navbar-text, .25), mat-color($foreground, divider, .25));
+                        color: if($is-dark, mat.get-color-from-palette($foreground, navbar-text, .25), mat.get-color-from-palette($foreground, divider, .25));
                     }
                 }
             }

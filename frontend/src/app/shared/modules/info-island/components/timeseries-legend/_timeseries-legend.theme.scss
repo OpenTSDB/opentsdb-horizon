@@ -1,15 +1,16 @@
+@use '~@angular/material' as mat;
 @mixin timeseries-legend-component-theme() {
 
-    $divider: mat-color($foreground, divider);
+    $divider: mat.get-color-from-palette($foreground, divider);
 
-    $menu-bg: if($is-dark, mat-color($background, menu, .75), mat-color($background, menu));
-    $menu-bg-lighter: if($is-dark, mat-color($background, menu, .85), mat-color($background, menu));
+    $menu-bg: if($is-dark, mat.get-color-from-palette($background, menu, .75), mat.get-color-from-palette($background, menu));
+    $menu-bg-lighter: if($is-dark, mat.get-color-from-palette($background, menu, .85), mat.get-color-from-palette($background, menu));
 
     $cdk-window-bg: $menu-bg;
     $cdk-window-border: $divider;
 
-    $header-bg: if($is-dark, mat-color($background, menu), mat-color($background, navbar));
-    $text: mat-color($foreground, navbar-text);
+    $header-bg: if($is-dark, mat.get-color-from-palette($background, menu), mat.get-color-from-palette($background, navbar));
+    $text: mat.get-color-from-palette($foreground, navbar-text);
 
     $brief-dark: #3a87ad; // TODO: plug into theme
     $brief-light: #ddeff9; // TODO: plug into theme
@@ -38,11 +39,11 @@
 
             .mat-row:hover,
             .mat-row.tag-highlight {
-                background-color: mat-color($primary, default, .04);
+                background-color: mat.get-color-from-palette($primary, default, .04);
             }
             .mat-cell:hover,
             .mat-cell.tag-highlight {
-                background-color: mat-color($primary, default, .15);
+                background-color: mat.get-color-from-palette($primary, default, .15);
             }
         }
     }
@@ -71,6 +72,6 @@
 
     // cdk items
     .namespace-selector-menu.mat-menu-panel {
-        border: 1px solid mat-color($foreground, divider);
+        border: 1px solid mat.get-color-from-palette($foreground, divider);
     }
 }

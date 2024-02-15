@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -21,11 +22,11 @@
 
 $dark-theme: (
     theme-name: 'dark',
-    primary:  mat-palette($denali-brand-5, 800, 700, 900),
-    accent:   mat-palette($denali-lime),
-    warn:     mat-palette($denali-status-warning, 600),
-    success:  mat-palette($denali-status-success, A400, A200, A700),
-    danger:   mat-palette($denali-status-danger, A400, A100, A700),
+    primary:  mat.define-palette($denali-brand-5, 800, 700, 900),
+    accent:   mat.define-palette($denali-lime),
+    warn:     mat.define-palette($denali-status-warning, 600),
+    success:  mat.define-palette($denali-status-success, A400, A200, A700),
+    danger:   mat.define-palette($denali-status-danger, A400, A100, A700),
     is-dark:  true,
     foreground: (
       base:              #ffffff,
@@ -80,9 +81,9 @@ $dark-theme: (
         widget-icons-background-hover: rgba(#3697F2, .26)
     ),
     ks: (
-      sidenav-background: rgba(map-get($mat-light-blue, 900), 0.25),
-      sidenav-panel: map_get($mat-light-blue, 100),
-      sidenav-text: rgba(map_get($mat-grey,900), .85)
+      sidenav-background: rgba(map-get(mat.$light-blue-palette, 900), 0.25),
+      sidenav-panel: map_get(mat.$light-blue-palette, 100),
+      sidenav-text: rgba(map_get(mat.$grey-palette,900), .85)
     ),
     status: (
         success:            map_get($denali-lime, A400),

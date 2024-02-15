@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import "~@angular/material/theming";
 @import 'mixins';
 
 .snooze-alert-dialog-component {
@@ -340,7 +340,7 @@
     }
 
     .mat-button-toggle-group {
-        @include mat-elevation(0);
+        @include mat.elevation(0);
         height: 52px;
         line-height: 52px;
     }

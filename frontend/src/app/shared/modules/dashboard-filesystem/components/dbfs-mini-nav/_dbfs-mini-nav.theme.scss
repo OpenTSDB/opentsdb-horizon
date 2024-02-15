@@ -1,9 +1,10 @@
+@use '~@angular/material' as mat;
 @mixin dbfs-mini-nav-component-theme() {
 
     $cssVarMap: get-theme-css-variables($theme-name);
     $cssText: get-theme-css-text($theme-name);
 
-    $status-success: mat-color($other, status-success);
+    $status-success: mat.get-color-from-palette($other, status-success);
 
     // TODO: Need to add navbar-config to theme
     /*$sn-light: map-get($navbar-config, sn-light);
@@ -13,23 +14,23 @@
     $sn-seperator: map-get($navbar-config, sn-seperator);
     $sn-active: map-get($navbar-config, sn-active);*/
 
-    $divider: mat-color($foreground, divider);
+    $divider: mat.get-color-from-palette($foreground, divider);
 
-    $navbar-background: mat-color($background, navbar);
-    $navbar-text: mat-color($foreground, navbar-text);
+    $navbar-background: mat.get-color-from-palette($background, navbar);
+    $navbar-text: mat.get-color-from-palette($foreground, navbar-text);
 
-    $text-color: mat-color($background, navbar);
-    $navbar-text-color: mat-color($foreground, navbar-text);
+    $text-color: mat.get-color-from-palette($background, navbar);
+    $navbar-text-color: mat.get-color-from-palette($foreground, navbar-text);
 
-    $menu-background: mat-color($background, card);
+    $menu-background: mat.get-color-from-palette($background, card);
     // TODO: need to have preprocessed colors in the theme-config
     $menu-background-raw-value: _mat-convert-variable-to-color(map-get($background, card), $cssVarMap);
     $menu-background-hover: find-color-invert($menu-background-raw-value);
 
     $item-text: if(
         $is-dark,
-        mat-color($foreground, navbar-text, .6),
-        mat-color($background, navbar, .85)
+        mat.get-color-from-palette($foreground, navbar-text, .6),
+        mat.get-color-from-palette($background, navbar, .85)
     );
     $icon-color: $item-text;
 
@@ -50,26 +51,26 @@
             background: transparent;
             color: if(
                 $is-dark,
-                mat-color($foreground, navbar-text, .6),
-                mat-color($background, navbar, .85)
+                mat.get-color-from-palette($foreground, navbar-text, .6),
+                mat.get-color-from-palette($background, navbar, .85)
             );
             box-shadow: inset 0 -1px 0 0 if(
                 $is-dark,
-                mat-color($foreground, divider, .12),
-                mat-color($background, navbar, .12)
+                mat.get-color-from-palette($foreground, divider, .12),
+                mat.get-color-from-palette($background, navbar, .12)
             );
         }
 
         .mini-navigator-actions {
             color: if(
                 $is-dark,
-                mat-color($foreground, navbar-text, .6),
-                mat-color($background, navbar, .85)
+                mat.get-color-from-palette($foreground, navbar-text, .6),
+                mat.get-color-from-palette($background, navbar, .85)
             );
             box-shadow: inset 0 1px 0 0 if(
                 $is-dark,
-                mat-color($foreground, divider, .12),
-                mat-color($background, navbar, .12)
+                mat.get-color-from-palette($foreground, divider, .12),
+                mat.get-color-from-palette($background, navbar, .12)
             );
         }
 
@@ -81,24 +82,24 @@
             .mat-nav-list .mat-list-item {
                 color: if(
                     $is-dark,
-                    mat-color($foreground, navbar-text, .65),
-                    mat-color($background, navbar, .65)
+                    mat.get-color-from-palette($foreground, navbar-text, .65),
+                    mat.get-color-from-palette($background, navbar, .65)
                 );
 
                 &.is-active,
                 &.is-selected {
-                    color:  mat-color($foreground, navbar-text, .85);
+                    color:  mat.get-color-from-palette($foreground, navbar-text, .85);
                 }
 
                 &.is-selected {
-                    background-color: mat-color($background, navbar);
+                    background-color: mat.get-color-from-palette($background, navbar);
                 }
 
                 &:not(:last-child) {
                     border-bottom: 1px solid if(
                         $is-dark,
-                        mat-color($foreground, divider, .07),
-                        mat-color($background, navbar, .07)
+                        mat.get-color-from-palette($foreground, divider, .07),
+                        mat.get-color-from-palette($background, navbar, .07)
                     );
                 }
 
@@ -112,13 +113,13 @@
         // FOLDER ITEM
         .mini-navigator-folder-item {
             .save-folder-name {
-                color: mat-color($other, status-success);
+                color: mat.get-color-from-palette($other, status-success);
             }
 
             .list-item.edit-form {
                 .mat-form-field {
                     .mat-input-element::placeholder {
-                        color:  mat-color($foreground, navbar-text, .25);
+                        color:  mat.get-color-from-palette($foreground, navbar-text, .25);
                     }
                 }
             }
@@ -137,22 +138,22 @@
         background-color: if(
             $is-dark,
             lighten($menu-background-raw-value, 15%),
-            mat-color($background, card)
+            mat.get-color-from-palette($background, card)
         );
-        border: 1px solid mat-color($background, navbar, .15);
+        border: 1px solid mat.get-color-from-palette($background, navbar, .15);
 
         .mat-menu-item {
             color: if(
                 $is-dark,
-                mat-color($foreground, navbar-text, .85),
-                mat-color($background, navbar, .85)
+                mat.get-color-from-palette($foreground, navbar-text, .85),
+                mat.get-color-from-palette($background, navbar, .85)
             );
 
             .mat-icon {
                 color: if(
                     $is-dark,
-                    mat-color($foreground, navbar-text, .6),
-                    mat-color($background, navbar, .85)
+                    mat.get-color-from-palette($foreground, navbar-text, .6),
+                    mat.get-color-from-palette($background, navbar, .85)
                 );
             }
 

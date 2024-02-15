@@ -1,37 +1,38 @@
+@use '~@angular/material' as mat;
 @mixin admin-config-metric-host-component-theme() {
     .app-admin-config-metric-host {
         .host-display-wrap {
             &:hover {
-                background-color: mat-color($background, menu);
+                background-color: mat.get-color-from-palette($background, menu);
             }
         }
 
         .host-display-edit-wrap {
-            background: mat-color($background, menu);
+            background: mat.get-color-from-palette($background, menu);
 
             .actions {
                 .mat-flat-button.apply {
-                    background-color: mat-color($success, default);
-                    color: mat-color($success, default-contrast);
+                    background-color: mat.get-color-from-palette($success, default);
+                    color: mat.get-color-from-palette($success, default-contrast);
                 }
 
                 .mat-flat-button.cancel {
-                    background-color: mat-color($primary, default);
-                    color: mat-color($primary, default-contrast);
+                    background-color: mat.get-color-from-palette($primary, default);
+                    color: mat.get-color-from-palette($primary, default-contrast);
                 }
 
                 .mat-flat-button.delete {
-                    background-color: mat-color($danger, default);
-                    color: mat-color($danger, default-contrast);
+                    background-color: mat.get-color-from-palette($danger, default);
+                    color: mat.get-color-from-palette($danger, default-contrast);
                 }
             }
         }
 
         &.editing-mode {
             .delete-confirm {
-                background: mat-color($background, menu);
-                box-shadow: inset 0 0 0 5px mat-color($other, status-warning);
-                color: mat-color($foreground, text);
+                background: mat.get-color-from-palette($background, menu);
+                box-shadow: inset 0 0 0 5px mat.get-color-from-palette($other, status-warning);
+                color: mat.get-color-from-palette($foreground, text);
             }
         }
     }

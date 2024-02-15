@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @mixin dashboard-container-component-theme() {
 
-    $close-button-background: mat-color($accent, A400);
-    $close-button-text: mat-color($foreground, navbar-text);
-    $navbar-background: mat-color($background, navbar);
+    $close-button-background: mat.get-color-from-palette($accent, A400);
+    $close-button-text: mat.get-color-from-palette($foreground, navbar-text);
+    $navbar-background: mat.get-color-from-palette($background, navbar);
 
     $disabled-text: map-get($foreground, disabled-text);
 
@@ -13,11 +14,11 @@
     .nav-dashboard-template-var-trigger {
         .mat-raised-button,
         .mat-flat-button {
-            background-color: mat-color($background, navbar-button);
-            color: mat-color($foreground, navbar-text);
+            background-color: mat.get-color-from-palette($background, navbar-button);
+            color: mat.get-color-from-palette($foreground, navbar-text);
 
             &:hover {
-                background-color: mat-color($background, navbar-button-hover);
+                background-color: mat.get-color-from-palette($background, navbar-button-hover);
             }
         }
     }
@@ -28,16 +29,16 @@
     // cdk items
     .controls-bar {
         .batch-controls-wrap {
-            border-bottom: 1px solid mat-color($foreground, divider);
+            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
 
             .batch-toggle {
-                background: mat-color($primary, default, 0.08);
+                background: mat.get-color-from-palette($primary, default, 0.08);
             }
 
             .batch-select,
             .batch-copy,
             .batch-trash {
-                color: mat-color($foreground, link);
+                color: mat.get-color-from-palette($foreground, link);
 
                 &[disabled] {
                     color: $disabled-text;
@@ -45,36 +46,36 @@
             }
 
             .batch-select.is-checked {
-                color: mat-color($accent, default);
+                color: mat.get-color-from-palette($accent, default);
             }
         }
     }
 
     .mat-flat-button {
         &.save-dashboard-button {
-            background-color: mat-color($other, status-success);
-            color: mat-color($other, status-success-contrast);
+            background-color: mat.get-color-from-palette($other, status-success);
+            color: mat.get-color-from-palette($other, status-success-contrast);
         }
     }
 
     .dashboard-available-widgets-menu {
         &::after {
             border-color: rgba(255, 255, 255, 0);
-            border-bottom-color: mat-color($background, menu); // actual color of arrow
+            border-bottom-color: mat.get-color-from-palette($background, menu); // actual color of arrow
         }
 
         .widget-types {
             .widget-type-selector {
                 // need a background color here
-                background-color: mat-color($other, widget-icons-background);
+                background-color: mat.get-color-from-palette($other, widget-icons-background);
 
                 &:hover {
-                    background-color: mat-color($other, widget-icons-background-hover);
+                    background-color: mat.get-color-from-palette($other, widget-icons-background-hover);
                 }
             }
 
             .widget-type-label {
-                color: mat-color($foreground, text);
+                color: mat.get-color-from-palette($foreground, text);
             }
         }
     }
@@ -94,8 +95,8 @@
         }
     }
 
-    $success-bg: mat-color($other, status-success);
-    $success-txt: mat-color($other, status-success-contrast);
+    $success-bg: mat.get-color-from-palette($other, status-success);
+    $success-txt: mat.get-color-from-palette($other, status-success-contrast);
 
     .mat-snack-bar-container.success-notification {
         color: $success-txt;

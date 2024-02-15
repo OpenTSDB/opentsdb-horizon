@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @mixin landing-page-container-component-theme() {
     .landing-page-main {
         .sidebar {
-            background-color: mat-color($background, card);
+            background-color: mat.get-color-from-palette($background, card);
         }
     }
 }

@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin inline-editable-component-theme() {
 
     .inline-editable,
@@ -9,11 +10,11 @@
         .mat-form-field {
 
             .save-button.mat-mini-fab {
-                background-color: mat-color($success, default);
+                background-color: mat.get-color-from-palette($success, default);
             }
 
             .edit-button {
-                color: mat-color($foreground, link);
+                color: mat.get-color-from-palette($foreground, link);
             }
 
             &.readonly-mode {
@@ -22,28 +23,28 @@
                 }
 
                 &:hover {
-                    background-color: mat-color($primary, default, 0.08);
+                    background-color: mat.get-color-from-palette($primary, default, 0.08);
 
                     .mat-form-field-underline {
-                        background-color: mat-color($foreground, link);
-                        color: mat-color($foreground, link);
+                        background-color: mat.get-color-from-palette($foreground, link);
+                        color: mat.get-color-from-palette($foreground, link);
                     }
                 }
             }
 
             &.editing-mode {
-                background-color: mat-color($primary, default, 0.08);
+                background-color: mat.get-color-from-palette($primary, default, 0.08);
 
                 .mat-form-field-underline {
-                    background-color: mat-color($foreground, link);
-                    color: mat-color($foreground, link);
+                    background-color: mat.get-color-from-palette($foreground, link);
+                    color: mat.get-color-from-palette($foreground, link);
                 }
             }
 
             &.mat-focused {
                 .mat-form-field-ripple {
-                    background-color: mat-color($foreground, link);
-                    color: mat-color($foreground, link);
+                    background-color: mat.get-color-from-palette($foreground, link);
+                    color: mat.get-color-from-palette($foreground, link);
                 }
             }
         }

@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @mixin color-picker-selector-component-theme() {
     .color-picker-selector-compponent {
         .cps {
             .mat-button {
-                color: mat-color($primary, default);
+                color: mat.get-color-from-palette($primary, default);
             }
         }
     }

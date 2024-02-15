@@ -1,17 +1,18 @@
+@use '~@angular/material' as mat;
 @mixin navbar-timezone-toggle-component-theme() {
     .navbar-timezone-toggle {
         .timezone-toggle-options.sliding-button-group {
-            background-color: mat-color($background, navbar-button);
+            background-color: mat.get-color-from-palette($background, navbar-button);
 
             .mat-tab-link {
                 &,
                 &.mat-tab-label-active {
-                    color: mat-color($foreground, navbar-text);
+                    color: mat.get-color-from-palette($foreground, navbar-text);
                 }
             }
 
             .mat-ink-bar {
-                background-color: mat-color($foreground, navbar-text, .25);
+                background-color: mat.get-color-from-palette($foreground, navbar-text, .25);
             }
         }
     }

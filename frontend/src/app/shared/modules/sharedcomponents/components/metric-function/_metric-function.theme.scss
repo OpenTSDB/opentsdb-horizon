@@ -1,22 +1,23 @@
+@use '~@angular/material' as mat;
 @mixin metric-function-component-theme() {
 
     .metric-function-component {
         .mat-form-field {
             .mat-form-field-prefix {
-                color: mat-color($foreground, text, .5)
+                color: mat.get-color-from-palette($foreground, text, .5)
             }
 
             .mat-form-field-underline {
-                background-color: mat-color($foreground, link);
+                background-color: mat.get-color-from-palette($foreground, link);
             }
 
             &.mat-focused {
                 &:not(.readonly-mode) {
-                    background-color: mat-color($foreground, link, 0.04)
+                    background-color: mat.get-color-from-palette($foreground, link, 0.04)
                 }
 
                 .mat-form-field-underline {
-                    background-color: mat-color($foreground, link);
+                    background-color: mat.get-color-from-palette($foreground, link);
                 }
             }
 

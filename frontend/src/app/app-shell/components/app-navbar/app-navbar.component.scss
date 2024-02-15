@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -18,7 +19,6 @@
 // * NAVBAR COMPONENT
 
 //@import "loader-component";
-@import "~@angular/material/theming";
 @import 'config';
 @import 'typography';
 
@@ -43,7 +43,7 @@ $logo-height: map-get($navbar-config, "logo-height");
     }
 
     .dashboard-name {
-        @include mat-typography-level-to-styles(
+        @include mat.typography-level(
             map-get($app-fontface-config, sans),
             title
         );
@@ -69,7 +69,7 @@ $logo-height: map-get($navbar-config, "logo-height");
                 padding: 0 2px;
 
                 .mat-tab-link {
-                    font-size: mat-font-size(
+                    font-size: mat.font-size(
                         map-get($app-fontface-config, sans),
                         caption
                     );

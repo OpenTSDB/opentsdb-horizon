@@ -1,15 +1,16 @@
+@use '~@angular/material' as mat;
 @mixin alert-details-metric-period-over-period-component-theme() {
 
     .period-over-period {
 
         .blue-background {
-            background: mat-color($primary, default, 0.08);
+            background: mat.get-color-from-palette($primary, default, 0.08);
         }
 
         .threshold-type {
 
             .mat-button-toggle {
-                background: mat-color($primary, default, 0.08);
+                background: mat.get-color-from-palette($primary, default, 0.08);
             }
 
             .mat-button-toggle-checked {

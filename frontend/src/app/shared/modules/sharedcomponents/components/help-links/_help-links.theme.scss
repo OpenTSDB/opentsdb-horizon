@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin help-links-component-theme() {
 
     $cssVarMap: get-theme-css-variables($theme-name);
@@ -7,7 +8,7 @@
 
     .mat-raised-button {
         background-color: darken($navbar-bg, 4%);
-        color: mat-color($foreground, navbar-text);
+        color: mat.get-color-from-palette($foreground, navbar-text);
 
         &:hover {
             background-color: lighten($navbar-bg, 8%);

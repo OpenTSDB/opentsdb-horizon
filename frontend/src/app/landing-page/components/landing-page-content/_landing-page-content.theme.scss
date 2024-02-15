@@ -1,9 +1,10 @@
+@use '~@angular/material' as mat;
 @mixin landing-page-content-component-theme() {
     .landing-page-content {
-        border-right: 2px solid mat-color($foreground, divider);
+        border-right: 2px solid mat.get-color-from-palette($foreground, divider);
 
         .landing-page-hero {
-            background-color: mat-color($background, card);
+            background-color: mat.get-color-from-palette($background, card);
         }
 
         .landing-page-utilities {
@@ -13,17 +14,17 @@
             }
 
             .search-utility {
-                background-color: mat-color($background, card);
+                background-color: mat.get-color-from-palette($background, card);
 
                 .search-query-form-field {
                     .mat-icon {
-                        color: mat-color($primary, default);
+                        color: mat.get-color-from-palette($primary, default);
                     }
 
                     .mat-form-field-underline {
 
                         .mat-form-field-ripple {
-                            background-color: mat-color($primary, default);
+                            background-color: mat.get-color-from-palette($primary, default);
                         }
                     }
                 }

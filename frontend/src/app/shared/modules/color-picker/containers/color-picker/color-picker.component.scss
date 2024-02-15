@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -23,7 +24,6 @@ $available-palettes: "auto", "blues", "greens", "greys", "oranges", "purples",
     "sinebow", "rainbow", "Category10", "Accent", "Dark2", "Paired", "Set1",
     "Set2", "Set3", "Tableau10";
 
-@import "~@angular/material/theming";
 @import "config";
 @import "typography";
 
@@ -32,7 +32,7 @@ $available-palettes: "auto", "blues", "greens", "greys", "oranges", "purples",
     position: relative;
     text-align: left;
     z-index: 1;
-    @include mat-typography-level-to-styles(
+    @include mat.typography-level(
         map-get($app-fontface-config, sans),
         input
     );

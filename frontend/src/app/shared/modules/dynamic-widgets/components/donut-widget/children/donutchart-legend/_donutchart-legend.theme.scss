@@ -1,6 +1,7 @@
+@use '~@angular/material' as mat;
 @mixin donutchart-legend-component-theme() {
 
-    $good-green: if($is-dark, mat-color($success, default), mat-color($success, 600));
+    $good-green: if($is-dark, mat.get-color-from-palette($success, default), mat.get-color-from-palette($success, 600));
 
     .widget-config-tab.legend-configuration {
         .config-control.with-enable-label {

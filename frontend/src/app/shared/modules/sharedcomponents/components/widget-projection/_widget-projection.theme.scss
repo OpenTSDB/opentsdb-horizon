@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @mixin widget-projection-component-theme() {
     .widget-projection {
         .mat-card {
             box-shadow: none;
-            background-color: mat-color($background, card);
+            background-color: mat.get-color-from-palette($background, card);
             border: 1px solid rgba($black, 0.08);
 
             .panel-body .panel-heading {
@@ -24,7 +25,7 @@
 
                 &:hover {
                     //background-color: rgba(map-get($accent, A700), .1);
-                    background-color: mat-color($background, card-header);
+                    background-color: mat.get-color-from-palette($background, card-header);
 
                     .mat-toolbar {
                         .mat-icon-button {

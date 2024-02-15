@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -120,7 +121,7 @@ $horizon-theme-css-variables: map-merge(
     --palette-warn-contrast-A700: var(--light-warn-text),
     // BACKGROUND
     --palette-background-status-bar:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 300)),
     --palette-background-ink-bar:
         _mat-css-hex-to-rgb(map_get($denali-brand-6, 500)),
     --palette-background-app-bar:
@@ -136,12 +137,12 @@ $horizon-theme-css-variables: map-merge(
     --palette-background-background:
         _mat-css-hex-to-rgb(lighten(map-get($denali-cool-grey, 50), 4%)),
     --palette-background-header:
-        _mat-css-hex-to-rgb(map_get($mat-blue, 900)),
+        _mat-css-hex-to-rgb(map_get(mat.$blue-palette, 900)),
     --palette-background-hover: _mat-css-hex-to-rgb(#000000),
     --palette-background-hover-alpha: 0.04,
     --palette-background-card: _mat-css-hex-to-rgb(#ffffff),
     --palette-background-lighter-card: _mat-css-hex-to-rgb(#ffffff),
-    --palette-background-card-header: _mat-css-hex-to-rgb(map-get($mat-blue, 900)),
+    --palette-background-card-header: _mat-css-hex-to-rgb(map-get(mat.$blue-palette, 900)),
     --palette-background-card-header-alpha: 0.08,
     --palette-background-dialog: _mat-css-hex-to-rgb(#ffffff),
     --palette-background-disabled-button: _mat-css-hex-to-rgb(#000000),
@@ -149,19 +150,19 @@ $horizon-theme-css-variables: map-merge(
     --palette-background-raised-button: _mat-css-hex-to-rgb(#ffffff),
     --palette-background-focused-button: _mat-css-hex-to-rgb($dark-focused),
     --palette-background-selected-button:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 300)),
     --palette-background-selected-disabled-button:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 400)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 400)),
     --palette-background-disabled-button-toggle:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 200)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 200)),
     --palette-background-unselected-chip:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 300)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 300)),
     --palette-background-disabled-list-option:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 200)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 200)),
     --palette-background-tooltip:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
-    --palette-background-menu: _mat-css-hex-to-rgb(map_get($mat-grey, 50)),
-    --palette-background-menu-border: _mat-css-hex-to-rgb(map_get($mat-grey, 100)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 700)),
+    --palette-background-menu: _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 50)),
+    --palette-background-menu-border: _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 100)),
     // FOREGROUND
     --palette-foreground-base: _mat-css-hex-to-rgb(#000000),
     --palette-foreground-divider: _mat-css-hex-to-rgb($dark-dividers),
@@ -204,7 +205,7 @@ $horizon-theme-css-variables: map-merge(
     --palette-background-ink-bar-dark:
         _mat-css-hex-to-rgb(map-get($denali-lime, A400)),
     --palette-background-app-bar-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 900)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 900)),
     --palette-background-navbar-dark:
         _mat-css-hex-to-rgb(map_get($denali-mid-grey, 900)),
     --palette-background-navbar-button-dark:
@@ -217,31 +218,31 @@ $horizon-theme-css-variables: map-merge(
     --palette-background-hover-dark: _mat-css-hex-to-rgb(#ffffff),
     --palette-background-hover-dark-alpha: 0.04,
     --palette-background-card-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 800)),
     --palette-background-lighter-card-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 600)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 600)),
     --palette-background-card-header-dark: _mat-css-hex-to-rgb(#8ACFED),
     --palette-background-card-header-dark-alpha: 0.1,
     --palette-background-dialog-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 800)),
     --palette-background-disabled-button-dark: _mat-css-hex-to-rgb(#ffffff),
     --palette-background-disabled-button-dark-alpha: 0.12,
     --palette-background-raised-button-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 800)),
     --palette-background-focused-button-dark:
         _mat-css-hex-to-rgb($light-focused),
     --palette-background-selected-button-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 900)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 900)),
     --palette-background-selected-disabled-button-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 800)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 800)),
     --palette-background-disabled-button-toggle-dark:
         _mat-css-hex-to-rgb(#000000),
     --palette-background-unselected-chip-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 700)),
     --palette-background-disabled-list-option-dark:
         _mat-css-hex-to-rgb(#000000),
     --palette-background-tooltip-dark:
-        _mat-css-hex-to-rgb(map_get($mat-grey, 700)),
+        _mat-css-hex-to-rgb(map_get(mat.$grey-palette, 700)),
     --palette-background-menu-dark: _mat-css-hex-to-rgb(map_get($denali-mid-grey, A400)),
     --palette-background-menu-border-dark: _mat-css-hex-to-rgb(map_get($denali-mid-grey, A200)),
     // FOREGROUND DARK

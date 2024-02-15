@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @mixin widget-config-multigraph-component-theme() {
     .widget-config-tab.multigraph-configuration {
         .form-field-group.table-output {
             .mat-row:hover {
-                background: mat-color($foreground, lighter-divider);
+                background: mat.get-color-from-palette($foreground, lighter-divider);
             }
         }
     }

@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -21,11 +22,11 @@
 
 $developing-theme: (
     theme-name: "developing",
-    primary: mat-palette($denali-brand-6, 800, 300, 900),
-    accent: mat-palette($denali-pink),
-    warn: mat-palette($mat-red, 600),
-    success: mat-palette($mat-light-green, A400, A200, A700),
-    danger: mat-palette($mat-deep-orange, A400, A100, A700),
+    primary: mat.define-palette($denali-brand-6, 800, 300, 900),
+    accent: mat.define-palette($denali-pink),
+    warn: mat.define-palette(mat.$red-palette, 600),
+    success: mat.define-palette(mat.$light-green-palette, A400, A200, A700),
+    danger: mat.define-palette(mat.$deep-orange-palette, A400, A100, A700),
     is-dark: false,
     foreground: (
         base: #000000,
@@ -38,7 +39,7 @@ $developing-theme: (
         secondary-text: $dark-secondary-text,
         icon: rgba(#000000, 0.54),
         icons: rgba(#000000, 0.54),
-        link: map-get($mat-blue, A200),
+        link: map-get(mat.$blue-palette, A200),
         navbar-icons: #ffffff,
         navbar-text: #ffffff,
         text: rgba(#000000, 0.87),
@@ -47,27 +48,27 @@ $developing-theme: (
         slider-off-active: rgba(#000000, 0.38)
     ),
     background: (
-        status-bar: map_get($mat-grey, 300),
+        status-bar: map_get(mat.$grey-palette, 300),
         ink-bar: map_get($denali-brand-6, 500),
         app-bar: #084b4e,
         navbar: #084b4e,
         navbar-alt:               #8eaeaf,
         background: lighten(map_get($denali-cool-grey, 50), 4%),
-        header: rgba(map_get($mat-blue, 900), 0.08),
+        header: rgba(map_get(mat.$blue-palette, 900), 0.08),
         hover: rgba(#000000, 0.04),
         card: #ffffff,
-        card-header-hover: rgba(map-get($mat-blue, 900), 0.08),
+        card-header-hover: rgba(map-get(mat.$blue-palette, 900), 0.08),
         dialog: #ffffff,
         disabled-button: rgba(#000000, 0.12),
         raised-button: #ffffff,
         focused-button: $dark-focused,
-        selected-button: map_get($mat-grey, 300),
-        selected-disabled-button: map_get($mat-grey, 400),
-        disabled-button-toggle: map_get($mat-grey, 200),
-        unselected-chip: map_get($mat-grey, 300),
-        disabled-list-option: map_get($mat-grey, 200),
-        menu: map_get($mat-grey, 50),
-        gridster-highlight: rgba(map_get($mat-blue, 900), 0.15),
+        selected-button: map_get(mat.$grey-palette, 300),
+        selected-disabled-button: map_get(mat.$grey-palette, 400),
+        disabled-button-toggle: map_get(mat.$grey-palette, 200),
+        unselected-chip: map_get(mat.$grey-palette, 300),
+        disabled-list-option: map_get(mat.$grey-palette, 200),
+        menu: map_get(mat.$grey-palette, 50),
+        gridster-highlight: rgba(map_get(mat.$blue-palette, 900), 0.15),
         graph-legend: map_get($denali-red, 50)
     ),
     widgets: (
@@ -79,9 +80,9 @@ $developing-theme: (
         query-editor-selected-border: map-get($denali-cool-grey, A100)
     ),
     ks: (
-        sidenav-background: map_get($mat-blue-grey, 800),
-        sidenav-panel: map_get($mat-blue-grey, 50),
-        sidenav-text: rgba(map_get($mat-grey, 900), 0.85)
+        sidenav-background: map_get(mat.$blue-grey-palette, 800),
+        sidenav-panel: map_get(mat.$blue-grey-palette, 50),
+        sidenav-text: rgba(map_get(mat.$grey-palette, 900), 0.85)
     ),
     status: (
         success: map_get($denali-lime, A400),

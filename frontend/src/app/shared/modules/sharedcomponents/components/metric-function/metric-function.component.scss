@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import '~@angular/material/theming';
 @import 'typography';
 @import 'mixins';
 
@@ -51,7 +51,7 @@
             font-weight: bold;
 
             .mat-input-element {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                font-family: mat.font-family(map-get($app-fontface-config, mono));
                 padding: 0 4px;
                 align-self: stretch;
                 min-width: 30px;
@@ -60,7 +60,7 @@
 
         .mat-form-field-prefix,
         .mat-form-field-suffix {
-            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            font-family: mat.font-family(map-get($app-fontface-config, mono));
             align-self: stretch;
             display: flex;
             align-items: center;

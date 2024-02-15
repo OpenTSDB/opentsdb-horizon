@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin topn-widget-component-theme() {
     //$theme-name: map-get($theme-config, $theme-name);
     $cssText: get-theme-css-text($theme-name);
@@ -10,13 +11,13 @@
 
     $tooltip-bg: if(
         $is-dark,
-        mat-color($background, menu),
+        mat.get-color-from-palette($background, menu),
         #f0f0f0 // TODO: plug into theme
     );
 
     $tooltip-border: if(
         $is-dark,
-        mat-color($background, menu-border),
+        mat.get-color-from-palette($background, menu-border),
         #cccccc // TODO: plug into theme
     );
 

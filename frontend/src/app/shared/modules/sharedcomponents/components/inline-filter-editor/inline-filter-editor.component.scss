@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import '~@angular/material/theming';
 @import 'config';
 @import 'typography';
 @import 'mixins';
@@ -198,7 +198,7 @@ $filter-block-padding: 8px;
             margin-top: 2px;
             border-radius: 6px;
 
-            @include mat-elevation(2);
+            @include mat.elevation(2);
 
             .tag-filter-caption {
                 font-size: 14px;
@@ -228,7 +228,7 @@ $filter-block-padding: 8px;
                 justify-content: flex-start;
                 align-items: center;
                 padding: 0 $filter-block-padding;
-                font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+                font-size: mat.font-size(map-get($app-fontface-config, sans), caption);
                 line-height: 24px;
 
                 // Only match selected tags label
@@ -252,7 +252,7 @@ $filter-block-padding: 8px;
                 margin: 2px $filter-block-padding;
                 border-radius: 4px;
                 border: 0;
-                font-size: mat-font-size(map-get($app-fontface-config, sans), body-1);
+                font-size: mat.font-size(map-get($app-fontface-config, sans), body-1);
                 padding: ($filter-block-padding / 2) $filter-block-padding;
 
                 .mat-list-item-content {
@@ -496,7 +496,7 @@ $filter-block-padding: 8px;
 
                 &,
                 strong {
-                    font-weight: mat-font-weight(map-get($app-fontface-config, sans), title);
+                    font-weight: mat.font-weight(map-get($app-fontface-config, sans), title);
                 }
             }
 

@@ -1,4 +1,5 @@
 // utility to add css-variables to document :root
+@use '~@angular/material' as mat;
 // with theme compatibility
 //
 // based on _mat-css-root from angular-css-vars
@@ -61,7 +62,7 @@
         //@at-root .#{$theme-name}-theme,
         @at-root [theme="#{$theme-name}"] {
             &[variant="light"] {
-                @include angular-material-theme($light-theme);
+                @include mat.all-component-themes($light-theme);
                 @content;
             }
 
@@ -69,7 +70,7 @@
                 $mat-css-theme: $dark-theme !global;
                 //&#{$dark-theme-selector},
                 &[variant="dark"] {
-                    @include angular-material-theme($dark-theme);
+                    @include mat.all-component-themes($dark-theme);
                     @content;
                 }
             }
@@ -77,14 +78,14 @@
     } @else {
         // DEFAULT theme
         @at-root {
-            @include angular-material-theme($light-theme);
+            @include mat.all-component-themes($light-theme);
             @content;
 
             @if $dark-theme-selector {
                 $mat-css-theme: $dark-theme !global;
                 //#{$dark-theme-selector},
                 [variant="dark"] {
-                    @include angular-material-theme($dark-theme);
+                    @include mat.all-component-themes($dark-theme);
                     @content;
                 }
             }
@@ -125,7 +126,7 @@
 }
 
 @mixin standalone-angular-material-theme($theme) {
-    @include mat-core-theme($theme);
+    @include mat.core-theme($theme);
     //@include mat-autocomplete-theme($theme);
     //@include mat-badge-theme($theme);
     //@include mat-bottom-sheet-theme($theme);

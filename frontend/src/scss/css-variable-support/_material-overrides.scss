@@ -1,11 +1,12 @@
 // see: https://github.com/zbirizdo/material-css-vars
+@use '~@angular/material' as mat;
 // MAT-COLOR: Main material override to make it work
 //
 // Requires '~angular/material/themeing' to be loaded first
 
-@function mat-color($palette, $hue: default, $opacity: null) {
+@function mat.get-color-from-palette($palette, $hue: default, $opacity: null) {
     @if type-of($hue) == number and $hue >= 0 and $hue <= 1 {
-        @return mat-color($palette, default, $hue);
+        @return mat.get-color-from-palette($palette, default, $hue);
     }
 
     //@debug 'PALETTE ' #{$palette} + '--' + #{$hue};
@@ -52,7 +53,7 @@
     .mat-ripple-element {
         // if it's a color, rgba just works.
         // If it's a variable, rgba works because all color variables should be 3 comma separated numbers
-        background-color: rgba($foreground-base, $mat-ripple-color-opacity);
+        background-color: rgba($foreground-base, 0.1);
     }
 }
 
@@ -61,7 +62,7 @@
 // This would cause the opacity to get applied twice, resulting in a ripple that is almost invisible.
 // Instead, we will trust that mat-color handles opacity correctly.
 @mixin _mat-button-ripple-background($palette, $hue, $opacity) {
-    $background-color: mat-color($palette, $hue, $opacity);
+    $background-color: mat.get-color-from-palette($palette, $hue, $opacity);
     background-color: $background-color;
 }
 
@@ -97,7 +98,7 @@
                 var(--palette-background-disabled-button-alpha)
             );
 
-            $badge-color: mat-color(
+            $badge-color: mat.get-color-from-palette(
                 $foreground,
                 disabled-button,
                 $badge-opacity
@@ -119,8 +120,8 @@
 }
 
 @mixin _horizon-mat-datepicker-color($palette) {
-    $fade-amount: $mat-datepicker-selected-fade-amount;
-    $color: mat-color($palette, $fade-amount);
+    $fade-amount: 0.6;
+    $color: mat.get-color-from-palette($palette, $fade-amount);
 
     .mat-calendar-body-disabled > .mat-calendar-body-selected {
         background-color: $color;
@@ -133,10 +134,10 @@
 
     .mat-calendar-body-disabled
         > .mat-calendar-body-today:not(.mat-calendar-body-selected) {
-        border-color: mat-color(
+        border-color: mat.get-color-from-palette(
             $foreground,
             hint-text,
-            $mat-datepicker-today-fade-amount
+            0.2
         );
     }
 
@@ -171,21 +172,21 @@
     $foreground: map-get($theme, foreground);
 
     .mat-badge-content {
-        color: mat-color($primary, default-contrast);
-        background: mat-color($primary);
+        color: mat.get-color-from-palette($primary, default-contrast);
+        background: mat.get-color-from-palette($primary);
     }
 
     .mat-badge-accent {
         .mat-badge-content {
-            background: mat-color($accent);
-            color: mat-color($accent, default-contrast);
+            background: mat.get-color-from-palette($accent);
+            color: mat.get-color-from-palette($accent, default-contrast);
         }
     }
 
     .mat-badge-warn {
         .mat-badge-content {
-            color: mat-color($warn, default-contrast);
-            background: mat-color($warn);
+            color: mat.get-color-from-palette($warn, default-contrast);
+            background: mat.get-color-from-palette($warn);
         }
     }
 
@@ -201,7 +202,7 @@
 
     .mat-badge-disabled {
         .mat-badge-content {
-            color: mat-color($foreground, disabled-text);
+            color: mat.get-color-from-palette($foreground, disabled-text);
         }
     }
 
@@ -226,13 +227,13 @@
     }
 
     .mat-badge-small {
-        @include _mat-badge-size($mat-badge-small-size);
+        @include _mat-badge-size(16px);
     }
     .mat-badge-medium {
-        @include _mat-badge-size($mat-badge-default-size);
+        @include _mat-badge-size(22px);
     }
     .mat-badge-large {
-        @include _mat-badge-size($mat-badge-large-size);
+        @include _mat-badge-size(28px);
     }
 }
 
@@ -247,7 +248,7 @@
         // color by taking the opacity from the rgba value and using the value to determine the
         // percentage of the background to put into foreground when mixing the colors together.
 
-        $text-color: mat-color($foreground, secondary-text);
+        $text-color: mat.get-color-from-palette($foreground, secondary-text);
         color: $text-color;
     }
 }
@@ -255,21 +256,21 @@
 // modified from https://github.com/angular/components
 @mixin _mat-datepicker-color($palette) {
     .mat-calendar-body-selected {
-        background-color: mat-color($palette);
-        color: mat-color($palette, default-contrast);
+        background-color: mat.get-color-from-palette($palette);
+        color: mat.get-color-from-palette($palette, default-contrast);
     }
 
     .mat-calendar-body-disabled > .mat-calendar-body-selected {
         //background-color: fade-out(mat-color($palette), $mat-datepicker-selected-fade-amount);
         background-color: RGBA(
-            mat-color($palette),
-            $mat-datepicker-selected-fade-amount
+            mat.get-color-from-palette($palette),
+            0.6
         );
     }
 
     .mat-calendar-body-today.mat-calendar-body-selected {
-        box-shadow: inset 0 0 0 $mat-datepicker-selected-today-box-shadow-width
-            mat-color($palette, default-contrast);
+        box-shadow: inset 0 0 0 1px
+            mat.get-color-from-palette($palette, default-contrast);
     }
 }
 
@@ -279,7 +280,7 @@
     $background: map-get($theme, background);
 
     .mat-calendar-arrow {
-        border-top-color: mat-color($foreground, icon);
+        border-top-color: mat.get-color-from-palette($foreground, icon);
     }
 
     // The prev/next buttons need a bit more specificity to
@@ -287,50 +288,50 @@
     .mat-datepicker-toggle,
     .mat-datepicker-content .mat-calendar-next-button,
     .mat-datepicker-content .mat-calendar-previous-button {
-        color: mat-color($foreground, icon);
+        color: mat.get-color-from-palette($foreground, icon);
     }
 
     .mat-calendar-table-header {
-        color: mat-color($foreground, hint-text);
+        color: mat.get-color-from-palette($foreground, hint-text);
     }
 
     .mat-calendar-table-header-divider::after {
-        background: mat-color($foreground, divider);
+        background: mat.get-color-from-palette($foreground, divider);
     }
 
     .mat-calendar-body-label {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     .mat-calendar-body-cell-content {
-        color: mat-color($foreground, text);
+        color: mat.get-color-from-palette($foreground, text);
         border-color: transparent;
     }
 
     .mat-calendar-body-disabled
         > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
-        color: mat-color($foreground, disabled-text);
+        color: mat.get-color-from-palette($foreground, disabled-text);
     }
 
     .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover,
     .cdk-keyboard-focused .mat-calendar-body-active,
     .cdk-program-focused .mat-calendar-body-active {
         & > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
-            background-color: mat-color($background, hover);
+            background-color: mat.get-color-from-palette($background, hover);
         }
     }
 
     .mat-calendar-body-today:not(.mat-calendar-body-selected) {
         // Note: though it's not text, the border is a hint about the fact that this is today's date,
         // so we use the hint color.
-        border-color: mat-color($foreground, hint-text);
+        border-color: mat.get-color-from-palette($foreground, hint-text);
     }
 
     .mat-calendar-body-disabled
         > .mat-calendar-body-today:not(.mat-calendar-body-selected) {
         border-color: RGBA(
-            mat-color($foreground, hint-text),
-            $mat-datepicker-today-fade-amount
+            mat.get-color-from-palette($foreground, hint-text),
+            0.2
         );
     }
 
@@ -339,8 +340,8 @@
     .mat-datepicker-content {
         //@include _mat-theme-elevation(4, $theme);
         @include _mat-theme-overridable-elevation(4, $theme);
-        background-color: mat-color($background, card);
-        color: mat-color($foreground, text);
+        background-color: mat.get-color-from-palette($background, card);
+        color: mat.get-color-from-palette($foreground, text);
 
         &.mat-accent {
             @include _mat-datepicker-color(map-get($theme, accent));
@@ -357,14 +358,14 @@
     }
 
     .mat-datepicker-toggle-active {
-        color: mat-color(map-get($theme, primary));
+        color: mat.get-color-from-palette(map-get($theme, primary));
 
         &.mat-accent {
-            color: mat-color(map-get($theme, accent));
+            color: mat.get-color-from-palette(map-get($theme, accent));
         }
 
         &.mat-warn {
-            color: mat-color(map-get($theme, warn));
+            color: mat.get-color-from-palette(map-get($theme, warn));
         }
     }
 }
@@ -386,19 +387,19 @@
     $backdrop-color: _mat-list-to-color-type(map-get($cssVarMap,_mat-var-unwrap(map-get($background, card))));
 
     $drawer-backdrop-color: invert(rgba($backdrop-color, 0.6));
-    $drawer-background-color: mat-color($background, dialog);
-    $drawer-container-background-color:  mat-color($background, background);
-    $drawer-push-background-color: mat-color($background, dialog);
-    $drawer-side-border: solid 1px mat-color($foreground, divider);
+    $drawer-background-color: mat.get-color-from-palette($background, dialog);
+    $drawer-container-background-color:  mat.get-color-from-palette($background, background);
+    $drawer-push-background-color: mat.get-color-from-palette($background, dialog);
+    $drawer-side-border: solid 1px mat.get-color-from-palette($foreground, divider);
 
     .mat-drawer-container {
       background-color: $drawer-container-background-color;
-      color: mat-color($foreground, text);
+      color: mat.get-color-from-palette($foreground, text);
     }
 
     .mat-drawer {
       background-color: $drawer-background-color;
-      color: mat-color($foreground, text);
+      color: mat.get-color-from-palette($foreground, text);
 
       &.mat-drawer-push {
         background-color: $drawer-push-background-color;
