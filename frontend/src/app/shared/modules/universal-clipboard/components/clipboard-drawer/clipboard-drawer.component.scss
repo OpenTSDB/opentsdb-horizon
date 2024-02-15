@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import '~@angular/material/theming';
 @import 'config';
 @import 'mixins';
 
@@ -23,7 +23,7 @@ $navbar-height: map-get($navbar-config, "navbar-height");
 $logo-height: map-get($navbar-config, "logo-height");
 
 .clipboard-drawer {
-    @include mat-elevation(3);
+    @include mat.elevation(3);
     overflow: hidden;
     position: relative;
     z-index: 10;
@@ -58,7 +58,7 @@ $logo-height: map-get($navbar-config, "logo-height");
     }
 
     .clipboard-header.mat-toolbar {
-        @include mat-elevation(0);
+        @include mat.elevation(0);
         @include unselectable;
         background: transparent;
 

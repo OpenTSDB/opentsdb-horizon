@@ -1,36 +1,37 @@
+@use '~@angular/material' as mat;
 @mixin info-island-container-component-theme() {
 
     $cdk-window-bg: if(
         $is-dark,
-        mat-color($background, menu, .9),
-        mat-color($background, menu)
+        mat.get-color-from-palette($background, menu, .9),
+        mat.get-color-from-palette($background, menu)
     );
 
     $header-bg: if(
         $is-dark,
-        mat-color($background, menu),
-        mat-color($background, navbar)
+        mat.get-color-from-palette($background, menu),
+        mat.get-color-from-palette($background, navbar)
     );
 
     .info-island-container {
-        @include mat-elevation(4);
+        @include mat.elevation(4);
 
         .mat-card {
             background-color: $cdk-window-bg;
 
             @if $is-dark {
-                border: 1px solid mat-color($foreground, divider);
+                border: 1px solid mat.get-color-from-palette($foreground, divider);
             }
         }
 
         .mat-card-header {
             background: $header-bg;
-            color: mat-color($foreground, navbar-text);
-            border-bottom: 1px solid mat-color($foreground, divider);
+            color: mat.get-color-from-palette($foreground, navbar-text);
+            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
         }
 
         .mat-card-actions {
-            border-top: 1px solid mat-color($foreground, divider);
+            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
         }
     }
 }

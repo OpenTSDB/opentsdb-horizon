@@ -1,13 +1,14 @@
+@use '~@angular/material' as mat;
 @mixin navbar-clipboard-menu-component-theme() {
     .navbar-clipboard-menu {
         &.is-open {
             background: rgba($white, .2);
-            color: mat-color($foreground, navbar-text);
+            color: mat.get-color-from-palette($foreground, navbar-text);
 
             box-shadow:
-                inset 0 -3px 0 -1px mat-color($foreground, navbar-text),
-                inset 3px 0px 0 -1px mat-color($foreground, navbar-text),
-                inset 0 1px 0 1px mat-color($foreground, navbar-text);
+                inset 0 -3px 0 -1px mat.get-color-from-palette($foreground, navbar-text),
+                inset 3px 0px 0 -1px mat.get-color-from-palette($foreground, navbar-text),
+                inset 0 1px 0 1px mat.get-color-from-palette($foreground, navbar-text);
 
             &:hover {
                 background: rgba($white, .28);

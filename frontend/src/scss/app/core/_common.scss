@@ -1,6 +1,7 @@
 // html,
+@use '~@angular/material' as mat;
 body {
-    @include mat-typography-level-to-styles(
+    @include mat.typography-level(
         map-get($app-fontface-config, sans),
         body-1
     );
@@ -19,6 +20,6 @@ body {
 // * THEME VARIANTS
 @include init-component-variants() {
     &.mat-app-background {
-        background-color: mat-color($background, background);
+        background-color: mat.get-color-from-palette($background, background);
     }
 }

@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -108,7 +109,7 @@
 
     &.move-position-strategy {
         .tooltip-output {
-            @include mat-elevation(2);
+            @include mat.elevation(2);
             max-width: 50vw;
 
             &.shift-below {
@@ -202,9 +203,9 @@
     .data-tooltip {
         &.move-position-strategy {
             .tooltip-output {
-                box-shadow: 0 0 5px mat-color($primary, default, .65);
-                background: mat-color($primary, A100, 1);
-                color: mat-color($primary, A100-contrast, .95);
+                box-shadow: 0 0 5px mat.get-color-from-palette($primary, default, .65);
+                background: mat.get-color-from-palette($primary, A100, 1);
+                color: mat.get-color-from-palette($primary, A100-contrast, .95);
                 border: 1px solid currentColor;
             }
         }
@@ -212,9 +213,9 @@
         &.sticky-position-strategy {
 
             .tooltip-output {
-                box-shadow: 0 0 5px mat-color($primary, default, .65);
-                background: mat-color($primary, A100, 1);
-                color: mat-color($primary, A100-contrast, .95);
+                box-shadow: 0 0 5px mat.get-color-from-palette($primary, default, .65);
+                background: mat.get-color-from-palette($primary, A100, 1);
+                color: mat.get-color-from-palette($primary, A100-contrast, .95);
 
                 .value-marker,
                 .other-data {
@@ -222,7 +223,7 @@
                     color: if(
                         $is-dark,
                         $black,
-                        mat-color($primary, A100-contrast)
+                        mat.get-color-from-palette($primary, A100-contrast)
                     );
                 }
             }
@@ -230,7 +231,7 @@
     }
 
     .tooltip-mouse-boundary-hover {
-        box-shadow: 0 0 5px mat-color($primary, default, .65);
+        box-shadow: 0 0 5px mat.get-color-from-palette($primary, default, .65);
 
         /*&.shift-above {
             //box-shadow: 0 -2px 0 0 mat-color($background, background), 0 0px 0px 2px mat-color($primary, A100, 1);

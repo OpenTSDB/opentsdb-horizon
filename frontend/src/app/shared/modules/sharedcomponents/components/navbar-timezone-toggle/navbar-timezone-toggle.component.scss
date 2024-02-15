@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -17,7 +18,6 @@
 
 // * TIMEZONE TOGGLE COMPONENT */
 
-@import '~@angular/material/theming';
 @import 'typography';
 
 .navbar-timezone-toggle {
@@ -27,7 +27,7 @@
 
     .timezone-toggle-options.sliding-button-group {
         .mat-tab-link {
-            font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+            font-size: mat.font-size(map-get($app-fontface-config, sans), caption);
             height: 24px;
         }
 

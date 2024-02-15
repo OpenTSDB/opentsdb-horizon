@@ -1,13 +1,14 @@
+@use '~@angular/material' as mat;
 @mixin widget-config-visual-appearance-component-theme() {
 
-    $input-bg: mat-color($primary, default, 0.08);
+    $input-bg: mat.get-color-from-palette($primary, default, 0.08);
 
     .widget-config-tab.visual-appearance-configuration {
         // style rules here
 
         .mat-table {
             .metric-group-row {
-                background-color: mat-color($background, app-bar);
+                background-color: mat.get-color-from-palette($background, app-bar);
             }
         }
 
@@ -17,12 +18,12 @@
             }
 
             .mat-button-toggle {
-                color: mat-color($foreground, link);
+                color: mat.get-color-from-palette($foreground, link);
             }
 
             .mat-button-toggle-checked {
-                background: mat-color($background, card);
-                color: mat-color($foreground, text);
+                background: mat.get-color-from-palette($background, card);
+                color: mat.get-color-from-palette($foreground, text);
             }
         }
 

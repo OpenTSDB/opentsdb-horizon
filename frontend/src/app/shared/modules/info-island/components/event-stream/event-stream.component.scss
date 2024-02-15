@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -19,7 +20,6 @@
 // * COMMON STYLES FOR WDATE TIME
 // **/
 
-@import '~@angular/material/theming';
 @import 'typography';
 @import 'mixins';
 
@@ -49,7 +49,7 @@ $mono-fontface: map-get($app-fontface-config, mono);
         //.event-accordion.mat-accordion { }
 
         .event-panel.mat-expansion-panel {
-            @include mat-elevation(0);
+            @include mat.elevation(0);
             border-radius: 0;
 
             .mat-expansion-panel-header {
@@ -64,10 +64,10 @@ $mono-fontface: map-get($app-fontface-config, mono);
             }
 
             .mat-expansion-panel-header-title {
-                font-size: mat-font-size($mono-fontface, body-1);
+                font-size: mat.font-size($mono-fontface, body-1);
 
                 .event-time {
-                    font-family: mat-font-family($mono-fontface);
+                    font-family: mat.font-family($mono-fontface);
                     margin-right: 12px;
                 }
 
@@ -89,7 +89,7 @@ $mono-fontface: map-get($app-fontface-config, mono);
 
                 .tag-value {
                     padding-left: 4px;
-                    font-family: mat-font-family($mono-fontface);
+                    font-family: mat.font-family($mono-fontface);
                     word-break: break-all;
                 }
 
@@ -149,8 +149,8 @@ $mono-fontface: map-get($app-fontface-config, mono);
                         margin-right: 6px;
                     }
                     .event-time {
-                        font-family: mat-font-family($mono-fontface);
-                        font-size: mat-font-size($mono-fontface, caption);
+                        font-family: mat.font-family($mono-fontface);
+                        font-size: mat.font-size($mono-fontface, caption);
                     }
                 }
 
@@ -187,8 +187,8 @@ $mono-fontface: map-get($app-fontface-config, mono);
                     .event-details {
                         padding: 6px;
                         border-radius: 4px;
-                        font-family: mat-font-family($mono-fontface);
-                        font-size: mat-font-size($mono-fontface, caption);
+                        font-family: mat.font-family($mono-fontface);
+                        font-size: mat.font-size($mono-fontface, caption);
                     }
                 }
             }

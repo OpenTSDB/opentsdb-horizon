@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -57,7 +58,7 @@
 
 // RENDER MATERIAL CORE (structure)
 // NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
-@include mat-core(map-get($app-fontface-config, sans));
+@include mat.core(map-get($app-fontface-config, sans));
 
 // THEME RULES
 

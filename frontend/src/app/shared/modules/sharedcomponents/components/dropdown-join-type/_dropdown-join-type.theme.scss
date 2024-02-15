@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @mixin dropdown-join-type-component-theme() {
     .dropdown-join-type {
         .mat-button {
-            color: mat-color($foreground, link);
+            color: mat.get-color-from-palette($foreground, link);
         }
     }
 }

@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin theme-picker-component-theme() {
 
     //.nav-theme-picker { }
@@ -8,12 +9,12 @@
         // arrow
         &::after {
             border-color: rgba($white, 0);
-            border-bottom-color: mat-color($background, menu); // actual color of arrow
+            border-bottom-color: mat.get-color-from-palette($background, menu); // actual color of arrow
         }
 
         .mat-menu-item.is-active {
             .mat-icon {
-                color: mat-color($accent, A200);
+                color: mat.get-color-from-palette($accent, A200);
             }
         }
     }

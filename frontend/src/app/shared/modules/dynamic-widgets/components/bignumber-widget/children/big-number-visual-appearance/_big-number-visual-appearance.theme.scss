@@ -1,8 +1,9 @@
+@use '~@angular/material' as mat;
 @mixin big-number-visual-appearance-component-theme() {
 
-    $chip-bg: mat-color($primary, default, .1);
+    $chip-bg: mat.get-color-from-palette($primary, default, .1);
 
-    $input-background: mat-color($primary, default);
+    $input-background: mat.get-color-from-palette($primary, default);
 
     .big-number-visual-appearance {
 
@@ -15,18 +16,18 @@
 
             .mat-button-toggle-group {
                 .mat-button-toggle {
-                    background-color: mat-color($primary, default, 0.08);
+                    background-color: mat.get-color-from-palette($primary, default, 0.08);
                 }
 
                 .mat-button-toggle-checked {
-                    background-color: mat-color($primary, default, 0.18);
+                    background-color: mat.get-color-from-palette($primary, default, 0.18);
                 }
 
                 .mat-button-toggle-disabled {
-                    background-color: mat-color($primary, default, 0.08);
+                    background-color: mat.get-color-from-palette($primary, default, 0.08);
 
                     &.mat-button-toggle-checked {
-                        background-color: mat-color($primary, default, 0.14);
+                        background-color: mat.get-color-from-palette($primary, default, 0.14);
                     }
                 }
             }

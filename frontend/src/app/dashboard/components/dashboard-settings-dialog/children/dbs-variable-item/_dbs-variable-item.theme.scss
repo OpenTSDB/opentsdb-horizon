@@ -1,26 +1,27 @@
+@use '~@angular/material' as mat;
 @mixin dbs-variable-item-component-theme() {
     .template-variable-item {
-        border: 2px solid  mat-color($background, background);
+        border: 2px solid  mat.get-color-from-palette($background, background);
 
         &:first-child {
             border-top: 0;
         }
 
         .settings-control {
-            background-color:  mat-color($background, background, 0);
+            background-color:  mat.get-color-from-palette($background, background, 0);
         }
 
         // modifier
         &.is-disabled {
             .settings-control:not(.actions-control){
-                background-color:  mat-color($background, background);
+                background-color:  mat.get-color-from-palette($background, background);
             }
         }
 
         .filter-values-list {
             .mat-chip-list-wrapper {
                 .mat-standard-chip {
-                    background-color: mat-color($primary, default, .1);
+                    background-color: mat.get-color-from-palette($primary, default, .1);
                 }
             }
         }

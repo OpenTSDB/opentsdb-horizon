@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin alert-details-count-component-theme() {
 
     .alert-details-count {
@@ -14,19 +15,19 @@
 
         .cdk-column-good {
             .count-amount {
-                background-color: mat-color($other, status-success);
+                background-color: mat.get-color-from-palette($other, status-success);
             }
         }
 
         .cdk-column-bad {
             .count-amount {
-                background-color: mat-color($other, status-error);
+                background-color: mat.get-color-from-palette($other, status-error);
             }
         }
 
         .cdk-column-warn {
             .count-amount {
-                background-color: mat-color($other, status-warning);
+                background-color: mat.get-color-from-palette($other, status-warning);
             }
         }
 

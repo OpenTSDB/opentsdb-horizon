@@ -1,11 +1,12 @@
+@use '~@angular/material' as mat;
 @mixin dashboard-save-dialog-component-theme() {
 
-    $divider: mat-color($foreground, divider);
+    $divider: mat.get-color-from-palette($foreground, divider);
 
     .dashboard-save-dialog {
         .mat-dialog-title {
-            background-color: mat-color($other, status-success);
-            color: mat-color($other, status-success-contrast);
+            background-color: mat.get-color-from-palette($other, status-success);
+            color: mat.get-color-from-palette($other, status-success-contrast);
         }
     }
 
@@ -13,7 +14,7 @@
 
     // backdrop
     .dashboard-save-dialog-backdrop {
-        background-color: mat-color($foreground, disabled);
+        background-color: mat.get-color-from-palette($foreground, disabled);
     }
 
     // panel

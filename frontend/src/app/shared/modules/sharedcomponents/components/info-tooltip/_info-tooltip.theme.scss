@@ -1,16 +1,17 @@
+@use '~@angular/material' as mat;
 @mixin info-tooltip-component-theme() {
 
     $text: get-theme-css-text($theme-name);
 
     $tooltip-bg: if(
         $is-dark,
-        mat-color($background, menu),
+        mat.get-color-from-palette($background, menu),
         #f0f0f0
     );
 
     $tooltip-border: if(
         $is-dark,
-        mat-color($background, menu-border),
+        mat.get-color-from-palette($background, menu-border),
         #cccccc
     );
 

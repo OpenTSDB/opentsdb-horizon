@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@use '~@angular/material' as mat;
 @charset "utf-8";
 
 /**************************************
@@ -21,7 +22,6 @@
  **************************************/
 
 // material theming support
-@import '~@angular/material/theming';
 
 // theme configs
 @import 'styles/theme-config';
@@ -40,11 +40,11 @@
 // you have to include one of the prebuilt themes or define a theme before calling 'mat-core'
 // avoid getting an error in the console.
 // Whatever is included here will be our 'default' theme
-@include angular-material-theme(map-get($app-available-themes, 'default'));
+@include mat.all-component-themes(map-get($app-available-themes, 'default'));
 @include generate-component-themes(map-get($app-available-themes, 'default'));
 
 // Now we can build out the Material core
-@include mat-core();
+@include mat.core();
 
 /*
  * ALTERNATE THEMES
@@ -58,7 +58,7 @@
         [theme='#{$theme}'] {
 
             //* Material core theme */
-            @include angular-material-theme($theme-config);
+            @include mat.all-component-themes($theme-config);
             //* Component themes */
             @include generate-component-themes($theme-config, $theme);
         }

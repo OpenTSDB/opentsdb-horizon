@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -15,7 +16,6 @@
 // * limitations under the License.
 // *
 
-@import '~@angular/material/theming';
 @import 'typography';
 @import 'mixins';
 
@@ -76,7 +76,7 @@
             }
 
             .mat-button-toggle-group {
-                @include mat-elevation(0);
+                @include mat.elevation(0);
                 border-radius: 0;
 
                 .mat-button-toggle-label-content {
@@ -113,7 +113,7 @@
                     margin: 0;
                     top: 0;
                     white-space: nowrap;
-                    font-size: mat-font-size(map-get($app-fontface-config, sans), body-1);
+                    font-size: mat.font-size(map-get($app-fontface-config, sans), body-1);
                     width: initial;
                 }
 

@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 //* loading spinner */
 //* NOTE: Loading spinner may be going away in favor of .gif-spinner for performance reasons */
 .loading-spinner,
@@ -96,7 +97,7 @@
 // * THEME VARIANTS
 @include init-component-variants() {
 
-    $divider: mat-color($foreground, divider);
+    $divider: mat.get-color-from-palette($foreground, divider);
 
     $default-color: if($is-dark, #ffffff, #000000);
 
@@ -107,28 +108,28 @@
         border-left-color: $default-color;
 
         &.color-primary {
-            border-top-color: mat-color($primary, default, 0.2);
-            border-right-color: mat-color($primary, default, 0.2);
-            border-bottom-color: mat-color($primary, default, 0.2);
-            border-left-color: mat-color($primary, default);
+            border-top-color: mat.get-color-from-palette($primary, default, 0.2);
+            border-right-color: mat.get-color-from-palette($primary, default, 0.2);
+            border-bottom-color: mat.get-color-from-palette($primary, default, 0.2);
+            border-left-color: mat.get-color-from-palette($primary, default);
         }
 
         &.color-accent {
-            border-top-color: mat-color($accent, default, 0.2);
-            border-right-color: mat-color($accent, default, 0.2);
-            border-bottom-color: mat-color($accent, default, 0.2);
-            border-left-color: mat-color($accent, default);
+            border-top-color: mat.get-color-from-palette($accent, default, 0.2);
+            border-right-color: mat.get-color-from-palette($accent, default, 0.2);
+            border-bottom-color: mat.get-color-from-palette($accent, default, 0.2);
+            border-left-color: mat.get-color-from-palette($accent, default);
         }
 
         &.color-warn {
-            border-top-color: mat-color($warn, default, 0.2);
-            border-right-color: mat-color($warn, default, 0.2);
-            border-bottom-color: mat-color($warn, default, 0.2);
-            border-left-color: mat-color($warn, default);
+            border-top-color: mat.get-color-from-palette($warn, default, 0.2);
+            border-right-color: mat.get-color-from-palette($warn, default, 0.2);
+            border-bottom-color: mat.get-color-from-palette($warn, default, 0.2);
+            border-left-color: mat.get-color-from-palette($warn, default);
         }
     }
 
     .gif-spinner {
-        background-color: mat-color($background, card, .8);
+        background-color: mat.get-color-from-palette($background, card, .8);
     }
 }

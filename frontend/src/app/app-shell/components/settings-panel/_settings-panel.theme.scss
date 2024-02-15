@@ -1,9 +1,10 @@
+@use '~@angular/material' as mat;
 @mixin settings-panel-component-theme() {
     // * THEME VARIANTS
     //@include init-component-variants() {
         .settings-navigator {
             .panel-toolbar {
-                color: mat-color($foreground, navbar-text);
+                color: mat.get-color-from-palette($foreground, navbar-text);
             }
         }
     //}

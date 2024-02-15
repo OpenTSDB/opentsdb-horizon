@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@use '~@angular/material' as mat;
 /* WIDGET COMPONENTS */
 
 // NOTE: These styles cover ALL of the widget panels generic classes.
@@ -27,7 +28,7 @@ $output-radius: map-get($widgets-common-config, output-radius);
 $widget-output-height: map-get($widgets-common-config, widget-output-height);
 
 .widget-panel-content {
-    @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), body-1);
+    @include mat.typography-level(map-get($app-fontface-config, sans), body-1);
     // padding-top: 21px;
 
     .widget-config {
@@ -73,7 +74,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
         flex-direction: column;  // no on edit
 
         .widget-title {
-            @include mat-typography-level-to-styles(map-get($app-fontface-config, sans), subheading-2);
+            @include mat.typography-level(map-get($app-fontface-config, sans), subheading-2);
             flex: 1 1 $action-bar-height;
 
             .title-label {
@@ -116,7 +117,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
                 justify-content: center;
 
                 span {
-                    font-family: mat-font-family(map-get($app-fontface-config, mono));
+                    font-family: mat.font-family(map-get($app-fontface-config, mono));
                     font-size: 10px;
                     padding: 0 6px;
                     line-height: 12px;
@@ -308,7 +309,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
         }
 
         .graph-header-cell-inner {
-            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            font-family: mat.font-family(map-get($app-fontface-config, mono));
             font-size: 13px;
             flex: 1;
             display: flex;
@@ -351,7 +352,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
             position: absolute;
             left: 0;
             top: 0;
-            font-family: mat-font-family(map-get($app-fontface-config, mono));
+            font-family: mat.font-family(map-get($app-fontface-config, mono));
             font-size: 10px;
             line-height: 15px;
             padding: 0 3px;
@@ -378,7 +379,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
             justify-content: center;
 
             span {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                font-family: mat.font-family(map-get($app-fontface-config, mono));
                 font-size: 10px;
                 padding: 0 6px;
                 line-height: 12px;
@@ -387,7 +388,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
         }
 
         .graph-header {
-            @include mat-typography-level-to-styles(map-get($app-fontface-config, mono), caption);
+            @include mat.typography-level(map-get($app-fontface-config, mono), caption);
             padding: 0 3px;
             display: flex;
             align-items: stretch;
@@ -396,7 +397,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
             white-space: nowrap;
 
             .graph-header-inner {
-                font-family: mat-font-family(map-get($app-fontface-config, mono));
+                font-family: mat.font-family(map-get($app-fontface-config, mono));
                 font-size: 10px;
                 flex: 1;
                 display: flex;
@@ -555,9 +556,9 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
 // * THEME VARIANTS
 @include init-component-variants() {
 
-    $divider: mat-color($foreground, divider);
-    $card: mat-color($background, card);
-    $text:  mat-color($foreground, text);
+    $divider: mat.get-color-from-palette($foreground, divider);
+    $card: mat.get-color-from-palette($background, card);
+    $text:  mat.get-color-from-palette($foreground, text);
 
     // multigraph
         // TODO: need to plug into theme
@@ -566,7 +567,7 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
 
     // section markers
     //
-    $section-tab-markers: if($is-dark, mat-color($foreground, link, .45), mat-color($background, navbar, .45));
+    $section-tab-markers: if($is-dark, mat.get-color-from-palette($foreground, link, .45), mat.get-color-from-palette($background, navbar, .45));
     $section-tab-color: #ffffff; // most of the time, white will do. need to test
 
     $new-bg: if($is-dark, rgba(255,255,255, 0.25), #edeff4);
@@ -575,21 +576,21 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
         .widget-output-container {
 
             .widget-output {
-                background-color: mat-color($background, card);
+                background-color: mat.get-color-from-palette($background, card);
             }
 
             .widget-title {
-                background-color: mat-color($background, card);
+                background-color: mat.get-color-from-palette($background, card);
 
                 .title-label {
-                    color: mat-color($foreground, secondary-text);
+                    color: mat.get-color-from-palette($foreground, secondary-text);
                 }
             }
         }
 
         .mat-flat-button {
             &.snapshot-button {
-                border: 1px solid mat-color($foreground, divider, .08); // TODO: need to move to theme
+                border: 1px solid mat.get-color-from-palette($foreground, divider, .08); // TODO: need to move to theme
 
                 .mat-icon {
                     margin: 0;
@@ -601,8 +602,8 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
     .widget-panel-content {
 
         .widget-controls-container {
-            background-color: mat-color($background, card);
-            border-top: 1px solid mat-color($foreground, divider, .15);
+            background-color: mat.get-color-from-palette($background, card);
+            border-top: 1px solid mat.get-color-from-palette($foreground, divider, .15);
         }
         .widget-configs {
 
@@ -611,18 +612,18 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
             }
 
             .mat-tab-label:not(.mat-tab-label-active) {
-                color: mat-color($primary, default);
+                color: mat.get-color-from-palette($primary, default);
             }
 
             .mat-tab-label-active,
             .mat-tab-label:not(.mat-tab-disabled):focus {
                 opacity: 1;
-                background-color: mat-color($background, card);
+                background-color: mat.get-color-from-palette($background, card);
                 border-radius: 0;
-                box-shadow: inset 1px 0 0 mat-color($foreground, dividers), inset -1px 0 0 mat-color($foreground, dividers);
+                box-shadow: inset 1px 0 0 mat.get-color-from-palette($foreground, dividers), inset -1px 0 0 mat.get-color-from-palette($foreground, dividers);
 
                 &::after {
-                    background-color: mat-color($background, card);
+                    background-color: mat.get-color-from-palette($background, card);
                 }
             }
 
@@ -632,18 +633,18 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
                 pointer-events: none;
             }
             .mat-tab-body {
-                background-color: mat-color($background, card);
-                border: 1px solid mat-color($foreground, dividers);
+                background-color: mat.get-color-from-palette($background, card);
+                border: 1px solid mat.get-color-from-palette($foreground, dividers);
                 border-top: 0;
             }
 
             .mat-tab-header {
-                box-shadow: inset 0 -1px 0 mat-color($foreground, dividers);
+                box-shadow: inset 0 -1px 0 mat.get-color-from-palette($foreground, dividers);
             }
         }
 
         .widget-actions {
-            border-top: 1px solid mat-color($foreground, dividers);
+            border-top: 1px solid mat.get-color-from-palette($foreground, dividers);
         }
 
         .step-section {
@@ -726,10 +727,10 @@ $widget-output-height: map-get($widgets-common-config, widget-output-height);
 
             background-color: if($is-dark, rgba(0, 191, 255, 0.3), $card); // TODO: need to plug into theme
             color: $text;
-            border: 1px solid mat-color($foreground, text, .3);
+            border: 1px solid mat.get-color-from-palette($foreground, text, .3);
 
         }
 
-        box-shadow: inset 0px -2px 1px -1px mat-color($foreground, text, .3);
+        box-shadow: inset 0px -2px 1px -1px mat.get-color-from-palette($foreground, text, .3);
     }
 }

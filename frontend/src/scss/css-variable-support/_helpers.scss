@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -59,18 +60,18 @@
     $palette-other: map-get($theme-config, palette-other);
     $palette-other-dark: map-get($theme-config, palette-other-dark);
 
-    $primary: mat-palette($palette-primary);
-    $accent: mat-palette($palette-accent);
-    $warn: mat-palette($palette-warn);
-    $success: mat-palette($palette-success);
-    $danger: mat-palette($palette-danger);
+    $primary: mat.define-palette($palette-primary);
+    $accent: mat.define-palette($palette-accent);
+    $warn: mat.define-palette($palette-warn);
+    $success: mat.define-palette($palette-success);
+    $danger: mat.define-palette($palette-danger);
 
     $css-variables: map-get($theme-config, css-variables);
     $css-text: map-get($theme-config, css-text);
 
     // light variant
     $light-theme: map_merge(
-        mat-light-theme($primary, $accent, $warn),
+        mat.define-light-theme($primary, $accent, $warn),
         (
             theme-name: $theme-name,
             success: $success,
@@ -84,7 +85,7 @@
 
     // dark variant
     $dark-theme: map_merge(
-        mat-dark-theme($primary, $accent, $warn),
+        mat.define-dark-theme($primary, $accent, $warn),
         (
             theme-name: $theme-name,
             success: $success,

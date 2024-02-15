@@ -1,5 +1,6 @@
+@use '~@angular/material' as mat;
 @mixin dbs-variables-component-theme() {
-    $bg-color: mat-color($background, background);
+    $bg-color: mat.get-color-from-palette($background, background);
 
     .dbs-variables-component {
         .template-variable-list {

@@ -1,4 +1,5 @@
 // **
+@use '~@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -19,7 +20,6 @@
 // * ADMIN CONFIG COMPONENT
 // *
 
-@import '~@angular/material/theming';
 @import 'mixins';
 @import 'typography';
 
@@ -43,11 +43,11 @@
 
     .config-section-title {
         h1 {
-            font-size: mat-font-size(
+            font-size: mat.font-size(
                 map-get($app-fontface-config, sans),
                 subheading-2
             );
-            font-weight: mat-font-weight(
+            font-weight: mat.font-weight(
                 map-get($app-fontface-config, sans),
                 title
             );
@@ -68,11 +68,11 @@
 
     .form-group {
         .form-label {
-            font-size: mat-font-size(
+            font-size: mat.font-size(
                 map-get($app-fontface-config, sans),
                 caption
             );
-            font-weight: mat-font-weight(
+            font-weight: mat.font-weight(
                 map-get($app-fontface-config, sans),
                 body-2
             );
@@ -81,7 +81,7 @@
 
     .module-section {
         .module-section-title {
-            font-weight: mat-font-weight(
+            font-weight: mat.font-weight(
                 map-get($app-fontface-config, sans),
                 body-2
             );
@@ -116,7 +116,7 @@
     }
 
     .add-new-metric-host {
-        font-size: mat-font-size(map-get($app-fontface-config, sans), caption);
+        font-size: mat.font-size(map-get($app-fontface-config, sans), caption);
     }
 
     .form-control-wrap {

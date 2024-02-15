@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 $navbar-height: map-get($navbar-config, 'navbar-height');
 $logo-height: map-get($navbar-config, 'logo-height');
 
@@ -19,7 +20,7 @@ $logo-height: map-get($navbar-config, 'logo-height');
 // usually only contains title and a close button
 // Exception is DBFS panel which has a lot more controls
 .panel-toolbar {
-    @include mat-elevation(0);
+    @include mat.elevation(0);
     @include unselectable;
 
     .nav-item {

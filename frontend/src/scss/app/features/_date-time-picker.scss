@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 //* Date Time Picker Global Styles
 //* ====================================================
 //* Since part of the app-navbar is a cdk portal
@@ -11,7 +12,7 @@
     margin: 0 5px;
 
     .mat-raised-button {
-        @include mat-elevation(0);
+        @include mat.elevation(0);
         line-height: 24px;
         font-size: 12px;
         padding-left: 6px;
@@ -39,11 +40,11 @@
     // when it is in the navbar
     .navbar-item.nav-date-time-picker {
         .mat-raised-button {
-            background-color: mat-color($background, navbar-button);
-            color: mat-color($foreground, navbar-text);
+            background-color: mat.get-color-from-palette($background, navbar-button);
+            color: mat.get-color-from-palette($foreground, navbar-text);
 
             &:hover {
-            background-color: mat-color($background, navbar-button-hover);
+            background-color: mat.get-color-from-palette($background, navbar-button-hover);
             }
         }
     }

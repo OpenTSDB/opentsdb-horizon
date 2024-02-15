@@ -1,12 +1,13 @@
+@use '~@angular/material' as mat;
 @mixin alert-details-suppress-config-component-theme() {
 
     .alert-details-suppress-config-component {
 
             .display-name {
-                background-color: mat-color($foreground, link, 0.1);
+                background-color: mat.get-color-from-palette($foreground, link, 0.1);
 
                 .mat-icon {
-                    color: mat-color($foreground, link);
+                    color: mat.get-color-from-palette($foreground, link);
                 }
 
             }

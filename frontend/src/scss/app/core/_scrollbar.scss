@@ -1,4 +1,5 @@
 // * THEME VARIANTS
+@use '~@angular/material' as mat;
 @include init-component-variants() {
 
     $cssVarMap: get-theme-css-variables($theme-name);
@@ -7,9 +8,9 @@
     $scrollbar-size: map-get($cssVarMap, _mat-var-unwrap(map-get($scrollbar, size)));
     $scrollbar-radius: $scrollbar-size / 2;
 
-    $scrollbar-track-bg: mat-color($scrollbar, 'color', map-get($scrollbar, track-bg-alpha));
-    $scrollbar-track-border: mat-color($scrollbar, 'color', map-get($scrollbar, track-border-alpha));
-    $scrollbar-thumb-bg: mat-color($scrollbar, 'color', map-get($scrollbar, thumb-bg-alpha));
+    $scrollbar-track-bg: mat.get-color-from-palette($scrollbar, 'color', map-get($scrollbar, track-bg-alpha));
+    $scrollbar-track-border: mat.get-color-from-palette($scrollbar, 'color', map-get($scrollbar, track-border-alpha));
+    $scrollbar-thumb-bg: mat.get-color-from-palette($scrollbar, 'color', map-get($scrollbar, thumb-bg-alpha));
 
 
     * {

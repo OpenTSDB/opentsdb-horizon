@@ -1,12 +1,13 @@
+@use '~@angular/material' as mat;
 @mixin widget-loader-component-theme() {
 
-    $divider: mat-color($foreground, divider);
-    $card: mat-color($background, card);
+    $divider: mat.get-color-from-palette($foreground, divider);
+    $card: mat.get-color-from-palette($background, card);
 
     .widget-loader {
         .mat-card {
             box-shadow: none;
-            background-color: mat-color($background, card);
+            background-color: mat.get-color-from-palette($background, card);
             border: 1px solid rgba($black, .08);
 
             .panel-body .panel-heading {
@@ -33,7 +34,7 @@
 
                 &:hover {
 
-                    background-color: mat-color($background, card-header);
+                    background-color: mat.get-color-from-palette($background, card-header);
 
                     .mat-toolbar {
                         .mat-icon-button {
@@ -54,7 +55,7 @@
         .gridster-item-inner {
             .widget-loader {
                 .mat-card-header {
-                    background-color: mat-color($background, card-header);
+                    background-color: mat.get-color-from-palette($background, card-header);
 
                     .mat-toolbar {
                         .mat-icon-button {
@@ -71,7 +72,7 @@
     .widget-menu,
     .widget-submenu {
         .menu-seperator {
-            background-color: mat-color($foreground, divider, .1);
+            background-color: mat.get-color-from-palette($foreground, divider, .1);
         }
     }
 }

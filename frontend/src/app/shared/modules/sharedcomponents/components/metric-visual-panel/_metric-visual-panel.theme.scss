@@ -1,27 +1,28 @@
+@use '~@angular/material' as mat;
 @mixin metric-visual-panel-component-theme() {
 
     // TODO: Brand color sounds like it needs to be in theme
     $brand-color: if(
         $is-dark,
-        mat-color($background, navbar, .85),
-        mat-color($background, navbar)
+        mat.get-color-from-palette($background, navbar, .85),
+        mat.get-color-from-palette($background, navbar)
     );
 
-    $brand-color-lighter: mat-color($background, navbar-alt);
-    $brand-color-inverse: mat-color($foreground, navbar-text);
+    $brand-color-lighter: mat.get-color-from-palette($background, navbar-alt);
+    $brand-color-inverse: mat.get-color-from-palette($foreground, navbar-text);
 
     .metric-visual-panel {
         .metric-visual-panel-card {
             .mat-card-header {
-                border-bottom: 1px solid mat-color($foreground, divider);
+                border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
             }
 
             .mat-card-footer {
-                border-top: 1px solid mat-color($foreground, divider);
+                border-top: 1px solid mat.get-color-from-palette($foreground, divider);
             }
 
             .mat-stroked-button[color="primary"] {
-                border-color: mat-color($foreground, link);
+                border-color: mat.get-color-from-palette($foreground, link);
             }
 
             // reset the color picker border and background
@@ -36,11 +37,11 @@
                 .mat-radio-button {
                     .mat-radio-container {
                         .mat-radio-outer-circle {
-                            border-color: mat-color($foreground, link)
+                            border-color: mat.get-color-from-palette($foreground, link)
                         }
 
                         .mat-radio-inner-circle {
-                            background-color: mat-color($foreground, link);
+                            background-color: mat.get-color-from-palette($foreground, link);
                         }
                     }
                 }
@@ -48,22 +49,22 @@
         }
 
         .color-toggle.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
-            border-color: mat-color($primary, default);
+            border-color: mat.get-color-from-palette($primary, default);
 
             .mat-button {
-                color: mat-color($primary, default);
+                color: mat.get-color-from-palette($primary, default);
             }
 
             .mat-button-toggle.mat-button-toggle-checked {
                 .mat-button {
-                    background-color: mat-color($primary, default);
-                    color: mat-color($primary, default-contrast);
+                    background-color: mat.get-color-from-palette($primary, default);
+                    color: mat.get-color-from-palette($primary, default-contrast);
                 }
             }
         }
     }
 
     .mat-menu-panel.metric-visual-panel-wrapper {
-        border-top: 2px solid mat-color($foreground, link, .25);
+        border-top: 2px solid mat.get-color-from-palette($foreground, link, .25);
     }
 }

@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @mixin tag-aggregator-component-theme() {
     .tag-aggregator-component {
         .mat-button {
-            color: mat-color($foreground, link);
+            color: mat.get-color-from-palette($foreground, link);
         }
     }
 
@@ -11,13 +12,13 @@
             .aggregator-help {
                 background: if(
                     $is-dark,
-                    mat-color($denali-brand-5, 100, .2),
-                    mat-color($denali-brand-5, 100, .5)
+                    mat.get-color-from-palette($denali-brand-5, 100, .2),
+                    mat.get-color-from-palette($denali-brand-5, 100, .5)
                 );
-                border-left: 1px solid mat-color($foreground, divider);
+                border-left: 1px solid mat.get-color-from-palette($foreground, divider);
 
                 .help-title {
-                border-bottom: 1px solid mat-color($foreground, divider);
+                border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
                 }
             }
         }

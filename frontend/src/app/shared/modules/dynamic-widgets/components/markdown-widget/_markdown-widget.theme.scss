@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @mixin markdown-widget-component-theme() {
 
     .markdown-widget {
@@ -8,7 +9,7 @@
     }
 
     .markdown-note {
-        background: mat-color($background, background);
+        background: mat.get-color-from-palette($background, background);
         color: if($is-dark, $white, $black);
         border: none;
 

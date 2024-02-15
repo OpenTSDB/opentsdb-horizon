@@ -1,17 +1,18 @@
+@use '~@angular/material' as mat;
 @mixin placeholder-widget-component-theme() {
     .widget-panel-content.placeholder-widget {
         .widget-types {
             .widget-type-selector {
                 // need a background color here
-                background-color: mat-color($other, widget-icons-background);
+                background-color: mat.get-color-from-palette($other, widget-icons-background);
 
                 &:hover {
-                    background-color: mat-color($other, widget-icons-background-hover);
+                    background-color: mat.get-color-from-palette($other, widget-icons-background-hover);
                 }
             }
 
             .widget-type-label {
-                color: mat-color($foreground, text);
+                color: mat.get-color-from-palette($foreground, text);
             }
         }
     }
