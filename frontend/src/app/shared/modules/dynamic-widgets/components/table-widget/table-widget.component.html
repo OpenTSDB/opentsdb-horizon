@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@
                 This snapshot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
             </span>
         </span>
-        <graph-type (change)="changeWidgetType($event)" selected="TableWidgetComponent"></graph-type>
+        <graph-type (valueChange)="changeWidgetType($event)" selected="TableWidgetComponent"></graph-type>
         <mat-button-toggle-group  (change)="changeLayout($event.value)" [value]="widget.settings.layout">
             <mat-button-toggle value="column" aria-label="Column"><mat-icon fontSet="denali" fontIcon="d-layout-one"></mat-icon></mat-button-toggle>
             <mat-button-toggle value="row-reverse" aria-label="Row"><mat-icon fontSet="denali" fontIcon="d-layout-two"></mat-icon></mat-button-toggle>
@@ -47,32 +47,32 @@
             <div id="container">
                 <div class="is-scroller">
                     <!-- material table (sortable) -->
-                    <mat-table *ngIf="data.length" #dataTable [dataSource] = "dataSource" [style.fontSize.px]="widget.settings.visual.fontSize || 12" 
+                    <mat-table *ngIf="data.length" #dataTable [dataSource] = "dataSource" [style.fontSize.px]="widget.settings.visual.fontSize || 12"
                         matSort
                         [matSortActive]="widget.settings.visual.sortBy"
                         [matSortDirection]="widget.settings.visual.sortDir"
                         matSortDisableClear="true"
                         (matSortChange)="sortData($event)">
-                       
+
                         <!-- automated columns and rows generator based on query result from  TSDB -->
                         <ng-container *ngFor="let col of displayedColumns; let index=index; trackBy: trackByIndex" matColumnDef = {{col.id}} [sticky]="index === 0">
-                            <mat-header-cell *matHeaderCellDef 
+                            <mat-header-cell *matHeaderCellDef
                                 [style.padding.px]="widget.settings.visual.padding"
-                                [style.minWidth.px]="widget.settings.visual.colWidth" 
+                                [style.minWidth.px]="widget.settings.visual.colWidth"
                                 mat-sort-header [matTooltip]="col.label" [matTooltipDisabled]="!col.label || col.shortLabel === col.label">
                                 <span>{{col.shortLabel}}</span>
                             </mat-header-cell>
-                            <mat-cell *matCellDef = "let row" 
+                            <mat-cell *matCellDef = "let row"
                                 [style.color]="row[col.id + ':color']"
                                 [style.minWidth.px]="widget.settings.visual.colWidth"
-                                [style.backgroundColor]="row[col.id + ':backgroundColor']"  
-                                [style.padding.px]="widget.settings.visual.padding">{{row[col.id]}}</mat-cell> 
+                                [style.backgroundColor]="row[col.id + ':backgroundColor']"
+                                [style.padding.px]="widget.settings.visual.padding">{{row[col.id]}}</mat-cell>
                         </ng-container>
-                
+
                         <!-- sticky header -->
                         <mat-header-row *matHeaderRowDef="displayedColumnsIds; sticky:true" mat-header-row>displayedColumns</mat-header-row>
                         <mat-row *matRowDef = "let row; columns: displayedColumnsIds"></mat-row>
-                        
+
                     </mat-table>
                     <div class="message" *ngIf="isDataLoaded && data.length === 0 ">No data found</div>
                 </div>

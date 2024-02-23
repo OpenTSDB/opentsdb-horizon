@@ -26,28 +26,27 @@ export class CmdManager {
     private commands: ICommand[] = [];
     private _currentCmd: ICommand;
 
-    public getLastCommand() {
-       if (this.commands.length > 0) {
-           return this.commands[this.commands.length - 1];
-       }
-       return undefined;
+    public getLastCommand(): ICommand | undefined {
+        if (this.commands.length > 0) {
+            return this.commands[this.commands.length - 1];
+        }
+        return undefined;
     }
 
-    public get currentCommand() {
+    public get currentCommand(): ICommand {
         return this._currentCmd;
     }
 
-    public resetCommands() {
+    public resetCommands(): void {
         this.commands = [];
     }
 
-    public execute(cmd: ICommand) {
+    public execute(cmd: ICommand): void {
         cmd.execute();
         this.commands.push(cmd);
     }
 
-
-    public undo() {
+    public undo(): void {
         const cmd = this.commands.pop();
         this._currentCmd = cmd;
         if (cmd !== undefined && cmd.unexcute !== undefined) {

@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ColorPickerHsvSelectorComponent } from './color-picker-hsv-selector.component';
 
 describe('ColorPickerHsvSelectorComponent', () => {
-  let component: ColorPickerHsvSelectorComponent;
-  let fixture: ComponentFixture<ColorPickerHsvSelectorComponent>;
+    let component: ColorPickerHsvSelectorComponent;
+    let fixture: ComponentFixture<ColorPickerHsvSelectorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ColorPickerHsvSelectorComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [ColorPickerHsvSelectorComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ColorPickerHsvSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ColorPickerHsvSelectorComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -14,45 +14,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, OnDestroy, SimpleChanges, HostListener, AfterViewInit, AfterViewChecked, ChangeDetectorRef, ViewEncapsulation, Renderer2 } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ElementRef,
+    ViewChild,
+    OnDestroy,
+    HostListener,
+    AfterViewInit,
+    ChangeDetectorRef,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { startWith, debounceTime, catchError } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { startWith, debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { HttpService } from '../../../../../core/http/http.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'metric-autocomplete',
     templateUrl: './metric-autocomplete.component.html',
     styleUrls: ['./metric-autocomplete.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-
-export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MetricAutocompleteComponent
+implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.metric-autocomplete') private _hostClass = true;
     @Input() namespace = '';
     @Input() filters = [];
-    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    @Input() multiple: boolean = false;
+    @Input() multiple = false;
     @Input() metrics = [];
-    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    @Input() focus: boolean = true;
+    @Input() focus = true;
 
     @Output() metricOutput = new EventEmitter();
-    @Output() blur = new EventEmitter();
+    @Output() blurFocus = new EventEmitter();
 
     @ViewChild('metricSearchInput') metricSearchInput: ElementRef;
     @ViewChild('metricAutoComplete') metricAutoCompleteCntrl: MatAutocomplete;
-    @ViewChild('metricSearchFormField', { read: ElementRef }) metricSearchFormField: ElementRef;
+    @ViewChild('metricSearchFormField', { read: ElementRef })
+    metricSearchFormField: ElementRef;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
     metricOptions = [];
     metricSearchControl: FormControl;
-    message: any = { 'metricSearchControl': { message: '' } };
+    message: any = { metricSearchControl: { message: '' } };
     Object = Object;
 
     metricSelectedTabIndex = 0;
@@ -67,7 +79,9 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     firstRun: boolean = true;
     scrollDetect: any;
 
-    autocompleteWidth$: BehaviorSubject<number> = new BehaviorSubject<number>(700);
+    autocompleteWidth$: BehaviorSubject<number> = new BehaviorSubject<number>(
+        700,
+    );
     autocompleteWidth: number;
     autocompleteDefaultWidth: number;
 
@@ -75,8 +89,8 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         private elRef: ElementRef,
         private httpService: HttpService,
         private utils: UtilsService,
-        private cdRef: ChangeDetectorRef
-    ) { }
+        private cdRef: ChangeDetectorRef,
+    ) {}
 
     /** ANGULAR INTERFACE METHODS */
     ngOnInit() {
@@ -87,7 +101,8 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         if (this.focus === true) {
             setTimeout(() => {
                 if (!this.multiple) {
-                    this.autocompleteDefaultWidth = this.metricSearchFormField.nativeElement.getBoundingClientRect().width;
+                    this.autocompleteDefaultWidth =
+                        this.metricSearchFormField.nativeElement.getBoundingClientRect().width;
                     this.autocompleteWidth = this.autocompleteDefaultWidth;
                 }
                 this.metricSearchInput.nativeElement.focus();
@@ -97,7 +112,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
 
     ngOnDestroy() {
         this.isDestroying = true;
-        if (  this.metricSub ) {
+        if (this.metricSub) {
             this.metricSub.unsubscribe();
         }
     }
@@ -112,8 +127,8 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         if (array.length === 0) {
             return '';
         }
-        const longest = array.reduce(function(a, b) {
-            return (a.name.length > b.name.length) ? a : b;
+        const longest = array.reduce(function (a, b) {
+            return a.name.length > b.name.length ? a : b;
         });
         return longest;
     }
@@ -121,7 +136,11 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     calculateAutoCompleteWidth(arr: any) {
         const longestOption = this.findLongestWordInArray(arr);
         // 32 is for option left/right padding
-        const renderedWidth = this.utils.calculateTextWidth(<string>longestOption.name, '17', 'Ubuntu');
+        const renderedWidth = this.utils.calculateTextWidth(
+            <string>longestOption.name,
+            '17',
+            'Ubuntu',
+        );
 
         if (renderedWidth > this.autocompleteDefaultWidth) {
             this.autocompleteWidth = renderedWidth + 32;
@@ -134,65 +153,77 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     /** METHODS */
 
     setMetricSearch() {
-        this.metricSearchControl = new FormControl(this.multiple ? '' : this.metrics[0]);
+        this.metricSearchControl = new FormControl(
+            this.multiple ? '' : this.metrics[0],
+        );
         this.metricSearchControl.valueChanges
-            .pipe(
-                startWith(''),
-                debounceTime(200)
-            )
-            .subscribe(value => {
-                //console.log('IT DID SOMETHING **');
+            .pipe(startWith(''), debounceTime(200))
+            .subscribe((value) => {
+                // console.log('IT DID SOMETHING **');
                 // this.visible = true;
-                const query: any = { namespace: this.namespace, tags: this.filters };
+                const query: any = {
+                    namespace: this.namespace,
+                    tags: this.filters,
+                };
                 query.search = value ? value : '';
                 this.message['metricSearchControl'] = {};
                 this.firstRun = true;
                 // this.detectChanges();
-                if (  this.metricSub ) {
+                if (this.metricSub) {
                     this.metricSub.unsubscribe();
                 }
-                this.metricSub = this.httpService.getMetricsByNamespace(query)
-                    .subscribe(res => {
-                        this.firstRun = false;
-                        this.metricOptions = res;
+                this.metricSub = this.httpService
+                    .getMetricsByNamespace(query)
+                    .subscribe(
+                        (res) => {
+                            this.firstRun = false;
+                            this.metricOptions = res;
 
-
-                        if ( this.metricOptions.length === 0 ) {
-                            this.message['metricSearchControl'] = { 'type': 'info', 'message': 'No data found' };
-                        }
-                        setTimeout(() => {
-                            this.calculateAutoCompleteWidth(this.metricOptions);
-                            this.detectChanges();
-                        });
-
-                    },
-                        err => {
+                            if (this.metricOptions.length === 0) {
+                                this.message['metricSearchControl'] = {
+                                    type: 'info',
+                                    message: 'No data found',
+                                };
+                            }
+                            setTimeout(() => {
+                                this.calculateAutoCompleteWidth(
+                                    this.metricOptions,
+                                );
+                                this.detectChanges();
+                            });
+                        },
+                        (err) => {
                             this.firstRun = false;
                             this.metricOptions = [];
-                            const message = err.error.error ? err.error.error.message : err.message;
-                            this.message['metricSearchControl'] = { 'type': 'error', 'message': message };
+                            const message = err.error.error
+                                ? err.error.error.message
+                                : err.message;
+                            this.message['metricSearchControl'] = {
+                                type: 'error',
+                                message: message,
+                            };
                             this.detectChanges();
-                    });
-
+                        },
+                    );
             });
     }
 
     detectChanges() {
-        if ( ! this.isDestroying ) {
+        if (!this.isDestroying) {
             this.cdRef.detectChanges();
         }
     }
 
     doMetricSearch() {
         this.visible = true;
-        if ( this.multiple && !this.trigger.menuOpen ) {
+        if (this.multiple && !this.trigger.menuOpen) {
             this.trigger.openMenu();
         }
-        this.metricSearchControl.updateValueAndValidity({emitEvent: false});
+        this.metricSearchControl.updateValueAndValidity({ emitEvent: false });
     }
 
     requestChanges() {
-        if ( this.metrics.length ) {
+        if (this.metrics.length) {
             this.metricOutput.emit(this.metrics);
         }
     }
@@ -225,15 +256,19 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         const paddingOffset = 32; // 8px padding on left and right + 16px icon ((8*2) + 16)
 
         // calculate width using service
-        const textWidth = this.utils.calculateTextWidth(text, fontSize, fontFace);
+        const textWidth = this.utils.calculateTextWidth(
+            text,
+            fontSize,
+            fontFace,
+        );
 
-        let styles = {
-            width: '100%'
+        const styles = {
+            width: '100%',
         };
 
         // if the measured text is larger than 175 px, then set width + padding offset
         if (textWidth > 175) {
-            styles.width = (textWidth + paddingOffset) + 'px';
+            styles.width = textWidth + paddingOffset + 'px';
         }
 
         return styles;
@@ -253,7 +288,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
                 this.requestChanges();
                 this.trigger.closeMenu();
             }
-            this.blur.emit();
+            this.blurFocus.emit();
             this.visible = false;
         }
     }
@@ -261,12 +296,12 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     clickMultipleDone() {
         this.requestChanges();
         this.trigger.closeMenu();
-        this.blur.emit();
+        this.blurFocus.emit();
         this.visible = false;
     }
 
     metricACKeydown(event: any) {
-        /*if (!this.metricAutoCompleteCntrl.isOpen) {
+        /* if (!this.metricAutoCompleteCntrl.isOpen) {
             this.metrics[0] = this.metricSearchControl.value;
             this.requestChanges();
             this.blur.emit();
@@ -275,28 +310,34 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
         const textVal = this.metricSearchControl.value;
 
         // check if value is valid metric option
-        const checkIdx = this.metricOptions.findIndex(item => textVal.toLowerCase() === item.name.toLowerCase());
+        const checkIdx = this.metricOptions.findIndex(
+            (item) => textVal.toLowerCase() === item.name.toLowerCase(),
+        );
 
         if (checkIdx >= 0) {
             // set value to the option value (since typed version could be different case)
             this.metrics[0] = this.metricOptions[checkIdx].name;
             // emit change
             this.requestChanges();
-            this.blur.emit();
+            this.blurFocus.emit();
         }
     }
 
     metricMultipleACKeydown(event: any) {
-
         const textVal = this.metricSearchControl.value;
 
         // check if valid option
-        const validIdx = this.metricOptions.findIndex(item => textVal.toLowerCase() === item.name.toLowerCase());
+        const validIdx = this.metricOptions.findIndex(
+            (item) => textVal.toLowerCase() === item.name.toLowerCase(),
+        );
 
         // if valid option, AND it hasn't been selected yet
         if (validIdx >= 0 && this.getMetricIndex(textVal) === -1) {
             // set value to the option value (since typed version could be different case)
-            this.updateMetricSelection(this.metricOptions[validIdx].name, 'add');
+            this.updateMetricSelection(
+                this.metricOptions[validIdx].name,
+                'add',
+            );
         }
 
         if (this.metrics.length > 0) {
@@ -307,7 +348,7 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
     metricACOptionSelected(event: any) {
         this.metrics[0] = event.option.value;
         this.requestChanges();
-        this.blur.emit();
+        this.blurFocus.emit();
     }
 
     multipleMenuOpened() {
@@ -335,7 +376,4 @@ export class MetricAutocompleteComponent implements OnInit, OnDestroy, AfterView
             this.trigger.openMenu();
         }
     }
-
-
-
 }

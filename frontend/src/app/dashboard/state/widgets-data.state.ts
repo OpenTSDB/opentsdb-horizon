@@ -15,18 +15,22 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector, createSelector } from '@ngxs/store';
+import {
+    State,
+    Action,
+    StateContext,
+    Selector
+} from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
 import { UtilsService } from '../../core/services/utils.service';
 import { DatatranformerService } from '../../core/services/datatranformer.service';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import {  takeUntil } from 'rxjs/operators';
-import { Actions, ofActionDispatched } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { Actions  } from '@ngxs/store';
 
 export interface RawDataModel {
     lastModifiedWidget: {
-        wid: string,
-        data: any
+        wid: string;
+        data: any;
     };
 }
 
@@ -52,79 +56,90 @@ export class ClearWidgetsData {
     constructor() {}
 }
 
-
-
 @Injectable()
 @State<RawDataModel>({
     name: 'Rawdata',
     defaults: {
         lastModifiedWidget: {
             wid: '',
-            data: {}
+            data: {},
         },
-    }
+    },
 })
-
 export class WidgetsRawdataState {
     queryObserver: Observable<any>;
     subs: any = {};
 
-    constructor(private httpService: HttpService,
-                private actions$: Actions,
-                private utils: UtilsService,
-                private dataTransformer: DatatranformerService ) {}
+    constructor(
+        private httpService: HttpService,
+        private actions$: Actions,
+        private utils: UtilsService,
+        private dataTransformer: DatatranformerService,
+    ) {}
 
-
-    @Selector() static getLastModifiedWidgetRawdataByGroup (state: RawDataModel) {
+    @Selector() static getLastModifiedWidgetRawdataByGroup(
+        state: RawDataModel,
+    ) {
         return state.lastModifiedWidget;
     }
 
     @Action(GetQueryDataByGroup)
-    getQueryDataByGroup(ctx: StateContext<RawDataModel>, { payload }: GetQueryDataByGroup) {
+    getQueryDataByGroup(
+        ctx: StateContext<RawDataModel>,
+        { payload }: GetQueryDataByGroup,
+    ) {
         const qid = payload.wid;
         // cancels the previous call
-        if (  this.subs[qid] ) {
+        if (this.subs[qid]) {
             this.subs[qid].unsubscribe();
         }
         this.queryObserver = this.httpService.getOpenTSDBData(payload);
 
         this.subs[qid] = this.queryObserver.subscribe(
-            data => {
+            (data) => {
                 data = this.dataTransformer.removeEmptySeries(data);
                 payload.data = data;
                 ctx.dispatch(new SetQueryDataByGroup(payload));
             },
-            err => {
+            (err) => {
                 payload.error = err;
                 ctx.dispatch(new SetQueryDataByGroup(payload));
-            }
+            },
         );
     }
 
     @Action(SetQueryDataByGroup)
-    setQueryDataByGroup(ctx: StateContext<RawDataModel>, { payload }: SetQueryDataByGroup) {
+    setQueryDataByGroup(
+        ctx: StateContext<RawDataModel>,
+        { payload }: SetQueryDataByGroup,
+    ) {
         const qid = payload.wid;
-        const wdata = payload.data !== undefined ? payload.data : { error: payload.error };
+        const wdata =
+            payload.data !== undefined
+                ? payload.data
+                : { error: payload.error };
 
         const lastModifiedWidget = { wid: payload.wid, data: wdata };
-        ctx.patchState({  lastModifiedWidget: lastModifiedWidget });
-        if ( this.subs[qid]) {
+        ctx.patchState({ lastModifiedWidget: lastModifiedWidget });
+        if (this.subs[qid]) {
             this.subs[qid].unsubscribe();
         }
         this.queryObserver = null;
     }
 
-
     @Action(ClearQueryData)
-    clearQueryData(ctx: StateContext<RawDataModel>, { payload }: ClearQueryData) {
+    clearQueryData(
+        ctx: StateContext<RawDataModel>,
+        { payload }: ClearQueryData,
+    ) {
         const lastModifiedWidget = { wid: payload.wid, data: {} };
-        ctx.patchState({  lastModifiedWidget: lastModifiedWidget });
+        ctx.patchState({ lastModifiedWidget: lastModifiedWidget });
     }
 
     @Action(ClearWidgetsData)
     clearWidgetsData(ctx: StateContext<RawDataModel>) {
-        for ( const k in this.subs ) {
-            if (typeof this.subs[k].unsubscribe === 'function' ) {
+        for (const k in this.subs) {
+            if (typeof this.subs[k].unsubscribe === 'function') {
                 this.subs[k].unsubscribe();
             }
         }

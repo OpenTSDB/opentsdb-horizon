@@ -22,32 +22,39 @@ import {
     EventEmitter,
     HostBinding,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import {
+    MatDialog,
+    MatDialogConfig,
+    MatDialogRef,
+} from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 import { DashboardSaveDialogComponent } from '../dashboard-save-dialog/dashboard-save-dialog.component';
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
-
+import {
+    IntercomService,
+    IMessage,
+} from '../../../core/services/intercom.service';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navbar-dashboard-actions-menu',
     templateUrl: './navbar-dashboard-actions-menu.component.html',
     styleUrls: ['./navbar-dashboard-actions-menu.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NavbarDashboardActionsMenuComponent implements OnInit {
-
-    @HostBinding('class.navbar-dashboard-actions-menu') private _hostClass = true;
+    @HostBinding('class.navbar-dashboard-actions-menu') private _hostClass =
+    true;
 
     @Input() id: string;
     @Input() dbSettingsMeta: any = {};
 
     // dashboard action menu trigger
-    @ViewChild('actionMenuTrigger', { read: MatMenuTrigger }) actionMenuTrigger: MatMenuTrigger;
+    @ViewChild('actionMenuTrigger', { read: MatMenuTrigger })
+    actionMenuTrigger: MatMenuTrigger;
 
     get actionMenuIsOpen(): boolean {
         if (this.actionMenuTrigger) {
@@ -67,16 +74,15 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
-        private interCom: IntercomService
-    ) { }
+        private interCom: IntercomService,
+    ) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */}
 
     // NOTE:: these three click actions should probably intercom the dashboard container instead of emitting
     click_cloneDashboard(event: any) {
         this.dashboardAction.emit({
-            action: 'clone'
+            action: 'clone',
         });
     }
 
@@ -90,14 +96,14 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
 
     click_deleteDashboard(event: any) {
         this.dashboardAction.emit({
-            action: 'delete'
+            action: 'delete',
         });
     }
 
     click_saveDashboard(event: any) {
         // check if first time saving
         // if first time saving, prompt first save dialog
-        if ( this.id === '_new_') {
+        if (this.id === '_new_') {
             this.showFirstSaveDialog();
         } else {
             this.triggerSaveAction();
@@ -105,7 +111,6 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
     }
 
     private showFirstSaveDialog() {
-
         // do something
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         dialogConf.backdropClass = 'dashboard-save-dialog-backdrop';
@@ -118,21 +123,23 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
         // should be the dashboard.settings piece
         dialogConf.data = this.dbSettingsMeta;
 
-        this.dashboardSaveDialog = this.dialog.open(DashboardSaveDialogComponent, dialogConf);
+        this.dashboardSaveDialog = this.dialog.open(
+            DashboardSaveDialogComponent,
+            dialogConf,
+        );
         // this.dashboardSaveDialog.updatePosition({top: '48px'});
 
         // getting data passing out from dialog
         this.dashboardSaveDialog.afterClosed().subscribe((dialog_out: any) => {
             // dialog_out will be empty if the dialog is cancelled
-            if ( dialog_out ) {
+            if (dialog_out) {
                 this.triggerSaveAction(dialog_out);
             }
         });
     }
 
     private triggerSaveAction(data?: any) {
-
-        const payload: any = { updateFirst: false, name: ''};
+        const payload: any = { updateFirst: false, name: '' };
 
         if (data) {
             payload.updateFirst = true;
@@ -147,9 +154,9 @@ export class NavbarDashboardActionsMenuComponent implements OnInit {
             }
         }
         // now intercom to save it.
-        this.interCom.requestSend(<IMessage> {
+        this.interCom.requestSend(<IMessage>{
             action: 'dashboardSaveRequest',
-            payload: payload
+            payload: payload,
         });
     }
 }

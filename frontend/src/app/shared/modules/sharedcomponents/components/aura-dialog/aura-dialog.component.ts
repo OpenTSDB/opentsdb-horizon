@@ -14,16 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Inject,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
 
 @Component({
     selector: 'app-aura-dialog',
     templateUrl: './aura-dialog.component.html',
     styleUrls: ['./aura-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AuraDialogComponent implements OnInit {
     @HostBinding('class.aura-dialog-component') private _hostclass = true;
@@ -32,12 +37,12 @@ export class AuraDialogComponent implements OnInit {
     constructor(
         private domSanitizer: DomSanitizer,
         public dialogRef: MatDialogRef<AuraDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dialogData: any
-    ) {
-    }
+        @Inject(MAT_DIALOG_DATA) public dialogData: any,
+    ) {}
 
     ngOnInit() {
-        this.urlSafe = this.domSanitizer.bypassSecurityTrustResourceUrl(this.dialogData.src);
+        this.urlSafe = this.domSanitizer.bypassSecurityTrustResourceUrl(
+            this.dialogData.src,
+        );
     }
-
 }

@@ -21,19 +21,16 @@ import { catchError, map, tap } from 'rxjs/operators';
 import {
     DbfsPanelFolderModel,
     DbfsFileModel,
-    DbfsFolderModel
+    DbfsFolderModel,
 } from '../state/dbfs-resources.interfaces';
 
 import { UtilsService } from '../../../../core/services/utils.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class DbfsUtilsService {
-
-    constructor(
-        private utils: UtilsService
-    ) { }
+    constructor(private utils: UtilsService) {}
 
     findTopPath(fullPath: string) {
         const pathParts = fullPath.split('/');
@@ -62,7 +59,7 @@ export class DbfsUtilsService {
         const pathParts = fullPath.split('/');
         details.type = pathParts[1];
         details.typeKey = pathParts[2];
-        details.topFolder = (pathParts.length === 3);
+        details.topFolder = pathParts.length === 3;
         details.topPath = this.findTopPath(fullPath);
         details.parentPath = this.findParentPath(fullPath);
         details.trashPath = details.topPath + '/trash';
@@ -73,12 +70,13 @@ export class DbfsUtilsService {
 
     normalizeFolder(rawFolder: any, locked?: boolean): DbfsFolderModel {
         const details = this.detailsByFullPath(rawFolder.fullPath);
-        const folder = <DbfsFolderModel>{...rawFolder,
+        const folder = <DbfsFolderModel>{
+            ...rawFolder,
             ownerType: details.type,
             resourceType: 'folder',
             icon: 'd-folder',
             loaded: false,
-            parentPath: details.parentPath
+            parentPath: details.parentPath,
         };
 
         if (!folder.files) {
@@ -112,16 +110,15 @@ export class DbfsUtilsService {
 
     normalizeFile(rawFile: any, locked?: boolean): DbfsFileModel {
         const details = this.detailsByFullPath(rawFile.fullPath);
-        const file = <DbfsFileModel>{...rawFile,
+        const file = <DbfsFileModel>{
+            ...rawFile,
             resourceType: 'file',
             ownerType: details.type,
             icon: 'd-dashboard-tile',
-            parentPath: details.parentPath
+            parentPath: details.parentPath,
         };
 
-        if (
-            (file.ownerType === 'user' && file.name === '_clipboard_')
-        ) {
+        if (file.ownerType === 'user' && file.name === '_clipboard_') {
             file.hidden = true;
         }
 
@@ -135,11 +132,20 @@ export class DbfsUtilsService {
         return file;
     }
 
-    normalizePanelFolder(rawFolder: any, moveEnabled: boolean = true, selectEnabled: boolean = true, noDisplay: boolean = false): DbfsPanelFolderModel {
-
+    normalizePanelFolder(
+        rawFolder: any,
+        moveEnabled: boolean = true,
+        selectEnabled: boolean = true,
+        noDisplay: boolean = false,
+    ): DbfsPanelFolderModel {
         const folder = this.normalizeFolder(rawFolder);
 
-        const panelFolder: DbfsPanelFolderModel  = <DbfsPanelFolderModel>{...folder, moveEnabled, selectEnabled, selected: false};
+        const panelFolder: DbfsPanelFolderModel = <DbfsPanelFolderModel>{
+            ...folder,
+            moveEnabled,
+            selectEnabled,
+            selected: false,
+        };
 
         if (panelFolder.files) {
             delete panelFolder.files;
@@ -151,5 +157,4 @@ export class DbfsUtilsService {
 
         return panelFolder;
     }
-
 }

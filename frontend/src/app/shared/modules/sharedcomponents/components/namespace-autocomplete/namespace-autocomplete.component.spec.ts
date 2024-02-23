@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NamespaceAutocompleteComponent } from './namespace-autocomplete.component';
 
 describe('NamespaceAutocompleteComponent', () => {
-  let component: NamespaceAutocompleteComponent;
-  let fixture: ComponentFixture<NamespaceAutocompleteComponent>;
+    let component: NamespaceAutocompleteComponent;
+    let fixture: ComponentFixture<NamespaceAutocompleteComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NamespaceAutocompleteComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NamespaceAutocompleteComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NamespaceAutocompleteComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NamespaceAutocompleteComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

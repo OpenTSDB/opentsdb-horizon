@@ -17,33 +17,32 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class DataShareService {
+    constructor() {}
 
-  constructor() { }
+    private data: any;
+    private message = '';
 
-  private data: any;
-  private message = '';
+    clear(): void {
+        this.data = null;
+        this.message = '';
+    }
 
-  clear() {
-    this.data = null;
-    this.message = '';
-  }
+    setData(data: any): void {
+        this.data = data;
+    }
 
-  setData(data: any) {
-    this.data = data;
-  }
+    setMessage(message: string): void {
+        this.message = message;
+    }
 
-  setMessage(message: string) {
-    this.message = message;
-  }
+    getData(): any {
+        return this.data;
+    }
 
-  getData() {
-    return this.data;
-  }
-
-  getMessage() {
-    return this.message;
-  }
+    getMessage(): string {
+        return this.message;
+    }
 }

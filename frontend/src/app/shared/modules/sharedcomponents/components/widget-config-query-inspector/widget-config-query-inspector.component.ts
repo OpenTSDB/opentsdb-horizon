@@ -14,30 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-query-inspector',
     templateUrl: './widget-config-query-inspector.component.html',
     styleUrls: ['./widget-config-query-inspector.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetConfigQueryInspectorComponent implements OnInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
-    @HostBinding('class.query-inspector-configuration') private _tabClass = true;
+    @HostBinding('class.query-inspector-configuration') private _tabClass =
+    true;
 
     /** Inputs */
     @Input() widget: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() widgetChange = new EventEmitter();
 
     /** Local variables */
 
-    constructor() { }
+    constructor() {}
 
     ngOnInit() {
+        // do nothing
     }
-
 }

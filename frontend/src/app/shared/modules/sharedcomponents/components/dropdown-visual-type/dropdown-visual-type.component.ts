@@ -14,14 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'dropdown-visual-type',
-  templateUrl: './dropdown-visual-type.component.html',
-  styleUrls: ['./dropdown-visual-type.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'dropdown-visual-type',
+    templateUrl: './dropdown-visual-type.component.html',
+    styleUrls: ['./dropdown-visual-type.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DropdownVisualTypeComponent {
     @HostBinding('class.dropdown-visual-type') private _hostClass = true;
@@ -35,18 +41,18 @@ export class DropdownVisualTypeComponent {
         {
             label: 'Line',
             value: 'line',
-            icon: 'd-chart-line'
+            icon: 'd-chart-line',
         },
         {
             label: 'Bar',
             value: 'bar',
-            icon: 'd-chart-bar-vertical'
+            icon: 'd-chart-bar-vertical',
         },
         {
             label: 'Area',
             value: 'area',
-            icon: 'd-chart-area-solid'
-        }
+            icon: 'd-chart-area-solid',
+        },
     ];
 
     changeVisualType(type) {

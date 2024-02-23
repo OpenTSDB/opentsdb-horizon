@@ -14,20 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * NOTE: this component doesn't appear to be used or do anything it.
+ * Maybe remove it?
+ */
+
 import { Component, OnInit, HostBinding } from '@angular/core';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'pin-panel',
     templateUrl: './pin-panel.component.html',
-    styleUrls: ['./pin-panel.component.scss']
+    styleUrls: ['./pin-panel.component.scss'],
 })
 export class PinPanelComponent implements OnInit {
     @HostBinding('class.pin-panel') private _hostClass = true;
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

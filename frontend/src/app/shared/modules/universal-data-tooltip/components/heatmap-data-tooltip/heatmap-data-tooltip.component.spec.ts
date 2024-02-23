@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HeatmapDataTooltipComponent } from './heatmap-data-tooltip.component';
 
 describe('HeatmapDataTooltipComponent', () => {
-  let component: HeatmapDataTooltipComponent;
-  let fixture: ComponentFixture<HeatmapDataTooltipComponent>;
+    let component: HeatmapDataTooltipComponent;
+    let fixture: ComponentFixture<HeatmapDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HeatmapDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [HeatmapDataTooltipComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeatmapDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HeatmapDataTooltipComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

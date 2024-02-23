@@ -15,7 +15,17 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, HostBinding, Inject, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, AfterContentInit, ViewEncapsulation
+    Component,
+    OnInit,
+    HostBinding,
+    Inject,
+    OnDestroy,
+    ViewChild,
+    Renderer2,
+    ElementRef,
+    HostListener,
+    AfterContentInit,
+    ViewEncapsulation,
 } from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 import { IntercomService } from '../../../../../core/services/intercom.service';
@@ -27,8 +37,11 @@ import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { I } from '@angular/cdk/keycodes';
-import { TableItemSizeDirective, TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
-import { ResizeSensor} from 'css-element-queries';
+import {
+    TableItemSizeDirective,
+    TableVirtualScrollDataSource,
+} from 'ng-table-virtual-scroll';
+import { ResizeSensor } from 'css-element-queries';
 import * as moment from 'moment';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -37,18 +50,23 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
     selector: 'timeseries-legend-component',
     templateUrl: './timeseries-legend.component.html',
     styleUrls: ['./timeseries-legend.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterContentInit {
-
+export class TimeseriesLegendComponent
+implements OnInit, OnDestroy, AfterContentInit {
     @HostBinding('class.timeseries-legend-component') private _hostClass = true;
 
-    @ViewChild('legendTable', { read: MatTable, static: true }) private _legendTable: MatTable<any>;
-    @ViewChild('legendTable', { read: ElementRef, static: true }) private _legendTableEl: ElementRef<any>;
-    @ViewChild('legendTable', { read: CdkObserveContent, static: true }) private _legendTableObserve: CdkObserveContent;
-    @ViewChild('tsDataWrapper', { read: ElementRef, static: true }) private _tsDataWrapper: ElementRef<any>;
+    @ViewChild('legendTable', { read: MatTable, static: true })
+    private _legendTable: MatTable<any>;
+    @ViewChild('legendTable', { read: ElementRef, static: true })
+    private _legendTableEl: ElementRef<any>;
+    @ViewChild('legendTable', { read: CdkObserveContent, static: true })
+    private _legendTableObserve: CdkObserveContent;
+    @ViewChild('tsDataWrapper', { read: ElementRef, static: true })
+    private _tsDataWrapper: ElementRef<any>;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
-    @ViewChild(CdkVirtualScrollViewport, { static: true }) viewportComponent: CdkVirtualScrollViewport;
+    @ViewChild(CdkVirtualScrollViewport, { static: true })
+    viewportComponent: CdkVirtualScrollViewport;
 
     islandRef: InfoIslandComponent;
 
@@ -56,15 +74,15 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     private subscription: Subscription = new Subscription();
 
     /** Local Variables */
-    currentWidgetId: string = '';
+    currentWidgetId = '';
     currentWidgetOptions: any = {};
     currentWidgetQueries: any = {};
-    currentWidgetType: string = '';
+    currentWidgetType = '';
 
     options: any = {
         trackMouse: true,
         open: false,
-        showLogscaleToggle: true
+        showLogscaleToggle: true,
     };
     data: any;
 
@@ -78,8 +96,9 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     /** Table Stuff */
     tableColumns: string[] = [];
-    //tableDataSource: MatTableDataSource<any[]> = new MatTableDataSource<any[]>([]);
-    tableDataSource: TableVirtualScrollDataSource<any[]> = new TableVirtualScrollDataSource<any[]>([]);
+    // tableDataSource: MatTableDataSource<any[]> = new MatTableDataSource<any[]>([]);
+    tableDataSource: TableVirtualScrollDataSource<any[]> =
+    new TableVirtualScrollDataSource<any[]>([]);
     resultTagKeys: string[] = [];
 
     highlightTag: any = { key: '', value: '' };
@@ -87,11 +106,11 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     masterChecked = false;
     masterIndeterminate = false;
 
-    shiftModifierKey: boolean = false;
+    shiftModifierKey = false;
     firstClickedSrcIndex: any = -1;
     lastClickedSrcIndex: any = -1;
 
-    virtualScrollHeight: number = 193;
+    virtualScrollHeight = 193;
 
     multigraph: any = false;
 
@@ -101,12 +120,16 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         private interCom: IntercomService,
         private renderer: Renderer2,
         private utilsService: UtilsService,
-        @Inject(ISLAND_DATA) private _islandData: any
+        @Inject(ISLAND_DATA) private _islandData: any,
     ) {
-        //console.log('[TSL] Constructor', { ISLAND_DATA: _islandData });
+        // console.log('[TSL] Constructor', { ISLAND_DATA: _islandData });
         // Set initial incoming data (data from first click that opens island)
         this.currentWidgetId = _islandData.originId;
-        if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.component_type) {
+        if (
+            _islandData.widget &&
+            _islandData.widget.settings &&
+            _islandData.widget.settings.component_type
+        ) {
             this.currentWidgetType = _islandData.widget.settings.component_type;
         }
 
@@ -114,13 +137,13 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             this.options.showLogscaleToggle = false;
         }
 
-        //this.currentWidgetOptions = utilsService.deepClone(_islandData.data.options);
-        //this.currentWidgetQueries = utilsService.deepClone(_islandData.data.queries);
+        // this.currentWidgetOptions = utilsService.deepClone(_islandData.data.options);
+        // this.currentWidgetQueries = utilsService.deepClone(_islandData.data.queries);
         this.currentWidgetOptions = _islandData.data.options;
         this.currentWidgetQueries = _islandData.data.queries;
 
         this.multigraph = _islandData.data.multigraph;
-        //this.data = utilsService.deepClone(_islandData.data.tsTickData);
+        // this.data = utilsService.deepClone(_islandData.data.tsTickData);
         this.data = _islandData.data.tsTickData;
         this.setTableColumns();
         this.setTableData();
@@ -130,146 +153,181 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             this.interCom.responsePut({
                 id: this.currentWidgetId,
                 action: 'tsLegendFocusChange',
-                payload: this.multigraph
+                payload: this.multigraph,
             });
         } else {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
                 action: 'tsLegendFocusChange',
-                payload: true
+                payload: true,
             });
         }
 
         let widgetAxes: any = {};
-        if (_islandData.widget && _islandData.widget.settings && _islandData.widget.settings.axes) {
+        if (
+            _islandData.widget &&
+            _islandData.widget.settings &&
+            _islandData.widget.settings.axes
+        ) {
             widgetAxes = _islandData.widget.settings.axes;
         }
-        this.logScaleY1 = (widgetAxes.y1 && widgetAxes.y1.hasOwnProperty('logscale')) ? widgetAxes.y1.logscale : false;
-        this.logScaleY2 = (widgetAxes.y2 && widgetAxes.y2.hasOwnProperty('logscale')) ? widgetAxes.y2.logscale : false;
+        this.logScaleY1 =
+            widgetAxes.y1 && widgetAxes.y1.hasOwnProperty('logscale')
+                ? widgetAxes.y1.logscale
+                : false;
+        this.logScaleY2 =
+            widgetAxes.y2 && widgetAxes.y2.hasOwnProperty('logscale')
+                ? widgetAxes.y2.logscale
+                : false;
 
         // set subscriptions
-        this.subscription.add(this.interCom.responseGet().subscribe(message => {
-            switch (message.action) {
-                case 'islandResizeComplete':
-                    // island got resized... need to tell virtual scrollport to check size
-                    this.viewportComponent.checkViewportSize();
-                    break;
-                default:
-                    break;
-            }
-        }));
+        this.subscription.add(
+            this.interCom.responseGet().subscribe((message) => {
+                switch (message.action) {
+                    case 'islandResizeComplete':
+                        // island got resized... need to tell virtual scrollport to check size
+                        this.viewportComponent.checkViewportSize();
+                        break;
+                    default:
+                        break;
+                }
+            }),
+        );
 
-        this.subscription.add(this.interCom.requestListen().subscribe(message => {
-            // this.console.intercom('[TSL] RequestListen', {message});
-            switch (message.action) {
-                case 'tsLegendWidgetOptionsUpdate':
-                    //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
-                    this.currentWidgetOptions = message.payload.options;
-                    this.updateMasterCheckboxStates();
-                    break;
-                case 'tsLegendWidgetSettingsResponse':
-                    //this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
-                    this.currentWidgetOptions = message.payload.options;
-                    const settings = message.payload.settings;
-                    this.currentWidgetType = settings.component_type;
-                    const axes = settings.axes;
-                    this.logScaleY1 = (axes.y1.hasOwnProperty('logscale')) ? axes.y1.logscale : false;
-                    this.logScaleY2 = (axes.y2.hasOwnProperty('logscale')) ? axes.y2.logscale : false;
-                    this.updateMasterCheckboxStates();
-                    break;
-                case 'tsTickDataChange':
-                    // if the incoming message has a trackMouse property, it came from a click that is resetting it
-                    // otherwise if the local options.trackMouse is true, compare the widget ids, and if multigraph, compare multigraph x/y
-                    if (
-                        (message.payload.trackMouse) ||
-                        (this.options.trackMouse && (this.currentWidgetId === message.id) && (!this.multigraph || (this.multigraph && (this.multigraph.y === message.payload.multigraph.y) && (this.multigraph.x === message.payload.multigraph.x))))
-                    ) {
-                        let newOptionsNeeded = false;
-                        // if new widget, then get new options
-                        if (this.currentWidgetId !== message.id) {
-                            // check if previous series were all hidden, if so, then turn on
-                            this.checkExitVisbility();
-                            //this.masterIndeterminate = false;
-                            newOptionsNeeded = true;
-                            this.tableHighlightTag('', '');
-                        } else if (message.payload.multigraph) {
-                            if (this.multigraph && (this.multigraph.y !== message.payload.multigraph.y || this.multigraph.x !== message.payload.multigraph.x)) {
+        this.subscription.add(
+            this.interCom.requestListen().subscribe((message) => {
+                // this.console.intercom('[TSL] RequestListen', {message});
+                switch (message.action) {
+                    case 'tsLegendWidgetOptionsUpdate':
+                        // this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                        this.currentWidgetOptions = message.payload.options;
+                        this.updateMasterCheckboxStates();
+                        break;
+                    case 'tsLegendWidgetSettingsResponse':
+                        // this.currentWidgetOptions = this.utilsService.deepClone(message.payload.options);
+                        this.currentWidgetOptions = message.payload.options;
+                        const settings = message.payload.settings;
+                        this.currentWidgetType = settings.component_type;
+                        const axes = settings.axes;
+                        this.logScaleY1 = axes.y1.hasOwnProperty('logscale')
+                            ? axes.y1.logscale
+                            : false;
+                        this.logScaleY2 = axes.y2.hasOwnProperty('logscale')
+                            ? axes.y2.logscale
+                            : false;
+                        this.updateMasterCheckboxStates();
+                        break;
+                    case 'tsTickDataChange':
+                        // if the incoming message has a trackMouse property, it came from a click that is resetting it
+                        // otherwise if the local options.trackMouse is true, compare the widget ids, and if multigraph, compare multigraph x/y
+                        if (
+                            message.payload.trackMouse ||
+                            (this.options.trackMouse &&
+                                this.currentWidgetId === message.id &&
+                                (!this.multigraph ||
+                                    (this.multigraph &&
+                                        this.multigraph.y ===
+                                            message.payload.multigraph.y &&
+                                        this.multigraph.x ===
+                                            message.payload.multigraph.x)))
+                        ) {
+                            let newOptionsNeeded = false;
+                            // if new widget, then get new options
+                            if (this.currentWidgetId !== message.id) {
                                 // check if previous series were all hidden, if so, then turn on
                                 this.checkExitVisbility();
-                                this.masterIndeterminate = false;
-                                // this.console.error('DIFFERENT MULTIGRAPH GRAPH', message);
+                                // this.masterIndeterminate = false;
                                 newOptionsNeeded = true;
                                 this.tableHighlightTag('', '');
+                            } else if (message.payload.multigraph) {
+                                if (
+                                    this.multigraph &&
+                                    (this.multigraph.y !==
+                                        message.payload.multigraph.y ||
+                                        this.multigraph.x !==
+                                            message.payload.multigraph.x)
+                                ) {
+                                    // check if previous series were all hidden, if so, then turn on
+                                    this.checkExitVisbility();
+                                    this.masterIndeterminate = false;
+                                    // this.console.error('DIFFERENT MULTIGRAPH GRAPH', message);
+                                    newOptionsNeeded = true;
+                                    this.tableHighlightTag('', '');
+                                }
+                            }
+
+                            if (message.payload.trackMouse) {
+                                this.trackmouseCheckboxChange(
+                                    message.payload.trackMouse,
+                                );
+                            }
+                            this.currentWidgetId = message.id;
+                            this.multigraph = message.payload.multigraph;
+                            if (message.payload.queries) {
+                                // this.currentWidgetQueries = this.utilsService.deepClone(message.payload.queries);
+                                this.currentWidgetQueries =
+                                    message.payload.queries;
+                            }
+                            // this.data = this.utilsService.deepClone(message.payload.tickData);
+                            this.data = message.payload.tickData;
+                            this.setTableColumns();
+                            this.setTableData();
+
+                            // need new options
+                            if (newOptionsNeeded) {
+                                // request widget settings
+                                // need this for axis logscale settings
+                                this.interCom.responsePut({
+                                    id: message.id,
+                                    action: 'tsLegendRequestWidgetSettings',
+                                    payload: {
+                                        multigraph: this.multigraph,
+                                    },
+                                });
+                                this._legendTableObserve.disabled = false;
+                                // request new overlayOrginRef
+                                this.interCom.responsePut({
+                                    id: message.id,
+                                    action: 'tsLegendRequestUpdatedOverlayOrigin',
+                                    payload: {
+                                        multigraph: this.multigraph,
+                                    },
+                                });
+                            }
+
+                            // focus change
+                            if (this.multigraph) {
+                                this.interCom.responsePut({
+                                    id: this.currentWidgetId,
+                                    action: 'tsLegendFocusChange',
+                                    payload: this.multigraph,
+                                });
+                            } else {
+                                this.interCom.responsePut({
+                                    id: this.currentWidgetId,
+                                    action: 'tsLegendFocusChange',
+                                    payload: true,
+                                });
                             }
                         }
+                        break;
+                    default:
+                        break;
+                }
+            }),
+        );
 
-                        if (message.payload.trackMouse) {
-                            this.trackmouseCheckboxChange(message.payload.trackMouse);
-                        }
-                        this.currentWidgetId = message.id;
-                        this.multigraph = message.payload.multigraph;
-                        if (message.payload.queries) {
-                            //this.currentWidgetQueries = this.utilsService.deepClone(message.payload.queries);
-                            this.currentWidgetQueries = message.payload.queries;
-                        }
-                        //this.data = this.utilsService.deepClone(message.payload.tickData);
-                        this.data = message.payload.tickData;
-                        this.setTableColumns();
-                        this.setTableData();
-
-                        // need new options
-                        if (newOptionsNeeded) {
-                            // request widget settings
-                            // need this for axis logscale settings
-                            this.interCom.responsePut({
-                                id: message.id,
-                                action: 'tsLegendRequestWidgetSettings',
-                                payload: {
-                                    multigraph: this.multigraph
-                                }
-                            });
-                            this._legendTableObserve.disabled = false;
-                            // request new overlayOrginRef
-                            this.interCom.responsePut({
-                                id: message.id,
-                                action: 'tsLegendRequestUpdatedOverlayOrigin',
-                                payload: {
-                                    multigraph: this.multigraph
-                                }
-                            });
-                        }
-
-                        // focus change
-                        if (this.multigraph) {
-                            this.interCom.responsePut({
-                                id: this.currentWidgetId,
-                                action: 'tsLegendFocusChange',
-                                payload: this.multigraph
-                            });
-                        } else {
-                            this.interCom.responsePut({
-                                id: this.currentWidgetId,
-                                action: 'tsLegendFocusChange',
-                                payload: true
-                            });
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }));
-
-        this.subscription.add(this.showAmount.valueChanges.subscribe(val => {
-            this.setTableData();
-        }));
+        this.subscription.add(
+            this.showAmount.valueChanges.subscribe((val) => {
+                this.setTableData();
+            }),
+        );
 
         // interCom out the options
         this.interCom.responsePut({
             action: 'tsLegendOptionsChange',
-            payload: this.options
+            payload: this.options,
         });
-
     }
 
     ngOnInit() {
@@ -279,13 +337,18 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     }
 
     ngAfterContentInit() {
-        const resizeSensor = new ResizeSensor(this._tsDataWrapper.nativeElement, (size) => {
-           this.virtualScrollHeight = size.height ? size.height : 193;
-        });
+        const resizeSensor = new ResizeSensor(
+            this._tsDataWrapper.nativeElement,
+            (size) => {
+                this.virtualScrollHeight = size.height ? size.height : 193;
+            },
+        );
     }
 
     get visibleDataCount() {
-        const visible = this.currentWidgetOptions.visibility.filter(item => item === true);
+        const visible = this.currentWidgetOptions.visibility.filter(
+            (item) => item === true,
+        );
         return visible.length;
     }
 
@@ -302,7 +365,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         this.options.trackMouse = event.checked;
         this.interCom.responsePut({
             action: 'tsLegendOptionsChange',
-            payload: this.options
+            payload: this.options,
         });
     }
 
@@ -321,8 +384,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             id: this.currentWidgetId,
             payload: {
                 y1: this.logScaleY1,
-                y2: this.logScaleY2
-            }
+                y2: this.logScaleY2,
+            },
         });
     }
 
@@ -340,7 +403,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     tableContentChanged(event: any) {
         // calculate size of table
-        const tableSize: DOMRect = this._legendTableEl.nativeElement.getBoundingClientRect();
+        const tableSize: DOMRect =
+            this._legendTableEl.nativeElement.getBoundingClientRect();
 
         // attempt to tell island window of potential minimum size to open with all data visible
         this.islandRef.updateSize(tableSize);
@@ -364,11 +428,13 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         let tagKeyProps: any = {};
 
         if (this.data.series.length > 0) {
-            //tagKeys = Object.keys(this.data.series[0].series.tags).filter(tag => tag !== 'metric');
+            // tagKeys = Object.keys(this.data.series[0].series.tags).filter(tag => tag !== 'metric');
 
             for (const index in this.data.series) {
                 if (this.data.series[index]) {
-                    const seriesTags: any = {...this.data.series[index].series.tags};
+                    const seriesTags: any = {
+                        ...this.data.series[index].series.tags,
+                    };
                     if (seriesTags.metric) {
                         delete seriesTags.metric;
                     }
@@ -377,7 +443,6 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             }
 
             tagKeys = Object.keys(tagKeyProps);
-
         }
 
         columns = columns.concat(tagKeys, ['value']);
@@ -393,21 +458,38 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 if (this.data.series[index]) {
                     // eslint-disable-next-line radix
                     this.data.series[index]['srcIndex'] = parseInt(index);
-                    this.data.series[index]['visible'] = this.currentWidgetOptions.visibility[this.data.series[index].srcIndex];
+                    this.data.series[index]['visible'] =
+                        this.currentWidgetOptions.visibility[
+                            this.data.series[index].srcIndex
+                        ];
                 }
             }
 
             // go ahead and sort by value so showLimit will show correctly
-            const newDataArray: any[] = this.sortData(this.data.series, (this.sort) ? this.sort : <MatSort>{ active: 'value', direction: 'asc' });
+            const newDataArray: any[] = this.sortData(
+                this.data.series,
+                this.sort
+                    ? this.sort
+                    : <MatSort>{ active: 'value', direction: 'asc' },
+            );
 
             const showLimit = this.showAmount.value;
 
             switch (this.dataLimitType) {
                 case 'Top':
-                    this.tableDataSource.data = (newDataArray.length < showLimit) ? newDataArray : newDataArray.slice(0, showLimit);
+                    this.tableDataSource.data =
+                        newDataArray.length < showLimit
+                            ? newDataArray
+                            : newDataArray.slice(0, showLimit);
                     break;
                 case 'Bottom':
-                    this.tableDataSource.data = (newDataArray.length < showLimit) ? newDataArray : newDataArray.slice(newDataArray.length - showLimit, newDataArray.length);
+                    this.tableDataSource.data =
+                        newDataArray.length < showLimit
+                            ? newDataArray
+                            : newDataArray.slice(
+                                newDataArray.length - showLimit,
+                                newDataArray.length,
+                            );
                     break;
                 default:
                     this.tableDataSource.data = newDataArray;
@@ -415,11 +497,19 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             }
 
             // double check the sort if it is a tag (if not value or metric, it is a tag)
-            if (this.sort && this.sort.active !== 'value' && this.sort.active !== 'metric') {
+            if (
+                this.sort &&
+                this.sort.active !== 'value' &&
+                this.sort.active !== 'metric'
+            ) {
                 // check if by changing data (and possibly changing graph)
                 // if the sort.active exists on the data
                 // if not, go back to default of 'value'
-                if (!(this.tableDataSource.data[0] as any).series.tags[this.sort.active]) {
+                if (
+                    !(this.tableDataSource.data[0] as any).series.tags[
+                        this.sort.active
+                    ]
+                ) {
                     this.sort.active = 'value';
                 }
             }
@@ -445,7 +535,7 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             // regex to test if expression
             // group indentifiers don't work in some versions of node, even if valid
             // const regex = /^q(?<queryIndex>[1-9][0-9]*?)\:e(?<metricIndex>[1-9][0-9]*?)$/gmi;
-            const regex = /^q([1-9][0-9]*)\:e([1-9][0-9]*)$/gmi;
+            const regex = /^q([1-9][0-9]*)\:e([1-9][0-9]*)$/gim;
             // if it IS expression
             if (regex.test(item.series.tags.metric)) {
                 if (item.series.label === item.series.tags.metric) {
@@ -459,9 +549,12 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                     if (
                         this.currentWidgetQueries[qIndex] &&
                         this.currentWidgetQueries[qIndex].metrics[mIndex] &&
-                        this.currentWidgetQueries[qIndex].metrics[mIndex].expression
+                        this.currentWidgetQueries[qIndex].metrics[mIndex]
+                            .expression
                     ) {
-                        value = this.currentWidgetQueries[qIndex].metrics[mIndex].originalExpression;
+                        value =
+                            this.currentWidgetQueries[qIndex].metrics[mIndex]
+                                .originalExpression;
                     } else {
                         // fallback to label
                         value = item.series.label;
@@ -491,14 +584,18 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
         let dataValues: any[] = [];
         let nanValues: any[] = [];
-        let sortedValues: any[];
+        let sortedValues: any[] = [];
 
         // if sorting by value (which should be an integer/float)
         if (active === 'value') {
             // need to remove NaN temporarily
-            nanValues = data.slice().filter((item: any) => isNaN(item.data.yval));
+            nanValues = data
+                .slice()
+                .filter((item: any) => isNaN(item.data.yval));
             // real integer/float values
-            dataValues = data.slice().filter((item: any) => !isNaN(item.data.yval));
+            dataValues = data
+                .slice()
+                .filter((item: any) => !isNaN(item.data.yval));
         } else {
             // sorting by something else, most likely a string
             dataValues = data.slice();
@@ -510,10 +607,12 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             const valueB = this.sortingDataAccessor(b, active);
             if (active === 'value') {
                 // for sorting integer/float
-                return (direction === 'asc') ? valueA - valueB : valueB - valueA;
+                return direction === 'asc' ? valueA - valueB : valueB - valueA;
             } else {
                 // string type sort
-                return (valueA < valueB ? -1 : 1) * (direction === 'asc' ? 1 : -1);
+                return (
+                    (valueA < valueB ? -1 : 1) * (direction === 'asc' ? 1 : -1)
+                );
             }
         });
 
@@ -545,15 +644,25 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
             }
         }
 
-        const indeterminateCheck = (visCount < this.tableDataSource.data.length && visCount > 0) ? true : false;
+        const indeterminateCheck =
+            visCount < this.tableDataSource.data.length && visCount > 0
+                ? true
+                : false;
         if (this.masterIndeterminate !== indeterminateCheck) {
-            this.masterIndeterminate = (visCount < this.tableDataSource.data.length && visCount > 0) ? true : false;
+            this.masterIndeterminate =
+                visCount < this.tableDataSource.data.length && visCount > 0
+                    ? true
+                    : false;
         }
         // need to timeout slightly to let indeterminate to set first, otherwise it would cancel out masterChecked (if true)
         setTimeout(() => {
-            this.masterChecked = (visCount === 0) ? false : (visCount === this.tableDataSource.data.length) ? true : false;
+            this.masterChecked =
+                visCount === 0
+                    ? false
+                    : visCount === this.tableDataSource.data.length
+                        ? true
+                        : false;
         }, 50);
-
     }
 
     // master checkbox change
@@ -569,9 +678,13 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 action: 'tsLegendToggleSeries',
                 payload: {
                     visible: true,
-                    batch: <number[]>this.tableDataSource.data.map((item: any) => item.srcIndex),
-                    multigraph: this.multigraph
-                }
+                    batch: <number[]>(
+                        this.tableDataSource.data.map(
+                            (item: any) => item.srcIndex,
+                        )
+                    ),
+                    multigraph: this.multigraph,
+                },
             });
         } else if (checked && !indeterminate) {
             // everything is visible
@@ -581,93 +694,140 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 action: 'tsLegendToggleSeries',
                 payload: {
                     visible: false,
-                    batch: <number[]>this.tableDataSource.data.map((item: any) => item.srcIndex),
-                    multigraph: this.multigraph
-                }
+                    batch: <number[]>(
+                        this.tableDataSource.data.map(
+                            (item: any) => item.srcIndex,
+                        )
+                    ),
+                    multigraph: this.multigraph,
+                },
             });
         } else {
             // indeterminate
             // partial not visible
             // need to turn those on
-            const notVisible = this.tableDataSource.data.filter((item: any) => !this.currentWidgetOptions.visibility[item.srcIndex]);
+            const notVisible = this.tableDataSource.data.filter(
+                (item: any) =>
+                    !this.currentWidgetOptions.visibility[item.srcIndex],
+            );
 
             this.interCom.responsePut({
                 id: this.currentWidgetId,
                 action: 'tsLegendToggleSeries',
                 payload: {
                     visible: true,
-                    batch: <number[]>notVisible.map((item: any) => item.srcIndex),
-                    multigraph: this.multigraph
-                }
+                    batch: <number[]>(
+                        notVisible.map((item: any) => item.srcIndex)
+                    ),
+                    multigraph: this.multigraph,
+                },
             });
         }
     }
 
     // single table row checkbox
-    timeSeriesVisibilityToggle(srcIndex: any, currentCheckedStatus: boolean, event: any) {
+    timeSeriesVisibilityToggle(
+        srcIndex: any,
+        currentCheckedStatus: boolean,
+        event: any,
+    ) {
         const newVisibilityState = !currentCheckedStatus;
-        let itemIndex: any = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === srcIndex);
-        let lastItemIndex: any = this.lastClickedSrcIndex >= 0 ? this.tableDataSource.data.findIndex((item: any) => item.srcIndex === this.lastClickedSrcIndex) : this.lastClickedSrcIndex;
-        let firstItemIndex: any = this.firstClickedSrcIndex >= 0 ? this.tableDataSource.data.findIndex((item: any) => item.srcIndex === this.firstClickedSrcIndex) : this.firstClickedSrcIndex;
+        const itemIndex: any = this.tableDataSource.data.findIndex(
+            (item: any) => item.srcIndex === srcIndex,
+        );
+        const lastItemIndex: any =
+            this.lastClickedSrcIndex >= 0
+                ? this.tableDataSource.data.findIndex(
+                    (item: any) => item.srcIndex === this.lastClickedSrcIndex,
+                )
+                : this.lastClickedSrcIndex;
+        const firstItemIndex: any =
+            this.firstClickedSrcIndex >= 0
+                ? this.tableDataSource.data.findIndex(
+                    (item: any) =>
+                        item.srcIndex === this.firstClickedSrcIndex,
+                )
+                : this.firstClickedSrcIndex;
 
-        let toHide: number[] = [];
-        let toShow: number[] = [];
+        const toHide: number[] = [];
+        const toShow: number[] = [];
 
         if (this.shiftModifierKey && this.firstClickedSrcIndex >= 0) {
-            let srcIndexVisibilityMap: any = {}
-            for(var i = 0; i < this.tableDataSource.data.length; i++) {
+            const srcIndexVisibilityMap: any = {};
+            for (let i = 0; i < this.tableDataSource.data.length; i++) {
                 const item: any = this.tableDataSource.data[i];
                 srcIndexVisibilityMap[item.srcIndex] = {
                     dataIndex: i,
-                    visible: this.currentWidgetOptions.visibility[item.srcIndex]
+                    visible:
+                        this.currentWidgetOptions.visibility[item.srcIndex],
                 };
             }
 
             if (itemIndex > firstItemIndex && itemIndex > lastItemIndex) {
-                for(let i = lastItemIndex; i <= itemIndex; i++) {
+                for (let i = lastItemIndex; i <= itemIndex; i++) {
                     const item: any = this.tableDataSource.data[i];
-                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    srcIndexVisibilityMap[item.srcIndex].visible =
+                        newVisibilityState;
                 }
-            } else if (itemIndex > firstItemIndex && itemIndex < lastItemIndex) {
-                for(let i = itemIndex; i <= lastItemIndex; i++) {
+            } else if (
+                itemIndex > firstItemIndex &&
+                itemIndex < lastItemIndex
+            ) {
+                for (let i = itemIndex; i <= lastItemIndex; i++) {
                     const item: any = this.tableDataSource.data[i];
-                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    srcIndexVisibilityMap[item.srcIndex].visible =
+                        newVisibilityState;
                 }
-            } else if (itemIndex < firstItemIndex && itemIndex < lastItemIndex ) {
-                for(let i = itemIndex; i <= lastItemIndex; i++) {
+            } else if (
+                itemIndex < firstItemIndex &&
+                itemIndex < lastItemIndex
+            ) {
+                for (let i = itemIndex; i <= lastItemIndex; i++) {
                     const item: any = this.tableDataSource.data[i];
-                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    srcIndexVisibilityMap[item.srcIndex].visible =
+                        newVisibilityState;
                 }
-            } else if (itemIndex < firstItemIndex && itemIndex > lastItemIndex ) {
-                for(let i = lastItemIndex; i <= itemIndex; i++) {
+            } else if (
+                itemIndex < firstItemIndex &&
+                itemIndex > lastItemIndex
+            ) {
+                for (let i = lastItemIndex; i <= itemIndex; i++) {
                     const item: any = this.tableDataSource.data[i];
-                    srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                    srcIndexVisibilityMap[item.srcIndex].visible =
+                        newVisibilityState;
                 }
             } else if (itemIndex === firstItemIndex) {
                 // they clicked on the same checkbox as the first click
                 if (itemIndex > lastItemIndex) {
-                    for(let i = lastItemIndex; i <= itemIndex; i++) {
+                    for (let i = lastItemIndex; i <= itemIndex; i++) {
                         const item: any = this.tableDataSource.data[i];
-                        srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                        srcIndexVisibilityMap[item.srcIndex].visible =
+                            newVisibilityState;
                     }
-
-                } else if (itemIndex < lastItemIndex ) {
-                    for(let i = itemIndex; i <= lastItemIndex; i++) {
+                } else if (itemIndex < lastItemIndex) {
+                    for (let i = itemIndex; i <= lastItemIndex; i++) {
                         const item: any = this.tableDataSource.data[i];
-                        srcIndexVisibilityMap[item.srcIndex].visible = newVisibilityState;
+                        srcIndexVisibilityMap[item.srcIndex].visible =
+                            newVisibilityState;
                     }
                 }
             }
 
-            let mapKeys: number[] = Object.keys(srcIndexVisibilityMap).map(item => parseInt(item));
+            const mapKeys: number[] = Object.keys(srcIndexVisibilityMap).map(
+                (item) => parseInt(item),
+            );
 
-            for(let i = 0; i < mapKeys.length; i++) {
+            for (let i = 0; i < mapKeys.length; i++) {
                 if (srcIndexVisibilityMap[mapKeys[i]].visible) {
                     toShow.push(mapKeys[i]);
                 } else {
                     toHide.push(mapKeys[i]);
                 }
-                (<any>this.tableDataSource.data[srcIndexVisibilityMap[mapKeys[i]].dataIndex]).visible = srcIndexVisibilityMap[mapKeys[i]].visible;
+                (<any>(
+                    this.tableDataSource.data[
+                        srcIndexVisibilityMap[mapKeys[i]].dataIndex
+                    ]
+                )).visible = srcIndexVisibilityMap[mapKeys[i]].visible;
             }
 
             if (toHide.length > 0) {
@@ -677,8 +837,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                     payload: {
                         visible: false,
                         batch: toHide,
-                        multigraph: this.multigraph
-                    }
+                        multigraph: this.multigraph,
+                    },
                 });
             }
 
@@ -689,19 +849,17 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                     payload: {
                         visible: true,
                         batch: toShow,
-                        multigraph: this.multigraph
-                    }
+                        multigraph: this.multigraph,
+                    },
                 });
             }
-
-
         } else {
-
             if (this.shiftModifierKey && this.firstClickedSrcIndex === -1) {
                 this.firstClickedSrcIndex = srcIndex;
             }
 
-            (<any>this.tableDataSource.data[itemIndex]).visible = newVisibilityState;
+            (<any>this.tableDataSource.data[itemIndex]).visible =
+                newVisibilityState;
 
             this.interCom.responsePut({
                 id: this.currentWidgetId,
@@ -709,17 +867,15 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 payload: {
                     visible: newVisibilityState,
                     batch: [srcIndex],
-                    multigraph: this.multigraph
-                }
+                    multigraph: this.multigraph,
+                },
             });
         }
 
         this.lastClickedSrcIndex = srcIndex;
-
     }
 
     timeseriesVisibilityBy(filter: string, data: any, event: any) {
-
         let toHide: number[] = [];
         let toShow: number[] = [];
 
@@ -732,35 +888,43 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         if (filter === 'row' && data.srcIndex > -1) {
             if (modifierKey && event.shiftKey) {
                 // get some indices
-                const itemIndex = this.tableDataSource.data.findIndex((item: any) => item.srcIndex === data.srcIndex);
-                const lastIndex = this.tableDataSource.data.findIndex((item:any) => item.srcIndex === this.lastClickedSrcIndex);
+                const itemIndex = this.tableDataSource.data.findIndex(
+                    (item: any) => item.srcIndex === data.srcIndex,
+                );
+                const lastIndex = this.tableDataSource.data.findIndex(
+                    (item: any) => item.srcIndex === this.lastClickedSrcIndex,
+                );
 
                 // check the direction of the shift select
 
                 // select an item ABOVE the last clicked item in the list
                 if (itemIndex < lastIndex) {
-                    for(let i = itemIndex; i <= lastIndex; i++) {
-                        let item = <any>this.tableDataSource.data[i];
+                    for (let i = itemIndex; i <= lastIndex; i++) {
+                        const item = <any>this.tableDataSource.data[i];
                         toShow.push(item.srcIndex);
                     }
                 }
 
                 // select an item BELOW the last clicked item in the list
-                if(itemIndex > lastIndex) {
-                    for(let i = lastIndex; i <= itemIndex; i++) {
-                        let item = <any>this.tableDataSource.data[i];
+                if (itemIndex > lastIndex) {
+                    for (let i = lastIndex; i <= itemIndex; i++) {
+                        const item = <any>this.tableDataSource.data[i];
                         toShow.push(item.srcIndex);
                     }
                 }
 
                 // filter out the ones to hide
-                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
-
-            } else if(modifierKey && (event.metaKey || event.ctrlKey)) {
-
+                toHide = this.tableDataSource.data
+                    .filter((item: any) => !toShow.includes(item.srcIndex))
+                    .map((item: any) => item.srcIndex);
+            } else if (modifierKey && (event.metaKey || event.ctrlKey)) {
                 // since this is a single click to add an item to the existing list,
                 // we need to find the currently selected items
-                for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
+                for (
+                    let i = 0;
+                    i < this.currentWidgetOptions.visibility.length;
+                    i++
+                ) {
                     const itemVis = this.currentWidgetOptions.visibility[i];
                     if (itemVis === true) {
                         toShow.push(i);
@@ -771,20 +935,30 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 toShow.push(data.srcIndex);
 
                 // filter out the ones to hide
-                toHide = this.tableDataSource.data.filter((item: any) => !toShow.includes(item.srcIndex)).map((item: any) => item.srcIndex);
-
+                toHide = this.tableDataSource.data
+                    .filter((item: any) => !toShow.includes(item.srcIndex))
+                    .map((item: any) => item.srcIndex);
             } else {
                 // default behavior, select only the one you click
-                toHide = (this.tableDataSource.data.filter((item: any) => item.srcIndex !== data.srcIndex)).map((item: any) => item.srcIndex);
+                toHide = this.tableDataSource.data
+                    .filter((item: any) => item.srcIndex !== data.srcIndex)
+                    .map((item: any) => item.srcIndex);
                 toShow = [data.srcIndex];
             }
-
         }
 
         // FILTERING BY TAG
         if (filter === 'tag' && data.tag && data.value) {
-            toHide = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] !== data.value)).map((item: any) => item.srcIndex);
-            toShow = (this.tableDataSource.data.filter((item: any) => item.series.tags[data.tag] === data.value)).map((item: any) => item.srcIndex);
+            toHide = this.tableDataSource.data
+                .filter(
+                    (item: any) => item.series.tags[data.tag] !== data.value,
+                )
+                .map((item: any) => item.srcIndex);
+            toShow = this.tableDataSource.data
+                .filter(
+                    (item: any) => item.series.tags[data.tag] === data.value,
+                )
+                .map((item: any) => item.srcIndex);
         }
 
         // set last one clicked
@@ -797,8 +971,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 payload: {
                     visible: false,
                     batch: toHide,
-                    multigraph: this.multigraph
-                }
+                    multigraph: this.multigraph,
+                },
             });
         }
 
@@ -809,8 +983,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
                 payload: {
                     visible: true,
                     batch: toShow,
-                    multigraph: this.multigraph
-                }
+                    multigraph: this.multigraph,
+                },
             });
         }
     }
@@ -824,16 +998,22 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     // OR when the island closes
     private checkExitVisbility() {
         // check if all series were hidden
-        const notVisible: any[] = this.tableDataSource.data.filter((item: any) => !this.currentWidgetOptions.visibility[item.srcIndex]);
+        const notVisible: any[] = this.tableDataSource.data.filter(
+            (item: any) => !this.currentWidgetOptions.visibility[item.srcIndex],
+        );
         if (notVisible.length === this.tableDataSource.data.length) {
             this.interCom.responsePut({
                 id: this.currentWidgetId,
                 action: 'tsLegendToggleSeries',
                 payload: {
                     visible: true,
-                    batch: <number[]>this.tableDataSource.data.map((item: any) => item.srcIndex),
-                    multigraph: this.multigraph
-                }
+                    batch: <number[]>(
+                        this.tableDataSource.data.map(
+                            (item: any) => item.srcIndex,
+                        )
+                    ),
+                    multigraph: this.multigraph,
+                },
             });
         }
     }
@@ -842,39 +1022,45 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     // initiates CSV download
     saveLegendDataCSV() {
+        const csvContent = this.getLegendCSV();
+        // console.log('CSV CONTENT', csvContent);
 
-        let csvContent = this.getLegendCSV();
-        //console.log('CSV CONTENT', csvContent);
-
-        let filename = 'csvdata_' + this.currentWidgetId + '_' + moment(this.data.timestamp).format('YYYYMMDD_HH:mmA') + '.csv';
+        const filename =
+            'csvdata_' +
+            this.currentWidgetId +
+            '_' +
+            moment(this.data.timestamp).format('YYYYMMDD_HH:mmA') +
+            '.csv';
 
         // see: https://stackoverflow.com/a/24922761/1810361
         // for the Blob download snippet
-        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        let navigator = window.navigator;
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const navigator = window.navigator;
 
-        if (navigator.msSaveBlob) { // IE 10+
-            navigator.msSaveBlob(blob, filename);
-        } else {
-            var link = document.createElement("a");
-            if (link.download !== undefined) { // feature detection
-                // Browsers that support HTML5 download attribute
-                var url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+        // NOTE: Do we still want to suppor IE 10?
+        // if (navigator.msSaveBlob) {
+        // IE 10+
+        // navigator.msSaveBlob(blob, filename);
+        // } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            // feature detection
+            // Browsers that support HTML5 download attribute
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
+        // }
     }
 
     // initiates copying CSV to clipboard
     copyLegendDataCSV() {
-
-        let csvContent = this.getLegendCSV();
-        //console.log('CSV CONTENT', csvContent);
+        const csvContent = this.getLegendCSV();
+        // console.log('CSV CONTENT', csvContent);
 
         // see: https://stackoverflow.com/a/49121680/1810361
         // for this quick copy to clipboard snippet
@@ -896,26 +1082,32 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
     private getLegendCSV(): any {
         let csvContent = '';
         // get headers
-        let columns: any[] = [...this.tableColumns];
+        const columns: any[] = [...this.tableColumns];
         columns.shift();
         // add headers to first line
         csvContent += columns.join(',') + '\n';
 
         // get legend data
-        let data = this.getVisibleLegendItems();
+        const data = this.getVisibleLegendItems();
         console.log('DATA', data);
 
         // loop through data and add relevant items to csvContent
         data.forEach((item: any) => {
             // first is always metric
             let rowData = '';
-            columns.forEach(col => {
-                if ( col === 'metric' ) {
+            columns.forEach((col) => {
+                if (col === 'metric') {
                     rowData += this.formattedMetricLabel(item) + ',';
-                } else if ( col === 'value' ) {
-                    rowData += (typeof(item.formattedValue) === 'string') ? item.formattedValue.trim() : item.formattedValue;
+                } else if (col === 'value') {
+                    rowData +=
+                        typeof item.formattedValue === 'string'
+                            ? item.formattedValue.trim()
+                            : item.formattedValue;
                 } else {
-                    rowData += ((item.series.tags[col] === undefined) ? 'n/a' : item.series.tags[col]) + ',';
+                    rowData +=
+                        (item.series.tags[col] === undefined
+                            ? 'n/a'
+                            : item.series.tags[col]) + ',';
                 }
             });
             csvContent += rowData + '\n';
@@ -928,8 +1120,8 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
 
     // gets only the legend items that are checked (visible)
     private getVisibleLegendItems(): any[] {
-        let toShow: number[] = [];
-        let dataItems: any[];
+        const toShow: number[] = [];
+        let dataItems: any[] = [];
 
         // get the indexes of items that are visible
         for (let i = 0; i < this.currentWidgetOptions.visibility.length; i++) {
@@ -940,23 +1132,25 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         }
 
         // filter table data to only return visible (checked) items
-        dataItems = this.tableDataSource.data.filter((item: any) => toShow.includes(item.srcIndex)).map((item: any) => item);
+        dataItems = this.tableDataSource.data
+            .filter((item: any) => toShow.includes(item.srcIndex))
+            .map((item: any) => item);
 
         return dataItems;
     }
 
     // utility to print out the CSV data to console
-    private parseCSVDataToConsole(data){
-        let lbreak = data.split('\n');
-        let columns = lbreak.shift().split(',');
-        if (lbreak[lbreak.length-1].trim().length === 0) {
+    private parseCSVDataToConsole(data) {
+        const lbreak = data.split('\n');
+        const columns = lbreak.shift().split(',');
+        if (lbreak[lbreak.length - 1].trim().length === 0) {
             lbreak.pop();
         }
-        let csvData = [];
+        const csvData = [];
 
-        lbreak.forEach(res => {
-            let items = res.split(',');
-            let resObj = {};
+        lbreak.forEach((res) => {
+            const items = res.split(',');
+            const resObj = {};
             items.forEach((item, i) => {
                 resObj[columns[i]] = item;
             });
@@ -990,15 +1184,14 @@ export class TimeseriesLegendComponent implements OnInit, OnDestroy, AfterConten
         this.options.open = false;
         this.interCom.responsePut({
             action: 'tsLegendOptionsChange',
-            payload: this.options
+            payload: this.options,
         });
         // should turn any focus off
         this.interCom.responsePut({
-            action: 'tsLegendFocusChange'
+            action: 'tsLegendFocusChange',
         });
 
         // check if all series were hidden
         this.checkExitVisbility();
     }
-
 }

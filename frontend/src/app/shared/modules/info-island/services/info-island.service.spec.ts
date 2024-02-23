@@ -19,10 +19,10 @@ import { TestBed } from '@angular/core/testing';
 import { InfoIslandService } from './info-island.service';
 
 describe('InfoIslandService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: InfoIslandService = TestBed.inject(InfoIslandService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: InfoIslandService = TestBed.inject(InfoIslandService);
+        expect(service).toBeTruthy();
+    });
 });

@@ -14,24 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- import { NgModule } from '@angular/core';
- import { Routes, RouterModule } from '@angular/router';
- 
- // containers
- import { ErrorComponent } from './container/error.component';
- 
- // components
- 
- const routes: Routes = [
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+// containers
+import { ErrorComponent } from './container/error.component';
+
+// components
+
+const routes: Routes = [
     // this setup to let the url path thru to DashboardComponent
     // since we dont want to manually define every possible path with folder tree
-    { path: '**', component: ErrorComponent }
+    { path: '**', component: ErrorComponent },
 ];
- 
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class ErrorRoutingModule { }
- 
+export class ErrorRoutingModule {}

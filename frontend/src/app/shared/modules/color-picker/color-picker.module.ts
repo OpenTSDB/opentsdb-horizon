@@ -39,28 +39,29 @@ import { ColorPickerHueSliderComponent } from './components/color-picker-hue-sli
 import { ColorPickerHsvSelectorComponent } from './components/color-picker-hsv-selector/color-picker-hsv-selector.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    OverlayModule,
-    PortalModule,
-    MaterialModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule
-  ],
-  declarations: [
-    ColorPickerComponent,
-    ColorPickerSelectorComponent,
-    ColorPickerHueSliderComponent,
-    ColorPickerHsvSelectorComponent
-  ],
-  exports: [
-    ColorPickerComponent
-  ],
-  providers: [ColorPickerService, ColorService, { provide: EMPTY_COLOR, useValue: 'none' }],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        OverlayModule,
+        PortalModule,
+        MaterialModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+    ],
+    declarations: [
+        ColorPickerComponent,
+        ColorPickerSelectorComponent,
+        ColorPickerHueSliderComponent,
+        ColorPickerHsvSelectorComponent,
+    ],
+    exports: [ColorPickerComponent],
+    providers: [
+        ColorPickerService,
+        ColorService,
+        { provide: EMPTY_COLOR, useValue: 'none' },
+    ],
 })
-
-export class ColorPickerModule { }
+export class ColorPickerModule {}

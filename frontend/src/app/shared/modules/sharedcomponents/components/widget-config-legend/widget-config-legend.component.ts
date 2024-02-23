@@ -14,7 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
@@ -26,7 +35,7 @@ import { Subscription } from 'rxjs';
     selector: 'widget-config-legend',
     templateUrl: './widget-config-legend.component.html',
     styleUrls: ['./widget-config-legend.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
@@ -36,7 +45,7 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     @Input() widget: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() widgetChange = new EventEmitter();
 
     /** Form Group */
     widgetConfigLegend: FormGroup;
@@ -50,58 +59,59 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     visibilityOptions: any[] = [
         {
             label: 'Visible',
-            value: true
+            value: true,
         },
         {
             label: 'Hidden',
-            value: false
-        }
+            value: false,
+        },
     ];
 
     formatOptions: any[] = [
         {
             label: 'Inline',
-            value: 'inline'
+            value: 'inline',
         },
         {
             label: 'Table',
-            value: 'table'
-        }
+            value: 'table',
+        },
     ];
 
     columns: any[] = [
         {
             label: 'Min',
-            value: 'min'
+            value: 'min',
         },
         {
             label: 'Max',
-            value: 'max'
+            value: 'max',
         },
         {
             label: 'Avg',
-            value: 'avg'
+            value: 'avg',
         },
         {
             label: 'Sum',
-            value: 'sum'
+            value: 'sum',
         },
         {
             label: 'Last',
-            value: 'last'
-        }
+            value: 'last',
+        },
     ];
     tags = [];
-    constructor(private fb: FormBuilder) { }
+    constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
-        this.widget.settings.legend.columns = this.widget.settings.legend.columns || [];
+        this.widget.settings.legend.columns =
+            this.widget.settings.legend.columns || [];
         // populate form controls
         this.createForm();
         for (let i = 0; i < this.widget.queries.length; i++) {
             const query = this.widget.queries[i];
-            for ( let j = 0; query.filters && j < query.filters.length; j++ ) {
-                if ( query.filters[j].groupBy ) {
+            for (let j = 0; query.filters && j < query.filters.length; j++) {
+                if (query.filters[j].groupBy) {
                     this.tags.push(query.filters[j].tagk);
                 }
             }
@@ -109,32 +119,38 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     }
 
     createForm() {
-
         this.widgetConfigLegend = this.fb.group({
-            display:   new FormControl( this.widget.settings.legend.display || false ),
-            position: new FormControl(this.widget.settings.legend.position || 'bottom'),
+            display: new FormControl(
+                this.widget.settings.legend.display || false,
+            ),
+            position: new FormControl(
+                this.widget.settings.legend.position || 'bottom',
+            ),
             columns: new FormControl(this.widget.settings.legend.columns),
-            tags: new FormControl(this.widget.settings.legend.tags || [])
+            tags: new FormControl(this.widget.settings.legend.tags || []),
         });
 
         this.subscription = this.widgetConfigLegend.valueChanges
-                                                        .pipe(debounceTime(500))
-                                                        .subscribe(data => {
-                                                            this.widgetChange.emit( {action: 'SetLegend', payload: {data: data} } );
-                                                        });
+            .pipe(debounceTime(500))
+            .subscribe((data) => {
+                this.widgetChange.emit({
+                    action: 'SetLegend',
+                    payload: { data: data },
+                });
+            });
 
         // this.formatsubs = this.widgetConfigLegend.controls.format.valueChanges.subscribe( format => {
-            // this.widgetConfigLegend.controls.position.setValue(format === 'table' ? 'right' : 'bottom');
+        // this.widgetConfigLegend.controls.position.setValue(format === 'table' ? 'right' : 'bottom');
         // });
     }
 
     setLegendColumns(e) {
         const column = e.source.value;
         const columns = this.widgetConfigLegend.controls.columns.value;
-        if ( e.checked ) {
+        if (e.checked) {
             columns.push(column);
         } else {
-            columns.splice( columns.indexOf(column),1);
+            columns.splice(columns.indexOf(column), 1);
         }
         this.widgetConfigLegend.controls.columns.setValue(columns);
     }

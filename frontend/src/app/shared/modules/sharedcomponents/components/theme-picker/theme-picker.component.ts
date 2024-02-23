@@ -14,20 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    Output,
+    EventEmitter,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuTrigger } from '@angular/material/menu';
 
+interface ThemeOptionData {
+    label: string;
+    value: string;
+}
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'theme-picker',
     templateUrl: './theme-picker.component.html',
     styleUrls: ['./theme-picker.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class ThemePickerComponent implements OnInit {
-
     @HostBinding('class.nav-theme-picker') private _hostClass = true;
 
     @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
@@ -40,24 +50,22 @@ export class ThemePickerComponent implements OnInit {
         return this.themeClass;
     }
 
-    themeOptions: Array<object> = [
+    themeOptions: Array<ThemeOptionData> = [
         {
             label: 'Developing',
-            value: 'developing' // light theme in progress
+            value: 'developing', // light theme in progress
         },
         {
             label: 'Light',
-            value: 'light' // light theme
+            value: 'light', // light theme
         },
         {
             label: 'Dark',
-            value: 'dark'
-        }
+            value: 'dark',
+        },
     ];
 
-    constructor(
-        private overlayContainer: OverlayContainer
-    ) { }
+    constructor(private overlayContainer: OverlayContainer) {}
 
     ngOnInit() {
         // NOTE: need some way get user settings for theme
@@ -82,5 +90,4 @@ export class ThemePickerComponent implements OnInit {
         // docBodyClasses.add(this.themeClass + '-theme');
         docBody.setAttribute('theme', this.themeClass);
     }
-
 }

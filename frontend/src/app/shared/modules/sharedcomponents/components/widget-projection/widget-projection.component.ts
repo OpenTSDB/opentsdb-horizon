@@ -19,7 +19,7 @@ import {
     OnInit,
     HostBinding,
     Input,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -29,17 +29,16 @@ import { Observable, Subscription } from 'rxjs';
     selector: 'widget-projection',
     templateUrl: './widget-projection.component.html',
     styleUrls: ['./widget-projection.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetProjectionComponent implements OnInit {
-
     @HostBinding('class.widget-projection') private hostClass = true;
 
     @Input() title: any;
 
-    constructor() { }
+    constructor() {}
 
     ngOnInit() {
+        // do nothing
     }
-
 }

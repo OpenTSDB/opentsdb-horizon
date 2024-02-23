@@ -16,7 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'aliasmetric'})
+@Pipe({ name: 'aliasmetric' })
 export class AliasDisplayPipe implements PipeTransform {
     transform(value: string): string {
         // format is mid~metricname~alias (alias is optional)

@@ -17,33 +17,30 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 export class SetAuth {
-  static type = '[Auth] Set Auth';
+    static type = '[Auth] Set Auth';
 
-  constructor(public readonly payload: string) {}
+    constructor(public readonly payload: string) {}
 }
 
 export interface AuthStateModel {
-  auth: string; //valid/invalid/unknown
+    auth: string; // valid/invalid/unknown
 }
-
 
 @State<AuthStateModel>({
-  name: 'authState',
-  defaults: {
-      auth:'unknown'
-    }
+    name: 'authState',
+    defaults: {
+        auth: 'unknown',
+    },
 })
-
 export class AuthState {
-  @Selector()
-  static getAuth(state: AuthStateModel) {
-    return state.auth;
-  }
+    @Selector()
+    static getAuth(state: AuthStateModel): string {
+        return state.auth;
+    }
 
-  @Action(SetAuth)
-  setAuth( ctx : StateContext<AuthStateModel>, { payload }: SetAuth) {
-    const state = ctx.getState();
-    ctx.setState({...state, auth:payload});
-  }
+    @Action(SetAuth)
+    setAuth(ctx: StateContext<AuthStateModel>, { payload }: SetAuth): void {
+        const state = ctx.getState();
+        ctx.setState({ ...state, auth: payload });
+    }
 }
-

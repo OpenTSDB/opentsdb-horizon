@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TimeseriesLegendComponent } from './timeseries-legend.component';
 
 describe('TimeseriesLegendComponent', () => {
-  let component: TimeseriesLegendComponent;
-  let fixture: ComponentFixture<TimeseriesLegendComponent>;
+    let component: TimeseriesLegendComponent;
+    let fixture: ComponentFixture<TimeseriesLegendComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TimeseriesLegendComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [TimeseriesLegendComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TimeseriesLegendComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TimeseriesLegendComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

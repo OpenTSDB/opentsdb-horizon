@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavbarClipboardMenuComponent } from './navbar-clipboard-menu.component';
 
 describe('NavbarClipboardMenuComponent', () => {
-  let component: NavbarClipboardMenuComponent;
-  let fixture: ComponentFixture<NavbarClipboardMenuComponent>;
+    let component: NavbarClipboardMenuComponent;
+    let fixture: ComponentFixture<NavbarClipboardMenuComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavbarClipboardMenuComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavbarClipboardMenuComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarClipboardMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavbarClipboardMenuComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

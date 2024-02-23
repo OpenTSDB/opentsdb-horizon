@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WidgetConfigQueryInspectorComponent } from './widget-config-query-inspector.component';
 
 describe('WidgetConfigQueryInspectorComponent', () => {
-  let component: WidgetConfigQueryInspectorComponent;
-  let fixture: ComponentFixture<WidgetConfigQueryInspectorComponent>;
+    let component: WidgetConfigQueryInspectorComponent;
+    let fixture: ComponentFixture<WidgetConfigQueryInspectorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WidgetConfigQueryInspectorComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [WidgetConfigQueryInspectorComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetConfigQueryInspectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(WidgetConfigQueryInspectorComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

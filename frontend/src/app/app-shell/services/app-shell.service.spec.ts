@@ -19,10 +19,10 @@ import { TestBed } from '@angular/core/testing';
 import { AppShellService } from './app-shell.service';
 
 describe('AppShellService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: AppShellService = TestBed.inject(AppShellService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: AppShellService = TestBed.inject(AppShellService);
+        expect(service).toBeTruthy();
+    });
 });

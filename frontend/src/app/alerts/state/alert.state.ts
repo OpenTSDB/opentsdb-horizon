@@ -19,11 +19,8 @@ import {
     State,
     StateContext,
     Action,
-    Selector,
-    createSelector
+    Selector
 } from '@ngxs/store';
-
-
 
 import { HttpService } from '../../core/http/http.service';
 import { AlertConverterService } from '../services/alert-converter.service';
@@ -57,16 +54,15 @@ export class GetAlertDetailsById {
             alertGroupingRules: [],
             labels: [],
             threshold: {},
-            notification: {}
-        }
-    }
+            notification: {},
+        },
+    },
 })
-
 export class AlertState {
     constructor(
         private httpService: HttpService,
-        private alertConverter: AlertConverterService
-    ) { }
+        private alertConverter: AlertConverterService,
+    ) {}
 
     @Selector() static getAlertDetails(state: AlertStateModel) {
         return state.data;
@@ -78,17 +74,30 @@ export class AlertState {
     }
 
     @Action(GetAlertDetailsById)
-    getAlertDetailsById(ctx: StateContext<AlertStateModel>, { id: id }: GetAlertDetailsById) {
+    getAlertDetailsById(
+        ctx: StateContext<AlertStateModel>,
+        { id: id }: GetAlertDetailsById,
+    ) {
         const state = ctx.getState();
         ctx.patchState({ status: 'loading', loaded: false, error: {} });
         this.httpService.getAlertDetailsById(id).subscribe(
-            data => {
+            (data) => {
                 data = this.alertConverter.convert(data);
-                ctx.patchState({data: data, status: 'success', loaded: true, error: {}});
+                ctx.patchState({
+                    data: data,
+                    status: 'success',
+                    loaded: true,
+                    error: {},
+                });
             },
-            err => {
-                ctx.patchState({ data: {}, status: 'failed', loaded: false, error: err });
-            }
+            (err) => {
+                ctx.patchState({
+                    data: {},
+                    status: 'failed',
+                    loaded: false,
+                    error: err,
+                });
+            },
         );
     }
 }

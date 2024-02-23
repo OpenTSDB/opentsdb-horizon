@@ -19,10 +19,12 @@ import { TestBed } from '@angular/core/testing';
 import { AlertConverterService } from './alert-converter.service';
 
 describe('AlertConverterService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: AlertConverterService = TestBed.inject(AlertConverterService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: AlertConverterService = TestBed.inject(
+            AlertConverterService,
+        );
+        expect(service).toBeTruthy();
+    });
 });

@@ -19,10 +19,8 @@ import { CommonModule } from '@angular/common';
 import { DygraphsChartDirective } from './components/dygraphs-chart.directive';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: [DygraphsChartDirective],
-  exports: [DygraphsChartDirective]
+    imports: [CommonModule],
+    declarations: [DygraphsChartDirective],
+    exports: [DygraphsChartDirective],
 })
-export class DygraphsModule { }
+export class DygraphsModule {}

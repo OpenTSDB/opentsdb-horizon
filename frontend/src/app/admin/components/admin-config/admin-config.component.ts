@@ -15,8 +15,23 @@
  * limitations under the License.
  */
 
-import { ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators, FormsModule, NgForm } from '@angular/forms';
+import {
+    ChangeDetectorRef,
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    FormBuilder,
+    FormGroup,
+    FormArray,
+    FormControl,
+    Validators,
+    FormsModule,
+    NgForm,
+} from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { AppConfigService } from '../../../core/services/config.service';
 import { Subscription } from 'rxjs';
@@ -27,18 +42,18 @@ const alertRecipientLabelMap: any = {
     oc: 'OC',
     slack: 'Slack',
     opsgenie: 'OpsGenie',
-    pagerduty: 'PagerDuty'
+    pagerduty: 'PagerDuty',
 };
 
 @Component({
     selector: 'app-admin-config',
     templateUrl: './admin-config.component.html',
     styleUrls: ['./admin-config.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminConfigComponent implements OnInit, OnDestroy {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-section app-admin-config';
+    @HostBinding('class') classAttribute =
+    'app-admin-section app-admin-config';
 
     // FORM STUFF
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -51,10 +66,10 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private appConfig: AppConfigService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
     ) {
         this.configValues = this.appConfig.getConfig();
-        //console.log('CONFIG VALUES', this.configValues);
+        // console.log('CONFIG VALUES', this.configValues);
     }
 
     ngOnInit() {
@@ -62,10 +77,9 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     private setupForm() {
-
         this.adminConfigForm = <FormGroup>this.fb.group({});
 
-        let application = this.fb.group({
+        const application = this.fb.group({
             name: this.configValues.name || 'OpenTSDB',
             production: this.configValues.production || false,
             readonly: this.configValues.readonly || false,
@@ -75,26 +89,26 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('application', application);
 
-        let uiBranding = this.fb.group({
+        const uiBranding = this.fb.group({
             logo: this.fb.group({
                 imageUrl: this.configValues.uiBranding.logo.imageUrl || '',
-                homeUrl: this.configValues.uiBranding.logo.homeUrl || ''
-            })
+                homeUrl: this.configValues.uiBranding.logo.homeUrl || '',
+            }),
         });
 
         this.adminConfigForm.addControl('uiBranding', uiBranding);
 
-        let endpoints = this.fb.group({
+        const endpoints = this.fb.group({
             tsdb_host: this.configValues.tsdb_host || '',
             tsdb_hosts: new FormArray([]),
             webUI: this.configValues.webUI || '',
             configdb: this.configValues.configdb || '',
             metaApi: this.configValues.metaApi || '',
-            auraUI: this.configValues.auraUI || ''
+            auraUI: this.configValues.auraUI || '',
         });
 
-        let thostsControl = <FormArray>endpoints.get('tsdb_hosts');
-        let thosts = this.configValues.tsdb_hosts || [];
+        const thostsControl = <FormArray>endpoints.get('tsdb_hosts');
+        const thosts = this.configValues.tsdb_hosts || [];
 
         for (let i = 0; i < thosts.length; i++) {
             thostsControl.push(new FormControl(thosts[i]));
@@ -102,9 +116,9 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('endpoints', endpoints);
 
-        let alert = this.fb.group({
+        const alert = this.fb.group({
             alert_history_url: this.configValues.alert_history_url || '',
-            recipient: this.fb.group({})
+            recipient: this.fb.group({}),
         });
 
         let recipients = Object.keys(this.configValues.alert.recipient);
@@ -114,17 +128,19 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
         const recipientControl = <FormGroup>alert.get('recipient');
 
         for (let i = 0; i < recipients.length; i++) {
-            let rKey = recipients[i];
-            let rObj = this.configValues.alert.recipient[rKey];
-            rObj.label = (alertRecipientLabelMap[rKey]) ? alertRecipientLabelMap[rKey] : rKey; // add label
+            const rKey = recipients[i];
+            const rObj = this.configValues.alert.recipient[rKey];
+            rObj.label = alertRecipientLabelMap[rKey]
+                ? alertRecipientLabelMap[rKey]
+                : rKey; // add label
             recipientControl.addControl(rKey, this.fb.group(rObj));
         }
 
         this.adminConfigForm.addControl('alert', alert);
 
-        let helpLinks = new FormArray([]);
+        const helpLinks = new FormArray([]);
 
-        let configHelpLinks = this.configValues.helpLinks;
+        const configHelpLinks = this.configValues.helpLinks;
 
         for (let i = 0; i < configHelpLinks.length; i++) {
             helpLinks.push(this.fb.group(configHelpLinks[i]));
@@ -132,22 +148,22 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('helpLinks', helpLinks);
 
-        let modules = this.fb.group({});
+        const modules = this.fb.group({});
 
-        let moduleKeys = Object.keys(this.configValues.modules);
+        const moduleKeys = Object.keys(this.configValues.modules);
 
         for (let i = 0; i < moduleKeys.length; i++) {
-            let mKey = moduleKeys[i];
-            let module = this.configValues.modules[mKey];
+            const mKey = moduleKeys[i];
+            const module = this.configValues.modules[mKey];
 
-            let moduleControl = this.fb.group({});
+            const moduleControl = this.fb.group({});
 
-            let submoduleKeys = Object.keys(module);
+            const submoduleKeys = Object.keys(module);
 
             for (let j = 0; j < submoduleKeys.length; j++) {
-                let smKey = submoduleKeys[j];
-                let submodule = module[smKey];
-                let submoduleControl = this.fb.group(submodule);
+                const smKey = submoduleKeys[j];
+                const submodule = module[smKey];
+                const submoduleControl = this.fb.group(submodule);
                 moduleControl.addControl(smKey, submoduleControl);
             }
 
@@ -156,41 +172,53 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('modules', modules);
 
-        let namespace = this.fb.group(this.configValues.namespace);
+        const namespace = this.fb.group(this.configValues.namespace);
 
         this.adminConfigForm.addControl('namespace', namespace);
 
-        let auth = this.fb.group(this.configValues.auth);
+        const auth = this.fb.group(this.configValues.auth);
 
         this.adminConfigForm.addControl('auth', auth);
 
-        //console.log('%cFORM GROUP', 'color: white; background: purple; padding: 2px;', this.adminConfigForm.getRawValue());
+        // console.log('%cFORM GROUP', 'color: white; background: purple; padding: 2px;', this.adminConfigForm.getRawValue());
 
-        //this.subscription.add(this.adminConfigForm.valueChanges.subscribe((changes: any) => {
-            //console.log('===>> CHANGES ::: ', changes);
-            //this.cdr.detectChanges();
-        //}));
+        // this.subscription.add(this.adminConfigForm.valueChanges.subscribe((changes: any) => {
+        // console.log('===>> CHANGES ::: ', changes);
+        // this.cdr.detectChanges();
+        // }));
     }
 
     // quick form accessors
-    get uiBranding(): FormGroup { return <FormGroup>this.adminConfigForm.get('uiBranding'); }
-    get auth(): FormGroup { return <FormGroup>this.adminConfigForm.get('auth'); }
-    get alert(): FormGroup { return <FormGroup>this.adminConfigForm.get('alert'); }
-    get endpoints(): FormGroup { return <FormGroup>this.adminConfigForm.get('endpoints'); }
-    get helpLinks(): FormArray { return <FormArray>this.adminConfigForm.get('helpLinks'); }
-    get modules(): FormGroup { return <FormGroup>this.adminConfigForm.get('modules'); }
+    get uiBranding(): FormGroup {
+        return <FormGroup>this.adminConfigForm.get('uiBranding');
+    }
+    get auth(): FormGroup {
+        return <FormGroup>this.adminConfigForm.get('auth');
+    }
+    get alert(): FormGroup {
+        return <FormGroup>this.adminConfigForm.get('alert');
+    }
+    get endpoints(): FormGroup {
+        return <FormGroup>this.adminConfigForm.get('endpoints');
+    }
+    get helpLinks(): FormArray {
+        return <FormArray>this.adminConfigForm.get('helpLinks');
+    }
+    get modules(): FormGroup {
+        return <FormGroup>this.adminConfigForm.get('modules');
+    }
 
     // MODULE HELPERS
     getModuleKeys() {
-        let modules = this.modules;
-        let keys = Object.keys(modules.controls);
+        const modules = this.modules;
+        const keys = Object.keys(modules.controls);
         return keys;
     }
 
     getModuleSections(moduleKey: string) {
-        let modules = this.modules;
-        let module = <FormGroup>modules.get(moduleKey);
-        let sections = Object.keys(module.controls);
+        const modules = this.modules;
+        const module = <FormGroup>modules.get(moduleKey);
+        const sections = Object.keys(module.controls);
     }
 
     // TSDB METRIC HOSTS
@@ -205,7 +233,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     tsdbMetricHostListener(data: any) {
-        switch(data.action) {
+        switch (data.action) {
             case 'remove':
                 this.removeTsdbMetricHost(data.index);
                 break;
@@ -234,7 +262,10 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     // ALERT RECIPIENT TYPES
     addAlertRecipient(recipientData: any) {
         const control = <FormGroup>this.alert.get('recipient');
-        control.addControl(recipientData.label.toLowerCase(), new FormControl(recipientData));
+        control.addControl(
+            recipientData.label.toLowerCase(),
+            new FormControl(recipientData),
+        );
     }
 
     removeAlertRecipient(recipientLabel: any) {
@@ -243,19 +274,20 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     get alertRecipientKeys(): any[] {
-
-        let recipientControl: FormGroup = <FormGroup>this.alert.get('recipient');
-        let keys = Object.keys(recipientControl['controls']);
+        const recipientControl: FormGroup = <FormGroup>(
+            this.alert.get('recipient')
+        );
+        const keys = Object.keys(recipientControl['controls']);
 
         // make sure http and email are first
-        let recipientKeys = ['http', 'email'];
+        const recipientKeys = ['http', 'email'];
 
-        let httpIdx = keys.indexOf('http');
+        const httpIdx = keys.indexOf('http');
         if (httpIdx >= 0) {
             keys.splice(httpIdx, 1);
         }
 
-        let emailIdx = keys.indexOf('email');
+        const emailIdx = keys.indexOf('email');
         if (emailIdx >= 0) {
             keys.splice(emailIdx, 1);
         }
@@ -264,15 +296,15 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     getAlertRecipientGroup(key: string): FormGroup {
-        let recipientControl: FormGroup = <FormGroup>this.alert.get('recipient');
-        let recipientGroup = <FormGroup>recipientControl['controls'][key];
+        const recipientControl: FormGroup = <FormGroup>(
+            this.alert.get('recipient')
+        );
+        const recipientGroup = <FormGroup>recipientControl['controls'][key];
         return recipientGroup;
     }
-
 
     // LAST
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

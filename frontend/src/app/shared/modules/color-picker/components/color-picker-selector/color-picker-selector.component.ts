@@ -18,7 +18,6 @@
  * TODO: Need to re-evaluate this file and clean up some of the non-used code
  */
 
-
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
@@ -34,9 +33,14 @@ import {
     Renderer2,
     SimpleChanges,
     ViewChild,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators
+} from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { HostListener, HostBinding } from '@angular/core';
@@ -55,16 +59,15 @@ interface ColorOption {
     styleUrls: ['./color-picker-selector.component.scss'],
     encapsulation: ViewEncapsulation.None,
     preserveWhitespaces: false,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ColorPickerSelectorComponent
-    implements AfterViewInit, OnInit, OnChanges, OnDestroy {
-
+export class ColorPickerSelectorComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
     embedded = 'embedded';
     dropDownNoButton = 'dropDownNoButton';
     dropDown = 'dropDown';
 
-    @HostBinding('class.color-picker-selector-component') private _hostClass = true;
+    @HostBinding('class.color-picker-selector-component') private _hostClass =
+    true;
 
     // 3 Supported Modes: dropDown, dropDownNoButton, embedded
     // If using dropDownNoButton, programatically change [isOpen]
@@ -80,11 +83,11 @@ export class ColorPickerSelectorComponent
     /**
      * Change height base of the selector
      */
-    @Input('height')
+    @Input()
     set height(value: number) {
         this._height = value;
     }
-    /*get selectorHeight(): number {
+    /* get selectorHeight(): number {
         return this._height;
     }
     get stripHeight(): number {
@@ -103,7 +106,7 @@ export class ColorPickerSelectorComponent
         if (!value || value.toLowerCase() === 'auto') {
             this._selectedColor = '#000000';
         } else {
-            this._selectedColor = isValidColor(value) ? value : '#000000' ;
+            this._selectedColor = isValidColor(value) ? value : '#000000';
         }
     }
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
@@ -196,10 +199,23 @@ export class ColorPickerSelectorComponent
      */
     heightOfComponent: number;
 
-    presetColors = [ { hex: '#000000', rgb: [0, 0, 0], name:'Black' }, { hex: '#FFFFFF' , rgb: [255,255,255], name:'White' }, { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' }, { hex: '#1E90FF', rgb: [30, 144, 255], name:'Dodger blue' },
-        { hex: '#228B22', rgb: [34, 139, 34], name:'Forest green' }, { hex: '#FF00FF', rgb: [255, 0, 255], name:'Magenta' }, { hex: '#FFD700', rgb: [255, 215, 0], name:'Gold' }, { hex: '#0000FF', rgb: [0, 0, 255], name:'Blue' },
-        { hex: '#00FF00', rgb: [0, 255, 0], name:'Lime' }, { hex: '#FFA500', rgb: [255, 165, 0], name:'Orange' }, { hex: '#FF4500', rgb: [255, 69, 0], name:'Orange red' }, { hex: '#808000', rgb: [128, 128, 0], name:'Olive' },
-        { hex: '#800080', rgb: [128,0,128], name:'Purple' }, { hex: '#FFFF00', rgb: [255, 255, 0], name:'Yellow' }, { hex: '#FF0000', rgb: [255, 0, 0], name:'Red' }, { hex: '#A52A2A', rgb: [165, 42, 42], name:'Brown' }
+    presetColors = [
+        { hex: '#000000', rgb: [0, 0, 0], name: 'Black' },
+        { hex: '#FFFFFF', rgb: [255, 255, 255], name: 'White' },
+        { hex: '#00FFFF', rgb: [0, 255, 255], name: 'Aqua' },
+        { hex: '#1E90FF', rgb: [30, 144, 255], name: 'Dodger blue' },
+        { hex: '#228B22', rgb: [34, 139, 34], name: 'Forest green' },
+        { hex: '#FF00FF', rgb: [255, 0, 255], name: 'Magenta' },
+        { hex: '#FFD700', rgb: [255, 215, 0], name: 'Gold' },
+        { hex: '#0000FF', rgb: [0, 0, 255], name: 'Blue' },
+        { hex: '#00FF00', rgb: [0, 255, 0], name: 'Lime' },
+        { hex: '#FFA500', rgb: [255, 165, 0], name: 'Orange' },
+        { hex: '#FF4500', rgb: [255, 69, 0], name: 'Orange red' },
+        { hex: '#808000', rgb: [128, 128, 0], name: 'Olive' },
+        { hex: '#800080', rgb: [128, 0, 128], name: 'Purple' },
+        { hex: '#FFFF00', rgb: [255, 255, 0], name: 'Yellow' },
+        { hex: '#FF0000', rgb: [255, 0, 0], name: 'Red' },
+        { hex: '#A52A2A', rgb: [165, 42, 42], name: 'Brown' }
     ];
 
     constructor(
@@ -207,33 +223,47 @@ export class ColorPickerSelectorComponent
         private render: Renderer2,
         private cs: ColorService,
         @Inject(EMPTY_COLOR) private emptyColor: string
-    ) { }
+    ) {}
 
     ngOnInit() {
-        this._tmpSelectedColor = new BehaviorSubject<string>(this._selectedColor);
+        this._tmpSelectedColor = new BehaviorSubject<string>(
+            this._selectedColor
+        );
         if (this.pickerMode === this.embedded) {
             this.heightOfComponent = 232;
         } else {
             this.heightOfComponent = 280; // has cancel and apply buttons
         }
 
-        this._tmpSelectedColorSub = this._tmpSelectedColor.subscribe(color => {
-            if (color !== this._selectedColor && isValidColor(color)) {
-                if (this.hexForm.get('hexCode').value !== color) {
-                    this.hexForm.setValue({ hexCode: color }, { emitEvent: false });
-                }
-                // if embedded, immedietly emit new color
-                if (this.pickerMode === this.embedded) {
-                    this.changeSelectedColor.emit(coerceHexaColor(color));
-                } else {
-                    this.selectedColor = color;
+        this._tmpSelectedColorSub = this._tmpSelectedColor.subscribe(
+            (color) => {
+                if (color !== this._selectedColor && isValidColor(color)) {
+                    if (this.hexForm.get('hexCode').value !== color) {
+                        this.hexForm.setValue(
+                            { hexCode: color },
+                            { emitEvent: false }
+                        );
+                    }
+                    // if embedded, immedietly emit new color
+                    if (this.pickerMode === this.embedded) {
+                        this.changeSelectedColor.emit(coerceHexaColor(color));
+                    } else {
+                        this.selectedColor = color;
+                    }
                 }
             }
-        });
+        );
 
         // hex form
         this.hexForm = this.formBuilder.group({
-            hexCode: [this.selectedColor, [Validators.minLength(7), Validators.maxLength(7), Validators.pattern(/^#[0-9A-F]{6}$/i)]],
+            hexCode: [
+                this.selectedColor,
+                [
+                    Validators.minLength(7),
+                    Validators.maxLength(7),
+                    Validators.pattern(/^#[0-9A-F]{6}$/i)
+                ]
+            ]
         });
 
         // rgb dynamic form
@@ -246,9 +276,9 @@ export class ColorPickerSelectorComponent
                         Validators.min(0),
                         Validators.max(256),
                         Validators.minLength(1),
-                        Validators.maxLength(3),
+                        Validators.maxLength(3)
                     ],
-                    updateOn: 'blur',
+                    updateOn: 'blur'
                 }))
         );
         this.rgbForm = this.formBuilder.group(rgbGroup);
@@ -266,17 +296,22 @@ export class ColorPickerSelectorComponent
      * @param changes SimpleChanges
      */
     ngOnChanges(changes: SimpleChanges) {
-        if ('selectedColor' in changes && changes['selectedColor'].currentValue !== this.emptyColor) {
+        if (
+            'selectedColor' in changes &&
+            changes['selectedColor'].currentValue !== this.emptyColor
+        ) {
             if (!this._isPressed) {
                 this._updateRGB();
                 this._updateRGBA();
-                /*if (this._blockContext) {
+                /* if (this._blockContext) {
                     this._fillGradient();
                 }*/
             }
 
             const rgb = this._getRGB();
-            const o = Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
+            const o = Math.round(
+                (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000
+            );
             this.textClass = o > 125 ? 'black' : 'white';
         }
     }
@@ -296,20 +331,27 @@ export class ColorPickerSelectorComponent
         }
     }
 
-    ngAfterViewInit() { }
+    // NOTE: cleanup? is this even needed?
+    ngAfterViewInit() {
+        /* do nothing */
+    }
 
     /**
      * Watch change on forms
      */
     private _onChanges() {
         // validate digited code and update when digitation is finished
-        this._hexValuesSub = this.hexForm.get('hexCode').valueChanges.subscribe(value => {
-            if (!this._isPressed && isValidColor(value)) {
-                this._tmpSelectedColor.next(coerceHexaColor(value) || this.emptyColor);
-            }
-        });
+        this._hexValuesSub = this.hexForm
+            .get('hexCode')
+            .valueChanges.subscribe((value) => {
+                if (!this._isPressed && isValidColor(value)) {
+                    this._tmpSelectedColor.next(
+                        coerceHexaColor(value) || this.emptyColor
+                    );
+                }
+            });
 
-        this._rgbValuesSub = this.rgbForm.valueChanges.subscribe(controls => {
+        this._rgbValuesSub = this.rgbForm.valueChanges.subscribe((controls) => {
             const data: string[] = [];
             // eslint-disable-next-line guard-for-in
             for (const key in controls) {
@@ -362,7 +404,9 @@ export class ColorPickerSelectorComponent
             }
         });
 
-        return coerceHexaColor(`${hex[0]}${hex[1]}${hex[2]}`) || this.emptyColor;
+        return (
+            coerceHexaColor(`${hex[0]}${hex[1]}${hex[2]}`) || this.emptyColor
+        );
     }
 
     /**
@@ -442,5 +486,4 @@ export class ColorPickerSelectorComponent
     userClickedCancel() {
         this.clickedCancel.emit();
     }
-
 }

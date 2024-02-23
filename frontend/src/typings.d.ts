@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 /* SystemJS module definition */
-declare var Chart: any;
-declare var module: NodeModule;
+declare let Chart: any;
+declare let module: NodeModule;
 interface NodeModule {
-  id: string;
+    id: string;
 }

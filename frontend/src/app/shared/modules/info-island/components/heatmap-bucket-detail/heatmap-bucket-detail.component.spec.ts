@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HeatmapBucketDetailComponent } from './heatmap-bucket-detail.component';
 
 describe('HeatmapBucketDetailComponent', () => {
-  let component: HeatmapBucketDetailComponent;
-  let fixture: ComponentFixture<HeatmapBucketDetailComponent>;
+    let component: HeatmapBucketDetailComponent;
+    let fixture: ComponentFixture<HeatmapBucketDetailComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HeatmapBucketDetailComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [HeatmapBucketDetailComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeatmapBucketDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HeatmapBucketDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

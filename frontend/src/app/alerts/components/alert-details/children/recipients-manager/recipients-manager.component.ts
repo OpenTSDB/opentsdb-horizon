@@ -14,8 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ElementRef, HostListener,
-    Input, Output, EventEmitter, ViewChild, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ElementRef,
+    HostListener,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    OnDestroy,
+    OnChanges,
+    SimpleChanges,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatInput } from '@angular/material/input';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -24,7 +37,13 @@ import { Mode, RecipientType, Recipient } from './models';
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 // eslint-disable-next-line max-len
-import { RecipientsState, GetRecipients, PostRecipient, DeleteRecipient, UpdateRecipient } from '../../../../state/recipients-management.state';
+import {
+    RecipientsState,
+    GetRecipients,
+    PostRecipient,
+    DeleteRecipient,
+    UpdateRecipient,
+} from '../../../../state/recipients-management.state';
 import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { AppConfigService } from '../../../../../core/services/config.service';
@@ -36,15 +55,23 @@ import { AppConfigService } from '../../../../../core/services/config.service';
     selector: 'recipients-manager',
     templateUrl: './recipients-manager.component.html',
     styleUrls: ['./recipients-manager.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
+export class AlertConfigurationContactsComponent
+implements OnInit, OnChanges, OnDestroy {
+    @HostBinding('class.alert-configuration-contacts-component')
+    private _hostClass = true;
+    constructor(
+        private eRef: ElementRef,
+        private store: Store,
+        private utils: UtilsService,
+        private appConfig: AppConfigService,
+    ) {}
 
-export class AlertConfigurationContactsComponent implements OnInit, OnChanges, OnDestroy {
-    @HostBinding('class.alert-configuration-contacts-component') private _hostClass = true;
-    constructor(private eRef: ElementRef, private store: Store, private utils: UtilsService, private appConfig: AppConfigService ) { }
-
-    @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger, static: true }) private megaPanelTrigger: MatMenuTrigger;
-    @ViewChild('recipientInput', { read: MatInput, static: true }) private recipientInput: MatInput;
+    @ViewChild('recipientMenuTrigger', { read: MatMenuTrigger, static: true })
+    private megaPanelTrigger: MatMenuTrigger;
+    @ViewChild('recipientInput', { read: MatInput, static: true })
+    private recipientInput: MatInput;
 
     @Input() namespace: string;
     @Input() selectedAlertRecipients: any;
@@ -54,7 +81,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     megaPanelVisible: boolean = false;
     viewMode: Mode = Mode.all;
     recipientType: RecipientType;
-    recipientsFormData: {}; // map<RecipientType, Recipient>;
+    recipientsFormData: any; // map<RecipientType, Recipient>;
     tempRecipient: Recipient; // for canceling
     originalName = ''; // for canceling
     alertRecipients: Array<any>; // [{name, type}]
@@ -92,8 +119,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     // state control
     private nsRecipientSub: Subscription;
     private lastUpdatedRecipientSub: Subscription;
-    @Select(RecipientsState.GetRecipients) _namespaceRecipients$: Observable<any>;
-    @Select(RecipientsState.GetLastUpdated) _recipientLastUpdated$: Observable<any>;
+    @Select(RecipientsState.GetRecipients)
+    _namespaceRecipients$: Observable<any>;
+    @Select(RecipientsState.GetLastUpdated)
+    _recipientLastUpdated$: Observable<any>;
 
     /** ACCESSORS */
 
@@ -111,7 +140,12 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
                 return true;
             }
         } else if (this.recipientType === RecipientType.oc) {
-            if (this.ocName.errors || this.ocDisplayCount.errors || this.ocContext.errors || this.ocProperty.errors) {
+            if (
+                this.ocName.errors ||
+                this.ocDisplayCount.errors ||
+                this.ocContext.errors ||
+                this.ocProperty.errors
+            ) {
                 return true;
             }
         } else if (this.recipientType === RecipientType.email) {
@@ -131,9 +165,17 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             case this._mode.edit:
                 return 'Edit Recipients';
             case this._mode.editRecipient:
-                return 'Edit ' + this.typeToDisplayName(this.recipientType) + ' Recipient';
+                return (
+                    'Edit ' +
+                    this.typeToDisplayName(this.recipientType) +
+                    ' Recipient'
+                );
             case this._mode.createRecipient:
-                return 'Create new ' + this.typeToDisplayName(this.recipientType) + ' Recipient';
+                return (
+                    'Create new ' +
+                    this.typeToDisplayName(this.recipientType) +
+                    ' Recipient'
+                );
             default:
                 return 'Select Recipients';
         }
@@ -147,8 +189,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     ngOnInit() {
         this.config = this.appConfig.getConfig();
         this.types = Object.keys(RecipientType)
-            .filter(t => this.config.alert.recipient[t])
-            .filter(t => this.config.alert.recipient[t].enable);
+            .filter((t) => this.config.alert.recipient[t])
+            .filter((t) => this.config.alert.recipient[t].enable);
 
         this.populateEmptyRecipients();
         if (!this.alertRecipients) {
@@ -158,7 +200,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             this.namespace = '';
         }
 
-        this.nsRecipientSub = this._namespaceRecipients$.subscribe(data => {
+        this.nsRecipientSub = this._namespaceRecipients$.subscribe((data) => {
             this.namespaceRecipients = [];
             const _data = JSON.parse(JSON.stringify(data));
             // eslint-disable-next-line guard-for-in
@@ -166,13 +208,15 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
                 let recipients = _data.recipients[type];
                 if (recipients) {
                     // sort by name
-                    recipients.sort((a: any, b: any) => {
-                        return this.utils.sortAlphaNum(a.name, b.name);
-                    });
+                    recipients.sort((a: any, b: any) => this.utils.sortAlphaNum(a.name, b.name));
                     for (let _recipient of recipients) {
                         _recipient.type = type.toLowerCase();
                         this.namespaceRecipients.push(_recipient);
-                        if (_recipient.type === 'oc' && _recipient.context && _recipient.context !== 'live') {
+                        if (
+                            _recipient.type === 'oc' &&
+                            _recipient.context &&
+                            _recipient.context !== 'live'
+                        ) {
                             _recipient.context = 'analysis';
                         }
                     }
@@ -181,15 +225,24 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
             this.updateValidators();
         });
 
-        this.lastUpdatedRecipientSub = this._recipientLastUpdated$.subscribe(data => {
-            if (data && data.action) {
-                if (data.action.toLowerCase() === 'delete') {
-                    this.removeRecipientFromAlertRecipients(data.recipient.id);
-                } else if (data.action.toLowerCase() === 'update' || data.action.toLowerCase() === 'add') {
-                    this.modifyRecipientNameInAlertRecipients(data.recipient);
+        this.lastUpdatedRecipientSub = this._recipientLastUpdated$.subscribe(
+            (data) => {
+                if (data && data.action) {
+                    if (data.action.toLowerCase() === 'delete') {
+                        this.removeRecipientFromAlertRecipients(
+                            data.recipient.id,
+                        );
+                    } else if (
+                        data.action.toLowerCase() === 'update' ||
+                        data.action.toLowerCase() === 'add'
+                    ) {
+                        this.modifyRecipientNameInAlertRecipients(
+                            data.recipient,
+                        );
+                    }
                 }
-            }
-        });
+            },
+        );
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -204,10 +257,10 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
                 let alertRecipients = this.selectedAlertRecipients[type];
                 for (let recipient of alertRecipients) {
                     const o: any = { name: recipient.name, type: type };
-                    if ( recipient.id !== undefined ) {
+                    if (recipient.id !== undefined) {
                         o.id = recipient.id;
                     }
-                    if ( type === RecipientType.email ) {
+                    if (type === RecipientType.email) {
                         o.email = recipient.name;
                     }
                     this.alertRecipients.push(o);
@@ -258,7 +311,9 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
 
         if (mode === Mode.editRecipient) {
-            this.tempRecipient = { ...this.recipientsFormData[this.recipientType] };
+            this.tempRecipient = {
+                ...this.recipientsFormData[this.recipientType],
+            };
         }
         this.updateValidators();
 
@@ -282,7 +337,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     editRecipientMode($event, recipient: any) {
         // eslint-disable-next-line prefer-const
         this.recipientType = recipient.type;
-        this.recipientsFormData[this.recipientType] = {...recipient};
+        this.recipientsFormData[this.recipientType] = { ...recipient };
         this.originalName = recipient.name;
 
         if (this.recipientType !== RecipientType.email) {
@@ -290,19 +345,43 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
 
         // manually update validators values
-        this.opsGenieName.setValue(this.recipientsFormData[RecipientType.opsgenie].name);
-        this.opsGenieApiKey.setValue(this.recipientsFormData[RecipientType.opsgenie].apikey);
-        this.slackName.setValue(this.recipientsFormData[RecipientType.slack].name);
-        this.slackWebhook.setValue(this.recipientsFormData[RecipientType.slack].webhook);
+        this.opsGenieName.setValue(
+            this.recipientsFormData[RecipientType.opsgenie].name,
+        );
+        this.opsGenieApiKey.setValue(
+            this.recipientsFormData[RecipientType.opsgenie].apikey,
+        );
+        this.slackName.setValue(
+            this.recipientsFormData[RecipientType.slack].name,
+        );
+        this.slackWebhook.setValue(
+            this.recipientsFormData[RecipientType.slack].webhook,
+        );
         this.ocName.setValue(this.recipientsFormData[RecipientType.oc].name);
-        this.ocDisplayCount.setValue(this.recipientsFormData[RecipientType.oc].displaycount);
-        this.ocContext.setValue(this.recipientsFormData[RecipientType.oc].context);
-        this.ocProperty.setValue(this.recipientsFormData[RecipientType.oc].opsdbproperty);
-        this.httpName.setValue(this.recipientsFormData[RecipientType.http].name);
-        this.httpEndpoint.setValue(this.recipientsFormData[RecipientType.http].endpoint);
-        this.emailAddress.setValue(this.recipientsFormData[RecipientType.email].name);
-        this.pagerDutyName.setValue(this.recipientsFormData[RecipientType.pagerduty].name);
-        this.pagerDutyRoutingKey.setValue(this.recipientsFormData[RecipientType.pagerduty].routingkey);
+        this.ocDisplayCount.setValue(
+            this.recipientsFormData[RecipientType.oc].displaycount,
+        );
+        this.ocContext.setValue(
+            this.recipientsFormData[RecipientType.oc].context,
+        );
+        this.ocProperty.setValue(
+            this.recipientsFormData[RecipientType.oc].opsdbproperty,
+        );
+        this.httpName.setValue(
+            this.recipientsFormData[RecipientType.http].name,
+        );
+        this.httpEndpoint.setValue(
+            this.recipientsFormData[RecipientType.http].endpoint,
+        );
+        this.emailAddress.setValue(
+            this.recipientsFormData[RecipientType.email].name,
+        );
+        this.pagerDutyName.setValue(
+            this.recipientsFormData[RecipientType.pagerduty].name,
+        );
+        this.pagerDutyRoutingKey.setValue(
+            this.recipientsFormData[RecipientType.pagerduty].routingkey,
+        );
     }
 
     addUserInputToAlertRecipients($event: MatChipInputEvent) {
@@ -320,7 +399,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     saveCreatedRecipient($event) {
-        let newRecipient = { ... this.recipientsFormData[this.recipientType] };
+        let newRecipient = { ...this.recipientsFormData[this.recipientType] };
         newRecipient.namespace = this.namespace;
         if (this.recipientType === RecipientType.email) {
             newRecipient.email = newRecipient.name;
@@ -332,7 +411,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     saveEditedRecipient($event) {
         // check if name has changed
         let updatedRecipient: any = {};
-        updatedRecipient = { ... this.recipientsFormData[this.recipientType] };
+        updatedRecipient = { ...this.recipientsFormData[this.recipientType] };
         updatedRecipient.namespace = this.namespace;
 
         this.store.dispatch(new UpdateRecipient(updatedRecipient));
@@ -352,8 +431,15 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     cancelEdit($event: Event) {
         // reset to old contact
         for (let i = 0; i < this.alertRecipients.length; i++) {
-            if (this.alertRecipients[i].id === this.recipientsFormData[this.recipientType].id) {
-                this.alertRecipients[i] = { id: this.tempRecipient.id, name: this.tempRecipient.name, type: this.tempRecipient.type };
+            if (
+                this.alertRecipients[i].id ===
+                this.recipientsFormData[this.recipientType].id
+            ) {
+                this.alertRecipients[i] = {
+                    id: this.tempRecipient.id,
+                    name: this.tempRecipient.name,
+                    type: this.tempRecipient.type,
+                };
                 break;
             }
         }
@@ -365,7 +451,8 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     contactMenuClosed($event: any) {
         if (this.viewMode !== Mode.all) {
             this.viewMode = Mode.all;
-            if (this._clickedCreateMenu > 0) { // needed to exit out of menu
+            if (this._clickedCreateMenu > 0) {
+                // needed to exit out of menu
                 this._clickedCreateMenu--;
             }
         }
@@ -377,7 +464,7 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let recipients: any = {};
         for (let alertRecipient of this.alertRecipients) {
             // [{name: blah, type: http}]
-            let simplifiedAlertRecipient = {...alertRecipient};
+            let simplifiedAlertRecipient = { ...alertRecipient };
             delete simplifiedAlertRecipient['type'];
             if (recipients[alertRecipient.type]) {
                 recipients[alertRecipient.type].push(simplifiedAlertRecipient);
@@ -396,28 +483,44 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         let recipient = this.getRecipientIfUniqueName(recipientName);
 
         if (recipient) {
-          this.addRecipientToAlertRecipients(null, recipient.id, recipient.name, recipient.type);
+            this.addRecipientToAlertRecipients(
+                null,
+                recipient.id,
+                recipient.name,
+                recipient.type,
+            );
         } else {
-          if (this.isEmailValid(recipientName)) {
-            this.recipientType = RecipientType.email;
-            this.recipientsFormData[this.recipientType].name = recipientName;
-            this.saveCreatedRecipient(null);
-            // eslint-disable-next-line max-len
-            this.addRecipientToAlertRecipients(null, this.recipientsFormData[this.recipientType].id, this.recipientsFormData[this.recipientType].name, this.recipientType);
-          }
+            if (this.isEmailValid(recipientName)) {
+                this.recipientType = RecipientType.email;
+                this.recipientsFormData[this.recipientType].name =
+                    recipientName;
+                this.saveCreatedRecipient(null);
+                // eslint-disable-next-line max-len
+                this.addRecipientToAlertRecipients(
+                    null,
+                    this.recipientsFormData[this.recipientType].id,
+                    this.recipientsFormData[this.recipientType].name,
+                    this.recipientType,
+                );
+            }
         }
     }
 
-    addRecipientToAlertRecipients($event: Event, id: number, name: string, type: RecipientType) {
+    addRecipientToAlertRecipients(
+        $event: Event,
+        id: number,
+        name: string,
+        type: RecipientType,
+    ) {
         if ($event) {
             $event.stopPropagation();
         }
         if (!this.isAlertRecipient(name, type)) {
             const o: any = { name: name, type: type };
-            if ( id ) {
+            if (id) {
                 o.id = id;
             }
-            if ( type === RecipientType.email ) {
+            if (type === RecipientType.email) {
                 o.email = name;
             }
             this.alertRecipients.push(o);
@@ -427,19 +530,22 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
     modifyRecipientNameInAlertRecipients(recipient) {
         for (let index = 0; index < this.alertRecipients.length; index++) {
-          if (this.alertRecipients[index].id === recipient.id ) {
-            this.alertRecipients[index].id = recipient.id;
-            this.alertRecipients[index].name = recipient.name;
-            this.emitAlertRecipients();
-            break;
-          }
+            if (this.alertRecipients[index].id === recipient.id) {
+                this.alertRecipients[index].id = recipient.id;
+                this.alertRecipients[index].name = recipient.name;
+                this.emitAlertRecipients();
+                break;
+            }
         }
-      }
+    }
 
     // OPERATIONS to get Recipient
     isAlertRecipient(name: string, type: RecipientType): boolean {
         for (let i = 0; i < this.alertRecipients.length; i++) {
-            if (this.alertRecipients[i].name === name && this.alertRecipients[i].type === type) {
+            if (
+                this.alertRecipients[i].name === name &&
+                this.alertRecipients[i].type === type
+            ) {
                 return true;
             }
         }
@@ -448,14 +554,23 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
     getRecipient(name: string, type: RecipientType): Recipient {
         for (let i = 0; i < this.namespaceRecipients.length; i++) {
-            if (this.namespaceRecipients[i].name === name && this.namespaceRecipients[i].type === type) {
+            if (
+                this.namespaceRecipients[i].name === name &&
+                this.namespaceRecipients[i].type === type
+            ) {
                 return this.namespaceRecipients[i];
             }
         }
     }
 
     removeRecipient(id: number, type: RecipientType) {
-        this.store.dispatch(new DeleteRecipient({ namespace: this.namespace, id: id, type: type }));
+        this.store.dispatch(
+            new DeleteRecipient({
+                namespace: this.namespace,
+                id: id,
+                type: type,
+            }),
+        );
     }
 
     removeRecipientFromAlertRecipients(id: number) {
@@ -492,12 +607,22 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
 
     populateEmptyRecipients() {
         let emptyRecipients = {};
-        let emptyOpsGenieRecipient = this.createDefaultRecipient(RecipientType.opsgenie);
-        let emptySlackRecipient = this.createDefaultRecipient(RecipientType.slack);
-        let emptyHTTPRecipient = this.createDefaultRecipient(RecipientType.http);
+        let emptyOpsGenieRecipient = this.createDefaultRecipient(
+            RecipientType.opsgenie,
+        );
+        let emptySlackRecipient = this.createDefaultRecipient(
+            RecipientType.slack,
+        );
+        let emptyHTTPRecipient = this.createDefaultRecipient(
+            RecipientType.http,
+        );
         let emptyOCRecipient = this.createDefaultRecipient(RecipientType.oc);
-        let emptyEmailRecipient = this.createDefaultRecipient(RecipientType.email);
-        let emptyPagerDutyRecipient = this.createDefaultRecipient(RecipientType.pagerduty);
+        let emptyEmailRecipient = this.createDefaultRecipient(
+            RecipientType.email,
+        );
+        let emptyPagerDutyRecipient = this.createDefaultRecipient(
+            RecipientType.pagerduty,
+        );
 
         // Set Defaults
         emptyOpsGenieRecipient.apikey = '';
@@ -543,15 +668,27 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     }
 
     isSlackWebhookCorrectLength(webhook: string): boolean {
-        return webhook && webhook.length > 0 && webhook.length <= this.slackWebhookMaxLength;
+        return (
+            webhook &&
+            webhook.length > 0 &&
+            webhook.length <= this.slackWebhookMaxLength
+        );
     }
 
     isOpsGenieApiKeyCorrectLength(apiKey: string): boolean {
-        return apiKey && apiKey.length > 0 && apiKey.length <= this.opsGenieApiKeyMaxLength;
+        return (
+            apiKey &&
+            apiKey.length > 0 &&
+            apiKey.length <= this.opsGenieApiKeyMaxLength
+        );
     }
 
     isPagerDutyRoutingKeyCorrectLength(routingkey: string): boolean {
-        return routingkey && routingkey.length > 0 && routingkey.length <= this.pagerDutyRoutingKeyMaxLength;
+        return (
+            routingkey &&
+            routingkey.length > 0 &&
+            routingkey.length <= this.pagerDutyRoutingKeyMaxLength
+        );
     }
 
     getRecipientItemsByType(type) {
@@ -576,7 +713,11 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         /* eslint-disable prefer-const */
         let recipients = [];
         for (let recipient of this.namespaceRecipients) {
-            if (filterOutAlertRecipients && recipient.type === type && !this.isAlertRecipient(recipient.name, recipient.type)) {
+            if (
+                filterOutAlertRecipients &&
+                recipient.type === type &&
+                !this.isAlertRecipient(recipient.name, recipient.type)
+            ) {
                 recipients.push(recipient);
             } else if (!filterOutAlertRecipients && recipient.type === type) {
                 recipients.push(recipient);
@@ -602,69 +743,128 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
         }
     }
 
-    forbiddenNameValidator(recipients: Array<Recipient>, currentRecipient): ValidatorFn {
+    forbiddenNameValidator(
+        recipients: Array<Recipient>,
+        currentRecipient,
+    ): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = false;
             // eslint-disable-next-line prefer-const
             for (let recipient of recipients) {
-                if (control.value.toLowerCase() === recipient.name.toLowerCase() && recipient.name !== currentRecipient.name) {
+                if (
+                    control.value.toLowerCase() ===
+                        recipient.name.toLowerCase() &&
+                    recipient.name !== currentRecipient.name
+                ) {
                     forbidden = true;
                 }
             }
             if (control.value.toLowerCase().trim().length < 2) {
                 forbidden = true;
             }
-            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
     emailValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = !this.isEmailValid(control.value);
-            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
     slackWebookValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = !this.isSlackWebhookCorrectLength(control.value);
-            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
     opsGenieApiKeyValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             let forbidden = !this.isOpsGenieApiKeyCorrectLength(control.value);
-            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
     pagerDutyRoutingKeyValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
-            let forbidden = !this.isPagerDutyRoutingKeyCorrectLength(control.value);
-            return forbidden ? {'forbiddenName': {value: control.value}} : null;
+            let forbidden = !this.isPagerDutyRoutingKeyCorrectLength(
+                control.value,
+            );
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
-    urlValidator() : ValidatorFn {
+    urlValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
-            let forbidden = !/^https:\/\/(www\.)?(([-a-zA-Z0-9@:%._[\]]{1,256}\.[a-zA-Z0-9()]{0,6}\b)|(\[?[a-fA-F0-9]*:[a-fA-F0-9:]+\]))([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/.test(control.value);
-            return forbidden ? { 'forbiddenName': { value: control.value } } : null;
+            // eslint-disable-next-line max-len
+            const urlRegexp = /^https:\/\/(www\.)?(([-a-zA-Z0-9@:%._[\]]{1,256}\.[a-zA-Z0-9()]{0,6}\b)|(\[?[a-fA-F0-9]*:[a-fA-F0-9:]+\]))([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+            let forbidden = !urlRegexp.test(control.value);
+
+            return forbidden
+                ? { forbiddenName: { value: control.value } }
+                : null;
         };
     }
 
     updateValidators() {
         /* eslint-disable max-len */
-        this.opsGenieName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.opsgenie), this.recipientsFormData[this.recipientType])]);
-        this.opsGenieApiKey = new FormControl('', [this.opsGenieApiKeyValidator()]);
+        this.opsGenieName = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.opsgenie),
+                this.recipientsFormData[this.recipientType],
+            ),
+        ]);
+        this.opsGenieApiKey = new FormControl('', [
+            this.opsGenieApiKeyValidator(),
+        ]);
         this.httpEndpoint = new FormControl('', [this.urlValidator()]);
-        this.slackName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.slack), this.recipientsFormData[this.recipientType])]);
+        this.slackName = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.slack),
+                this.recipientsFormData[this.recipientType],
+            ),
+        ]);
         this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
-        this.ocName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.oc), this.recipientsFormData[this.recipientType])]);
-        this.httpName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.http), this.recipientsFormData[this.recipientType])]);
-        this.emailAddress = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.email), this.recipientsFormData[this.recipientType]), this.emailValidator()]);
-        this.pagerDutyName = new FormControl('', [this.forbiddenNameValidator(this.getAllRecipientsForType(RecipientType.pagerduty), this.recipientsFormData[this.recipientType])]);
-        this.pagerDutyRoutingKey = new FormControl('', [this.pagerDutyRoutingKeyValidator()]);
+        this.ocName = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.oc),
+                this.recipientsFormData[this.recipientType],
+            ),
+        ]);
+        this.httpName = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.http),
+                this.recipientsFormData[this.recipientType],
+            ),
+        ]);
+        this.emailAddress = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.email),
+                this.recipientsFormData[this.recipientType],
+            ),
+            this.emailValidator(),
+        ]);
+        this.pagerDutyName = new FormControl('', [
+            this.forbiddenNameValidator(
+                this.getAllRecipientsForType(RecipientType.pagerduty),
+                this.recipientsFormData[this.recipientType],
+            ),
+        ]);
+        this.pagerDutyRoutingKey = new FormControl('', [
+            this.pagerDutyRoutingKeyValidator(),
+        ]);
     }
 
     trimRecipientName(name) {
@@ -675,10 +875,14 @@ export class AlertConfigurationContactsComponent implements OnInit, OnChanges, O
     // Listen if we should close panel
     @HostListener('document:click', ['$event'])
     clickOutsideComponent(event) {
-        if (!this.eRef.nativeElement.contains(event.target) && !this._clickedCreateMenu) {
+        if (
+            !this.eRef.nativeElement.contains(event.target) &&
+            !this._clickedCreateMenu
+        ) {
             this.collapseMegaPanel();
         }
-        if (this._clickedCreateMenu > 0) { // needed to exit out of menu
+        if (this._clickedCreateMenu > 0) {
+            // needed to exit out of menu
             this._clickedCreateMenu--;
         }
     }

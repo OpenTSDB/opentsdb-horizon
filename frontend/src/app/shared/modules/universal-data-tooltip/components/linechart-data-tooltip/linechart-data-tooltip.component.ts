@@ -22,11 +22,14 @@ import {
     Renderer2,
     ViewChild,
     ElementRef,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { TooltipDataService, TooltipData } from '../../services/tooltip-data.service';
+import {
+    TooltipDataService,
+    TooltipData,
+} from '../../services/tooltip-data.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
@@ -34,15 +37,17 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     selector: 'linechart-data-tooltip',
     templateUrl: './linechart-data-tooltip.component.html',
     styleUrls: ['./linechart-data-tooltip.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class LinechartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
-
+export class LinechartDataTooltipComponent
+    extends DataTooltipComponent
+    implements OnInit, OnDestroy {
     @HostBinding('class.linechart-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef, static: true }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef, static: true })
+    public ttOutputEl: ElementRef;
 
-    positionStrategy: string = 'sticky';
+    positionStrategy = 'sticky';
 
     private utils: UtilsService;
 
@@ -50,30 +55,22 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        _utils: UtilsService
+        _utils: UtilsService,
     ) {
-        super(
-            ttDataSvc,
-            renderer,
-            sanitizer
-        );
+        super(ttDataSvc, renderer, sanitizer);
         this.utils = _utils;
     }
 
     ngOnInit() {
-
         super.ngOnInit();
-        super._dataStreamSubscribe((data: any) => {
-            return this.dataFormatter(data);
-        });
+        super._dataStreamSubscribe((data: any) => this.dataFormatter(data));
     }
 
-    dataFormatter(data: any) {
-
+    dataFormatter(data: any): any {
         // get color contrast
         const contrast = this.utils.findContrastColor(data.color);
         data.colorContrast = contrast.hex;
-        //this.console.api('LINE CHART DATA FORMATTER', data);
+        // this.console.api('LINE CHART DATA FORMATTER', data);
         return data;
     }
 
@@ -81,5 +78,4 @@ export class LinechartDataTooltipComponent extends DataTooltipComponent implemen
     ngOnDestroy() {
         super.ngOnDestroy();
     }
-
 }

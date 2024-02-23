@@ -15,23 +15,26 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpHeaders,
+    HttpParams,
+    HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { AppConfigService } from '../../core/services/config.service';
 import { catchError, map, tap } from 'rxjs/operators';
 
-
-import { UtilsService } from '../../core/services/utils.service'
+import { UtilsService } from '../../core/services/utils.service';
 
 @Injectable()
 export class AlertsService {
-
     version = 1;
     constructor(
         private http: HttpClient,
         private utils: UtilsService,
-        private appConfig: AppConfigService
-    ) { }
+        private appConfig: AppConfigService,
+    ) {}
 
     /**
      * Error Handler
@@ -40,27 +43,28 @@ export class AlertsService {
      */
 
     handleError(error: HttpErrorResponse) {
-
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
             console.group(
                 '%cERROR%cAlertsService :: An API error occurred',
                 'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                'color: #ff0000; padding: 4px 8px; font-weight: bold',
             );
-            console.log('%cErrorMsg', 'font-weight: bold;', error.error.message);
+            console.log(
+                '%cErrorMsg',
+                'font-weight: bold;',
+                error.error.message,
+            );
             console.groupEnd();
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
             console.error(
                 `backend return code ${error.status}, ` +
-                `body was: ${error.error}`
+                    `body was: ${error.error}`,
             );
         }
-        return throwError(
-            'Something bad happened; please try again later.'
-        );
+        return throwError('Something bad happened; please try again later.');
     }
 
     /**
@@ -68,39 +72,39 @@ export class AlertsService {
      */
 
     getUserNamespaces() {
-
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/member';
+        const apiUrl =
+            this.appConfig.getConfig().configdb + '/namespace/member';
 
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
 
         const httpOptions: any = {
             headers,
             withCredentials: true,
-            responseType: 'json'
+            responseType: 'json',
         };
 
-        return this.http.get(apiUrl, httpOptions).pipe(
-            catchError(this.handleError)
-        );
+        return this.http
+            .get(apiUrl, httpOptions)
+            .pipe(catchError(this.handleError));
     }
 
     getNamespaces(): Observable<any> {
         const apiUrl = this.appConfig.getConfig().configdb + '/namespace';
 
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
 
         const httpOptions: any = {
             headers,
             withCredentials: true,
-            responseType: 'json'
+            responseType: 'json',
         };
 
-        return this.http.get(apiUrl, httpOptions).pipe(
-            catchError(this.handleError)
-        );
+        return this.http
+            .get(apiUrl, httpOptions)
+            .pipe(catchError(this.handleError));
     }
 }

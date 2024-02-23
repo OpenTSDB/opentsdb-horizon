@@ -26,7 +26,7 @@ import {
     Renderer2,
     ViewChild,
     AfterViewInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
@@ -36,10 +36,9 @@ import { ColorService } from '../../services/color.service';
     selector: 'color-picker-hsv-selector',
     templateUrl: './color-picker-hsv-selector.component.html',
     styleUrls: ['./color-picker-hsv-selector.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
-
     @HostBinding('class.color-picker-hsv-selector') private _hostClass = true;
 
     @ViewChild('colorBlock', { static: true }) _colorBlock: ElementRef;
@@ -68,34 +67,32 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
     constructor(
         private cs: ColorService,
         private renderer: Renderer2,
-        @Inject(EMPTY_COLOR) private emptyColor: string
-    ) { }
+        @Inject(EMPTY_COLOR) private emptyColor: string,
+    ) {}
 
     ngOnInit() {
-
         // calculate base color from selected color
         const hsv = this.cs.hexToHsv(this.selectedColor);
-        const baseRgb  = this.cs.hsvToRgb(hsv.h, 1, 1);
+        const baseRgb = this.cs.hsvToRgb(hsv.h, 1, 1);
 
         this.baseColor = this.cs.rgbToHex(baseRgb.r, baseRgb.g, baseRgb.b);
         this.baseHsv = this.cs.hexToHsv(this.baseColor);
 
-        this.setPickerPosition((hsv.s * 100), (hsv.v * 100));
+        this.setPickerPosition(hsv.s * 100, hsv.v * 100);
     }
 
     ngAfterViewInit() {
-
         // events setup
         const bEl = this._colorBlock.nativeElement;
 
-
-        this.renderer.listen(bEl, 'mousedown', e => {
+        this.renderer.listen(bEl, 'mousedown', (e) => {
             const bCoords = bEl.getBoundingClientRect();
             if (!this.isDragging) {
-            this.isDragging = true;
+                this.isDragging = true;
                 if (!e.target.classList.contains('picker')) {
                     const leftVal = e.offsetX / bCoords.width;
-                    const bottomVal = ( bCoords.height - e.offsetY ) / bCoords.height;
+                    const bottomVal =
+                        (bCoords.height - e.offsetY) / bCoords.height;
 
                     this.setPickerPosition(leftVal * 100, bottomVal * 100);
                     this.prepareColorChange(leftVal, bottomVal);
@@ -103,13 +100,14 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
             }
         });
 
-        this.renderer.listen(bEl, 'mouseup', e => {
+        this.renderer.listen(bEl, 'mouseup', (e) => {
             const bCoords = bEl.getBoundingClientRect();
             if (this.isDragging) {
                 this.isDragging = false;
                 if (!e.target.classList.contains('picker')) {
                     const leftVal = e.offsetX / bCoords.width;
-                    const bottomVal = ( bCoords.height - e.offsetY ) / bCoords.height;
+                    const bottomVal =
+                        (bCoords.height - e.offsetY) / bCoords.height;
 
                     this.setPickerPosition(leftVal * 100, bottomVal * 100);
                     this.prepareColorChange(leftVal, bottomVal);
@@ -117,16 +115,14 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
             }
         });
 
-        this.renderer.listen(bEl, 'mousemove', e => {
+        this.renderer.listen(bEl, 'mousemove', (e) => {
             const bCoords = bEl.getBoundingClientRect();
             if (this.isDragging && !e.target.classList.contains('picker')) {
-
                 const leftVal = e.offsetX / bCoords.width;
-                const bottomVal = ( bCoords.height - e.offsetY ) / bCoords.height;
+                const bottomVal = (bCoords.height - e.offsetY) / bCoords.height;
 
                 this.setPickerPosition(leftVal * 100, bottomVal * 100);
                 this.prepareColorChange(leftVal, bottomVal);
-
             }
         });
     }
@@ -146,21 +142,20 @@ export class ColorPickerHsvSelectorComponent implements OnInit, AfterViewInit {
         const newHsv = this.cs.hexToHsv(this.selectedColor);
 
         if (newHsv.h !== this.baseHsv.h) {
-            const baseRgb  = this.cs.hsvToRgb(newHsv.h, 1, 1);
+            const baseRgb = this.cs.hsvToRgb(newHsv.h, 1, 1);
             this.baseColor = this.cs.rgbToHex(baseRgb.r, baseRgb.g, baseRgb.b);
             this.baseHsv = this.cs.hexToHsv(this.baseColor);
 
             if (!this.isDragging) {
-                this.setPickerPosition((newHsv.s * 100), (newHsv.v * 100));
+                this.setPickerPosition(newHsv.s * 100, newHsv.v * 100);
             }
         }
     }
 
     prepareColorChange(x, y) {
-        x = (x > 1) ? x / 100 : x;
-        y = (y > 1) ? y / 100 : y;
+        x = x > 1 ? x / 100 : x;
+        y = y > 1 ? y / 100 : y;
         const rgb = this.cs.hsvToRgb(this.baseHsv.h, x, y);
         this.colorChanged.emit([rgb.r, rgb.g, rgb.b]);
     }
-
 }

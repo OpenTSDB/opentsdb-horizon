@@ -14,18 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Inject, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, DialogPosition } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { IntercomService, IMessage } from '../../../core/services/intercom.service';
+import {
+    Component,
+    Inject,
+    OnInit,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    MAT_DIALOG_DATA,
+    MatDialogRef
+} from '@angular/material/dialog';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dashboard-settings-dialog',
     templateUrl: './dashboard-settings-dialog.component.html',
     styleUrls: ['./dashboard-settings-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DashboardSettingsDialogComponent implements OnInit {
     @HostBinding('class.dashboard-settings-dialog') private _hostClass = true;
@@ -40,18 +45,18 @@ export class DashboardSettingsDialogComponent implements OnInit {
         {
             label: 'Meta data',
             tab: 'meta',
-            idx: 0
+            idx: 0,
         },
         {
             label: 'Variables',
             tab: 'variables',
-            idx: 1
+            idx: 1,
         },
         {
             label: 'JSON',
             tab: 'json',
-            idx: 2
-        }
+            idx: 2,
+        },
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
@@ -60,13 +65,11 @@ export class DashboardSettingsDialogComponent implements OnInit {
     private pendingData: any = {};
 
     constructor(
-        private interCom: IntercomService,
         public dialogRef: MatDialogRef<DashboardSettingsDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dbData: any
+        @Inject(MAT_DIALOG_DATA) public dbData: any,
     ) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     /**
      * Behaviors
@@ -92,7 +95,7 @@ export class DashboardSettingsDialogComponent implements OnInit {
     }
 
     tabChangeEvent(e: any) {
-        //NOTE: do we need this still?
+        // NOTE: do we need this still?
     }
 
     settingsDataModified(e: any) {
@@ -102,5 +105,4 @@ export class DashboardSettingsDialogComponent implements OnInit {
         }
         this.pendingData[e.type] = e.data;
     }
-
 }

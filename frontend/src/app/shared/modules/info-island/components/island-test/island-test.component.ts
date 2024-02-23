@@ -14,29 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, Inject, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Inject,
+    ViewEncapsulation,
+} from '@angular/core';
 import { ISLAND_DATA } from '../../info-island.tokens';
 
 @Component({
-// eslint-disable-next-line @angular-eslint/component-selector
     selector: 'island-test',
     templateUrl: './island-test.component.html',
     styleUrls: ['./island-test.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class IslandTestComponent implements OnInit {
-
     @Input() data: any = {};
 
     constructor(
-        @Inject(ISLAND_DATA) private _data: any // injection as private, to give you opportunity to do whatever you want first
+        @Inject(ISLAND_DATA) private _data: any, // injection as private, to give you opportunity to do whatever you want first
     ) {
         if (_data) {
             this.data = _data;
         }
     }
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

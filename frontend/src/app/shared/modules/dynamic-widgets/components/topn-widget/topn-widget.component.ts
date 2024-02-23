@@ -14,27 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input,
-    OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
-import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    OnDestroy,
+    ViewChild,
+    ElementRef,
+    AfterViewInit,
+    ChangeDetectorRef,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    IntercomService,
+    IMessage,
+} from '../../../../../core/services/intercom.service';
 import { DatatranformerService } from '../../../../../core/services/datatranformer.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
-import { Subscription, BehaviorSubject} from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material/dialog';
+import {
+    MatDialog,
+    MatDialogConfig,
+    MatDialogRef
+} from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { debounceTime } from 'rxjs/operators';
 import { AppConfigService } from '../../../../../core/services/config.service';
 
 @Component({
-  selector: 'app-topn-widget',
-  templateUrl: './topn-widget.component.html',
-  styleUrls: ['./topn-widget.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-topn-widget',
+    templateUrl: './topn-widget.component.html',
+    styleUrls: ['./topn-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
-
 export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.topnchart-widget') private _componentClass = true;
@@ -43,7 +59,8 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() mode = 'view'; // view/explore/edit
     @Input() readonly = true;
 
-    @ViewChild('widgetoutput', { static: true }) private widgetOutputElement: ElementRef;
+    @ViewChild('widgetoutput', { static: true })
+    private widgetOutputElement: ElementRef;
     @ViewChild('container', { static: true }) private container: ElementRef;
 
     Object = Object;
@@ -52,10 +69,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     private isDataLoaded: boolean = false;
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 
-    options: any  = {
+    options: any = {
         direction: 'horizontal',
         data: [],
-        format: { unit: '', precision: 2 , precisionStrict: true}
+        format: { unit: '', precision: 2, precisionStrict: true },
     };
     width = '100%';
     height = '100%';
@@ -70,12 +87,12 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     nQueryDataLoading = 0;
     meta: any = {};
     error: any;
-    errorDialog: MatDialogRef < ErrorDialogComponent > | null;
+    errorDialog: MatDialogRef<ErrorDialogComponent> | null;
     debugData: any; // debug data from the data source.
-    debugDialog: MatDialogRef < DebugDialogComponent > | null;
+    debugDialog: MatDialogRef<DebugDialogComponent> | null;
     storeQuery: any;
     needRequery = false;
-    visibleSections: any = { 'queries' : true, 'time': false, 'visuals': false };
+    visibleSections: any = { queries: true, time: false, visuals: false };
     formErrors: any = {};
     resizeSensor: any;
 
@@ -87,122 +104,165 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         private cdRef: ChangeDetectorRef,
         private elRef: ElementRef,
         private dateUtil: DateUtilsService,
-        private appConfig: AppConfigService
-    ) { }
+        private appConfig: AppConfigService,
+    ) {}
 
     ngOnInit() {
         this.visibleSections.queries = this.mode === 'edit' ? true : false;
         this.doRefreshData$ = new BehaviorSubject(false);
         this.doRefreshDataSub = this.doRefreshData$
-            .pipe(
-                debounceTime(1000)
-            )
-            .subscribe(trigger => {
+            .pipe(debounceTime(1000))
+            .subscribe((trigger) => {
                 if (trigger) {
                     this.refreshData();
                 }
             });
 
         // subscribe to event stream
-        this.listenSub = this.interCom.responseGet().subscribe((message: IMessage) => {
-            let overrideTime;
-            switch ( message.action ) {
-                case 'TimeChanged':
-                    overrideTime = this.widget.settings.time.overrideTime;
-                    if ( !overrideTime ) {
-                        this.refreshData();
-                    }
-                    break;
-                case 'reQueryData':
-                    if ( !message.id || message.id === this.widget.id ) {
-                        this.refreshData();
-                    }
-                    break;
-                case 'ZoomDateRange':
-                    if ( !message.id || message.id === this.widget.id ) {
+        this.listenSub = this.interCom
+            .responseGet()
+            .subscribe((message: IMessage) => {
+                let overrideTime;
+                switch (message.action) {
+                    case 'TimeChanged':
                         overrideTime = this.widget.settings.time.overrideTime;
-                        if ( message.payload.date.isZoomed && overrideTime ) {
-                            const oStartUnix = this.dateUtil.timeToMoment(overrideTime.start, message.payload.date.zone).unix();
-                            const oEndUnix = this.dateUtil.timeToMoment(overrideTime.end, message.payload.date.zone).unix();
-                            if ( oStartUnix <= message.payload.date.start && oEndUnix >= message.payload.date.end ) {
-                                this.options.isCustomZoomed = message.payload.date.isZoomed;
-                                this.widget.settings.time.zoomTime = message.payload.date;
-                                this.refreshData();
-                            }
-                        // eslint-disable-next-line max-len
-                        } else if ( (message.payload.date.isZoomed && !overrideTime && !message.payload.overrideOnly) || (this.options.isCustomZoomed && !message.payload.date.isZoomed) ) {
-                            this.options.isCustomZoomed = message.payload.date.isZoomed;
+                        if (!overrideTime) {
                             this.refreshData();
                         }
-                        // unset the zoom time
-                        if ( !message.payload.date.isZoomed ) {
-                            delete this.widget.settings.time.zoomTime;
-                        }
-                    }
-                    break;
-                case 'SnapshotMeta':
-                    this.meta = message.payload;
-                    break;
-                case 'ResizeAllWidgets':
-                    if(this.resizeSensor) {
-                        this.resizeSensor.detach();
-                    }
-                    this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-                        this.newSize$.next(1);
-                    });
-                    break;
-            }
-            if (message && (message.id === this.widget.id)) {
-                switch (message.action) {
-                    case 'updatedWidgetGroup':
-                        this.nQueryDataLoading--;
-                        if ( !this.isDataLoaded ) {
-                            this.isDataLoaded = true;
-                            this.options.data = [];
-                        }
-                        if ( message.payload.error ) {
-                            this.error = message.payload.error;
-                        } else {
-                            this.error = null;
-                        }
-                        if (this.appConfig.getConfig().debugLevel.toUpperCase() === 'TRACE' ||
-                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'DEBUG' ||
-                            this.appConfig.getConfig().debugLevel.toUpperCase() == 'INFO') {
-                                this.debugData = message.payload.rawdata.log; // debug log
-                        }
-                        this.setOptions();
-                        this.options = this.dataTransformer.openTSDBToD3Bar(this.options, this.widget, message.payload.rawdata);
-                        this.cdRef.detectChanges();
                         break;
-                    case 'getUpdatedWidgetConfig':
-                        this.widget = message.payload.widget;
-                        this.refreshData(message.payload.needRefresh);
+                    case 'reQueryData':
+                        if (!message.id || message.id === this.widget.id) {
+                            this.refreshData();
+                        }
                         break;
-                    case 'WidgetQueryLoading':
-                        this.nQueryDataLoading = 1;
-                        this.storeQuery = message.payload.storeQuery;
-                        this.cdRef.detectChanges();
+                    case 'ZoomDateRange':
+                        if (!message.id || message.id === this.widget.id) {
+                            overrideTime =
+                                this.widget.settings.time.overrideTime;
+                            if (message.payload.date.isZoomed && overrideTime) {
+                                const oStartUnix = this.dateUtil
+                                    .timeToMoment(
+                                        overrideTime.start,
+                                        message.payload.date.zone,
+                                    )
+                                    .unix();
+                                const oEndUnix = this.dateUtil
+                                    .timeToMoment(
+                                        overrideTime.end,
+                                        message.payload.date.zone,
+                                    )
+                                    .unix();
+                                if (
+                                    oStartUnix <= message.payload.date.start &&
+                                    oEndUnix >= message.payload.date.end
+                                ) {
+                                    this.options.isCustomZoomed =
+                                        message.payload.date.isZoomed;
+                                    this.widget.settings.time.zoomTime =
+                                        message.payload.date;
+                                    this.refreshData();
+                                }
+                                // eslint-disable-next-line max-len
+                            } else if (
+                                (message.payload.date.isZoomed &&
+                                    !overrideTime &&
+                                    !message.payload.overrideOnly) ||
+                                (this.options.isCustomZoomed &&
+                                    !message.payload.date.isZoomed)
+                            ) {
+                                this.options.isCustomZoomed =
+                                    message.payload.date.isZoomed;
+                                this.refreshData();
+                            }
+                            // unset the zoom time
+                            if (!message.payload.date.isZoomed) {
+                                delete this.widget.settings.time.zoomTime;
+                            }
+                        }
                         break;
-                    case 'ResetUseDBFilter':
-                        // reset useDBFilter to true
-                        this.widget.settings.useDBFilter = true;
-                        this.cdRef.detectChanges();
+                    case 'SnapshotMeta':
+                        this.meta = message.payload;
                         break;
-                    case 'widgetDragDropEnd':
+                    case 'ResizeAllWidgets':
                         if (this.resizeSensor) {
                             this.resizeSensor.detach();
                         }
-                        this.resizeSensor = new ResizeSensor(this.widgetOutputElement.nativeElement, () => {
-                            const newSize = {
-                                width: this.widgetOutputElement.nativeElement.clientWidth,
-                                height: this.widgetOutputElement.nativeElement.clientHeight
-                            }
-                            this.newSize$.next(newSize);
-                        });
+                        this.resizeSensor = new ResizeSensor(
+                            this.widgetOutputElement.nativeElement,
+                            () => {
+                                this.newSize$.next(1);
+                            },
+                        );
                         break;
                 }
-            }
-        });
+                if (message && message.id === this.widget.id) {
+                    switch (message.action) {
+                        case 'updatedWidgetGroup':
+                            this.nQueryDataLoading--;
+                            if (!this.isDataLoaded) {
+                                this.isDataLoaded = true;
+                                this.options.data = [];
+                            }
+                            if (message.payload.error) {
+                                this.error = message.payload.error;
+                            } else {
+                                this.error = null;
+                            }
+                            if (
+                                this.appConfig
+                                    .getConfig()
+                                    .debugLevel.toUpperCase() === 'TRACE' ||
+                                this.appConfig
+                                    .getConfig()
+                                    .debugLevel.toUpperCase() === 'DEBUG' ||
+                                this.appConfig
+                                    .getConfig()
+                                    .debugLevel.toUpperCase() === 'INFO'
+                            ) {
+                                this.debugData = message.payload.rawdata.log; // debug log
+                            }
+                            this.setOptions();
+                            this.options = this.dataTransformer.openTSDBToD3Bar(
+                                this.options,
+                                this.widget,
+                                message.payload.rawdata,
+                            );
+                            this.cdRef.detectChanges();
+                            break;
+                        case 'getUpdatedWidgetConfig':
+                            this.widget = message.payload.widget;
+                            this.refreshData(message.payload.needRefresh);
+                            break;
+                        case 'WidgetQueryLoading':
+                            this.nQueryDataLoading = 1;
+                            this.storeQuery = message.payload.storeQuery;
+                            this.cdRef.detectChanges();
+                            break;
+                        case 'ResetUseDBFilter':
+                            // reset useDBFilter to true
+                            this.widget.settings.useDBFilter = true;
+                            this.cdRef.detectChanges();
+                            break;
+                        case 'widgetDragDropEnd':
+                            if (this.resizeSensor) {
+                                this.resizeSensor.detach();
+                            }
+                            this.resizeSensor = new ResizeSensor(
+                                this.widgetOutputElement.nativeElement,
+                                () => {
+                                    const newSize = {
+                                        width: this.widgetOutputElement
+                                            .nativeElement.clientWidth,
+                                        height: this.widgetOutputElement
+                                            .nativeElement.clientHeight,
+                                    };
+                                    this.newSize$.next(newSize);
+                                },
+                            );
+                            break;
+                    }
+                }
+            });
 
         // first time when displaying chart
         if (!this.widget.settings.sorting) {
@@ -211,7 +271,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // when the widget first loaded in dashboard, we request to get data
         // when in edit mode first time, we request to get cached raw data.
-        setTimeout(() => this.refreshData(this.mode !== 'view' ? false : true), 0);
+        setTimeout(
+            () => this.refreshData(this.mode !== 'view' ? false : true),
+            0,
+        );
     }
 
     ngAfterViewInit() {
@@ -222,21 +285,25 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         ElementQueries.init();
         const initSize = {
             width: this.widgetOutputElement.nativeElement.clientWidth,
-            height: this.widgetOutputElement.nativeElement.clientHeight
+            height: this.widgetOutputElement.nativeElement.clientHeight,
         };
         this.newSize$ = new BehaviorSubject(initSize);
 
-        this.newSizeSub = this.newSize$.pipe(
-            debounceTime(100)
-        ).subscribe(size => {
-            this.setSize(size);
-        });
-        const nativeEl = (this.mode !== 'view') ?
-            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        this.newSizeSub = this.newSize$
+            .pipe(debounceTime(100))
+            .subscribe((size) => {
+                this.setSize(size);
+            });
+        const nativeEl =
+            this.mode !== 'view'
+                ? this.widgetOutputElement.nativeElement
+                : this.widgetOutputElement.nativeElement.closest(
+                    '.mat-card-content',
+                );
         this.resizeSensor = new ResizeSensor(nativeEl, () => {
-             const newSize = {
+            const newSize = {
                 width: nativeEl.clientWidth,
-                height: nativeEl.clientHeight
+                height: nativeEl.clientHeight,
             };
             this.newSize$.next(newSize);
         });
@@ -244,18 +311,29 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setOptions() {
         this.options.format.unit = this.widget.settings.visual.unit;
-        this.options.format.precision = this.widget.settings.visual.decimals || 2;
+        this.options.format.precision =
+            this.widget.settings.visual.decimals || 2;
     }
     setSize(newSize) {
-
         const editModifier = this.mode !== 'view' ? 0 : 20;
         const heightMod = 0.55;
-        this.widgetOutputElHeight = !this.isEditContainerResized && this.widget.queries[0].metrics.length ? this.elRef.nativeElement.getBoundingClientRect().height * heightMod
-                                                                : newSize.height + 60;
-        const nativeEl = (this.mode !== 'view') ?
-            this.widgetOutputElement.nativeElement : this.widgetOutputElement.nativeElement.closest('.mat-card-content');
+        this.widgetOutputElHeight =
+            !this.isEditContainerResized &&
+            this.widget.queries[0].metrics.length
+                ? this.elRef.nativeElement.getBoundingClientRect().height *
+                  heightMod
+                : newSize.height + 60;
+        const nativeEl =
+            this.mode !== 'view'
+                ? this.widgetOutputElement.nativeElement
+                : this.widgetOutputElement.nativeElement.closest(
+                    '.mat-card-content',
+                );
         const outputSize = nativeEl.getBoundingClientRect();
-        this.size = { width: outputSize.width, height: outputSize.height - editModifier };
+        this.size = {
+            width: outputSize.width,
+            height: outputSize.height - editModifier,
+        };
         this.cdRef.detectChanges();
     }
 
@@ -274,7 +352,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.interCom.requestSend({
                 id: this.widget.id,
                 action: 'getQueryData',
-                payload: this.widget
+                payload: this.widget,
             });
             this.cdRef.detectChanges();
         }
@@ -286,17 +364,17 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.interCom.requestSend({
             id: this.widget.id,
             action: 'getWidgetCachedData',
-            payload: this.widget
+            payload: this.widget,
         });
     }
 
     updateConfig(message) {
-        switch ( message.action ) {
+        switch (message.action) {
             case 'SetMetaData':
                 this.util.setWidgetMetaData(this.widget, message.payload.data);
                 break;
             case 'SetTimeError':
-                if ( message.payload.error ) {
+                if (message.payload.error) {
                     this.formErrors.time = true;
                 } else {
                     delete this.formErrors.time;
@@ -304,7 +382,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'SetTimeConfiguration':
                 delete this.formErrors.time;
-                this.util.setWidgetTimeConfiguration(this.widget, message.payload.data);
+                this.util.setWidgetTimeConfiguration(
+                    this.widget,
+                    message.payload.data,
+                );
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -316,7 +397,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'UpdateQuery':
                 this.updateQuery(message.payload);
                 this.widget.queries = [...this.widget.queries];
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -325,14 +406,17 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.refreshData(false);
                 break;
             case 'ToggleQueryMetricVisibility':
-                this.toggleQueryMetricVisibility(message.id, message.payload.mid);
+                this.toggleQueryMetricVisibility(
+                    message.id,
+                    message.payload.mid,
+                );
                 this.widget.queries = this.util.deepClone(this.widget.queries);
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
             case 'DeleteQueryMetric':
                 this.deleteQueryMetric(message.id, message.payload.mid);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
@@ -349,7 +433,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
             case 'DeleteQuery':
                 this.deleteQuery(message.id);
                 this.doRefreshData$.next(true);
-                this.widget = {...this.widget};
+                this.widget = { ...this.widget };
                 this.needRequery = true;
                 break;
             case 'ToggleDBFilterUsage':
@@ -361,55 +445,67 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.refreshData();
                 break;
             case 'ToggleInfectiousNan':
-                this.util.toggleQueryInfectiousNan(this.widget, message.payload.checked);
-                this.widget = {...this.widget};
+                this.util.toggleQueryInfectiousNan(
+                    this.widget,
+                    message.payload.checked,
+                );
+                this.widget = { ...this.widget };
                 this.doRefreshData$.next(true);
                 this.needRequery = true;
                 break;
         }
     }
-    updateQuery( payload ) {
+    updateQuery(payload) {
         const query = payload.query;
-        let qindex = query.id ? this.widget.queries.findIndex(q => q.id === query.id ) : -1;
-        if ( qindex !== -1 ) {
+        let qindex = query.id
+            ? this.widget.queries.findIndex((q) => q.id === query.id)
+            : -1;
+        if (qindex !== -1) {
             this.widget.queries[qindex] = query;
         }
         let hasVisibleMetric = false;
-        for (let i = 0; i < this.widget.queries.length; i++ ) {
-            for (let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
-                if ( this.widget.queries[i].metrics[j].settings.visual.visible ) {
+        for (let i = 0; i < this.widget.queries.length; i++) {
+            for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
+                if (this.widget.queries[i].metrics[j].settings.visual.visible) {
                     hasVisibleMetric = true;
                     break;
                 }
             }
-            if ( hasVisibleMetric ) {
+            if (hasVisibleMetric) {
                 break;
             }
         }
 
         // default metric visibility is false. so make first metric visible
         // find query with metrics in it
-        qindex = this.widget.queries.findIndex(d => d.metrics.length > 0);
-        if ( qindex !== -1 && hasVisibleMetric === false ) {
-            this.widget.queries[qindex].metrics[0].settings.visual.visible = true;
+        qindex = this.widget.queries.findIndex((d) => d.metrics.length > 0);
+        if (qindex !== -1 && hasVisibleMetric === false) {
+            this.widget.queries[qindex].metrics[0].settings.visual.visible =
+                true;
         }
     }
 
-    setVisualization( visual) {
-        this.widget.settings.visual = {...this.widget.settings.visual, ...visual};
+    setVisualization(visual) {
+        this.widget.settings.visual = {
+            ...this.widget.settings.visual,
+            ...visual,
+        };
     }
 
-    setVisualConditions( vConditions ) {
+    setVisualConditions(vConditions) {
         this.widget.settings.visual.conditions = vConditions;
     }
 
     setSorting(sConfig) {
-        this.widget.settings.sorting = { order: sConfig.order, limit: sConfig.limit };
+        this.widget.settings.sorting = {
+            order: sConfig.order,
+            limit: sConfig.limit,
+        };
     }
 
     refreshData(reload = true) {
         this.isDataLoaded = false;
-        if ( reload ) {
+        if (reload) {
             this.requestData();
         } else {
             this.requestCachedData();
@@ -417,48 +513,62 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     toggleQueryMetricVisibility(qid, mid) {
-        const qindex = this.widget.queries.findIndex(d => d.id === qid);
-        const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === mid);
-        for (let i = 0; i < this.widget.queries.length; i++ ) {
-            for (let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
-                this.widget.queries[i].metrics[j].settings.visual.visible = false;
+        const qindex = this.widget.queries.findIndex((d) => d.id === qid);
+        const mindex = this.widget.queries[qindex].metrics.findIndex(
+            (d) => d.id === mid,
+        );
+        for (let i = 0; i < this.widget.queries.length; i++) {
+            for (let j = 0; j < this.widget.queries[i].metrics.length; j++) {
+                this.widget.queries[i].metrics[j].settings.visual.visible =
+                    false;
             }
         }
-        this.widget.queries[qindex].metrics[mindex].settings.visual.visible = true;
+        this.widget.queries[qindex].metrics[mindex].settings.visual.visible =
+            true;
     }
 
     deleteQueryMetric(qid, mid) {
-        let qindex = this.widget.queries.findIndex(d => d.id === qid);
+        let qindex = this.widget.queries.findIndex((d) => d.id === qid);
         if (this.widget.queries[qindex]) {
-            const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === mid);
-            const delMetricVisibility = this.widget.queries[qindex].metrics[mindex].settings.visual.visible;
+            const mindex = this.widget.queries[qindex].metrics.findIndex(
+                (d) => d.id === mid,
+            );
+            const delMetricVisibility =
+                this.widget.queries[qindex].metrics[mindex].settings.visual
+                    .visible;
             this.widget.queries[qindex].metrics.splice(mindex, 1);
 
             // find query with metrics in it
-            qindex = this.widget.queries.findIndex(d => d.metrics.length > 0);
-            if ( qindex !== -1 && delMetricVisibility ) {
-                this.widget.queries[qindex].metrics[0].settings.visual.visible = true;
+            qindex = this.widget.queries.findIndex((d) => d.metrics.length > 0);
+            if (qindex !== -1 && delMetricVisibility) {
+                this.widget.queries[qindex].metrics[0].settings.visual.visible =
+                    true;
             }
         }
     }
 
     cloneQuery(qid) {
-        const qindex = this.widget.queries.findIndex(d => d.id === qid);
-        if ( qindex !== -1 ) {
+        const qindex = this.widget.queries.findIndex((d) => d.id === qid);
+        if (qindex !== -1) {
             const query = this.util.getQueryClone(this.widget.queries, qindex);
-            query.metrics.map(d => { d.settings.visual.visible = false; } );
+            query.metrics.map((d) => {
+                d.settings.visual.visible = false;
+            });
             this.widget.queries.splice(qindex + 1, 0, query);
         }
     }
 
     deleteQuery(qid) {
-        let qindex = this.widget.queries.findIndex(d => d.id === qid);
-        const hasSelectedMetric = this.widget.queries[qindex].metrics.findIndex( d => d.settings.visual.visible );
+        let qindex = this.widget.queries.findIndex((d) => d.id === qid);
+        const hasSelectedMetric = this.widget.queries[qindex].metrics.findIndex(
+            (d) => d.settings.visual.visible,
+        );
         this.widget.queries.splice(qindex, 1);
 
-        qindex = this.widget.queries.findIndex(d => d.metrics.length > 0 );
-        if ( qindex !== -1 && hasSelectedMetric !== -1  ) {
-            this.widget.queries[qindex].metrics[0].settings.visual.visible = true;
+        qindex = this.widget.queries.findIndex((d) => d.metrics.length > 0);
+        if (qindex !== -1 && hasSelectedMetric !== -1) {
+            this.widget.queries[qindex].metrics[0].settings.visual.visible =
+                true;
         }
     }
 
@@ -468,18 +578,22 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     scrollToElement($element): void {
         setTimeout(() => {
-            $element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+            $element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest',
+            });
         });
     }
 
     changeWidgetType(type) {
         const wConfig = this.util.deepClone(this.widget);
         wConfig.id = wConfig.id.replace('__EDIT__', '');
-         this.interCom.requestSend({
-             action: 'changeWidgetType',
-             id: wConfig.id,
-             payload: { wConfig: wConfig, newType: type }
-         });
+        this.interCom.requestSend({
+            action: 'changeWidgetType',
+            id: wConfig.id,
+            payload: { wConfig: wConfig, newType: type },
+        });
     }
 
     showError() {
@@ -493,8 +607,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.data = this.error;
 
         this.errorDialog = this.dialog.open(ErrorDialogComponent, dialogConf);
-        this.errorDialog.afterClosed().subscribe((dialog_out: any) => {
-        });
+        this.errorDialog.afterClosed().subscribe((dialogOut: any) => { /* do nothing */ });
     }
 
     showDebug() {
@@ -506,22 +619,21 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         dialogConf.minHeight = '200px';
         dialogConf.backdropClass = 'error-dialog-backdrop'; // re-use for now
         dialogConf.panelClass = 'error-dialog-panel';
-         dialogConf.data = {
-          log: this.debugData,
-          query: this.storeQuery
+        dialogConf.data = {
+            log: this.debugData,
+            query: this.storeQuery,
         };
 
         // re-use?
         this.debugDialog = this.dialog.open(DebugDialogComponent, dialogConf);
-        this.debugDialog.afterClosed().subscribe((dialog_out: any) => {
-        });
+        this.debugDialog.afterClosed().subscribe((dialogOut: any) => { /* do nothing */ });
     }
 
     closeViewEditMode() {
         this.interCom.requestSend(<IMessage>{
             action: 'closeViewEditMode',
             id: this.widget.id,
-            payload: 'dashboard'
+            payload: 'dashboard',
         });
     }
 
@@ -531,7 +643,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.interCom.requestSend({
             action: 'updateWidgetConfig',
             id: cloneWidget.id,
-            payload: { widget: cloneWidget, needRequery: this.needRequery }
+            payload: { widget: cloneWidget, needRequery: this.needRequery },
         });
         this.closeViewEditMode();
     }
@@ -542,7 +654,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.interCom.requestSend({
             action: 'SaveSnapshot',
             id: cloneWidget.id,
-            payload: { widget: cloneWidget, needRequery: false }
+            payload: { widget: cloneWidget, needRequery: false },
         });
     }
 
@@ -552,4 +664,3 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.doRefreshDataSub.unsubscribe();
     }
 }
-

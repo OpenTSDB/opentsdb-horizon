@@ -15,46 +15,49 @@
  * limitations under the License.
  */
 
-import { Component, HostBinding, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
     selector: 'app-admin-users',
     templateUrl: './admin-users.component.html',
     styleUrls: ['./admin-users.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminUsersComponent implements OnInit {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-section app-admin-users';
-
+    @HostBinding('class') classAttribute =
+    'app-admin-section app-admin-users';
 
     // TEST sections links
     testSubLinks: any[] = [
         {
             label: 'Test User 1',
-            path: 'test-1'
+            path: 'test-1',
         },
         {
             label: 'Test User 2',
-            path: 'test-2'
+            path: 'test-2',
         },
         {
             label: 'Test User 3',
-            path: 'test-3'
+            path: 'test-3',
         },
         {
             label: 'Test User 4',
-            path: 'test-4'
+            path: 'test-4',
         },
         {
             label: 'Test User 5',
-            path: 'test-5'
-        }
+            path: 'test-5',
+        },
     ];
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

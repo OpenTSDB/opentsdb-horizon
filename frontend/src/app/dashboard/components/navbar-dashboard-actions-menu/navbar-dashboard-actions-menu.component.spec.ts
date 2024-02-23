@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavbarDashboardActionsMenuComponent } from './navbar-dashboard-actions-menu.component';
 
 describe('NavbarDashboardActionsMenuComponent', () => {
-  let component: NavbarDashboardActionsMenuComponent;
-  let fixture: ComponentFixture<NavbarDashboardActionsMenuComponent>;
+    let component: NavbarDashboardActionsMenuComponent;
+    let fixture: ComponentFixture<NavbarDashboardActionsMenuComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavbarDashboardActionsMenuComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavbarDashboardActionsMenuComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarDashboardActionsMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavbarDashboardActionsMenuComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

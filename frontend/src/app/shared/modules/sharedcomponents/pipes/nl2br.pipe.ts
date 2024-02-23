@@ -22,7 +22,10 @@ export class Nl2BrPipe implements PipeTransform {
         if (!value) {
             return value;
         }
-        let breakTag = '<br>';
-        return (value + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+        const breakTag = '<br>';
+        return (value + '').replace(
+            /([^>\r\n]?)(\r\n|\n\r|\r|\n)/g,
+            '$1' + breakTag + '$2',
+        );
     }
 }

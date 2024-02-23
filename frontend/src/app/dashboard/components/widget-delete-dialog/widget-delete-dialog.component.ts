@@ -14,28 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Inject,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-widget-delete-dialog',
-  templateUrl: './widget-delete-dialog.component.html',
-  styleUrls: ['./widget-delete-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-widget-delete-dialog',
+    templateUrl: './widget-delete-dialog.component.html',
+    styleUrls: ['./widget-delete-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetDeleteDialogComponent implements OnInit {
-
     @HostBinding('class.widget-delete-dialog') private _hostClass = true;
 
     constructor(
         public dialogRef: MatDialogRef<WidgetDeleteDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dbData: any
-    ) { }
+        @Inject(MAT_DIALOG_DATA) public dbData: any,
+    ) {}
 
-    ngOnInit() {}
+    ngOnInit() { /* do nothing */ }
 
-    confirm() {
-        this.dialogRef.close( {delete : true } );
+    confirm(): void {
+        this.dialogRef.close({ delete: true });
     }
-
 }

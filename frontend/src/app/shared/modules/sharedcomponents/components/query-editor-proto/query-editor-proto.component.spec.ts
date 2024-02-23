@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryEditorProtoComponent } from './query-editor-proto.component';
 
 describe('QueryEditorProtoComponent', () => {
-  let component: QueryEditorProtoComponent;
-  let fixture: ComponentFixture<QueryEditorProtoComponent>;
+    let component: QueryEditorProtoComponent;
+    let fixture: ComponentFixture<QueryEditorProtoComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ QueryEditorProtoComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [QueryEditorProtoComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(QueryEditorProtoComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(QueryEditorProtoComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

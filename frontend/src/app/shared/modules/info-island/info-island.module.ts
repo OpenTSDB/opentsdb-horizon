@@ -16,7 +16,7 @@
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../material/material.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -47,7 +47,7 @@ import { D3Module } from '../d3/d3.module';
         MatTableModule,
         MatSortModule,
         D3Module,
-        TableVirtualScrollModule
+        TableVirtualScrollModule,
     ],
     declarations: [
         InfoIslandComponent,
@@ -55,17 +55,15 @@ import { D3Module } from '../d3/d3.module';
         EventStreamComponent,
         TimeseriesLegendComponent,
         InfoIslandToolbarComponent,
-        HeatmapBucketDetailComponent
+        HeatmapBucketDetailComponent,
     ],
-    providers: [
-        InfoIslandService
-    ],
+    providers: [InfoIslandService],
     entryComponents: [
         InfoIslandComponent,
         IslandTestComponent,
         EventStreamComponent,
         TimeseriesLegendComponent,
-        HeatmapBucketDetailComponent
-    ]
+        HeatmapBucketDetailComponent,
+    ],
 })
-export class InfoIslandModule { }
+export class InfoIslandModule {}

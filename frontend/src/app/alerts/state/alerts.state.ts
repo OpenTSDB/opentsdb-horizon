@@ -14,24 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-    State,
-    StateContext,
-    Action,
-    Selector,
-    Store
-} from '@ngxs/store';
-
+import { State, StateContext, Action, Selector, Store } from '@ngxs/store';
 
 import { HttpService } from '../../core/http/http.service';
 import { AlertsService } from '../services/alerts.service';
 import { forkJoin } from 'rxjs';
 
 import { UtilsService } from '../../core/services/utils.service';
-import { DbfsState, DbfsResourcesState, DbfsLoadNamespacesList } from '../../shared/modules/dashboard-filesystem/state';
+import {
+    DbfsState,
+    DbfsResourcesState,
+    DbfsLoadNamespacesList,
+} from '../../shared/modules/dashboard-filesystem/state';
 import { Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
-
 
 export interface AlertModel {
     id: number;
@@ -76,9 +72,7 @@ export interface AlertsStateModel {
 /* actions */
 export class LoadNamespaces {
     static readonly type = '[Alerts] Load namespaces';
-    constructor(
-        public readonly options?: any
-    ) { }
+    constructor(public readonly options?: any) {}
 }
 
 export class SetNamespace {
@@ -98,17 +92,26 @@ export class LoadAlertsStats {
 
 export class SaveAlerts {
     static readonly type = '[Alerts] Save Alerts';
-    constructor(public namespace: string, public payload: any) {}
+    constructor(
+        public namespace: string,
+        public payload: any,
+    ) {}
 }
 
 export class DeleteAlerts {
     static readonly type = '[Alerts] Delete Alerts';
-    constructor(public namespace: string, public payload: any) {}
+    constructor(
+        public namespace: string,
+        public payload: any,
+    ) {}
 }
 
 export class ToggleAlerts {
     static readonly type = '[Alerts] Toggle Alerts';
-    constructor(public namespace: string, public payload: any) {}
+    constructor(
+        public namespace: string,
+        public payload: any,
+    ) {}
 }
 
 export class LoadSnoozes {
@@ -118,17 +121,22 @@ export class LoadSnoozes {
 
 export class SaveSnoozes {
     static readonly type = '[Alerts] Save Snoozes';
-    constructor(public namespace: string, public payload: any) {}
+    constructor(
+        public namespace: string,
+        public payload: any,
+    ) {}
 }
 
 export class DeleteSnoozes {
     static readonly type = '[Alerts] Delete Snoozes';
-    constructor(public namespace: string, public payload: any) {}
+    constructor(
+        public namespace: string,
+        public payload: any,
+    ) {}
 }
 
-
 export class CheckWriteAccess {
-    static readonly type = "[Alerts] Check write Access";
+    static readonly type = '[Alerts] Check write Access';
     constructor(public payload: any) {}
 }
 
@@ -148,7 +156,7 @@ export class ClearNamespace {
         loading: false,
         loaded: {
             userNamespaces: false,
-            allNamespaces: false
+            allNamespaces: false,
         },
         error: {},
         saveError: {}, // handles dialog create/update error
@@ -159,10 +167,9 @@ export class ClearNamespace {
         actionStatus: '',
         alertTypeFilter: 'all', // all, alerting, snoozed, disabled
         editItem: {},
-        readOnly: false
-    }
+        readOnly: false,
+    },
 })
-
 export class AlertsState {
     sub: Subscription;
     sub2: Subscription;
@@ -170,8 +177,8 @@ export class AlertsState {
         private httpService: HttpService,
         private alertsService: AlertsService,
         private utils: UtilsService,
-        private store: Store
-    ) { }
+        private store: Store,
+    ) {}
 
     /* SELECTORS */
     @Selector()
@@ -247,45 +254,63 @@ export class AlertsState {
     /* ACTIONS */
 
     @Action(LoadNamespaces)
-    loadNamespaces(ctx: StateContext<AlertsStateModel>, { options }: LoadNamespaces) {
-        //this.console.state('AlertsState :: Load namespaces', { options });
+    loadNamespaces(
+        ctx: StateContext<AlertsStateModel>,
+        { options }: LoadNamespaces,
+    ) {
+        // this.console.state('AlertsState :: Load namespaces', { options });
         const state = ctx.getState();
-       if (!state.loaded.userNamespaces) {
-        ctx.patchState({ loading: true, error: {} });
+        if (!state.loaded.userNamespaces) {
+            ctx.patchState({ loading: true, error: {} });
 
             let req1: any;
             let req2: any;
 
             // check if ALL namespaces have been loaded by DBFS
-            const dynamicLoaded: any = this.store.selectSnapshot(DbfsResourcesState.getDynamicLoaded);
+            const dynamicLoaded: any = this.store.selectSnapshot(
+                DbfsResourcesState.getDynamicLoaded,
+            );
 
             if (dynamicLoaded.namespace) {
                 // They have been loaded already
-                req1 = this.store.selectSnapshot(DbfsState.getUserMemberNamespaceData());
-                req2 = this.store.selectSnapshot(DbfsResourcesState.getNamespacesList);
+                req1 = this.store.selectSnapshot(
+                    DbfsState.getUserMemberNamespaceData(),
+                );
+                req2 = this.store.selectSnapshot(
+                    DbfsResourcesState.getNamespacesList,
+                );
 
                 ctx.patchState({
                     userNamespaces: req1,
                     allNamespaces: req2,
                     loading: false,
-                    loaded: { userNamespaces: true, allNamespaces: true}
+                    loaded: { userNamespaces: true, allNamespaces: true },
                 });
             } else {
                 // they have NOT been loaded already
-                this.store.dispatch(new DbfsLoadNamespacesList({})).subscribe( (data: any) => {
+                this.store.dispatch(new DbfsLoadNamespacesList({})).subscribe(
+                    (data: any) => {
+                        req1 = this.store.selectSnapshot(
+                            DbfsState.getUserMemberNamespaceData(),
+                        );
+                        req2 = this.store.selectSnapshot(
+                            DbfsResourcesState.getNamespacesList,
+                        );
 
-                    req1 = this.store.selectSnapshot(DbfsState.getUserMemberNamespaceData());
-                    req2 = this.store.selectSnapshot(DbfsResourcesState.getNamespacesList);
-
-                    ctx.patchState({
-                        userNamespaces: req1,
-                        allNamespaces: req2,
-                        loading: false,
-                        loaded: { userNamespaces: true, allNamespaces: true}
-                    });
-                }, error => {
-                    ctx.patchState({ error: error });
-                });
+                        ctx.patchState({
+                            userNamespaces: req1,
+                            allNamespaces: req2,
+                            loading: false,
+                            loaded: {
+                                userNamespaces: true,
+                                allNamespaces: true,
+                            },
+                        });
+                    },
+                    (error) => {
+                        ctx.patchState({ error: error });
+                    },
+                );
             }
 
             /* const req1 = this.alertsService.getUserNamespaces();
@@ -313,159 +338,209 @@ export class AlertsState {
     }
 
     @Action(SetNamespace)
-    SetNamespace(ctx: StateContext<AlertsStateModel>, { namespace }: SetNamespace) {
+    SetNamespace(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace }: SetNamespace,
+    ) {
         const state = ctx.getState();
         const userNamespaces = state.userNamespaces;
-        let fixedNamespace: string = "";
+        let fixedNamespace = '';
 
-        state.allNamespaces.forEach(d => {
-            if (d.name.toLowerCase() === namespace.toLowerCase()) { fixedNamespace = d.name; }
+        state.allNamespaces.forEach((d) => {
+            if (d.name.toLowerCase() === namespace.toLowerCase()) {
+                fixedNamespace = d.name;
+            }
         });
 
-        const readOnly = (userNamespaces.find( (d: any) => d.name === fixedNamespace ) === undefined) ? true : false;
+        const readOnly =
+            userNamespaces.find((d: any) => d.name === fixedNamespace) ===
+            undefined
+                ? true
+                : false;
 
-        if (fixedNamespace !== "") {
+        if (fixedNamespace !== '') {
             ctx.patchState({ selectedNamespace: fixedNamespace, readOnly });
         }
     }
 
     @Action(CheckWriteAccess)
-    checkWriteAccess(ctx: StateContext<AlertsStateModel>, { payload }: CheckWriteAccess) {
+    checkWriteAccess(
+        ctx: StateContext<AlertsStateModel>,
+        { payload }: CheckWriteAccess,
+    ) {
         const state = ctx.getState();
         const userNamespaces = state.userNamespaces;
-        const readOnly = (userNamespaces.find( (d: any) => d.name === payload.namespace ) === undefined) ? true : false;
+        const readOnly =
+            userNamespaces.find((d: any) => d.name === payload.namespace) ===
+            undefined
+                ? true
+                : false;
 
-        ctx.patchState( { editItem: payload, readOnly } );
+        ctx.patchState({ editItem: payload, readOnly });
     }
 
     @Action(LoadAlerts)
     loadAlerts(ctx: StateContext<AlertsStateModel>, { options }: LoadAlerts) {
-        ctx.patchState({ actionStatus: 'save-progress', error: {}});
-        if ( this.sub ) {
+        ctx.patchState({ actionStatus: 'save-progress', error: {} });
+        if (this.sub) {
             this.sub.unsubscribe();
         }
         this.sub = this.httpService.getAlerts(options).subscribe(
-            alerts => {
-                ctx.patchState({ alerts: alerts});
-                if ( alerts.length ) {
+            (alerts) => {
+                ctx.patchState({ alerts: alerts });
+                if (alerts.length) {
                     ctx.dispatch(new LoadAlertsStats(options));
                 }
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
-
     }
 
     @Action(LoadAlertsStats)
-    loadAlertsStats(ctx: StateContext<AlertsStateModel>, { options }: LoadAlertsStats) {
-        if ( this.sub2 ) {
+    loadAlertsStats(
+        ctx: StateContext<AlertsStateModel>,
+        { options }: LoadAlertsStats,
+    ) {
+        if (this.sub2) {
             this.sub2.unsubscribe();
         }
-        this.sub2 =  this.httpService.getAlertsStats(options).subscribe(
-            res => {
+        this.sub2 = this.httpService.getAlertsStats(options).subscribe(
+            (res) => {
                 const alertCounts = {};
-                if ( res.error === undefined && res.results ) {
+                if (res.error === undefined && res.results) {
                     const sData = res.results[0].data;
-                    for ( let i = 0; i < sData.length; i++ ) {
+                    for (let i = 0; i < sData.length; i++) {
                         const alertId = parseInt(sData[i].tags._alert_id, 10);
                         alertCounts[alertId] = sData[i].summary;
                     }
                 }
-                ctx.patchState({ stats: alertCounts});
+                ctx.patchState({ stats: alertCounts });
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
-
     }
 
     @Action(SaveAlerts)
-    saveAlerts(ctx: StateContext<AlertsStateModel>, { namespace, payload }: SaveAlerts) {
-        ctx.patchState({ actionStatus: 'save-progress', saveError: {}});
+    saveAlerts(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace, payload }: SaveAlerts,
+    ) {
+        ctx.patchState({ actionStatus: 'save-progress', saveError: {} });
         return this.httpService.saveAlert(namespace, payload).subscribe(
-            res => {
-                ctx.patchState({ actionStatus: payload.data[0].id ? 'update-success' : 'add-success', saveError: null});
+            (res) => {
+                ctx.patchState({
+                    actionStatus: payload.data[0].id
+                        ? 'update-success'
+                        : 'add-success',
+                    saveError: null,
+                });
             },
-            error => {
-                ctx.patchState({ actionStatus: payload.data[0].id ? 'update-failed' : 'add-failed', saveError: error });
-            }
+            (error) => {
+                ctx.patchState({
+                    actionStatus: payload.data[0].id
+                        ? 'update-failed'
+                        : 'add-failed',
+                    saveError: error,
+                });
+            },
         );
-
     }
 
-
     @Action(DeleteAlerts)
-    deleteAlerts(ctx: StateContext<AlertsStateModel>, { namespace, payload:payload }: DeleteAlerts) {
-        ctx.patchState({ actionStatus: 'delete-progress', error: {}});
+    deleteAlerts(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace, payload: payload }: DeleteAlerts,
+    ) {
+        ctx.patchState({ actionStatus: 'delete-progress', error: {} });
         return this.httpService.deleteAlerts(namespace, payload).subscribe(
-            res => {
-                ctx.patchState({ actionStatus: 'delete-success'});
-                ctx.dispatch(new LoadAlerts({namespace: namespace}));
+            (res) => {
+                ctx.patchState({ actionStatus: 'delete-success' });
+                ctx.dispatch(new LoadAlerts({ namespace: namespace }));
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
-
     }
 
     @Action(ToggleAlerts)
-    toggleAlerts(ctx: StateContext<AlertsStateModel>, { namespace, payload:payload }: DeleteAlerts) {
-        ctx.patchState({ actionStatus: 'toggle-progress', error: {}});
+    toggleAlerts(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace, payload: payload }: DeleteAlerts,
+    ) {
+        ctx.patchState({ actionStatus: 'toggle-progress', error: {} });
         return this.httpService.saveAlert(namespace, payload).subscribe(
-            res => {
-                ctx.patchState({ actionStatus: payload.data[0].enabled ? 'enable-success' : 'disable-success'});
-                ctx.dispatch(new LoadAlerts({namespace: namespace}));
+            (res) => {
+                ctx.patchState({
+                    actionStatus: payload.data[0].enabled
+                        ? 'enable-success'
+                        : 'disable-success',
+                });
+                ctx.dispatch(new LoadAlerts({ namespace: namespace }));
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
-
     }
 
     @Action(LoadSnoozes)
     LoadSnoozes(ctx: StateContext<AlertsStateModel>, { options }: LoadSnoozes) {
-        ctx.patchState({ error: {}});
+        ctx.patchState({ error: {} });
         return this.httpService.getSnoozes(options).subscribe(
-            snoozes => {
-                ctx.patchState({ snoozes: snoozes});
+            (snoozes) => {
+                ctx.patchState({ snoozes: snoozes });
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
-
     }
 
     @Action(SaveSnoozes)
-    saveSnoozes(ctx: StateContext<AlertsStateModel>, { namespace, payload }: SaveSnoozes) {
-        ctx.patchState({ actionStatus: 'save-progress', saveError: {}});
+    saveSnoozes(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace, payload }: SaveSnoozes,
+    ) {
+        ctx.patchState({ actionStatus: 'save-progress', saveError: {} });
         return this.httpService.saveSnooze(namespace, payload).subscribe(
-            res => {
-                ctx.patchState({ actionStatus: payload.data[0].id ? 'snooze-update-success' : 'snooze-add-success'});
-                ctx.dispatch(new LoadSnoozes({namespace: namespace}));
+            (res) => {
+                ctx.patchState({
+                    actionStatus: payload.data[0].id
+                        ? 'snooze-update-success'
+                        : 'snooze-add-success',
+                });
+                ctx.dispatch(new LoadSnoozes({ namespace: namespace }));
             },
-            error => {
-                ctx.patchState({ actionStatus: payload.data[0].id ? 'snooze-update-failed' : 'snooze-add-failed', saveError: error });
-            }
+            (error) => {
+                ctx.patchState({
+                    actionStatus: payload.data[0].id
+                        ? 'snooze-update-failed'
+                        : 'snooze-add-failed',
+                    saveError: error,
+                });
+            },
         );
     }
 
     @Action(DeleteSnoozes)
-    deleteSnoozes(ctx: StateContext<AlertsStateModel>, { namespace, payload:payload }: DeleteSnoozes) {
-        ctx.patchState({ actionStatus: 'snooze-delete-progress', error: {}});
+    deleteSnoozes(
+        ctx: StateContext<AlertsStateModel>,
+        { namespace, payload: payload }: DeleteSnoozes,
+    ) {
+        ctx.patchState({ actionStatus: 'snooze-delete-progress', error: {} });
         return this.httpService.deleteSnoozes(namespace, payload).subscribe(
-            res => {
-                ctx.patchState({ actionStatus: 'snooze-delete-success'});
-                ctx.dispatch(new LoadSnoozes({namespace: namespace}));
+            (res) => {
+                ctx.patchState({ actionStatus: 'snooze-delete-success' });
+                ctx.dispatch(new LoadSnoozes({ namespace: namespace }));
             },
-            error => {
+            (error) => {
                 ctx.patchState({ error: error });
-            }
+            },
         );
     }
 

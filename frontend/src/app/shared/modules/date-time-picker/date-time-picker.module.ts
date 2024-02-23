@@ -30,26 +30,26 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DownsampleComponent } from './components/downsample/downsample.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    MaterialModule,
-    FlexLayoutModule,
-    ReactiveFormsModule
-  ],
-  declarations: [
-      TimePickerComponent,
-      TimeRangePickerComponent,
-      KeypadComponent,
-      DatepickerComponent,
-      DownsampleComponent
-  ],
-  providers: [],
-  exports: [
-    TimePickerComponent,
-    DatepickerComponent,
-    DownsampleComponent,
-    TimeRangePickerComponent
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        MaterialModule,
+        FlexLayoutModule,
+        ReactiveFormsModule,
+    ],
+    declarations: [
+        TimePickerComponent,
+        TimeRangePickerComponent,
+        KeypadComponent,
+        DatepickerComponent,
+        DownsampleComponent,
+    ],
+    providers: [],
+    exports: [
+        TimePickerComponent,
+        DatepickerComponent,
+        DownsampleComponent,
+        TimeRangePickerComponent,
+    ],
 })
-export class DateTimePickerModule { }
+export class DateTimePickerModule {}

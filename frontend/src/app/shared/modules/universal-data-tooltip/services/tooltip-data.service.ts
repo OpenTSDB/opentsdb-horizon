@@ -17,26 +17,29 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
-export interface TooltipData { data: any; position: any; };
+export interface TooltipData {
+    data: any;
+    position: any;
+}
 
 @Injectable()
 export class TooltipDataService implements OnInit {
-
     /* STREAMS */
-    private _tooltipStream: Subject<TooltipData | Boolean> = new Subject(); // tooltip data
+    private _tooltipStream: Subject<TooltipData | boolean> = new Subject(); // tooltip data
 
     constructor() {}
 
-    ngOnInit() {}
+    ngOnInit(): void {
+        // do nothing
+    }
 
     /* Testing New Stuff */
 
-    _ttStreamListen(): Observable<TooltipData | Boolean> {
+    _ttStreamListen(): Observable<TooltipData | boolean> {
         return this._tooltipStream.asObservable();
     }
 
-    _ttDataPut(data: TooltipData | Boolean) {
+    _ttDataPut(data: TooltipData | boolean): void {
         this._tooltipStream.next(data);
     }
-
 }

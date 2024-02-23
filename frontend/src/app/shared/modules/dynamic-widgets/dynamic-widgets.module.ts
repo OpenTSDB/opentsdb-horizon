@@ -26,14 +26,11 @@ import { D3Module } from '../d3/d3.module';
 import { ChartjsModule } from '../chartjs/chartjs.module';
 
 import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.module';
-import { RouterModule} from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { PlaceholderWidgetComponent } from './components/placeholder-widget/placeholder-widget.component';
 import { LinechartWidgetComponent } from './components/linechart-widget/linechart-widget.component';
 import { DeveloperWidgetComponent } from './components/developer-widget/developer-widget.component';
-import {
-    MarkdownModule,
-    MarkedOptions
-} from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 import {
     BignumberWidgetComponent,
@@ -42,12 +39,10 @@ import {
 
 import {
     DonutWidgetComponent,
-    DonutchartLegendComponent
+    DonutchartLegendComponent,
 } from './components/donut-widget';
 
-import {
-    BarchartWidgetComponent
-} from './components/barchart-widget';
+import { BarchartWidgetComponent } from './components/barchart-widget';
 
 import { StatusWidgetComponent } from './components/status-widget/status-widget.component';
 import { MarkdownWidgetComponent } from './components/markdown-widget/markdown-widget.component';
@@ -59,7 +54,6 @@ import { EventsWidgetComponent } from './components/events-widget/events-widget.
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 
 import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/universal-data-tooltip-directives.module';
-
 
 @NgModule({
     imports: [
@@ -75,12 +69,12 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         UniversalDataTooltipDirectivesModule,
         MarkdownModule.forRoot({
             markedOptions: {
-              provide: MarkedOptions,
-              useValue: {
-                sanitize: true,
-              }
-            }
-          })
+                provide: MarkedOptions,
+                useValue: {
+                    sanitize: true,
+                },
+            },
+        }),
     ],
     exports: [
         PlaceholderWidgetComponent,
@@ -96,7 +90,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         MarkdownWidgetComponent,
         MarkdownWidgetVisualAppearanceComponent,
         EventsWidgetComponent,
-        TableWidgetComponent
+        TableWidgetComponent,
     ],
     declarations: [
         PlaceholderWidgetComponent,
@@ -114,7 +108,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         TopnWidgetComponent,
         HeatmapWidgetComponent,
         EventsWidgetComponent,
-        TableWidgetComponent
+        TableWidgetComponent,
     ],
     entryComponents: [
         PlaceholderWidgetComponent,
@@ -128,7 +122,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         StatusWidgetComponent,
         MarkdownWidgetComponent,
         EventsWidgetComponent,
-        TableWidgetComponent
-    ]
+        TableWidgetComponent,
+    ],
 })
-export class DynamicWidgetsModule { }
+export class DynamicWidgetsModule {}

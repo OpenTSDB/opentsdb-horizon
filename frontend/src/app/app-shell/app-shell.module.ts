@@ -22,18 +22,12 @@ import { RouterModule } from '@angular/router';
 // store
 import { NgxsModule } from '@ngxs/store';
 
-import {
-    AppShellState,
-    NavigatorState
- } from './state';
+import { AppShellState, NavigatorState } from './state';
 
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
-import {
-  MarkdownModule,
-  MarkedOptions
-} from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
 import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module';
 
@@ -50,12 +44,10 @@ import { AppShellSharedModule } from './app-shell-shared.module';
 
 import {
     SettingsPanelComponent,
-    SettingsThemeComponent
+    SettingsThemeComponent,
 } from './components/settings-panel';
 
-import {
-    AdminPanelComponent,
-} from './components/admin-panel';
+import { AdminPanelComponent } from './components/admin-panel';
 
 import { DashboardService } from '../dashboard/services/dashboard.service';
 
@@ -67,21 +59,18 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
         ReactiveFormsModule,
         SharedcomponentsModule,
         MarkdownModule.forRoot({
-          markedOptions: {
-            provide: MarkedOptions,
-            useValue: {
-              sanitize: true,
-            }
-          }
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    sanitize: true,
+                },
+            },
         }),
-        NgxsModule.forFeature([
-            AppShellState,
-            NavigatorState
-        ]),
+        NgxsModule.forFeature([AppShellState, NavigatorState]),
         UniversalClipboardModule,
         DashboardFilesystemModule,
         AppShellSharedModule,
-        RouterModule
+        RouterModule,
     ],
     declarations: [
         AppShellComponent,
@@ -95,15 +84,13 @@ import { DashboardService } from '../dashboard/services/dashboard.service';
     providers: [
         AppShellService,
         DashboardService,
-        { provide: 'WINDOW', useFactory: getBrowserWindow } // this is used to open dashboards in new tab
+        { provide: 'WINDOW', useFactory: getBrowserWindow }, // this is used to open dashboards in new tab
     ],
-    exports: [
-        AppShellComponent
-    ]
+    exports: [AppShellComponent],
 })
-export class AppShellModule { }
+export class AppShellModule {}
 
 // function for WINDOW provider factory to return browser window object
 export function getBrowserWindow() {
-    return (typeof window !== 'undefined') ? window : null;
+    return typeof window !== 'undefined' ? window : null;
 }

@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { InfoIslandToolbarComponent } from './info-island-toolbar.component';
 
 describe('InfoIslandToolbarComponent', () => {
-  let component: InfoIslandToolbarComponent;
-  let fixture: ComponentFixture<InfoIslandToolbarComponent>;
+    let component: InfoIslandToolbarComponent;
+    let fixture: ComponentFixture<InfoIslandToolbarComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ InfoIslandToolbarComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [InfoIslandToolbarComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InfoIslandToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InfoIslandToolbarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

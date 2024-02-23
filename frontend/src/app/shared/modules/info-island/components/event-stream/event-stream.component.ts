@@ -14,7 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnChanges, SimpleChanges, OnDestroy, Inject, ViewChild, ViewChildren, QueryList, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    OnChanges,
+    SimpleChanges,
+    OnDestroy,
+    Inject,
+    ViewChild,
+    ViewChildren,
+    QueryList,
+    AfterViewInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 import { Subscription } from 'rxjs';
@@ -28,17 +42,20 @@ import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
     selector: 'event-stream',
     templateUrl: './event-stream.component.html',
     styleUrls: ['./event-stream.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class EventStreamComponent
+implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.event-stream') private _componentClass = true;
 
-    @ViewChild('eventAccordion', { read: MatAccordion, static: true }) private eventAccordion: MatAccordion;
-    @ViewChildren('eventPanel', {read: MatExpansionPanel}) eventPanels: QueryList<MatExpansionPanel>;
+    @ViewChild('eventAccordion', { read: MatAccordion, static: true })
+    private eventAccordion: MatAccordion;
+    @ViewChildren('eventPanel', { read: MatExpansionPanel })
+    eventPanels: QueryList<MatExpansionPanel>;
 
     buckets: any[] = [];
-    startTime: number;  // in milliseconds
-    endTime: number;    // in milliseconds
+    startTime: number; // in milliseconds
+    endTime: number; // in milliseconds
     timezone: string;
     expandedBucketIndex: number;
     maxEventsShown = 30;
@@ -54,62 +71,95 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
     constructor(
         private util: UtilsService,
         private interCom: IntercomService,
-        @Inject(ISLAND_DATA) private _data: any
+        @Inject(ISLAND_DATA) private _data: any,
     ) {
-
         this.title = _data.data.title;
 
-        this.subscription.add(_data.data.timeRange$.subscribe( time => {
-            // this.logger.log('TIME RANGE RECEIVED', {time});
-            this.startTime = time.startTime;
-            this.endTime = time.endTime;
-        }));
+        this.subscription.add(
+            _data.data.timeRange$.subscribe((time) => {
+                // this.logger.log('TIME RANGE RECEIVED', {time});
+                this.startTime = time.startTime;
+                this.endTime = time.endTime;
+            }),
+        );
 
-        this.subscription.add(_data.data.timezone$.subscribe( timezone => {
-            // this.logger.log('TIME ZONE RECEIVED', {timezone});
-            this.timezone = timezone;
-        }));
+        this.subscription.add(
+            _data.data.timezone$.subscribe((timezone) => {
+                // this.logger.log('TIME ZONE RECEIVED', {timezone});
+                this.timezone = timezone;
+            }),
+        );
 
-        this.subscription.add(this._data.data.expandedBucketIndex$.pipe(distinctUntilChanged()).subscribe( index => {
-            this.expandedBucketIndex = index;
+        this.subscription.add(
+            this._data.data.expandedBucketIndex$
+                .pipe(distinctUntilChanged())
+                .subscribe((index) => {
+                    this.expandedBucketIndex = index;
 
-            if (this.displayReady) {
+                    if (this.displayReady) {
+                        this.eventAccordion.closeAll();
 
-                this.eventAccordion.closeAll();
+                        const newSelected = this.eventPanels.find(
+                            (panel: MatExpansionPanel, idx: number) =>
+                                idx === index,
+                        );
 
-                const newSelected = this.eventPanels.find( (panel: MatExpansionPanel, idx: number) => idx === index);
+                        if (newSelected) {
+                            setTimeout(() => {
+                                newSelected.open();
+                            }, 200);
+                        }
+                    }
+                }),
+        );
 
-                if (newSelected) {
-                    setTimeout( () => {
-                        newSelected.open();
-                    }, 200);
-                }
-            }
-        }));
+        this.subscription.add(
+            _data.data.buckets$
+                .pipe(distinctUntilChanged())
+                .subscribe((buckets) => {
+                    this.buckets = buckets.map((bucket) => {
+                        if (bucket.events.length > 1) {
+                            bucket.displayTime = this.util.buildDisplayTime(
+                                bucket.endTime,
+                                this.startTime,
+                                this.endTime,
+                                true,
+                                this.timezone,
+                            );
+                        } else {
+                            // eslint-disable-next-line max-len
+                            bucket.displayTime = this.util.buildDisplayTime(
+                                bucket.events[0].timestamp,
+                                this.startTime,
+                                this.endTime,
+                                true,
+                                this.timezone,
+                            );
+                        }
 
-        this.subscription.add(_data.data.buckets$.pipe(distinctUntilChanged()).subscribe( buckets => {
-            this.buckets = buckets.map(bucket => {
-                if (bucket.events.length > 1) {
-                    bucket.displayTime = this.util.buildDisplayTime(bucket.endTime, this.startTime, this.endTime, true, this.timezone);
-                } else {
-                    // eslint-disable-next-line max-len
-                    bucket.displayTime = this.util.buildDisplayTime(bucket.events[0].timestamp, this.startTime, this.endTime, true, this.timezone);
-                }
+                        for (let i = 0; i < bucket.events.length; i++) {
+                            const event: any = this.util.deepClone(
+                                bucket.events[i],
+                            );
+                            event.displayTime = this.util.buildDisplayTime(
+                                event.timestamp,
+                                this.startTime,
+                                this.endTime,
+                                true,
+                                this.timezone,
+                            );
+                            event.showDetails = false;
+                            bucket.events[i] = event;
+                        }
 
-                for (let i = 0; i < bucket.events.length; i++) {
-                    const event: any = this.util.deepClone(bucket.events[i]);
-                    event.displayTime = this.util.buildDisplayTime(event.timestamp, this.startTime, this.endTime, true, this.timezone);
-                    event.showDetails = false;
-                    bucket.events[i] = event;
-                }
-
-                return bucket;
-            });
-            this.generateTagsAndProps();
-        }));
+                        return bucket;
+                    });
+                    this.generateTagsAndProps();
+                }),
+        );
     }
 
-    ngOnInit() { }
+    ngOnInit() { /* do nothing */ }
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -117,7 +167,7 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
 
     ngOnChanges(changes: SimpleChanges): void {
         // eslint-disable-next-line max-len
-        /*if (changes && changes.buckets
+        /* if (changes && changes.buckets
             && changes.buckets.currentValue && changes.buckets.previousValue
             && changes.buckets.previousValue.length !== changes.buckets.currentValue.length) {
             this.collapseExpansion();
@@ -128,21 +178,26 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
     }
 
     ngAfterViewInit() {
-
         this.eventAccordion.closeAll();
         this.eventAccordion.multi = true;
 
-        const newSelected = this.eventPanels.find( (panel: MatExpansionPanel, idx: number) => idx === this.expandedBucketIndex);
+        const newSelected = this.eventPanels.find(
+            (panel: MatExpansionPanel, idx: number) =>
+                idx === this.expandedBucketIndex,
+        );
 
-        setTimeout( function() {
-            if (newSelected) {
-                newSelected.open();
-            }
-            this.displayReady = true;
-        }.bind(this), 200);
+        setTimeout(
+            function () {
+                if (newSelected) {
+                    newSelected.open();
+                }
+                this.displayReady = true;
+            }.bind(this),
+            200,
+        );
     }
 
-    /*hide() {
+    /* hide() {
         this.collapseExpansion();
         this.show = false;
         this.updatedShowing.emit(this.show);
@@ -158,7 +213,9 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
             this.props[i] = [];
             for (const e of b.events) {
                 this.tags[i].push(this.util.transformTagMapToArray(e.tags));
-                this.props[i].push(this.util.transformTagMapToArray(e.additionalProps));
+                this.props[i].push(
+                    this.util.transformTagMapToArray(e.additionalProps),
+                );
             }
             i++;
         }
@@ -172,8 +229,8 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
             action: 'UpdateExpandedBucketIndex',
             id: this._data.originId,
             payload: {
-                index
-            }
+                index,
+            },
         });
     }
 
@@ -188,10 +245,9 @@ export class EventStreamComponent implements OnInit, OnChanges, OnDestroy, After
                 action: 'UpdateExpandedBucketIndex',
                 id: this._data.originId,
                 payload: {
-                    index: -1
-                }
+                    index: -1,
+                },
             });
         }
     }
-
 }

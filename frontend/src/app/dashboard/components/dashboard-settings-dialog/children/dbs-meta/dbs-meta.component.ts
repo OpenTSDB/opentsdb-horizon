@@ -24,21 +24,24 @@ import {
     Output,
     ViewChild,
     ElementRef,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    FormControl,
+    FormArray
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
-
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-meta',
     templateUrl: './dbs-meta.component.html',
     styleUrls: ['./dbs-meta.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DbsMetaComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.dbs-meta-component') private _hostClass = true;
     @HostBinding('class.dbs-settings-tab') private _tabClass = true;
 
@@ -54,36 +57,42 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
 
     @ViewChild('newLabelInput', { static: true }) newLabelInput: ElementRef;
 
-    constructor(
-        private fb: FormBuilder
-    ) { }
+    constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
-
         this.metaForm = this.fb.group({
             title: new FormControl(this.dbData.meta.title),
             namespace: new FormControl(this.dbData.meta.namespace),
             isPersonal: new FormControl(this.dbData.meta.isPersonal),
             description: new FormControl(this.dbData.meta.description),
-            labels: this.fb.array([])
+            labels: this.fb.array([]),
         });
 
-        this.metaFormSub = this.metaForm.valueChanges.subscribe(val => {
+        this.metaFormSub = this.metaForm.valueChanges.subscribe((val) => {
             this.dataModified.emit({
                 type: 'meta',
-                data: val
+                data: val,
             });
         });
 
         this.intializeLabels(this.dbData.meta.labels);
-
     }
 
-    get title() { return this.metaForm.get('title'); }
-    get namespace() { return this.metaForm.get('namespace'); }
-    get isPersonal() { return this.metaForm.get('isPersonal'); }
-    get description() { return this.metaForm.get('description'); }
-    get labels() { return this.metaForm.get('labels'); }
+    get title() {
+        return this.metaForm.get('title');
+    }
+    get namespace() {
+        return this.metaForm.get('namespace');
+    }
+    get isPersonal() {
+        return this.metaForm.get('isPersonal');
+    }
+    get description() {
+        return this.metaForm.get('description');
+    }
+    get labels() {
+        return this.metaForm.get('labels');
+    }
 
     ngOnDestroy() {
         this.metaFormSub.unsubscribe();
@@ -96,7 +105,6 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
             control.push(this.fb.group(item));
         }
     }
-
 
     /**
      * Click event for the 'plus' sign in the label input
@@ -123,5 +131,4 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
         const control = <FormArray>this.metaForm.controls['labels'];
         control.removeAt(i);
     }
-
 }

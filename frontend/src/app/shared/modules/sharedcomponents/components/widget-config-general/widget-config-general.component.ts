@@ -14,8 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    FormBuilder,
+    FormGroup,
+    FormControl,
+    Validators,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,7 +37,7 @@ import { Subscription } from 'rxjs';
     selector: 'widget-config-general',
     templateUrl: './widget-config-general.component.html',
     styleUrls: ['./widget-config-general.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetConfigGeneralComponent implements OnInit, OnDestroy {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
@@ -33,27 +47,31 @@ export class WidgetConfigGeneralComponent implements OnInit, OnDestroy {
     @Input() widget: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() widgetChange = new EventEmitter();
 
     /** Local variables */
     formGroups: FormGroup;
     formGroupSub: Subscription;
 
-    constructor(private fb: FormBuilder ) { }
+    constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
         this.formGroups = this.fb.group({
-            title: new FormControl(this.widget.settings.title, [Validators.required]),
-            description: new FormControl(this.widget.settings.description)
+            title: new FormControl(this.widget.settings.title, [
+                Validators.required,
+            ]),
+            description: new FormControl(this.widget.settings.description),
         });
 
-        this.formGroupSub = this.formGroups.valueChanges.subscribe( data => {
-            this.widgetChange.emit( {action: 'SetMetaData', payload: {data: data} } );
+        this.formGroupSub = this.formGroups.valueChanges.subscribe((data) => {
+            this.widgetChange.emit({
+                action: 'SetMetaData',
+                payload: { data: data },
+            });
         });
     }
 
     ngOnDestroy() {
         this.formGroupSub.unsubscribe();
     }
-
 }

@@ -21,7 +21,7 @@ import {
     EventEmitter,
     Input,
     Output,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 @Component({
@@ -29,10 +29,9 @@ import {
     selector: 'dbs-json',
     templateUrl: './dbs-json.component.html',
     styleUrls: ['./dbs-json.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DbsJsonComponent implements OnInit {
-
     @HostBinding('class.dbs-json-component') private _hostClass = true;
     @HostBinding('class.dbs-settings-tab') private _tabClass = true;
 
@@ -42,9 +41,7 @@ export class DbsJsonComponent implements OnInit {
     /** Outputs */
     @Output() dataUpdated: any = new EventEmitter();
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

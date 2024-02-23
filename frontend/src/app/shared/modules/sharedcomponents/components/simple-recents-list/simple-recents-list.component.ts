@@ -19,7 +19,7 @@ import {
     OnInit,
     HostBinding,
     OnDestroy,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -33,10 +33,9 @@ import { FormControl } from '@angular/forms';
     selector: 'simple-recents-list',
     templateUrl: './simple-recents-list.component.html',
     styleUrls: ['./simple-recents-list.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class SimpleRecentsListComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.simple-recents-list') private _componentClass = true;
 
@@ -49,24 +48,24 @@ export class SimpleRecentsListComponent implements OnInit, OnDestroy {
     userRecentsDataSource = new MatTableDataSource([]);
     userRecentsFilter: FormControl = new FormControl('');
 
-    constructor(
-        private store: Store
-    ) { }
+    constructor(private store: Store) {}
 
     ngOnInit() {
-        this.subscription.add(this.userRecents$.subscribe(recs => {
-            this.userRecents = recs || [];
-            this.userRecentsDataSource.data = this.userRecents;
-        }));
+        this.subscription.add(
+            this.userRecents$.subscribe((recs) => {
+                this.userRecents = recs || [];
+                this.userRecentsDataSource.data = this.userRecents;
+            }),
+        );
 
-        this.subscription.add(this.userRecentsFilter.valueChanges.subscribe(val => {
-            this.userRecentsDataSource.filter = val;
-        }));
+        this.subscription.add(
+            this.userRecentsFilter.valueChanges.subscribe((val) => {
+                this.userRecentsDataSource.filter = val;
+            }),
+        );
     }
-
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpHeaders,
+    HttpParams,
+    HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, of, throwError, forkJoin, BehaviorSubject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { AppConfigService } from '../services/config.service';
@@ -24,14 +29,13 @@ import { OpenTSDBService } from '../services/opentsdb.service';
 import { UtilsService } from '../services/utils.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class HttpService {
-
     override_host = {
         tsdb_host: '',
         meta_host: '',
-        cfgdb_host: ''
+        cfgdb_host: '',
     };
 
     regexMetricFormat = /([^\.]*)\.([^\.]*)\.(.*)/;
@@ -43,14 +47,14 @@ export class HttpService {
         private metaService: MetaService,
         private utils: UtilsService,
         private appConfig: AppConfigService,
-        private openTSDBService: OpenTSDBService) { }
+        private openTSDBService: OpenTSDBService,
+    ) {}
 
     getDashoard(id: string): Observable<any> {
         const apiUrl = this.appConfig.getConfig().configdb + '/object/' + id;
-        return this.http.get(apiUrl, { withCredentials: true })
-            .pipe(
-                map((data: any) => JSON.parse(data.content))
-            );
+        return this.http
+            .get(apiUrl, { withCredentials: true })
+            .pipe(map((data: any) => JSON.parse(data.content)));
     }
 
     /* to handle error  with more info */
@@ -60,7 +64,7 @@ export class HttpService {
             console.group(
                 '%cERROR %cHttpService',
                 'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                'color: #ff0000; padding: 4px 8px; font-weight: bold',
             );
             console.log('%cErrorMsg', 'font-weight: bold;', error.message);
             console.groupEnd();
@@ -69,71 +73,95 @@ export class HttpService {
             // the response body may contain clues of what went wrong
             console.error(
                 `backend return code ${error.status}, ` +
-                `body was: ${error.error}`
+                    `body was: ${error.error}`,
             );
         }
-        return throwError(
-            'Something bad happened; please try again later.'
-        );
+        return throwError('Something bad happened; please try again later.');
     }
     /* will refactor later */
     getOpenTSDBData(payload: any): Observable<any> {
-        var headers = new HttpHeaders(
-            { 'Content-Type': 'application/json' });
-        headers = headers.set('X-Horizon-DSHBID', String(payload.dbid))
-                         .set('X-Horizon-WID', String(payload.wid));
+        let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        headers = headers
+            .set('X-Horizon-DSHBID', String(payload.dbid))
+            .set('X-Horizon-WID', String(payload.wid));
         // simple random from 0 to length of hosts - 1
         // const metricsUrl = this.appConfig.getConfig().tsdb_host + '/api/query/graph';
-         // const metricsUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
+        // NOTE: I wrapped because comment too long. May just remove since its commented anyway.
+        // TODO: cleanup?
+        // const metricsUrl =
+        //      this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() *
+        //      (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
         if (this.assigned_tsdb_host === '') {
-            this.assigned_tsdb_host = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
+            this.assigned_tsdb_host =
+                this.appConfig.getConfig().tsdb_hosts[
+                    Math.floor(
+                        Math.random() *
+                            (this.appConfig.getConfig().tsdb_hosts.length - 1),
+                    )
+                ] + '/api/query/graph';
         }
-        return this.http.post(this.assigned_tsdb_host, payload.query, { headers, withCredentials: true });
+        return this.http.post(this.assigned_tsdb_host, payload.query, {
+            headers,
+            withCredentials: true,
+        });
     }
 
     getAlertCount(options: any): Observable<any> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
+        const statusApiUrl =
+            this.appConfig.getConfig().tsdb_hosts[
+                Math.floor(
+                    Math.random() *
+                        (this.appConfig.getConfig().tsdb_hosts.length - 1),
+                )
+            ] + '/api/query/graph';
         const statusQuery = this.openTSDBService.buildStatusQuery(options);
 
-        return this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
-            .pipe(catchError(error => of( { error : error } ) ));
+        return this.http
+            .post(statusApiUrl, statusQuery, { headers, withCredentials: true })
+            .pipe(catchError((error) => of({ error: error })));
     }
 
     /* post to search for metric */
     searchMetrics(queryObj: any): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
-        return this.http.post('/search/msearch', queryObj, { headers, withCredentials: true })
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this.http
+            .post('/search/msearch', queryObj, {
+                headers,
+                withCredentials: true,
+            })
+            .pipe(catchError(this.handleError));
     }
 
-    getNamespaces(queryObj: any, source= 'meta'): Observable<any> {
+    getNamespaces(queryObj: any, source = 'meta'): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
-        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'NAMESPACES', queryObj);
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
-            .pipe(
-                map((res: any) => res ? res.results[0].namespaces : []),
-            );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(map((res: any) => (res ? res.results[0].namespaces : [])));
     }
     // to get all tagkeys by namespaces
     // can pass a list of namespace and optional a list of metrics
     getTagKeys(queryObj: any): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
         const newQueryParams = {};
         const namespaces = queryObj.namespaces || [];
         for (let i = 0, len = namespaces.length; i < len; i++) {
             const namespace = namespaces[i];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { search: '', namespace: namespace, metrics: [] };
+                newQueryParams[namespace] = {
+                    search: '',
+                    namespace: namespace,
+                    metrics: [],
+                };
             }
         }
         const metrics = queryObj.metrics || [];
@@ -142,109 +170,158 @@ export class HttpService {
             const namespace = res[1];
             const metric = res[2] + '.' + res[3];
             if (!newQueryParams[namespace]) {
-                newQueryParams[namespace] = { search: '', namespace: namespace, metrics: [] };
+                newQueryParams[namespace] = {
+                    search: '',
+                    namespace: namespace,
+                    metrics: [],
+                };
             }
             newQueryParams[namespace].metrics.push(metric);
         }
-        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
-        const query = this.metaService.getQuery('meta', 'TAG_KEYS', Object.values(newQueryParams));
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const query = this.metaService.getQuery(
+            'meta',
+            'TAG_KEYS',
+            Object.values(newQueryParams),
+        );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
                     let tagkeys = [];
                     const len = res && res.results ? res.results.length : 0;
                     for (let i = 0; i < len; i++) {
-                        const keys = res.results[i].tagKeys.filter(item => tagkeys.indexOf(item.name) === -1);
-                        tagkeys = tagkeys.concat(keys.map(d => d.name));
+                        const keys = res.results[i].tagKeys.filter(
+                            (item) => tagkeys.indexOf(item.name) === -1,
+                        );
+                        tagkeys = tagkeys.concat(keys.map((d) => d.name));
                     }
                     return tagkeys.sort(this.utils.sortAlphaNum);
-                })
+                }),
             );
     }
 
-
     getMetricsByNamespace(queryObj: any): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
-        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery('meta', 'METRICS', queryObj);
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
-            .pipe(
-                map((res: any) => res ? res.results[0].metrics : [])
-            );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(map((res: any) => (res ? res.results[0].metrics : [])));
     }
 
     getTagKeysForQueries(widgets): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
         const newQueries = [];
         for (let i = 0, len = widgets.length; i < len; i++) {
             const queries = widgets[i].queries;
-            for (let j = 0;  j < queries.length; j++) {
+            for (let j = 0; j < queries.length; j++) {
                 let hasMetric = false;
-                const q = { id: widgets[i].id + ':' + queries[j].id, search: '', namespace: queries[j].namespace, metrics: [] };
-                for (let k = 0;  k < queries[j].metrics.length; k++) {
-                    if ( queries[j].metrics[k].expression === undefined ) {
+                const q = {
+                    id: widgets[i].id + ':' + queries[j].id,
+                    search: '',
+                    namespace: queries[j].namespace,
+                    metrics: [],
+                };
+                for (let k = 0; k < queries[j].metrics.length; k++) {
+                    if (queries[j].metrics[k].expression === undefined) {
                         q.metrics.push(queries[j].metrics[k].name);
                         hasMetric = true;
                     }
                 }
-                if ( hasMetric ) {
+                if (hasMetric) {
                     newQueries.push(q);
                 }
             }
         }
-        if ( newQueries.length ) {
-            const query = this.metaService.getQuery('meta', 'TAG_KEYS', newQueries);
-            const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
-            return this.http.post(apiUrl, query, { headers, withCredentials: true });
+        if (newQueries.length) {
+            const query = this.metaService.getQuery(
+                'meta',
+                'TAG_KEYS',
+                newQueries,
+            );
+            const apiUrl =
+                this.appConfig.getConfig().metaApi + '/search/timeseries';
+            return this.http.post(apiUrl, query, {
+                headers,
+                withCredentials: true,
+            });
         } else {
-            return of({ 'results': [] });
+            return of({ results: [] });
         }
     }
     getNamespaceTagKeys(queryObj: any, source = 'meta'): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
-        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
         const query = this.metaService.getQuery(source, 'TAG_KEYS', queryObj);
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
-            .pipe(
-                map((res: any) => res ? res.results[0].tagKeys : [])
-            );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(map((res: any) => (res ? res.results[0].tagKeys : [])));
     }
 
     getTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json'
-      });
-      const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
-      const query = this.metaService.getQuery(source, 'TAG_KEYS_AND_VALUES', queryObj, false);
-      return this.http.post(apiUrl, query, { headers, withCredentials: true })
-                        .pipe(
-                          map((res: any) => res && res.results[0].tagKeysAndValues[queryObj.tagkey] ?
-                            res.results[0].tagKeysAndValues[queryObj.tagkey].values : []),
-                        );
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const query = this.metaService.getQuery(
+            source,
+            'TAG_KEYS_AND_VALUES',
+            queryObj,
+            false,
+        );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(
+                map((res: any) =>
+                    res && res.results[0].tagKeysAndValues[queryObj.tagkey]
+                        ? res.results[0].tagKeysAndValues[queryObj.tagkey]
+                            .values
+                        : [],
+                ),
+            );
     }
 
-    getTagKeysAndTagValuesByNamespace(queryObj: any, source = 'meta'): Observable<any> {
+    getTagKeysAndTagValuesByNamespace(
+        queryObj: any,
+        source = 'meta',
+    ): Observable<any> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
-          });
-        const apiUrl =  this.appConfig.getConfig().metaApi + '/search/timeseries';
-        const query = this.metaService.getQuery(source, 'BASIC', queryObj, false);
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
-                            .pipe(
-                                map((res: any) => res && res.results[0] ? res.results[0] : {'tagKeysAndValues': {}})
-                            );
+            'Content-Type': 'application/json',
+        });
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const query = this.metaService.getQuery(
+            source,
+            'BASIC',
+            queryObj,
+            false,
+        );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(
+                map((res: any) =>
+                    res && res.results[0]
+                        ? res.results[0]
+                        : { tagKeysAndValues: {} },
+                ),
+            );
     }
 
     // results should filter the lists from already selected filters
     getTagValues(queryObj: any): Observable<string[]> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
         const newQueryParams = {};
         const namespaces = queryObj.namespaces || [];
@@ -255,7 +332,8 @@ export class HttpService {
                     search: queryObj.tag.value,
                     namespace: namespaces[i],
                     metrics: [],
-                    tags: queryObj.tagsFilter };
+                    tags: queryObj.tagsFilter,
+                };
             }
         }
 
@@ -270,44 +348,63 @@ export class HttpService {
                     search: queryObj.tag.value,
                     namespace: namespace,
                     metrics: [],
-                    tags: queryObj.tagsFilter };
+                    tags: queryObj.tagsFilter,
+                };
             }
             newQueryParams[namespace].metrics.push(metric);
         }
-        const apiUrl = this.appConfig.getConfig().metaApi + '/search/timeseries';
-        const query = this.metaService.getQuery('meta', 'TAG_KEYS_AND_VALUES', Object.values(newQueryParams), false);
-        return this.http.post(apiUrl, query, { headers, withCredentials: true })
+        const apiUrl =
+            this.appConfig.getConfig().metaApi + '/search/timeseries';
+        const query = this.metaService.getQuery(
+            'meta',
+            'TAG_KEYS_AND_VALUES',
+            Object.values(newQueryParams),
+            false,
+        );
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
             .pipe(
                 map((res: any) => {
                     let tagvalues = [];
                     for (let i = 0; res && i < res.results.length; i++) {
-                        if (Object.keys(res.results[i].tagKeysAndValues).length > 0 && res.results[i].tagKeysAndValues[queryObj.tag.key]) {
-                            const keys = res.results[i].tagKeysAndValues[queryObj.tag.key].values
-                                .filter(item => tagvalues.indexOf(item.name) === -1);
-                            tagvalues = tagvalues.concat(keys.map(d => d.name));
+                        if (
+                            Object.keys(res.results[i].tagKeysAndValues)
+                                .length > 0 &&
+                            res.results[i].tagKeysAndValues[queryObj.tag.key]
+                        ) {
+                            const keys = res.results[i].tagKeysAndValues[
+                                queryObj.tag.key
+                            ].values.filter(
+                                (item) => tagvalues.indexOf(item.name) === -1,
+                            );
+                            tagvalues = tagvalues.concat(
+                                keys.map((d) => d.name),
+                            );
                         }
                     }
                     return tagvalues.sort(this.utils.sortAlphaNum);
-                })
+                }),
             );
     }
 
     getDashboardByPath(path: string) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/' + path;
+        const apiUrl =
+            this.appConfig.getConfig().configdb + '/dashboard/' + path;
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
 
     getDashboardById(id: string) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/file/' + id;
+        const apiUrl =
+            this.appConfig.getConfig().configdb + '/dashboard/file/' + id;
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
@@ -315,10 +412,14 @@ export class HttpService {
     getDashboards() {
         const apiUrl = this.appConfig.getConfig().configdb + '/object';
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
-        const params = { 'userId': 'user.arunmohzi', 'type': 'DASHBOARD' };
-        return this.http.get(apiUrl, { params: params, headers, withCredentials: true });
+        const params = { userId: 'user.arunmohzi', type: 'DASHBOARD' };
+        return this.http.get(apiUrl, {
+            params: params,
+            headers,
+            withCredentials: true,
+        });
     }
 
     // id is not use for now, but just carry it here
@@ -327,7 +428,7 @@ export class HttpService {
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.put(apiUrl, data, httpOptions);
     }
@@ -343,7 +444,7 @@ export class HttpService {
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
@@ -353,9 +454,9 @@ export class HttpService {
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
-        if ( id === '_new_') {
+        if (id === '_new_') {
             return this.http.post(apiUrl, data, httpOptions);
         } else {
             return this.http.put(apiUrl, data, httpOptions);
@@ -363,46 +464,56 @@ export class HttpService {
     }
 
     userNamespaces() {
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/member';
+        const apiUrl =
+            this.appConfig.getConfig().configdb + '/namespace/member';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
 
     getUserFolderData() {
-        const apiUrl = this.appConfig.getConfig().configdb + '/dashboard/topFolders';
+        const apiUrl =
+            this.appConfig.getConfig().configdb + '/dashboard/topFolders';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
 
     getRecipients(namespace: string) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/contact';
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            namespace +
+            '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         return this.http.get(apiUrl, httpOptions);
     }
 
     postRecipient(data: any) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact';
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            data.namespace +
+            '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
-        let recipient: any = {... data};
+        let recipient: any = { ...data };
         delete recipient.type;
         delete recipient.namespace;
         serverData[data.type][0] = recipient;
@@ -410,16 +521,20 @@ export class HttpService {
     }
 
     updateRecipient(data: any) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact';
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            data.namespace +
+            '/contact';
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         /* eslint-disable prefer-const */
         let serverData: any = {};
         serverData[data.type] = [];
-        let recipient: any = {... data};
+        let recipient: any = { ...data };
         delete recipient.type;
         delete recipient.namespace;
         serverData[data.type][0] = recipient;
@@ -427,12 +542,16 @@ export class HttpService {
     }
 
     deleteRecipient(data: any) {
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + data.namespace + '/contact/delete';
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            data.namespace +
+            '/contact/delete';
         // eslint-disable-next-line prefer-const
         let httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
             withCredentials: true,
-            observe: 'response' as 'response'
+            observe: 'response' as const,
         };
         // eslint-disable-next-line prefer-const
         let serverData: any = {};
@@ -443,20 +562,30 @@ export class HttpService {
 
     saveAlert(namespace, payload: any): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/alert';
-        if ( !payload.data[0].id  ) {
-            return this.http.post(apiUrl, payload.data, { headers, withCredentials: true });
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            namespace +
+            '/alert';
+        if (!payload.data[0].id) {
+            return this.http.post(apiUrl, payload.data, {
+                headers,
+                withCredentials: true,
+            });
         } else {
             // payload.data[0].id = payload.id;
-            return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
+            return this.http.put(apiUrl, payload.data, {
+                headers,
+                withCredentials: true,
+            });
         }
     }
 
     getAlertDetailsById(id: number): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
         const apiUrl = this.appConfig.getConfig().configdb + '/alert/' + id;
         return this.http.get(apiUrl, { headers, withCredentials: true });
@@ -465,48 +594,77 @@ export class HttpService {
     getAlerts(options): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-          });
+        });
 
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/alert';
-        return this.http.get(apiUrl, { headers, withCredentials: true })
-                            
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            options.namespace +
+            '/alert';
+        return this.http.get(apiUrl, { headers, withCredentials: true });
     }
 
     getAlertsStats(options): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-          });
+        });
 
         const statusQuery = this.openTSDBService.buildStatusQuery(options);
-        const statusApiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
-        return this.http.post(statusApiUrl, statusQuery, { headers, withCredentials: true })
+        const statusApiUrl =
+            this.appConfig.getConfig().tsdb_hosts[
+                Math.floor(
+                    Math.random() *
+                        (this.appConfig.getConfig().tsdb_hosts.length - 1),
+                )
+            ] + '/api/query/graph';
+        return this.http.post(statusApiUrl, statusQuery, {
+            headers,
+            withCredentials: true,
+        });
     }
 
     deleteAlerts(namespace, payload): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/alert/delete';
-        return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            namespace +
+            '/alert/delete';
+        return this.http.put(apiUrl, payload.data, {
+            headers,
+            withCredentials: true,
+        });
     }
 
     /** snooze */
     saveSnooze(namespace, payload: any): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + namespace + '/snooze';
-        if ( !payload.data[0].id  ) {
-            return this.http.post(apiUrl, payload.data, { headers, withCredentials: true });
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            namespace +
+            '/snooze';
+        if (!payload.data[0].id) {
+            return this.http.post(apiUrl, payload.data, {
+                headers,
+                withCredentials: true,
+            });
         } else {
             // payload.data[0].id = payload.id;
-            return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
+            return this.http.put(apiUrl, payload.data, {
+                headers,
+                withCredentials: true,
+            });
         }
     }
 
     getSnoozeDetailsById(id: number): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
         const apiUrl = this.appConfig.getConfig().configdb + '/snooze/' + id;
         return this.http.get(apiUrl, { headers, withCredentials: true });
@@ -515,50 +673,89 @@ export class HttpService {
     getSnoozes(options): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-          });
-        const apiUrl = this.appConfig.getConfig().configdb + '/namespace/' + options.namespace + '/snooze';
+        });
+        const apiUrl =
+            this.appConfig.getConfig().configdb +
+            '/namespace/' +
+            options.namespace +
+            '/snooze';
         return this.http.get(apiUrl, { headers, withCredentials: true });
     }
 
     deleteSnoozes(namespace, payload): Observable<any> {
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         });
         const apiUrl = this.appConfig.getConfig().configdb + '/snooze/delete';
-        return this.http.put(apiUrl, payload.data, { headers, withCredentials: true });
+        return this.http.put(apiUrl, payload.data, {
+            headers,
+            withCredentials: true,
+        });
     }
     /** snooze */
 
     getEvents(wid: string, time: any, eventQueries: any[], limit) {
-        let query = this.openTSDBService.buildEventsQuery(time, eventQueries, limit);
+        let query = this.openTSDBService.buildEventsQuery(
+            time,
+            eventQueries,
+            limit,
+        );
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         });
 
-        const apiUrl = this.appConfig.getConfig().tsdb_hosts[Math.floor(Math.random() * (this.appConfig.getConfig().tsdb_hosts.length - 1))] + '/api/query/graph';
+        const apiUrl =
+            this.appConfig.getConfig().tsdb_hosts[
+                Math.floor(
+                    Math.random() *
+                        (this.appConfig.getConfig().tsdb_hosts.length - 1),
+                )
+            ] + '/api/query/graph';
 
-        return this.http.post(apiUrl, query, { headers, withCredentials: true }).pipe(
-            map((res: any) => {
-                let events = [], counts: any = {};
-                counts.results = res && res.results.length ? res.results.filter(d =>  d.source.indexOf('count') !== -1 ) : [];
-                for (let i = 0; res && i < res.results.length; i++) {
-                    for (let j = 0; res.results[i] && j < res.results[i].data.length; j++) {
-                        if (Object.keys(res.results[i].data[j]).length > 0 && res.results[i].data[j].EventsType) {
-                            const event = res.results[i].data[j].EventsType;
-                            // put tags at top-level
-                            if (res.results[i].data[j].tags) {
-                                event.tags = res.results[i].data[j].tags;
+        return this.http
+            .post(apiUrl, query, { headers, withCredentials: true })
+            .pipe(
+                map((res: any) => {
+                    let events = [],
+                        counts: any = {};
+                    counts.results =
+                        res && res.results.length
+                            ? res.results.filter(
+                                (d) => d.source.indexOf('count') !== -1,
+                            )
+                            : [];
+                    for (let i = 0; res && i < res.results.length; i++) {
+                        for (
+                            let j = 0;
+                            res.results[i] && j < res.results[i].data.length;
+                            j++
+                        ) {
+                            if (
+                                Object.keys(res.results[i].data[j]).length >
+                                    0 &&
+                                res.results[i].data[j].EventsType
+                            ) {
+                                const event = res.results[i].data[j].EventsType;
+                                // put tags at top-level
+                                if (res.results[i].data[j].tags) {
+                                    event.tags = res.results[i].data[j].tags;
+                                }
+                                // time in milliseconds
+                                if (String(event.timestamp).length === 10) {
+                                    event.timestamp = event.timestamp * 1000;
+                                }
+                                events.push(event);
                             }
-                            // time in milliseconds
-                            if (String(event.timestamp).length === 10) {
-                                event.timestamp = event.timestamp * 1000;
-                            }
-                            events.push(event);
                         }
                     }
-                }
-                return {events: events, counts: counts, wid: wid, time: time, eventQueries: eventQueries};
-            })
-        );
+                    return {
+                        events: events,
+                        counts: counts,
+                        wid: wid,
+                        time: time,
+                        eventQueries: eventQueries,
+                    };
+                }),
+            );
     }
 }

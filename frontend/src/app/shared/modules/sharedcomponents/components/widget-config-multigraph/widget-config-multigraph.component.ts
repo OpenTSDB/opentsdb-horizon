@@ -15,11 +15,27 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, OnDestroy, OnChanges, SimpleChanges,
-    HostBinding, Input, Output, EventEmitter, ViewChild, ElementRef, ViewEncapsulation
+    Component,
+    OnInit,
+    OnDestroy,
+    OnChanges,
+    SimpleChanges,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormControl,
+    FormArray,
+} from '@angular/forms';
 import { Subscription, Subject } from 'rxjs';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable } from '@angular/material/table';
@@ -35,13 +51,14 @@ import { pairwise, startWith, distinctUntilChanged } from 'rxjs/operators';
     selector: 'widget-config-multigraph',
     templateUrl: './widget-config-multigraph.component.html',
     styleUrls: ['./widget-config-multigraph.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDestroy {
-
+export class WidgetConfigMultigraphComponent
+implements OnInit, OnChanges, OnDestroy {
     @ViewChild('chartTable', { static: true }) chartTable: MatTable<any>;
     @ViewChild('tagKeyInput', { read: ElementRef }) tagKeyInput: ElementRef;
-    @ViewChild('tagKeyInput', { read: MatAutocompleteTrigger }) tagKeyACTrigger: MatAutocompleteTrigger;
+    @ViewChild('tagKeyInput', { read: MatAutocompleteTrigger })
+    tagKeyACTrigger: MatAutocompleteTrigger;
 
     @HostBinding('class.widget-config-tab') private _hostClass = true;
     @HostBinding('class.multigraph-configuration') private _tabClass = true;
@@ -67,7 +84,7 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     layoutPresetOptions: Array<any> = [
         {
             label: 'Grid',
-            value: 'grid'
+            value: 'grid',
         },
         /* {
             label: 'Freeflow',
@@ -81,16 +98,16 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     availableTagOptions: Array<any> = [];
 
     sortAsOptions: Array<any> = [
-        { label: 'Asc', value: 'asc'},
-        { label: 'Desc', value: 'desc'}
+        { label: 'Asc', value: 'asc' },
+        { label: 'Desc', value: 'desc' },
     ];
 
     multigraphByOption: Array<any> = [
-        { label: 'Metrics', value: 'metric_group'},
-        { label: 'Queries', value: 'query_group'}
+        { label: 'Metrics', value: 'metric_group' },
+        { label: 'Queries', value: 'query_group' },
     ];
     multigraphMode = 'metric_group';
-    canSelectQuery: boolean = true;
+    canSelectQuery = true;
     /** Mat Table Stuff */
     chartDisplayColumns: string[] = ['label', 'sort', 'x', 'y', 'g', 'order'];
 
@@ -100,8 +117,8 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             {
                 key: 'metric_group',
                 displayAs: 'g', // g|x|y
-                sortAs: 'asc'
-            }
+                sortAs: 'asc',
+            },
         ],
         enabled: true,
         layout: 'grid', // grid | freeflow
@@ -109,9 +126,9 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             viewportDisplay: 'custom', // fit | custom
             custom: {
                 x: 3,
-                y: 3
-            }
-        }
+                y: 3,
+            },
+        },
     };
     multigraph: any;
     multigraphSubs: any = false;
@@ -120,17 +137,22 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         private fb: FormBuilder,
         private httpService: HttpService,
         private utilService: UtilsService,
-        private multiService: MultigraphService
-    ) { }
+        private multiService: MultigraphService,
+    ) {}
 
-    ngOnInit() { }
+    ngOnInit() {
+        // do nothing
+    }
 
     ngOnChanges(changes: SimpleChanges) {
-        if ( !changes.widget ) {
+        if (!changes.widget) {
             return;
         }
         if (changes.widget.currentValue.settings.multigraph) {
-            const idx = changes.widget.currentValue.settings.multigraph.chart.findIndex(item => item.key === 'metric_group');
+            const idx =
+                changes.widget.currentValue.settings.multigraph.chart.findIndex(
+                    (item) => item.key === 'metric_group',
+                );
             this.multigraphMode = idx > -1 ? 'metric_group' : 'query_group';
         }
         this.setupMultigraph();
@@ -147,8 +169,8 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             action: 'UpdateMultigraph',
             payload: {
                 requery: this.needRequery,
-                changes: this.multigraph
-            }
+                changes: this.multigraph,
+            },
         });
         this.createForm(this.multigraph);
     }
@@ -156,7 +178,9 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     checkAvailableQuery(queries: any[]): boolean {
         let count = 0;
         for (let i = 0; i < queries.length; i++) {
-            if (queries[i].settings.visual.visible) ++count;
+            if (queries[i].settings.visual.visible) {
+                ++count;
+            }
         }
         return count > 1 ? true : false;
     }
@@ -165,26 +189,31 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     setupMultigraph() {
         // check of they have multigraph before or not
         if (this.widget.settings.multigraph) {
-            this.multigraph = this.utilService.deepClone(this.widget.settings.multigraph);
+            this.multigraph = this.utilService.deepClone(
+                this.widget.settings.multigraph,
+            );
             // we just set to custom if it used fit before then it can save later
             // since we only support custom not auto for now
             if (this.multigraph.gridOptions.viewportDisplay === 'fit') {
                 this.multigraph.gridOptions.viewportDisplay = 'custom';
             }
         } else {
-          this.multigraph = this.utilService.deepClone(this.defaultMultigraph);
-          if (this.multigraphMode === 'query_group') {
+            this.multigraph = this.utilService.deepClone(
+                this.defaultMultigraph,
+            );
+            if (this.multigraphMode === 'query_group') {
                 this.multigraph.chart[0].key = 'query_group';
             }
         }
-        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        const groupByTags = this.multiService.getGroupByTags(
+            this.widget.queries,
+        );
         this.multiService.updateMultigraphConf(groupByTags, this.multigraph);
         this.canSelectQuery = this.checkAvailableQuery(this.widget.queries);
         this.createForm(this.multigraph);
     }
 
     createForm(multigraph: any) {
-
         // setup the group
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
@@ -194,14 +223,14 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
                 viewportDisplay: new FormControl('', [Validators.required]),
                 custom: this.fb.group({
                     x: new FormControl(1, [Validators.required]),
-                    y: new FormControl(1, [Validators.required])
-                })
-            })
+                    y: new FormControl(1, [Validators.required]),
+                }),
+            }),
         });
 
         for (const i in multigraph.chart) {
             if (multigraph.chart[i]) {
-                let chartItem = multigraph.chart[i];
+                const chartItem = multigraph.chart[i];
                 if (!chartItem.sortAs) {
                     chartItem.sortAs = 'asc';
                 }
@@ -210,10 +239,13 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         }
         // patch with values (triggering first valueChange)
         this.widgetConfigMultigraph.patchValue(this.multigraph, {
-            emitEvent: true
+            emitEvent: true,
         });
 
-        this.widgetConfigMultigraph.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        this.widgetConfigMultigraph.updateValueAndValidity({
+            onlySelf: false,
+            emitEvent: true,
+        });
 
         this.setViewportDisplayValidators();
     }
@@ -222,51 +254,51 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         // form changes for chart group
         this.subscription.add(
             this.widgetConfigMultigraph.controls['chart'].valueChanges
-                .pipe(
-                    startWith(''),
-                    distinctUntilChanged(),
-                    pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {
+                .pipe(startWith(''), distinctUntilChanged(), pairwise())
+                .subscribe(([prev, changes]: [any, any]) => {
                     if (this.chartTable && !deepEqual(prev, changes)) {
                         this.chartTable.renderRows();
-                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
+                        this.multigraph =
+                            this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
                                 requery: this.needRequery,
-                                changes: this.widgetConfigMultigraph.getRawValue()
-                            }
+                                changes:
+                                    this.widgetConfigMultigraph.getRawValue(),
+                            },
                         });
                         this.needRequery = false;
                     }
-                })
+                }),
         );
         // form change for viewport options
         this.subscription.add(
             this.widgetConfigMultigraph.controls['gridOptions'].valueChanges
-                .pipe(
-                    startWith(''),
-                    distinctUntilChanged(),
-                    pairwise()
-                ).subscribe(([prev, changes]: [any, any]) => {
+                .pipe(startWith(''), distinctUntilChanged(), pairwise())
+                .subscribe(([prev, changes]: [any, any]) => {
                     if (!deepEqual(prev, changes)) {
-                        this.multigraph = this.widgetConfigMultigraph.getRawValue();
+                        this.multigraph =
+                            this.widgetConfigMultigraph.getRawValue();
                         this.widgetChange.emit({
                             action: 'UpdateMultigraph',
                             payload: {
                                 requery: this.needRequery,
-                                changes: this.widgetConfigMultigraph.getRawValue()
-                            }
+                                changes:
+                                    this.widgetConfigMultigraph.getRawValue(),
+                            },
                         });
                         this.needRequery = false;
                     }
-                })
+                }),
         );
     }
 
     widgetTagOptions() {
-        const chartItems: string[] = this.widgetConfigMultigraph.getRawValue().chart.map(item => item.key);
-        return this.widgetTags.tags.filter(tag => !chartItems.includes(tag));
+        const chartItems: string[] = this.widgetConfigMultigraph
+            .getRawValue()
+            .chart.map((item) => item.key);
+        return this.widgetTags.tags.filter((tag) => !chartItems.includes(tag));
     }
 
     addChartItem(data: any) {
@@ -278,13 +310,24 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
 
     addTagKeyChartItem(key: string) {
         const control = <FormArray>this.FC_chart;
-        const chartItem = { key, displayAs: 'g', sortAs: 'asc', order: (control['controls'].length - 1) };
+        const chartItem = {
+            key,
+            displayAs: 'g',
+            sortAs: 'asc',
+            order: control['controls'].length - 1,
+        };
         this.addChartItem(chartItem);
     }
 
     dropTable(event: any) {
-        const prevIndex = this.FC_chart['controls'].findIndex((d) => d === event.item.data);
-        moveItemInArray(this.FC_chart['controls'], prevIndex, event.currentIndex);
+        const prevIndex = this.FC_chart['controls'].findIndex(
+            (d) => d === event.item.data,
+        );
+        moveItemInArray(
+            this.FC_chart['controls'],
+            prevIndex,
+            event.currentIndex,
+        );
         this.setChartDataOrder();
         // this.chartTable.renderRows();
     }
@@ -295,7 +338,10 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
             const formGroup = <FormGroup>controls[i];
             formGroup.get('order').setValue(i);
         }
-        this.FC_chart.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        this.FC_chart.updateValueAndValidity({
+            onlySelf: false,
+            emitEvent: true,
+        });
     }
 
     setViewportDisplayMode(event: any) {
@@ -330,7 +376,9 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
         // check if in tag key array
         const val = this.tagKeyControlInput.value;
 
-        const idx = this.widgetTags.tags.findIndex(item => item && item.toLowerCase() === val.toLowerCase());
+        const idx = this.widgetTags.tags.findIndex(
+            (item) => item && item.toLowerCase() === val.toLowerCase(),
+        );
 
         if (idx === -1) {
             this.tagKeyControlInput.setValue('');
@@ -352,35 +400,52 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     checkIfGroupByTags(tag: string): boolean {
-        const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
+        const groupByTags = this.multiService.getGroupByTags(
+            this.widget.queries,
+        );
         return groupByTags.includes(tag);
     }
 
     /** network stuff */
 
     getWidgetTagKeys() {
-        this.subscription.add(this.httpService.getTagKeysForQueries([this.widget]).subscribe((res: any) => {
-            this.widgetTags = { rawWidgetTags: {}, totalQueries: 0, tags: [] };
-            for (let i = 0; res && i < res.results.length; i++) {
-                const [wid, qid] = res.results[i].id ? res.results[i].id.split(':') : [null, null];
-                if (!wid) { continue; }
-                const keys = res.results[i].tagKeys.map(d => d.name);
-                if (!this.widgetTags.rawWidgetTags[wid]) {
-                    this.widgetTags.rawWidgetTags[wid] = {};
-                }
-                this.widgetTags.rawWidgetTags[wid][qid] = keys;
-                this.widgetTags.totalQueries++;
-                this.widgetTags.tags = [...this.widgetTags.tags,
-                ...keys.filter(k => this.widgetTags.tags.indexOf(k) < 0)];
-            }
-            this.widgetTags.tags.sort(this.utilService.sortAlphaNum);
-            this.isWidgetTagsLoaded = true;
-            this.isWidgetTagsLoaded$.next(true);
-        },
-            error => {
-                this.isWidgetTagsLoaded = true;
-                this.isWidgetTagsLoaded$.next(true);
-            })
+        this.subscription.add(
+            this.httpService.getTagKeysForQueries([this.widget]).subscribe(
+                (res: any) => {
+                    this.widgetTags = {
+                        rawWidgetTags: {},
+                        totalQueries: 0,
+                        tags: [],
+                    };
+                    for (let i = 0; res && i < res.results.length; i++) {
+                        const [wid, qid] = res.results[i].id
+                            ? res.results[i].id.split(':')
+                            : [null, null];
+                        if (!wid) {
+                            continue;
+                        }
+                        const keys = res.results[i].tagKeys.map((d) => d.name);
+                        if (!this.widgetTags.rawWidgetTags[wid]) {
+                            this.widgetTags.rawWidgetTags[wid] = {};
+                        }
+                        this.widgetTags.rawWidgetTags[wid][qid] = keys;
+                        this.widgetTags.totalQueries++;
+                        this.widgetTags.tags = [
+                            ...this.widgetTags.tags,
+                            ...keys.filter(
+                                (k) => this.widgetTags.tags.indexOf(k) < 0,
+                            ),
+                        ];
+                    }
+                    this.widgetTags.tags.sort(this.utilService.sortAlphaNum);
+                    this.isWidgetTagsLoaded = true;
+                    this.isWidgetTagsLoaded$.next(true);
+                },
+                (error) => {
+                    this.isWidgetTagsLoaded = true;
+                    this.isWidgetTagsLoaded$.next(true);
+                },
+            ),
         );
     }
 
@@ -394,15 +459,23 @@ export class WidgetConfigMultigraphComponent implements OnInit, OnChanges, OnDes
     }
 
     get FC_gridOpts_viewportDisplay() {
-        return this.widgetConfigMultigraph.get('gridOptions').get('viewportDisplay');
+        return this.widgetConfigMultigraph
+            .get('gridOptions')
+            .get('viewportDisplay');
     }
 
     get FC_gridOpts_custom_x() {
-        return this.widgetConfigMultigraph.get('gridOptions').get('custom').get('x');
+        return this.widgetConfigMultigraph
+            .get('gridOptions')
+            .get('custom')
+            .get('x');
     }
 
     get FC_gridOpts_custom_y() {
-        return this.widgetConfigMultigraph.get('gridOptions').get('custom').get('y');
+        return this.widgetConfigMultigraph
+            .get('gridOptions')
+            .get('custom')
+            .get('y');
     }
 
     ngOnDestroy() {

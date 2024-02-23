@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { State, StateContext, Action, Selector, createSelector } from '@ngxs/store';
-import { append, patch, removeItem, updateItem } from '@ngxs/store/operators';
+import {
+    State,
+    StateContext,
+    Action,
+    Selector,
+    createSelector,
+} from '@ngxs/store';
+import { patch,  updateItem } from '@ngxs/store/operators';
 import { UtilsService } from '../../core/services/utils.service';
 
 export interface Axis {
@@ -89,7 +95,7 @@ export interface WidgetModel {
         xSm?: number;
         ySm?: number;
         wSm?: number;
-        hSm?: number
+        hSm?: number;
     };
     queries: any[];
     eventQueries?: any[];
@@ -98,7 +104,7 @@ export interface WidgetModel {
 export interface WidgetsModel {
     widgets: WidgetModel[];
     lastUpdated: {
-        id: string,
+        id: string;
         widget: any;
         needRefresh: boolean;
     };
@@ -138,13 +144,11 @@ export class DeleteWidgets {
         lastUpdated: {
             id: '',
             widget: {},
-            needRefresh: true
-        }
-    }
+            needRefresh: true,
+        },
+    },
 })
-
 export class WidgetsState {
-
     constructor(private utils: UtilsService) {}
 
     @Selector() static getWigets(state: WidgetsModel) {
@@ -157,15 +161,13 @@ export class WidgetsState {
 
     // a dynamic selector to return a selected widget by id
     static getUpdatedWidget(wid: string) {
-        return createSelector([WidgetsState], (state: WidgetModel[]) => {
-            return state.filter(w => w.id === wid);
-        });
+        return createSelector([WidgetsState], (state: WidgetModel[]) => state.filter((w) => w.id === wid));
     }
 
     // update state with the loading dashboard
     @Action(UpdateWidgets)
     updateWidgets(ctx: StateContext<WidgetsModel>, { payload }: UpdateWidgets) {
-        ctx.patchState({widgets: payload});
+        ctx.patchState({ widgets: payload });
     }
 
     @Action(UpdateGridPos)
@@ -173,7 +175,10 @@ export class WidgetsState {
         const curState = ctx.getState();
         const state = this.utils.deepClone(curState);
         for (let i = 0; i < state.widgets.length; i++) {
-            state.widgets[i].gridPos = {...state.widgets[i].gridPos, ...gridpos[state.widgets[i].id] };
+            state.widgets[i].gridPos = {
+                ...state.widgets[i].gridPos,
+                ...gridpos[state.widgets[i].id],
+            };
         }
         ctx.patchState({ widgets: state.widgets });
     }
@@ -181,16 +186,22 @@ export class WidgetsState {
     // updating a widget config after editing it
     // only editing widget needs to update
     @Action(UpdateWidget)
-    updateWidget({ setState }: StateContext<WidgetsModel>, { payload }: UpdateWidget) {
+    updateWidget(
+        { setState }: StateContext<WidgetsModel>,
+        { payload }: UpdateWidget,
+    ) {
         setState(
             patch<WidgetsModel>({
-                widgets: updateItem<WidgetModel>(widget => widget.id === payload.id, payload.widget),
+                widgets: updateItem<WidgetModel>(
+                    (widget) => widget.id === payload.id,
+                    payload.widget,
+                ),
                 lastUpdated: {
                     id: payload.id,
                     widget: payload.widget,
-                    needRefresh: payload.needRequery
-                }
-            })
+                    needRefresh: payload.needRequery,
+                },
+            }),
         );
     }
 
@@ -198,8 +209,8 @@ export class WidgetsState {
     deleteWidget(ctx: StateContext<WidgetsModel>, { wid }: DeleteWidget) {
         const curState = ctx.getState();
         const state = this.utils.deepClone(curState);
-        const index = state.widgets.findIndex( d => d.id === wid );
-        if ( index !== -1 ) {
+        const index = state.widgets.findIndex((d) => d.id === wid);
+        if (index !== -1) {
             state.widgets.splice(index, 1);
             ctx.patchState({ widgets: state.widgets });
         }
@@ -210,12 +221,8 @@ export class WidgetsState {
         const curState = ctx.getState();
         const state = this.utils.deepClone(curState);
 
-        let widgets = state.widgets.filter((item: any) => {
-            return !wids.includes(item.id);
-        });
+        const widgets = state.widgets.filter((item: any) => !wids.includes(item.id));
 
         ctx.patchState({ widgets: widgets });
-
     }
-
 }

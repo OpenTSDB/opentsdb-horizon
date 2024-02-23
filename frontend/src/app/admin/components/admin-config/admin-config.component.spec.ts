@@ -20,23 +20,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AdminConfigComponent } from './admin-config.component';
 
 describe('AdminConfigComponent', () => {
-  let component: AdminConfigComponent;
-  let fixture: ComponentFixture<AdminConfigComponent>;
+    let component: AdminConfigComponent;
+    let fixture: ComponentFixture<AdminConfigComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AdminConfigComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AdminConfigComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AdminConfigComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AdminConfigComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

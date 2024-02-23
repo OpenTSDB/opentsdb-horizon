@@ -51,7 +51,6 @@ import { AlertDetailsSuppressConfigComponent } from './components/alert-details/
 // directives
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
 
-
 @NgModule({
     imports: [
         InfoIslandModule,
@@ -67,8 +66,8 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
             AlertState,
             AlertsState,
             SnoozeState,
-            RecipientsState
-        ])
+            RecipientsState,
+        ]),
     ],
     declarations: [
         AlertsComponent,
@@ -80,13 +79,9 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
         AlertDetailsMetricPeriodOverPeriodPreviewComponent,
         AlertDetailsTransitionsComponent,
         AlertDetailsCountComponent,
-        AlertDetailsSuppressConfigComponent
+        AlertDetailsSuppressConfigComponent,
     ],
-    providers: [
-        AlertsService
-    ],
-    entryComponents: [
-        NameAlertDialogComponent
-    ]
+    providers: [AlertsService],
+    entryComponents: [NameAlertDialogComponent],
 })
-export class AlertsModule { }
+export class AlertsModule {}
