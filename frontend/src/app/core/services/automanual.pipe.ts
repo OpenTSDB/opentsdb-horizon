@@ -22,16 +22,23 @@ export class FormatAutoManualFilterPipe implements PipeTransform {
     constructor(private domSanitizer: DomSanitizer) {}
     transform(values: string[], tplVars: any[]): SafeHtml {
         const regexVars = /^!?\[.*\]$/;
-        let retVals = [];
+        const retVals = [];
         for (let i = 0; i < values.length; i++) {
-            let val = values[i];
+            const val = values[i];
             if (regexVars.test(val)) {
-                const valToCheck = val.replace('!','');
-                const idx = tplVars.findIndex(f => f.mode === 'auto' && '[' + f.alias + ']' === valToCheck)
+                const valToCheck = val.replace('!', '');
+                const idx = tplVars.findIndex(
+                    (f) =>
+                        f.mode === 'auto' && '[' + f.alias + ']' === valToCheck,
+                );
                 if (idx > -1) {
-                    retVals.push('<span class="automode auto-mode">' + val + '</span>');
+                    retVals.push(
+                        '<span class="automode auto-mode">' + val + '</span>',
+                    );
                 } else {
-                    retVals.push('<span class="automode manual-mode">' + val + '</span>');
+                    retVals.push(
+                        '<span class="automode manual-mode">' + val + '</span>',
+                    );
                 }
             } else {
                 retVals.push('<span>' + val + '</span>');

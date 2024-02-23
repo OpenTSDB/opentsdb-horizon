@@ -25,23 +25,23 @@ const routes: Routes = [
         path: 'list',
         component: NamespaceComponent,
         data: {
-            namespaceList: true
-        }
+            namespaceList: true,
+        },
     },
     {
         path: ':nsalias',
-        component: NamespaceComponent
+        component: NamespaceComponent,
     },
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'list'
+        redirectTo: 'list',
     },
-    { path: '**', component: NamespaceComponent }
+    { path: '**', component: NamespaceComponent },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class NamespaceRoutingModule { }
+export class NamespaceRoutingModule {}

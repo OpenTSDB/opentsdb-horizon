@@ -31,7 +31,7 @@
             </span>
         </span>
 
-        <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
+        <graph-type (valueChange)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
         <button mat-flat-button *ngIf="!readonly" class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
@@ -41,10 +41,10 @@
         [ngClass]="{
             'multigraph-enabled': displayMultigraph,
             'singlegraph-enabled': !displayMultigraph,
-            'display-legend-top': widget.settings.legend.display && widget.settings.legend.position=='top' && options.labels.length > 1,
-            'display-legend-right': widget.settings.legend.display && widget.settings.legend.position=='right' && options.labels.length > 1,
-            'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position=='bottom' && options.labels.length > 1,
-            'display-legend-left': widget.settings.legend.display && widget.settings.legend.position=='left' && options.labels.length > 1
+            'display-legend-top': widget.settings.legend.display && widget.settings.legend.position==='top' && options.labels.length > 1,
+            'display-legend-right': widget.settings.legend.display && widget.settings.legend.position==='right' && options.labels.length > 1,
+            'display-legend-bottom': widget.settings.legend.display && widget.settings.legend.position==='bottom' && options.labels.length > 1,
+            'display-legend-left': widget.settings.legend.display && widget.settings.legend.position==='left' && options.labels.length > 1
         }">
         <div class="dygraph-legend" #graphLegend style="display: none !important;"></div>
         <!-- STANDARD GRAPH OUTPUT -->
@@ -122,7 +122,7 @@
                                 <div class="graph-legend"
                                     [style.minWidth]="legendWidth"
                                     [style.height]="legendHeight"
-                                    [style.flex]="(widget.settings.legend.display && (widget.settings.legend.position=='top' || widget.settings.legend.position=='bottom')) ? '1 1 ' + legendHeight : '1 1 ' + legendWidth"
+                                    [style.flex]="(widget.settings.legend.display && (widget.settings.legend.position==='top' || widget.settings.legend.position==='bottom')) ? '1 1 ' + legendHeight : '1 1 ' + legendWidth"
                                     *ngIf="!displayMultigraph">
                                     <ng-container *ngIf="widget.settings.legend.display">
                                         <table mat-table matSort [dataSource]="legendDataSource"
@@ -183,7 +183,7 @@
             (updatedValue)="setTitle($event)">
         </inline-editable>
         </span>
-        <graph-type (change)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
+        <graph-type (valueChange)="changeWidgetType($event)" selected="LinechartWidgetComponent"></graph-type>
     </div>-->
     <div class="widget-control-steps has-scroller">
         <div class="is-scroller" cdkScrollable>

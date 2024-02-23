@@ -14,11 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    ViewEncapsulation,
+} from '@angular/core';
 
 // import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 
-import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
+import {
+    IntercomService,
+    IMessage,
+} from '../../../../../core/services/intercom.service';
 
 import { WidgetModel } from '../../../../../dashboard/state/widgets.state';
 
@@ -29,7 +38,7 @@ import {
     WidgetConfigMetricQueriesComponent,
     WidgetConfigQueryInspectorComponent,
     WidgetConfigTimeComponent,
-    WidgetConfigVisualAppearanceComponent
+    WidgetConfigVisualAppearanceComponent,
 } from '../../../sharedcomponents/components';
 
 @Component({
@@ -37,7 +46,7 @@ import {
     selector: 'status-widget',
     templateUrl: './status-widget.component.html',
     styleUrls: ['./status-widget.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class StatusWidgetComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
@@ -51,10 +60,9 @@ export class StatusWidgetComponent implements OnInit {
 
     /** Local variables */
 
-    constructor(private interCom: IntercomService) { }
+    constructor(private interCom: IntercomService) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     /**
      * Services
@@ -66,11 +74,10 @@ export class StatusWidgetComponent implements OnInit {
      * Behaviors
      */
 
-     closeViewEditMode() {
+    closeViewEditMode() {
         this.interCom.requestSend(<IMessage>{
             action: 'closeViewEditMode',
-            payload: 'dashboard'
+            payload: 'dashboard',
         });
     }
-
 }

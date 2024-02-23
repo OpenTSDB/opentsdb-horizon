@@ -745,7 +745,7 @@
                                 <namespace-autocomplete [value]="alertForm.get('queries').get('eventdb')['controls'][0].get('namespace').value"
                                     [options]="{metaSource: ''}"
                                     (nschange)="saveNamespace($event)"
-                                    (blur)="cancelSaveNamespace($event)">
+                                    (blurFocus)="cancelSaveNamespace($event)">
                                 </namespace-autocomplete>
                                 <mat-error *ngIf="alertForm.get('queries').get('eventdb')['controls'][0].get('namespace').errors && alertForm.get('queries').get('eventdb')['controls'][0].get('namespace').errors.required">Please select the namespace</mat-error>
                                 <!---->
@@ -1399,7 +1399,7 @@ This simulates the output of the query editor - minus a few events and buttons
             [xPosition]="menuXAlignValue">
         </time-picker>
         <span class="navbar-item nav-timezone-toggle" *ngIf="data.type === 'simple'">
-            <navbar-timezone-toggle [timezone]="timeZone" (change)="setTimezone($event);"></navbar-timezone-toggle>
+            <navbar-timezone-toggle [timezone]="timeZone" (valueChange)="setTimezone($event);"></navbar-timezone-toggle>
         </span>
     </div>
     <div class="navbar-item">

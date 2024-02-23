@@ -16,9 +16,21 @@
  */
 
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive } from '@angular/router';
+import {
+    ActivatedRoute,
+    NavigationEnd,
+    Router,
+    RouterLinkActive,
+} from '@angular/router';
 import { Store } from '@ngxs/store';
 import { CdkService } from '../../../core/services/cdk.service';
 import { filter, findIndex } from 'rxjs/operators';
@@ -27,16 +39,18 @@ import { filter, findIndex } from 'rxjs/operators';
     selector: 'app-admin-container',
     templateUrl: './admin.component.html',
     styleUrls: ['./admin.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminComponent implements OnInit {
-    @HostBinding('class') classAttribute: string = 'app-admin app-admin-container';
+    @HostBinding('class') classAttribute =
+    'app-admin app-admin-container';
 
     // portal placeholders
     adminNavbarPortal: TemplatePortal;
 
     // portal templates
-    @ViewChild('adminNavbarTmpl', { static: true }) adminNavbarTmpl: TemplateRef<any>;
+    @ViewChild('adminNavbarTmpl', { static: true })
+    adminNavbarTmpl: TemplateRef<any>;
 
     activeAdminSection: any = './';
     activeAdminSectionIndex = 0;
@@ -46,32 +60,32 @@ export class AdminComponent implements OnInit {
         {
             label: 'Admin home',
             path: '',
-            icon: 'd-home'
+            icon: 'd-home',
         },
         {
             label: 'Config',
             path: 'config',
-            icon: 'd-setting'
+            icon: 'd-setting',
         },
         {
             label: 'Themes',
             path: 'themes',
             altPath: 'theme',
-            icon: 'd-palette'
+            icon: 'd-palette',
         },
         {
             label: 'Users',
             path: 'users',
             altPath: 'user',
-            icon: 'd-user-group'
+            icon: 'd-user-group',
         },
         {
             label: 'Namespaces',
             path: 'namespaces',
             altPath: 'namespace',
-            icon: 'd-network-platform'
+            icon: 'd-network-platform',
             // TODO: add some conditional flag so we can check config in UI
-        }
+        },
     ];
 
     constructor(
@@ -82,46 +96,53 @@ export class AdminComponent implements OnInit {
         private cdkService: CdkService,
     ) {
         // get some router events
-        this.router.events.pipe(
-            filter(event => event instanceof NavigationEnd)
-        ).subscribe((event: NavigationEnd) => {
+        this.router.events
+            .pipe(filter((event) => event instanceof NavigationEnd))
+            .subscribe((event: NavigationEnd) => {
+                const urlParts = event.urlAfterRedirects.split('?');
+                const urlPath =
+                    urlParts && urlParts.length > 0
+                        ? urlParts[0].split('/')
+                        : [];
 
-            const urlParts = event.urlAfterRedirects.split('?');
-            const urlPath = (urlParts && urlParts.length > 0) ? urlParts[0].split('/') : [];
+                // console.log('%cURL','color: white; background: purple;', urlPath);
 
-            //console.log('%cURL','color: white; background: purple;', urlPath);
+                if (urlPath.length === 2) {
+                    // admin default
+                    this.activeAdminSectionIndex = 0;
+                } else if (urlPath.length > 2) {
+                    const subPath = urlPath[2];
+                    const subIndex = this.adminSectionLinks.findIndex(
+                        (link: any) => (
+                            link.path === subPath ||
+                                link.altPath === subPath
+                        ),
+                    );
+                    this.activeAdminSectionIndex = subIndex;
+                } else {
+                    // should never get here
+                }
+            });
 
-            if (urlPath.length === 2) {
-                // admin default
-                this.activeAdminSectionIndex = 0;
-            } else if (urlPath.length > 2) {
-                let subPath = urlPath[2];
-                let subIndex = this.adminSectionLinks.findIndex((link: any) => {
-                    return link.path === subPath || link.altPath === subPath;
-                });
-                this.activeAdminSectionIndex = subIndex;
-            } else {
-                // should never get here
-            }
-        });
-
-        this.router.isActive
+        // NOTE: not sure if we still need this.
+        // this.router.isActive;
     }
 
     ngOnInit() {
         // setup navbar portal
-        this.adminNavbarPortal = new TemplatePortal(this.adminNavbarTmpl, undefined, {});
+        this.adminNavbarPortal = new TemplatePortal(
+            this.adminNavbarTmpl,
+            undefined,
+            {},
+        );
         this.cdkService.setNavbarPortal(this.adminNavbarPortal);
     }
 
     // nav click
     changeAdminSection(index: any) {
-        let link = this.adminSectionLinks[index];
+        const link = this.adminSectionLinks[index];
 
         this.activeAdminSection = link.path;
         this.activeAdminSectionIndex = index;
-
     }
-
-
 }

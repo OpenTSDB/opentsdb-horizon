@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LinechartDataTooltipComponent } from './linechart-data-tooltip.component';
 
 describe('LinechartDataTooltipComponent', () => {
-  let component: LinechartDataTooltipComponent;
-  let fixture: ComponentFixture<LinechartDataTooltipComponent>;
+    let component: LinechartDataTooltipComponent;
+    let fixture: ComponentFixture<LinechartDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LinechartDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [LinechartDataTooltipComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LinechartDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LinechartDataTooltipComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

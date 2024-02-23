@@ -24,7 +24,6 @@ import { GridsterModule } from 'angular2gridster';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
 import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-widgets.module';
-import { AppShellModule } from '../app-shell/app-shell.module';
 
 import { InfoIslandModule } from '../shared/modules/info-island/info-island.module';
 import { UniversalClipboardModule } from '../shared/modules/universal-clipboard/universal-clipboard.module';
@@ -35,8 +34,14 @@ import { DashboardConverterService } from '../core/services/dashboard-converter.
 
 // store
 import { NgxsModule } from '@ngxs/store';
-import { DBState, DBSettingsState, WidgetsState, ClientSizeState,
-         WidgetsConfigState, WidgetsRawdataState, UserSettingsState,  } from './state';
+import {
+    DBState,
+    DBSettingsState,
+    WidgetsState,
+    ClientSizeState,
+    WidgetsRawdataState,
+    UserSettingsState,
+} from './state';
 
 import { EventsState } from './state/events.state';
 
@@ -53,7 +58,7 @@ import {
     DbsJsonComponent,
     DbsMetaComponent,
     DbsVariablesComponent,
-    DbsVariableItemComponent
+    DbsVariableItemComponent,
 } from './components/dashboard-settings-dialog';
 import { DashboardSettingsToggleComponent } from './components/dashboard-settings-toggle/dashboard-settings-toggle.component';
 import { NavbarDashboardActionsMenuComponent } from './components/navbar-dashboard-actions-menu/navbar-dashboard-actions-menu.component';
@@ -65,7 +70,7 @@ import { DashboardToAlertDialogComponent } from './components/dashboard-to-alert
 
 import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universal-data-tooltip/universal-data-tooltip-directives.module';
 
-import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module'
+import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesystem/dashboard-filesystem.module';
 
 @NgModule({
     imports: [
@@ -84,13 +89,12 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
             ClientSizeState,
             WidgetsRawdataState,
             UserSettingsState,
-            EventsState
+            EventsState,
         ]),
         DynamicWidgetsModule,
         UniversalDataTooltipDirectivesModule,
         UniversalClipboardModule,
-        //AppShellModule
-        DashboardFilesystemModule
+        DashboardFilesystemModule,
     ],
     declarations: [
         DashboardComponent,
@@ -109,18 +113,15 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
         DbsVariableItemComponent,
         WidgetDeleteDialogComponent,
         TemplateVariablePanelComponent,
-        DashboardToAlertDialogComponent
+        DashboardToAlertDialogComponent,
     ],
-    providers: [
-        DashboardService,
-        DashboardConverterService
-    ],
+    providers: [DashboardService, DashboardConverterService],
     entryComponents: [
         DashboardSettingsDialogComponent,
         DashboardSaveDialogComponent,
         DashboardDeleteDialogComponent,
         DashboardToAlertDialogComponent,
-        WidgetDeleteDialogComponent
-    ]
+        WidgetDeleteDialogComponent,
+    ],
 })
-export class DashboardModule { }
+export class DashboardModule {}

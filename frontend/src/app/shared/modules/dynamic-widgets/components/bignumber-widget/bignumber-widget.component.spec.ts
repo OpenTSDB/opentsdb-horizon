@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BignumberWidgetComponent } from './bignumber-widget.component';
 
 describe('BignumberWidgetComponent', () => {
-  let component: BignumberWidgetComponent;
-  let fixture: ComponentFixture<BignumberWidgetComponent>;
+    let component: BignumberWidgetComponent;
+    let fixture: ComponentFixture<BignumberWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BignumberWidgetComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [BignumberWidgetComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BignumberWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(BignumberWidgetComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

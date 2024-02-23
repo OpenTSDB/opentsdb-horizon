@@ -15,24 +15,31 @@
  * limitations under the License.
  */
 
-import { Injectable }       from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CanLoad, Route, Router } from '@angular/router';
-import { AppConfigService }      from './core/services/config.service';
+import { AppConfigService } from './core/services/config.service';
 
 @Injectable()
 export class AuthGuardService implements CanLoad {
-  constructor(private appConfig: AppConfigService, private router: Router) {
-  }
-  canLoad(route: Route): boolean {
-    const config = this.appConfig.getConfig();
-    const homeUrl = config.uiBranding && config.uiBranding.logo && config.uiBranding.logo.homeUrl ? config.uiBranding.logo.homeUrl : '/main';
-    if (!config.readonly) {
-	    return true; 
-    } else if ( homeUrl !== '/main') {
-      this.router.navigate([config.uiBranding.logo.homeUrl]);
-    } else {
-      this.router.navigate([ 'error' ]);
+    constructor(
+        private appConfig: AppConfigService,
+        private router: Router,
+    ) {}
+    canLoad(route: Route): boolean {
+        const config = this.appConfig.getConfig();
+        const homeUrl =
+            config.uiBranding &&
+            config.uiBranding.logo &&
+            config.uiBranding.logo.homeUrl
+                ? config.uiBranding.logo.homeUrl
+                : '/main';
+        if (!config.readonly) {
+            return true;
+        } else if (homeUrl !== '/main') {
+            this.router.navigate([config.uiBranding.logo.homeUrl]);
+        } else {
+            this.router.navigate(['error']);
+        }
+        return true;
     }
-    return true;		
-  }
 }

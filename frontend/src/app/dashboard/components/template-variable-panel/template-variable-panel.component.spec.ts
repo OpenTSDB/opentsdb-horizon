@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TemplateVariablePanelComponent } from './template-variable-panel.component';
 
 describe('TemplateVariablePanelComponent', () => {
-  let component: TemplateVariablePanelComponent;
-  let fixture: ComponentFixture<TemplateVariablePanelComponent>;
+    let component: TemplateVariablePanelComponent;
+    let fixture: ComponentFixture<TemplateVariablePanelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TemplateVariablePanelComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [TemplateVariablePanelComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TemplateVariablePanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TemplateVariablePanelComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

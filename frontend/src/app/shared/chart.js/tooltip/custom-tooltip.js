@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var customTooltip = function(tooltipModel) {
+var customTooltip = function (tooltipModel) {
     // Tooltip Element
-    var tooltipEl = document.getElementById('chartjs-tooltip');
+    var tooltipEl = document.getElementById("chartjs-tooltip");
 
     // Create element on first render
     if (!tooltipEl) {
-        tooltipEl = document.createElement('div');
-        tooltipEl.id = 'chartjs-tooltip';
+        tooltipEl = document.createElement("div");
+        tooltipEl.id = "chartjs-tooltip";
         tooltipEl.innerHTML = "<table></table>";
         document.body.appendChild(tooltipEl);
     }
@@ -33,11 +33,11 @@ var customTooltip = function(tooltipModel) {
     }
 
     // Set caret Position
-    tooltipEl.classList.remove('above', 'below', 'no-transform');
+    tooltipEl.classList.remove("above", "below", "no-transform");
     if (tooltipModel.yAlign) {
         tooltipEl.classList.add(tooltipModel.yAlign);
     } else {
-        tooltipEl.classList.add('no-transform');
+        tooltipEl.classList.add("no-transform");
     }
 
     function getBody(bodyItem) {
@@ -49,24 +49,24 @@ var customTooltip = function(tooltipModel) {
         var titleLines = tooltipModel.title || [];
         var bodyLines = tooltipModel.body.map(getBody);
 
-        var innerHtml = '<thead>';
+        var innerHtml = "<thead>";
 
-        titleLines.forEach(function(title) {
-            innerHtml += '<tr><th>' + title + '</th></tr>';
+        titleLines.forEach(function (title) {
+            innerHtml += "<tr><th>" + title + "</th></tr>";
         });
-        innerHtml += '</thead><tbody>';
+        innerHtml += "</thead><tbody>";
 
-        bodyLines.forEach(function(body, i) {
+        bodyLines.forEach(function (body, i) {
             var colors = tooltipModel.labelColors[i];
-            var style = 'background:' + colors.backgroundColor;
-            style += '; border-color:' + colors.borderColor;
-            style += '; border-width: 2px';
+            var style = "background:" + colors.backgroundColor;
+            style += "; border-color:" + colors.borderColor;
+            style += "; border-width: 2px";
             var span = '<span style="' + style + '"></span>';
-            innerHtml += '<tr><td>' + span + body + '</td></tr>';
+            innerHtml += "<tr><td>" + span + body + "</td></tr>";
         });
-        innerHtml += '</tbody>';
+        innerHtml += "</tbody>";
 
-        var tableRoot = tooltipEl.querySelector('table');
+        var tableRoot = tooltipEl.querySelector("table");
         tableRoot.innerHTML = innerHtml;
     }
 
@@ -75,13 +75,16 @@ var customTooltip = function(tooltipModel) {
 
     // Display, position, and set styles for font
     tooltipEl.style.opacity = 1;
-    tooltipEl.style.position = 'absolute';
-    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+    tooltipEl.style.position = "absolute";
+    tooltipEl.style.left =
+        position.left + window.pageXOffset + tooltipModel.caretX + "px";
+    tooltipEl.style.top =
+        position.top + window.pageYOffset + tooltipModel.caretY + "px";
     tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-    tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+    tooltipEl.style.fontSize = tooltipModel.bodyFontSize + "px";
     tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-    tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-    tooltipEl.style.pointerEvents = 'none';
+    tooltipEl.style.padding =
+        tooltipModel.yPadding + "px " + tooltipModel.xPadding + "px";
+    tooltipEl.style.pointerEvents = "none";
 };
 module.exports = customTooltip;

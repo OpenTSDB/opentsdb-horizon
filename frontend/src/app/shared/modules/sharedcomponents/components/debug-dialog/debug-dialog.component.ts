@@ -19,10 +19,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-debug-dialog',
-  templateUrl: './debug-dialog.component.html',
-  styleUrls: ['./debug-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-debug-dialog',
+    templateUrl: './debug-dialog.component.html',
+    styleUrls: ['./debug-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DebugDialogComponent implements OnInit {
     log: any;
@@ -30,38 +30,36 @@ export class DebugDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<DebugDialogComponent>,
         private domSanitizer: DomSanitizer,
-        @Inject(MAT_DIALOG_DATA) public dialogData: any
+        @Inject(MAT_DIALOG_DATA) public dialogData: any,
     ) {
-
-      this.log = '<table>';
-      var i = 0;
-      dialogData.log.forEach(element => {
-          if (i++ % 2 == 0) {
-            this.log += '<tr bgcolor="#f6f5fa"><td>';
-          } else {
-            this.log += '<tr><td>';
-          }
-          this.log += element.replace(/\n/g, '<br>');
-          this.log += '</td></tr>';
-      });
-      this.log += '</table>';
-      this.log = domSanitizer.bypassSecurityTrustHtml(this.log);
+        this.log = '<table>';
+        let i = 0;
+        dialogData.log.forEach((element) => {
+            if (i++ % 2 === 0) {
+                this.log += '<tr bgcolor="#f6f5fa"><td>';
+            } else {
+                this.log += '<tr><td>';
+            }
+            this.log += element.replace(/\n/g, '<br>');
+            this.log += '</td></tr>';
+        });
+        this.log += '</table>';
+        this.log = domSanitizer.bypassSecurityTrustHtml(this.log);
     }
 
     ngOnInit() {
+        // do nothing
     }
 
     copyText() {
-      let listener = (e: ClipboardEvent) => {
-        let clipboard = e.clipboardData || window["clipboardData"];
-        clipboard.setData("text", JSON.stringify(this.dialogData));
-        e.preventDefault();
-      };
+        const listener = (e: ClipboardEvent) => {
+            const clipboard = e.clipboardData || window['clipboardData'];
+            clipboard.setData('text', JSON.stringify(this.dialogData));
+            e.preventDefault();
+        };
 
-      document.addEventListener("copy", listener, false)
-      document.execCommand("copy");
-      document.removeEventListener("copy", listener, false);
+        document.addEventListener('copy', listener, false);
+        document.execCommand('copy');
+        document.removeEventListener('copy', listener, false);
     }
-
 }
-

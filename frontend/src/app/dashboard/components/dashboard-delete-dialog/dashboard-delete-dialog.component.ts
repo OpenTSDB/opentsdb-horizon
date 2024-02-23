@@ -14,28 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Inject,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
 
 @Component({
     selector: 'app-dashboard-delete-dialog',
     templateUrl: './dashboard-delete-dialog.component.html',
     styleUrls: ['./dashboard-delete-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DashboardDeleteDialogComponent implements OnInit {
     @HostBinding('class.dashboard-delete-dialog') private _hostClass = true;
 
     constructor(
         public dialogRef: MatDialogRef<DashboardDeleteDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dbData: any) { }
+        @Inject(MAT_DIALOG_DATA) public dbData: any,
+    ) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     confirm() {
         this.dialogRef.close({ delete: true });
     }
-
 }

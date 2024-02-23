@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BarchartWidgetComponent } from './barchart-widget.component';
 
 describe('BarchartWidgetComponent', () => {
-  let component: BarchartWidgetComponent;
-  let fixture: ComponentFixture<BarchartWidgetComponent>;
+    let component: BarchartWidgetComponent;
+    let fixture: ComponentFixture<BarchartWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BarchartWidgetComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [BarchartWidgetComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BarchartWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(BarchartWidgetComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

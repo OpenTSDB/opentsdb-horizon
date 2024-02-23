@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { GraphTypeComponent } from './graph-type.component';
 
 describe('GraphTypeComponent', () => {
-  let component: GraphTypeComponent;
-  let fixture: ComponentFixture<GraphTypeComponent>;
+    let component: GraphTypeComponent;
+    let fixture: ComponentFixture<GraphTypeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GraphTypeComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [GraphTypeComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GraphTypeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(GraphTypeComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -19,23 +19,24 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './alert-details-metric-period-over-period.component';
 
 describe('AlertDetailsMetricPeriodOverPeriodComponent', () => {
-  let component: AlertDetailsMetricPeriodOverPeriodComponent;
-  let fixture: ComponentFixture<AlertDetailsMetricPeriodOverPeriodComponent>;
+    let component: AlertDetailsMetricPeriodOverPeriodComponent;
+    let fixture: ComponentFixture<AlertDetailsMetricPeriodOverPeriodComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsMetricPeriodOverPeriodComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsMetricPeriodOverPeriodComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsMetricPeriodOverPeriodComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(
+            AlertDetailsMetricPeriodOverPeriodComponent,
+        );
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

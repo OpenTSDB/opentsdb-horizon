@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AlertDetailsSuppressConfigComponent } from './alert-details-suppress-config.component';
 
 describe('AlertDetailsSuppressConfigComponent', () => {
-  let component: AlertDetailsSuppressConfigComponent;
-  let fixture: ComponentFixture<AlertDetailsSuppressConfigComponent>;
+    let component: AlertDetailsSuppressConfigComponent;
+    let fixture: ComponentFixture<AlertDetailsSuppressConfigComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsSuppressConfigComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsSuppressConfigComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsSuppressConfigComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AlertDetailsSuppressConfigComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

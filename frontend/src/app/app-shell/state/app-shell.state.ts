@@ -16,13 +16,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { State , Action, Selector, StateContext, Store} from '@ngxs/store';
+import { State, Action, Selector, StateContext, Store } from '@ngxs/store';
 import { map, catchError } from 'rxjs/operators';
 
-
-import {
-    AppShellService
-} from '../services/app-shell.service';
+import { AppShellService } from '../services/app-shell.service';
 
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
@@ -46,23 +43,19 @@ export class SetCurrentMediaQuery {
     constructor(public currentMediaQuery: string) {}
 }
 
- export class SSGetUserProfile {
+export class SSGetUserProfile {
     public static type = '[DashboardNavigator] get user profile';
     constructor() {}
 }
 
 export class SSGetUserProfileSuccess {
     static readonly type = '[DashboardNavigator] Get User profile [SUCCESS]';
-    constructor(
-        public readonly response: any
-    ) {}
+    constructor(public readonly response: any) {}
 }
 
 export class SSGetUserProfileFail {
     static readonly type = '[DashboardNavigator] Get User profile [FAIL]';
-    constructor(
-        public readonly error: any
-    ) {}
+    constructor(public readonly error: any) {}
 }
 
 export class SSCreateUserProfile {
@@ -72,18 +65,13 @@ export class SSCreateUserProfile {
 
 export class SSCreateUserProfileSuccess {
     static readonly type = '[DashboardNavigator] Create User profile [SUCCESS]';
-    constructor(
-        public readonly response: any
-    ) {}
+    constructor(public readonly response: any) {}
 }
 
 export class SSCreateUserProfileFail {
     static readonly type = '[DashboardNavigator] Create User profile [FAIL]';
-    constructor(
-        public readonly error: any
-    ) {}
+    constructor(public readonly error: any) {}
 }
-
 
 /** Define State */
 @Injectable()
@@ -93,26 +81,28 @@ export class SSCreateUserProfileFail {
         currentTheme: 'developing',
         currentMediaQuery: '',
         userProfile: {
-            loaded: false
+            loaded: false,
         },
-        error: false
-    }
+        error: false,
+    },
 })
-
 export class AppShellState {
-
     // subscription to media query change
     mediaWatcher$: Subscription;
 
-    constructor (
+    constructor(
         private service: AppShellService,
         private store: Store,
-        private mediaObserver: MediaObserver
+        private mediaObserver: MediaObserver,
     ) {
-        this.mediaWatcher$ = mediaObserver.media$.subscribe((change: MediaChange) => {
-            const currentMediaQuery = change ? change.mqAlias : '';
-            this.store.dispatch(new SetCurrentMediaQuery(currentMediaQuery));
-        });
+        this.mediaWatcher$ = mediaObserver.media$.subscribe(
+            (change: MediaChange) => {
+                const currentMediaQuery = change ? change.mqAlias : '';
+                this.store.dispatch(
+                    new SetCurrentMediaQuery(currentMediaQuery),
+                );
+            },
+        );
     }
 
     /** Selectors */
@@ -137,7 +127,7 @@ export class AppShellState {
         return state.currentMediaQuery;
     }
 
-    /**************************
+    /** ************************
      * UTILS
      **************************/
 
@@ -145,30 +135,40 @@ export class AppShellState {
     @Action(SetTheme)
     setTheme(ctx: StateContext<AppShellStateModel>, { theme }: SetTheme) {
         const state = ctx.getState();
-        ctx.patchState({...state, currentTheme: theme });
+        ctx.patchState({ ...state, currentTheme: theme });
     }
 
     @Action(SetCurrentMediaQuery)
-    setCurrentMediaQuery(ctx: StateContext<AppShellStateModel>, { currentMediaQuery }: SetCurrentMediaQuery) {
+    setCurrentMediaQuery(
+        ctx: StateContext<AppShellStateModel>,
+        { currentMediaQuery }: SetCurrentMediaQuery,
+    ) {
         const state = ctx.getState();
-        ctx.setState({...state, currentMediaQuery });
+        ctx.setState({ ...state, currentMediaQuery });
     }
 
-
     @Action(SSGetUserProfile)
-    GetUserProfile(ctx: StateContext<AppShellStateModel>, { }: SSGetUserProfile) {
+    GetUserProfile(
+        ctx: StateContext<AppShellStateModel>,
+        {}: SSGetUserProfile,
+    ) {
         // AppShellState :: Get user profile
         const state = ctx.getState();
         return this.service.getUserProfile().pipe(
-            map( (payload: any) => {
+            map((payload: any) => {
                 ctx.dispatch(new SSGetUserProfileSuccess(payload));
             }),
-            catchError( error => ctx.dispatch(new SSGetUserProfileFail(error)))
+            catchError((error) =>
+                ctx.dispatch(new SSGetUserProfileFail(error)),
+            ),
         );
     }
 
     @Action(SSGetUserProfileSuccess)
-    GetUserProfileSuccess(ctx: StateContext<AppShellStateModel>, { response }: SSGetUserProfileSuccess) {
+    GetUserProfileSuccess(
+        ctx: StateContext<AppShellStateModel>,
+        { response }: SSGetUserProfileSuccess,
+    ) {
         const state = ctx.getState();
         const userProfile = response.body;
         userProfile.loaded = true;
@@ -177,21 +177,24 @@ export class AppShellState {
 
         ctx.setState({
             ...state,
-            userProfile
+            userProfile,
         });
     }
 
     @Action(SSGetUserProfileFail)
-    GetUserProfileFail(ctx: StateContext<AppShellStateModel>, { error }: SSGetUserProfileFail) {
+    GetUserProfileFail(
+        ctx: StateContext<AppShellStateModel>,
+        { error }: SSGetUserProfileFail,
+    ) {
         // throw error since previous call should create user if not there.
         console.group(
             '%cERROR%cAppShellState :: Get user profile',
             'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            'color: #ff0000; padding: 4px 8px; font-weight: bold',
         );
         console.log('%cErrorMsg', 'font-weight: bold;', error);
         console.groupEnd();
 
-        ctx.dispatch({error: error});
+        ctx.dispatch({ error: error });
     }
 }

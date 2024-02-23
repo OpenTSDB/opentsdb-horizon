@@ -15,8 +15,22 @@
  * limitations under the License.
  */
 import {
-    Component, Input, EventEmitter, Output, ViewChild, Renderer2,
-    ElementRef, HostListener, HostBinding, OnInit, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, AfterViewInit, ViewEncapsulation
+    Component,
+    Input,
+    EventEmitter,
+    Output,
+    ViewChild,
+    Renderer2,
+    ElementRef,
+    HostListener,
+    HostBinding,
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+    ChangeDetectionStrategy,
+    AfterViewInit,
+    ViewEncapsulation,
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
@@ -28,21 +42,23 @@ import { MatInput } from '@angular/material/input';
     templateUrl: './inline-editable.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./inline-editable.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-
-export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class InlineEditableComponent
+implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.inline-editable') private _hostClass = true;
 
     @Input() fieldValue: string;
     @Input() minLength: number;
     @Input() maxLength: number;
-    @Input() showEditIcon: boolean = false;
+    @Input() showEditIcon = false;
     @Output() updatedValue: EventEmitter<any> = new EventEmitter();
     @ViewChild('container', { static: true }) container: ElementRef;
     @ViewChild(MatInput, { static: true }) inputControl: MatInput;
-    @ViewChild(MatInput, { read: ElementRef, static: true }) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, { read: ElementRef, static: true }) private formFieldEl: ElementRef;
+    @ViewChild(MatInput, { read: ElementRef, static: true })
+    inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef, static: true })
+    private formFieldEl: ElementRef;
 
     isRequired = true;
     isEditView = false;
@@ -54,18 +70,17 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
 
     constructor(
         private renderer: Renderer2,
-        private eRef: ElementRef
-    ) { }
+        private eRef: ElementRef,
+    ) {}
 
     ngOnInit() {
-
         if (!this.fieldValue || this.fieldValue.trim().length === 0) {
             this.fieldValue = this.placeholder;
         }
 
         this.fieldFormControl = new FormControl('', []);
         this.fieldFormControl.setValue(this.fieldValue);
-        const validators: any[] = new Array;
+        const validators: any[] = [];
         validators.push(Validators.required, this.noWhitespaceValidator);
 
         if (this.minLength) {
@@ -89,7 +104,7 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
     }
 
     ngAfterViewInit() {
-        this.fixAutoWidth()
+        this.fixAutoWidth();
     }
 
     private fixAutoWidth() {
@@ -98,14 +113,17 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
         // set the initial data-value
         // needs to live on the .mat-form-field-infix
         // aka, the wrapper around the actual input field
-        const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+        const formFieldInfix: HTMLElement =
+            this.formFieldEl.nativeElement.querySelector(
+                '.mat-form-field-infix',
+            );
         formFieldInfix.dataset.value = this.fieldValue;
     }
 
     noWhitespaceValidator(control: FormControl) {
         const isWhitespace = (control.value || '').trim().length === 0;
         const isValid = !isWhitespace;
-        return isValid ? null : { 'whitespace': true };
+        return isValid ? null : { whitespace: true };
     }
 
     showEditable() {
@@ -115,23 +133,31 @@ export class InlineEditableComponent implements OnInit, OnChanges, OnDestroy, Af
             this.inputControlEl.nativeElement.focus();
         }, 200);
 
-        this.documentKeydownEventListener = this.renderer.listen('document','keydown', (event) => {
-            if (event.key === 'Escape') {
-                this.resetFormField();
-                // remove document.keydown listener
-                this.documentKeydownEventListener();
-                // remove document.click listener
-                //this.showEditableEventListener();
-                this.inputControlEl.nativeElement.blur();
-                document.body.focus();
-            }
-        });
+        this.documentKeydownEventListener = this.renderer.listen(
+            'document',
+            'keydown',
+            (event) => {
+                if (event.key === 'Escape') {
+                    this.resetFormField();
+                    // remove document.keydown listener
+                    this.documentKeydownEventListener();
+                    // remove document.click listener
+                    // this.showEditableEventListener();
+                    this.inputControlEl.nativeElement.blur();
+                    document.body.focus();
+                }
+            },
+        );
     }
 
     save() {
         // only save if no errors, not placeholder, and a change
         // eslint-disable-next-line max-len
-        if (!this.fieldFormControl.errors && this.fieldFormControl.value !== this.placeholder && this.fieldValue !== this.fieldFormControl.value) {
+        if (
+            !this.fieldFormControl.errors &&
+            this.fieldFormControl.value !== this.placeholder &&
+            this.fieldValue !== this.fieldFormControl.value
+        ) {
             this.updatedValue.emit(this.fieldFormControl.value);
             this.fieldValue = this.fieldFormControl.value;
             this.isEditView = false;

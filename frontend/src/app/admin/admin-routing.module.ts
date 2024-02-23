@@ -32,49 +32,49 @@ const routes: Routes = [
         children: [
             {
                 path: 'config',
-                component: AdminConfigComponent
+                component: AdminConfigComponent,
             },
             {
                 path: 'themes',
-                component: AdminThemesComponent
+                component: AdminThemesComponent,
             },
             {
                 path: 'theme/:themeid',
-                component: AdminThemesComponent
+                component: AdminThemesComponent,
             },
             {
                 path: 'themes/:themeid',
-                redirectTo: 'theme/:themeid'
+                redirectTo: 'theme/:themeid',
             },
             {
                 path: 'theme',
                 redirectTo: 'themes',
-                pathMatch: 'full'
+                pathMatch: 'full',
             },
             {
                 path: 'users',
-                component: AdminUsersComponent
+                component: AdminUsersComponent,
             },
             {
                 path: 'user/:userid',
-                component: AdminUsersComponent
+                component: AdminUsersComponent,
             },
             {
                 path: 'users/:userid',
-                redirectTo: 'user/:userid'
+                redirectTo: 'user/:userid',
             },
             {
                 path: 'user',
                 redirectTo: 'users',
-                pathMatch: 'full'
+                pathMatch: 'full',
             },
             {
                 path: 'namespaces',
-                component: AdminNamespacesComponent
+                component: AdminNamespacesComponent,
             },
             {
                 path: 'namespace/:nsalias',
-                component: AdminNamespacesComponent
+                component: AdminNamespacesComponent,
             },
             {
                 path: 'namespaces/:nsalias',
@@ -83,21 +83,21 @@ const routes: Routes = [
             {
                 path: 'namespace',
                 redirectTo: 'namespaces',
-                pathMatch: 'full'
+                pathMatch: 'full',
             },
             {
                 path: '',
-                component: AdminDefaultComponent
-            }
-        ]
-    }
+                component: AdminDefaultComponent,
+            },
+        ],
+    },
 ];
 
 // NOTE: not sure how yet, but we need to put a check here to see if user is actually an admin
 // TODO: AUTHCHECK NEEDED
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
 })
-export class AdminRoutingModule { }
+export class AdminRoutingModule {}

@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BarchartDataTooltipComponent } from './barchart-data-tooltip.component';
 
 describe('BarchartDataTooltipComponent', () => {
-  let component: BarchartDataTooltipComponent;
-  let fixture: ComponentFixture<BarchartDataTooltipComponent>;
+    let component: BarchartDataTooltipComponent;
+    let fixture: ComponentFixture<BarchartDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BarchartDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [BarchartDataTooltipComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BarchartDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(BarchartDataTooltipComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

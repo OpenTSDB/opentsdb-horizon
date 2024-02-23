@@ -14,11 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+import {
+    RouteReuseStrategy,
+    ActivatedRouteSnapshot,
+    DetachedRouteHandle,
+} from '@angular/router';
 
 export class CustomReuseStrategy implements RouteReuseStrategy {
-
-    handlers: {[key: string]: DetachedRouteHandle} = {};
+    handlers: { [key: string]: DetachedRouteHandle } = {};
 
     constructor() {}
 
@@ -30,12 +33,17 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
         return route.data.shouldReuse || false;
     }
 
-    shouldReuseRoute(future: ActivatedRouteSnapshot, current: ActivatedRouteSnapshot): boolean {
+    shouldReuseRoute(
+        future: ActivatedRouteSnapshot,
+        current: ActivatedRouteSnapshot,
+    ): boolean {
         return future.data.shouldReuse || false;
     }
 
-    retrieve(route: ActivatedRouteSnapshot) : DetachedRouteHandle {
-        if (!route.routeConfig) return null;
+    retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
+        if (!route.routeConfig) {
+            return null;
+        }
         return this.handlers[route.routeConfig.path];
     }
 

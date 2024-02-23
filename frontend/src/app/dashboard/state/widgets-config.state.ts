@@ -27,14 +27,14 @@ export interface WidgetConfig {
             h: number;
             xMd?: number;
             yMd?: number;
-        },
+        };
         query: {
             start: string;
             end?: string;
             downsample: string;
             groups: any[];
-        }
-    }
+        };
+    };
 }
 
 // action
@@ -49,19 +49,17 @@ export class LoadWidgetsConfig {
 @Injectable()
 @State<any>({
     name: 'Configs',
-    defaults: []
+    defaults: [],
 })
-
 export class WidgetsConfigState {
-
     @Selector() static getWidgetsConfig(state: any) {
         return state;
     }
 
     @Action(LoadWidgetsConfig)
     loadWidgetsConfig(ctx: StateContext<any>, { payload }: LoadWidgetsConfig) {
-        const state = ctx.getState();
-        //ctx.setState({...state, ...payload});
+        // const state = ctx.getState();
+        // ctx.setState({...state, ...payload});
         ctx.setState(payload);
     }
 }

@@ -14,34 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, HostBinding, ViewChild, HostListener, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    HostBinding,
+    ViewChild,
+    HostListener,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'info-tooltip',
-  templateUrl: './info-tooltip.component.html',
-  styleUrls: ['./info-tooltip.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'info-tooltip',
+    templateUrl: './info-tooltip.component.html',
+    styleUrls: ['./info-tooltip.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class InfoTooltipComponent implements OnInit {
+    @HostBinding('class.info-tooltip-component') _hostClass = true;
 
-  @HostBinding('class.info-tooltip-component') _hostClass = true;
+    @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+    @ViewChild(MatMenu, { static: true }) tooltip: MatMenu;
 
-  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
-  @ViewChild(MatMenu, { static: true }) tooltip: MatMenu;
+    @Input() fontSet = 'denali';
+    @Input() fontIcon = 'd-information-circle';
 
-  @Input() fontSet: string = 'denali';
-  @Input() fontIcon: string = 'd-information-circle';
+    @HostListener('document:keydown.escape', ['$event'])
+    private escapeListener(event: KeyboardEvent) {
+        this.trigger.closeMenu();
+    }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  private escapeListener(event: KeyboardEvent) {
-    this.trigger.closeMenu();
-  }
+    constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+    ngOnInit() {
+        // do nothing
+    }
 }

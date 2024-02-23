@@ -14,26 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { AppConfigService } from '../../../../../core/services/config.service';
 
-
 @Component({
-  selector: 'help-links',
-  templateUrl: './help-links.component.html',
-  styleUrls: ['./help-links.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'help-links',
+    templateUrl: './help-links.component.html',
+    styleUrls: ['./help-links.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class HelpLinksComponent implements OnInit {
-  @HostBinding('class.help-links') private _hostClass = true;
+    @HostBinding('class.help-links') private _hostClass = true;
 
-  links = [];
+    links = [];
 
-  constructor(private appConfig: AppConfigService) { }
+    constructor(private appConfig: AppConfigService) {}
 
-  ngOnInit() {
-    const helpLinks = this.appConfig.getConfig().helpLinks;
-    this.links = helpLinks ? helpLinks : [];
-  }
-
+    ngOnInit() {
+        const helpLinks = this.appConfig.getConfig().helpLinks;
+        this.links = helpLinks ? helpLinks : [];
+    }
 }

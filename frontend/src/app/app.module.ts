@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler, Injectable, APP_INITIALIZER } from '@angular/core';
+import { NgModule, Injectable, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
@@ -45,85 +45,87 @@ import { AuthState } from './shared/state/auth.state';
 
 import { AppShellModule } from './app-shell/app-shell.module';
 import * as Hammer from 'hammerjs';
-import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import {
+    HammerGestureConfig,
+    HAMMER_GESTURE_CONFIG,
+} from '@angular/platform-browser';
 
 @Injectable()
 export class CustomHammerConfig extends HammerGestureConfig {
-  buildHammer(elem: HTMLElement) {
-    let mconf = new Hammer(elem, {
-      touchAction: 'auto'
-    });
-    return mconf;
-  }
+    buildHammer(elem: HTMLElement): any {
+        const mconf = new Hammer(elem, {
+            touchAction: 'auto',
+        });
+        return mconf;
+    }
 }
-const appInitializerFn = (appConfig: AppConfigService) => {
-  return () => {
-    return appConfig.loadAppConfig();
-  };
-};
+const appInitializerFn = (appConfig: AppConfigService) => (): Promise<void> =>
+    appConfig.loadAppConfig();
 
 @Injectable()
 export class CustomUrlSerializer implements UrlSerializer {
-  private _defaultUrlSerializer: DefaultUrlSerializer = new DefaultUrlSerializer();
+    private _defaultUrlSerializer: DefaultUrlSerializer =
+    new DefaultUrlSerializer();
 
-  parse(url: string): UrlTree {
-     // Encode parentheses
-     url = url.replace(/\(/g, '%28').replace(/\)/g, '%29');
-     // Use the default serializer.
-     return this._defaultUrlSerializer.parse(url)
-  }
+    parse(url: string): UrlTree {
+        // Encode parentheses
+        url = url.replace(/\(/g, '%28').replace(/\)/g, '%29');
+        // Use the default serializer.
+        return this._defaultUrlSerializer.parse(url);
+    }
 
-  serialize(tree: UrlTree): string {
-     return this._defaultUrlSerializer.serialize(tree).replace(/%28/g, '(').replace(/%29/g, ')');
-  }
+    serialize(tree: UrlTree): string {
+        return this._defaultUrlSerializer
+            .serialize(tree)
+            .replace(/%28/g, '(')
+            .replace(/%29/g, ')');
+    }
 }
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    CoreModule,
-    MaterialModule,
-    // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: false }),
-    AppRoutingModule,
-    ThemeModule,
-    NgxsModule.forRoot([AuthState], { developmentMode: false }),
-    NgxsLoggerPluginModule.forRoot(),
-    AdminModule,
-    AdhocModule,
-    AppShellModule,
-    UniversalDataTooltipModule.forRoot()
-  ],
-  providers: [
-    AuthService,
-    /*{
-      provide: HTTP_INTERCEPTORS,
-      useClass: CredentialsInterceptor,
-      multi: true
-    }*/
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFn,
-      multi: true,
-      deps: [AppConfigService]
-    },
-    {
-      provide: UrlSerializer,
-      useClass: CustomUrlSerializer
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },
-    {
-      provide: HAMMER_GESTURE_CONFIG,
-      useClass: CustomHammerConfig
-    }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        CoreModule,
+        MaterialModule,
+        // ServiceWorkerModule.register('/ngsw-worker.js', { enabled: false }),
+        AppRoutingModule,
+        ThemeModule,
+        NgxsModule.forRoot([AuthState], { developmentMode: false }),
+        NgxsLoggerPluginModule.forRoot(),
+        AdminModule,
+        AdhocModule,
+        AppShellModule,
+        UniversalDataTooltipModule.forRoot(),
+    ],
+    providers: [
+        AuthService,
+        /* {
+          provide: HTTP_INTERCEPTORS,
+          useClass: CredentialsInterceptor,
+          multi: true
+        }*/
+        {
+            provide: APP_INITIALIZER,
+            useFactory: appInitializerFn,
+            multi: true,
+            deps: [AppConfigService],
+        },
+        {
+            provide: UrlSerializer,
+            useClass: CustomUrlSerializer,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+        {
+            provide: HAMMER_GESTURE_CONFIG,
+            useClass: CustomHammerConfig,
+        },
+    ],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -23,17 +23,27 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    FormControl,
+    Validators,
+} from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 
 import { Select, Store } from '@ngxs/store';
 
-import { DbfsState, DbfsResourcesState, DbfsLoadResources, DbfsLoadSubfolder } from '../../../shared/modules/dashboard-filesystem/state';
+import {
+    DbfsState,
+    DbfsResourcesState,
+    DbfsLoadResources,
+    DbfsLoadSubfolder,
+} from '../../../shared/modules/dashboard-filesystem/state';
 import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
@@ -42,11 +52,12 @@ import { UtilsService } from '../../../core/services/utils.service';
     templateUrl: './dashboard-save-dialog.component.html',
     styleUrls: ['./dashboard-save-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterViewInit {
-
-    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
+export class DashboardSaveDialogComponent
+implements OnInit, OnDestroy, AfterViewInit {
+    @Select(DbfsResourcesState.getResourcesLoaded)
+    resourcesLoaded$: Observable<any>;
 
     @Select(DbfsState.getUser(false, true)) user$: Observable<any>;
     user: any = {};
@@ -57,12 +68,14 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     @Select(DbfsResourcesState.getFileResources) files$: Observable<any>;
     files: any = {};
 
-    @Select(DbfsState.getUserMemberNamespaceData()) namespacesData$: Observable<any[]>;
+    @Select(DbfsState.getUserMemberNamespaceData()) namespacesData$: Observable<
+    any[]
+    >;
     namespaceOptions: any[] = [];
 
     @HostBinding('class.dashboard-save-dialog') private _hostClass = true;
 
-    selectedNamespace: String | null;
+    selectedNamespace: string | null;
 
     // namespaceOptions = [];
     filteredNamespaceOptions: Observable<any[]>;
@@ -73,10 +86,14 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     /** Form Variables */
 
     saveForm: FormGroup = new FormGroup({
-      title: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-      //namespace: new FormControl(''), // NOTE: may not need anymore
-      //isPersonal: new FormControl(false), // NOTE: may not need anymore
-      dbSaveLocation: new FormControl('')
+        title: new FormControl('', [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(50),
+        ]),
+        // namespace: new FormControl(''), // NOTE: may not need anymore
+        // isPersonal: new FormControl(false), // NOTE: may not need anymore
+        dbSaveLocation: new FormControl(''),
     });
 
     // listenSub: Subscription;
@@ -85,8 +102,9 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     formReady: boolean = false;
 
-    miniNavOpen: boolean = false;
-    @ViewChild(MatMenuTrigger, { read: MatMenuTrigger, static: true }) miniNavSelectTrigger: MatMenuTrigger;
+    miniNavOpen = false;
+    @ViewChild(MatMenuTrigger, { read: MatMenuTrigger, static: true })
+    miniNavSelectTrigger: MatMenuTrigger;
     private selectedSaveFolder: any;
 
     private subscription: Subscription = new Subscription();
@@ -96,7 +114,7 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         private fb: FormBuilder,
         public dialogRef: MatDialogRef<DashboardSaveDialogComponent>,
         private utils: UtilsService,
-        @Inject(MAT_DIALOG_DATA) public dbData: any
+        @Inject(MAT_DIALOG_DATA) public dbData: any,
     ) {}
 
     // form accessors should come after form initialized
@@ -105,44 +123,50 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     // get isPersonal() { return this.saveForm['controls']['isPersonal']; }
 
     ngOnInit() {
-        this.subscription.add(this.resourcesLoaded$.subscribe( loaded => {
-            if (loaded === false) {
-                // resources should have been loaded already, but just in case
-                this.store.dispatch(new DbfsLoadResources());
-            } else {
-                // we wait till resources have been loaded in order to set form validator
-                // this.saveForm.setValidators(this.duplicateDashboard());
-                setTimeout(() => {
-                  this.createForm();
-                }, 200);
-            }
-        }));
+        this.subscription.add(
+            this.resourcesLoaded$.subscribe((loaded) => {
+                if (loaded === false) {
+                    // resources should have been loaded already, but just in case
+                    this.store.dispatch(new DbfsLoadResources());
+                } else {
+                    // we wait till resources have been loaded in order to set form validator
+                    // this.saveForm.setValidators(this.duplicateDashboard());
+                    setTimeout(() => {
+                        this.createForm();
+                    }, 200);
+                }
+            }),
+        );
 
-        this.subscription.add(this.user$.subscribe( user => {
-            this.user = user;
-        }));
+        this.subscription.add(
+            this.user$.subscribe((user) => {
+                this.user = user;
+            }),
+        );
 
-        this.subscription.add(this.folders$.subscribe( folders => {
-            this.folders = folders;
-        }));
+        this.subscription.add(
+            this.folders$.subscribe((folders) => {
+                this.folders = folders;
+            }),
+        );
 
-        this.subscription.add(this.files$.subscribe( files => {
-            this.files = files;
-        }));
+        this.subscription.add(
+            this.files$.subscribe((files) => {
+                this.files = files;
+            }),
+        );
 
         // NOTE: may not need this anymore
-        this.subscription.add(this.namespacesData$.subscribe( namespaces => {
-            namespaces.sort((a: any, b: any) => {
-                return this.utils.sortAlphaNum(a.name, b.name);
-            });
+        this.subscription.add(
+            this.namespacesData$.subscribe((namespaces) => {
+                namespaces.sort((a: any, b: any) => this.utils.sortAlphaNum(a.name, b.name));
 
-            this.namespaceOptions = namespaces;
-        }));
-
-
+                this.namespaceOptions = namespaces;
+            }),
+        );
     }
 
-    ngAfterViewInit() {}
+    ngAfterViewInit() { /* do nothing */ }
 
     // NOTE: simplify this
     private createForm() {
@@ -150,8 +174,10 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
 
         this.saveForm['controls']['title'].setValue(this.dbData.title);
 
-        //this.saveForm['controls']['dbSaveLocation'].setValue('/user/'+this.user.alias);
-        this.selectedSaveFolder = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/'+this.user.alias));
+        // this.saveForm['controls']['dbSaveLocation'].setValue('/user/'+this.user.alias);
+        this.selectedSaveFolder = this.store.selectSnapshot(
+            DbfsResourcesState.getFolderResource('/user/' + this.user.alias),
+        );
 
         this.saveForm.setValidators(this.duplicateDashboard());
 
@@ -166,36 +192,45 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     // this is a simple test to check for existing dashboard in the top level
     // of either the personal folder or namespace folder
     duplicateDashboard() {
-      const self = this;
-      return (group: FormGroup): {[key: string]: any} => {
+        // const self = this;
+        return (group: FormGroup): { [key: string]: any } => {
+            const dbName = group['controls']['title']
+                ? (<string>group['controls']['title'].value)
+                    .toLowerCase()
+                    .replace(/\s+/gim, '-')
+                : '';
+            const parent = this.store.selectSnapshot(
+                DbfsResourcesState.getFolder(this.selectedSaveFolder.fullPath),
+            );
 
-        const dbName = group['controls']['title'] ? (<string>group['controls']['title'].value).toLowerCase().replace(/\s+/gmi, '-') : '';
-        const parent = self.store.selectSnapshot(DbfsResourcesState.getFolder(self.selectedSaveFolder.fullPath));
+            const check = parent.files.includes(dbName);
 
-        const check  = parent.files.includes(dbName);
-
-        if (check) {
-          const error: any = {
-            duplicateDashboard: true
-          };
-          return error;
-        }
-      };
+            if (check) {
+                const error: any = {
+                    duplicateDashboard: true,
+                };
+                return error;
+            }
+        };
     }
 
     // similar to duplicateDashboard, but this is called one last time
     // when 'save' is clicked
     isDuplicateDashboard() {
+        const dbName = this.saveForm['controls']['title']
+            ? (<string>this.saveForm['controls']['title'].value)
+                .toLowerCase()
+                .replace(/\s+/gim, '-')
+            : '';
 
-        const dbName = this.saveForm['controls']['title'] ?
-                       (<string>this.saveForm['controls']['title'].value).toLowerCase().replace(/\s+/gmi, '-') : '';
-
-        const parent = this.store.selectSnapshot(DbfsResourcesState.getFolder(this.selectedSaveFolder.fullPath));
+        const parent = this.store.selectSnapshot(
+            DbfsResourcesState.getFolder(this.selectedSaveFolder.fullPath),
+        );
 
         const check: boolean = parent.files.includes(dbName);
 
         if (check) {
-            this.saveForm.get('title').setErrors({duplicateDashboard: true});
+            this.saveForm.get('title').setErrors({ duplicateDashboard: true });
         }
 
         return !check;
@@ -205,18 +240,20 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
     dashboardSaveToChanged(e: any) {
         if ('isPersonal' === e.value) {
             this.saveForm['controls']['namespace'].disable(); // disable namespace control
-        } else if ('isNamespace' === e.value){
+        } else if ('isNamespace' === e.value) {
             this.saveForm['controls']['namespace'].enable(); // enable namespace control
         }
     }
 
     // NOTE: may not need this anymore
     filterNamespace(val: string): string[] {
-        return this.namespaceOptions.filter(option => {
+        return this.namespaceOptions.filter((option) => {
             if (val === '') {
                 return option.name;
             } else {
-                return option.name.toLowerCase().includes(val.toLowerCase().trim());
+                return option.name
+                    .toLowerCase()
+                    .includes(val.toLowerCase().trim());
             }
         });
     }
@@ -228,9 +265,17 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
      */
     namespaceKeydown(event: any) {
         // eslint-disable-next-line max-len
-        const nsIndex = this.namespaceOptions.findIndex((item: any) => item.name.toLowerCase() === this.saveForm['controls']['namespace'].value.toLowerCase().trim());
+        const nsIndex = this.namespaceOptions.findIndex(
+            (item: any) =>
+                item.name.toLowerCase() ===
+                this.saveForm['controls']['namespace'].value
+                    .toLowerCase()
+                    .trim(),
+        );
         if (this.saveForm['controls']['namespace'].valid && nsIndex >= 0) {
-            this.saveForm['controls']['namespace'].setValue(this.namespaceOptions[nsIndex].name);
+            this.saveForm['controls']['namespace'].setValue(
+                this.namespaceOptions[nsIndex].name,
+            );
             this.selectedNamespace = this.namespaceOptions[nsIndex].name;
         }
     }
@@ -245,24 +290,31 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
 
     // NOTE: may not need anymore || modify?
     isValidNamespaceSelected() {
-        if ( this.saveForm['controls']['namespace'].status === 'DISABLED' ) {
-             return true;
+        if (this.saveForm['controls']['namespace'].status === 'DISABLED') {
+            return true;
         }
-        const namespace = this.saveForm['controls']['namespace'].value.toLowerCase().trim();
+        const namespace = this.saveForm['controls']['namespace'].value
+            .toLowerCase()
+            .trim();
         const errors: any = {};
 
-        if ( namespace === '') {
+        if (namespace === '') {
             errors.required = true;
         }
-        if ( namespace && this.namespaceOptions.findIndex(d => namespace === d.name.toLowerCase() ) === -1 ) {
+        if (
+            namespace &&
+            this.namespaceOptions.findIndex(
+                (d) => namespace === d.name.toLowerCase(),
+            ) === -1
+        ) {
             errors.invalid = true;
         }
-        this.saveForm['controls']['namespace'].setErrors(Object.keys(errors).length ? errors : null);
+        this.saveForm['controls']['namespace'].setErrors(
+            Object.keys(errors).length ? errors : null,
+        );
 
         return Object.keys(errors).length === 0 ? true : false;
     }
-
-
 
     /** MINI NAV EVENTS */
 
@@ -278,9 +330,13 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         if (event.action === 'miniNavSave') {
             this.miniNavSelectTrigger.closeMenu();
             this.selectedSaveFolder = event.payload;
-            this.saveForm.get('dbSaveLocation').setValue(this.selectedSaveFolder.fullPath);
+            this.saveForm
+                .get('dbSaveLocation')
+                .setValue(this.selectedSaveFolder.fullPath);
             // check if the folder has been loaded
-            const folder = this.store.selectSnapshot(DbfsResourcesState.getFolder(this.selectedSaveFolder.fullPath));
+            const folder = this.store.selectSnapshot(
+                DbfsResourcesState.getFolder(this.selectedSaveFolder.fullPath),
+            );
             if (!folder.topFolder && !folder.loaded) {
                 this.store.dispatch(new DbfsLoadSubfolder(folder.fullPath, {}));
             }
@@ -299,7 +355,6 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
         } else {
             this.miniNavOpen = true;
             this.miniNavSelectTrigger.openMenu();
-            this
         }
     }
 
@@ -317,17 +372,15 @@ export class DashboardSaveDialogComponent implements OnInit, OnDestroy, AfterVie
             const data: any = {
                 name: this.saveForm['controls']['title'].value,
                 parentPath: this.selectedSaveFolder.fullPath,
-                parentId: this.selectedSaveFolder.id
-             };
+                parentId: this.selectedSaveFolder.id,
+            };
 
-             this.dialogRef.close(data);
+            this.dialogRef.close(data);
         }
-
     }
 
     /* ON DESTROY */
     ngOnDestroy() {
-      this.subscription.unsubscribe();
-
-  }
+        this.subscription.unsubscribe();
+    }
 }

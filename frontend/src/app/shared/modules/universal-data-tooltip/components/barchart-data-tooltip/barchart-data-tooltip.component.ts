@@ -14,7 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewChild,
+    ElementRef,
+    Renderer2,
+    OnDestroy,
+    Injector,
+    ViewEncapsulation,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -26,15 +36,17 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     selector: 'barchart-data-tooltip',
     templateUrl: './barchart-data-tooltip.component.html',
     styleUrls: ['./barchart-data-tooltip.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class BarchartDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
-
+export class BarchartDataTooltipComponent
+    extends DataTooltipComponent
+    implements OnInit, OnDestroy {
     @HostBinding('class.barchart-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef })
+    public ttOutputEl: ElementRef;
 
-    positionStrategy: string = 'sticky';
+    positionStrategy = 'sticky';
 
     private utils: UtilsService;
 
@@ -42,13 +54,9 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        _utils: UtilsService
+        _utils: UtilsService,
     ) {
-        super(
-            ttDataSvc,
-            renderer,
-            sanitizer
-        );
+        super(ttDataSvc, renderer, sanitizer);
         this.utils = _utils;
     }
 
@@ -64,7 +72,6 @@ export class BarchartDataTooltipComponent extends DataTooltipComponent implement
 
     /* Last */
     ngOnDestroy() {
-       super.ngOnDestroy();
+        super.ngOnDestroy();
     }
-
 }

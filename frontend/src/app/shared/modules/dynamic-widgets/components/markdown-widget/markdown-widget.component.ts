@@ -14,159 +14,190 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, OnDestroy, ElementRef, ViewEncapsulation } from '@angular/core';
-import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    OnDestroy,
+    ElementRef,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    IntercomService,
+    IMessage,
+} from '../../../../../core/services/intercom.service';
 import { Subscription, BehaviorSubject, of } from 'rxjs';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'markdown-widget',
-  templateUrl: './markdown-widget.component.html',
-  styleUrls: ['./markdown-widget.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'markdown-widget',
+    templateUrl: './markdown-widget.component.html',
+    styleUrls: ['./markdown-widget.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class MarkdownWidgetComponent implements OnInit, OnDestroy {
-  @HostBinding('class.widget-panel-content') private _hostClass = true;
-  @HostBinding('class.markdown-widget') private _componentClass = true;
+    @HostBinding('class.widget-panel-content') private _hostClass = true;
+    @HostBinding('class.markdown-widget') private _componentClass = true;
 
-  constructor(
-      private interCom: IntercomService,
-      private elRef: ElementRef
-    ) { }
-  /** Inputs */
-  @Input() mode = 'view'; // view/edit
-  @Input() widget: any;
-  @Input() readonly = true;
+    constructor(
+        private interCom: IntercomService,
+        private elRef: ElementRef,
+    ) {}
+    /** Inputs */
+    @Input() mode = 'view'; // view/edit
+    @Input() widget: any;
+    @Input() readonly = true;
 
-  isDataRefreshRequired = false;
+    isDataRefreshRequired = false;
 
-  displayText$: BehaviorSubject<string>;
-  tplVariables: any = {};
-  tplMarcos: any = {};
-  tplValues = [];
-  private subscription: Subscription = new Subscription();
+    displayText$: BehaviorSubject<string>;
+    tplVariables: any = {};
+    tplMarcos: any = {};
+    tplValues = [];
+    private subscription: Subscription = new Subscription();
 
-  ngOnInit() {
+    ngOnInit() {
+        this.displayText$ = new BehaviorSubject('');
+        this.subscription.add(
+            this.interCom.responseGet().subscribe((message) => {
+                if (message.action === 'viewTplVariablesValues') {
+                    this.tplVariables = message.payload.tplVariables;
+                    this.tplValues = message.payload.tplValues;
+                    if (this.tplVariables.tvars.length > 0) {
+                        this.tplVariables.tvars.forEach((tvar) => {
+                            this.tplMarcos['{{' + tvar.alias + '}}'] =
+                                tvar.filter;
+                        });
+                    }
+                    this.setDefaults();
+                }
+            }),
+        );
+        this.interCom.requestSend({
+            action: 'GetResolveViewTplVariables',
+        });
 
-    this.displayText$ = new BehaviorSubject('');
-    this.subscription.add(this.interCom.responseGet().subscribe(message => {
-      if (message.action === 'viewTplVariablesValues') {
-        this.tplVariables = message.payload.tplVariables;
-        this.tplValues = message.payload.tplValues;
-        if (this.tplVariables.tvars.length > 0) {
-          this.tplVariables.tvars.forEach(tvar => {
-            this.tplMarcos['{{'+tvar.alias+'}}'] = tvar.filter;
-          });
+        this.subscription.add(
+            this.interCom.responseGet().subscribe((message: IMessage) => {
+                if (message && message.id === this.widget.id) {
+                    switch (message.action) {
+                        case 'getUpdatedWidgetConfig': // called when switching to presentation view
+                            this.widget = message.payload.widget;
+                            break;
+                    }
+                }
+            }),
+        );
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
         }
-        this.setDefaults();
-      }
-    }));
-    this.interCom.requestSend({
-      action: 'GetResolveViewTplVariables'
-    });
-
-    this.subscription.add(this.interCom.responseGet().subscribe((message: IMessage) => {
-      if (message && (message.id === this.widget.id)) {
-        switch (message.action) {
-          case 'getUpdatedWidgetConfig': // called when switching to presentation view
-            this.widget = message.payload.widget;
-            break;
-
-        }
-      }
-    }));
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  setDefaults() {
-    if (!this.widget.settings.visual.text) {
-      this.widget.settings.visual.text = '';
-      this.displayText$.next('');
-    } else {
-      this.displayText$.next(this.resolveTplMacro(this.tplMarcos, this.tplValues, this.widget.settings.visual.text));
     }
 
-    if (!this.widget.settings.visual.backgroundColor) {
-      this.widget.settings.visual.backgroundColor = '#FFFFFF';
-    }
-
-    if (!this.widget.settings.visual.font) {
-      this.widget.settings.visual.font = 'default';
-    }
-
-    if (!this.widget.settings.visual.textColor) {
-      this.widget.settings.visual.textColor = '#000000';
-    }
-  }
-
-  textChanged(txt: string) {
-    this.widget.settings.visual.text = txt;
-    this.displayText$.next(this.resolveTplMacro(this.tplMarcos, this.tplValues, this.widget.settings.visual.text));
-  }
-
-  updateConfig(message) {
-    switch (message.action) {
-      case 'SetVisualization':
-        this.setVisualization(message.payload.data);
-        break;
-    }
-  }
-
-  setVisualization(vconfigs) {
-    this.widget.settings.visual = { ...vconfigs };
-  }
-
-  applyConfig() {
-    const cloneWidget = { ...this.widget };
-    cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
-    this.interCom.requestSend({
-      action: 'updateWidgetConfig',
-      id: cloneWidget.id,
-      payload: { widget: cloneWidget, isDataRefreshRequired: this.isDataRefreshRequired }
-    });
-    this.closeViewEditMode();
-  }
-
-  closeViewEditMode() {
-    this.interCom.requestSend({
-      action: 'closeViewEditMode',
-      id: this.widget.id,
-      payload: 'dashboard'
-    });
-  }
-
-  resolveTplMacro(tplMacros: any, tplValues: any[], text: string): string {
-
-    if (this.checkExistMarco(text)) {
-      for (let i = 0; i < Object.keys(tplMacros).length; i++) {
-        const key = Object.keys(tplMacros)[i];
-        tplMacros[key] = tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';
-      }
-      const regx = new RegExp(Object.keys(tplMacros).join('|'),'gi');
-      return text.replace(regx, (matched) => {
-        if(tplMacros[matched] !== '') {
-          return tplMacros[matched];
+    setDefaults() {
+        if (!this.widget.settings.visual.text) {
+            this.widget.settings.visual.text = '';
+            this.displayText$.next('');
         } else {
-          return matched;
+            this.displayText$.next(
+                this.resolveTplMacro(
+                    this.tplMarcos,
+                    this.tplValues,
+                    this.widget.settings.visual.text,
+                ),
+            );
         }
-      });
-    } else {
-      return text;
+
+        if (!this.widget.settings.visual.backgroundColor) {
+            this.widget.settings.visual.backgroundColor = '#FFFFFF';
+        }
+
+        if (!this.widget.settings.visual.font) {
+            this.widget.settings.visual.font = 'default';
+        }
+
+        if (!this.widget.settings.visual.textColor) {
+            this.widget.settings.visual.textColor = '#000000';
+        }
     }
 
-  }
-
-  // check if text contains tag filter marcos
-  checkExistMarco(text: string): boolean {
-    if (Object.keys(this.tplMarcos).length > 0) {
-      const regx = new RegExp(Object.keys(this.tplMarcos).join('|'),'gi');
-      return regx.test(text);
+    textChanged(txt: string) {
+        this.widget.settings.visual.text = txt;
+        this.displayText$.next(
+            this.resolveTplMacro(
+                this.tplMarcos,
+                this.tplValues,
+                this.widget.settings.visual.text,
+            ),
+        );
     }
-    return false;
-  }
+
+    updateConfig(message) {
+        switch (message.action) {
+            case 'SetVisualization':
+                this.setVisualization(message.payload.data);
+                break;
+        }
+    }
+
+    setVisualization(vconfigs) {
+        this.widget.settings.visual = { ...vconfigs };
+    }
+
+    applyConfig() {
+        const cloneWidget = { ...this.widget };
+        cloneWidget.id = cloneWidget.id.replace('__EDIT__', '');
+        this.interCom.requestSend({
+            action: 'updateWidgetConfig',
+            id: cloneWidget.id,
+            payload: {
+                widget: cloneWidget,
+                isDataRefreshRequired: this.isDataRefreshRequired,
+            },
+        });
+        this.closeViewEditMode();
+    }
+
+    closeViewEditMode() {
+        this.interCom.requestSend({
+            action: 'closeViewEditMode',
+            id: this.widget.id,
+            payload: 'dashboard',
+        });
+    }
+
+    resolveTplMacro(tplMacros: any, tplValues: any[], text: string): string {
+        if (this.checkExistMarco(text)) {
+            for (let i = 0; i < Object.keys(tplMacros).length; i++) {
+                const key = Object.keys(tplMacros)[i];
+                tplMacros[key] =
+                    tplValues[i] && tplValues[i].length ? tplValues[i][0] : '';
+            }
+            const regx = new RegExp(Object.keys(tplMacros).join('|'), 'gi');
+            return text.replace(regx, (matched) => {
+                if (tplMacros[matched] !== '') {
+                    return tplMacros[matched];
+                } else {
+                    return matched;
+                }
+            });
+        } else {
+            return text;
+        }
+    }
+
+    // check if text contains tag filter marcos
+    checkExistMarco(text: string): boolean {
+        if (Object.keys(this.tplMarcos).length > 0) {
+            const regx = new RegExp(
+                Object.keys(this.tplMarcos).join('|'),
+                'gi',
+            );
+            return regx.test(text);
+        }
+        return false;
+    }
 }

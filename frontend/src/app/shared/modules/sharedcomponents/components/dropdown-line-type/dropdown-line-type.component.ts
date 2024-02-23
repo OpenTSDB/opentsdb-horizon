@@ -14,14 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
+
+interface LineTypeOptionData {
+    label: string;
+    value: string;
+}
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'dropdown-line-type',
-  templateUrl: './dropdown-line-type.component.html',
-  styleUrls: ['./dropdown-line-type.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'dropdown-line-type',
+    templateUrl: './dropdown-line-type.component.html',
+    styleUrls: ['./dropdown-line-type.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DropdownLineTypeComponent {
     @HostBinding('class.dropdown-line-type') private _hostClass = true;
@@ -29,32 +41,32 @@ export class DropdownLineTypeComponent {
     @Input() value = 'solid';
 
     @Output()
-    change = new EventEmitter<string>();
+    valueChange = new EventEmitter<string>();
 
-    lineTypeOptions: Array<object> = [
+    lineTypeOptions: Array<LineTypeOptionData> = [
         {
             label: 'Solid',
-            value: 'solid'
+            value: 'solid',
         },
         {
             label: 'Dotted',
-            value: 'dotted'
+            value: 'dotted',
         },
         {
             label: 'Dashed',
-            value: 'dashed'
+            value: 'dashed',
         },
         {
             label: 'Dot-Dashed',
-            value: 'dot-dashed'
-        }
+            value: 'dot-dashed',
+        },
     ];
 
     defaultLineType = 'solid';
 
-    constructor() { }
+    constructor() {}
 
     changeLineType(type) {
-        this.change.emit(type);
+        this.valueChange.emit(type);
     }
 }

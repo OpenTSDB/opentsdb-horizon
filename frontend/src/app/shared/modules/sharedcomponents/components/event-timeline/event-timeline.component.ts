@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 import {
-    Component, OnInit, ViewChild, ElementRef, HostBinding, Input, Output, EventEmitter,
-    OnChanges, SimpleChanges, ViewEncapsulation
+    Component,
+    OnInit,
+    ViewChild,
+    ElementRef,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    OnChanges,
+    SimpleChanges,
+    ViewEncapsulation,
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import * as deepEqual from 'fast-deep-equal';
@@ -26,9 +35,8 @@ import * as deepEqual from 'fast-deep-equal';
     selector: 'event-timeline',
     templateUrl: './event-timeline.component.html',
     styleUrls: ['./event-timeline.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-
 export class EventTimelineComponent implements OnInit, OnChanges {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.event-timeline') private _componentClass = true;
@@ -48,7 +56,8 @@ export class EventTimelineComponent implements OnInit, OnChanges {
     @Output() newBuckets: EventEmitter<any[]> = new EventEmitter();
     @Output() bucketClicked: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('eventsOverlayCanvas', { static: true }) eventsOverlayCanvas: ElementRef;
+    @ViewChild('eventsOverlayCanvas', { static: true })
+    eventsOverlayCanvas: ElementRef;
     context: CanvasRenderingContext2D;
 
     eventLocations: any = [];
@@ -59,9 +68,11 @@ export class EventTimelineComponent implements OnInit, OnChanges {
     iconColor = '#44BCB7';
     eventRunnerColor = '#E1E5E5';
 
-    constructor(private util: UtilsService) { }
+    constructor(private util: UtilsService) {}
 
-    ngOnInit() { }
+    ngOnInit() {
+        // do nothing
+    }
 
     ngOnChanges(changes: SimpleChanges): void {
         this.drawEvents();
@@ -74,9 +85,12 @@ export class EventTimelineComponent implements OnInit, OnChanges {
 
     drawEvents() {
         // manually set width
-        (<HTMLCanvasElement>this.eventsOverlayCanvas.nativeElement).width = this.width;
+        (<HTMLCanvasElement>this.eventsOverlayCanvas.nativeElement).width =
+            this.width;
 
-        this.context = (<HTMLCanvasElement>this.eventsOverlayCanvas.nativeElement).getContext('2d');
+        this.context = (<HTMLCanvasElement>(
+            this.eventsOverlayCanvas.nativeElement
+        )).getContext('2d');
         this.eventLocations = [];
 
         this.context.beginPath();
@@ -87,15 +101,30 @@ export class EventTimelineComponent implements OnInit, OnChanges {
 
         if (this.events) {
             const oldBucketsIds = this.getEventIdsForBuckets([...this.buckets]);
-            this.buckets = this.util.getEventBuckets(this.startTime, this.endTime, this.width / this.iconWidth, this.events);
+            this.buckets = this.util.getEventBuckets(
+                this.startTime,
+                this.endTime,
+                this.width / this.iconWidth,
+                this.events,
+            );
             const newBucketsIds = this.getEventIdsForBuckets([...this.buckets]);
 
             /* eslint-disable prefer-const */
             for (let i = 0; i < this.buckets.length; i++) {
-                if (this.buckets[i].startTime >= this.startTime && this.buckets[i].startTime <= this.endTime) {
-                    let xStart = (this.buckets[i].endTime - this.startTime) * this.getEventResolution();
-                    if (i === 0) { // if last bucket, take start + interval - remember that first bucket is latest time
-                        xStart = (this.buckets[i].startTime + this.buckets[i].width - this.startTime) * this.getEventResolution();
+                if (
+                    this.buckets[i].startTime >= this.startTime &&
+                    this.buckets[i].startTime <= this.endTime
+                ) {
+                    let xStart =
+                        (this.buckets[i].endTime - this.startTime) *
+                        this.getEventResolution();
+                    if (i === 0) {
+                        // if last bucket, take start + interval - remember that first bucket is latest time
+                        xStart =
+                            (this.buckets[i].startTime +
+                                this.buckets[i].width -
+                                this.startTime) *
+                            this.getEventResolution();
                     }
                     this.drawEvent(xStart, this.iconColor, this.buckets[i]);
                 }
@@ -143,14 +172,17 @@ export class EventTimelineComponent implements OnInit, OnChanges {
         }
 
         // order the map by count, put in array
-        let sortedSourceAndCount = Array.from(sourceToCount).sort((a, b) => {
+        let sortedSourceAndCount = Array.from(sourceToCount).sort((a, b) =>
             // a[0], b[0] is the key of the map
-            return a[0] - b[0];
-        });
+            a[0] - b[0]
+        );
 
         // fill up summaries
         let i = 0;
-        while (i < this.maxTooltipSourceSummaries - 1 && i < sortedSourceAndCount.length) {
+        while (
+            i < this.maxTooltipSourceSummaries - 1 &&
+            i < sortedSourceAndCount.length
+        ) {
             summaries.push(sortedSourceAndCount[i]);
             i++;
         }
@@ -158,7 +190,9 @@ export class EventTimelineComponent implements OnInit, OnChanges {
         // determine if 'more' bucket is needed
         if (sortedSourceAndCount.length < this.maxTooltipSourceSummaries) {
             // do nothing
-        } else if (sortedSourceAndCount.length === this.maxTooltipSourceSummaries) {
+        } else if (
+            sortedSourceAndCount.length === this.maxTooltipSourceSummaries
+        ) {
             summaries.push(sortedSourceAndCount[i]);
         } else {
             let count = 0;
@@ -179,8 +213,11 @@ export class EventTimelineComponent implements OnInit, OnChanges {
         const count = bucket.events.length;
         this.roundRect(xStart - 7, 2, 16, 16, 2, color);
         this.eventLocations.push({
-            xStart: (xStart - 10), xEnd: (xStart + 10), yStart: 0, yEnd: 20,
-            bucket: bucket
+            xStart: xStart - 10,
+            xEnd: xStart + 10,
+            yStart: 0,
+            yEnd: 20,
+            bucket: bucket,
         });
         // draw number in box
         this.context.fillStyle = 'white';
@@ -189,7 +226,8 @@ export class EventTimelineComponent implements OnInit, OnChanges {
             this.context.fillText(count.toString(), xStart - 6, 14);
         } else if (count.toString().length > 2) {
             this.context.fillText('*', xStart - 3, 14);
-        } else { // center single digit
+        } else {
+            // center single digit
             this.context.fillText(count.toString(), xStart - 3, 14);
         }
     }
@@ -222,11 +260,17 @@ export class EventTimelineComponent implements OnInit, OnChanges {
 
         // send event for tooltip
         for (let eventLocation of this.eventLocations) {
-            if (xCoord >= eventLocation.xStart &&
+            if (
+                xCoord >= eventLocation.xStart &&
                 xCoord <= eventLocation.xEnd &&
                 yCoord >= eventLocation.yStart &&
-                yCoord <= eventLocation.yEnd) {
-                this.toolTipData = { bucket: eventLocation.bucket, xCoord: xCoord + 45 + 'px', yCoord: yCoord };
+                yCoord <= eventLocation.yEnd
+            ) {
+                this.toolTipData = {
+                    bucket: eventLocation.bucket,
+                    xCoord: xCoord + 45 + 'px',
+                    yCoord: yCoord,
+                };
                 hoveredOverIcon = true;
                 break;
             }
@@ -256,10 +300,12 @@ export class EventTimelineComponent implements OnInit, OnChanges {
         // send event for tooltip
         let index = 0;
         for (let eventLocation of this.eventLocations) {
-            if (xCoord >= eventLocation.xStart &&
+            if (
+                xCoord >= eventLocation.xStart &&
                 xCoord <= eventLocation.xEnd &&
                 yCoord >= eventLocation.yStart &&
-                yCoord <= eventLocation.yEnd) {
+                yCoord <= eventLocation.yEnd
+            ) {
                 this.bucketClicked.emit(index);
                 break;
             }

@@ -20,13 +20,12 @@ import * as d3 from 'd3';
 export type D3 = typeof d3;
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class D3Service {
+    constructor() {}
 
-  constructor() { }
-
-  public getD3(): D3 {
-    return d3;
-  }
+    public getD3(): D3 {
+        return d3;
+    }
 }

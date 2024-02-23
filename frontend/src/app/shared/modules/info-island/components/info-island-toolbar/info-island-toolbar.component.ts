@@ -23,7 +23,7 @@ import {
     ViewChild,
     ViewContainerRef,
     Input,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { InfoIslandService } from '../../services/info-island.service';
 
@@ -32,28 +32,28 @@ import { InfoIslandService } from '../../services/info-island.service';
     selector: 'info-island-toolbar',
     templateUrl: './info-island-toolbar.component.html',
     styleUrls: ['./info-island-toolbar.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
-
+export class InfoIslandToolbarComponent
+implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('toolbarPlaceholder', { static: true }) toolbarTmplRef;
 
     @Input() customClass = '';
 
     private disposeFn: () => void;
-    private viewRef: EmbeddedViewRef<{}>;
+    private viewRef: EmbeddedViewRef<unknown>;
 
     constructor(
         private viewContainerRef: ViewContainerRef,
-        private islandService: InfoIslandService
-    ) { }
+        private islandService: InfoIslandService,
+    ) {}
 
-    ngOnInit() { }
+    ngOnInit() { /* do nothing */ }
 
     ngAfterViewInit(): void {
         // render the view
         this.viewRef = this.viewContainerRef.createEmbeddedView(
-            this.toolbarTmplRef
+            this.toolbarTmplRef,
         );
         this.viewRef.detectChanges();
 
@@ -61,11 +61,11 @@ export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDest
         const toolbarRef = this.islandService.islandToolbarRef;
 
         // attach the view to the window toolbar ref
-       toolbarRef.insert(this.viewRef);
+        toolbarRef.insert(this.viewRef);
 
         // register a dispose fn we can call later
         // to remove the content from the DOM again
-        this.disposeFn = () => { };
+        this.disposeFn = () => { /* do nothing */ };
     }
 
     ngOnDestroy(): void {
@@ -74,5 +74,4 @@ export class InfoIslandToolbarComponent implements OnInit, AfterViewInit, OnDest
             this.viewContainerRef.remove(index);
         }
     }
-
 }

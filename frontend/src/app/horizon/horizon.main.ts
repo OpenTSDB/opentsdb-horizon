@@ -8,4 +8,4 @@ if (environment.production) {
 }
 
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(HorizonModule);
-bootstrap().catch(err => console.error(err));
+bootstrap().catch((err) => console.error(err));

@@ -27,7 +27,7 @@ export enum RecipientType {
     http = 'http',
     oc = 'oc',
     email = 'email',
-    pagerduty = 'pagerduty'
+    pagerduty = 'pagerduty',
 }
 
 export class Recipient {

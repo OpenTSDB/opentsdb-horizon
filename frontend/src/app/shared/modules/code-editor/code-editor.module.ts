@@ -14,14 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * NOTE: This module 'CodeEditorModule' doesn't really do anything.
+ * It might be ok to cleanup
+ */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CodeEditorComponent } from './components/code-editor.component';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: [CodeEditorComponent]
+    imports: [CommonModule],
+    declarations: [CodeEditorComponent]
 })
-export class CodeEditorModule { }
+export class CodeEditorModule {}

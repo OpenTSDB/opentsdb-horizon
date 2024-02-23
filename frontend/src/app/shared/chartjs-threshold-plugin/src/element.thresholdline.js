@@ -14,28 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function ThresholdLine(chart,options) {
+function ThresholdLine(chart, options) {
     this.id = options.id;
     this.value = options.value;
     this.scaleId = options.scaleId;
-	this.chart = chart;
+    this.chart = chart;
     this.options = options;
     this.update();
 }
 
 /**
  *
- * Updates the line configurations 
+ * Updates the line configurations
  */
-ThresholdLine.prototype.update = function() {
+ThresholdLine.prototype.update = function () {
     var chart = this.chart;
     // subtracts 0.5 from x-axis position if the lineWidth is odd number
     var lineWidth = this.options.borderWidth || 1;
     var d = lineWidth % 2 == 1 ? 0.5 : 0;
-    if ( chart.config.type === 'bar' ) {
+    if (chart.config.type === "bar") {
         this.x1 = Math.round(chart.chartArea.left);
         this.y1 = chart.scales[this.scaleId].getPixelForValue(this.value) + d;
-        this.x2 = this.x1 + Math.round(chart.chartArea.right - chart.chartArea.left);
+        this.x2 =
+            this.x1 + Math.round(chart.chartArea.right - chart.chartArea.left);
         this.y2 = this.y1;
     } else {
         this.x1 = chart.scales[this.scaleId].getPixelForValue(this.value) + d;
@@ -47,47 +48,58 @@ ThresholdLine.prototype.update = function() {
 
 /**
  *
- * Sets the border around the threshold line 
+ * Sets the border around the threshold line
  * @param {Integer} border - border width
  */
-ThresholdLine.prototype.setBorder = function(border) {
+ThresholdLine.prototype.setBorder = function (border) {
     this.border = border;
 };
 
 /**
  *
- * Draws the threshold line 
+ * Draws the threshold line
  * @param {Object} ctx - target canvas context
  */
-ThresholdLine.prototype.draw = function(ctx) {
+ThresholdLine.prototype.draw = function (ctx) {
     // don't draw line if out of chart area
-    if ( (this.chart.config.type === 'bar' && (this.y1 < this.chart.chartArea.top || this.y1 > this.chart.chartArea.bottom)) ||
-            (this.chart.config.type === 'horizontalBar' && (this.x1 < this.chart.chartArea.left || this.x1 > this.chart.chartArea.right)) ) {
+    if (
+        (this.chart.config.type === "bar" &&
+            (this.y1 < this.chart.chartArea.top ||
+                this.y1 > this.chart.chartArea.bottom)) ||
+        (this.chart.config.type === "horizontalBar" &&
+            (this.x1 < this.chart.chartArea.left ||
+                this.x1 > this.chart.chartArea.right))
+    ) {
         return;
     }
     ctx.beginPath();
 
     if (ctx.setLineDash) {
-        ctx.setLineDash(this.options.borderDash||[]);   
+        ctx.setLineDash(this.options.borderDash || []);
     }
 
     var lineWidth = this.options.borderWidth || 1;
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = this.options.borderColor || "#000000";
     ctx.lineDashOffset = this.options.borderDashOffset || 0;
-    ctx.moveTo(this.x1,this.y1);
-    ctx.lineTo(this.x2,this.y2);
+    ctx.moveTo(this.x1, this.y1);
+    ctx.lineTo(this.x2, this.y2);
     ctx.stroke();
     ctx.closePath();
 
-    var height = this.options.borderWidth || 1 ;
+    var height = this.options.borderWidth || 1;
     var border = 5;
-    if ( this.border ) {
+    if (this.border) {
         ctx.beginPath();
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.lineWidth=2;
-        ctx.setLineDash([4,2]);
-        ctx.strokeRect(this.x1, this.y1-(border+height), this.x2-this.x1, 2*( height + border));
+        ctx.strokeStyle = "rgba(0,0,0,1)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 2]);
+        ctx.strokeRect(
+            this.x1,
+            this.y1 - (border + height),
+            this.x2 - this.x1,
+            2 * (height + border)
+        );
         ctx.closePath();
         ctx.restore();
     }
@@ -95,14 +107,18 @@ ThresholdLine.prototype.draw = function(ctx) {
 
 /**
  *
- * Checks whether the mouse position falls on the line range 
+ * Checks whether the mouse position falls on the line range
  * @param {Integer} mx - mouseX position
  * @param {Integer} my - mouseY position
- * @param {Integer} around - extra surrounding area to consider 
+ * @param {Integer} around - extra surrounding area to consider
  */
-ThresholdLine.prototype.inRange = function(mx, my, around) {
-  	return  (this.x1 <= mx) && (this.x2 >= mx) &&
-          (this.y1 - around <= my) && (this.y1 +  around >= my);
+ThresholdLine.prototype.inRange = function (mx, my, around) {
+    return (
+        this.x1 <= mx &&
+        this.x2 >= mx &&
+        this.y1 - around <= my &&
+        this.y1 + around >= my
+    );
 };
 
 module.exports = ThresholdLine;

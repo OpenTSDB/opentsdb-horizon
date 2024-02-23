@@ -21,36 +21,33 @@ import {
     Input,
     Output,
     EventEmitter,
-    AfterContentInit,
     ChangeDetectorRef,
     ViewChild,
     ElementRef,
     HostBinding,
     HostListener,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith, debounceTime, switchMap, skip } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { debounceTime } from 'rxjs/operators';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { HttpService } from '../../../../../core/http/http.service';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'namespace-autocomplete',
     templateUrl: './namespace-autocomplete.component.html',
     styleUrls: ['./namespace-autocomplete.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
-
-    @HostBinding('class.namespace-autocomplete-component') private _hostClass = true;
+    @HostBinding('class.namespace-autocomplete-component') private _hostClass =
+    true;
 
     @Input() value = '';
     @Input() options: any = {};
     @Input() initFocus = false;
     @Output() nschange = new EventEmitter();
-    @Output() blur = new EventEmitter();
+    @Output() blurFocus = new EventEmitter();
     @ViewChild('namespaceInput', { static: true }) nsInput: ElementRef;
     @ViewChild('trigger', { static: true }) trigger: MatAutocompleteTrigger;
 
@@ -61,49 +58,56 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
     namespaceControl: FormControl;
     selectedNamespace;
 
-
-
-    constructor(private httpService: HttpService, private cdRef: ChangeDetectorRef) { }
+    constructor(
+        private httpService: HttpService,
+        private cdRef: ChangeDetectorRef,
+    ) {}
 
     ngOnInit() {
         let showFullList = true;
         this.namespaceControl = new FormControl(this.value || '');
         this.namespaceControl.valueChanges
-            .pipe(
-                debounceTime(100),
-            ).subscribe( search => {
+            .pipe(debounceTime(100))
+            .subscribe((search) => {
                 search = search.trim();
                 search = search === '' || showFullList ? '.*' : search;
                 search = search.replace(/\s+/g, '.*').toLowerCase();
-                const regex = new RegExp( search );
-                for ( let i = 0; i < this.namespaces.length; i++ ) {
-                    this.filteredNamespaceOptions = this.namespaces.filter(d => regex.test(d.toLowerCase()));
+                const regex = new RegExp(search);
+                for (let i = 0; i < this.namespaces.length; i++) {
+                    this.filteredNamespaceOptions = this.namespaces.filter(
+                        (d) => regex.test(d.toLowerCase()),
+                    );
                 }
-                if ( !this.destroy ) {
+                if (!this.destroy) {
                     this.cdRef.detectChanges();
                 }
                 showFullList = false;
             });
-        this.httpService.getNamespaces({ search: '' }, this.options.metaSource)
-                        .subscribe(res => {
-                            this.namespaces = res;
-                            this.namespaceControl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
-                        },
-                        err => {
-                            this.namespaces = [];
-                            this.filteredNamespaceOptions = [];
-                        });
+        this.httpService
+            .getNamespaces({ search: '' }, this.options.metaSource)
+            .subscribe(
+                (res) => {
+                    this.namespaces = res;
+                    this.namespaceControl.updateValueAndValidity({
+                        onlySelf: false,
+                        emitEvent: true,
+                    });
+                },
+                (err) => {
+                    this.namespaces = [];
+                    this.filteredNamespaceOptions = [];
+                },
+            );
 
         setTimeout(() => {
             this.visible = true;
-            if ( this.initFocus ) {
+            if (this.initFocus) {
                 this.nsInput.nativeElement.focus();
             }
         }, 200);
     }
 
-
-    namespaceKeydown(event: any) {
+    namespaceKeydown(event: any): void {
         // this fixes issue related to LastPass plugin throwing error
         // see: https://github.com/lastpass/lastpass-cli/issues/428
         //      https://github.com/KillerCodeMonkey/ngx-quill/issues/351#issuecomment-475175743
@@ -115,7 +119,9 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
         // check if the namespace is valid option
 
         // find index in options
-        const checkIdx = this.filteredNamespaceOptions.findIndex(item => textVal.toLowerCase() === item.toLowerCase());
+        const checkIdx = this.filteredNamespaceOptions.findIndex(
+            (item) => textVal.toLowerCase() === item.toLowerCase(),
+        );
 
         if (checkIdx >= 0) {
             // set value to the option value (since typed version could be different case)
@@ -126,8 +132,8 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
         }
     }
 
-    resetNamespaceList() {
-        if ( this.namespaces.length ) {
+    resetNamespaceList(): void {
+        if (this.namespaces.length) {
             this.filteredNamespaceOptions = this.namespaces;
         }
     }
@@ -135,37 +141,36 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
     /**
      * * Event fired when an autocomplete option is selected
      */
-    namespaceOptionSelected(event: any) {
+    namespaceOptionSelected(event: any): void {
         this.selectedNamespace = event.option.value;
         this.nschange.emit(this.selectedNamespace);
         this.clearInput();
     }
 
-    clearInput() {
-        if ( this.trigger.panelOpen ) {
+    clearInput(): void {
+        if (this.trigger.panelOpen) {
             this.trigger.closePanel();
         }
         this.nsInput.nativeElement.blur();
-        if ( this.options.resetOnBlur ) {
-            this.namespaceControl.setValue(this.value, {emitEvent: false});
+        if (this.options.resetOnBlur) {
+            this.namespaceControl.setValue(this.value, { emitEvent: false });
         }
     }
 
     @HostListener('click', ['$event'])
-    hostClickHandler(e) {
+    hostClickHandler(e): void {
         e.stopPropagation();
     }
 
     @HostListener('document:click', ['$event.target'])
-    documentClickHandler(target) {
+    documentClickHandler(target): void {
         if (!target.classList.contains('mat-option-text') && this.visible) {
-            this.namespaceControl.setValue(this.value, {emitEvent: false});
-            this.blur.emit('');
+            this.namespaceControl.setValue(this.value, { emitEvent: false });
+            this.blurFocus.emit('');
         }
     }
 
     ngOnDestroy() {
         this.destroy = true;
     }
-
 }

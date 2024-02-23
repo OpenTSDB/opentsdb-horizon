@@ -20,27 +20,26 @@ import {
     HostBinding,
     Input,
     OnInit,
-    Output, ViewChild, ElementRef, ViewEncapsulation
+    Output,
+    ViewChild,
+    ElementRef,
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'test-navigator',
     templateUrl: './test-navigator.component.html',
     styleUrls: ['./test-navigator.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    host: {
-        '[class.test-navigator]': 'true',
-        '[class.panel-content]': 'true'
-    }
+    encapsulation: ViewEncapsulation.None
 })
 export class TestNavigatorComponent implements OnInit {
+    @HostBinding('class.test-navigator') private _hostClass = true;
+    @HostBinding('class.panelContent') private _panelContentClass = true;
 
-    //@HostBinding('class.test-navigator') private _hostClass = true;
-
-    @ViewChild(NavigatorPanelComponent, { static: true }) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent, { static: true })
+    private navPanel: NavigatorPanelComponent;
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';
@@ -50,19 +49,17 @@ export class TestNavigatorComponent implements OnInit {
 
     @Output() toggleDrawer: EventEmitter<any> = new EventEmitter();
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     closeDrawer() {
         this.toggleDrawer.emit({
-            closeNavigator: true
+            closeNavigator: true,
         });
     }
 
     toggleDrawerMode() {
         this.toggleDrawer.emit(true);
     }
-
 }

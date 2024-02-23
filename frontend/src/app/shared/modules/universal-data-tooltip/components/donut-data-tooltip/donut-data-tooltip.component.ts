@@ -14,7 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, Injector, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewChild,
+    ElementRef,
+    Renderer2,
+    OnDestroy,
+    ViewEncapsulation,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -26,16 +35,17 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     selector: 'donut-data-tooltip',
     templateUrl: './donut-data-tooltip.component.html',
     styleUrls: ['./donut-data-tooltip.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class DonutDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
-
+export class DonutDataTooltipComponent
+    extends DataTooltipComponent
+    implements OnInit, OnDestroy {
     @HostBinding('class.donut-data-tooltip') private _hostClass = true;
-    // @HostBinding('class.hidden') public tooltipHidden = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef })
+    public ttOutputEl: ElementRef;
 
-    positionStrategy: string = 'sticky';
+    positionStrategy = 'sticky';
 
     private utils: UtilsService;
 
@@ -43,13 +53,9 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
         sanitizer: DomSanitizer,
-        _utils: UtilsService
+        _utils: UtilsService,
     ) {
-        super(
-            ttDataSvc,
-            renderer,
-            sanitizer
-        );
+        super(ttDataSvc, renderer, sanitizer);
         this.utils = _utils;
     }
 
@@ -64,7 +70,6 @@ export class DonutDataTooltipComponent extends DataTooltipComponent implements O
 
     /* Last */
     ngOnDestroy() {
-       super.ngOnDestroy();
+        super.ngOnDestroy();
     }
-
 }

@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WidgetConfigLegendComponent } from './widget-config-legend.component';
 
 describe('WidgetConfigLegendComponent', () => {
-  let component: WidgetConfigLegendComponent;
-  let fixture: ComponentFixture<WidgetConfigLegendComponent>;
+    let component: WidgetConfigLegendComponent;
+    let fixture: ComponentFixture<WidgetConfigLegendComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WidgetConfigLegendComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [WidgetConfigLegendComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetConfigLegendComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(WidgetConfigLegendComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

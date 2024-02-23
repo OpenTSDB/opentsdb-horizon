@@ -19,23 +19,24 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MarkdownWidgetVisualAppearanceComponent } from './markdown-widget-visual-appearance.component';
 
 describe('MarkdownWidgetVisualAppearanceComponent', () => {
-  let component: MarkdownWidgetVisualAppearanceComponent;
-  let fixture: ComponentFixture<MarkdownWidgetVisualAppearanceComponent>;
+    let component: MarkdownWidgetVisualAppearanceComponent;
+    let fixture: ComponentFixture<MarkdownWidgetVisualAppearanceComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MarkdownWidgetVisualAppearanceComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [MarkdownWidgetVisualAppearanceComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MarkdownWidgetVisualAppearanceComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(
+            MarkdownWidgetVisualAppearanceComponent,
+        );
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

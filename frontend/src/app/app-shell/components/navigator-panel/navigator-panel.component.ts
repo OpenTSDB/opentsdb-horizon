@@ -25,34 +25,40 @@ import {
     QueryList,
     ViewChild,
     ViewChildren,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
-import { animate, AnimationBuilder, AnimationFactory, AnimationPlayer, style } from '@angular/animations';
+import {
+    animate,
+    AnimationBuilder,
+    AnimationFactory,
+    AnimationPlayer,
+    style,
+} from '@angular/animations';
 
 import { NavigatorPanelItemDirective } from '../../directives/navigator-panel-item.directive';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '.navigator-panel-item'
+    selector: '.navigator-panel-item',
 })
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export class NavigatorPanelItemElement {
-}
+export class NavigatorPanelItemElement {}
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'navigator-panel',
     templateUrl: './navigator-panel.component.html',
     styleUrls: ['./navigator-panel.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NavigatorPanelComponent implements AfterViewInit {
-
     @HostBinding('class.navigator-panel') private _hostClass = true;
     @HostBinding('style.width') private panelWidth = '300px';
 
-    @ContentChildren(NavigatorPanelItemDirective) items: QueryList<NavigatorPanelItemDirective>;
-    @ViewChildren(NavigatorPanelItemElement, { read: ElementRef }) private itemElements: QueryList<ElementRef>;
+    @ContentChildren(NavigatorPanelItemDirective)
+    items: QueryList<NavigatorPanelItemDirective>;
+    @ViewChildren(NavigatorPanelItemElement, { read: ElementRef })
+    private itemElements: QueryList<ElementRef>;
     @ViewChild('navigatorPanel', { static: true }) private panel: ElementRef;
 
     @Input() timing = '200ms cubic-bezier(0.250, 0.460, 0.450, 0.940)';
@@ -64,12 +70,10 @@ export class NavigatorPanelComponent implements AfterViewInit {
     private itemWidth: number = 300;
 
     panelWrapperStyle = {
-        width: '300px'
+        width: '300px',
     };
 
-    constructor(
-        private builder: AnimationBuilder
-    ) { }
+    constructor(private builder: AnimationBuilder) {}
 
     ngAfterViewInit() {
         if (this.items.length > 0) {
@@ -80,7 +84,9 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     goNext(isDone?: any) {
-        if (this.currentSlide + 1 === this.items.length) { return; }
+        if (this.currentSlide + 1 === this.items.length) {
+            return;
+        }
 
         this.currentSlide = (this.currentSlide + 1) % this.items.length;
 
@@ -98,9 +104,12 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     goBack(isDone?: any) {
-        if (this.currentSlide === 0) { return; }
+        if (this.currentSlide === 0) {
+            return;
+        }
 
-        this.currentSlide = ((this.currentSlide - 1) + this.items.length) % this.items.length;
+        this.currentSlide =
+            (this.currentSlide - 1 + this.items.length) % this.items.length;
 
         const offset = this.currentSlide * this.itemWidth;
 
@@ -116,7 +125,9 @@ export class NavigatorPanelComponent implements AfterViewInit {
     }
 
     shiftTo(idx: any, fromIdx: any, isDone?: any) {
-        if (this.currentSlide === 0) { return; }
+        if (this.currentSlide === 0) {
+            return;
+        }
 
         const tmpOffset = (fromIdx - 1) * this.itemWidth;
         this.panel.nativeElement.style.transform = `translateX(-${tmpOffset}px)`;
@@ -133,7 +144,6 @@ export class NavigatorPanelComponent implements AfterViewInit {
             }
         });
         this.player.play();
-
     }
 
     startAt(idx: any) {
@@ -160,8 +170,10 @@ export class NavigatorPanelComponent implements AfterViewInit {
 
     private buildAnimation(offset, immediate: boolean = false) {
         return this.builder.build([
-            animate((immediate) ? 0 : this.timing, style({ transform: `translateX(-${offset}px)` }))
+            animate(
+                immediate ? 0 : this.timing,
+                style({ transform: `translateX(-${offset}px)` }),
+            ),
         ]);
     }
-
 }

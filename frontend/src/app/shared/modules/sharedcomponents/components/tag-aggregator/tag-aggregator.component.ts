@@ -14,9 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    forwardRef,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
+
+interface AggregatorHelpData {
+    label: string;
+    description: string;
+}
+
+interface AggregatorOptionData {
+    value: string;
+    icon: string;
+    help: AggregatorHelpData;
+}
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -24,23 +44,24 @@ import { Subscription } from 'rxjs';
     templateUrl: './tag-aggregator.component.html',
     styleUrls: ['./tag-aggregator.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => TagAggregatorComponent),
-        multi: true,
-    }]
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TagAggregatorComponent),
+            multi: true,
+        },
+    ],
 })
 export class TagAggregatorComponent implements OnInit {
-
     @HostBinding('class.tag-aggregator-component') private _hostClass = true;
 
     @Input() value;
     @Input() exclude = [];
 
     @Output()
-    change = new EventEmitter<string>();
+    valueChange = new EventEmitter<string>();
 
-    aggregatorOptions: Array<any> = [
+    aggregatorOptions: Array<AggregatorOptionData> = [
         {
             value: 'avg',
             icon: 'avg',
@@ -50,8 +71,8 @@ export class TagAggregatorComponent implements OnInit {
                 This function will perform linear interpolation across time series. It’s useful for looking at gauge metrics.</p>
 
                 <p><strong>Note:</strong> Even though the calculation will usually result in a floating point value, if the data
-                points are recorded as integers, an integer will be returned losing some precision.</p>`
-            }
+                points are recorded as integers, an integer will be returned losing some precision.</p>`,
+            },
         },
         {
             value: 'min',
@@ -59,17 +80,19 @@ export class TagAggregatorComponent implements OnInit {
             help: {
                 label: 'Min  Aggregator',
                 description: `<p>Returns only the smallest data point from all of the time series or within the time span.
-                This function will perform linear interpolation across time series. It’s useful for looking at the lower bounds of gauge metrics.</p>`
-            }
+                This function will perform linear interpolation across time series. It’s useful for looking at the lower
+                bounds of gauge metrics.</p>`,
+            },
         },
         {
             value: 'max',
             icon: 'max',
             help: {
                 label: 'Max Aggregator',
-                description: `<p>The inverse of <code>min</code>, it returns the largest data point from all of the time series or within a time span.
-                This function will perform linear interpolation across time series. It’s useful for looking at the upper bounds of gauge metrics.</p>`
-            }
+                description: `<p>The inverse of <code>min</code>, it returns the largest data point from all of the time series
+                or within a time span. This function will perform linear interpolation across time series. It’s useful for
+                looking at the upper bounds of gauge metrics.</p>`,
+            },
         },
         {
             value: 'sum',
@@ -78,8 +101,8 @@ export class TagAggregatorComponent implements OnInit {
                 label: 'Sum Aggregator',
                 description: `<p>Calculates the sum of all data points from all of the time series or within the time span if down sampling.
                 This is the default aggregation function for the GUI as it’s often the most useful when combining multiple time series such
-                as gauges or counters. It performs linear interpolation when data points fail to line up.</p>`
-            }
+                as gauges or counters. It performs linear interpolation when data points fail to line up.</p>`,
+            },
         },
         {
             value: 'count',
@@ -88,9 +111,9 @@ export class TagAggregatorComponent implements OnInit {
                 label: 'Count Aggregator',
                 description: `<p>Returns the number of data points stored in the series or range. When used to aggregate multiple series,
                 zeros will be substituted. When used with downsampling, it will reflect the number of data points in each downsample bucket.
-                When used in a group-by aggregation, reflects the number of time series with values at a given time.</p>`
-            }
-        }
+                When used in a group-by aggregation, reflects the number of time series with values at a given time.</p>`,
+            },
+        },
     ];
 
     aggregatorControl: FormControl;
@@ -101,29 +124,33 @@ export class TagAggregatorComponent implements OnInit {
 
     subscription: Subscription;
 
-    constructor() { }
+    constructor() {}
 
     ngOnInit() {
         if (!this.value) {
             this.value = this.defaultAggregator;
         }
         if (this.exclude.length) {
-            this.aggregatorOptions = this.aggregatorOptions.filter(item => this.exclude.indexOf(item.value) === -1);
+            this.aggregatorOptions = this.aggregatorOptions.filter(
+                (item) => this.exclude.indexOf(item.value) === -1,
+            );
         }
         this.setSelectedIndex();
     }
 
-    selectOption(value) {
+    selectOption(value): void {
         this.value = value;
         this.setSelectedIndex();
-        this.change.emit(this.value);
+        this.valueChange.emit(this.value);
     }
 
-    setSelectedIndex() {
-        this.selectedIndex = this.aggregatorOptions.findIndex(item => item.value === this.value);
+    setSelectedIndex(): void {
+        this.selectedIndex = this.aggregatorOptions.findIndex(
+            (item) => item.value === this.value,
+        );
     }
 
-    setAggregatorHelpObject(obj: any) {
+    setAggregatorHelpObject(obj: any): void {
         this.selectedAggregatorHelpObj = obj;
     }
 }

@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { InlineFilterEditorComponent } from './inline-filter-editor.component';
 
 describe('InlineFilterEditorComponent', () => {
-  let component: InlineFilterEditorComponent;
-  let fixture: ComponentFixture<InlineFilterEditorComponent>;
+    let component: InlineFilterEditorComponent;
+    let fixture: ComponentFixture<InlineFilterEditorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ InlineFilterEditorComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [InlineFilterEditorComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InlineFilterEditorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InlineFilterEditorComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

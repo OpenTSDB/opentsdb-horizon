@@ -14,42 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Inject, HostBinding, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Inject,
+    HostBinding,
+    AfterViewInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'dashboard-to-alert-dialog',
-  templateUrl: './dashboard-to-alert-dialog.component.html',
-  styleUrls: ['./dashboard-to-alert-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'dashboard-to-alert-dialog',
+    templateUrl: './dashboard-to-alert-dialog.component.html',
+    styleUrls: ['./dashboard-to-alert-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DashboardToAlertDialogComponent implements OnInit, AfterViewInit {
-  @HostBinding('class.dashboard-to-alert-dialog') private _hostClass = true;
+    @HostBinding('class.dashboard-to-alert-dialog') private _hostClass = true;
 
+    constructor(
+        private _focusMonitor: FocusMonitor,
+        public dialogRef: MatDialogRef<DashboardToAlertDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any,
+    ) {
+        if (data.namespaces) {
+            this.namespaces = data.namespaces;
+        }
+    }
 
-  constructor(private _focusMonitor: FocusMonitor, public dialogRef: MatDialogRef<DashboardToAlertDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any ) {
-                if (data.namespaces) {
-                  this.namespaces = data.namespaces;
-                }
-              }
+    namespaces: string[] = [];
 
-  namespaces: string[] = [];
+    ngOnInit() { /* do nothing */ }
 
-  ngOnInit() { }
+    ngAfterViewInit() {
+        // remove focus from first button
+        this._focusMonitor.stopMonitoring(document.getElementById('ns0'));
+    }
 
-   ngAfterViewInit() { // remove focus from first button
-    this._focusMonitor.stopMonitoring(document.getElementById('ns0'));
-}
+    nsSelected(ns) {
+        this.dialogRef.close({ namespace: ns });
+    }
 
-  nsSelected(ns) {
-    this.dialogRef.close( {namespace : ns} );
-  }
-
-  canceled() {
-    this.dialogRef.close( {canceled : true } );
-  }
-
+    canceled() {
+        this.dialogRef.close({ canceled: true });
+    }
 }

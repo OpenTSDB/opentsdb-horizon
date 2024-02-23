@@ -14,73 +14,92 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { debounceTime } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'widget-config-events',
-  templateUrl: './widget-config-events.component.html',
-  styleUrls: ['./widget-config-events.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'widget-config-events',
+    templateUrl: './widget-config-events.component.html',
+    styleUrls: ['./widget-config-events.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class WidgetConfigEventsComponent implements OnInit {
+    @HostBinding('class.widget-config-events') private _hostClass = true;
 
-  @HostBinding('class.widget-config-events') private _hostClass = true;
+    constructor(private util: UtilsService) {}
 
-  constructor( private util: UtilsService) { }
+    /** Inputs */
+    @Input() widget: any;
+    @Input() allowEventToggling: boolean;
 
-  /** Inputs */
-  @Input() widget: any;
-  @Input() allowEventToggling: boolean;
+    /** Outputs */
+    @Output() widgetChange = new EventEmitter();
 
-  /** Outputs */
-  @Output() widgetChange = new EventEmitter;
+    seachControl: FormControl = new FormControl('');
 
-  seachControl: FormControl = new FormControl('');
+    ngOnInit() {
+        if (this.allowEventToggling === undefined) {
+            this.allowEventToggling = true;
+        }
 
-  ngOnInit() {
+        this.widget = this.util.setDefaultEventsConfig(this.widget, false);
 
-    if (this.allowEventToggling === undefined) {
-      this.allowEventToggling = true;
+        if (
+            !this.widget.eventQueries[0].namespace &&
+            this.widget.queries &&
+            this.widget.queries[0] &&
+            this.widget.queries[0].namespace
+        ) {
+            this.widget.eventQueries[0].namespace =
+                this.widget.queries[0].namespace;
+        }
+
+        if (this.widget.settings.visual.showEvents === undefined) {
+            this.widget.settings.visual.showEvents = false;
+        }
+
+        this.seachControl = new FormControl(this.widget.eventQueries[0].search);
+        this.seachControl.valueChanges
+            .pipe(debounceTime(300))
+            .subscribe((search) => {
+                search = search.trim();
+                if (search !== this.widget.eventQueries[0].search) {
+                    this.widgetChange.emit({
+                        action: 'SetEventQuerySearch',
+                        payload: { search: search },
+                    });
+                }
+            });
     }
 
-    this.widget = this.util.setDefaultEventsConfig(this.widget, false);
-
-    if (!this.widget.eventQueries[0].namespace && this.widget.queries && this.widget.queries[0] && this.widget.queries[0].namespace) {
-      this.widget.eventQueries[0].namespace = this.widget.queries[0].namespace;
+    showEventsChanged(events: boolean) {
+        this.widgetChange.emit({
+            action: 'SetShowEvents',
+            payload: { showEvents: events },
+        });
     }
 
-    if (this.widget.settings.visual.showEvents === undefined) {
-      this.widget.settings.visual.showEvents = false;
+    saveNamespace(namespace: string) {
+        if (namespace) {
+            this.widgetChange.emit({
+                action: 'SetEventQueryNamespace',
+                payload: { namespace: namespace },
+            });
+        }
     }
 
-    this.seachControl = new FormControl(this.widget.eventQueries[0].search);
-    this.seachControl.valueChanges
-    .pipe(
-        debounceTime(300),
-    ).subscribe( search => {
-      search = search.trim();
-      if (search !== this.widget.eventQueries[0].search) {
-        this.widgetChange.emit( {action: 'SetEventQuerySearch', payload: {search: search}});
-      }
-    });
-  }
-
-  showEventsChanged(events: boolean) {
-    this.widgetChange.emit( {action: 'SetShowEvents', payload: {showEvents: events} } );
-  }
-
-  saveNamespace(namespace: string) {
-    if (namespace) {
-      this.widgetChange.emit( {action: 'SetEventQueryNamespace', payload: {namespace: namespace}});
+    cancelSaveNamespace(event) {
+        // do something?
     }
-  }
-
-  cancelSaveNamespace(event) {
-    // do something?
-  }
-
 }

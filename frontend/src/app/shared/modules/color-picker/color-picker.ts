@@ -63,7 +63,6 @@ export function isValidColor(color: string): boolean {
     return /^#[0-9A-F]{6}$/i.test(color);
 }
 
-
 export interface IDefaultColor {
     text: string;
     value: string;
@@ -99,4 +98,5 @@ export const DEFAULT_COLORS: IDefaultColor[] = [
     { text: 'Olive', value: '#446E17' },
     { text: 'Purple', value: '#87119A' },
     { text: 'Pink', value: '#FC5AA8' },
-    { text: 'White', value: '#FFFFFF' }]
+    { text: 'White', value: '#FFFFFF' },
+];

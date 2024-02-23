@@ -22,7 +22,7 @@ export interface InfoIslandOptions {
     width?: number;
     height?: number;
     showActions?: boolean;
-    outerWrap?: string;  // class name of outermost div. ex: '.app-dboard-content'
+    outerWrap?: string; // class name of outermost div. ex: '.app-dboard-content'
     isSnapshot?: boolean;
     service?: any;
     widgetContainerRef?: any;

@@ -29,15 +29,13 @@ import {
     OnDestroy,
     OnChanges,
     SimpleChanges,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
-import { MatIconRegistry } from '@angular/material/icon';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { IMessage, IntercomService } from '../../../../../core/services/intercom.service';
+import { IntercomService } from '../../../../../core/services/intercom.service';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -47,7 +45,7 @@ import {
     state,
     style,
     transition,
-    trigger
+    trigger,
 } from '@angular/animations';
 
 interface IQueryEditorOptions {
@@ -72,25 +70,37 @@ interface IQueryEditorOptions {
     styleUrls: ['./query-editor-proto.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: [
-        trigger( 'addQueryItem', [
-            state('collapsed', style({ height: '0px', minHeight: '0px', visibility: 'hidden'})),
-            state('expanded', style({ height: '*', minHeight: '48px', visibility: 'visible'})),
+        trigger('addQueryItem', [
+            state(
+                'collapsed',
+                style({
+                    height: '0px',
+                    minHeight: '0px',
+                    visibility: 'hidden',
+                }),
+            ),
+            state(
+                'expanded',
+                style({
+                    height: '*',
+                    minHeight: '48px',
+                    visibility: 'visible',
+                }),
+            ),
             transition('collapsed => expanded', animate('225ms ease-in-out')),
-            transition('expanded => collapsed', animate('225ms ease-in-out'))
-        ])
-    ]
+            transition('expanded => collapsed', animate('225ms ease-in-out')),
+        ]),
+    ],
 })
-
 export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
-
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     @HostBinding('class.query-editor-proto') private _hostClass: boolean = true;
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 
     @ViewChild('addExpressionInput') addExpressionInput: ElementRef;
     @ViewChild('editExpressionInput') editExpressionInput: ElementRef;
-    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true }) confirmDeleteDialogRef: TemplateRef<any>;
-
+    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true })
+    confirmDeleteDialogRef: TemplateRef<any>;
 
     @Input() type;
     @Input() query: any;
@@ -100,14 +110,19 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     @Input() queries: any[]; // for cross-query
     @Input() widget: any;
 
-    @Output() queryOutput = new EventEmitter;
+    @Output() queryOutput = new EventEmitter();
 
-    @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger }) tagFilterMenuTrigger: MatMenuTrigger;
-    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger }) metricVisualPanelTrigger: MatMenuTrigger;
+    @ViewChild('tagFilterMenuTrigger', { read: MatMenuTrigger })
+    tagFilterMenuTrigger: MatMenuTrigger;
+    @ViewChild('metricVisualPanelTrigger', { read: MatMenuTrigger })
+    metricVisualPanelTrigger: MatMenuTrigger;
 
-    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger }) artifactsMenuTrigger: MatMenuTrigger;
-    @ViewChild('functionSelectionMenu', { read: MatMenu, static: true }) functionSelectionMenu: MatMenu;
-    @ViewChildren(MatMenuTrigger) functionMenuTriggers: QueryList<MatMenuTrigger>;
+    @ViewChild('artifactsMenuTrigger', { read: MatMenuTrigger })
+    artifactsMenuTrigger: MatMenuTrigger;
+    @ViewChild('functionSelectionMenu', { read: MatMenu, static: true })
+    functionSelectionMenu: MatMenu;
+    @ViewChildren(MatMenuTrigger)
+    functionMenuTriggers: QueryList<MatMenuTrigger>;
 
     // confirmDelete Dialog
     confirmDeleteDialog: MatDialogRef<TemplateRef<any>> | null;
@@ -127,42 +142,50 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     tagFilters = [];
     tplVars = []; // a wrapper object for tplVariables.tvars for pipe since alert component using it.
 
-    inAlertEditor: boolean = false;
+    inAlertEditor = false;
 
     visualPanelHighlight: any = false;
 
     timeAggregatorOptions: Array<any> = [
         {
             label: 'Sum',
-            value: 'sum'
+            value: 'sum',
         },
         {
             label: 'Min',
-            value: 'min'
+            value: 'min',
         },
         {
             label: 'Max',
-            value: 'max'
+            value: 'max',
         },
         {
             label: 'Avg',
-            value: 'avg'
+            value: 'avg',
         },
         {
             label: 'Last',
-            value: 'last'
-        }
+            value: 'last',
+        },
     ];
 
     tagAggregatorIconMap: any = {
-        'sum': 'd-value-sum',
-        'min': 'd-value-minimum',
-        'max': 'd-value-maximum',
-        'avg': 'd-value-average',
-        'count': 'd-value-all'
+        sum: 'd-value-sum',
+        min: 'd-value-minimum',
+        max: 'd-value-maximum',
+        avg: 'd-value-average',
+        count: 'd-value-all',
     };
 
-    summarizerOptions: Array<string> = ['avg', 'last', 'first', 'sum', 'min', 'max', 'count'];
+    summarizerOptions: Array<string> = [
+        'avg',
+        'last',
+        'first',
+        'sum',
+        'min',
+        'max',
+        'count',
+    ];
     queryChanges$: BehaviorSubject<boolean>;
     queryChangeSub: Subscription;
 
@@ -182,12 +205,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '3,0.0',
                     help: {
                         label: 'EWMA Samples (3 samples)',
-                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
-                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
-                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a
+                        positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current
+                        sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at
+                        least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 3, 0.0</code>, where <code>3</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 3, 0.0</code>, where <code>3</code> is the
+                        sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 5 Samples',
@@ -195,12 +222,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '5,0.0',
                     help: {
                         label: 'EWMA Samples (5 samples)',
-                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
-                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
-                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a
+                        positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current
+                        sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at
+                        least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 5, 0.0</code>, where <code>5</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 5, 0.0</code>, where <code>5</code> is the
+                        sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 10 Samples',
@@ -208,12 +239,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '10,0.0',
                     help: {
                         label: 'EWMA Samples (10 Samples)',
-                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
-                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current sample and the previous (N-1) samples will be
-                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a
+                        positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range [0,1]. For a sample count of N, the current
+                        sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at
+                        least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 10, 0.0</code>, where <code>10</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 10, 0.0</code>, where <code>10</code> is the
+                        sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 20 Samples',
@@ -221,12 +256,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '20,0.0',
                     help: {
                         label: 'EWMA Samples (20 Samples)',
-                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a positive-integer number of samples and a
-                        parameter <i>α</i> whose argument must be in the closed range <code>[0,1]</code>. For a sample count of N, the current sample and the previous (N-1) samples will be
-                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
+                        description: `<p>This expontentially-weighted moving average is calculated over a window defined by a
+                        positive-integer number of samples and a
+                        parameter <i>α</i> whose argument must be in the closed range <code>[0,1]</code>. For a sample count of N,
+                        the current sample and the previous (N-1) samples will be
+                        used to calculate the <code>EWMA</code>. The amount of time between samples is irrelevant, provided that at
+                        least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 20, 0.0<code>, where <code>20</code> is the sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 20, 0.0<code>, where <code>20</code> is the
+                        sample count, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 1m Window',
@@ -235,10 +274,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'EWMA Interval (1m Window)',
                         description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
-                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The
+                        sample count is unlimited.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 1m, 0.0</code>, where <code>1m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 1m, 0.0</code>, where <code>1m</code> is the
+                        time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 5m Window',
@@ -247,10 +288,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'EWMA Interval (5m Window)',
                         description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
-                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The
+                        sample count is unlimited.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 5m, 0.0</code>, where <code>5m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 5m, 0.0</code>, where <code>5m</code> is the
+                        time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Average 15m Window',
@@ -259,10 +302,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'EWMA Interval (15m Window)',
                         description: `<p>This function is like <strong>EWMA Samples</strong>, except that the window is defined by a time interval.
-                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The sample count is unlimited.</p>
+                        Any samples that appear within this time interval will be used to calculate the <code>EWMA</code>. The
+                        sample count is unlimited.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>EWMA 15m, 0.0</code>, where <code>15m</code> is the time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>EWMA 15m, 0.0</code>, where <code>15m</code> is the
+                        time interval, and <code>0.0</code> is the value of <i>α</i>.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Median 3 Samples',
@@ -274,8 +319,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
                         The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Median 3</code>, where <code>3</code> is the sample count.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Median 3</code>, where <code>3</code> is the sample count.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Median 5 Samples',
@@ -287,8 +332,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
                         The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Median 5</code>, where <code>5</code> is the sample count.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Median 5</code>, where <code>5</code> is the sample count.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Median 7 Samples',
@@ -300,8 +345,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
                         The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Median 7</code>, where <code>7</code> is the sample count.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Median 7</code>, where <code>7</code> is the sample count.</p>`,
+                    },
                 },
                 {
                     label: 'Moving Median 9 Samples',
@@ -313,10 +358,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         For a sample count of N, the current sample and the previous (N-1) samples will be used to calculate the moving median.
                         The amount of time between samples is irrelevant, provided that at least N samples appear within the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Median 9</code>, where <code>9</code> is the sample count.</p>`
-                    }
-                }
-            ]
+                        <p>At the UI, this will appear as (for example) <code>Median 9</code>, where <code>9</code> is the sample count.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Difference',
@@ -327,12 +372,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'auto',
                     help: {
                         label: 'ValueDiff',
-                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid
+                        this function. Use rate function <code>CntrRate</code> instead.</i></p>
 
-                        <p>This function ignores the time at which each data point was measured and instead calculates a simple difference between successive values of a gauge metric.</p>
+                        <p>This function ignores the time at which each data point was measured and instead calculates a simple
+                        difference between successive values of a gauge metric.</p>
 
-                        <p>At the UI, this will appear as <code>ValueDiff</code> with no interval parameter.</p>`
-                    }
+                        <p>At the UI, this will appear as <code>ValueDiff</code> with no interval parameter.</p>`,
+                    },
                 },
                 {
                     label: 'Counter Value Difference',
@@ -340,16 +387,20 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'auto',
                     help: {
                         label: 'CounterValueDiff',
-                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid
+                        this function. Use rate function <code>CntrRate</code> instead.</i></p>
 
-                        <p>This function ignores the time at which each point was measured and instead calculates a simple difference between successive values of a counter metric.
-                        Thus, unlike the counter-to-rate conversion given by <code>CntrRate</code>, this is not a derivative with respect to time, because time is ignored. Furthermore, if your
-                        metric is not a counter, then this function will give you nonsensical results. You must know that your metric is, in fact, a counter.</p>
+                        <p>This function ignores the time at which each point was measured and instead calculates a simple
+                        difference between successive values of a counter metric.
+                        Thus, unlike the counter-to-rate conversion given by <code>CntrRate</code>, this is not a derivative with
+                        respect to time, because time is ignored. Furthermore, if your
+                        metric is not a counter, then this function will give you nonsensical results. You must know that your
+                        metric is, in fact, a counter.</p>
 
-                        <p>At the UI, this will appear as <code>CounterValueDiff</code> with no interval parameter.</p>`
-                    }
-                }
-            ]
+                        <p>At the UI, this will appear as <code>CounterValueDiff</code> with no interval parameter.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Interval Total',
@@ -360,8 +411,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1s,10s',
                     help: {
                         label: 'TotalUsingBaseInterval (Second)',
-                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic DataDog's <code>as_count</code> function.
-                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it into a series of counts.</p>
+                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic
+                        DataDog's <code>as_count</code> function.
+                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it
+                        into a series of counts.</p>
 
                         <p>TotalUsingBaseInterval requires the following two parameters:</p>
                         <ol>
@@ -371,9 +424,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         <p>In effect, the ratio of data interval over rate interval is used to scale query data, which will be downsampled later.
                         Generally, <code>TotalUsingBaseInterval = (data_interval / rate_interval) * value</code>.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
-                        You may click on these arguments to edit them.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where
+                        <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
+                        You may click on these arguments to edit them.</p>`,
+                    },
                 },
                 {
                     label: 'Total Using Base Interval - Minute',
@@ -381,8 +435,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1m,1m',
                     help: {
                         label: 'TotalUsingBaseInterval (Minute)',
-                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic DataDog's <code>as_count</code> function.
-                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it into a series of counts.</p>
+                        description: `<p>This function performs partial rate-to-counter conversion. It was designed to mimic
+                        DataDog's <code>as_count</code> function.
+                        If your source metric is already reported as a rate, then <code>TotalUsingBaseInterval</code> can turn it
+                        into a series of counts.</p>
 
                         <p>TotalUsingBaseInterval requires the following two parameters:</p>
                         <ol>
@@ -392,11 +448,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         <p>In effect, the ratio of data interval over rate interval is used to scale query data, which will be downsampled later.
                         Generally, <code>TotalUsingBaseInterval = (data_interval / rate_interval) * value</code>.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
-                        You may click on these arguments to edit them.</p>`
-                    }
-                }
-            ]
+                        <p>At the UI, this will appear as (for example) <code>TotalUsingBaseInterval 1s,1m</code>, where
+                        <code>1s</code> is the rate interval, and <code>1m</code> is the data interval.
+                        You may click on these arguments to edit them.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Rate',
@@ -407,13 +464,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1s',
                     help: {
                         label: 'Rate (Per Second)',
-                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid
+                        this function. Use rate function <code>CntrRate</code> instead.</i></p>
 
                         <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
                         In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`,
+                    },
                 },
                 {
                     label: 'Per Minute',
@@ -421,13 +479,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1m',
                     help: {
                         label: 'Rate (Per Minute)',
-                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid
+                        this function. Use rate function <code>CntrRate</code> instead.</i></p>
 
                         <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
                         In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`,
+                    },
                 },
                 {
                     label: 'Per Hour',
@@ -435,13 +494,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1h',
                     help: {
                         label: 'Rate  (Per Hour)',
-                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid this function. Use rate function <code>CntrRate</code> instead.</i></p>
+                        description: `<p><strong>WARNING:</strong> <i>If you want to perform counter-to-rate conversion, then avoid
+                        this function. Use rate function <code>CntrRate</code> instead.</i></p>
 
                         <p>This function performs gauge-to-rate conversion. It makes no assumptions about the underlying metric values.
                         In particular, it does not treat the metric as a monotonically-increasing counter, and it does not handle resets.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rate 1h</code>, where <code>1h</code> is the rate interval.</p>`,
+                    },
                 },
                 {
                     label: 'Counter Per Second',
@@ -450,10 +510,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'CntrRate (Counter Per Second)',
                         description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
-                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen
+                        as a result of, e.g., service restarts.</p>
 
-                        </p>At the UI, this will appear as (for example) <code>CntrRate 1s</code>, where <code>1s</code> is the rate interval.</p>`
-                    }
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1s</code>, where <code>1s</code> is the rate interval.</p>`,
+                    },
                 },
                 {
                     label: 'Counter Per Minute',
@@ -462,10 +523,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'CntrRate (Counter Per Minute)',
                         description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
-                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen
+                        as a result of, e.g., service restarts.</p>
 
-                        </p>At the UI, this will appear as (for example) <code>CntrRate 1m</code>, where <code>1m</code> is the rate interval.</p>`
-                    }
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1m</code>, where <code>1m</code> is the rate interval.</p>`,
+                    },
                 },
                 {
                     label: 'Counter Per Hour',
@@ -474,12 +536,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'CntrRate (Counter Per Hour)',
                         description: `<p>This function performs counter-to-rate conversion, i.e., the first derivative with respect to time.
-                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen as a result of, e.g., service restarts.</p>
+                        Counters are assumed to be monotonically increasing. Also, this function handles counter resets that happen
+                        as a result of, e.g., service restarts.</p>
 
-                        </p>At the UI, this will appear as (for example) <code>CntrRate 1h</code>, where <code>1h</code> is the rate interval.</p>`
-                    }
-                }
-            ]
+                        </p>At the UI, this will appear as (for example) <code>CntrRate 1h</code>, where <code>1h</code> is the rate interval.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Rollup',
@@ -490,10 +553,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'avg,auto',
                     help: {
                         label: 'Rollup (Average)',
-                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior
+                        to the final, query-level downsample.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rollup avg,auto</code>, where <code>avg</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rollup avg,auto</code>, where <code>avg</code> is the
+                        aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`,
+                    },
                 },
                 {
                     label: 'Minimum',
@@ -501,10 +566,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'min,auto',
                     help: {
                         label: 'Rollup (Minimum)',
-                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior
+                        to the final, query-level downsample.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rollup min,auto</code>, where <code>min</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rollup min,auto</code>, where <code>min</code> is the
+                        aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`,
+                    },
                 },
                 {
                     label: 'Maximum',
@@ -512,10 +579,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'max,auto',
                     help: {
                         label: 'Rollup (Maximum)',
-                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior
+                        to the final, query-level downsample.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rollup max,auto</code>, where <code>max</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Rollup max,auto</code>, where <code>max</code> is the
+                        aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`,
+                    },
                 },
                 {
                     label: 'Sum',
@@ -523,12 +592,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: 'sum,auto',
                     help: {
                         label: 'Rollup (Sum)',
-                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior to the final, query-level downsample.</p>
+                        description: `<p>This function performs a downsample operation at a per-metric or per-expression level prior
+                        to the final, query-level downsample.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Rollup sum,auto</code>, where <code>sum</code> is the aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`
-                    }
-                }
-            ]
+                        <p>At the UI, this will appear as (for example) <code>Rollup sum,auto</code>, where <code>sum</code> is the
+                        aggregation function, and <code>auto</code> is the rollup (downsample) interval.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Timeshift',
@@ -539,10 +610,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1h',
                     help: {
                         label: 'Timeshift (Hour Before)',
-                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time
+                        relative prior to the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Timeshift 1h</code>, where <code>1h</code> is the offset interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1h</code>, where <code>1h</code> is the offset interval.</p>`,
+                    },
                 },
                 {
                     label: 'Day Before',
@@ -550,10 +622,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1d',
                     help: {
                         label: 'Timeshift (Day Before)',
-                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time
+                        relative prior to the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Timeshift 1d</code>, where <code>1d</code> is the offset interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1d</code>, where <code>1d</code> is the offset interval.</p>`,
+                    },
                 },
                 {
                     label: 'Week Before',
@@ -561,10 +634,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '1w',
                     help: {
                         label: 'Timeshift (Week Before)',
-                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time
+                        relative prior to the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Timeshift 1w</code>, where <code>1w</code> is the offset interval.</p>`
-                    }
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 1w</code>, where <code>1w</code> is the offset interval.</p>`,
+                    },
                 },
                 {
                     label: 'Month Before',
@@ -572,12 +646,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     val: '4w',
                     help: {
                         label: 'Timeshift (Month Before)',
-                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time relative prior to the query time range.</p>
+                        description: `<p>This function shifts the metric to which it is applied by a configurable amount of time
+                        relative prior to the query time range.</p>
 
-                        <p>At the UI, this will appear as (for example) <code>Timeshift 4w</code>, where <code>4w</code> is the offset interval.</p>`
-                    }
-                }
-            ]
+                        <p>At the UI, this will appear as (for example) <code>Timeshift 4w</code>, where <code>4w</code> is the offset interval.</p>`,
+                    },
+                },
+            ],
         },
         /*
         {
@@ -621,8 +696,8 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'Ratio',
                         description: `<p>At the UI, this will appear as (for example) <code>Ratio foo</code>, where <code>foo</code> is the
-                        alias you want the resulting ratio values to receive.</p>`
-                    }
+                        alias you want the resulting ratio values to receive.</p>`,
+                    },
                 },
                 {
                     label: 'Percentage',
@@ -631,10 +706,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                     help: {
                         label: 'Percentage',
                         description: `<p>At the UI, this will appear as (for example) <code>Percentage</code> foo, where <code>foo</code> is
-                        the alias you want the resulting percentage values to receive.</p>`
-                    }
-                }
-            ]
+                        the alias you want the resulting percentage values to receive.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Sliding Window',
@@ -642,99 +717,100 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 {
                     label: 'Sliding Sum 5m',
                     fxCall: 'SlidingWindow',
-                    val: "sum,5m",
+                    val: 'sum,5m',
                     help: {
                         label: 'SlidingWindow (Sum 5m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,5m</code>, where
                         <code>sum</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Sum 15m',
                     fxCall: 'SlidingWindow',
-                    val: "sum,15m",
+                    val: 'sum,15m',
                     help: {
                         label: 'SlidingWindow (Sum 15m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow sum,15m</code>, where
                         <code>sum</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
-                },{
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
+                },
+                {
                     label: 'Sliding Count 5m',
                     fxCall: 'SlidingWindow',
-                    val: "count,5m",
+                    val: 'count,5m',
                     help: {
                         label: 'SlidingWindow (Count 5m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,5m</code>, where
                         <code>count</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Count 15m',
                     fxCall: 'SlidingWindow',
-                    val: "count,15m",
+                    val: 'count,15m',
                     help: {
                         label: 'SlidingWindow (Count 15m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow count,15m</code>, where
                         <code>count</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Min 5m',
                     fxCall: 'SlidingWindow',
-                    val: "min,5m",
+                    val: 'min,5m',
                     help: {
                         label: 'SlidingWindow (Min 5m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,5m</code>, where
                         <code>min</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Min 15m',
                     fxCall: 'SlidingWindow',
-                    val: "min,15m",
+                    val: 'min,15m',
                     help: {
                         label: 'SlidingWindow (Min 15m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow min,15m</code>, where
                         <code>min</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Max 5m',
                     fxCall: 'SlidingWindow',
-                    val: "max,5m",
+                    val: 'max,5m',
                     help: {
                         label: 'SlidingWindow (Max 5m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,5m</code>, where
                         <code>max</code> is the aggregator, and <code>5m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
                 },
                 {
                     label: 'Sliding Max 15m',
                     fxCall: 'SlidingWindow',
-                    val: "max,15m",
+                    val: 'max,15m',
                     help: {
                         label: 'SlidingWindow (Max 15m)',
                         description: `<p>At the UI, this will appear as (for example) <code>SlidingWindow max,15m</code>, where
                         <code>max</code> is the aggregator, and <code>15m</code> is the window size.</p>
 
-                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`
-                    }
-                }
-            ]
+                        <p><strong>Note</strong> that interpolation is not required here. If a “window” is missing data, it’s simply skipped.</p>`,
+                    },
+                },
+            ],
         },
         {
             label: 'Time Difference',
@@ -748,8 +824,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         description: `<p>At the UI, this will appear as (for example) <code>TimeDiff MINUTES</code>, where <code>MINUTES</code>
                         is the resolution.</p>
 
-                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>`
-                    }
+                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not
+                        reflect the actual time deltas.</p>`,
+                    },
                 },
                 {
                     label: 'Delta in Seconds',
@@ -760,85 +837,85 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         description: `<p>At the UI, this will appear as (for example) <code>TimeDiff SECONDS</code>, where <code>SECONDS</code>
                         is the resolution.</p>
 
-                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not reflect the actual time deltas.</p>s`
-                    }
-                }
-            ]
-        }
+                        <p>It is best to process raw data with this node as downsampled or interpolated data may be filled and not
+                        reflect the actual time deltas.</p>s`,
+                    },
+                },
+            ],
+        },
     ];
 
     selectedFunctionHelpObj: any = {};
 
-
     FunctionOptions: any = {
-        'TotalUsingBaseInterval': {
+        TotalUsingBaseInterval: {
             errorMessage: 'Pair of comma separated durations, e.g. "1s,1m"',
-            regexValidator: /^\d+[smhd],*(\d+[smhd]){0,1}$/i
+            regexValidator: /^\d+[smhd],*(\d+[smhd]){0,1}$/i,
         },
-        'RateOfChange' : {
-            errorMessage: null,
-            regexValidator: null
-        },
-        'EWMA' : {
-            errorMessage: null,
-            regexValidator: null
-        },
-        'Median' : {
-            errorMessage: null,
-            regexValidator: null
-        },
-        'ValueDiff' : {
+        RateOfChange: {
             errorMessage: null,
             regexValidator: null,
-            noVal: true
         },
-        'CounterValueDiff' : {
+        EWMA: {
             errorMessage: null,
             regexValidator: null,
-            noVal: true
         },
-        'CntrRate' : {
+        Median: {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
         },
-        'Rate' : {
+        ValueDiff: {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true,
         },
-        'Rollup' : {
+        CounterValueDiff: {
             errorMessage: null,
-            regexValidator: null
+            regexValidator: null,
+            noVal: true,
         },
-        'Timeshift' : {
+        CntrRate: {
+            errorMessage: null,
+            regexValidator: null,
+        },
+        Rate: {
+            errorMessage: null,
+            regexValidator: null,
+        },
+        Rollup: {
+            errorMessage: null,
+            regexValidator: null,
+        },
+        Timeshift: {
             errorMessage: 'Possible values: 1h, 2d, 3w, etc.',
-            regexValidator: /^\d+[hdw]$/i
+            regexValidator: /^\d+[hdw]$/i,
         },
-        'GroupByAvg' : {
-            groupByFx : true
+        GroupByAvg: {
+            groupByFx: true,
         },
-        'GroupByMin' : {
-            groupByFx : true
+        GroupByMin: {
+            groupByFx: true,
         },
-        'GroupByMax' : {
-            groupByFx : true
+        GroupByMax: {
+            groupByFx: true,
         },
-        'GroupBySum' : {
-            groupByFx : true
+        GroupBySum: {
+            groupByFx: true,
         },
-        'GroupByCount' : {
-            groupByFx : true
+        GroupByCount: {
+            groupByFx: true,
         },
-        'SlidingWindow' : {
-            errorMessage: "Must have an aggregator and interval, e.g. 'sum,5m'",
-            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i
+        SlidingWindow: {
+            errorMessage: 'Must have an aggregator and interval, e.g. \'sum,5m\'',
+            regexValidator: /^max|min|sum|avg|count,*(\d+[smhd]){0,1}$/i,
         },
-        'TimeDiff' : {
-            errorMessage: "Must be SECONDS, MINUTES or HOURS.",
-            regexValidator: /^SECONDS|MINUTES|HOURS$/
-        }
+        TimeDiff: {
+            errorMessage: 'Must be SECONDS, MINUTES or HOURS.',
+            regexValidator: /^SECONDS|MINUTES|HOURS$/,
+        },
     };
 
-    functionHelpVisible: boolean = false;
+    functionHelpVisible = false;
 
     // MAT-TABLE DEFAULT COLUMNS
     metricTableDisplayColumns: string[] = [
@@ -847,7 +924,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // 'alias',
         'modifiers',
         'action',
-        'visual'
+        'visual',
     ];
 
     // MAT-TABLE DATA SOURCE
@@ -858,7 +935,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     pctSelectedMetrics;
 
     // QUERY ALIAS EDITING
-    queryAliasEdit: boolean = false;
+    queryAliasEdit = false;
     queryAliasFormControl: FormControl;
 
     constructor(
@@ -867,7 +944,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         private fb: FormBuilder,
         private dialog: MatDialog,
         private interCom: IntercomService,
-        private multiService: MultigraphService
+        private multiService: MultigraphService,
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
@@ -875,7 +952,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.tplVariables && changes.tplVariables.currentValue.tvars) {
             this.tplVars = changes.tplVariables.currentValue.tvars;
         }
-        if ( changes.options && changes.options.currentValue ) {
+        if (changes.options && changes.options.currentValue) {
             this.initOptions();
             this.initSummarizerValue();
         }
@@ -888,7 +965,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
         this.queryChangeSub = this.queryChanges$
             // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
-            .subscribe(trigger => {
+            .subscribe((trigger) => {
                 if (trigger) {
                     this.triggerQueryChanges();
                 }
@@ -905,7 +982,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         if (!this.query.settings.visual.label) {
             this.query.settings.visual.label = '';
         }
-
     }
 
     ngOnDestroy() {
@@ -914,55 +990,65 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     initOptions() {
         const defaultOptions = {
-            'deleteQuery': false,
-            'toggleQuery': false,
-            'cloneQuery': false,
-            'enableAlias': true,
-            'enableMetric': true,
-            'toggleMetric': true,
-            'enableGroupBy': true,
-            'enableSummarizer': false,
-            'enableMultiMetricSelection': true,
-            'enableExplicitTagMatch': true,
-            'showNamespaceBar': true
-         };
-        this.options = { ...defaultOptions, ...this.options};
+            deleteQuery: false,
+            toggleQuery: false,
+            cloneQuery: false,
+            enableAlias: true,
+            enableMetric: true,
+            toggleMetric: true,
+            enableGroupBy: true,
+            enableSummarizer: false,
+            enableMultiMetricSelection: true,
+            enableExplicitTagMatch: true,
+            showNamespaceBar: true,
+        };
+        this.options = { ...defaultOptions, ...this.options };
     }
 
-    hasValidFilter(query: any): Number {
-        const index =  query.filters.findIndex(f => f.filter.length || (f.customFilter && f.customFilter.length));
-        return  index;
+    hasValidFilter(query: any): number {
+        const index = query.filters.findIndex(
+            (f) => f.filter.length || (f.customFilter && f.customFilter.length),
+        );
+        return index;
     }
 
-    isArray(d : any ) {
+    isArray(d: any) {
         return Array.isArray(d);
     }
 
     // helper function to format the table datasource into a structure
     // that allows the table to work more or less like it did before
     initMetricDataSource() {
-
         // extract metrics only, then format with pre-constructed label, a type, and reference to the metric data
         const metrics = [];
         // this.query.metrics.filter(d => d.expression === undefined);
-        let mIndex = 0, eIndex = 0, indexLabel = '';
-        for ( let i = 0 ; i < this.query.metrics.length; i++ ) {
+        let mIndex = 0,
+            eIndex = 0,
+            indexLabel = '';
+        for (let i = 0; i < this.query.metrics.length; i++) {
             const isExpression = this.query.metrics[i].expression !== undefined;
-            if (  !isExpression ) {
+            if (!isExpression) {
                 mIndex++;
                 indexLabel = 'm' + mIndex;
             } else {
                 eIndex++;
                 indexLabel = 'e' + eIndex;
             }
-            metrics.push({ indexLabel: indexLabel, type: isExpression ? 'expression' : 'metric', metric: this.query.metrics[i], visual: this.options.enableMultiMetricSelection ? this.query.metrics[i].settings.visual : this.widget.settings.visual });
+            metrics.push({
+                indexLabel: indexLabel,
+                type: isExpression ? 'expression' : 'metric',
+                metric: this.query.metrics[i],
+                visual: this.options.enableMultiMetricSelection
+                    ? this.query.metrics[i].settings.visual
+                    : this.widget.settings.visual,
+            });
         }
 
         /* eslint-disable , , , , , , , , , , , , , , , , , , , , , , , ,  */
 
-        metrics.push({addMetric: true});
+        metrics.push({ addMetric: true });
         // placeholder row for Add Expression form
-        metrics.push({addExpression: true});
+        metrics.push({ addExpression: true });
 
         // merge the arrays and create datasource
         this.metricTableDataSource = new MatTableDataSource(metrics);
@@ -972,7 +1058,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.fg = new FormGroup({});
         const expressions = this.getMetricsByType('expression');
         for (let i = 0; i < expressions.length; i++) {
-            this.fg.addControl(expressions[i].id, new FormControl(this.getExpressionUserInput(expressions[i].expression)));
+            this.fg.addControl(
+                expressions[i].id,
+                new FormControl(
+                    this.getExpressionUserInput(expressions[i].expression),
+                ),
+            );
         }
         this.fg.addControl('-1', new FormControl(''));
     }
@@ -998,14 +1089,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     updateMetric(metrics, id) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
-        if ( index !== -1 ) {
+        const index = this.query.metrics.findIndex((item) => item.id === id);
+        if (index !== -1) {
             this.query.metrics[index].name = metrics[0];
         } else {
             const insertIndex = this.getMetricsLength('metrics');
             for (let i = 0; i < metrics.length; i++) {
                 // eslint-disable-next-line no-shadow,@typescript-eslint/no-shadow
-                const id = this.utils.generateId(3, this.utils.getIDs( this.utils.getAllMetrics(this.queries)));
+                const id = this.utils.generateId(
+                    3,
+                    this.utils.getIDs(this.utils.getAllMetrics(this.queries)),
+                );
                 const oMetric = {
                     id: id,
                     name: metrics[i],
@@ -1014,12 +1108,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                         visual: {
                             visible: this.options.enableMultiMetricSelection,
                             color: '',
-                            label: ''
-                        }
+                            label: '',
+                        },
                     },
                     tagAggregator: 'sum',
                     functions: [],
-                    summarizer: ''
+                    summarizer: '',
                 };
                 if (this.options.enableSummarizer) {
                     oMetric.summarizer = 'avg';
@@ -1050,18 +1144,27 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // helper function to create clean tag filters for metric auto-complete
-    buildTagFilters (filters : any[]) {
+    buildTagFilters(filters: any[]) {
         // clone it so we do not alert original object
         const mfilters = this.utils.deepClone(filters);
         this.tagFilters = []; // reset
         for (let i = 0; i < mfilters.length; i++) {
-            if (mfilters[i].customFilter && mfilters[i].customFilter.length > 0) {
+            if (
+                mfilters[i].customFilter &&
+                mfilters[i].customFilter.length > 0
+            ) {
                 // they do have one or more customFilter for same tag key, add value of it
                 for (let j = 0; j < mfilters[i].customFilter.length; j++) {
                     const cusFilter = mfilters[i].customFilter[j];
                     for (let k = 0; k < this.tplVariables.tvars.length; k++) {
-                        if ('[' + this.tplVariables.tvars[k].alias + ']' === cusFilter && this.tplVariables.tvars[k].filter !== '') {
-                            mfilters[i].filter.push(this.tplVariables.tvars[k].filter);
+                        if (
+                            '[' + this.tplVariables.tvars[k].alias + ']' ===
+                                cusFilter &&
+                            this.tplVariables.tvars[k].filter !== ''
+                        ) {
+                            mfilters[i].filter.push(
+                                this.tplVariables.tvars[k].filter,
+                            );
                         }
                     }
                 }
@@ -1078,9 +1181,14 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     functionUpdate(event: any) {
         // event have metricId and fx
-        const mIndex = this.query.metrics.findIndex(m => m.id === event.metricId);
-        this.query.metrics[mIndex].functions = this.query.metrics[mIndex].functions || [];
-        const fxIndex = this.query.metrics[mIndex].functions.findIndex(fx => fx.id === event.fx.id);
+        const mIndex = this.query.metrics.findIndex(
+            (m) => m.id === event.metricId,
+        );
+        this.query.metrics[mIndex].functions =
+            this.query.metrics[mIndex].functions || [];
+        const fxIndex = this.query.metrics[mIndex].functions.findIndex(
+            (fx) => fx.id === event.fx.id,
+        );
         if (fxIndex !== -1) {
             this.query.metrics[mIndex].functions[fxIndex] = event.fx;
         } else {
@@ -1091,8 +1199,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     functionDelete(event: any) {
         // event have metricId and funcId
-        const mIndex = this.query.metrics.findIndex(m => m.id === event.metricId);
-        const fxIndex = this.query.metrics[mIndex].functions.findIndex(fx => fx.id === event.funcId);
+        const mIndex = this.query.metrics.findIndex(
+            (m) => m.id === event.metricId,
+        );
+        const fxIndex = this.query.metrics[mIndex].functions.findIndex(
+            (fx) => fx.id === event.funcId,
+        );
         if (fxIndex !== -1) {
             this.query.metrics[mIndex].functions.splice(fxIndex, 1);
         }
@@ -1100,7 +1212,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     setMetricTagAggregator(id, value) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
+        const index = this.query.metrics.findIndex((item) => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].tagAggregator = value;
             this.queryChanges$.next(true);
@@ -1108,7 +1220,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     setJoinType(id, value) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
+        const index = this.query.metrics.findIndex((item) => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].joinType = value;
             this.queryChanges$.next(true);
@@ -1116,21 +1228,26 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     setMetricGroupByTags(id, tags) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
+        const index = this.query.metrics.findIndex((item) => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].groupByTags = tags;
             // this is in edit widget mode, if they make change to groupby
             // we need also update the the multigraph conf
-            if ( this.widget.settings ) {
-                const groupByTags = this.multiService.getGroupByTags(this.widget.queries);
-                this.multiService.updateMultigraphConf(groupByTags, this.widget.settings.multigraph);
+            if (this.widget.settings) {
+                const groupByTags = this.multiService.getGroupByTags(
+                    this.widget.queries,
+                );
+                this.multiService.updateMultigraphConf(
+                    groupByTags,
+                    this.widget.settings.multigraph,
+                );
             }
             this.queryChanges$.next(true);
         }
     }
 
     updateVisual(message, data) {
-        if ( message.action === 'ClosePanel') {
+        if (message.action === 'ClosePanel') {
             this.metricVisualPanelTrigger.closeMenu();
         } else {
             this.requestChanges(message.action, message.payload);
@@ -1139,34 +1256,80 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             data.visual = { ...data.visual, ...message.payload.visual };
             const newConfig = message.payload.visual;
             const overrideConfig: any = {};
-            for ( let i = 0; i < this.widget.queries.length; i++ ) {
-                for ( let j = 0; j < this.widget.queries[i].metrics.length; j++ ) {
-                    const vconfig = this.widget.queries[i].metrics[j].settings.visual;
-                    if ( ['area', 'bar'].includes(vconfig.type) ) {
+            for (let i = 0; i < this.widget.queries.length; i++) {
+                for (
+                    let j = 0;
+                    j < this.widget.queries[i].metrics.length;
+                    j++
+                ) {
+                    const vconfig =
+                        this.widget.queries[i].metrics[j].settings.visual;
+                    if (['area', 'bar'].includes(vconfig.type)) {
                         overrideConfig.axis = vconfig.axis || 'y1';
                         overrideConfig.stacked = vconfig.stacked || 'true';
                         break;
                     }
                 }
             }
-            const qindex = this.widget.queries.findIndex(d => d.id === message.payload.qid);
-            const mindex = this.widget.queries[qindex].metrics.findIndex(d => d.id === message.payload.mid);
-            const curtype = this.widget.queries[qindex].metrics[mindex].settings.visual.type || 'line';
-            for ( let i = 0; i < this.metricTableDataSource.data.length; i++ ) {
-                if ( this.metricTableDataSource.data[i].visual ) {
+            const qindex = this.widget.queries.findIndex(
+                (d) => d.id === message.payload.qid,
+            );
+            const mindex = this.widget.queries[qindex].metrics.findIndex(
+                (d) => d.id === message.payload.mid,
+            );
+            const curtype =
+                this.widget.queries[qindex].metrics[mindex].settings.visual
+                    .type || 'line';
+            for (let i = 0; i < this.metricTableDataSource.data.length; i++) {
+                if (this.metricTableDataSource.data[i].visual) {
                     // eslint-disable-next-line max-len
-                    if ( message.action === 'UpdateQueryMetricVisual' && (newConfig.axis || newConfig.stacked  || ['area', 'bar'].includes(newConfig.type)) && ['area', 'bar'].includes(curtype) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type) ) {
-                        this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
-                    } else if ( message.action === 'UpdateQueryVisual' && (newConfig.scheme || newConfig.color ||  newConfig.type ) ) {
-                        this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...newConfig};
+                    if (
+                        message.action === 'UpdateQueryMetricVisual' &&
+                        (newConfig.axis ||
+                            newConfig.stacked ||
+                            ['area', 'bar'].includes(newConfig.type)) &&
+                        ['area', 'bar'].includes(curtype) &&
+                        ['area', 'bar'].includes(
+                            this.metricTableDataSource.data[i].visual.type,
+                        )
+                    ) {
+                        this.metricTableDataSource.data[i].visual = {
+                            ...this.metricTableDataSource.data[i].visual,
+                            ...newConfig,
+                        };
+                    } else if (
+                        message.action === 'UpdateQueryVisual' &&
+                        (newConfig.scheme || newConfig.color || newConfig.type)
+                    ) {
+                        this.metricTableDataSource.data[i].visual = {
+                            ...this.metricTableDataSource.data[i].visual,
+                            ...newConfig,
+                        };
                         // set existing bar axis
                         // eslint-disable-next-line max-len
-                        if ( newConfig.type && ['area', 'bar'].includes(newConfig.type) && ['area', 'bar'].includes(this.metricTableDataSource.data[i].visual.type)) {
-                            this.metricTableDataSource.data[i].visual = {...this.metricTableDataSource.data[i].visual, ...overrideConfig};
+                        if (
+                            newConfig.type &&
+                            ['area', 'bar'].includes(newConfig.type) &&
+                            ['area', 'bar'].includes(
+                                this.metricTableDataSource.data[i].visual.type,
+                            )
+                        ) {
+                            this.metricTableDataSource.data[i].visual = {
+                                ...this.metricTableDataSource.data[i].visual,
+                                ...overrideConfig,
+                            };
                         }
-                    // eslint-disable-next-line max-len
-                    } else if ( message.action === 'UpdateQueryVisual' && newConfig.axis && (curtype !== 'line' || !this.metricTableDataSource.data[i].visual.type || this.metricTableDataSource.data[i].visual.type === 'line') )  {
-                        this.metricTableDataSource.data[i].visual.axis = newConfig.axis;
+                        // eslint-disable-next-line max-len
+                    } else if (
+                        message.action === 'UpdateQueryVisual' &&
+                        newConfig.axis &&
+                        (curtype !== 'line' ||
+                            !this.metricTableDataSource.data[i].visual.type ||
+                            this.metricTableDataSource.data[i].visual.type ===
+                                'line')
+                    ) {
+                        this.metricTableDataSource.data[i].visual.axis =
+                            newConfig.axis;
                     }
                 }
             }
@@ -1175,21 +1338,28 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     getGroupByTags(id) {
         let groupByTags = [];
-        const expression = this.utils.getMetricFromId(id, this.queries).expression;
+        const expression = this.utils.getMetricFromId(
+            id,
+            this.queries,
+        ).expression;
 
         if (expression) {
             // replace {{<id>}} with query source id
             const re = new RegExp(this.handleBarsRegex, 'g');
             let matches = [];
             let i = 0;
-            while (matches = re.exec(expression)) {
+            while ((matches = re.exec(expression))) {
                 const id = matches[1];
-                const mTags = this.getGroupByTags( id );
-                groupByTags = i === 0 ? mTags : groupByTags.filter(v => mTags.includes(v));
+                const mTags = this.getGroupByTags(id);
+                groupByTags =
+                    i === 0
+                        ? mTags
+                        : groupByTags.filter((v) => mTags.includes(v));
                 i++;
             }
         } else {
-            groupByTags = this.utils.getMetricFromId(id, this.queries).groupByTags || [];
+            groupByTags =
+                this.utils.getMetricFromId(id, this.queries).groupByTags || [];
         }
         return groupByTags;
     }
@@ -1198,10 +1368,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         const isExpression = this.query.metrics[index].expression !== undefined;
         let labelIndex = 0;
         for (let i = 0; i <= index; i++) {
-            if (!isExpression && this.query.metrics[i].expression === undefined) {
+            if (
+                !isExpression &&
+                this.query.metrics[i].expression === undefined
+            ) {
                 labelIndex++;
             }
-            if (isExpression && this.query.metrics[i].expression !== undefined) {
+            if (
+                isExpression &&
+                this.query.metrics[i].expression !== undefined
+            ) {
                 labelIndex++;
             }
         }
@@ -1215,22 +1391,28 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     getMetricsByType(type) {
         if (type === 'metrics') {
-            return this.query.metrics.filter(d => d.expression === undefined);
+            return this.query.metrics.filter((d) => d.expression === undefined);
         } else {
-            return this.query.metrics.filter(d => d.expression !== undefined);
+            return this.query.metrics.filter((d) => d.expression !== undefined);
         }
     }
 
     editExpression(id) {
-        if (this.fg.controls[this.editExpressionId].errors) { return; }
+        if (this.fg.controls[this.editExpressionId].errors) {
+            return;
+        }
         this.editExpressionId = id;
         if (id === -1) {
             this.fg.controls[this.editExpressionId].setValue('');
             // this.isAddExpressionProgress = true;
             this.addQueryItemProgress('expression');
         } else {
-            const index = this.query.metrics.findIndex(d => d.id === id);
-            this.fg.controls[this.editExpressionId].setValue(this.getExpressionUserInput(this.query.metrics[index].expression));
+            const index = this.query.metrics.findIndex((d) => d.id === id);
+            this.fg.controls[this.editExpressionId].setValue(
+                this.getExpressionUserInput(
+                    this.query.metrics[index].expression,
+                ),
+            );
             setTimeout(() => {
                 this.editExpressionInput.nativeElement.focus();
             }, 100);
@@ -1243,7 +1425,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         let matches = [];
         let userExpression = expression;
         const aliases = this.getHashMetricIdUserAliases();
-        while (matches = re.exec(expression)) {
+        while ((matches = re.exec(expression))) {
             const id = '' + matches[1];
             const idreg = new RegExp('\\{\\{' + id + '\\}\\}', 'g');
             userExpression = userExpression.replace(idreg, aliases[id]);
@@ -1253,7 +1435,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     updateExpression(id, e) {
         const expression = e.srcElement.value.trim();
-        let index = this.query.metrics.findIndex(d => d.id === id);
+        let index = this.query.metrics.findIndex((d) => d.id === id);
         if (expression && this.isValidExpression(id, expression)) {
             const expConfig: any = this.getExpressionConfig(expression);
             if (index === -1) {
@@ -1263,12 +1445,15 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
                 index = this.query.metrics.length - 1;
             } else {
                 expConfig.id = id;
-                expConfig.settings.visual = this.query.metrics[index].settings.visual;
+                expConfig.settings.visual =
+                    this.query.metrics[index].settings.visual;
                 expConfig.functions = this.query.metrics[index].functions;
                 this.query.metrics[index] = expConfig;
                 this.editExpressionId = -1;
             }
-            this.query.metrics[index].groupByTags = this.getGroupByTags(expConfig.id);
+            this.query.metrics[index].groupByTags = this.getGroupByTags(
+                expConfig.id,
+            );
             this.queryChanges$.next(true);
             this.initMetricDataSource();
         } else if (!expression && index === -1) {
@@ -1278,10 +1463,13 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     updateMetricAlias(id, e) {
         const alias = e.srcElement.value.trim();
-        const index = this.query.metrics.findIndex(d => d.id === id);
+        const index = this.query.metrics.findIndex((d) => d.id === id);
         this.query.metrics[index].settings.visual.label = alias;
         this.editAliasId = -1;
-        this.requestChanges('UpdateQueryMetricVisual', { mid : id, visual: { label: alias } } );
+        this.requestChanges('UpdateQueryMetricVisual', {
+            mid: id,
+            visual: { label: alias },
+        });
     }
 
     isValidExpression(id, expression) {
@@ -1296,7 +1484,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const isValid = result != null && !invalidRefs.length;
-        this.fg.controls[id].setErrors(!isValid ? { 'invalid': true } : null);
+        this.fg.controls[id].setErrors(!isValid ? { invalid: true } : null);
         return isValid;
     }
 
@@ -1312,9 +1500,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             metricIndex = 0;
             expressionIndex = 0;
             for (let j = 0; j < this.queries[i].metrics.length; j++) {
-                const alias = this.queries[i].metrics[j].expression === undefined ?
-                    'q' + queryIndex + '.' + 'm' + ++metricIndex :
-                    'q' + queryIndex + '.' + 'e' + ++expressionIndex;
+                const alias =
+                    this.queries[i].metrics[j].expression === undefined
+                        ? 'q' + queryIndex + '.' + 'm' + ++metricIndex
+                        : 'q' + queryIndex + '.' + 'e' + ++expressionIndex;
                 aliases[this.queries[i].metrics[j].id] = alias;
             }
         }
@@ -1322,9 +1511,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         metricIndex = 0;
         expressionIndex = 0;
         for (let i = 0; i < this.query.metrics.length; i++) {
-            const alias = this.query.metrics[i].expression === undefined ?
-            'm' + ++metricIndex :
-            'e' + ++expressionIndex;
+            const alias =
+                this.query.metrics[i].expression === undefined
+                    ? 'm' + ++metricIndex
+                    : 'e' + ++expressionIndex;
             aliases[this.query.metrics[i].id] = alias;
         }
 
@@ -1339,9 +1529,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
         // shorthand aliases
         for (let i = 0; i < this.query.metrics.length; i++) {
-            const alias = this.query.metrics[i].expression === undefined ?
-            'm' + ++metricIndex :
-            'e' + ++expressionIndex;
+            const alias =
+                this.query.metrics[i].expression === undefined
+                    ? 'm' + ++metricIndex
+                    : 'e' + ++expressionIndex;
             aliases[alias] = this.query.metrics[i].id;
         }
 
@@ -1351,9 +1542,10 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             metricIndex = 0;
             expressionIndex = 0;
             for (let j = 0; j < this.queries[i].metrics.length; j++) {
-                const alias = this.queries[i].metrics[j].expression === undefined ?
-                    'q' + queryIndex + '.' + 'm' + ++metricIndex :
-                    'q' + queryIndex + '.' + 'e' + ++expressionIndex;
+                const alias =
+                    this.queries[i].metrics[j].expression === undefined
+                        ? 'q' + queryIndex + '.' + 'm' + ++metricIndex
+                        : 'q' + queryIndex + '.' + 'e' + ++expressionIndex;
                 aliases[alias] = this.queries[i].metrics[j].id;
             }
         }
@@ -1371,30 +1563,39 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         // first cross-query
         for (let i = 0; i < result.length; i++) {
             if (result[i].includes('.')) {
-                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
-                transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
+                const regex = new RegExp(result[i] + '(?![^\\{\\}]*\\})', 'g');
+                transformedExp = transformedExp.replace(
+                    regex,
+                    '{{' + aliases[result[i]] + '}}',
+                );
             }
         }
         // then shorthand
         for (let i = 0; i < result.length; i++) {
             if (!result[i].includes('.')) {
-                const regex = new RegExp( result[i] + '(?![^\\{\\}]*\\})', 'g');
-                transformedExp = transformedExp.replace(regex, '{{' + aliases[result[i]] + '}}');
+                const regex = new RegExp(result[i] + '(?![^\\{\\}]*\\})', 'g');
+                transformedExp = transformedExp.replace(
+                    regex,
+                    '{{' + aliases[result[i]] + '}}',
+                );
             }
         }
 
         const config = {
-            id: this.utils.generateId(3, this.utils.getIDs(this.utils.getAllMetrics(this.queries))),
+            id: this.utils.generateId(
+                3,
+                this.utils.getIDs(this.utils.getAllMetrics(this.queries)),
+            ),
             expression: transformedExp,
             originalExpression: expression,
             settings: {
                 visual: {
                     visible: this.options.enableMultiMetricSelection,
                     color: '',
-                    label: ''
-                }
+                    label: '',
+                },
             },
-            summarizer: this.options.enableSummarizer ? 'avg' : ''
+            summarizer: this.options.enableSummarizer ? 'avg' : '',
         };
         return config;
     }
@@ -1418,19 +1619,29 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     addFunction(func: any, metricId: string) {
-        const metricIdx = this.query.metrics.findIndex(d => d.id === metricId ) ;
-        this.query.metrics[metricIdx].functions = this.query.metrics[metricIdx].functions || [];
+        const metricIdx = this.query.metrics.findIndex(
+            (d) => d.id === metricId,
+        );
+        this.query.metrics[metricIdx].functions =
+            this.query.metrics[metricIdx].functions || [];
 
         const newFx = {
-            id: this.utils.generateId(3, this.utils.getIDs(this.query.metrics[metricIdx].functions)),
+            id: this.utils.generateId(
+                3,
+                this.utils.getIDs(this.query.metrics[metricIdx].functions),
+            ),
             fxCall: func.fxCall,
-            val: func.val
+            val: func.val,
         };
 
         this.query.metrics[metricIdx].functions.push(newFx);
         // eslint-disable-next-line max-len
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
-        const trigger: MatMenuTrigger = <MatMenuTrigger>this.functionMenuTriggers.find((el, i) => i === this.currentFunctionMenuTriggerIdx);
+        const trigger: MatMenuTrigger = <MatMenuTrigger>(
+            this.functionMenuTriggers.find(
+                (el, i) => i === this.currentFunctionMenuTriggerIdx,
+            )
+        );
         if (trigger) {
             trigger.closeMenu();
         }
@@ -1438,7 +1649,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     setSummarizerValue(id, summarizer: string) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
+        const index = this.query.metrics.findIndex((item) => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].summarizer = summarizer;
             this.requestChanges('SummarizerChange', { summarizer });
@@ -1446,28 +1657,26 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     setMissingMetrics(id, flag) {
-        const index = this.query.metrics.findIndex(item => item.id === id);
+        const index = this.query.metrics.findIndex((item) => item.id === id);
         if (index !== -1) {
             this.query.metrics[index].substituteMissing = flag;
             this.queryChanges$.next(true);
         }
     }
 
-    showMetricAC() {
-
-    }
+    showMetricAC() {}
 
     requestChanges(action, data = {}) {
         const message = {
             id: this.query.id,
             action: action,
-            payload: data
+            payload: data,
         };
         this.queryOutput.emit(message);
     }
 
     triggerQueryChanges() {
-        this.requestChanges('QueryChange', { 'query': this.query });
+        this.requestChanges('QueryChange', { query: this.query });
     }
 
     toggleExplictTagMatch(e: any) {
@@ -1480,7 +1689,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     toggleMetric(id) {
-        this.requestChanges('ToggleQueryMetricVisibility', { mid : id} );
+        this.requestChanges('ToggleQueryMetricVisibility', { mid: id });
     }
 
     toggleQuery() {
@@ -1492,14 +1701,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     deleteQuery() {
-        this.confirmDeleteDialog.close({deleted: true});
+        this.confirmDeleteDialog.close({ deleted: true });
     }
 
-
     confirmQueryDelete(label) {
-        this.confirmDeleteDialog = this.dialog.open(this.confirmDeleteDialogRef, {data: { label: label}});
-        this.confirmDeleteDialog.afterClosed().subscribe(event => {
-            if ( event.deleted ) {
+        this.confirmDeleteDialog = this.dialog.open(
+            this.confirmDeleteDialogRef,
+            { data: { label: label } },
+        );
+        this.confirmDeleteDialog.afterClosed().subscribe((event) => {
+            if (event.deleted) {
                 this.requestChanges('DeleteQuery');
             }
         });
@@ -1512,11 +1723,16 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             metricIds.push(metric.id);
         }
 
-        if (this.queries) { // cross queries
+        if (this.queries) {
+            // cross queries
             for (const query of this.queries) {
-                for ( let i = 0; i < query.metrics.length; i++ ) {
+                for (let i = 0; i < query.metrics.length; i++) {
                     const expression = query.metrics[i].expression;
-                    if (expression && query.id !== this.query.id && this.expressionContainIds(expression, metricIds)) {
+                    if (
+                        expression &&
+                        query.id !== this.query.id &&
+                        this.expressionContainIds(expression, metricIds)
+                    ) {
                         canDelete = false;
                         break;
                     }
@@ -1524,7 +1740,6 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             }
         }
         return canDelete;
-
     }
 
     expressionContainIds(expression, ids) {
@@ -1543,52 +1758,72 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.query.metrics[event.currentIndex] = dragItem;
         this.query.metrics[event.previousIndex] = dropItem;
         this.initMetricDataSource();
-        this.requestChanges('UpdateQueryMetricOrder', { qid: this.query.id, query: this.query });
+        this.requestChanges('UpdateQueryMetricOrder', {
+            qid: this.query.id,
+            query: this.query,
+        });
     }
 
     cloneMetric(id) {
-        const index = this.query.metrics.findIndex(d => d.id === id );
+        const index = this.query.metrics.findIndex((d) => d.id === id);
         const oMetric = this.query.metrics[index];
         const nMetric = this.utils.deepClone(oMetric);
-        nMetric.id = this.utils.generateId(3, this.utils.getIDs(this.utils.getAllMetrics(this.queries)));
-        if ( nMetric.expression ) {
+        nMetric.id = this.utils.generateId(
+            3,
+            this.utils.getIDs(this.utils.getAllMetrics(this.queries)),
+        );
+        if (nMetric.expression) {
             this.fg.addControl(nMetric.id, new FormControl(nMetric.expression));
         }
 
-        if (!this.options.enableMultiMetricSelection && nMetric.settings && nMetric.settings.visual) {
+        if (
+            !this.options.enableMultiMetricSelection &&
+            nMetric.settings &&
+            nMetric.settings.visual
+        ) {
             nMetric.settings.visual.visible = false;
         }
 
-        const insertIndex = this.query.metrics.findIndex(d => d.id === oMetric.id ) + 1;
+        const insertIndex =
+            this.query.metrics.findIndex((d) => d.id === oMetric.id) + 1;
         this.query.metrics.splice(insertIndex, 0, nMetric);
         this.queryChanges$.next(true);
         this.initMetricDataSource();
     }
 
     deleteMetric(id) {
-        this.requestChanges('DeleteQueryMetric', { mid : id} );
+        this.requestChanges('DeleteQueryMetric', { mid: id });
         this.initMetricDataSource();
     }
 
     canDeleteMetric(id) {
-        const index = this.query.metrics.findIndex(d => d.id === id ) ;
+        const index = this.query.metrics.findIndex((d) => d.id === id);
         const metrics = this.query.metrics;
         let canDelete = true;
 
-        if (this.queries) { // cross queries
+        if (this.queries) {
+            // cross queries
             for (const query of this.queries) {
-                for ( let i = 0; i < query.metrics.length; i++ ) {
+                for (let i = 0; i < query.metrics.length; i++) {
                     const expression = query.metrics[i].expression;
-                    if ( expression && i !== index  &&  expression.indexOf('{{' + id + '}}') !== -1 ) {
+                    if (
+                        expression &&
+                        i !== index &&
+                        expression.indexOf('{{' + id + '}}') !== -1
+                    ) {
                         canDelete = false;
                         break;
                     }
                 }
             }
         } else {
-            for ( let i = 0; i < metrics.length; i++ ) {
+            for (let i = 0; i < metrics.length; i++) {
                 const expression = metrics[i].expression;
-                if ( expression && i !== index  &&  expression.indexOf('{{' + id + '}}') !== -1 ) {
+                if (
+                    expression &&
+                    i !== index &&
+                    expression.indexOf('{{' + id + '}}') !== -1
+                ) {
                     canDelete = false;
                     break;
                 }
@@ -1624,27 +1859,32 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     createPercentageMetrics() {
-        if ( this.pctSelectedMetrics.length > 1 ) {
-            const expConfig = this.getExpressionConfig(this.pctSelectedMetrics.join(' + '));
+        if (this.pctSelectedMetrics.length > 1) {
+            const expConfig = this.getExpressionConfig(
+                this.pctSelectedMetrics.join(' + '),
+            );
             expConfig.settings.visual.label = 'Total';
             expConfig.settings.visual.visible = false;
             this.query.metrics.push(expConfig);
 
             const expLabel = this.getMetricLabel(this.query.metrics.length - 1);
             const aliases = this.getMetricAliases();
-            for ( let i = 0; i < this.pctSelectedMetrics.length; i++ ) {
+            for (let i = 0; i < this.pctSelectedMetrics.length; i++) {
                 const mid = aliases[this.pctSelectedMetrics[i]];
-                const index = this.query.metrics.findIndex( d =>  d.id === mid );
+                const index = this.query.metrics.findIndex((d) => d.id === mid);
                 // set the actual metric visible=false and groupby=everything
                 this.query.metrics[index].settings.visual.visible = false;
                 this.query.metrics[index].groupByTags = [];
 
-                const expConfig: any = this.getExpressionConfig( this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel );
+                const expConfig: any = this.getExpressionConfig(
+                    this.pctSelectedMetrics[i] + ' * 100 / ' + expLabel,
+                );
                 expConfig.settings.visual.type = 'area';
-                expConfig.settings.visual.label = this.query.metrics[index].name + ' %';
+                expConfig.settings.visual.label =
+                    this.query.metrics[index].name + ' %';
                 this.query.metrics.push(expConfig);
             }
-            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' } );
+            this.requestChanges('ChangeAxisLabel', { axis: 'y1', label: '%' });
             this.queryChanges$.next(true);
             this.initMetricDataSource();
         }
@@ -1658,7 +1898,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     // QUERY ALIAS EDITING
     toggleQueryAliasEditForm() {
         if (!this.queryAliasEdit) {
-            this.queryAliasFormControl = new FormControl(this.query.settings.visual.label);
+            this.queryAliasFormControl = new FormControl(
+                this.query.settings.visual.label,
+            );
             this.queryAliasEdit = true;
         } else {
             this.queryAliasEdit = false;
@@ -1669,7 +1911,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         let value = this.queryAliasFormControl.value;
         this.query.settings.visual.label = value;
         this.queryAliasEdit = false;
-        this.requestChanges('UpdateQueryAlias', { visual: { label: value } } );
+        this.requestChanges('UpdateQueryAlias', { visual: { label: value } });
     }
 
     functionHelpVisibleToggle(visible: boolean) {
@@ -1680,9 +1922,11 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedFunctionHelpObj = helpObj;
     }
 
-
     // datasource table stuff - predicate helpers to determine if add metric/expression rows should show
-    checkAddMetricRow = (i: number, data: object) => data.hasOwnProperty('addMetric');
-    checkMetricVisualRow = (i: number, data: any) => data.hasOwnProperty('visual');
-    checkAddExpressionRow = (i: number, data: object) => data.hasOwnProperty('addExpression');
+    checkAddMetricRow = (i: number, data: object) =>
+        data.hasOwnProperty('addMetric');
+    checkMetricVisualRow = (i: number, data: any) =>
+        data.hasOwnProperty('visual');
+    checkAddExpressionRow = (i: number, data: object) =>
+        data.hasOwnProperty('addExpression');
 }

@@ -19,10 +19,10 @@ import { TestBed } from '@angular/core/testing';
 import { TooltipDataService } from './tooltip-data.service';
 
 describe('TooltipDataService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: TooltipDataService = TestBed.inject(TooltipDataService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: TooltipDataService = TestBed.inject(TooltipDataService);
+        expect(service).toBeTruthy();
+    });
 });

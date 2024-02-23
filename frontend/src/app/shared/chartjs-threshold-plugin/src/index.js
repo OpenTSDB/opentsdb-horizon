@@ -14,27 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var Chart = require('chart.js');
+var Chart = require("chart.js");
 
-Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+Chart = typeof Chart === "function" ? Chart : window.Chart;
 
 Chart.Threshold = Chart.Threshold || {};
 
 Chart.Threshold.defaults = {
-	draw: false,
+    draw: false,
     maxLines: Number.MAX_VALUE,
-    scaleId : 'y-axis-0',
-	thresholds : []
+    scaleId: "y-axis-0",
+    thresholds: [],
 };
 
 Chart.Threshold.lineDefaults = {
-	borderColor: '#000000',
-	borderWidth: 1,
-	borderDash: [],
-	borderDashOffset: 0
+    borderColor: "#000000",
+    borderWidth: 1,
+    borderDash: [],
+    borderDashOffset: 0,
 };
 
-var thresholdPlugin = require('./threshold.js')(Chart);
+var thresholdPlugin = require("./threshold.js")(Chart);
 
 module.exports = thresholdPlugin;
 

@@ -11,22 +11,27 @@ import { TooltipDataService } from '../shared/modules/universal-data-tooltip/ser
 import { TooltipComponentService } from '../shared/modules/universal-data-tooltip/services/tooltip-component.service';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BrowserModule,
-    DygraphsModule,
-    UniversalDataTooltipModule,
-    UniversalDataTooltipDirectivesModule
-  ],
-  declarations: [HorizonComponent],
-  entryComponents: [HorizonComponent],
-  providers: [UnitConverterService, TooltipDataService, TooltipComponentService]
+    imports: [
+        CommonModule,
+        BrowserModule,
+        DygraphsModule,
+        UniversalDataTooltipModule,
+        UniversalDataTooltipDirectivesModule,
+    ],
+    declarations: [HorizonComponent],
+    entryComponents: [HorizonComponent],
+    providers: [
+        UnitConverterService,
+        TooltipDataService,
+        TooltipComponentService,
+    ],
 })
 export class HorizonModule implements DoBootstrap {
-  
-  constructor( private injector: Injector) { }
-  ngDoBootstrap() {
-    const el = createCustomElement(HorizonComponent, { injector : this.injector});
-    customElements.define('horizon-chart', el);
-  }
+    constructor(private injector: Injector) {}
+    ngDoBootstrap() {
+        const el = createCustomElement(HorizonComponent, {
+            injector: this.injector,
+        });
+        customElements.define('horizon-chart', el);
+    }
 }

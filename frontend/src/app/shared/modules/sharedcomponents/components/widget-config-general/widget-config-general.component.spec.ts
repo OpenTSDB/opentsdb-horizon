@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WidgetConfigGeneralComponent } from './widget-config-general.component';
 
 describe('WidgetConfigGeneralComponent', () => {
-  let component: WidgetConfigGeneralComponent;
-  let fixture: ComponentFixture<WidgetConfigGeneralComponent>;
+    let component: WidgetConfigGeneralComponent;
+    let fixture: ComponentFixture<WidgetConfigGeneralComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WidgetConfigGeneralComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [WidgetConfigGeneralComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetConfigGeneralComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(WidgetConfigGeneralComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

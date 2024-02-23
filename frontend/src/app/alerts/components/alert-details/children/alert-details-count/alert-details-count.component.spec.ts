@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AlertDetailsCountComponent } from './alert-details-count.component';
 
 describe('AlertDetailsCountComponent', () => {
-  let component: AlertDetailsCountComponent;
-  let fixture: ComponentFixture<AlertDetailsCountComponent>;
+    let component: AlertDetailsCountComponent;
+    let fixture: ComponentFixture<AlertDetailsCountComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsCountComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsCountComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsCountComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AlertDetailsCountComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

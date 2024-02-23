@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DropdownVisualTypeComponent } from './dropdown-visual-type.component';
 
 describe('DropdownVisualTypeComponent', () => {
-  let component: DropdownVisualTypeComponent;
-  let fixture: ComponentFixture<DropdownVisualTypeComponent>;
+    let component: DropdownVisualTypeComponent;
+    let fixture: ComponentFixture<DropdownVisualTypeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DropdownVisualTypeComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DropdownVisualTypeComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DropdownVisualTypeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DropdownVisualTypeComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

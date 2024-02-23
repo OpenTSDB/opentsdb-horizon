@@ -14,11 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    ViewEncapsulation,
+} from '@angular/core';
 
 // import { MatDialog, MatDialogConfig, MatDialogRef, DialogPosition } from '@angular/material';
 
-import { IntercomService, IMessage } from '../../../../../core/services/intercom.service';
+import {
+    IntercomService,
+    IMessage,
+} from '../../../../../core/services/intercom.service';
 
 import { WidgetModel } from '../../../../../dashboard/state/widgets.state';
 
@@ -29,15 +38,20 @@ import {
     WidgetConfigMetricQueriesComponent,
     WidgetConfigQueryInspectorComponent,
     WidgetConfigTimeComponent,
-    WidgetConfigVisualAppearanceComponent
+    WidgetConfigVisualAppearanceComponent,
 } from '../../../sharedcomponents/components';
 
+interface AvailableWidgetTypesData {
+    label: string;
+    type: string;
+    iconClass: string;
+}
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'developer-widget',
     templateUrl: './developer-widget.component.html',
     styleUrls: ['./developer-widget.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DeveloperWidgetComponent implements OnInit {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
@@ -51,56 +65,73 @@ export class DeveloperWidgetComponent implements OnInit {
 
     /** Local variables */
     fakeData: any = [
-        ['data-row-0-1', 'data-row-0-2', 'data-row-0-3', 'data-row-0-4', 'data-row-0-5', 'data-row-0-6', 'data-row-0-7', 'data-row-0-8'],
-        ['data-row-1-1', 'data-row-1-2', 'data-row-1-3', 'data-row-1-4', 'data-row-1-5', 'data-row-1-6', 'data-row-1-7', 'data-row-1-8']
+        [
+            'data-row-0-1',
+            'data-row-0-2',
+            'data-row-0-3',
+            'data-row-0-4',
+            'data-row-0-5',
+            'data-row-0-6',
+            'data-row-0-7',
+            'data-row-0-8',
+        ],
+        [
+            'data-row-1-1',
+            'data-row-1-2',
+            'data-row-1-3',
+            'data-row-1-4',
+            'data-row-1-5',
+            'data-row-1-6',
+            'data-row-1-7',
+            'data-row-1-8',
+        ],
     ];
 
     // NOTE: widget types should only be temporary here, as they should be added to some starting point widget
     // Available Widget Types
-    availableWidgetTypes: Array<object> = [
+    availableWidgetTypes: Array<AvailableWidgetTypesData> = [
         {
             label: 'Bar Graph',
             type: 'WidgetBarGraphComponent',
-            iconClass: 'widget-icon-bar-graph'
+            iconClass: 'widget-icon-bar-graph',
         },
         {
             label: 'Area Graph',
             type: 'WidgetAreaGraphComponent',
-            iconClass: 'widget-icon-area-graph'
+            iconClass: 'widget-icon-area-graph',
         },
         {
             label: 'Line Chart',
             type: 'LineChartComponent',
             // TODO: need to eventually switch to WidgetLineChartComponent
             // type: 'WidgetLineChartComponent',
-            iconClass: 'widget-icon-line-chart'
+            iconClass: 'widget-icon-line-chart',
         },
         {
             label: 'Big Number',
             type: 'WidgetBigNumberComponent',
-            iconClass: 'widget-icon-big-number'
+            iconClass: 'widget-icon-big-number',
         },
         {
             label: 'Donut Chart',
             type: 'WidgetDonutChartComponent',
-            iconClass: 'widget-icon-donut-chart'
+            iconClass: 'widget-icon-donut-chart',
         },
         {
             label: 'Statuses',
             type: 'WidgetStatusComponent',
-            iconClass: 'widget-icon-statuses'
+            iconClass: 'widget-icon-statuses',
         },
         {
             label: 'Table',
             type: 'WidgetTableComponent',
-            iconClass: 'widget-icon-table'
-        }
+            iconClass: 'widget-icon-table',
+        },
     ];
 
-    constructor(private interCom: IntercomService) { }
+    constructor(private interCom: IntercomService) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     /**
      * Services
@@ -112,12 +143,10 @@ export class DeveloperWidgetComponent implements OnInit {
      * Behaviors
      */
 
-     closeViewEditMode() {
+    closeViewEditMode() {
         this.interCom.requestSend(<IMessage>{
             action: 'closeViewEditMode',
-            payload: 'dashboard'
+            payload: 'dashboard',
         });
     }
-
-
 }

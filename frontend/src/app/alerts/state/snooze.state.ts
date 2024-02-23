@@ -15,12 +15,7 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import {
-    State,
-    StateContext,
-    Action,
-    Selector
-} from '@ngxs/store';
+import { State, StateContext, Action, Selector } from '@ngxs/store';
 
 import { HttpService } from '../../core/http/http.service';
 import { AlertConverterService } from '../services/alert-converter.service';
@@ -32,12 +27,10 @@ export interface SnoozeStateModel {
     data: any;
 }
 
-
 export class GetSnoozeDetailsById {
     static readonly type = '[Snooze] Get Snooze Details By Id';
     constructor(public id: number) {}
 }
-
 
 /* state define */
 @Injectable()
@@ -50,31 +43,43 @@ export class GetSnoozeDetailsById {
         data: {
             id: null,
             namespace: '',
-            notification: {}
-        }
-    }
+            notification: {},
+        },
+    },
 })
-
 export class SnoozeState {
     constructor(
         private httpService: HttpService,
-        private alertConverter: AlertConverterService
-    ) { }
+        private alertConverter: AlertConverterService,
+    ) {}
 
     @Selector() static getSnoozeDetails(state: SnoozeStateModel) {
         return state.data;
     }
 
     @Action(GetSnoozeDetailsById)
-    getSnoozeDetailsById(ctx: StateContext<SnoozeStateModel>, { id: id }: GetSnoozeDetailsById) {
+    getSnoozeDetailsById(
+        ctx: StateContext<SnoozeStateModel>,
+        { id: id }: GetSnoozeDetailsById,
+    ) {
         ctx.patchState({ status: 'loading', loaded: false, error: {} });
         this.httpService.getSnoozeDetailsById(id).subscribe(
-            data => {
-                ctx.patchState({data: data, status: 'success', loaded: true, error: {}});
+            (data) => {
+                ctx.patchState({
+                    data: data,
+                    status: 'success',
+                    loaded: true,
+                    error: {},
+                });
             },
-            err => {
-                ctx.patchState({ data: {}, status: 'failed', loaded: false, error: err });
-            }
+            (err) => {
+                ctx.patchState({
+                    data: {},
+                    status: 'failed',
+                    loaded: false,
+                    error: err,
+                });
+            },
         );
     }
 }

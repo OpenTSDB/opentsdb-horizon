@@ -14,7 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnChanges, OnDestroy, AfterViewInit, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnChanges,
+    OnDestroy,
+    AfterViewInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    ViewEncapsulation,
+} from '@angular/core';
 
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -22,14 +33,19 @@ import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { UnitConverterService } from '../../../../../core/services/unit-converter.service';
 
+interface AxisOptionValue {
+    label: string;
+    value: string;
+}
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'widget-config-axes',
     templateUrl: './widget-config-axes.component.html',
     styleUrls: ['./widget-config-axes.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class WidgetConfigAxesComponent
+implements OnChanges, OnDestroy, AfterViewInit {
     @HostBinding('class.widget-config-tab') private _hostClass = true;
     @HostBinding('class.axes-configuration') private _tabClass = true;
     @HostBinding('class.has-columns') private _modifierClass = true;
@@ -38,7 +54,7 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
     @Input() widget: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() widgetChange = new EventEmitter();
 
     /** Local variables */
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
@@ -57,62 +73,64 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
     y1UnitSub: Subscription;
     y2UnitSub: Subscription;
 
-
     /** Form Control Options */
 
-    yAxisWhichOptions: Array<object> = [
+    yAxisWhichOptions: Array<AxisOptionValue> = [
         {
             label: 'Y1',
-            value: 'y1'
+            value: 'y1',
         },
         {
             label: 'Y2',
-            value: 'y2'
-        }
+            value: 'y2',
+        },
     ];
 
-    yAxisUnitOptions: Array<object> = [
+    yAxisUnitOptions: Array<AxisOptionValue> = [
         {
             label: 'auto',
-            value: ''
+            value: '',
         },
         {
             label: 'Kilobyte (KB)',
-            value: 'KB'
+            value: 'KB',
         },
         {
             label: 'Megabyte (MB)',
-            value: 'MB'
+            value: 'MB',
         },
         {
             label: 'Gigabyte (GB)',
-            value: 'GB'
-        }
+            value: 'GB',
+        },
     ];
 
-    yAxisScaleOptions: Array<object> = [
+    yAxisScaleOptions: Array<AxisOptionValue> = [
         {
             label: 'Linear',
-            value: 'linear'
+            value: 'linear',
         },
         {
             label: 'Logscale',
-            value: 'logscale'
-        }
+            value: 'logscale',
+        },
     ];
 
     // NOTE: not using right now till clarification
-    xAxisModeOptions: Array<object> = [
+    xAxisModeOptions: Array<AxisOptionValue> = [
         {
             label: 'Time',
-            value: 'time'
-        }
+            value: 'time',
+        },
     ];
 
-    constructor(private fb: FormBuilder, private unit: UnitConverterService) { }
+    constructor(
+        private fb: FormBuilder,
+        private unit: UnitConverterService,
+    ) {}
 
     ngOnChanges(changes: SimpleChanges) {
-        if ( !changes.widget ) {
+        if (!changes.widget) {
             return;
         }
         // populate form controls
@@ -130,23 +148,42 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
         // ?INFO: these are mapped to the form variables set at top
         this.widgetConfigAxes = this.fb.group({});
 
-        switch ( this.widget.settings.component_type ) {
+        switch (this.widget.settings.component_type) {
             case 'BarchartWidgetComponent':
                 this.y1AxisEnabledToggleDisplay = false;
-                this.widgetConfigAxes.addControl('y1', this.getAxisFormGroup(this.getAxisConfiguration('y1')));
-            break;
+                this.widgetConfigAxes.addControl(
+                    'y1',
+                    this.getAxisFormGroup(this.getAxisConfiguration('y1')),
+                );
+                break;
             case 'LinechartWidgetComponent':
                 this.y1AxisEnabledToggleDisplay = false;
-                this.widgetConfigAxes.addControl('y1', this.getAxisFormGroup(this.getAxisConfiguration('y1')));
-                this.widgetConfigAxes.addControl('y2', this.getAxisFormGroup(this.getAxisConfiguration('y2')));
-                this.y1AxisEnabled_label = this.widgetConfigAxes.controls['y1']['controls'].enabled.value ? 'enabled' : 'disabled';
-                this.y2AxisEnabled_label = this.widgetConfigAxes.controls['y2']['controls'].enabled.value ? 'enabled' : 'disabled';
-            break;
+                this.widgetConfigAxes.addControl(
+                    'y1',
+                    this.getAxisFormGroup(this.getAxisConfiguration('y1')),
+                );
+                this.widgetConfigAxes.addControl(
+                    'y2',
+                    this.getAxisFormGroup(this.getAxisConfiguration('y2')),
+                );
+                this.y1AxisEnabled_label = this.widgetConfigAxes.controls['y1'][
+                    'controls'
+                ].enabled.value
+                    ? 'enabled'
+                    : 'disabled';
+                this.y2AxisEnabled_label = this.widgetConfigAxes.controls['y2'][
+                    'controls'
+                ].enabled.value
+                    ? 'enabled'
+                    : 'disabled';
+                break;
         }
 
         /*
         this.y1UnitSub = this.widgetConfigAxes.controls['y1']['controls'].unit.valueChanges.subscribe( function(unit) {
-            const oUnit = this.widget.settings.axes && this.widget.settings.axes.y1 ? this.unit.getDetails(this.widget.settings.axes.y1.unit) : null;
+            const oUnit = this.widget.settings.axes && this.widget.settings.axes.y1 ?
+                this.unit.getDetails(this.widget.settings.axes.y1.unit) : null;
+
             const nUnit = this.unit.getDetails(unit);
             let min = this.widgetConfigAxes.controls['y1']['controls'].min.value.toString().trim();
             let max = this.widgetConfigAxes.controls['y1']['controls'].max.value.toString().trim();
@@ -164,7 +201,9 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
         /*
         if ( this.widget.settings.component_type === 'LinechartWidgetComponent' ) {
             this.y2UnitSub = this.widgetConfigAxes.controls['y2']['controls'].unit.valueChanges.subscribe( function(unit) {
-                const oUnit = this.widget.settings.axes && this.widget.settings.axes.y2 ? this.unit.getDetails(this.widget.settings.axes.y2.unit) : null;
+                const oUnit = this.widget.settings.axes && this.widget.settings.axes.y2 ?
+                    this.unit.getDetails(this.widget.settings.axes.y2.unit) : null;
+
                 const nUnit = this.unit.getDetails(unit);
                 let min = this.widgetConfigAxes.controls['y2']['controls'].min.value.toString().trim();
                 let max = this.widgetConfigAxes.controls['y2']['controls'].max.value.toString().trim();
@@ -182,14 +221,22 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
         */
 
         this.widgetConfigAxes_Sub = this.widgetConfigAxes.valueChanges
-                                        // delay is required since we convert the min & max values to the respective unit size
-                                        .pipe(debounceTime(500))
-                                        .subscribe(function(data) {
-                                            // this.xAxisEnabled_label = (data.xAxisEnabled) ? 'enabled' : 'disabled';
-                                            this.y1AxisEnabled_label = (data.y1.enabled) ? 'enabled' : 'disabled';
-                                            this.y2AxisEnabled_label = (data.y2 && data.y2.enabled) ? 'enabled' : 'disabled';
-                                            this.widgetChange.emit( {action: 'SetAxes', payload: { data: data }} );
-                                        }.bind(this));
+            // delay is required since we convert the min & max values to the respective unit size
+            .pipe(debounceTime(500))
+            .subscribe(
+                function (data) {
+                    // this.xAxisEnabled_label = (data.xAxisEnabled) ? 'enabled' : 'disabled';
+                    this.y1AxisEnabled_label = data.y1.enabled
+                        ? 'enabled'
+                        : 'disabled';
+                    this.y2AxisEnabled_label =
+                        data.y2 && data.y2.enabled ? 'enabled' : 'disabled';
+                    this.widgetChange.emit({
+                        action: 'SetAxes',
+                        payload: { data: data },
+                    });
+                }.bind(this),
+            );
     }
 
     getAxisConfiguration(axis) {
@@ -200,31 +247,33 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
             min: 'auto',
             max: 'auto',
             decimals: 'auto',
-            label: ''
+            label: '',
         };
 
         const widget = this.widget.settings;
-        const wAxisConfig = widget.axes && widget.axes[axis] ? widget.axes[axis] : {};
+        const wAxisConfig =
+            widget.axes && widget.axes[axis] ? widget.axes[axis] : {};
         return { ...defaultConfig, ...wAxisConfig };
-
     }
 
     getAxisFormGroup(axis) {
         return this.fb.group({
-            enabled : new FormControl( axis.enabled ),
+            enabled: new FormControl(axis.enabled),
             unit: new FormControl(axis.unit),
             scale: new FormControl(axis.scale),
             min: new FormControl(axis.min),
             max: new FormControl(axis.max),
             decimals: new FormControl(axis.decimals),
-            label: new FormControl(axis.label)
+            label: new FormControl(axis.label),
         });
     }
 
     setUnit(axis, unit) {
         /*
         if ( this.widget.settings.axes ) {
-            const oUnit = this.widget.settings.axes && this.widget.settings.axes[axis] ? this.unit.getDetails(this.widget.settings.axes[axis].unit) : null;
+            const oUnit = this.widget.settings.axes && this.widget.settings.axes[axis] ?
+                this.unit.getDetails(this.widget.settings.axes[axis].unit) : null;
+
                 const nUnit = this.unit.getDetails(unit);
                 let min = this.widgetConfigAxes.controls[axis]['controls'].min.value.toString().trim();
                 let max = this.widgetConfigAxes.controls[axis]['controls'].max.value.toString().trim();
@@ -247,8 +296,8 @@ export class WidgetConfigAxesComponent implements OnChanges, OnDestroy, AfterVie
         this.widgetConfigAxes_Sub.unsubscribe();
         // this.y1UnitSub.unsubscribe();
         // if ( this.y2UnitSub ) {
-            // this.y2UnitSub.unsubscribe();
-        //}
+        // this.y2UnitSub.unsubscribe();
+        // }
     }
 
     /* function to attach to unit dropdown component when it gets finished

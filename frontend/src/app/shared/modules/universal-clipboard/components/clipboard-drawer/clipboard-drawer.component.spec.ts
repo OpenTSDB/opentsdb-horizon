@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ClipboardDrawerComponent } from './clipboard-drawer.component';
 
 describe('ClipboardDrawerComponent', () => {
-  let component: ClipboardDrawerComponent;
-  let fixture: ComponentFixture<ClipboardDrawerComponent>;
+    let component: ClipboardDrawerComponent;
+    let fixture: ComponentFixture<ClipboardDrawerComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ClipboardDrawerComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [ClipboardDrawerComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ClipboardDrawerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ClipboardDrawerComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

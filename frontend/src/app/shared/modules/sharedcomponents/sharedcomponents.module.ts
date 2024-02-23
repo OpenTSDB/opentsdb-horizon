@@ -29,13 +29,13 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
 
 /** public items from Sharedcomponents */
 
- // other components
- /* eslint-disable max-len */
+// other components
+/* eslint-disable max-len */
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
 import { ResizableDirective } from '../directives/resizable.directive';
 
- // widget config components
+// widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
 import { WidgetConfigGeneralComponent } from './components/widget-config-general/widget-config-general.component';
 import { WidgetConfigMetricQueriesComponent } from './components/widget-config-metric-queries/widget-config-metric-queries.component';
@@ -49,7 +49,6 @@ import { DropdownVisualTypeComponent } from './components/dropdown-visual-type/d
 import { NavbarTimezoneToggleComponent } from './components/navbar-timezone-toggle/navbar-timezone-toggle.component';
 import { DropdownUnitTypeComponent } from './components/dropdown-unit-type/dropdown-unit-type.component';
 import { GenericMessageBarComponent } from './components/generic-message-bar/generic-message-bar.component';
-import { SimpleDashboardListComponent } from './components/simple-dashboard-list/simple-dashboard-list.component';
 import { NamespaceAutocompleteComponent } from './components/namespace-autocomplete/namespace-autocomplete.component';
 import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from './components/debug-dialog/debug-dialog.component';
@@ -85,7 +84,7 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
 import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
-import {  Nl2BrPipe } from './pipes/nl2br.pipe';
+import { Nl2BrPipe } from './pipes/nl2br.pipe';
 import { HelpLinksComponent } from './components/help-links/help-links.component';
 
 @NgModule({
@@ -98,7 +97,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         ChartjsModule,
         DateTimePickerModule,
         ColorPickerModule,
-        RouterModule
+        RouterModule,
     ],
     declarations: [
         ThemePickerComponent,
@@ -116,7 +115,6 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         NavbarTimezoneToggleComponent,
         DropdownUnitTypeComponent,
         GenericMessageBarComponent,
-        SimpleDashboardListComponent,
         NamespaceAutocompleteComponent,
         ErrorDialogComponent,
         DebugDialogComponent,
@@ -150,7 +148,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         SafePipe,
         Nl2BrPipe,
         ResizableDirective,
-        HelpLinksComponent
+        HelpLinksComponent,
     ],
     exports: [
         ThemePickerComponent,
@@ -170,7 +168,6 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         NavbarTimezoneToggleComponent,
         DropdownMetricTagsComponent,
         GenericMessageBarComponent,
-        SimpleDashboardListComponent,
         InlineFilterEditorComponent,
         WidgetConfigSortingComponent,
         ConditionalFormatterComponent,
@@ -196,14 +193,14 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         AliasDisplayPipe,
         HighlightStripTextPipe,
         ResizableDirective,
-        HelpLinksComponent
+        HelpLinksComponent,
     ],
     entryComponents: [
         InlineFilterEditorComponent,
         MetricAutocompleteComponent,
         ErrorDialogComponent,
         AuraDialogComponent,
-        DebugDialogComponent
+        DebugDialogComponent,
     ],
 })
-export class SharedcomponentsModule { }
+export class SharedcomponentsModule {}

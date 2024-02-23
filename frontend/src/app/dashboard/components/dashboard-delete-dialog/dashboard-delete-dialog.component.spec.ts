@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DashboardDeleteDialogComponent } from './dashboard-delete-dialog.component';
 
 describe('DashboardDeleteDialogComponent', () => {
-  let component: DashboardDeleteDialogComponent;
-  let fixture: ComponentFixture<DashboardDeleteDialogComponent>;
+    let component: DashboardDeleteDialogComponent;
+    let fixture: ComponentFixture<DashboardDeleteDialogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardDeleteDialogComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DashboardDeleteDialogComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardDeleteDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DashboardDeleteDialogComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

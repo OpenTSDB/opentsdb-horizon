@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavigatorSidenavComponent } from './navigator-sidenav.component';
 
 describe('NavigatorSidenavComponent', () => {
-  let component: NavigatorSidenavComponent;
-  let fixture: ComponentFixture<NavigatorSidenavComponent>;
+    let component: NavigatorSidenavComponent;
+    let fixture: ComponentFixture<NavigatorSidenavComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavigatorSidenavComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavigatorSidenavComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavigatorSidenavComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavigatorSidenavComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

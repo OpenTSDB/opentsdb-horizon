@@ -25,22 +25,32 @@ import {
     Input,
     ChangeDetectorRef,
     AfterViewChecked,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Location } from '@angular/common';
-import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
+import {
+    MatDialog,
+    MatDialogRef,
+    MatDialogConfig,
+} from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Observable, Subscription, Subject } from 'rxjs';
-import { delayWhen, filter, skip, distinctUntilChanged, debounce, debounceTime } from 'rxjs/operators';
+import {
+    delayWhen,
+    filter,
+    skip,
+    distinctUntilChanged,
+    debounce,
+    debounceTime,
+} from 'rxjs/operators';
 import { HttpService } from '../../core/http/http.service';
-import { AppConfigService } from "../../core/services/config.service";
-
+import { AppConfigService } from '../../core/services/config.service';
 
 import { Select, Store } from '@ngxs/store';
 
@@ -58,7 +68,7 @@ import {
     SaveAlerts,
     SetNamespace,
     SaveSnoozes,
-    ClearNamespace
+    ClearNamespace,
 } from '../state/alerts.state';
 import { DbfsResourcesState } from '../../shared/modules/dashboard-filesystem/state/dbfs-resources.state';
 import { AlertState, GetAlertDetailsById } from '../state/alert.state';
@@ -76,7 +86,10 @@ import { AuraDialogComponent } from '../../shared/modules/sharedcomponents/compo
 
 import * as _moment from 'moment';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { IntercomService, IMessage } from '../../core/services/intercom.service';
+import {
+    IntercomService,
+    IMessage,
+} from '../../core/services/intercom.service';
 
 import { UtilsService } from '../../core/services/utils.service';
 import { URLOverrideService } from '../../core/services/urlOverride.service';
@@ -91,10 +104,9 @@ const moment = _moment;
     selector: 'app-alerts',
     templateUrl: './alerts.component.html',
     styleUrls: ['./alerts.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
-
     @HostBinding('class.alerts-container-component') private _hostClass = true;
 
     // @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -108,10 +120,18 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     get paginator(): MatPaginator {
-        //return this._currentPaginator || null
-        if (this.list === 'alerts' && this.alertsDataSource && this.alertsDataSource.paginator) {
+        // return this._currentPaginator || null
+        if (
+            this.list === 'alerts' &&
+            this.alertsDataSource &&
+            this.alertsDataSource.paginator
+        ) {
             return this.alertsDataSource.paginator;
-        } else if (this.list === 'snooze' && this.snoozesDataSource && this.snoozesDataSource.paginator) {
+        } else if (
+            this.list === 'snooze' &&
+            this.snoozesDataSource &&
+            this.snoozesDataSource.paginator
+        ) {
             return this.snoozesDataSource.paginator;
         } else {
             return null;
@@ -127,10 +147,12 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-    @ViewChild('namespaceDropMenuTrigger', { read: ElementRef }) namespaceDropMenuTrigger: ElementRef;
-    namespaceDropMenuTriggerWidth: string = '0px';
+    @ViewChild('namespaceDropMenuTrigger', { read: ElementRef })
+    namespaceDropMenuTrigger: ElementRef;
+    namespaceDropMenuTriggerWidth = '0px';
 
-    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true }) confirmDeleteDialogRef: TemplateRef<any>;
+    @ViewChild('confirmDeleteDialog', { read: TemplateRef, static: true })
+    confirmDeleteDialogRef: TemplateRef<any>;
 
     @Input() response;
 
@@ -139,9 +161,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     @Select(AlertsState.getLoaded) loaded$: Observable<any>;
     stateLoaded: any = {};
 
-    @Select(DbfsResourcesState.getResourcesLoaded) resourcesLoaded$: Observable<any>;
+    @Select(DbfsResourcesState.getResourcesLoaded)
+    resourcesLoaded$: Observable<any>;
 
-    @Select(AlertsState.getSelectedNamespace) selectedNamespace$: Observable<any>;
+    @Select(AlertsState.getSelectedNamespace)
+    selectedNamespace$: Observable<any>;
     selectedNamespace = '';
 
     hasNamespaceWriteAccess = false;
@@ -164,8 +188,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     @Select(AlertsState.getAlerts) alerts$: Observable<any[]>;
     alerts: AlertModel[] = [];
     @Select(AlertsState.getAlertsStats) alertsStats$: Observable<any>;
-    alertsStats:any = {};
-    defAlertStats:any = { bad: 0, warn: 0, good: 0, unknown: 0, missing: 0 };
+    alertsStats: any = {};
+    defAlertStats: any = { bad: 0, warn: 0, good: 0, unknown: 0, missing: 0 };
     @Select(AlertsState.getSnoozes) snoozes$: Observable<any[]>;
     snoozes: AlertModel[] = [];
     alertListMeta: any = [];
@@ -186,7 +210,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         'alertGroupingRules',
         'contacts',
         'updatedTime',
-        'updatedBy'
+        'updatedBy',
         // 'sparkline' // hidden for now
     ];
     alertSearch: FormControl;
@@ -195,14 +219,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     alertSearchDebounceTime = this.defaultDebounceTime; // ms
     snoozeSearchDebounceTime = this.defaultDebounceTime; // ms
 
-
     snoozesDataSource; // dynamically gets reassigned after new alerts state is subscribed
     snoozeDisplayedColumns: string[] = [
         'select',
         'name',
         'createdBy',
         'scope',
-        'reason'
+        'reason',
     ];
 
     // for batch selection
@@ -218,11 +241,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     private _guid: any = false;
     get guid(): string {
         if (!this._guid) {
-            this._guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                // eslint-disable-next-line no-bitwise
-                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
+            this._guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+                /[xy]/g,
+                function (c) {
+                    // eslint-disable-next-line no-bitwise
+                    const r = (Math.random() * 16) | 0,
+                        // eslint-disable-next-line no-bitwise
+                        v = c === 'x' ? r : (r & 0x3) | 0x8;
+                    return v.toString(16);
+                },
+            );
         }
         return this._guid;
     }
@@ -234,7 +262,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     snoozeFilterRegexp = new RegExp('.*');
 
     @ViewChild(AlertDetailsComponent) createAlertDialog: AlertDetailsComponent;
-    @ViewChild(SnoozeDetailsComponent) snoozeDetailsComp: SnoozeDetailsComponent;
+    @ViewChild(SnoozeDetailsComponent)
+    snoozeDetailsComp: SnoozeDetailsComponent;
 
     detailsView = false;
     list = 'alerts';
@@ -251,28 +280,28 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     sparklineDisplayMenuOptions: any[] = [
         {
             label: '1 HR',
-            value: '1HR'
+            value: '1HR',
         },
         {
             label: '2 HR',
-            value: '2HR'
+            value: '2HR',
         },
         {
             label: '3 HR',
-            value: '3HR'
+            value: '3HR',
         },
         {
             label: '6 HR',
-            value: '6HR'
+            value: '6HR',
         },
         {
             label: '12 HR',
-            value: '12HR'
+            value: '12HR',
         },
         {
             label: '24 HR',
-            value: '24HR'
-        }
+            value: '24HR',
+        },
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
@@ -284,15 +313,29 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     error: any = false;
 
     // portal templates
-    @ViewChild('alertspageNavbarTmpl', { static: true }) alertspageNavbarTmpl: TemplateRef<any>;
+    @ViewChild('alertspageNavbarTmpl', { static: true })
+    alertspageNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     alertspageNavbarPortal: TemplatePortal;
     auraDialog: MatDialogRef<AuraDialogComponent> | null;
 
     // for alert search
-    whitelistKeys: string[] = ['name', 'type', 'labels', 'recipients', 'updatedTime', 'updatedBy'];
-    nonZeroConditionalKeys: string[] = ['bad', 'warn', 'good', 'unknown', 'missing'];
+    whitelistKeys: string[] = [
+        'name',
+        'type',
+        'labels',
+        'recipients',
+        'updatedTime',
+        'updatedBy',
+    ];
+    nonZeroConditionalKeys: string[] = [
+        'bad',
+        'warn',
+        'good',
+        'unknown',
+        'missing',
+    ];
     booleanConditionalKeys: string[] = ['enabled'];
     showNamespace = true;
     // where to navigate on save
@@ -310,15 +353,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     get pagingTextDisplay(): string {
         if (this.paginator) {
-            let total: number = this.paginator.length;
-            let pageSize: number = this.paginator.pageSize;
-            let pageIndex: number = this.paginator.pageIndex;
-            let start: number = (pageIndex === 0) ? 1 : (pageIndex * pageSize) + 1;
-            let end: number = (start - 1) + pageSize;
+            const total: number = this.paginator.length;
+            const pageSize: number = this.paginator.pageSize;
+            const pageIndex: number = this.paginator.pageIndex;
+            const start: number = pageIndex === 0 ? 1 : pageIndex * pageSize + 1;
+            let end: number = start - 1 + pageSize;
             if (end > total) {
                 end = total;
             }
-            let prefix: string = 'Displaying';
+            const prefix = 'Displaying';
             if (total === 0) {
                 return '';
             }
@@ -346,430 +389,604 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         private dataShare: DataShareService,
         private infoIslandService: InfoIslandService,
         private urlOverrideService: URLOverrideService,
-        private appConfig: AppConfigService
+        private appConfig: AppConfigService,
     ) {
         this.sparklineDisplay = this.sparklineDisplayMenuOptions[0];
 
         // icons
-        const svgIcons = ['email', 'http', 'oc', 'opsgenie', 'slack', 'pagerduty'];
-
+        const svgIcons = [
+            'email',
+            'http',
+            'oc',
+            'opsgenie',
+            'slack',
+            'pagerduty',
+        ];
     }
 
     ngOnInit() {
         this.webUrl = this.appConfig.getConfig().webUI;
         this.urlOverrideService.initialize();
-        this.auraUrl = this.appConfig.getConfig().auraUI ? this.appConfig.getConfig().auraUI+ '/#/aura/newquery' : '';
+        this.auraUrl = this.appConfig.getConfig().auraUI
+            ? this.appConfig.getConfig().auraUI + '/#/aura/newquery'
+            : '';
         this.alertSearch = new FormControl();
         this.snoozeSearch = new FormControl();
         const config = this.appConfig.getConfig();
-        this.showNamespace = config.namespace && config.namespace.enabled !== undefined ? config.namespace.enabled : true;
+        this.showNamespace =
+            config.namespace && config.namespace.enabled !== undefined
+                ? config.namespace.enabled
+                : true;
 
-        this.subscription.add(this.alertSearch.valueChanges.pipe(
-            debounceTime(this.alertSearchDebounceTime)
-        ).subscribe(val => {
-            this.alertSearchDebounceTime = this.defaultDebounceTime;
-            if ( !this.detailsView && val !== null ) {
-                this.setRouterUrl();
-            }
-            val = val ? this.utils.regExpEscSpecialChars(val, ['[', '\\]']) : '';
-            try {
-                this.alertsFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-                let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
-                this.setTableDataSource(filteredAlertValues);
-            } catch(e) {
-                console.info(e);
-            }
-        }));
+        this.subscription.add(
+            this.alertSearch.valueChanges
+                .pipe(debounceTime(this.alertSearchDebounceTime))
+                .subscribe((val) => {
+                    this.alertSearchDebounceTime = this.defaultDebounceTime;
+                    if (!this.detailsView && val !== null) {
+                        this.setRouterUrl();
+                    }
+                    val = val
+                        ? this.utils.regExpEscSpecialChars(val, ['[', '\\]'])
+                        : '';
+                    try {
+                        this.alertsFilterRegexp = new RegExp(
+                            val.toLocaleLowerCase().replace(/\s/g, '.*'),
+                        );
+                        const filteredAlertValues = this.getFilteredAlerts(
+                            this.alertsFilterRegexp,
+                            this.alerts,
+                        );
+                        this.setTableDataSource(filteredAlertValues);
+                    } catch (e) {
+                        // eslint-disable-next-line no-console
+                        console.info(e);
+                    }
+                }),
+        );
 
-        this.subscription.add(this.snoozeSearch.valueChanges.pipe(
-            debounceTime(this.snoozeSearchDebounceTime)
-        ).subscribe(val => {
-            this.snoozeSearchDebounceTime = this.defaultDebounceTime;
-            val = val ? val : '';
-            this.snoozeFilterRegexp = new RegExp(val.toLocaleLowerCase().replace(/\s/g, '.*'));
-            this.setSnoozeTableDataSource(this.getFilteredSnoozes(this.snoozeFilterRegexp, this.snoozes));
-        }));
+        this.subscription.add(
+            this.snoozeSearch.valueChanges
+                .pipe(debounceTime(this.snoozeSearchDebounceTime))
+                .subscribe((val) => {
+                    this.snoozeSearchDebounceTime = this.defaultDebounceTime;
+                    val = val ? val : '';
+                    this.snoozeFilterRegexp = new RegExp(
+                        val.toLocaleLowerCase().replace(/\s/g, '.*'),
+                    );
+                    this.setSnoozeTableDataSource(
+                        this.getFilteredSnoozes(
+                            this.snoozeFilterRegexp,
+                            this.snoozes,
+                        ),
+                    );
+                }),
+        );
 
         // setup navbar portal
-        this.alertspageNavbarPortal = new TemplatePortal(this.alertspageNavbarTmpl, undefined, {});
+        this.alertspageNavbarPortal = new TemplatePortal(
+            this.alertspageNavbarTmpl,
+            undefined,
+            {},
+        );
         this.setNavbarPortal();
 
-        this.subscription.add(this.loaded$.subscribe(data => {
-            this.stateLoaded = JSON.parse(JSON.stringify(data));
-        }));
+        this.subscription.add(
+            this.loaded$.subscribe((data) => {
+                this.stateLoaded = JSON.parse(JSON.stringify(data));
+            }),
+        );
 
-        this.subscription.add(this.resourcesLoaded$.subscribe( rloaded => {
-            const dynamicLoaded = this.store.selectSnapshot(AlertsState.getLoaded);
-            if ( rloaded && !dynamicLoaded.allNamespaces) {
-                this.store.dispatch(
-                    new LoadNamespaces({
-                        guid: this.guid,
-                        responseRequested: true
-                    })
+        this.subscription.add(
+            this.resourcesLoaded$.subscribe((rloaded) => {
+                const dynamicLoaded = this.store.selectSnapshot(
+                    AlertsState.getLoaded,
                 );
-            }
-        }));
+                if (rloaded && !dynamicLoaded.allNamespaces) {
+                    this.store.dispatch(
+                        new LoadNamespaces({
+                            guid: this.guid,
+                            responseRequested: true,
+                        }),
+                    );
+                }
+            }),
+        );
 
-        this.subscription.add(this.selectedNamespace$.subscribe(data => {
-            this.selectedNamespace = data;
-            if (this.selectedNamespace) {
-                this.localStorageService.setLocal('defaultNS', data);
-                // this.hasNamespaceWriteAccess = this.userNamespaces.find(d => d.name === this.selectedNamespace ) ? true : false;
-                this.stateLoaded.alerts = false;
-                this.stateLoaded.snooze = false;
+        this.subscription.add(
+            this.selectedNamespace$.subscribe((data) => {
+                this.selectedNamespace = data;
+                if (this.selectedNamespace) {
+                    this.localStorageService.setLocal('defaultNS', data);
+                    // this.hasNamespaceWriteAccess = this.userNamespaces.find(d => d.name === this.selectedNamespace ) ? true : false;
+                    this.stateLoaded.alerts = false;
+                    this.stateLoaded.snooze = false;
 
-                this.loadAlertsSnooze(this.list === 'alerts' ? ['alerts'] : ['alerts', 'snooze']);
-            } else {
-                this.hasNamespaceWriteAccess = false;
-                this.alerts = [];
-            }
-        }));
-
-        this.subscription.add(this.allNamespaces$.subscribe(data => {
-            this.allNamespaces = data;
-            this.allNamespacesDS = new MatTableDataSource(this.allNamespaces);
-            this.allNamespacesDS.filterPredicate = (data: any, filter: string) => {
-                return data.name.toLowerCase().includes(filter.toLowerCase());
-            };
-        }));
-
-        this.subscription.add(this.userNamespaces$.subscribe(data => {
-            const dataCopy = this.utils.deepClone(data);
-            dataCopy.sort((a: any, b: any) => {
-                return this.utils.sortAlphaNum(a.name, b.name);
-            });
-            this.userNamespaces = dataCopy;
-
-            if (this.stateLoaded.userNamespaces) {
-                this.configLoaded$.next(true);
-                this.configLoaded$.complete();
-            }
-        }));
-
-        this.subscription.add(this.alerts$.pipe(skip(1)).subscribe(alerts => {
-            this.stateLoaded.alerts = true;
-            for (let i = 0; i < alerts.length; i++ ) {
-                alerts[i] = {...alerts[i], ...this.defAlertStats, recipientsKeys:this.getRecipientKeys(alerts[i])};
-            }
-            this.alerts = JSON.parse(JSON.stringify(alerts));
-            this.setAlertListMeta();
-            this.retriggerAlertSearch();
-        }));
-
-        this.subscription.add(this.alertsStats$.pipe(skip(1)).subscribe(stats => {
-            this.alertsStats = JSON.parse(JSON.stringify(stats));
-            for (let i = 0; i < this.alerts.length; i++ ) {
-                this.setAlertCount(i);
-            }
-            if (this.alertsDataSource && this.alertsDataSource.data) {
-                if (this.alertSearch && this.alertSearch.value !== '') {
-                    let val = this.utils.regExpEscSpecialChars(this.alertSearch.value, ['[', '\\]']);
-                    let filteredAlertValues = this.getFilteredAlerts(this.alertsFilterRegexp, this.alerts);
-                    this.setTableDataSource(filteredAlertValues);
+                    this.loadAlertsSnooze(
+                        this.list === 'alerts'
+                            ? ['alerts']
+                            : ['alerts', 'snooze'],
+                    );
                 } else {
-                    //this.alertsDataSource.data = this.alerts;
-                    this.setTableDataSource(this.alerts);
+                    this.hasNamespaceWriteAccess = false;
+                    this.alerts = [];
                 }
-            }
+            }),
+        );
 
-        }));
+        this.subscription.add(
+            this.allNamespaces$.subscribe((data) => {
+                this.allNamespaces = data;
+                this.allNamespacesDS = new MatTableDataSource(
+                    this.allNamespaces,
+                );
+                this.allNamespacesDS.filterPredicate = (
+                    nsData: any,
+                    nsFilter: string,
+                ) => nsData.name
+                    .toLowerCase()
+                    .includes(nsFilter.toLowerCase());
+            }),
+        );
 
-        this.subscription.add(this.snoozes$.pipe(skip(1)).subscribe(snoozes => {
-            this.stateLoaded.snooze = true;
-            this.snoozes = JSON.parse(JSON.stringify(snoozes));
-            this.snoozes = this.snoozes.map((d: any) => {
-                if ( d.filter && Object.keys(d.filter).length ) {
-                    d.rawFilters = this.utils.getFiltersTsdbToLocal(d.filter);
-                } else {
-                    d.rawFilters = [];
+        this.subscription.add(
+            this.userNamespaces$.subscribe((data) => {
+                const dataCopy = this.utils.deepClone(data);
+                dataCopy.sort((a: any, b: any) => this.utils.sortAlphaNum(a.name, b.name));
+                this.userNamespaces = dataCopy;
+
+                if (this.stateLoaded.userNamespaces) {
+                    this.configLoaded$.next(true);
+                    this.configLoaded$.complete();
                 }
-                return d;
-            });
-            this.retriggerSnoozeSearch();
-        }));
+            }),
+        );
 
-        this.subscription.add(this.status$.subscribe(status => {
-            let message = '';
-            switch (status) {
-                case 'add-success':
-                case 'update-success':
-                    message = 'Alert has been ' + (status === 'add-success' ? 'created' : 'updated') + '.';
-                    this.detailsView = false;
-                    this.loadAlertsSnooze(['alerts']);
-                    // this.router.navigate(['a']);
-                    // this.editMode = false;
-                    break;
-                case 'enable-success':
-                    this.isAlertEnabled = true;
-                    message = 'Alert has been enabled.';
-                    break;
-                case 'disable-success':
-                    this.isAlertEnabled = false;
-                    message = 'Alert has been disabled.';
-                    break;
-                case 'delete-success':
-                    message = 'Alert has been deleted.';
-                    break;
-                case 'snooze-add-success':
-                case 'snooze-update-success':
-                    message = 'Snooze has been ' + (status === 'snooze-add-success' ? 'created' : 'updated') + '.';
-                    this.detailsView = false;
-                    break;
-                case 'snooze-delete-success':
-                    message = 'Snooze has been deleted.';
-                    break;
-            }
-            if ( !this.detailsView ) {
-                if (message !== '') {
-                    this.snackBar.open(message, '', {
-                        horizontalPosition: 'center',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                        panelClass: 'info'
-                    });
+        this.subscription.add(
+            this.alerts$.pipe(skip(1)).subscribe((alerts) => {
+                this.stateLoaded.alerts = true;
+                for (let i = 0; i < alerts.length; i++) {
+                    alerts[i] = {
+                        ...alerts[i],
+                        ...this.defAlertStats,
+                        recipientsKeys: this.getRecipientKeys(alerts[i]),
+                    };
                 }
-                this.infoIslandService.closeIsland();
-            }
-            this.retriggerAlertSearch();
-            this.retriggerSnoozeSearch();
-        }));
+                this.alerts = JSON.parse(JSON.stringify(alerts));
+                this.setAlertListMeta();
+                this.retriggerAlertSearch();
+            }),
+        );
 
-        this.subscription.add(this.editItem$.pipe(filter(data => Object.keys(data).length !== 0), distinctUntilChanged())
-            .subscribe(data => {
-                let _data = JSON.parse(JSON.stringify(data));
-
-                // alert meta is needed when snooze add/edit
-                // if ( this.list === 'snooze' && !this.stateLoaded.alerts ) {
-                // this.store.dispatch(new LoadAlerts({namespace: _data.namespace}));
-                // }
-                // set the namespace if the user comes directly from edit url
-                // if (!this.selectedNamespace) {
-                    // this.setNamespace(_data.namespace, null);
-                // }
-                if (_data.id === '_new_') {
-                    if (this.list === 'alerts') {
-                        _data = {
-                            type: 'simple',
-                            name: 'Untitled Alert'
-                        };
-                    }
-                    _data.namespace = data.namespace;
+        this.subscription.add(
+            this.alertsStats$.pipe(skip(1)).subscribe((stats) => {
+                this.alertsStats = JSON.parse(JSON.stringify(stats));
+                for (let i = 0; i < this.alerts.length; i++) {
+                    this.setAlertCount(i);
                 }
-                this.openEditMode(_data);
-            }));
-
-        this.subscription.add(this.readOnly$.subscribe(readOnly => {
-            this.hasNamespaceWriteAccess = !readOnly;
-            const routeSnapshot = this.activatedRoute.snapshot.url;
-            let modeCheck;
-
-            if (routeSnapshot.length > 1 && this.utils.checkIfNumeric(routeSnapshot[0].path) && routeSnapshot[1].path !== '_new_') {
-
-                // check if there is a mode in the url
-                // purely aesthetic. If url has 'edit', but its readonly, it will still be readonly
-                if (readOnly) {
-                    modeCheck = routeSnapshot[routeSnapshot.length - 1];
-
-                    // there is no mode in the url
-                    if (modeCheck.path.toLowerCase() !== 'view' && modeCheck.path.toLowerCase() !== 'edit') {
-                        // force view url path
-                        const parts = routeSnapshot.map(item => item.path);
-                        parts.unshift('/a');
-                        parts.push('view');
-                        this.location.go(parts.join('/'));
+                if (this.alertsDataSource && this.alertsDataSource.data) {
+                    if (this.alertSearch && this.alertSearch.value !== '') {
+                        const val = this.utils.regExpEscSpecialChars(
+                            this.alertSearch.value,
+                            ['[', '\\]'],
+                        );
+                        const filteredAlertValues = this.getFilteredAlerts(
+                            this.alertsFilterRegexp,
+                            this.alerts,
+                        );
+                        this.setTableDataSource(filteredAlertValues);
                     } else {
-                        // mode is in url, so check if it matches edit, and forcibly change it to view
-                        const parts = routeSnapshot.map(item => item.path);
-                        parts.pop();
-                        parts.unshift('/a');
-                        parts.push('view');
-                        this.location.go(parts.join('/'));
+                        // this.alertsDataSource.data = this.alerts;
+                        this.setTableDataSource(this.alerts);
                     }
+                }
+            }),
+        );
 
-                    this.detailsMode = 'view';
-
-                    // it's not readonly, check if mode in url. If not, add 'edit'
-                    // if it has 'view' in the url, it will still pass
-                } else if (!readOnly) {
-                    modeCheck = routeSnapshot[routeSnapshot.length - 1];
-                    // there is no mode in the url
-                    if (!['view', 'edit', 'clone'].includes(modeCheck.path.toLowerCase())) {
-                        // enforce mode in url path, defaulting to edit
-                        const parts = routeSnapshot.map(item => item.path);
-                        parts.unshift('/a');
-                        parts.push('edit');
-                        this.location.go(parts.join('/'));
-                        this.detailsMode = 'edit';
+        this.subscription.add(
+            this.snoozes$.pipe(skip(1)).subscribe((snoozes) => {
+                this.stateLoaded.snooze = true;
+                this.snoozes = JSON.parse(JSON.stringify(snoozes));
+                this.snoozes = this.snoozes.map((d: any) => {
+                    if (d.filter && Object.keys(d.filter).length) {
+                        d.rawFilters = this.utils.getFiltersTsdbToLocal(
+                            d.filter,
+                        );
                     } else {
-                        this.detailsMode = modeCheck.path.toLowerCase();
+                        d.rawFilters = [];
                     }
-                }
-            }
-
-        }));
-
-        this.subscription.add(this.error$.subscribe(error => {
-
-            if (Object.keys(error).length > 0) {
-                this.error = error;
-            } else {
-                this.error = false;
-            }
-            // maybe intercom error for messaging bar?
-        }));
-
-        this.subscription.add(this.alertDetailError$.subscribe(error => {
-            if (error && ( error.error || error.message) ) {
-                // set system message bar
-                this.interCom.requestSend({
-                    action: 'systemMessage',
-                    payload: {
-                        type: 'error',
-                        message: error.error || error.message
-                    }
+                    return d;
                 });
-            }
-        }));
+                this.retriggerSnoozeSearch();
+            }),
+        );
 
-        this.subscription.add(this.saveError$.subscribe(error => {
-
-            if (!error) {
-                if (this.dashboardId > 0) {
-                    this.location.go('d/' + this.dashboardId);
-                    this.router.navigate(['d', this.dashboardId]);
-                } else {
-                    this.location.go('a/' + this.selectedNamespace);
+        this.subscription.add(
+            this.status$.subscribe((status) => {
+                let message = '';
+                switch (status) {
+                    case 'add-success':
+                    case 'update-success':
+                        message =
+                            'Alert has been ' +
+                            (status === 'add-success' ? 'created' : 'updated') +
+                            '.';
+                        this.detailsView = false;
+                        this.loadAlertsSnooze(['alerts']);
+                        // this.router.navigate(['a']);
+                        // this.editMode = false;
+                        break;
+                    case 'enable-success':
+                        this.isAlertEnabled = true;
+                        message = 'Alert has been enabled.';
+                        break;
+                    case 'disable-success':
+                        this.isAlertEnabled = false;
+                        message = 'Alert has been disabled.';
+                        break;
+                    case 'delete-success':
+                        message = 'Alert has been deleted.';
+                        break;
+                    case 'snooze-add-success':
+                    case 'snooze-update-success':
+                        message =
+                            'Snooze has been ' +
+                            (status === 'snooze-add-success'
+                                ? 'created'
+                                : 'updated') +
+                            '.';
+                        this.detailsView = false;
+                        break;
+                    case 'snooze-delete-success':
+                        message = 'Snooze has been deleted.';
+                        break;
                 }
-            }
-
-            if (this.list === 'alerts' && this.createAlertDialog) {
-                this.createAlertDialog.data.error = error;
-            }
-            if (this.list === 'snooze' && this.snoozeDetailsComp) {
-                this.snoozeDetailsComp.data.error = error;
-            }
-
-            if ( error && ( error.error || error.message ) ) {
-                // set system message bar
-                this.interCom.requestSend({
-                    action: 'systemMessage',
-                    payload: {
-                        type: 'error',
-                        message: 'Saving Error: ' + ( error.error || error.message )
+                if (!this.detailsView) {
+                    if (message !== '') {
+                        this.snackBar.open(message, '', {
+                            horizontalPosition: 'center',
+                            verticalPosition: 'top',
+                            duration: 5000,
+                            panelClass: 'info',
+                        });
                     }
-                });
-            }
-        }));
-
-
-        // handle route for alerts
-        this.subscription.add(this.activatedRoute.url.pipe(delayWhen(() => this.configLoaded$)).subscribe(url => {
-
-            const queryParams = this.activatedRoute.snapshot.queryParams;
-            this.clearSystemMessage();
-            this.alertsSelection.clear();
-            this.snoozeSelection.clear();
-
-            let defaultNS = this.getDefaultNamespace();
-            if (this.dataShare.getData() && this.dataShare.getMessage() === 'WidgetToAlert' ) {
-                this.createAlertFromWidget(this.dataShare.getData());
-            } else if (url.length >= 1 && url[0].path === 'snooze') {
-                this.list = 'snooze';
-                if (url.length >= 2 && this.utils.checkIfNumeric(url[1].path)) {
-                    this.store.dispatch(new GetSnoozeDetailsById(parseInt(url[1].path, 10)));
-                } else if (url.length === 3 && url[2].path === '_new_') {
-                    // new snooze
-                    this.setNamespace(url[1].path);
-                    this.store.dispatch(new CheckWriteAccess({ namespace: url[1].path, id: '_new_' }));
-                } else {
-                    this.detailsView = false;
-                    // eslint-disable-next-line max-len
-                    const ns = url[1] && url[1].path ? url[1].path : defaultNS;
-                    this.setNamespace(ns);
                     this.infoIslandService.closeIsland();
                 }
-            } else if (url.length === 1 && !this.utils.checkIfNumeric(url[0].path)) {
-                // if only one item, and its not numeric, probably a namespace
-                this.setNamespace(url[0].path, queryParams.q);
-            } else if (url.length === 2 && url[1].path === '_new_') {
-                // new alert
-                this.setNamespace(url[0].path);
-                this.store.dispatch(new CheckWriteAccess({ namespace: url[0].path, id: '_new_' }));
-            } else if (
-                (url.length === 2 &&
-                    this.utils.checkIfNumeric(url[0].path) &&
-                    (['view', 'edit', 'clone'].includes(url[1].path.toLocaleLowerCase()))) ||
-                (url.length === 1 && this.utils.checkIfNumeric(url[0].path))
-            ) {
-                // abreviated alert url... probably came from alert email
-                this.store.dispatch(new GetAlertDetailsById(parseInt(url[0].path, 10)));
-            } else if (url.length > 2) {
-                // load alert the alert
-                this.store.dispatch(new GetAlertDetailsById(parseInt(url[0].path, 10)));
-            } else if (url.length === 0 && this.detailsView && this.selectedNamespace.length > 0) {
-                this.location.go('/a/' + (this.list === 'snooze' ? 'snooze/' : '') + this.selectedNamespace);
-                this.detailsView = false;
-                this.infoIslandService.closeIsland();
-                this.setNavbarPortal();
+                this.retriggerAlertSearch();
+                this.retriggerSnoozeSearch();
+            }),
+        );
 
-            } else if ( defaultNS ) {
-                // set a namespace... probably should update url?
-                this.setNamespace(defaultNS);
+        this.subscription.add(
+            this.editItem$
+                .pipe(
+                    filter((data) => Object.keys(data).length !== 0),
+                    distinctUntilChanged(),
+                )
+                .subscribe((data) => {
+                    let _data = JSON.parse(JSON.stringify(data));
 
-                if (this.detailsView) {
-                    this.detailsView = false;
-                    this.infoIslandService.closeIsland;
+                    // alert meta is needed when snooze add/edit
+                    // if ( this.list === 'snooze' && !this.stateLoaded.alerts ) {
+                    // this.store.dispatch(new LoadAlerts({namespace: _data.namespace}));
+                    // }
+                    // set the namespace if the user comes directly from edit url
+                    // if (!this.selectedNamespace) {
+                    // this.setNamespace(_data.namespace, null);
+                    // }
+                    if (_data.id === '_new_') {
+                        if (this.list === 'alerts') {
+                            _data = {
+                                type: 'simple',
+                                name: 'Untitled Alert',
+                            };
+                        }
+                        _data.namespace = data.namespace;
+                    }
+                    this.openEditMode(_data);
+                }),
+        );
+
+        this.subscription.add(
+            this.readOnly$.subscribe((readOnly) => {
+                this.hasNamespaceWriteAccess = !readOnly;
+                const routeSnapshot = this.activatedRoute.snapshot.url;
+                let modeCheck;
+
+                if (
+                    routeSnapshot.length > 1 &&
+                    this.utils.checkIfNumeric(routeSnapshot[0].path) &&
+                    routeSnapshot[1].path !== '_new_'
+                ) {
+                    // check if there is a mode in the url
+                    // purely aesthetic. If url has 'edit', but its readonly, it will still be readonly
+                    if (readOnly) {
+                        modeCheck = routeSnapshot[routeSnapshot.length - 1];
+
+                        // there is no mode in the url
+                        if (
+                            modeCheck.path.toLowerCase() !== 'view' &&
+                            modeCheck.path.toLowerCase() !== 'edit'
+                        ) {
+                            // force view url path
+                            const parts = routeSnapshot.map(
+                                (item) => item.path,
+                            );
+                            parts.unshift('/a');
+                            parts.push('view');
+                            this.location.go(parts.join('/'));
+                        } else {
+                            // mode is in url, so check if it matches edit, and forcibly change it to view
+                            const parts = routeSnapshot.map(
+                                (item) => item.path,
+                            );
+                            parts.pop();
+                            parts.unshift('/a');
+                            parts.push('view');
+                            this.location.go(parts.join('/'));
+                        }
+
+                        this.detailsMode = 'view';
+
+                        // it's not readonly, check if mode in url. If not, add 'edit'
+                        // if it has 'view' in the url, it will still pass
+                    } else if (!readOnly) {
+                        modeCheck = routeSnapshot[routeSnapshot.length - 1];
+                        // there is no mode in the url
+                        if (
+                            !['view', 'edit', 'clone'].includes(
+                                modeCheck.path.toLowerCase(),
+                            )
+                        ) {
+                            // enforce mode in url path, defaulting to edit
+                            const parts = routeSnapshot.map(
+                                (item) => item.path,
+                            );
+                            parts.unshift('/a');
+                            parts.push('edit');
+                            this.location.go(parts.join('/'));
+                            this.detailsMode = 'edit';
+                        } else {
+                            this.detailsMode = modeCheck.path.toLowerCase();
+                        }
+                    }
                 }
-            }
-        }));
+            }),
+        );
+
+        this.subscription.add(
+            this.error$.subscribe((error) => {
+                if (Object.keys(error).length > 0) {
+                    this.error = error;
+                } else {
+                    this.error = false;
+                }
+                // maybe intercom error for messaging bar?
+            }),
+        );
+
+        this.subscription.add(
+            this.alertDetailError$.subscribe((error) => {
+                if (error && (error.error || error.message)) {
+                    // set system message bar
+                    this.interCom.requestSend({
+                        action: 'systemMessage',
+                        payload: {
+                            type: 'error',
+                            message: error.error || error.message,
+                        },
+                    });
+                }
+            }),
+        );
+
+        this.subscription.add(
+            this.saveError$.subscribe((error) => {
+                if (!error) {
+                    if (this.dashboardId > 0) {
+                        this.location.go('d/' + this.dashboardId);
+                        this.router.navigate(['d', this.dashboardId]);
+                    } else {
+                        this.location.go('a/' + this.selectedNamespace);
+                    }
+                }
+
+                if (this.list === 'alerts' && this.createAlertDialog) {
+                    this.createAlertDialog.data.error = error;
+                }
+                if (this.list === 'snooze' && this.snoozeDetailsComp) {
+                    this.snoozeDetailsComp.data.error = error;
+                }
+
+                if (error && (error.error || error.message)) {
+                    // set system message bar
+                    this.interCom.requestSend({
+                        action: 'systemMessage',
+                        payload: {
+                            type: 'error',
+                            message:
+                                'Saving Error: ' +
+                                (error.error || error.message),
+                        },
+                    });
+                }
+            }),
+        );
+
+        // handle route for alerts
+        this.subscription.add(
+            this.activatedRoute.url
+                .pipe(delayWhen(() => this.configLoaded$))
+                .subscribe((url) => {
+                    const queryParams =
+                        this.activatedRoute.snapshot.queryParams;
+                    this.clearSystemMessage();
+                    this.alertsSelection.clear();
+                    this.snoozeSelection.clear();
+
+                    const defaultNS = this.getDefaultNamespace();
+                    if (
+                        this.dataShare.getData() &&
+                        this.dataShare.getMessage() === 'WidgetToAlert'
+                    ) {
+                        this.createAlertFromWidget(this.dataShare.getData());
+                    } else if (url.length >= 1 && url[0].path === 'snooze') {
+                        this.list = 'snooze';
+                        if (
+                            url.length >= 2 &&
+                            this.utils.checkIfNumeric(url[1].path)
+                        ) {
+                            this.store.dispatch(
+                                new GetSnoozeDetailsById(
+                                    parseInt(url[1].path, 10),
+                                ),
+                            );
+                        } else if (
+                            url.length === 3 &&
+                            url[2].path === '_new_'
+                        ) {
+                            // new snooze
+                            this.setNamespace(url[1].path);
+                            this.store.dispatch(
+                                new CheckWriteAccess({
+                                    namespace: url[1].path,
+                                    id: '_new_',
+                                }),
+                            );
+                        } else {
+                            this.detailsView = false;
+                            // eslint-disable-next-line max-len
+                            const ns =
+                                url[1] && url[1].path ? url[1].path : defaultNS;
+                            this.setNamespace(ns);
+                            this.infoIslandService.closeIsland();
+                        }
+                    } else if (
+                        url.length === 1 &&
+                        !this.utils.checkIfNumeric(url[0].path)
+                    ) {
+                        // if only one item, and its not numeric, probably a namespace
+                        this.setNamespace(url[0].path, queryParams.q);
+                    } else if (url.length === 2 && url[1].path === '_new_') {
+                        // new alert
+                        this.setNamespace(url[0].path);
+                        this.store.dispatch(
+                            new CheckWriteAccess({
+                                namespace: url[0].path,
+                                id: '_new_',
+                            }),
+                        );
+                    } else if (
+                        (url.length === 2 &&
+                            this.utils.checkIfNumeric(url[0].path) &&
+                            ['view', 'edit', 'clone'].includes(
+                                url[1].path.toLocaleLowerCase(),
+                            )) ||
+                        (url.length === 1 &&
+                            this.utils.checkIfNumeric(url[0].path))
+                    ) {
+                        // abreviated alert url... probably came from alert email
+                        this.store.dispatch(
+                            new GetAlertDetailsById(parseInt(url[0].path, 10)),
+                        );
+                    } else if (url.length > 2) {
+                        // load alert the alert
+                        this.store.dispatch(
+                            new GetAlertDetailsById(parseInt(url[0].path, 10)),
+                        );
+                    } else if (
+                        url.length === 0 &&
+                        this.detailsView &&
+                        this.selectedNamespace.length > 0
+                    ) {
+                        this.location.go(
+                            '/a/' +
+                                (this.list === 'snooze' ? 'snooze/' : '') +
+                                this.selectedNamespace,
+                        );
+                        this.detailsView = false;
+                        this.infoIslandService.closeIsland();
+                        this.setNavbarPortal();
+                    } else if (defaultNS) {
+                        // set a namespace... probably should update url?
+                        this.setNamespace(defaultNS);
+
+                        if (this.detailsView) {
+                            this.detailsView = false;
+                            this.infoIslandService.closeIsland();
+                        }
+                    }
+                }),
+        );
 
         // check the edit access. skips the first time with default value
-        this.subscription.add(this.alertDetail$.pipe(skip(1)).subscribe(data => {
-            const routeSnapshot = this.activatedRoute.snapshot.url;
-            let parts;
-            const namespace = data.namespace ? data.namespace : this.getDefaultNamespace();
-            // url path has 2 parts, (i.e. /a/1234/view)
-            if (
-                routeSnapshot.length === 2 &&
-                this.utils.checkIfNumeric(routeSnapshot[0].path) &&
-                (['view', 'edit', 'clone'].includes(routeSnapshot[1].path.toLowerCase()))
-            ) {
-                // fix the URL if it is abbreviated route from alert email
-                parts = data.id ? ['/a', data.id, data.namespace, data.slug, routeSnapshot[1].path.toLowerCase()] : ['/a', namespace ];
-                this.location.go(parts.join('/'));
-                // set the namespace, since we probably didn't get it from the url
-                // this.setNamespace( namespace, null);
+        this.subscription.add(
+            this.alertDetail$.pipe(skip(1)).subscribe((data) => {
+                const routeSnapshot = this.activatedRoute.snapshot.url;
+                let parts;
+                const namespace = data.namespace
+                    ? data.namespace
+                    : this.getDefaultNamespace();
+                // url path has 2 parts, (i.e. /a/1234/view)
+                if (
+                    routeSnapshot.length === 2 &&
+                    this.utils.checkIfNumeric(routeSnapshot[0].path) &&
+                    ['view', 'edit', 'clone'].includes(
+                        routeSnapshot[1].path.toLowerCase(),
+                    )
+                ) {
+                    // fix the URL if it is abbreviated route from alert email
+                    parts = data.id
+                        ? [
+                            '/a',
+                            data.id,
+                            data.namespace,
+                            data.slug,
+                            routeSnapshot[1].path.toLowerCase(),
+                        ]
+                        : ['/a', namespace];
+                    this.location.go(parts.join('/'));
+                    // set the namespace, since we probably didn't get it from the url
+                    // this.setNamespace( namespace, null);
 
-                // url path has 1 parts, (i.e. /a/1234)
-            } else if (
-                routeSnapshot.length === 1 &&
-                this.utils.checkIfNumeric(routeSnapshot[0].path)
-            ) {
-                // fix the URL if it is abbreviated route from alert email
-                parts = data.id ? ['/a', data.id, data.namespace, data.slug, 'view'] : ['/a', namespace ];
-                this.location.go(parts.join('/'));
-                // set the namespace, since we probably didn't get it from the url
-                // this.setNamespace(namespace, null);
-            } else if ( !data.id ) {
-                this.location.go('/a/' + namespace);
-                this.setNamespace(namespace, null);
-            }
+                    // url path has 1 parts, (i.e. /a/1234)
+                } else if (
+                    routeSnapshot.length === 1 &&
+                    this.utils.checkIfNumeric(routeSnapshot[0].path)
+                ) {
+                    // fix the URL if it is abbreviated route from alert email
+                    parts = data.id
+                        ? ['/a', data.id, data.namespace, data.slug, 'view']
+                        : ['/a', namespace];
+                    this.location.go(parts.join('/'));
+                    // set the namespace, since we probably didn't get it from the url
+                    // this.setNamespace(namespace, null);
+                } else if (!data.id) {
+                    this.location.go('/a/' + namespace);
+                    this.setNamespace(namespace, null);
+                }
 
-            if ( data.id ) {
+                if (data.id) {
+                    this.store.dispatch(new CheckWriteAccess(data));
+                }
+            }),
+        );
+
+        this.subscription.add(
+            this.snoozeDetail$.pipe(skip(1)).subscribe((data) => {
                 this.store.dispatch(new CheckWriteAccess(data));
-            }
-
-        }));
-
-        this.subscription.add(this.snoozeDetail$.pipe(skip(1)).subscribe(data => {
-            this.store.dispatch(new CheckWriteAccess(data));
-        }));
-
+            }),
+        );
     }
 
     getDefaultNamespace() {
         let defaultNS = this.localStorageService.getLocal('defaultNS');
-        defaultNS =  defaultNS && defaultNS !== null ? defaultNS : this.userNamespaces.length ? this.userNamespaces[0].name : this.allNamespaces[0].name;
+        defaultNS =
+            defaultNS && defaultNS !== null
+                ? defaultNS
+                : this.userNamespaces.length
+                    ? this.userNamespaces[0].name
+                    : this.allNamespaces[0].name;
         return defaultNS;
     }
 
@@ -813,7 +1030,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                 const key = Object.keys(d)[i];
                 sanitizedDataStr += ' ' + JSON.stringify(d[key]);
                 if (key === 'alertIds') {
-                    sanitizedDataStr += ' ' + JSON.stringify(this.getAlertNamesByIds(d[key]));
+                    sanitizedDataStr +=
+                        ' ' + JSON.stringify(this.getAlertNamesByIds(d[key]));
                 }
             }
             if (regexFilter.test(sanitizedDataStr.toLowerCase())) {
@@ -826,13 +1044,17 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     setAlertCount(index) {
         const id = this.alerts[index].id;
         const counts = this.alertsStats[id] ? this.alertsStats[id] : {};
-        this.alerts[index] = { ...this.alerts[index], ...this.defAlertStats,  ...counts };
+        this.alerts[index] = {
+            ...this.alerts[index],
+            ...this.defAlertStats,
+            ...counts,
+        };
     }
 
     clearSystemMessage() {
         this.interCom.requestSend({
             action: 'clearSystemMessage',
-            payload: {}
+            payload: {},
         });
     }
     setNavbarPortal() {
@@ -854,7 +1076,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     setNamespace(namespace, search = '') {
         if (this.selectedNamespace !== namespace) {
             this.store.dispatch(new SetNamespace(namespace));
-            if ( this.alertSearch ) {
+            if (this.alertSearch) {
                 this.alertSearch.setValue(search);
             }
         }
@@ -875,21 +1097,28 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             if (this.alertsDataSource) {
                 this.alertsDataSource.data = [];
             }
-            this.store.dispatch(new LoadAlerts({ namespace: this.selectedNamespace }));
+            this.store.dispatch(
+                new LoadAlerts({ namespace: this.selectedNamespace }),
+            );
         }
         if (list.includes('snooze')) {
             this.stateLoaded.snooze = false;
             if (this.snoozesDataSource) {
                 this.snoozesDataSource.data = [];
             }
-            this.store.dispatch(new LoadSnoozes({ namespace: this.selectedNamespace }));
+            this.store.dispatch(
+                new LoadSnoozes({ namespace: this.selectedNamespace }),
+            );
         }
     }
 
     setRouterUrl() {
         const prefix = this.list === 'snooze' ? 'a/snooze/' : 'a/';
         const search = this.alertSearch.value;
-        const qs = this.list === 'alerts' && search ? '?q=' +  encodeURIComponent(search) : '';
+        const qs =
+            this.list === 'alerts' && search
+                ? '?q=' + encodeURIComponent(search)
+                : '';
         this.location.go(prefix + this.selectedNamespace + qs);
     }
 
@@ -907,8 +1136,16 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     setAlertListMeta() {
         const alertOptions = {};
         for (let i = 0; i < this.alerts.length; i++) {
-            alertOptions[this.alerts[i].id] = { label: this.alerts[i].name, id: this.alerts[i].id, type: 'alert' };
-            for (let j = 0; this.alerts[i].labels && j < this.alerts[i].labels.length; j++) {
+            alertOptions[this.alerts[i].id] = {
+                label: this.alerts[i].name,
+                id: this.alerts[i].id,
+                type: 'alert',
+            };
+            for (
+                let j = 0;
+                this.alerts[i].labels && j < this.alerts[i].labels.length;
+                j++
+            ) {
                 const label = this.alerts[i].labels[j];
                 alertOptions[label] = { label: label, type: 'label' };
             }
@@ -918,7 +1155,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     getAlertNamesByIds(ids) {
         let names = [];
-        names = this.alerts.filter(d => ids.includes(d.id)).map(d => d.name);
+        names = this.alerts
+            .filter((d) => ids.includes(d.id))
+            .map((d) => d.name);
         return names.length ? names : ids;
     }
 
@@ -941,12 +1180,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     /** batch selection tools */
     // method to get the data indices of the currently displayed items
     private getCurrentPaginatorDataRange(): any {
-        const pager = (this.list === 'alerts') ? this.alertsDataSource.paginator : this.snoozesDataSource.paginator;
+        const pager =
+            this.list === 'alerts'
+                ? this.alertsDataSource.paginator
+                : this.snoozesDataSource.paginator;
         if (pager) {
             const pageIndex = pager.pageIndex;
             const pageSize = pager.pageSize;
 
-            let startIndex = pageSize * pageIndex;
+            const startIndex = pageSize * pageIndex;
             let endIndex = startIndex + (pageSize - 1);
             let length = pageSize;
 
@@ -957,16 +1199,22 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
             return { start: startIndex, end: endIndex, length: length };
         } else {
-            return {}
+            return {};
         }
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
-        const dataSource = (this.list === 'alerts') ? this.alertsDataSource : this.snoozesDataSource;
+        const dataSource =
+            this.list === 'alerts'
+                ? this.alertsDataSource
+                : this.snoozesDataSource;
         if (dataSource) {
             const dataRange: any = this.getCurrentPaginatorDataRange();
-            const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+            const selection =
+                this.list === 'alerts'
+                    ? this.alertsSelection
+                    : this.snoozeSelection;
 
             const numSelected = selection.selected.length;
             const numRows = dataRange.length;
@@ -978,28 +1226,35 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     /** Selects all rows if they are not all selected; otherwise clear selection. */
     masterToggle() {
-        const dataSource: MatTableDataSource<any> = (this.list === 'alerts') ? this.alertsDataSource : this.snoozesDataSource;
-        const selection: SelectionModel<any> = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+        const dataSource: MatTableDataSource<any> =
+            this.list === 'alerts'
+                ? this.alertsDataSource
+                : this.snoozesDataSource;
+        const selection: SelectionModel<any> =
+            this.list === 'alerts'
+                ? this.alertsSelection
+                : this.snoozeSelection;
 
         if (dataSource) {
             const dataRange: any = this.getCurrentPaginatorDataRange();
 
-            this.isAllSelected() ?
-                selection.clear() :
+            if (this.isAllSelected()) {
+                selection.clear();
+            } else {
                 (() => {
                     // connect only returns values currently displayed
                     dataSource.connect().value.forEach((row, i) => {
                         selection.select(row);
-                    })
+                    });
                 })();
+            }
 
-            /*this.isAllSelected() ?
+            /* this.isAllSelected() ?
                 this.selection.clear() :
                 dataSource.data.forEach(row => this.selection.select(row));*/
         } else {
             selection.clear();
         }
-
     }
 
     /** bulk actions */
@@ -1007,35 +1262,49 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     // NOTE: adding stubs for now. Noticed the UI has buttons for this, but there were no functions assigned
 
     bulkDisableAlerts() {
-        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+        const selection =
+            this.list === 'alerts'
+                ? this.alertsSelection
+                : this.snoozeSelection;
         // TODO: get list of selected items, then disable (see this.toggleAlert)
-        const selected: any[] = selection.selected.map(item => {
-            const data: any = {id: item.id, enabled: false};
+        const selected: any[] = selection.selected.map((item) => {
+            const data: any = { id: item.id, enabled: false };
             return data;
         });
         this.store.dispatch(
-            new ToggleAlerts(
-                this.selectedNamespace,
-                { data: selected }
-            )
+            new ToggleAlerts(this.selectedNamespace, { data: selected }),
         );
     }
 
     bulkDeleteAlerts() {
-        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+        const selection =
+            this.list === 'alerts'
+                ? this.alertsSelection
+                : this.snoozeSelection;
         // TODO: get list of selected items, then do delete confirmation, then delete (see this.deleteItem)
-        const selected: any[] = selection.selected.map(item => item.id);
+        const selected: any[] = selection.selected.map((item) => item.id);
         const dialogData: any = {
             bulk: true,
-            items: selected
-        }
-        this.confirmDeleteDialog = this.dialog.open(this.confirmDeleteDialogRef, { data: dialogData });
-        this.confirmDeleteDialog.afterClosed().subscribe(event => {
+            items: selected,
+        };
+        this.confirmDeleteDialog = this.dialog.open(
+            this.confirmDeleteDialogRef,
+            { data: dialogData },
+        );
+        this.confirmDeleteDialog.afterClosed().subscribe((event) => {
             if (event.deleted) {
                 if (this.list === 'alerts') {
-                    this.store.dispatch(new DeleteAlerts(this.selectedNamespace, { data: selected }));
+                    this.store.dispatch(
+                        new DeleteAlerts(this.selectedNamespace, {
+                            data: selected,
+                        }),
+                    );
                 } else {
-                    this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: selected }));
+                    this.store.dispatch(
+                        new DeleteSnoozes(this.selectedNamespace, {
+                            data: selected,
+                        }),
+                    );
                 }
             }
             this.confirmDeleteDialog = null;
@@ -1046,33 +1315,58 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     toggleAlert(alertObj: any) {
         this.store.dispatch(
-            new ToggleAlerts(
-                this.selectedNamespace,
-                { data: [{ id: alertObj.id, enabled: !alertObj.enabled }] }
-            )
+            new ToggleAlerts(this.selectedNamespace, {
+                data: [{ id: alertObj.id, enabled: !alertObj.enabled }],
+            }),
         );
     }
 
     editAlert(element: any) {
         // check if they have write access
-        const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
+        const mode = this.hasNamespaceWriteAccess ? 'edit' : 'view';
         this.detailsMode = mode;
 
-        this.location.go('a/' + element.id + '/' + element.namespace + '/' + element.slug + '/' + mode);
+        this.location.go(
+            'a/' +
+                element.id +
+                '/' +
+                element.namespace +
+                '/' +
+                element.slug +
+                '/' +
+                mode,
+        );
         this.store.dispatch(new GetAlertDetailsById(element.id));
     }
 
     cloneAlert(element: any) {
-        const mode = (this.hasNamespaceWriteAccess) ? 'clone' : 'view';
+        const mode = this.hasNamespaceWriteAccess ? 'clone' : 'view';
         this.detailsMode = mode;
 
-        this.location.go('a/' + element.id + '/' + element.namespace + '/' + element.slug + '/' + mode);
+        this.location.go(
+            'a/' +
+                element.id +
+                '/' +
+                element.namespace +
+                '/' +
+                element.slug +
+                '/' +
+                mode,
+        );
         this.store.dispatch(new GetAlertDetailsById(element.id));
     }
 
     viewAlert(element: any) {
         this.detailsMode = 'view';
-        this.location.go('a/' + element.id + '/' + element.namespace + '/' + element.slug + '/view');
+        this.location.go(
+            'a/' +
+                element.id +
+                '/' +
+                element.namespace +
+                '/' +
+                element.slug +
+                '/view',
+        );
         this.store.dispatch(new GetAlertDetailsById(element.id));
     }
 
@@ -1081,7 +1375,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         const data = {
             type: type,
             namespace: this.selectedNamespace,
-            name: 'Untitled Alert'
+            name: 'Untitled Alert',
         };
         this.openEditMode(data);
         this.location.go('a/' + this.selectedNamespace + '/_new_');
@@ -1098,24 +1392,33 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             name: 'Alert from widget ' + payload.widget.settings.title,
             queries: {},
             notification: {
-                body: 'Created from dashboard: ' + this.webUrl + '/d/' + payload.dashboardId
+                body:
+                    'Created from dashboard: ' +
+                    this.webUrl +
+                    '/d/' +
+                    payload.dashboardId,
             },
             createdFrom: {
                 dashboardId: payload.dashboardId,
                 widgetId: payload.widget.id,
-            }
+            },
         };
 
         if (type === 'simple') {
-            const convertedQuery = this.convertQueryFromDashboardToAlert(payload.widget.queries, payload.tplVariables);
+            const convertedQuery = this.convertQueryFromDashboardToAlert(
+                payload.widget.queries,
+                payload.tplVariables,
+            );
             data.queries = {
-                raw: convertedQuery
+                raw: convertedQuery,
             };
         }
         if (type === 'event') {
-            const convertedQuery = this.convertEventQueryFromDashboardToAlert(payload.widget.eventQueries);
+            const convertedQuery = this.convertEventQueryFromDashboardToAlert(
+                payload.widget.eventQueries,
+            );
             data.queries = {
-                eventdb: convertedQuery
+                eventdb: convertedQuery,
             };
         }
         this.openEditMode(data);
@@ -1124,14 +1427,22 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     getAlertTypeFromWidget(widget) {
         const widgetType: string = widget.settings.component_type;
-        if (widgetType.toLowerCase() === 'BarchartWidgetComponent'.toLowerCase() ||
-            widgetType.toLowerCase() === 'LinechartWidgetComponent'.toLowerCase() ||
-            widgetType.toLowerCase() === 'HeatmapWidgetComponent'.toLowerCase() ||
-            widgetType.toLowerCase() === 'BignumberWidgetComponent'.toLowerCase() ||
+        if (
+            widgetType.toLowerCase() ===
+                'BarchartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() ===
+                'LinechartWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() ===
+                'HeatmapWidgetComponent'.toLowerCase() ||
+            widgetType.toLowerCase() ===
+                'BignumberWidgetComponent'.toLowerCase() ||
             widgetType.toLowerCase() === 'DonutWidgetComponent'.toLowerCase() ||
-            widgetType.toLowerCase() === 'TopnWidgetComponent'.toLowerCase() ) {
-                return 'simple';
-        } else if (widgetType.toLowerCase() === 'EventsWidgetComponent'.toLowerCase()) {
+            widgetType.toLowerCase() === 'TopnWidgetComponent'.toLowerCase()
+        ) {
+            return 'simple';
+        } else if (
+            widgetType.toLowerCase() === 'EventsWidgetComponent'.toLowerCase()
+        ) {
             return 'event';
         } else {
             return '';
@@ -1146,8 +1457,17 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             for (const f of q.filters) {
                 if (f.customFilter) {
                     for (const customFilter of f.customFilter) {
-                        const filterValue = this.getTplValueForAlias(tplVariables, customFilter);
-                        this.moveCustomFilterToFilter(convertQueries, q.id, f.tagk, filterValue, customFilter);
+                        const filterValue = this.getTplValueForAlias(
+                            tplVariables,
+                            customFilter,
+                        );
+                        this.moveCustomFilterToFilter(
+                            convertQueries,
+                            q.id,
+                            f.tagk,
+                            filterValue,
+                            customFilter,
+                        );
                     }
                 }
             }
@@ -1197,11 +1517,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
             if (qId === q.id) {
                 for (const f of q.filters) {
                     if (f.tagk === tagKey) {
-                        if (tagValue) { // add to filters
+                        if (tagValue) {
+                            // add to filters
                             f.filter.push(tagValue);
                         }
                         const index = f.customFilter.indexOf(customFilter);
-                        if (index > -1) { // remove from customFilters
+                        if (index > -1) {
+                            // remove from customFilters
                             f.customFilter.splice(index, 1);
                         }
                         return;
@@ -1215,9 +1537,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         for (const q of queries) {
             const filtersToRemove = [];
             let index = 0;
-            for (const f of q.filters) { // find indices to remove
-                if (f.customFilter && f.customFilter.length === 0 && f.filter && f.filter.length === 0) {
-                   filtersToRemove.push(index);
+            for (const f of q.filters) {
+                // find indices to remove
+                if (
+                    f.customFilter &&
+                    f.customFilter.length === 0 &&
+                    f.filter &&
+                    f.filter.length === 0
+                ) {
+                    filtersToRemove.push(index);
                 }
                 index++;
             }
@@ -1232,20 +1560,27 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.detailsMode === 'clone') {
             data.id = '';
             const nowInMillis = Date.now();
-            data.name = 'Clone of ' + data.name + ' on ' + this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
+            data.name =
+                'Clone of ' +
+                data.name +
+                ' on ' +
+                this.utils.buildDisplayTime(nowInMillis, 0, nowInMillis, true);
         }
         this.configurationEditData = data;
-        this.isAlertEnabled = this.list === 'alerts' && ( ( data.id && data.enabled ) || !data.id);
+        this.isAlertEnabled =
+            this.list === 'alerts' && ((data.id && data.enabled) || !data.id);
         this.detailsView = true;
     }
 
     createSnooze() {
         if (!this.stateLoaded.alerts) {
-            this.store.dispatch(new LoadAlerts({ namespace: this.selectedNamespace }));
+            this.store.dispatch(
+                new LoadAlerts({ namespace: this.selectedNamespace }),
+            );
         }
         const data = {
             id: '_new_',
-            namespace: this.selectedNamespace
+            namespace: this.selectedNamespace,
         };
         this.configurationEditData = data;
         this.detailsView = true;
@@ -1254,13 +1589,15 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     createAlertSnooze(alertId: number) {
         if (!this.stateLoaded.alerts) {
-            this.store.dispatch(new LoadAlerts({ namespace: this.selectedNamespace }));
+            this.store.dispatch(
+                new LoadAlerts({ namespace: this.selectedNamespace }),
+            );
         }
         const data = {
             id: '_new_',
             namespace: this.selectedNamespace,
             alertIds: [alertId],
-            cancelToAlerts: true
+            cancelToAlerts: true,
         };
         this.configurationEditData = data;
         this.detailsView = true;
@@ -1271,21 +1608,34 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     editSnooze(element: any) {
         // check if they have write access
-        const mode = (this.hasNamespaceWriteAccess) ? 'edit' : 'view';
+        const mode = this.hasNamespaceWriteAccess ? 'edit' : 'view';
         this.detailsMode = mode;
 
-        this.location.go('a/snooze/' + element.id + '/' + element.namespace + '/' + mode);
+        this.location.go(
+            'a/snooze/' + element.id + '/' + element.namespace + '/' + mode,
+        );
         this.store.dispatch(new GetSnoozeDetailsById(element.id));
     }
 
     deleteItem(obj: any) {
-        this.confirmDeleteDialog = this.dialog.open(this.confirmDeleteDialogRef, { data: obj });
-        this.confirmDeleteDialog.afterClosed().subscribe(event => {
+        this.confirmDeleteDialog = this.dialog.open(
+            this.confirmDeleteDialogRef,
+            { data: obj },
+        );
+        this.confirmDeleteDialog.afterClosed().subscribe((event) => {
             if (event.deleted) {
                 if (this.list === 'alerts') {
-                    this.store.dispatch(new DeleteAlerts(this.selectedNamespace, { data: [obj.id] }));
+                    this.store.dispatch(
+                        new DeleteAlerts(this.selectedNamespace, {
+                            data: [obj.id],
+                        }),
+                    );
                 } else {
-                    this.store.dispatch(new DeleteSnoozes(this.selectedNamespace, { data: [obj.id] }));
+                    this.store.dispatch(
+                        new DeleteSnoozes(this.selectedNamespace, {
+                            data: [obj.id],
+                        }),
+                    );
                 }
             }
             this.confirmDeleteDialog = null;
@@ -1303,21 +1653,25 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
                     this.dashboardId = message.dashboard;
                 }
                 // lets save this thing
-                this.store.dispatch(new SaveAlerts(message.namespace, message.payload));
+                this.store.dispatch(
+                    new SaveAlerts(message.namespace, message.payload),
+                );
                 this.router.navigateByUrl('a/' + message.namespace);
                 break;
             case 'ToggleAlert':
                 this.toggleAlert(message.payload);
                 break;
             case 'SaveSnooze':
-                this.store.dispatch(new SaveSnoozes(message.namespace, message.payload));
+                this.store.dispatch(
+                    new SaveSnoozes(message.namespace, message.payload),
+                );
                 this.location.go('a/snooze/' + message.namespace);
                 break;
             case 'CancelSnoozeEdit':
                 this.detailsView = false;
                 this.location.go('a/snooze/' + this.selectedNamespace);
                 break;
-           case 'CancelToAlerts':
+            case 'CancelToAlerts':
                 this.switchType('alerts');
                 this.detailsView = false;
                 this.location.go('a/' + this.selectedNamespace);
@@ -1331,7 +1685,7 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (message.action === 'CancelEdit' || message.action === 'SaveAlert') {
             this.setNavbarPortal();
         }
-        if ( message.action !== 'ToggleAlert' ) {
+        if (message.action !== 'ToggleAlert') {
             this.infoIslandService.closeIsland();
             this.retriggerAlertSearch();
             this.retriggerSnoozeSearch();
@@ -1339,7 +1693,6 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     retriggerAlertSearch() {
-
         const val = this.alertSearch.value;
 
         if (val !== null) {
@@ -1385,9 +1738,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     getRecipientKeys(element: any) {
         // extract keys
-        const objKeys = element.recipients ? Object.keys(element.recipients) : [];
+        const objKeys = element.recipients
+            ? Object.keys(element.recipients)
+            : [];
         // need to filter out junk entries
-        const validKeys = objKeys.filter(val => RecipientType[val] !== undefined);
+        const validKeys = objKeys.filter(
+            (val) => RecipientType[val] !== undefined,
+        );
         // return values
         return validKeys;
     }
@@ -1427,7 +1784,9 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     showAuraDialog(alertId, filters) {
-        if (!this.auraUrl) return; 
+        if (!this.auraUrl) {
+            return;
+        }
 
         const dialogConf: MatDialogConfig = new MatDialogConfig();
         // dialogConf.width = '50%';
@@ -1435,7 +1794,13 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         dialogConf.height = '500px';
         dialogConf.backdropClass = 'aura-dialog-backdrop';
         dialogConf.panelClass = 'aura-dialog-panel';
-        let url = this.auraUrl + '?namespace=' + this.selectedNamespace + '&tags=_alert_id:' + alertId + '&type=1';
+        let url =
+            this.auraUrl +
+            '?namespace=' +
+            this.selectedNamespace +
+            '&tags=_alert_id:' +
+            alertId +
+            '&type=1';
         if (filters.status !== undefined) {
             url += '&status=' + filters.status;
         }
@@ -1452,11 +1817,17 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     paginatorPageEvent(event: any) {
-        const selection = (this.list === 'alerts') ? this.alertsSelection : this.snoozeSelection;
+        const selection =
+            this.list === 'alerts'
+                ? this.alertsSelection
+                : this.snoozeSelection;
         if (event.previousPageIndex !== event.pageIndex) {
             selection.clear();
         }
-        if (event.previousPageIndex === event.pageIndex && selection.selected.length > 0) {
+        if (
+            event.previousPageIndex === event.pageIndex &&
+            selection.selected.length > 0
+        ) {
             const dataRange: any = this.getCurrentPaginatorDataRange();
             selection.selected.forEach((row, i) => {
                 if (i >= dataRange.length) {
@@ -1466,10 +1837,11 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
     }
 
-
-
     ngAfterViewChecked() {
-        if (this.location.path() === '/a' || this.location.path() === '/a/' + this.selectedNamespace) {
+        if (
+            this.location.path() === '/a' ||
+            this.location.path() === '/a/' + this.selectedNamespace
+        ) {
             this.utils.setTabTitle(this.selectedNamespace + ' Alerts');
         }
         // so matTable paginator won't out of check of page # changes
@@ -1481,5 +1853,4 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.subscription.unsubscribe();
         this.utils.setTabTitle();
     }
-
 }

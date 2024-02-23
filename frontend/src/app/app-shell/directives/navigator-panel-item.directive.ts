@@ -17,13 +17,8 @@
 import { Directive, TemplateRef } from '@angular/core';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[navigatorPanelItem]'
+    selector: '[navigatorPanelItem]',
 })
 export class NavigatorPanelItemDirective {
-
-  constructor(
-    public tpl: TemplateRef<any>
-  ) { }
-
+    constructor(public tpl: TemplateRef<any>) {}
 }

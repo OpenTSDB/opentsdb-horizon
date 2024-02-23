@@ -3,7 +3,6 @@ import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../../../core/services/local-storage.service';
 
-
 import styles from '../../../../../scss/app-styles.scss';
 import { pairwise, startWith } from 'rxjs/operators';
 
@@ -11,15 +10,15 @@ const DEFAULT_THEME = 'horizon';
 const DEFAULT_THEME_VARIANT = 'light';
 
 const THEME_OPTIONS: any[] = [
-    /*{
+    /* {
         label: 'Default',
         value: 'default'
     },*/
     {
         label: 'Horizon',
-        value: 'horizon'
+        value: 'horizon',
     },
-    /*{
+    /* {
         label: 'Vespa',
         value: 'vespa'
     }*/
@@ -28,19 +27,18 @@ const THEME_OPTIONS: any[] = [
 const THEME_VARIANT_OPTIONS: any[] = [
     {
         label: 'Light',
-        value: 'light'
+        value: 'light',
     },
     {
         label: 'Dark',
-        value: 'dark'
-    }
-]
+        value: 'dark',
+    },
+];
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ThemeService implements OnInit, OnDestroy {
-
     private _theme: any = new BehaviorSubject('');
     private _variant: any = new BehaviorSubject('');
 
@@ -69,31 +67,39 @@ export class ThemeService implements OnInit, OnDestroy {
 
     constructor(
         private overlayContainer: OverlayContainer,
-        private localStorage$: LocalStorageService
+        private localStorage$: LocalStorageService,
     ) {
         const OC = this.overlayContainer.getContainerElement();
         this.DocumentBody = OC.closest('body');
 
-        if (this.localStorage$.hasKey('settings.theme') && this.localStorage$.hasKey('settings.variant')) {
-            let themeCheck = this.localStorage$.getLocal('settings.theme');
-            let variantCheck = this.localStorage$.getLocal('settings.variant');
-            //console.log('%cTHEME/VARIANT CHECK', 'background: red; color: white; padding: 2px;', themeCheck, variantCheck);
+        if (
+            this.localStorage$.hasKey('settings.theme') &&
+            this.localStorage$.hasKey('settings.variant')
+        ) {
+            const themeCheck = this.localStorage$.getLocal('settings.theme');
+            const variantCheck =
+                this.localStorage$.getLocal('settings.variant');
+            // console.log('%cTHEME/VARIANT CHECK', 'background: red; color: white; padding: 2px;', themeCheck, variantCheck);
             this.setActiveTheme(
-                this.themeOption(this.localStorage$.getLocal('settings.theme')).value,
-                (themeCheck === 'default') ? false : true
+                this.themeOption(this.localStorage$.getLocal('settings.theme'))
+                    .value,
+                themeCheck === 'default' ? false : true,
             );
             this.setActiveVariant(
-                this.variantOption(this.localStorage$.getLocal('settings.variant')).value,
-                true
+                this.variantOption(
+                    this.localStorage$.getLocal('settings.variant'),
+                ).value,
+                true,
             );
         } else {
             this.setActiveTheme(DEFAULT_THEME);
-            this.setActiveVariant(DEFAULT_THEME_VARIANT)
+            this.setActiveVariant(DEFAULT_THEME_VARIANT);
         }
-
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        // do nothing
+    }
 
     public getActiveTheme() {
         return this._theme.asObservable();
@@ -108,13 +114,13 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     public setActiveTheme($theme: string, ignoreLocal: boolean = false) {
-        //console.log('%cSET ACTIVE THEME', 'color: white; background: purple;', $theme );
+        // console.log('%cSET ACTIVE THEME', 'color: white; background: purple;', $theme );
         if (!ignoreLocal) {
             this.localStorage$.setLocal('settings.theme', $theme);
         }
 
         if (this._themeClass !== 'null') {
-            let oldThemeClass = this._themeClass;
+            const oldThemeClass = this._themeClass;
             this.DocumentBody.classList.remove(oldThemeClass);
         }
 
@@ -129,13 +135,13 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     public setActiveVariant($variant: string, ignoreLocal: boolean = false) {
-        //console.log('%cSET ACTIVE VARIANT', 'color: white; background: purple;', $variant );
+        // console.log('%cSET ACTIVE VARIANT', 'color: white; background: purple;', $variant );
         if (!ignoreLocal) {
             this.localStorage$.setLocal('settings.variant', $variant);
         }
 
         if (this._variantClass !== 'null') {
-            let oldVariantClass = this._variantClass;
+            const oldVariantClass = this._variantClass;
             this.DocumentBody.classList.remove(oldVariantClass);
         }
         this._variant.next($variant);
@@ -149,27 +155,31 @@ export class ThemeService implements OnInit, OnDestroy {
     }
 
     private themeOption(name: any) {
-        //console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
+        // console.log('%cTHEME OPTION', 'color: white; background: purple;', name );
         if (name === 'default') {
             name = 'horizon';
         }
-        let idx = THEME_OPTIONS.findIndex(item => item.value === name);
+        let idx = THEME_OPTIONS.findIndex((item) => item.value === name);
         if (idx === -1) {
             // can't find... use default
-            idx = THEME_OPTIONS.findIndex(item => item.value === 'default');
+            idx = THEME_OPTIONS.findIndex((item) => item.value === 'default');
         }
         return THEME_OPTIONS[idx];
     }
 
     private variantOption(name: any) {
-        //console.log('%cVARIANT OPTION', 'color: white; background: purple;', name );
+        // console.log('%cVARIANT OPTION', 'color: white; background: purple;', name );
         if (name !== 'light' && name !== 'dark') {
             name = 'light';
         }
-        let idx = THEME_VARIANT_OPTIONS.findIndex(item => item.value === name);
+        let idx = THEME_VARIANT_OPTIONS.findIndex(
+            (item) => item.value === name,
+        );
         if (idx === -1) {
             // can't find... use default (aka light)
-            idx = THEME_VARIANT_OPTIONS.findIndex(item => item.value === 'light');
+            idx = THEME_VARIANT_OPTIONS.findIndex(
+                (item) => item.value === 'light',
+            );
         }
         return THEME_VARIANT_OPTIONS[idx];
     }

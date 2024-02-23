@@ -19,10 +19,12 @@ import { TestBed } from '@angular/core/testing';
 import { DashboardConverterService } from './dashboard-converter.service';
 
 describe('DashboardConverterService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: DashboardConverterService = TestBed.inject(DashboardConverterService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: DashboardConverterService = TestBed.inject(
+            DashboardConverterService,
+        );
+        expect(service).toBeTruthy();
+    });
 });

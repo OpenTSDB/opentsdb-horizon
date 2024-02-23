@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ColorPickerHueSliderComponent } from './color-picker-hue-slider.component';
 
 describe('ColorPickerHueSliderComponent', () => {
-  let component: ColorPickerHueSliderComponent;
-  let fixture: ComponentFixture<ColorPickerHueSliderComponent>;
+    let component: ColorPickerHueSliderComponent;
+    let fixture: ComponentFixture<ColorPickerHueSliderComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ColorPickerHueSliderComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [ColorPickerHueSliderComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ColorPickerHueSliderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ColorPickerHueSliderComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

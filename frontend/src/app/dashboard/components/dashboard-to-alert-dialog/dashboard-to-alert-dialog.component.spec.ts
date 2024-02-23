@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DashboardToAlertDialogComponent } from './dashboard-to-alert-dialog.component';
 
 describe('DashboardToAlertDialogComponent', () => {
-  let component: DashboardToAlertDialogComponent;
-  let fixture: ComponentFixture<DashboardToAlertDialogComponent>;
+    let component: DashboardToAlertDialogComponent;
+    let fixture: ComponentFixture<DashboardToAlertDialogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardToAlertDialogComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DashboardToAlertDialogComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardToAlertDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DashboardToAlertDialogComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

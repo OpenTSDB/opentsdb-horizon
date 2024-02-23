@@ -24,25 +24,24 @@ const THEME_OPTIONS: any[] = [
     {
         label: 'Default',
         value: 'developing', // light theme in progress
-        type: 'light'
+        type: 'light',
     },
     {
         label: 'Light',
         value: 'light', // light theme
-        type: 'light'
+        type: 'light',
     },
     {
         label: 'Dark',
         value: 'dark',
-        type: 'dark'
-    }
+        type: 'dark',
+    },
 ];
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ThemeService {
-
     private _activeTheme = new BehaviorSubject('');
     private _themeType = new BehaviorSubject('');
 
@@ -50,9 +49,7 @@ export class ThemeService {
         return THEME_OPTIONS;
     }
 
-    constructor(
-        private localStorage$: LocalStorageService
-    ) {
+    constructor(private localStorage$: LocalStorageService) {
         if (localStorage$.hasKey('settings.theme')) {
             this.setActiveTheme(localStorage$.getLocal('settings.theme'), true);
         } else {
@@ -83,13 +80,13 @@ export class ThemeService {
     }
 
     private themeOption(name: string) {
-        let idx = THEME_OPTIONS.findIndex(item => item.value === name);
+        let idx = THEME_OPTIONS.findIndex((item) => item.value === name);
         if (idx === -1) {
             // can't find... use default
-            idx = THEME_OPTIONS.findIndex(item => item.value === 'developing');
+            idx = THEME_OPTIONS.findIndex(
+                (item) => item.value === 'developing',
+            );
         }
         return THEME_OPTIONS[idx];
     }
-
-
 }

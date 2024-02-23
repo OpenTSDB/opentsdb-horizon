@@ -14,135 +14,160 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostListener, HostBinding, ElementRef, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-
+import {
+    Component,
+    OnInit,
+    HostListener,
+    HostBinding,
+    ElementRef,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
-  selector: 'metric-visual-panel',
-  templateUrl: './metric-visual-panel.component.html',
-  styleUrls: ['./metric-visual-panel.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'metric-visual-panel',
+    templateUrl: './metric-visual-panel.component.html',
+    styleUrls: ['./metric-visual-panel.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class MetricVisualPanelComponent implements OnInit {
+    @HostBinding('class.metric-visual-panel') private _hostClass = true;
 
-  @HostBinding('class.metric-visual-panel') private _hostClass = true;
+    @Input() query: any;
+    @Input() data: any;
+    @Input() type;
+    @Output() visualOutput = new EventEmitter();
 
-  @Input() query: any;
-  @Input() data: any;
-  @Input() type;
-  @Output() visualOutput = new EventEmitter();
+    visible = false;
+    colorToggleVal = 'color';
 
-  visible = false;
-  colorToggleVal = 'color';
+    axis;
+    mode;
+    color;
+    constructor(private elRef: ElementRef) {}
 
-  axis;
-  mode;
-  color;
-  constructor(private elRef: ElementRef) { }
-
-  ngOnInit() {
-    this.mode = this.data.visual.type || 'line';
-    this.axis = this.data.visual.axis || 'y1';
-  }
-
-  setQueryVisual(id, key, value) {
-    const visual = {};
-    visual[key] = value;
-    if ( key === 'color' || key === 'scheme') {
-      // unset other option
-      const key2 = key === 'color' ? 'scheme' : 'color';
-      visual[key2] = '';
+    ngOnInit() {
+        this.mode = this.data.visual.type || 'line';
+        this.axis = this.data.visual.axis || 'y1';
     }
-    this.visualOutput.emit( { action: 'UpdateQueryVisual', payload: { qid : this.query.id, mid: id, visual: visual } });
-  }
 
-  setMetricVisual(id, key, value) {
-      const visual = {};
-      visual[key] = value;
-      if ( key === 'color' || key === 'scheme' ) {
-        const key2 = key === 'color' ? 'scheme' : 'color';
-        visual[key2] = '';
-      }
-      this.visualOutput.emit( { action: 'UpdateQueryMetricVisual', payload: { qid: this.query.id, mid : id, visual: visual } });
-  }
+    setQueryVisual(id, key, value) {
+        const visual = {};
+        visual[key] = value;
+        if (key === 'color' || key === 'scheme') {
+            // unset other option
+            const key2 = key === 'color' ? 'scheme' : 'color';
+            visual[key2] = '';
+        }
+        this.visualOutput.emit({
+            action: 'UpdateQueryVisual',
+            payload: { qid: this.query.id, mid: id, visual: visual },
+        });
+    }
 
-  setVisualType(id, type) {
-    this.mode = type;
-    this.setMetricVisual(id, 'type', type);
-  }
+    setMetricVisual(id, key, value) {
+        const visual = {};
+        visual[key] = value;
+        if (key === 'color' || key === 'scheme') {
+            const key2 = key === 'color' ? 'scheme' : 'color';
+            visual[key2] = '';
+        }
+        this.visualOutput.emit({
+            action: 'UpdateQueryMetricVisual',
+            payload: { qid: this.query.id, mid: id, visual: visual },
+        });
+    }
 
-  setLineType(id, type) {
-      this.setMetricVisual(id, 'lineType', type);
-  }
+    setVisualType(id, type) {
+        this.mode = type;
+        this.setMetricVisual(id, 'type', type);
+    }
 
-  setLineWeight(id, weight) {
-      this.setMetricVisual(id, 'lineWeight', weight);
-  }
+    setLineType(id, type) {
+        this.setMetricVisual(id, 'lineType', type);
+    }
 
-  setColor(id, color, key = 'color') {
-    this.color = key === 'scheme' ? color.scheme : color;
-    this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color);
-  }
+    setLineWeight(id, weight) {
+        this.setMetricVisual(id, 'lineWeight', weight);
+    }
 
-  setAxis(id, axis) {
-    this.axis = axis;
-    this.setMetricVisual(id, 'axis', axis);
-  }
+    setColor(id, color, key = 'color') {
+        this.color = key === 'scheme' ? color.scheme : color;
+        this.setMetricVisual(id, key, key === 'scheme' ? color.scheme : color);
+    }
 
-  setStacking(id, stacked: boolean) {
-    this.setMetricVisual(id, 'stacked', stacked);
-  }
+    setAxis(id, axis) {
+        this.axis = axis;
+        this.setMetricVisual(id, 'axis', axis);
+    }
 
-  setMissingData(id, isConnected) {
-    this.setMetricVisual(id, 'connectMissingData', isConnected);
-  }
+    setStacking(id, stacked: boolean) {
+        this.setMetricVisual(id, 'stacked', stacked);
+    }
 
-  setStackOrderBy(id, orderBy) {
-    this.setMetricVisual(id, 'stackOrderBy', orderBy);
-  }
+    setMissingData(id, isConnected) {
+        this.setMetricVisual(id, 'connectMissingData', isConnected);
+    }
 
-  setStackOrder(id, order) {
-    this.setMetricVisual(id, 'stackOrder', order);
-  }
+    setStackOrderBy(id, orderBy) {
+        this.setMetricVisual(id, 'stackOrderBy', orderBy);
+    }
 
-  setUnit(id, unit) {
-    this.setMetricVisual(id, 'unit', unit);
-  }
+    setStackOrder(id, order) {
+        this.setMetricVisual(id, 'stackOrder', order);
+    }
 
-  setVisualConditions(id, condition) {
-    this.setMetricVisual(id, 'conditions', condition);
-  }
+    setUnit(id, unit) {
+        this.setMetricVisual(id, 'unit', unit);
+    }
 
-  setQueryVisualType(qid, e) {
-    this.setQueryVisual(qid, 'type', this.mode ? this.mode : this.data.visual.type);
-  }
+    setVisualConditions(id, condition) {
+        this.setMetricVisual(id, 'conditions', condition);
+    }
 
-  setQueryVisualColor(qid, e) {
-    const key = this.data.visual.color ? 'color' : 'scheme';
-    this.setQueryVisual(qid, key, this.color ? this.color : this.data.visual[key]);
-  }
+    setQueryVisualType(qid, e) {
+        this.setQueryVisual(
+            qid,
+            'type',
+            this.mode ? this.mode : this.data.visual.type,
+        );
+    }
 
-  setQueryVisualAxis(qid, e) {
-    this.setQueryVisual(qid, 'axis', this.axis ? this.axis : this.data.visual.axis);
-  }
+    setQueryVisualColor(qid, e) {
+        const key = this.data.visual.color ? 'color' : 'scheme';
+        this.setQueryVisual(
+            qid,
+            key,
+            this.color ? this.color : this.data.visual[key],
+        );
+    }
 
-  closePanel() {
-    this.visualOutput.emit( { action: 'ClosePanel' });
-  }
+    setQueryVisualAxis(qid, e) {
+        this.setQueryVisual(
+            qid,
+            'axis',
+            this.axis ? this.axis : this.data.visual.axis,
+        );
+    }
 
-  @HostListener('click', ['$event'])
-  hostClickHandler(e) {
-    console.log("metric visual panel");
-      // e.stopPropagation();
-  }
+    closePanel() {
+        this.visualOutput.emit({ action: 'ClosePanel' });
+    }
 
-  @HostListener('document:click', ['$event.target'])
-  documentClickHandler(target) {
-      if (!this.elRef.nativeElement.contains(target) && this.visible) {
-          this.visible = false;
-      } else if (!this.visible) {
-          this.visible = true;
-      }
-  }
+    @HostListener('click', ['$event'])
+    hostClickHandler(e) {
+        console.log('metric visual panel');
+        // e.stopPropagation();
+    }
 
+    @HostListener('document:click', ['$event.target'])
+    documentClickHandler(target) {
+        if (!this.elRef.nativeElement.contains(target) && this.visible) {
+            this.visible = false;
+        } else if (!this.visible) {
+            this.visible = true;
+        }
+    }
 }

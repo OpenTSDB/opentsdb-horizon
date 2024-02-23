@@ -26,14 +26,14 @@ import {
     BignumberWidgetComponent,
     MarkdownWidgetComponent,
     EventsWidgetComponent,
-    TableWidgetComponent
+    TableWidgetComponent,
 } from '../../shared/modules/dynamic-widgets/components';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class WidgetService {
-    constructor() { }
+    constructor() {}
 
     getComponentToLoad(name: string) {
         switch (name) {
@@ -56,27 +56,27 @@ export class WidgetService {
             case 'EventsWidgetComponent':
                 return EventsWidgetComponent;
             case 'TableWidgetComponent':
-                    return TableWidgetComponent;
+                return TableWidgetComponent;
             default:
                 return PlaceholderWidgetComponent;
         }
     }
 
-    getWidgetDefaultSettings(name: string ) {
+    getWidgetDefaultSettings(name: string) {
         let settings = {};
         switch (name) {
             case 'LinechartWidgetComponent':
-                settings =  {
+                settings = {
                     axes: {
                         y1: {},
-                        y2: {}
+                        y2: {},
                     },
                     legend: {
                         display: false,
                         position: 'bottom',
-                        columns: []
+                        columns: [],
                     },
-                    chartOptions: {}
+                    chartOptions: {},
                 };
                 break;
             case 'DonutWidgetComponent':
@@ -85,16 +85,16 @@ export class WidgetService {
                     legend: {
                         display: true,
                         position: 'right',
-                        showPercentages: false
-                    }
+                        showPercentages: false,
+                    },
                 };
                 break;
             case 'BarchartWidgetComponent':
                 settings = {
                     dataSummary: true,
                     axes: {
-                        y1: {}
-                    }
+                        y1: {},
+                    },
                 };
                 break;
             case 'TopnWidgetComponent':
@@ -106,8 +106,8 @@ export class WidgetService {
                 settings = {
                     dataSummary: true,
                     visual: {
-                        queryID: 0
-                    }
+                        queryID: 0,
+                    },
                 };
         }
         return settings;
@@ -117,44 +117,66 @@ export class WidgetService {
         // widget requires data series
         const series = ['LinechartWidgetComponent', 'HeatmapWidgetComponent'];
         // widget requires data summary
-        const summary = ['BarchartWidgetComponent', 'DonutWidgetComponent', 'TopnWidgetComponent', 'BignumberWidgetComponent'];
+        const summary = [
+            'BarchartWidgetComponent',
+            'DonutWidgetComponent',
+            'TopnWidgetComponent',
+            'BignumberWidgetComponent',
+        ];
         // multi metric widgets
-        const isMulti = ['LinechartWidgetComponent', 'BarchartWidgetComponent', 'DonutWidgetComponent', 'TableWidgetComponent'].includes(type);
+        const isMulti = [
+            'LinechartWidgetComponent',
+            'BarchartWidgetComponent',
+            'DonutWidgetComponent',
+            'TableWidgetComponent',
+        ].includes(type);
         // summarizer required
-        const summarizer = type !== 'LinechartWidgetComponent' && type !== 'HeatmapWidgetComponent' && type !== 'TableWidgetComponent';
+        const summarizer =
+            type !== 'LinechartWidgetComponent' &&
+            type !== 'HeatmapWidgetComponent' &&
+            type !== 'TableWidgetComponent';
         const queries = widget.queries;
         let hasVisible = false;
         const source = widget.settings.component_type;
         widget.settings.component_type = type;
         /* eslint-disable max-len */
-        const needRefresh = type === 'BignumberWidgetComponent' || !( series.includes(source) && series.includes(type) || summary.includes(source) && summary.includes(type));
+        const needRefresh =
+            type === 'BignumberWidgetComponent' ||
+            !(
+                (series.includes(source) && series.includes(type)) ||
+                (summary.includes(source) && summary.includes(type))
+            );
         // query override
-        for (let i = 0;  i < queries.length; i++) {
-            for (let j = 0;  j < queries[i].metrics.length; j++) {
-                if ( !isMulti && hasVisible ) {
+        for (let i = 0; i < queries.length; i++) {
+            for (let j = 0; j < queries[i].metrics.length; j++) {
+                if (!isMulti && hasVisible) {
                     queries[i].metrics[j].settings.visual.visible = false;
                 }
-                if ( !summarizer ) {
+                if (!summarizer) {
                     delete queries[i].metrics[j].summarizer;
                 } else {
-                    queries[i].metrics[j].summarizer =  queries[i].metrics[j].summarizer || 'avg';
+                    queries[i].metrics[j].summarizer =
+                        queries[i].metrics[j].summarizer || 'avg';
                 }
-                if ( queries[i].metrics[j].settings.visual.visible ) {
+                if (queries[i].metrics[j].settings.visual.visible) {
                     hasVisible = true;
                 }
                 // remove the metric settings
-                let msettings = ['lineType', 'lineWeight', 'type', 'axis'];
+                const msettings = ['lineType', 'lineWeight', 'type', 'axis'];
                 // big number doesn't have groupby
-                if ( type === 'BignumberWidgetComponent' ) {
+                if (type === 'BignumberWidgetComponent') {
                     delete queries[i].metrics[j].groupByTags;
                     delete queries[i].metrics[j].settings.visual.label;
                     delete queries[i].metrics[j].settings.visual.color;
                 }
-                if ( type === 'TopnWidgetComponent' || type === 'HeatmapWidgetComponent' ) {
+                if (
+                    type === 'TopnWidgetComponent' ||
+                    type === 'HeatmapWidgetComponent'
+                ) {
                     delete queries[i].metrics[j].settings.visual.color;
                 }
-                if ( source === 'LinechartWidgetComponent' ) {
-                    for ( let k = 0; k < msettings.length; k++ ) {
+                if (source === 'LinechartWidgetComponent') {
+                    for (let k = 0; k < msettings.length; k++) {
                         const key = msettings[k];
                         delete queries[i].metrics[j].settings.visual[key];
                     }
@@ -164,11 +186,15 @@ export class WidgetService {
         const defSettings: any = this.getWidgetDefaultSettings(type);
 
         // override axes, linechart and barchart have axes in commmon
-        if ( ['LinechartWidgetComponent', 'BarchartWidgetComponent'].includes(type) ) {
+        if (
+            ['LinechartWidgetComponent', 'BarchartWidgetComponent'].includes(
+                type,
+            )
+        ) {
             const oAxesConfig = widget.settings.axes || {};
             widget.settings.axes = defSettings.axes;
-            for ( const k in widget.settings.axes ) {
-                if ( oAxesConfig[k] ) {
+            for (const k in widget.settings.axes) {
+                if (oAxesConfig[k]) {
                     widget.settings.axes[k] = oAxesConfig[k];
                 }
             }
@@ -180,17 +206,27 @@ export class WidgetService {
         const oVisualConf = widget.settings.visual || {};
         const visual: any = defSettings.visual || {};
         // bignumber, heatmap and topn have units
-        if ( oVisualConf.unit && ['BignumberWidgetComponent', 'HeatmapWidgetComponent', 'TopnWidgetComponent', ].includes(type) ) {
+        if (
+            oVisualConf.unit &&
+            [
+                'BignumberWidgetComponent',
+                'HeatmapWidgetComponent',
+                'TopnWidgetComponent',
+            ].includes(type)
+        ) {
             visual.unit = oVisualConf.unit;
         }
 
-        if ( ['HeatmapWidgetComponent', 'TopnWidgetComponent', ].includes(type) ) {
-            visual.color = type === 'HeatmapWidgetComponent' ? '#3F00FF' : '#dff0ff';
+        if (['HeatmapWidgetComponent', 'TopnWidgetComponent'].includes(type)) {
+            visual.color =
+                type === 'HeatmapWidgetComponent' ? '#3F00FF' : '#dff0ff';
         }
 
-
         // bignumber and topn widgets have visual conditions
-        if ( oVisualConf.conditions && ['BignumberWidgetComponent', 'TopnWidgetComponent'].includes(type)) {
+        if (
+            oVisualConf.conditions &&
+            ['BignumberWidgetComponent', 'TopnWidgetComponent'].includes(type)
+        ) {
             visual.conditions = oVisualConf.conditions;
         }
         widget.settings.visual = visual;
@@ -199,9 +235,12 @@ export class WidgetService {
         const oLegendConfig = widget.settings.legend || {};
         widget.settings.legend = defSettings.legend || {};
         // line and donut have legend configuration
-        if (  oLegendConfig &&  ['LinechartWidgetComponent', 'DonutWidgetComponent'].includes(type) ) {
-            for ( const k in widget.settings.legend ) {
-                if ( oLegendConfig[k] ) {
+        if (
+            oLegendConfig &&
+            ['LinechartWidgetComponent', 'DonutWidgetComponent'].includes(type)
+        ) {
+            for (const k in widget.settings.legend) {
+                if (oLegendConfig[k]) {
                     widget.settings.legend[k] = oLegendConfig[k];
                 }
             }
@@ -210,14 +249,21 @@ export class WidgetService {
         }
 
         // sorting preference, the following don't have sorting preference
-        if  ( ['BignumberWidgetComponent', 'LinechartWidgetComponent', 'HeatmapWidgetComponent', 'TableWidgetComponent'].includes(type) ) {
+        if (
+            [
+                'BignumberWidgetComponent',
+                'LinechartWidgetComponent',
+                'HeatmapWidgetComponent',
+                'TableWidgetComponent',
+            ].includes(type)
+        ) {
             delete widget.settings.sorting;
         }
 
-        if ( source === 'LinechartWidgetComponent' ) {
+        if (source === 'LinechartWidgetComponent') {
             delete widget.eventQueries;
             delete widget.settings.multigraph;
         }
-        return [ widget, needRefresh ];
-      }
+        return [widget, needRefresh];
+    }
 }

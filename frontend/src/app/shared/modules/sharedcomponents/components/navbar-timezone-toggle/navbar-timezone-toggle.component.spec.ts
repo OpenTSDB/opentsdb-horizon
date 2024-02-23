@@ -19,23 +19,22 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavbarTimezoneToggleComponent } from './navbar-timezone-toggle.component';
 
 describe('NavbarTimezoneToggleComponent', () => {
-  let component: NavbarTimezoneToggleComponent;
-  let fixture: ComponentFixture<NavbarTimezoneToggleComponent>;
+    let component: NavbarTimezoneToggleComponent;
+    let fixture: ComponentFixture<NavbarTimezoneToggleComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavbarTimezoneToggleComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavbarTimezoneToggleComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarTimezoneToggleComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavbarTimezoneToggleComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

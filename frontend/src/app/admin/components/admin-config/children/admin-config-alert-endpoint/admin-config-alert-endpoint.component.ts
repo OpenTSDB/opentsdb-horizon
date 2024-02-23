@@ -1,33 +1,41 @@
-import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    Input,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-alert-endpoint',
     templateUrl: './admin-config-alert-endpoint.component.html',
     styleUrls: ['./admin-config-alert-endpoint.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminConfigAlertEndpointComponent implements OnInit {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-config-alert-endpoint';
-    @HostBinding('class.edit-mode') private tplEdit: boolean = false;
+    @HostBinding('class') classAttribute =
+    'app-admin-config-alert-endpoint';
+    @HostBinding('class.edit-mode') private tplEdit = false;
 
     @Input() endpoint: FormGroup;
     @Input() index: number;
 
-    _editMode: boolean = false;
+    _editMode = false;
 
-    get editMode() { return this._editMode; }
+    get editMode() {
+        return this._editMode;
+    }
 
     @Input() set editMode(mode: boolean) {
         this._editMode = mode;
         this.tplEdit = !this._editMode;
-    };
+    }
 
-    constructor() { }
+    constructor() {}
 
     ngOnInit() {
-        //console.log('ENDPOINT', this.endpoint.getRawValue());
+        // console.log('ENDPOINT', this.endpoint.getRawValue());
     }
 
     toggleEditMode() {
@@ -43,5 +51,4 @@ export class AdminConfigAlertEndpointComponent implements OnInit {
         // do something... maybe revert?
         this.toggleEditMode();
     }
-
 }

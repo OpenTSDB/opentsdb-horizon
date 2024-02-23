@@ -14,7 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, OnDestroy, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -22,21 +28,16 @@ import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppConfigService } from '../../../core/services/config.service';
 
-import {
-    Select,
-    Store,
-} from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 
-import {
-    DbfsState
-} from '../../../shared/modules/dashboard-filesystem/state';
+import { DbfsState } from '../../../shared/modules/dashboard-filesystem/state';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'landing-page-content',
     templateUrl: './landing-page-content.component.html',
     styleUrls: ['./landing-page-content.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
@@ -66,55 +67,55 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     fakeSearchContextOptions: Array<any> = [
         {
             label: 'Dashboards',
-            value: 'dashboard'
+            value: 'dashboard',
         },
         {
             label: 'Namespaces',
-            value: 'namespace'
+            value: 'namespace',
         },
-        /*{
+        /* {
             label: 'Metrics',
             value: 'metric'
         },*/
         {
             label: 'Users',
-            value: 'user'
-        }
+            value: 'user',
+        },
     ];
 
     // AutoSuggest
     // TODO: Replace this with empty array that gets filled out by result from service call
     fakeQuerySuggestions: Array<any> = [
         {
-            label: 'suggestion label 1'
+            label: 'suggestion label 1',
         },
         {
-            label: 'suggestion label 2'
+            label: 'suggestion label 2',
         },
         {
-            label: 'suggestion label 3'
+            label: 'suggestion label 3',
         },
         {
-            label: 'suggestion label 4'
+            label: 'suggestion label 4',
         },
         {
-            label: 'suggestion label 5'
+            label: 'suggestion label 5',
         },
         {
-            label: 'suggestion label 6'
+            label: 'suggestion label 6',
         },
         {
-            label: 'suggestion label 7'
+            label: 'suggestion label 7',
         },
         {
-            label: 'suggestion label 8'
+            label: 'suggestion label 8',
         },
         {
-            label: 'suggestion label 9'
+            label: 'suggestion label 9',
         },
         {
-            label: 'suggestion label 10'
-        }
+            label: 'suggestion label 10',
+        },
     ];
 
     /** Form Group */
@@ -130,32 +131,36 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
         private store: Store,
-        private appConfig: AppConfigService
-    ) { }
+        private appConfig: AppConfigService,
+    ) {}
 
     ngOnInit() {
         this.appName = this.appConfig.getConfig().name;
         this.createSearchForm();
-        this.subscription.add(this.route.queryParams.subscribe(params => {
-            if (params['db-delete']) {
-                this.snackBar.open('Dashboard has been deleted.', '', {
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'info'
-                });
-            }
-        }));
+        this.subscription.add(
+            this.route.queryParams.subscribe((params) => {
+                if (params['db-delete']) {
+                    this.snackBar.open('Dashboard has been deleted.', '', {
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                        panelClass: 'info',
+                    });
+                }
+            }),
+        );
 
-        this.subscription.add(this.user$.subscribe(user => {
-            this.user = user;
-        }));
+        this.subscription.add(
+            this.user$.subscribe((user) => {
+                this.user = user;
+            }),
+        );
     }
 
     createSearchForm() {
         this.searchFormGroup = this.fb.group({
             searchQuery: new FormControl(this.searchQuery),
-            searchContext: new FormControl(this.searchContext)
+            searchContext: new FormControl(this.searchContext),
         });
     }
 
@@ -191,5 +196,4 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

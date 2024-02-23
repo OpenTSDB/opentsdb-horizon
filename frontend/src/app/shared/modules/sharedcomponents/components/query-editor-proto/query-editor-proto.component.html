@@ -50,7 +50,7 @@
             <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace || !query.namespace.trim() ">
                 <span class="value">
                     <namespace-autocomplete [value]="query.namespace" [options]="options" [initFocus]="editNamespace" (nschange)="saveNamespace($event)"
-                        (blur)="cancelSaveNamespace($event)"></namespace-autocomplete>
+                        (blurFocus)="cancelSaveNamespace($event)"></namespace-autocomplete>
                 </span>
             </div>
         </ng-container>
@@ -158,7 +158,7 @@
                             </div>
                             <metric-autocomplete *ngIf="editMetricId === data.metric.id" [namespace]="query.namespace"
                                 [metrics]="[data.metric.name]" [filters]="tagFilters"
-                                (metricOutput)="updateMetric($event, data.metric.id);" (blur)="editMetricId = -1">
+                                (metricOutput)="updateMetric($event, data.metric.id);" (blurFocus)="editMetricId = -1">
                             </metric-autocomplete>
                         </div>
                     </ng-template>
@@ -237,8 +237,8 @@
                                     [fontIcon]="tagAggregatorIconMap[data.metric.tagAggregator]"
                                     *ngIf="data.metric.tagAggregator"></mat-icon>
                                 <tag-aggregator *ngIf="data.type === 'metric'" [value]="data.metric.tagAggregator"
-                                    (change)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
-                                <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (change)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
+                                    (valueChange)="setMetricTagAggregator(data.metric.id, $event)"></tag-aggregator>
+                                <dropdown-join-type *ngIf="data.type === 'expression'" [value]="data.metric.joinType" (valueChange)="setJoinType(data.metric.id, $event)"></dropdown-join-type>
                                 <span class="by-spacer">{{ data.type === 'expression' ? ' ON' : 'By' }}</span>
 
                                 <dropdown-metric-tags [namespace]="query.namespace" [metric]="data.metric.name"
@@ -359,7 +359,7 @@
                         <div class="metric-row-data metric-name is-adding" *ngIf="isAddMetricProgress">
                             <metric-autocomplete [focus]="isAddMetricProgress" [multiple]="true" [namespace]="query.namespace"
                                 [filters]="tagFilters" (metricOutput)="updateMetric($event, null);"
-                                (blur)="isAddMetricProgress = false"></metric-autocomplete>
+                                (blurFocus)="isAddMetricProgress = false"></metric-autocomplete>
                         </div>
                     </div>
                 </td>

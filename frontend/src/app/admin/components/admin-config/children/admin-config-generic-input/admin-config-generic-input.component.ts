@@ -1,9 +1,23 @@
 import {
-    AfterViewInit, Attribute, Component, ElementRef,
-    forwardRef, HostBinding, Input, OnDestroy,
-    OnInit, Provider, Renderer2, ViewChild, ViewEncapsulation
+    AfterViewInit,
+    Attribute,
+    Component,
+    ElementRef,
+    forwardRef,
+    HostBinding,
+    Input,
+    OnDestroy,
+    OnInit,
+    Provider,
+    Renderer2,
+    ViewChild,
+    ViewEncapsulation,
 } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+    ControlValueAccessor,
+    FormControl,
+    NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { Subscription } from 'rxjs';
@@ -19,39 +33,43 @@ const GENERIC_INPUT_CONTROL_VALUE_ACCESSOR: Provider = {
     templateUrl: './admin-config-generic-input.component.html',
     styleUrls: ['./admin-config-generic-input.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [
-        GENERIC_INPUT_CONTROL_VALUE_ACCESSOR
-    ]
+    providers: [GENERIC_INPUT_CONTROL_VALUE_ACCESSOR],
 })
-export class AdminConfigGenericInputComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
-
+export class AdminConfigGenericInputComponent
+implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
     @HostBinding('class') get classAttribute(): string {
-        let defaultClasses = 'app-admin-config-generic-input form-group';
+        const defaultClasses = 'app-admin-config-generic-input form-group';
         return defaultClasses + ' ' + this.classNames;
     }
-    @HostBinding('class.row-align') get horizontalAlignClass(): boolean { return this.horizontalAlign; }
+    @HostBinding('class.row-align') get horizontalAlignClass(): boolean {
+        return this.horizontalAlign;
+    }
 
     @ViewChild(MatInput, { static: true }) inputControl: MatInput;
-    @ViewChild(MatInput, { read: ElementRef, static: true }) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, { read: ElementRef, static: true }) private formFieldEl: ElementRef;
+    @ViewChild(MatInput, { read: ElementRef, static: true })
+    inputControlEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef, static: true })
+    private formFieldEl: ElementRef;
 
-    @Input() inputType: string = 'text'; // TODO: limit to the types with an enum, or possible templates
-    @Input() inputPlaceholder: string = 'Enter value';
+    @Input() inputType = 'text'; // TODO: limit to the types with an enum, or possible templates
+    @Input() inputPlaceholder = 'Enter value';
     @Input() inputLabel: string;
 
-    @Input() hasErrors: boolean = false;
+    @Input() hasErrors = false;
     @Input() errorMsg: any;
 
     // should label and input be aligned in row?
     // true: aligns label and input on same line
     // false: label aligns above input (default)
-    @Input() horizontalAlign: boolean = false;
+    @Input() horizontalAlign = false;
 
     inputValue: any;
     inputValueControl: FormControl = new FormControl(null);
 
-    disabled: boolean = false;
+    disabled = false;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     private onTouched!: Function;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     private onChanged!: Function;
 
     private subscription: Subscription = new Subscription();
@@ -59,13 +77,15 @@ export class AdminConfigGenericInputComponent implements OnInit, AfterViewInit, 
     constructor(
         @Attribute('class') public classNames: string,
         private renderer: Renderer2,
-        private eRef: ElementRef
-    ) { }
+        private eRef: ElementRef,
+    ) {}
 
     ngOnInit() {
-        this.subscription.add(this.inputValueControl.valueChanges.subscribe((changes: any) => {
-            this.inputValueChange(changes);
-        }));
+        this.subscription.add(
+            this.inputValueControl.valueChanges.subscribe((changes: any) => {
+                this.inputValueChange(changes);
+            }),
+        );
     }
 
     ngAfterViewInit() {
@@ -80,7 +100,10 @@ export class AdminConfigGenericInputComponent implements OnInit, AfterViewInit, 
         // set the initial data-value
         // needs to live on the .mat-form-field-infix
         // aka, the wrapper around the actual input field
-        const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+        const formFieldInfix: HTMLElement =
+            this.formFieldEl.nativeElement.querySelector(
+                '.mat-form-field-infix',
+            );
         formFieldInfix.dataset.value = this.inputValue;
     }
 
@@ -121,5 +144,4 @@ export class AdminConfigGenericInputComponent implements OnInit, AfterViewInit, 
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

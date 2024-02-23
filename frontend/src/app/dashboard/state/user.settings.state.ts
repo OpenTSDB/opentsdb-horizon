@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export interface UserSettingsModel {
     userid: string;
@@ -28,29 +28,28 @@ export interface UserSettingsModel {
 
 export class LoadUserNamespaces {
     public static type = '[Dashboard] Load User Namespaces';
-    constructor() { }
+    constructor() {}
 }
 
 export class UpdateUserNamespaces {
     public static type = '[Dashboard] Update User Namespaces';
-    constructor(public readonly namespaces: any) { }
+    constructor(public readonly namespaces: any) {}
 }
 
 export class UpdatePersonalFolders {
     public static type = '[Dashboard] Update User Personal folders';
-    constructor(public readonly personalFolders: any) { }
+    constructor(public readonly personalFolders: any) {}
 }
 
 export class UpdateNamespaceFolders {
     public static type = '[Dashboard] Update Namespace Folders';
-    constructor(public readonly namespaceFolders: any) { }
+    constructor(public readonly namespaceFolders: any) {}
 }
 
 export class LoadUserFolderData {
     public static type = '[Dashboard] Load User Namespaces';
-    constructor() { }
+    constructor() {}
 }
-
 
 @Injectable()
 @State<UserSettingsModel>({
@@ -59,12 +58,11 @@ export class LoadUserFolderData {
         userid: '',
         namespaces: [],
         personalFolders: [],
-        namespaceFolders: []
-    }
+        namespaceFolders: [],
+    },
 })
-
 export class UserSettingsState {
-    constructor(private httpService: HttpService) { }
+    constructor(private httpService: HttpService) {}
 
     @Selector() static GetUserSettings(state: UserSettingsModel) {
         return state;
@@ -90,7 +88,7 @@ export class UserSettingsState {
         return this.httpService.userNamespaces().pipe(
             map((namespaces: any) => {
                 ctx.dispatch(new UpdateUserNamespaces(namespaces.body));
-            })
+            }),
         );
     }
 
@@ -122,27 +120,34 @@ export class UserSettingsState {
                 delete personalFolder.subfolders;
                 delete personalFolder.files;
                 ctx.dispatch(new UpdatePersonalFolders([personalFolder]));
-            })
+            }),
         );
     }
 
     @Action(UpdateUserNamespaces)
-    updateUserNamespaces(ctx: StateContext<UserSettingsModel>, { namespaces }: UpdateUserNamespaces) {
+    updateUserNamespaces(
+        ctx: StateContext<UserSettingsModel>,
+        { namespaces }: UpdateUserNamespaces,
+    ) {
         const state = ctx.getState();
         ctx.patchState({ ...state, namespaces: namespaces });
     }
 
     @Action(UpdatePersonalFolders)
-    updatePersonalFolders(ctx: StateContext<UserSettingsModel>, { personalFolders }: UpdatePersonalFolders) {
+    updatePersonalFolders(
+        ctx: StateContext<UserSettingsModel>,
+        { personalFolders }: UpdatePersonalFolders,
+    ) {
         const state = ctx.getState();
         ctx.patchState({ ...state, personalFolders: personalFolders });
     }
 
     @Action(UpdateNamespaceFolders)
-    updateNamespaceFolders(ctx: StateContext<UserSettingsModel>, { namespaceFolders }: UpdateNamespaceFolders) {
+    updateNamespaceFolders(
+        ctx: StateContext<UserSettingsModel>,
+        { namespaceFolders }: UpdateNamespaceFolders,
+    ) {
         const state = ctx.getState();
         ctx.patchState({ ...state, namespaceFolders: namespaceFolders });
     }
-
-
 }

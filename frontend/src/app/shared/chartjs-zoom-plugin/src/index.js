@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var Chart = require('chart.js');
+var Chart = require("chart.js");
 
-Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+Chart = typeof Chart === "function" ? Chart : window.Chart;
 
 Chart.Zoom = Chart.Zoom || {};
 
 Chart.Zoom.defaults = {
-	enabled: false,
-	mode: "x|y"
+    enabled: false,
+    mode: "x|y",
 };
 
-var zoomPlugin = require('./zoom.js')(Chart);
+var zoomPlugin = require("./zoom.js")(Chart);
 
 module.exports = zoomPlugin;
 
