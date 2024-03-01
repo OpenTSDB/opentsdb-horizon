@@ -1,6 +1,7 @@
 // **
 @use '~@angular/material' as mat;
 @use '~@angular/cdk' as cdk;
+@use 'sass:math';
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -25,7 +26,7 @@ $calendar-width: $calendar-cell-size * 7 + $calendar-padding * 2;
 $calendar-height: 320px;
 
 $calendar-body-label-padding-start: 5% !default;
-$calendar-body-label-side-padding: 33% / 7 !default;
+$calendar-body-label-side-padding: math.div(33%,7) !default;
 $calendar-body-cell-min-size: 32px !default;
 $calendar-body-cell-content-margin: 5% !default;
 $calendar-body-cell-content-border-width: 1px !default;
@@ -36,7 +37,7 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
 $calendar-padding: 8px !default;
 $calendar-header-divider-width: 1px !default;
 $calendar-controls-vertical-padding: 5%;
-$calendar-controls-side-margin: calc(33% / 7 - 16px);
+$calendar-controls-side-margin: calc(math.div(33%,7) - 16px);
 
 $calendar-arrow-size: 5px !default;
 $calendar-arrow-disabled-opacity: 0.5 !default;
@@ -190,7 +191,7 @@ $calendar-next-icon-transform: translateX(-2px) rotate(45deg);
     }
 
     .mat-calendar-header {
-        padding: ($calendar-padding/2) $calendar-padding 0 $calendar-padding;
+        padding: math.div($calendar-padding,2) $calendar-padding 0 $calendar-padding;
     }
 
     .mat-calendar-content {

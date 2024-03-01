@@ -2,7 +2,7 @@
 @mixin time-selector-component-theme() {
     .time-selector-component {
         .time-button {
-            background-color: mat.get-color-from-palette($primary, default, 0.08)
+            background-color: mat-get-color-from-palette($primary, default, 0.08)
         }
     }
 }

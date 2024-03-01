@@ -1,12 +1,12 @@
 @use '~@angular/material' as mat;
 @mixin dashboard-delete-dialog-component-theme() {
 
-    $divider: mat.get-color-from-palette($foreground, divider);
+    $divider: mat-get-color-from-palette($foreground, divider);
 
     .dashboard-delete-dialog {
         .mat-dialog-title {
-            background-color: mat.get-color-from-palette($other, status-warning);
-            color: mat.get-color-from-palette($other, status-warning-contrast);
+            background-color: mat-get-color-from-palette($other, status-warning);
+            color: mat-get-color-from-palette($other, status-warning-contrast);
         }
     }
 
@@ -14,7 +14,7 @@
 
     // backdrop
     .dashboard-delete-dialog-backdrop {
-        background-color: mat.get-color-from-palette($foreground, disabled);
+        background-color: mat-get-color-from-palette($foreground, disabled);
     }
 
     // panel

@@ -1,23 +1,23 @@
 @use '~@angular/material' as mat;
 @mixin downsample-component-theme() {
 
-    $fill-background: mat.get-color-from-palette($foreground, base, if($is-dark, 0.1, 0.04));
+    $fill-background: mat-get-color-from-palette($foreground, base, if($is-dark, 0.1, 0.04));
 
-    $divider: mat.get-color-from-palette($foreground, divider);
-    $link: mat.get-color-from-palette($foreground, link);
+    $divider: mat-get-color-from-palette($foreground, divider);
+    $link: mat-get-color-from-palette($foreground, link);
 
     .time-downsample-component {
         // style rules here
 
         .advanced-toggle {
             a {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
         }
 
         &.advanced-open {
             .advanced-toggle {
-                border-bottom: 2px solid mat.get-color-from-palette($foreground, link, .25);
+                border-bottom: 2px solid mat-get-color-from-palette($foreground, link, .25);
 
                 .mat-button.mat-primary {
                     .mat-button-focus-overlay {

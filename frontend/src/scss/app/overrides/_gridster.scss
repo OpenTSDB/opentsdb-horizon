@@ -85,14 +85,14 @@
 @include init-component-variants() {
 
     .gridster-item-prototype {
-        background-color: mat.get-color-from-palette($primary, darker);
+        background-color: mat-get-color-from-palette($primary, darker);
     }
 
     .gridster-container {
         .position-highlight {
             .inner {
                 @include mat.elevation(3);
-                background-color: mat.get-color-from-palette($other, gridster-highlight);
+                background-color: mat-get-color-from-palette($other, gridster-highlight);
                 border: 1px solid transparent;
             }
         }

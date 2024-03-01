@@ -4,15 +4,15 @@
         .widget-types {
             .widget-type-selector {
                 // need a background color here
-                background-color: mat.get-color-from-palette($other, widget-icons-background);
+                background-color: mat-get-color-from-palette($other, widget-icons-background);
 
                 &:hover {
-                    background-color: mat.get-color-from-palette($other, widget-icons-background-hover);
+                    background-color: mat-get-color-from-palette($other, widget-icons-background-hover);
                 }
             }
 
             .widget-type-label {
-                color: mat.get-color-from-palette($foreground, text);
+                color: mat-get-color-from-palette($foreground, text);
             }
         }
     }

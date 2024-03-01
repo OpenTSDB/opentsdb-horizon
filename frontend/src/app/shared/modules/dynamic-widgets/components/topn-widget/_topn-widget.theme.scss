@@ -11,13 +11,13 @@
 
     $tooltip-bg: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu),
+        mat-get-color-from-palette($background, menu),
         #f0f0f0 // TODO: plug into theme
     );
 
     $tooltip-border: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu-border),
+        mat-get-color-from-palette($background, menu-border),
         #cccccc // TODO: plug into theme
     );
 

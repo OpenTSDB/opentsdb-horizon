@@ -268,67 +268,67 @@ $flex-gap: 10px;
         }
 
         .config-toolbar {
-            border-bottom: $edit-toolbar-border-width solid mat.get-color-from-palette($foreground, divider, .05);
+            border-bottom: $edit-toolbar-border-width solid mat-get-color-from-palette($foreground, divider, .05);
         }
 
         .query-item:not(:last-child) {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, .05);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider, .05);
         }
 
         // specific tab overrides are in their own component style sheet
     }
 
     // CUSTOM ELEMENT STYLES
-    $fill-background: mat.get-color-from-palette($foreground, base, if($is-dark, 0.1, 0.04));
+    $fill-background: mat-get-color-from-palette($foreground, base, if($is-dark, 0.1, 0.04));
 
     .button-group {
         .mat-raised-button {
             &.mat-primary:not(:last-child) {
-                border-right: 1px solid mat.get-color-from-palette($primary, 400);
+                border-right: 1px solid mat-get-color-from-palette($primary, 400);
             }
 
             &.mat-accent:not(:last-child) {
-                border-right: 1px solid mat.get-color-from-palette($accent, 400);
+                border-right: 1px solid mat-get-color-from-palette($accent, 400);
             }
 
             &.mat-warn:not(:last-child) {
-                border-right: 1px solid mat.get-color-from-palette($warn, 400);
+                border-right: 1px solid mat-get-color-from-palette($warn, 400);
             }
         }
 
     }
 
     .sliding-button-group.mat-tab-nav-bar {
-        $sbg-bg: if($is-dark, mat.get-color-from-palette($foreground, base, .1), mat.get-color-from-palette($primary, 50));
+        $sbg-bg: if($is-dark, mat-get-color-from-palette($foreground, base, .1), mat-get-color-from-palette($primary, 50));
 
         background-color: $sbg-bg;
 
         .mat-tab-link {
-            color: mat.get-color-from-palette($primary, default);
+            color: mat-get-color-from-palette($primary, default);
 
             &.mat-tab-label-active {
-                color: mat.get-color-from-palette($foreground, base);
+                color: mat-get-color-from-palette($foreground, base);
             }
         }
 
         .mat-ink-bar {
-            background: mat.get-color-from-palette($background, card);
+            background: mat-get-color-from-palette($background, card);
         }
     }
 
     .app-navbar .navbar-item {
         .sliding-button-group.mat-tab-nav-bar {
-            background-color: mat.get-color-from-palette($background, navbar-button);
+            background-color: mat-get-color-from-palette($background, navbar-button);
 
             .mat-tab-link {
                 &,
                 &.mat-tab-label-active {
-                    color: mat.get-color-from-palette($foreground, navbar-text);
+                    color: mat-get-color-from-palette($foreground, navbar-text);
                 }
             }
 
             .mat-ink-bar {
-                background: mat.get-color-from-palette($foreground, navbar-text, .25);
+                background: mat-get-color-from-palette($foreground, navbar-text, .25);
             }
         }
     }
@@ -341,12 +341,12 @@ $flex-gap: 10px;
 
                 .mat-button-toggle {
                     background: if($is-dark, rgba($black, .4), rgba($white, .8));
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
 
                     &.mat-button-toggle-checked  {
-                        background: if($is-dark, mat.get-color-from-palette($foreground, link, .2), rgba($white, .8));
+                        background: if($is-dark, mat-get-color-from-palette($foreground, link, .2), rgba($white, .8));
                         color: if($is-dark, $white, $black);
-                        border: 2px solid mat.get-color-from-palette($foreground, link);
+                        border: 2px solid mat-get-color-from-palette($foreground, link);
                     }
                 }
             }

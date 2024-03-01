@@ -1,17 +1,17 @@
 @use '~@angular/material' as mat;
 @mixin template-variable-panel-component-theme() {
     .template-variable-panel-component {
-        background-color: mat.get-color-from-palette($background, card);
+        background-color: mat-get-color-from-palette($background, card);
         //color: mat-color($foreground, navbar-text);
-        border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+        border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
 
         &.is-edit-mode {
-            background-color: mat.get-color-from-palette($background, card);
-            color: mat.get-color-from-palette($foreground, text);
+            background-color: mat-get-color-from-palette($background, card);
+            color: mat-get-color-from-palette($foreground, text);
         }
 
         .error-msg {
-            color: mat.get-color-from-palette($warn, default);
+            color: mat-get-color-from-palette($warn, default);
         }
 
         .regexp {
@@ -23,7 +23,7 @@
                 .mat-form-field {
                     &.mat-form-field-appearance-fill {
                         .mat-form-field-flex {
-                            background-color: mat.get-color-from-palette($primary, default, 0.08);
+                            background-color: mat-get-color-from-palette($primary, default, 0.08);
                         }
 
                         .mat-form-field-underline::before {
@@ -32,14 +32,14 @@
 
                         &:hover:not(.mat-focused) {
                             .mat-form-field-flex {
-                                background-color: mat.get-color-from-palette($primary, default, .1);
+                                background-color: mat-get-color-from-palette($primary, default, .1);
                             }
 
                             .mat-form-field-underline {
                                 background-color: rgba(0,0,0,0); // this is transparent
 
                                 .mat-form-field-ripple {
-                                    background-color: mat.get-color-from-palette($primary, default, 0.3);
+                                    background-color: mat-get-color-from-palette($primary, default, 0.3);
                                 }
                             }
                         }
@@ -47,7 +47,7 @@
                         &.mat-focused,
                         &:hover {
                             .mat-form-field-flex {
-                                background-color: mat.get-color-from-palette($primary, default, .08);
+                                background-color: mat-get-color-from-palette($primary, default, .08);
                             }
                         }
                     }
@@ -59,14 +59,14 @@
 
         .variable-form-wrapper {
             .namespace-column {
-                border-right: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-right: 1px solid mat-get-color-from-palette($foreground, divider);
 
                 .mat-chip-list-wrapper {
                     .mat-standard-chip {
                         background-color: if(
                             $is-dark,
-                            mat.get-color-from-palette($primary, default, .6),
-                            mat.get-color-from-palette($primary, default, .1)
+                            mat-get-color-from-palette($primary, default, .6),
+                            mat-get-color-from-palette($primary, default, .1)
                         );
                     }
                 }
@@ -81,30 +81,30 @@
             }
 
             .namespace-required-message {
-                background: mat.get-color-from-palette($foreground, divider);
+                background: mat-get-color-from-palette($foreground, divider);
             }
         }
 
         .variable-action-controls {
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         // form fields for list-view
         .dashboard-template-variable.mat-form-field {
             .mat-form-field-prefix {
-                background: mat.get-color-from-palette($primary, default, .1);
+                background: mat-get-color-from-palette($primary, default, .1);
 
                 .automode {
                     color: rgba($black,.8);
 
                     &.auto-mode {
-                        background-color: mat.get-color-from-palette($other, dashboard-filter-auto-mode-bg);
-                        border: 1px solid mat.get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
+                        background-color: mat-get-color-from-palette($other, dashboard-filter-auto-mode-bg);
+                        border: 1px solid mat-get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
                     }
 
                     &.manual-mode {
-                        background-color: mat.get-color-from-palette($other, dashboard-filter-manual-mode-bg);
-                        border: 1px solid mat.get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
+                        background-color: mat-get-color-from-palette($other, dashboard-filter-manual-mode-bg);
+                        border: 1px solid mat-get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
                     }
                 }
             }
@@ -112,12 +112,12 @@
             .mat-form-field-suffix {
                 .mat-icon {
                     cursor: pointer;
-                    color: mat.get-color-from-palette($primary, default, .1);
+                    color: mat-get-color-from-palette($primary, default, .1);
                 }
 
                 &:hover {
                     .mat-icon {
-                        color: mat.get-color-from-palette($primary, default, .3);
+                        color: mat-get-color-from-palette($primary, default, .3);
                     }
                 }
             }
@@ -134,32 +134,32 @@
 
             .settings-control.filter-mode-control {
                 .sliding-toggle-group {
-                    background-color: mat.get-color-from-palette($primary, default, 0.08);
+                    background-color: mat-get-color-from-palette($primary, default, 0.08);
                     border-bottom: 1px solid transparent;
 
                     .mat-tab-link {
                         &,
                         &.mat-tab-label-active {
-                            color: mat.get-color-from-palette($foreground, link);
+                            color: mat-get-color-from-palette($foreground, link);
                         }
                     }
 
                     .mat-ink-bar {
                         background-color: if($is-dark, rgba(#ffffff, 0.12), #ffffff);
-                        border: 1px solid mat.get-color-from-palette($foreground, link);
+                        border: 1px solid mat-get-color-from-palette($foreground, link);
                     }
 
                     &.auto-mode {
                         .mat-ink-bar {
-                            background-color: mat.get-color-from-palette($other, dashboard-filter-auto-mode-bg);
-                            border: 1px solid mat.get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
+                            background-color: mat-get-color-from-palette($other, dashboard-filter-auto-mode-bg);
+                            border: 1px solid mat-get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
                         }
                     }
 
                     &.manual-mode {
                         .mat-ink-bar {
-                            background-color: mat.get-color-from-palette($other, dashboard-filter-manual-mode-bg);
-                            border: 1px solid mat.get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
+                            background-color: mat-get-color-from-palette($other, dashboard-filter-manual-mode-bg);
+                            border: 1px solid mat-get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
                         }
                     }
 
@@ -180,13 +180,13 @@
     // cdk items here (if any)
     .mat-autocomplete-panel.default-value-autocomplete {
         .filter-type-toggle {
-            border-bottom: 2px solid mat.get-color-from-palette($foreground, divider);
+            border-bottom: 2px solid mat-get-color-from-palette($foreground, divider);
         }
 
         // regexp option is treated differently
         .mat-option:first-child {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
-            background-color: mat.get-color-from-palette($primary, default, 0.08);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
+            background-color: mat-get-color-from-palette($primary, default, 0.08);
         }
     }
 
@@ -194,11 +194,11 @@
     .filter-scope-cdk-menu.mat-menu-panel {
 
         .filter-tab-nav.mat-nav-list {
-            background-color: mat.get-color-from-palette($primary, default, .1);
+            background-color: mat-get-color-from-palette($primary, default, .1);
 
             .mat-list-item.selected {
-                background-color: mat.get-color-from-palette($primary, default, .1);
-                box-shadow: inset 4px 0 0 -2px mat.get-color-from-palette($primary, default);
+                background-color: mat-get-color-from-palette($primary, default, .1);
+                box-shadow: inset 4px 0 0 -2px mat-get-color-from-palette($primary, default);
                 pointer-events: none;
             }
         }
@@ -206,21 +206,21 @@
         .filter-scope-columns {
 
             .filter-scope-type {
-                background-color: mat.get-color-from-palette($primary, default, .3);
-                color: mat.get-color-from-palette($foreground, text, .6);
+                background-color: mat-get-color-from-palette($primary, default, .3);
+                color: mat-get-color-from-palette($foreground, text, .6);
             }
 
             .header-column {
-                background-color: mat.get-color-from-palette($foreground, divider);
-                color: mat.get-color-from-palette($foreground, text, .6);
+                background-color: mat-get-color-from-palette($foreground, divider);
+                color: mat-get-color-from-palette($foreground, text, .6);
             }
 
             .scope-column:not(:last-child) {
-                border-right: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-right: 1px solid mat-get-color-from-palette($foreground, divider);
             }
 
             .mat-standard-chip {
-                background-color: mat.get-color-from-palette($foreground, link, 0.15);
+                background-color: mat-get-color-from-palette($foreground, link, 0.15);
             }
 
             .mat-standard-chip:hover {
@@ -246,7 +246,7 @@
                         color: $black;
                     }
                     .mat-icon.exclude {
-                        color: mat.get-color-from-palette($other, status-error);
+                        color: mat-get-color-from-palette($other, status-error);
                     }
                 }
             }
@@ -256,8 +256,8 @@
 
     $placeholderBG: if(
         $is-dark,
-        mat.get-color-from-palette($primary, default, .6),
-        mat.get-color-from-palette($primary, default, .1)
+        mat-get-color-from-palette($primary, default, .6),
+        mat-get-color-from-palette($primary, default, .1)
     );
 
     // TODO: this is nasty to get the old code to work with variables

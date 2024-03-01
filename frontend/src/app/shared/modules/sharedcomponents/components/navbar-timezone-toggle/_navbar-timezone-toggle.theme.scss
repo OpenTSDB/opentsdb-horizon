@@ -2,17 +2,17 @@
 @mixin navbar-timezone-toggle-component-theme() {
     .navbar-timezone-toggle {
         .timezone-toggle-options.sliding-button-group {
-            background-color: mat.get-color-from-palette($background, navbar-button);
+            background-color: mat-get-color-from-palette($background, navbar-button);
 
             .mat-tab-link {
                 &,
                 &.mat-tab-label-active {
-                    color: mat.get-color-from-palette($foreground, navbar-text);
+                    color: mat-get-color-from-palette($foreground, navbar-text);
                 }
             }
 
             .mat-ink-bar {
-                background-color: mat.get-color-from-palette($foreground, navbar-text, .25);
+                background-color: mat-get-color-from-palette($foreground, navbar-text, .25);
             }
         }
     }

@@ -31,16 +31,6 @@ import {
 
 import { WidgetModel } from '../../../../../dashboard/state/widgets.state';
 
-import {
-    WidgetConfigAxesComponent,
-    WidgetConfigGeneralComponent,
-    WidgetConfigLegendComponent,
-    WidgetConfigMetricQueriesComponent,
-    WidgetConfigQueryInspectorComponent,
-    WidgetConfigTimeComponent,
-    WidgetConfigVisualAppearanceComponent,
-} from '../../../sharedcomponents/components';
-
 interface AvailableWidgetTypesData {
     label: string;
     type: string;

@@ -568,7 +568,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
         this.onChange.emit();
     };
 
-    monthSelected(monthIndex: string) {
+    monthSelected(monthIndex: number): void {
         // 0 represents Jan
         // eslint-disable-next-line max-len
         const monthMoment = moment(

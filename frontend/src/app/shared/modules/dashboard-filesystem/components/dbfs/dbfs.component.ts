@@ -505,7 +505,7 @@ export class DbfsComponent implements OnInit, OnDestroy {
     }
 
     /* UTILS */
-    getPanelContext(path: string, panelIndex: number) {
+    getPanelContext(path: string) {
         const panel = this.store.select(
             DbfsResourcesState.getFolderResource(path),
         );
@@ -641,19 +641,27 @@ export class DbfsComponent implements OnInit, OnDestroy {
         }
     }
 
-    applyNamespacesListFilter(filterValue: string) {
+    applyNamespacesListFilter(e: Event) {
+        const target = <HTMLInputElement>e.target;
+        const filterValue = target.value;
         this.namespacesDataSource.filter = filterValue.trim().toLowerCase();
     }
 
-    applyUsersListFilter(filterValue: string) {
+    applyUsersListFilter(e: Event) {
+        const target = <HTMLInputElement>e.target;
+        const filterValue = target.value;
         this.usersDataSource.filter = filterValue.trim().toLowerCase();
     }
 
-    applyUserFavoritesFilter(filterValue: string) {
+    applyUserFavoritesFilter(e: Event) {
+        const target = <HTMLInputElement>e.target;
+        const filterValue = target.value;
         this.userFavoritesDataSource.filter = filterValue.trim().toLowerCase();
     }
 
-    applyUserRecentsFilter(filterValue: string) {
+    applyUserRecentsFilter(e: Event) {
+        const target = <HTMLInputElement>e.target;
+        const filterValue = target.value;
         this.userRecentsDataSource.filter = filterValue.trim().toLowerCase();
     }
 

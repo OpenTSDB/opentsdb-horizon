@@ -6,12 +6,12 @@
     // TODO: Brand color sounds like it needs to be in theme
     $brand-color: if(
         $is-dark,
-        mat.get-color-from-palette($background, navbar, .85),
-        mat.get-color-from-palette($background, navbar)
+        mat-get-color-from-palette($background, navbar, .85),
+        mat-get-color-from-palette($background, navbar)
     );
 
-    $brand-color-lighter: mat.get-color-from-palette($background, navbar-alt);
-    $brand-color-inverse: mat.get-color-from-palette($foreground, navbar-text);
+    $brand-color-lighter: mat-get-color-from-palette($background, navbar-alt);
+    $brand-color-inverse: mat-get-color-from-palette($foreground, navbar-text);
 
     $new-bg: if($is-dark, rgba($white, 0.25), #edeff4);// TODO: plug into theme
 
@@ -27,7 +27,7 @@
             background-color: if($is-dark, rgba($white, 0.04), $new-bg);
 
             &.is-expanded {
-                box-shadow: inset 0 -1px 0 1px mat.get-color-from-palette($background, card);
+                box-shadow: inset 0 -1px 0 1px mat-get-color-from-palette($background, card);
             }
 
             .query-index {
@@ -37,16 +37,16 @@
 
             .toolbar-item {
                 .mat-select-arrow-wrapper {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
             }
 
             .query-alias-edit-icon {
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
             }
 
@@ -73,7 +73,7 @@
             }
 
             .tags-selected-header {
-                border-bottom: 1px solid mat.get-color-from-palette($background, card);
+                border-bottom: 1px solid mat-get-color-from-palette($background, card);
             }
 
             .tag-filter-detail {
@@ -82,26 +82,26 @@
                         color: rgba(0, 0, 0, 0.8);
 
                         &.auto-mode {
-                            background-color: mat.get-color-from-palette($other, dashboard-filter-auto-mode-bg);
-                            border: 1px solid mat.get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
+                            background-color: mat-get-color-from-palette($other, dashboard-filter-auto-mode-bg);
+                            border: 1px solid mat-get-color-from-palette($other, dashboard-filter-auto-mode-border-color);
                         }
 
                         &.manual-mode {
-                            background-color: mat.get-color-from-palette($other, dashboard-filter-manual-mode-bg);
-                            border: 1px solid mat.get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
+                            background-color: mat-get-color-from-palette($other, dashboard-filter-manual-mode-bg);
+                            border: 1px solid mat-get-color-from-palette($other, dashboard-filter-manual-mode-border-color);
                         }
                     }
                 }
             }
 
             .mat-icon {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
         }
 
         .vertical-line-spacer {
             span {
-                background-color: mat.get-color-from-palette($foreground, divider);
+                background-color: mat-get-color-from-palette($foreground, divider);
             }
         }
 
@@ -110,24 +110,24 @@
                 background-color: transparent;
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text, .5),
-                    mat.get-color-from-palette($background, navbar, .5)
+                    mat-get-color-from-palette($foreground, text, .5),
+                    mat-get-color-from-palette($background, navbar, .5)
                 );
 
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
 
                 .alias-text.has-alias {
-                    color: mat.get-color-from-palette($foreground, text);
+                    color: mat-get-color-from-palette($foreground, text);
                     font-weight: bold;
                 }
 
                 &:hover {
-                    background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                    background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, text),
+                        mat-get-color-from-palette($foreground, text),
                         $brand-color
                     );
                 }
@@ -135,12 +135,12 @@
 
             .alias-input-field {
                 .mat-form-field-prefix {
-                    color: mat.get-color-from-palette($foreground, text, 0.5);
-                    background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                    color: mat-get-color-from-palette($foreground, text, 0.5);
+                    background-color: mat-get-color-from-palette($foreground, link, 0.1);
                 }
 
                 .mat-input-element {
-                    color: mat.get-color-from-palette($foreground, text);
+                    color: mat-get-color-from-palette($foreground, text);
                 }
             }
         }
@@ -148,22 +148,22 @@
         .visual-panel-dropdown-text {
             color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, text, .5),
-                mat.get-color-from-palette($background, navbar, .5)
+                mat-get-color-from-palette($foreground, text, .5),
+                mat-get-color-from-palette($background, navbar, .5)
             );
             margin-left: 4px;
 
             &:hover {
-                background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                background-color: mat-get-color-from-palette($foreground, link, 0.1);
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text),
-                    mat.get-color-from-palette($background, navbar)
+                    mat-get-color-from-palette($foreground, text),
+                    mat-get-color-from-palette($background, navbar)
                 );
             }
 
             .mat-icon {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
         }
 
@@ -171,13 +171,13 @@
             &.metric-index {
                 background-color: if(
                     $is-dark,
-                    mat.get-color-from-palette($background, navbar, 1),
-                    mat.get-color-from-palette($background, navbar, 0.15)
+                    mat-get-color-from-palette($background, navbar, 1),
+                    mat-get-color-from-palette($background, navbar, 0.15)
                 );
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text),
-                    mat.get-color-from-palette($background, navbar)
+                    mat-get-color-from-palette($foreground, text),
+                    mat-get-color-from-palette($background, navbar)
                 );
 
                 /* ▼▼▼ Not sure this is still needed - need to check */
@@ -208,11 +208,11 @@
                     background-color: transparent;
 
                     .mat-icon {
-                        color: mat.get-color-from-palette($foreground, link);
+                        color: mat-get-color-from-palette($foreground, link);
                     }
 
                     &:hover {
-                        background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                        background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     }
                 }
             }
@@ -222,25 +222,25 @@
                     background-color: transparent;
 
                     .aggregator-icon {
-                        color: mat.get-color-from-palette($foreground, text, 0.8);
+                        color: mat-get-color-from-palette($foreground, text, 0.8);
                     }
 
                     &:hover {
-                        background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                        background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     }
                 }
             }
 
             &.summarizer-selector {
                 .mat-button {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
 
                 .summarizer-selector-wrapper {
                     border: 1px solid rgba($black, 0.04);
 
                     &:hover {
-                        background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                        background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     }
                 }
             }
@@ -251,7 +251,7 @@
                 .custom-function-wrapper {
 
                     &:hover {
-                        background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                        background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     }
                 }
             }
@@ -261,7 +261,7 @@
                     background-color: transparent;
 
                     .mat-icon {
-                        color: mat.get-color-from-palette($foreground, link);
+                        color: mat-get-color-from-palette($foreground, link);
                     }
 
                     .mat-select-arrow-wrapper {
@@ -275,7 +275,7 @@
                     }
 
                     &:hover {
-                        background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                        background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     }
                 }
             }
@@ -289,18 +289,18 @@
             }
 
             & + .metric-query-item-visual {
-                border-bottom: 2px solid mat.get-color-from-palette($foreground, link, .25);
+                border-bottom: 2px solid mat-get-color-from-palette($foreground, link, .25);
 
                 .visual-panel-dropdown-text {
-                    background: mat.get-color-from-palette($foreground, link, .25);
-                    color: mat.get-color-from-palette($foreground, text);
+                    background: mat-get-color-from-palette($foreground, link, .25);
+                    color: mat-get-color-from-palette($foreground, text);
 
                     .color-chip {
                         box-shadow: 0 0 0 2px $white;
                     }
 
                     .mat-select-arrow-wrapper .mat-select-arrow {
-                        color: mat.get-color-from-palette($foreground, text, 0.54);
+                        color: mat-get-color-from-palette($foreground, text, 0.54);
                     }
                 }
             }
@@ -319,12 +319,12 @@
         }
 
         .metric-query-item:not(:first-of-type) {
-            border-top: 1px dotted mat.get-color-from-palette($foreground, divider);
+            border-top: 1px dotted mat-get-color-from-palette($foreground, divider);
         }
 
         .metric-action-buttons {
             .add-metric-button {
-                background-color: mat.get-color-from-palette($primary, default, 0.15);
+                background-color: mat-get-color-from-palette($primary, default, 0.15);
             }
         }
     }
@@ -332,11 +332,11 @@
     // CDK ITEMS
     .function-selection-cdk-menu.mat-menu-panel {
         .function-categories {
-            border-right: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-right: 1px solid mat-get-color-from-palette($foreground, divider);
 
             .mat-nav-list {
                 .mat-list-item.is-active {
-                    background-color: mat.get-color-from-palette($primary, default, 0.06);
+                    background-color: mat-get-color-from-palette($primary, default, 0.06);
                 }
             }
         }
@@ -347,10 +347,10 @@
                 rgba(map-get($denali-brand-5, 100), .2), // TODO: plug into theme
                 rgba(map-get($denali-brand-5, 100), .5) // TODO: plug into theme
             );
-            border-left: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-left: 1px solid mat-get-color-from-palette($foreground, divider);
 
             .help-title {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
             }
         }
     }
@@ -364,25 +364,25 @@
             background-color: transparent;
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text, .5),
-                    mat.get-color-from-palette($background, navbar, .5)
+                    mat-get-color-from-palette($foreground, text, .5),
+                    mat-get-color-from-palette($background, navbar, .5)
                 );
 
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
 
                 .alias-text.has-alias {
-                    color: mat.get-color-from-palette($foreground, text);
+                    color: mat-get-color-from-palette($foreground, text);
                     font-weight: bold;
                 }
 
                 &:hover {
-                    background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                    background-color: mat-get-color-from-palette($foreground, link, 0.1);
                     color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, text),
-                        mat.get-color-from-palette($background, navbar)
+                        mat-get-color-from-palette($foreground, text),
+                        mat-get-color-from-palette($background, navbar)
                     );
                 }
             }
@@ -391,22 +391,22 @@
         .visual-panel-dropdown-text {
             color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, text, .5),
-                mat.get-color-from-palette($background, navbar, .5)
+                mat-get-color-from-palette($foreground, text, .5),
+                mat-get-color-from-palette($background, navbar, .5)
             );
             margin-left: 4px;
 
             &:hover {
-                background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                background-color: mat-get-color-from-palette($foreground, link, 0.1);
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text),
-                    mat.get-color-from-palette($background, navbar)
+                    mat-get-color-from-palette($foreground, text),
+                    mat-get-color-from-palette($background, navbar)
                 );
             }
 
             .mat-icon {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
         }
 
@@ -417,13 +417,13 @@
                 &.metric-index {
                     background-color: if(
                         $is-dark,
-                        mat.get-color-from-palette($background, navbar),
-                        mat.get-color-from-palette($background, navbar, 0.15)
+                        mat-get-color-from-palette($background, navbar),
+                        mat-get-color-from-palette($background, navbar, 0.15)
                     );
                     color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, text),
-                        mat.get-color-from-palette($background, navbar)
+                        mat-get-color-from-palette($foreground, text),
+                        mat-get-color-from-palette($background, navbar)
                     );
 
                     /* ▼▼▼ Not sure this is still needed - need to check */
@@ -454,11 +454,11 @@
                         background-color: transparent;
 
                         .mat-icon {
-                            color: mat.get-color-from-palette($foreground, link);
+                            color: mat-get-color-from-palette($foreground, link);
                         }
 
                         &:hover {
-                            background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                            background-color: mat-get-color-from-palette($foreground, link, 0.1);
                         }
                     }
                 }
@@ -468,25 +468,25 @@
                         background-color: transparent;
 
                         .aggregator-icon {
-                            color: mat.get-color-from-palette($foreground, text, 0.8);
+                            color: mat-get-color-from-palette($foreground, text, 0.8);
                         }
 
                         &:hover {
-                            background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                            background-color: mat-get-color-from-palette($foreground, link, 0.1);
                         }
                     }
                 }
 
                 &.summarizer-selector {
                     .mat-button {
-                        color: mat.get-color-from-palette($foreground, link);
+                        color: mat-get-color-from-palette($foreground, link);
                     }
 
                     .summarizer-selector-wrapper {
                         border: 1px solid rgba($black, 0.04);
 
                         &:hover {
-                            background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                            background-color: mat-get-color-from-palette($foreground, link, 0.1);
                         }
                     }
                 }
@@ -496,14 +496,14 @@
 
                     .custom-function-wrapper {
                         &:hover {
-                            background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                            background-color: mat-get-color-from-palette($foreground, link, 0.1);
                         }
                     }
                 }
 
                 &.action {
                     .action-icons .delete-metric.is-disabled .mat-icon {
-                        color: mat.get-color-from-palette($foreground, disabled-text);
+                        color: mat-get-color-from-palette($foreground, disabled-text);
                     }
                 }
             }

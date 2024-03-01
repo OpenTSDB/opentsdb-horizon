@@ -2,7 +2,7 @@
 @mixin tag-aggregator-component-theme() {
     .tag-aggregator-component {
         .mat-button {
-            color: mat.get-color-from-palette($foreground, link);
+            color: mat-get-color-from-palette($foreground, link);
         }
     }
 
@@ -12,13 +12,13 @@
             .aggregator-help {
                 background: if(
                     $is-dark,
-                    mat.get-color-from-palette($denali-brand-5, 100, .2),
-                    mat.get-color-from-palette($denali-brand-5, 100, .5)
+                    mat-get-color-from-palette($denali-brand-5, 100, .2),
+                    mat-get-color-from-palette($denali-brand-5, 100, .5)
                 );
-                border-left: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-left: 1px solid mat-get-color-from-palette($foreground, divider);
 
                 .help-title {
-                border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
                 }
             }
         }

@@ -177,25 +177,25 @@
 
     // CDK items are outside of component namespace class - be sure to give them very unique names
     .mat-menu-panel {
-        background-color: mat.get-color-from-palette($background, menu);
+        background-color: mat-get-color-from-palette($background, menu);
 
         .mat-menu-item.is-active .mat-icon {
-            color: mat.get-color-from-palette($accent, default);
+            color: mat-get-color-from-palette($accent, default);
         }
     }
 
     .mat-autocomplete-panel {
-        background-color: mat.get-color-from-palette($background, menu);
+        background-color: mat-get-color-from-palette($background, menu);
     }
 
     .mat-tab-group.mat-primary .mat-ink-bar,
     .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-        background: mat.get-color-from-palette($background, ink-bar);
+        background: mat-get-color-from-palette($background, ink-bar);
     }
 
     .mat-datepicker-content {
-        border: 1px solid mat.get-color-from-palette($accent, default);
-        background-color: mat.get-color-from-palette($background, menu);
+        border: 1px solid mat-get-color-from-palette($accent, default);
+        background-color: mat-get-color-from-palette($background, menu);
     }
 
     // Mat Form Field
@@ -208,19 +208,19 @@
             // remove the underline... inkbar will show on focus
             // make it transparent, because there is some sort of animation
             .mat-form-field-underline::before {
-                background-color: mat.get-color-from-palette($foreground, text, .2);
+                background-color: mat-get-color-from-palette($foreground, text, .2);
             }
 
             &:hover:not(.mat-focused) {
                 .mat-form-field-flex {
-                    background-color: mat.get-color-from-palette($primary, default, .08);
+                    background-color: mat-get-color-from-palette($primary, default, .08);
                 }
 
                 .mat-form-field-underline {
-                    background-color: mat.get-color-from-palette($primary, default);
+                    background-color: mat-get-color-from-palette($primary, default);
 
                     .mat-form-field-ripple {
-                        background-color: mat.get-color-from-palette($primary, default, 0.3);
+                        background-color: mat-get-color-from-palette($primary, default, 0.3);
                     }
                 }
             }
@@ -228,7 +228,7 @@
             &.mat-focused,
             &:hover {
                 .mat-form-field-flex {
-                    background-color: mat.get-color-from-palette($primary, default, .08);
+                    background-color: mat-get-color-from-palette($primary, default, .08);
                 }
             }
         }
@@ -242,13 +242,13 @@
         &.mat-form-field-appearance-outline {
             .mat-form-field-outline,
             .mat-form-field-outline-thick {
-                color: mat.get-color-from-palette($primary, default, 0.60);
+                color: mat-get-color-from-palette($primary, default, 0.60);
             }
 
             &.mat-focused {
                 .mat-form-field-outline,
                 .mat-form-field-outline-thick {
-                    color: mat.get-color-from-palette($primary, default, 0.60);
+                    color: mat-get-color-from-palette($primary, default, 0.60);
                 }
             }
         }

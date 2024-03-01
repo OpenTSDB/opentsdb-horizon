@@ -1,7 +1,7 @@
 @use '~@angular/material' as mat;
 @mixin widget-config-metric-queries-component-theme() {
 
-    $chip-bg: mat.get-color-from-palette($primary, default, .1);
+    $chip-bg: mat-get-color-from-palette($primary, default, .1);
     $alias-bg: if($is-dark, rgba($white, .2), rgba($black, .2));
     $alias-text: if($is-dark, rgba($white, .5), rgba($black, .5));
 
@@ -26,8 +26,8 @@
                 }
             }
             .mat-button-toggle-checked {
-                background-color: mat.get-color-from-palette($primary);
-                color: mat.get-color-from-palette($primary, default-contrast);
+                background-color: mat-get-color-from-palette($primary);
+                color: mat-get-color-from-palette($primary, default-contrast);
             }
         }
 
@@ -63,7 +63,7 @@
 
                     // first-child should be the tag-key
                     :first-child {
-                        color: mat.get-color-from-palette($foreground, text, .65);
+                        color: mat-get-color-from-palette($foreground, text, .65);
                     }
                 }
             }

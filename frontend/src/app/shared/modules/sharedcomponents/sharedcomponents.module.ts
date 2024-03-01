@@ -69,7 +69,7 @@ import { SimpleFavoritesListComponent } from './components/simple-favorites-list
 import { SimpleRecentsListComponent } from './components/simple-recents-list/simple-recents-list.component';
 import { SimpleNamespacesListComponent } from './components/simple-namespaces-list/simple-namespaces-list.component';
 import { WidgetProjectionComponent } from './components/widget-projection/widget-projection.component';
-
+import { HelpLinksComponent } from './components/help-links/help-links.component';
 import { GraphTypeComponent } from './components/graph-type/graph-type.component';
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
@@ -85,7 +85,8 @@ import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { Nl2BrPipe } from './pipes/nl2br.pipe';
-import { HelpLinksComponent } from './components/help-links/help-links.component';
+import { FormControlPipe } from './pipes/form-control.pipe';
+
 
 @NgModule({
     imports: [
@@ -147,6 +148,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         HighlightStripTextPipe,
         SafePipe,
         Nl2BrPipe,
+        FormControlPipe,
         ResizableDirective,
         HelpLinksComponent,
     ],
@@ -192,6 +194,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         TagAggregatorComponent,
         AliasDisplayPipe,
         HighlightStripTextPipe,
+        FormControlPipe,
         ResizableDirective,
         HelpLinksComponent,
     ],

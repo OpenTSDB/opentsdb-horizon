@@ -5,22 +5,22 @@
     .metric-autocomplete-cdk-panel.mat-menu-panel {
         .metric-search-result {
             .list-all {
-                border-right: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-right: 1px solid mat-get-color-from-palette($foreground, divider);
             }
 
             .mat-list.mat-list-base {
                 .mat-list-item-content {
                     .mat-icon {
-                        color: mat.get-color-from-palette($foreground, link);
+                        color: mat-get-color-from-palette($foreground, link);
                     }
                 }
 
                 .mat-list-item {
                     &.is-selected {
-                        background-color: mat.get-color-from-palette($foreground, link, .08);
+                        background-color: mat-get-color-from-palette($foreground, link, .08);
 
                         .mat-icon {
-                            color: mat.get-color-from-palette($other, status-error);
+                            color: mat-get-color-from-palette($other, status-error);
                         }
                     }
                 }
@@ -28,7 +28,7 @@
 
             .list-selected {
                 .selected-header {
-                    border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+                    border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
                 }
             }
         }

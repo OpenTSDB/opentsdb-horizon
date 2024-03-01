@@ -158,7 +158,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
         this.changeEvent.emit(values);
     }
 
-    onTagSelection(event, selected) {
+    onTagSelection(event: any, selected?: any) {
         let value;
         if (!this.multiple) {
             value = event.value ? [event.value] : [];
@@ -202,7 +202,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
         }
     }
 
-    clearFilterTagInput() {
+    clearFilterTagInput(): void {
         this.filterTagInputFC.setValue('');
     }
 
@@ -228,7 +228,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
         return renderedWidth > 280 ? renderedWidth : 280;
     }
 
-    optionsMenuOpened(e: any) {
+    optionsMenuOpened(e: any): void {
         const menuWidth: any = this.calculateOptionsMenuWidth();
         const matPanel: HTMLElement = document.querySelector(
             '.tag-options-cdk-menu',

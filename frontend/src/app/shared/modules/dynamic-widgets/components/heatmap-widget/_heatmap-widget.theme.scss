@@ -3,12 +3,12 @@
 
     $dygraph-tooltip-bg: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu),
+        mat-get-color-from-palette($background, menu),
         #f0f0f0 // TODO: plug into theme
     );
     $dygraph-tooltip-border: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu, .85),
+        mat-get-color-from-palette($background, menu, .85),
         #cccccc // TODO: plug into theme
     );
 

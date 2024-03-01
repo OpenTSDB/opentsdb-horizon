@@ -20,6 +20,6 @@ body {
 // * THEME VARIANTS
 @include init-component-variants() {
     &.mat-app-background {
-        background-color: mat.get-color-from-palette($background, background);
+        background-color: mat-get-color-from-palette($background, background);
     }
 }

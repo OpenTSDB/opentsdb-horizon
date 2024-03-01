@@ -22,16 +22,16 @@
 
         .mat-toolbar {
             background: transparent;
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         .panel-actions {
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         .toolbar-actions,
         .panel-actions{
-            color: mat.get-color-from-palette($primary, default);
+            color: mat-get-color-from-palette($primary, default);
 
             .mat-stroked-button:not([disabled]) {
                 border-color: currentColor;
@@ -39,7 +39,7 @@
 
             .mat-icon,
             .mat-icon:not([color]) {
-                color: mat.get-color-from-palette($primary, default);
+                color: mat-get-color-from-palette($primary, default);
             }
         }
 
@@ -49,7 +49,7 @@
             .contact-list-type {
 
                 &:not(:last-child) {
-                    border-right: 1px solid mat.get-color-from-palette($foreground, divider);
+                    border-right: 1px solid mat-get-color-from-palette($foreground, divider);
                 }
 
                 .contact-list-type-wrapper {
@@ -58,13 +58,13 @@
                     .contact-item-actions {
                         .mat-icon,
                         .mat-icon:not([color]) {
-                            color: mat.get-color-from-palette($primary, default);
+                            color: mat-get-color-from-palette($primary, default);
                         }
                     }
 
                     .mat-list .mat-list-item {
                         &:hover {
-                            background: mat.get-color-from-palette($primary, default, 0.08);
+                            background: mat-get-color-from-palette($primary, default, 0.08);
                         }
                     }
                 }

@@ -23,8 +23,8 @@ export class HighlightStripTextPipe implements PipeTransform {
     transform(
         value: string,
         regexp: string,
-        start: number,
-        len: number,
+        start?: number,
+        len?: number,
     ): SafeHtml {
         let more = '';
         if (start !== undefined && len !== undefined && value.length > len) {

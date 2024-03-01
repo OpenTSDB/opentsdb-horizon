@@ -97,7 +97,7 @@
 // * THEME VARIANTS
 @include init-component-variants() {
 
-    $divider: mat.get-color-from-palette($foreground, divider);
+    $divider: mat-get-color-from-palette($foreground, divider);
 
     $default-color: if($is-dark, #ffffff, #000000);
 
@@ -108,28 +108,28 @@
         border-left-color: $default-color;
 
         &.color-primary {
-            border-top-color: mat.get-color-from-palette($primary, default, 0.2);
-            border-right-color: mat.get-color-from-palette($primary, default, 0.2);
-            border-bottom-color: mat.get-color-from-palette($primary, default, 0.2);
-            border-left-color: mat.get-color-from-palette($primary, default);
+            border-top-color: mat-get-color-from-palette($primary, default, 0.2);
+            border-right-color: mat-get-color-from-palette($primary, default, 0.2);
+            border-bottom-color: mat-get-color-from-palette($primary, default, 0.2);
+            border-left-color: mat-get-color-from-palette($primary, default);
         }
 
         &.color-accent {
-            border-top-color: mat.get-color-from-palette($accent, default, 0.2);
-            border-right-color: mat.get-color-from-palette($accent, default, 0.2);
-            border-bottom-color: mat.get-color-from-palette($accent, default, 0.2);
-            border-left-color: mat.get-color-from-palette($accent, default);
+            border-top-color: mat-get-color-from-palette($accent, default, 0.2);
+            border-right-color: mat-get-color-from-palette($accent, default, 0.2);
+            border-bottom-color: mat-get-color-from-palette($accent, default, 0.2);
+            border-left-color: mat-get-color-from-palette($accent, default);
         }
 
         &.color-warn {
-            border-top-color: mat.get-color-from-palette($warn, default, 0.2);
-            border-right-color: mat.get-color-from-palette($warn, default, 0.2);
-            border-bottom-color: mat.get-color-from-palette($warn, default, 0.2);
-            border-left-color: mat.get-color-from-palette($warn, default);
+            border-top-color: mat-get-color-from-palette($warn, default, 0.2);
+            border-right-color: mat-get-color-from-palette($warn, default, 0.2);
+            border-bottom-color: mat-get-color-from-palette($warn, default, 0.2);
+            border-left-color: mat-get-color-from-palette($warn, default);
         }
     }
 
     .gif-spinner {
-        background-color: mat.get-color-from-palette($background, card, .8);
+        background-color: mat-get-color-from-palette($background, card, .8);
     }
 }

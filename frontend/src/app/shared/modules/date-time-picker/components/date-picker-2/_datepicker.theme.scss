@@ -3,18 +3,18 @@
 
     .dp-selected {
         // background: if($is-dark, true-value, false-value);
-        background: mat.get-color-from-palette($primary, default);
+        background: mat-get-color-from-palette($primary, default);
     }
 
     .calendar-container {
-        background-color: mat.get-color-from-palette($background, card);
-        color: mat.get-color-from-palette($foreground, text);
+        background-color: mat-get-color-from-palette($background, card);
+        color: mat-get-color-from-palette($foreground, text);
 
         .mat-calendar-body-not-current {
-            background-color: mat.get-color-from-palette($background, hover);
+            background-color: mat-get-color-from-palette($background, hover);
 
             .mat-calendar-body-cell-content {
-                color: mat.get-color-from-palette($foreground, disabled);
+                color: mat-get-color-from-palette($foreground, disabled);
             }
         }
 

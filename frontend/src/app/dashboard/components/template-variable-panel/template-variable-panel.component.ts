@@ -1135,7 +1135,7 @@ implements OnInit, OnChanges, OnDestroy {
         );
     }
 
-    calculateVariableDisplayWidth(item: FormGroup, options: any) {
+    calculateVariableDisplayWidth(item: FormGroup | AbstractControl, options?: any): string {
         let minSize = options && options.minSize ? options.minSize : '50px';
         const filter = item.get('display').value;
         const alias = item.get('alias').value;

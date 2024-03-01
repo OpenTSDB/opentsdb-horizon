@@ -1,18 +1,18 @@
 @use '~@angular/material' as mat;
 @mixin dashboard-settings-dialog-component-theme() {
 
-    $close-button-background: mat.get-color-from-palette($accent, A400);
-    $close-button-text: mat.get-color-from-palette($foreground, navbar-text);
+    $close-button-background: mat-get-color-from-palette($accent, A400);
+    $close-button-text: mat-get-color-from-palette($foreground, navbar-text);
 
-    $divider: mat.get-color-from-palette($background, background);
-    $card-background: mat.get-color-from-palette($background, card);
+    $divider: mat-get-color-from-palette($background, background);
+    $card-background: mat-get-color-from-palette($background, card);
 
-    $light-gray-background: mat.get-color-from-palette($background, menu);
+    $light-gray-background: mat-get-color-from-palette($background, menu);
 
-    $expanded-header-bg: mat.get-color-from-palette($primary, default);
-    $expanded-header-text: mat.get-color-from-palette($primary, default-contrast);
+    $expanded-header-bg: mat-get-color-from-palette($primary, default);
+    $expanded-header-text: mat-get-color-from-palette($primary, default-contrast);
 
-    $expanded-body-bg: mat.get-color-from-palette($primary, default, 0.05);
+    $expanded-body-bg: mat-get-color-from-palette($primary, default, 0.05);
 
     .dashboard-settings-dialog {
         background-color: $card-background;
@@ -34,7 +34,7 @@
         .dashboard-settings.mat-tab-group {
 
             .mat-ink-bar {
-                background: mat.get-color-from-palette($primary, default);
+                background: mat-get-color-from-palette($primary, default);
             }
 
             .mat-tab-header {
@@ -42,12 +42,12 @@
             }
 
             .mat-tab-label {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
 
             .mat-tab-label.mat-tab-label-active {
                 background-color: $card-background;
-                color: mat.get-color-from-palette($foreground, text);
+                color: mat-get-color-from-palette($foreground, text);
             }
         }
 

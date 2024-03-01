@@ -1,7 +1,7 @@
 @use '~@angular/material' as mat;
 @mixin heatmap-bucket-detail-component-theme() {
 
-    $cdk-window-bg: if($is-dark, mat.get-color-from-palette($background, menu, .75), mat.get-color-from-palette($background, menu));
+    $cdk-window-bg: if($is-dark, mat-get-color-from-palette($background, menu, .75), mat-get-color-from-palette($background, menu));
 
     .heatmap-bucket-detail-component {
         .ts-legend-toolbar {
@@ -21,7 +21,7 @@
             }
 
             .mat-row:hover {
-                background-color: mat.get-color-from-palette($primary, default, .15);
+                background-color: mat-get-color-from-palette($primary, default, .15);
             }
 
         }

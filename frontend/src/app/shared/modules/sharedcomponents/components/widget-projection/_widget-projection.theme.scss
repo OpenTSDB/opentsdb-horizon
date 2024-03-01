@@ -3,7 +3,7 @@
     .widget-projection {
         .mat-card {
             box-shadow: none;
-            background-color: mat.get-color-from-palette($background, card);
+            background-color: mat-get-color-from-palette($background, card);
             border: 1px solid rgba($black, 0.08);
 
             .panel-body .panel-heading {
@@ -25,7 +25,7 @@
 
                 &:hover {
                     //background-color: rgba(map-get($accent, A700), .1);
-                    background-color: mat.get-color-from-palette($background, card-header);
+                    background-color: mat-get-color-from-palette($background, card-header);
 
                     .mat-toolbar {
                         .mat-icon-button {

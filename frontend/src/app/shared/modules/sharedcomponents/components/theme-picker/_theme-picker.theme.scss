@@ -9,12 +9,12 @@
         // arrow
         &::after {
             border-color: rgba($white, 0);
-            border-bottom-color: mat.get-color-from-palette($background, menu); // actual color of arrow
+            border-bottom-color: mat-get-color-from-palette($background, menu); // actual color of arrow
         }
 
         .mat-menu-item.is-active {
             .mat-icon {
-                color: mat.get-color-from-palette($accent, A200);
+                color: mat-get-color-from-palette($accent, A200);
             }
         }
     }

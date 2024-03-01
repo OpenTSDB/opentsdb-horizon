@@ -108,10 +108,11 @@ export class WidgetConfigSortingComponent implements OnInit {
         }
     }
 
-    setDecimals(v) {
+    setDecimals(e: Event) {
+        const target = <HTMLInputElement>e.target;
         this.widgetChange.emit({
             action: 'UpdateQueryMetricVisual',
-            payload: { visual: { decimals: v } },
+            payload: { visual: { decimals: target.value } },
         });
     }
 

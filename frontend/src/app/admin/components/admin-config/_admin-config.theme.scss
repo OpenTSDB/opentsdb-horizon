@@ -1,20 +1,20 @@
 @use '~@angular/material' as mat;
 @mixin admin-config-component-theme() {
     .app-admin-section.app-admin-config {
-        background-color: mat.get-color-from-palette($background, card);
+        background-color: mat-get-color-from-palette($background, card);
 
         .action-controls {
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         .config-section-endpoints {
             .metric-hosts-list {
-                border: 1px solid mat.get-color-from-palette($foreground, divider);
+                border: 1px solid mat-get-color-from-palette($foreground, divider);
             }
         }
 
         .add-new-metric-host {
-            color: mat.get-color-from-palette($foreground, link);
+            color: mat-get-color-from-palette($foreground, link);
         }
     }
 }

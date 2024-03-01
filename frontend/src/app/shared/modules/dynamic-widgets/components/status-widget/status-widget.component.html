@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
  -->
 <div class="widget-output-container">
     <div class="widget-title" *ngIf="editMode" fxLayout="row">
-        <span fxFlex="1 1 100%">{{ widget.config.title }}</span>
+        <span fxFlex="1 1 100%">{{ widget.settings.title }}</span>
         <span>
             <button mat-button color="primary" class="close-edit-view-btn" (click)="closeViewEditMode()">
                 <mat-icon fontSet="denali" fontIcon="d-close"></mat-icon>
@@ -79,4 +79,3 @@
         <button mat-stroked-button color="primary" class="mat-elevation-z0">Cancel</button>
     </div>
 </div>
-    

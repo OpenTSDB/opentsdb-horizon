@@ -9,7 +9,7 @@
     .mat-menu-panel.settings-themepicker-menu {
         //background-color: $bg-menu;
         @if $is-dark {
-            border: 1px solid mat.get-color-from-palette($foreground, divider);
+            border: 1px solid mat-get-color-from-palette($foreground, divider);
             filter: brighten(1.08);
             * {
                 filter: brighten(1);

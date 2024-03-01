@@ -3,14 +3,14 @@
 
     $row-hover-bg: if(
         $is-dark,
-        mat.get-color-from-palette($primary, 50, .05),
-        mat.get-color-from-palette($primary, 50)
+        mat-get-color-from-palette($primary, 50, .05),
+        mat-get-color-from-palette($primary, 50)
     );
 
     $table-header-bg: if(
         $is-dark,
-        mat.get-color-from-palette($foreground, divider, .15),
-        mat.get-color-from-palette($foreground, divider)
+        mat-get-color-from-palette($foreground, divider, .15),
+        mat-get-color-from-palette($foreground, divider)
     );
 
     .widget-panel-content.simple-recents-list {
@@ -30,13 +30,13 @@
                 .recent-labels {
 
                     .dashboard-name {
-                        color: mat.get-color-from-palette($foreground, link);
+                        color: mat-get-color-from-palette($foreground, link);
                     }
 
                     .root-path,
                     .visited-date,
                     .visited-time {
-                        color: mat.get-color-from-palette($foreground, text, .7);
+                        color: mat-get-color-from-palette($foreground, text, .7);
                     }
                 }
             }

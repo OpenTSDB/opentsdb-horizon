@@ -85,7 +85,7 @@
     </div>
 </div>
 <div class="dtp-action-controls" *ngIf="!options.autoTrigger && showApply" fxLayout.xs="row">
-    <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="daytimePickerStart.dateCntrl.errors || daytimePickerEnd.dateCntrl.errors">Apply</button>
+    <button mat-raised-button class="mat-elevation-z0" color="primary" id="button-apply" (click)="applyClicked()" fxFlex.xs="1 1 100%" [disabled]="coerceExpressionBoolean(daytimePickerStart.dateCntrl.errors || daytimePickerEnd.dateCntrl.errors)">Apply</button>
     <button mat-stroked-button color="primary" id="button-cancel" (click)="cancelClicked()" fxFlex.xs="1 1 100%">Cancel</button>
 </div>
 

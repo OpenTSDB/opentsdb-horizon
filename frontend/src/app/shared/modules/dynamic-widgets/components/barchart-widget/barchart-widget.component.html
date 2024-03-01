@@ -21,7 +21,7 @@
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
             <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
-                showEditIcon="true"
+                [showEditIcon]="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
@@ -58,7 +58,7 @@
             <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
+                        (click)="toggleConfigSection('queries');scrollToElement(stepqueries)">
                         <span>1. Queries </span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
@@ -73,7 +73,7 @@
             <div class="step-section query-section is-visible" #steptime>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
+                        (click)="toggleConfigSection('time');scrollToElement(steptime);">
                         <span>2. Time Configuration </span>
                         <mat-icon fontSet="denali"
                             [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
@@ -86,7 +86,7 @@
             <div class="step-section query-section is-visible" #stepaxes>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('axes', $event);scrollToElement(stepaxes);">
+                        (click)="toggleConfigSection('axes');scrollToElement(stepaxes);">
                         <span>3. Axes </span>
                         <mat-icon fontSet="denali"
                             [fontIcon]="visibleSections.axes ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
@@ -99,7 +99,7 @@
             <div class="step-section query-section is-visible" #stepvisuals>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('visuals', $event);scrollToElement(stepvisuals);">
+                        (click)="toggleConfigSection('visuals');scrollToElement(stepvisuals);">
                         <span>4. Display </span>
                         <mat-icon fontSet="denali"
                             [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>

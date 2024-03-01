@@ -2,20 +2,20 @@
 @mixin navigator-sidenav-component-theme() {
     $cssVarMap: get-theme-css-variables($theme-name);
 
-    $sn-light: mat.get-color-from-palette($background, background);
+    $sn-light: mat-get-color-from-palette($background, background);
     $sn-dark: map-get($navbar-config, sn-dark); // TODO: this navbar-config needs to plug into theme
 
     $sn-light-text: map-get($navbar-config, sn-light-text); // TODO: this navbar-config needs to plug into theme
     $sn-dark-text: map-get($navbar-config, sn-dark-text); // TODO: this navbar-config needs to plug into theme
 
-    $sn-seperator: mat.get-color-from-palette($foreground, divider);
+    $sn-seperator: mat-get-color-from-palette($foreground, divider);
 
     $sn-active: map-get($navbar-config, sn-active); // TODO: this navbar-config needs to plug into theme
 
     $nav-item-bg: if(
         $is-dark,
-        mat.get-color-from-palette($background, lighter-card),
-        mat.get-color-from-palette($foreground, text, 0.08)
+        mat-get-color-from-palette($background, lighter-card),
+        mat-get-color-from-palette($foreground, text, 0.08)
     );
 
     .app-navigator-sidenav {
@@ -33,11 +33,11 @@
         }
 
         .mat-toolbar {
-            background: mat.get-color-from-palette($background, navbar);
-            color: mat.get-color-from-palette($foreground, navbar-text);
+            background: mat-get-color-from-palette($background, navbar);
+            color: mat-get-color-from-palette($foreground, navbar-text);
 
             .mat-icon-button .mat-icon {
-                color: mat.get-color-from-palette($foreground, navbar-icons);
+                color: mat-get-color-from-palette($foreground, navbar-icons);
             }
         }
 
