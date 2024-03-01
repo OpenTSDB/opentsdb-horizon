@@ -4,13 +4,13 @@
 
     $drawer-text: if(
         $is-dark,
-        mat.get-color-from-palette($foreground, navbar-text),
-        mat.get-color-from-palette($background, navbar)
+        mat-get-color-from-palette($foreground, navbar-text),
+        mat-get-color-from-palette($background, navbar)
     );
 
     .app-shell {
         .app-navigator-drawer {
-            background-color: mat.get-color-from-palette($background, card);
+            background-color: mat-get-color-from-palette($background, card);
             border-top: 1px solid transparent;
             color: $drawer-text;
             @if ($is-dark) {
@@ -22,7 +22,7 @@
 
             ::ng-deep .panel-content .mat-toolbar.panel-toolbar {
                 background: transparent;
-                border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
                 color: $drawer-text;
             }
         }
@@ -38,36 +38,36 @@
 
                 .message-text {
                     background-color: rgba($white, 0.8);
-                    color: mat.get-color-from-palette($foreground, text);
+                    color: mat-get-color-from-palette($foreground, text);
                 }
             }
 
             &.is-error-type {
-                background-color: mat.get-color-from-palette($other, status-error);
-                color: mat.get-color-from-palette($other, status-error-contrast);
+                background-color: mat-get-color-from-palette($other, status-error);
+                color: mat-get-color-from-palette($other, status-error-contrast);
 
-                .message-icon { color: mat.get-color-from-palette($other, status-error); }
+                .message-icon { color: mat-get-color-from-palette($other, status-error); }
             }
 
             &.is-info-type {
-                background-color: mat.get-color-from-palette($other, status-info);
-                color: mat.get-color-from-palette($other, status-info-contrast);
+                background-color: mat-get-color-from-palette($other, status-info);
+                color: mat-get-color-from-palette($other, status-info-contrast);
 
-                .message-icon { color: mat.get-color-from-palette($other, status-info); }
+                .message-icon { color: mat-get-color-from-palette($other, status-info); }
             }
 
             &.is-success-type {
-                background-color: mat.get-color-from-palette($other, status-success);
-                color: mat.get-color-from-palette($other, status-success-contrast);
+                background-color: mat-get-color-from-palette($other, status-success);
+                color: mat-get-color-from-palette($other, status-success-contrast);
 
-                .message-icon { color: mat.get-color-from-palette($other, status-success); }
+                .message-icon { color: mat-get-color-from-palette($other, status-success); }
             }
 
             &.is-warning-type {
-                background-color: mat.get-color-from-palette($other, status-warning);
-                color: mat.get-color-from-palette($other, status-warning-contrast);
+                background-color: mat-get-color-from-palette($other, status-warning);
+                color: mat-get-color-from-palette($other, status-warning-contrast);
 
-                .message-icon { color: mat.get-color-from-palette($other, status-warning); }
+                .message-icon { color: mat-get-color-from-palette($other, status-warning); }
             }
         }
     }

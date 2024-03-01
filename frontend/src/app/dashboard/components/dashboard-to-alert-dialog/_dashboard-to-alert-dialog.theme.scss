@@ -1,6 +1,6 @@
 @use '~@angular/material' as mat;
 @mixin dashboard-to-alert-dialog-component-theme() {
-    $bg: mat.get-color-from-palette($background, background);
+    $bg: mat-get-color-from-palette($background, background);
 
     .dashboard-to-alert-dialog  {
 

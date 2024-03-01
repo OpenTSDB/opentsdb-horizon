@@ -392,6 +392,10 @@ export class TimeRangePickerComponent implements OnInit {
             trigger.closeMenu();
         });
     }
+
+    coerceExpressionBoolean(exp: any): boolean {
+        return exp ? true : false;
+    }
 }
 
 interface Preset {

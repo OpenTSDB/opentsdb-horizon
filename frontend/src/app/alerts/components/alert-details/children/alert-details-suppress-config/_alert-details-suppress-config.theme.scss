@@ -4,10 +4,10 @@
     .alert-details-suppress-config-component {
 
             .display-name {
-                background-color: mat.get-color-from-palette($foreground, link, 0.1);
+                background-color: mat-get-color-from-palette($foreground, link, 0.1);
 
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
 
             }

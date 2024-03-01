@@ -4,7 +4,7 @@
     "overrides": [
         {
             "files": ["*.ts"],
-
+            "excludedFiles": ["*.scss"],
             "parserOptions": {
                 "project": ["tsconfig.json"],
                 "createDefaultProgram": true

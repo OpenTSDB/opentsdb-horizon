@@ -3,37 +3,37 @@
 
     $cssVarMap: get-theme-css-variables($theme-name);
 
-    $link-color: mat.get-color-from-palette($foreground, link);
-    $divider-color: mat.get-color-from-palette($foreground, divider);
+    $link-color: mat-get-color-from-palette($foreground, link);
+    $divider-color: mat-get-color-from-palette($foreground, divider);
 
-    $card: mat.get-color-from-palette($background, card);
+    $card: mat-get-color-from-palette($background, card);
 
-    $dygraph-tooltip-bg: if($is-dark, mat.get-color-from-palette($background, menu), #f0f0f0); // TODO: plug into theme
+    $dygraph-tooltip-bg: if($is-dark, mat-get-color-from-palette($background, menu), #f0f0f0); // TODO: plug into theme
 
     // TODO: this converting to raw defeats the css variable approach.
     // TODO: work on defining these colors in theme config
     $menu-bg-raw: _mat-convert-variable-to-color(map-get($background, menu), $cssVarMap);
     $dygraph-tooltip-border: if($is-dark, lighten($menu-bg-raw, 10%) , #cccccc); // TODO: plug into theme
 
-    $text-color: mat.get-color-from-palette($foreground, text);
+    $text-color: mat-get-color-from-palette($foreground, text);
 
     .snooze-alert-dialog-component {
 
         .mat-dialog-title {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         .mat-dialog-actions {
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
         }
 
         .preset-toggles {
             .mat-button-toggle-group {
                 .mat-button-toggle {
-                    color: mat.get-color-from-palette($primary, default);
+                    color: mat-get-color-from-palette($primary, default);
 
                     &.mat-button-toggle-checked {
-                        background-color: mat.get-color-from-palette($primary, default, .08);
+                        background-color: mat-get-color-from-palette($primary, default, .08);
                     }
                 }
             }
@@ -46,13 +46,13 @@
                 .step-section-label-text {
                     color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, navbar-text),
-                        mat.get-color-from-palette($background, navbar)
+                        mat-get-color-from-palette($foreground, navbar-text),
+                        mat-get-color-from-palette($background, navbar)
                     );
                     background-color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, navbar-text, 0.15),
-                        mat.get-color-from-palette($background, navbar, 0.15)
+                        mat-get-color-from-palette($foreground, navbar-text, 0.15),
+                        mat-get-color-from-palette($background, navbar, 0.15)
                     );
                     border-bottom-right-radius: 20px 24px;
                 }
@@ -68,7 +68,7 @@
             .mat-list.mat-list-base {
                 .mat-list-item {
                     &:hover {
-                        background: mat.get-color-from-palette($foreground, divider);
+                        background: mat-get-color-from-palette($foreground, divider);
                     }
                 }
             }
@@ -77,12 +77,12 @@
         .mat-list-item-content {
 
             .add-alert-label {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
 
             .alert-label-details {
                 .type {
-                    color: mat.get-color-from-palette($foreground, hint-text);
+                    color: mat-get-color-from-palette($foreground, hint-text);
                 }
             }
         }

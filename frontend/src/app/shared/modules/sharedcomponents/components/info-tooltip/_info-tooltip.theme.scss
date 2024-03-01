@@ -5,13 +5,13 @@
 
     $tooltip-bg: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu),
+        mat-get-color-from-palette($background, menu),
         #f0f0f0
     );
 
     $tooltip-border: if(
         $is-dark,
-        mat.get-color-from-palette($background, menu-border),
+        mat-get-color-from-palette($background, menu-border),
         #cccccc
     );
 

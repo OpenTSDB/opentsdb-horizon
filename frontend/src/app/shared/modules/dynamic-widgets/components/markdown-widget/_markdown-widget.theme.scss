@@ -9,7 +9,7 @@
     }
 
     .markdown-note {
-        background: mat.get-color-from-palette($background, background);
+        background: mat-get-color-from-palette($background, background);
         color: if($is-dark, $white, $black);
         border: none;
 

@@ -14,9 +14,10 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // *
-
+@use 'sass:math';
 @import 'mixins';
 @import 'config';
+
 
 $status-labels: ('bad', 'warn', 'good', 'unknown', 'missing', 'snoozed');
 $header-chip-size: 8px;
@@ -117,7 +118,7 @@ $header-chip-size: 8px;
             content: '';
             width: $header-chip-size;
             height: $header-chip-size;
-            border-radius: $header-chip-size / 2;
+            border-radius: math.div($header-chip-size,2);
             display: inline-block;
             margin-right: 6px;
         }

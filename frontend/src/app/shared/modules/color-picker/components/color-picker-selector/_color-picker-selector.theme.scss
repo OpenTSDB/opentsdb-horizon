@@ -3,7 +3,7 @@
     .color-picker-selector-compponent {
         .cps {
             .mat-button {
-                color: mat.get-color-from-palette($primary, default);
+                color: mat-get-color-from-palette($primary, default);
             }
         }
     }

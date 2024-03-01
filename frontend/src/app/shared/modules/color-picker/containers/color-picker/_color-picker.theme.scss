@@ -3,12 +3,12 @@
 
     .color-picker-component {
         .color-picker-flex {
-            background-color: mat.get-color-from-palette($primary, default, 0.08);
+            background-color: mat-get-color-from-palette($primary, default, 0.08);
         }
 
         .select-arrow-wrapper {
             .select-arrow {
-                color: mat.get-color-from-palette($foreground, secondary-text);
+                color: mat-get-color-from-palette($foreground, secondary-text);
             }
         }
 
@@ -22,8 +22,8 @@
     .color-picker-component-control {
         content: "#{$theme-name}#{$theme-variant}";
         &.card {
-            background: mat.get-color-from-palette($background, menu);
-            border-top: 2px solid mat.get-color-from-palette($primary, default);
+            background: mat-get-color-from-palette($background, menu);
+            border-top: 2px solid mat-get-color-from-palette($primary, default);
         }
 
         .grey-outline {
@@ -32,18 +32,18 @@
         }
 
         .isSelected {
-            border: 2px solid mat.get-color-from-palette($primary, default);
+            border: 2px solid mat-get-color-from-palette($primary, default);
         }
 
         .toggle {
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
-            color: mat.get-color-from-palette($primary, default);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
+            color: mat-get-color-from-palette($primary, default);
         }
 
         .palette-container {
             .palette-item:hover,
             .palette-item.selected {
-                border: 2px solid mat.get-color-from-palette($primary, default);
+                border: 2px solid mat-get-color-from-palette($primary, default);
             }
         }
     }

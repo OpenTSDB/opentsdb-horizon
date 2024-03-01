@@ -21,7 +21,7 @@
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
             <inline-editable class="navbar-item" *ngIf="mode === 'edit'"
-                showEditIcon="true"
+                [showEditIcon]="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
@@ -67,7 +67,7 @@
         <div class="is-scroller">
             <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
-                    <span class="step-section-label-text" (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('queries');scrollToElement(stepqueries)">
                         <span>1. Queries </span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
@@ -78,7 +78,7 @@
             </div>
             <div class="step-section query-section is-visible" #steptime>
                 <div class="step-section-label">
-                    <span class="step-section-label-text" (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('time');scrollToElement(steptime);">
                         <span>2. Time Configuration </span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon></span>
                 </div>
@@ -88,7 +88,7 @@
             </div>
             <div class="step-section query-section is-visible" #stepvisuals>
                 <div class="step-section-label">
-                    <span class="step-section-label-text" (click)="toggleConfigSection('visuals', $event);scrollToElement(stepvisuals);">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('visuals');scrollToElement(stepvisuals);">
                         <span>3. Display </span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.visuals ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>
@@ -100,7 +100,7 @@
             </div>
             <div class="step-section query-section is-visible" #steplegend>
                 <div class="step-section-label">
-                    <span class="step-section-label-text" (click)="toggleConfigSection('legend', $event);scrollToElement(steplegend);">
+                    <span class="step-section-label-text" (click)="toggleConfigSection('legend');scrollToElement(steplegend);">
                         <span>4. Legend </span>
                         <mat-icon fontSet="denali" [fontIcon]="visibleSections.legend ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
                     </span>

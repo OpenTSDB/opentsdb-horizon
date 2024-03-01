@@ -10,27 +10,27 @@
                 .mat-toolbar {
 
                     .close-dialog-wrapper {
-                        border-left: 1px solid mat.get-color-from-palette($background, card, 0.5);
+                        border-left: 1px solid mat-get-color-from-palette($background, card, 0.5);
                     }
 
                     .close-dialog {
-                        color: mat.get-color-from-palette($background, card);
+                        color: mat-get-color-from-palette($background, card);
                     }
                 }
             }
 
             .mat-card-content {
-                background-color: mat.get-color-from-palette($background, background);
+                background-color: mat-get-color-from-palette($background, background);
             }
 
             .mat-card-actions {
-                border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-top: 1px solid mat-get-color-from-palette($foreground, divider);
             }
 
         }
 
         .alert-status-bar {
-            background-color: mat.get-color-from-palette($background, card);
+            background-color: mat-get-color-from-palette($background, card);
         }
 
         .alert-status {
@@ -43,34 +43,34 @@
 
         .preview-wrapper {
             .graph-wrapper {
-                background-color: mat.get-color-from-palette($background, card);
-                border: 1px solid mat.get-color-from-palette($foreground, divider);
+                background-color: mat-get-color-from-palette($background, card);
+                border: 1px solid mat-get-color-from-palette($foreground, divider);
 
                 //.graph-output { }
             }
 
             .legend-wrapper {
-                border-left: 1px solid mat.get-color-from-palette($foreground, divider);
+                border-left: 1px solid mat-get-color-from-palette($foreground, divider);
             }
         }
 
         .edit-link {
-            color: mat.get-color-from-palette($foreground, link);
+            color: mat-get-color-from-palette($foreground, link);
             background: none;
         }
 
         .config-toolbar.mat-toolbar {
             background: transparent;
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider);
 
             .alert-history-link a {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
             }
         }
 
         .controls-wrapper {
-            background-color: mat.get-color-from-palette($background, card);
-            border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+            background-color: mat-get-color-from-palette($background, card);
+            border-top: 1px solid mat-get-color-from-palette($foreground, divider);
             //border-top-left-radius: 16px;
             //border-top-right-radius: 16px;
 
@@ -78,13 +78,13 @@
                 .form-label {
                     .indicator-square {
                         &.is-bad {
-                            background-color: mat.get-color-from-palette($other, status-error);
+                            background-color: mat-get-color-from-palette($other, status-error);
                         }
                         &.is-warning {
-                            background-color: mat.get-color-from-palette($other, status-warning);
+                            background-color: mat-get-color-from-palette($other, status-warning);
                         }
                         &.is-good {
-                            background-color: mat.get-color-from-palette($other, status-success);
+                            background-color: mat-get-color-from-palette($other, status-success);
                         }
                     }
                 }
@@ -92,18 +92,18 @@
 
             .step-section {
                 .step-section-label {
-                    border-top: 1px solid mat.get-color-from-palette($foreground, divider);
+                    border-top: 1px solid mat-get-color-from-palette($foreground, divider);
 
                     .step-section-label-text {
-                        color: if($is-dark, mat.get-color-from-palette($foreground, navbar-text), mat.get-color-from-palette($background, navbar));
-                        background-color: if($is-dark, mat.get-color-from-palette($foreground, navbar-text, 0.15), mat.get-color-from-palette($background, navbar, 0.15));
+                        color: if($is-dark, mat-get-color-from-palette($foreground, navbar-text), mat-get-color-from-palette($background, navbar));
+                        background-color: if($is-dark, mat-get-color-from-palette($foreground, navbar-text, 0.15), mat-get-color-from-palette($background, navbar, 0.15));
                         border-bottom-right-radius: 20px 24px;
                     }
                 }
 
                 .created-by,
                 .updated-by {
-                    color: mat.get-color-from-palette($foreground, text);
+                    color: mat-get-color-from-palette($foreground, text);
                 }
             }
         }
@@ -116,7 +116,7 @@
                 }
 
                 .mat-ink-bar {
-                    background-color: mat.get-color-from-palette($foreground, link);
+                    background-color: mat-get-color-from-palette($foreground, link);
                 }
             }
 
@@ -125,10 +125,10 @@
         .show-advanced-threshold-toggle {
 
             a.toggle-action {
-                color: mat.get-color-from-palette($foreground, link);
+                color: mat-get-color-from-palette($foreground, link);
 
                 .mat-icon {
-                    color: mat.get-color-from-palette($foreground, link);
+                    color: mat-get-color-from-palette($foreground, link);
                 }
             }
 
@@ -140,16 +140,16 @@
         .notify-when-options {
             flex-wrap: wrap;
             .mat-pseudo-checkbox {
-                color: mat.get-color-from-palette($primary, default);
+                color: mat-get-color-from-palette($primary, default);
             }
 
             .mat-pseudo-checkbox-checked {
-                background: mat.get-color-from-palette($primary, default);
+                background: mat-get-color-from-palette($primary, default);
             }
         }
 
         dropdown-metric-tags {
-            background: mat.get-color-from-palette($primary, default, 0.08);
+            background: mat-get-color-from-palette($primary, default, 0.08);
         }
 
         // dygraph tooltip
@@ -158,7 +158,7 @@
         // TODO: rework all this color manipulation into the theme
         $dygraph-tooltip-bg: if(
             $is-dark,
-            mat.get-color-from-palette($background, menu),
+            mat-get-color-from-palette($background, menu),
             #f0f0f0 // TODO: plug into theme
         );
 
@@ -186,15 +186,15 @@
                 background-color: if(
                     $is-dark,
                     rgba(0, 191, 255, 0.3), // TODO: plug this into theme
-                    mat.get-color-from-palette($background, card)
+                    mat-get-color-from-palette($background, card)
                 );
 
-                color: mat.get-color-from-palette($foreground, text);
-                border: 1px solid mat.get-color-from-palette($foreground, text, .3);
+                color: mat-get-color-from-palette($foreground, text);
+                border: 1px solid mat-get-color-from-palette($foreground, text, .3);
 
             }
 
-            box-shadow: inset 0px -2px 1px -1px mat.get-color-from-palette($foreground, text, .3);
+            box-shadow: inset 0px -2px 1px -1px mat-get-color-from-palette($foreground, text, .3);
         }
     }
 }

@@ -20,5 +20,19 @@
 // Material colors are loaded with Material
 // see ~@angular/material/_theming.scss
 
+// NOTE: Angular material colors are now inaccessible due to how the new SASS modules work
+// NOTE: Declaring variables here from 'node_modules/@angular/material/core/theming/_palette.scss
+
+$dark-primary-text: rgba(black, 0.87);
+$dark-secondary-text: rgba(black, 0.54);
+$dark-disabled-text: rgba(black, 0.38);
+$dark-dividers: rgba(black, 0.12);
+$dark-focused: rgba(black, 0.12);
+$light-primary-text: white;
+$light-secondary-text: rgba(white, 0.7);
+$light-disabled-text: rgba(white, 0.5);
+$light-dividers: rgba(white, 0.12);
+$light-focused: rgba(white, 0.12);
+
 // Denali colors
 @import './colors/denali.scss';

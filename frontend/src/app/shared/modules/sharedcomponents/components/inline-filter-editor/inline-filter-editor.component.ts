@@ -39,6 +39,20 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
+interface TagKeyValue {
+    name: string;
+    count: number;
+}
+
+interface TagKeysAndValues {
+    hits: number;
+    values: TagKeyValue[];
+}
+interface TagKeysSearchResults {
+    tagKeys: string[];
+    tagKeysAndValues: Record<string,TagKeysAndValues>;
+}
+
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'inline-filter-editor',
@@ -70,8 +84,12 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     tagOptions = [];
     tagFilteredOptions = [];
     filteredTagValues = [];
-    searchResults: any = {};
+    searchResults: TagKeysSearchResults = {
+        tagKeys: [], // was previously tagValueKeys for some reason
+        tagKeysAndValues: {},
+    };
     selectedTag = '';
+    selectedTagIndex = -1;
     loadFirstTagValues = false;
     tagValueTypeControl = new FormControl('literalor');
     searchControl: FormControl;
@@ -309,21 +327,23 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
                     )
                     .subscribe(
                         (res) => {
+
                             /* eslint-disable max-len */
                             this.searchResults = {
                                 tagKeys: Object.keys(res.tagKeysAndValues).sort(
                                     this.utils.sortAlphaNum,
                                 ),
                                 tagKeysAndValues: res.tagKeysAndValues,
-                            };
+                            } as TagKeysSearchResults;
+
                             this.basicSearch = false;
                             this.cdRef.detectChanges();
                         },
                         (err) => {
                             this.searchResults = {
-                                tagValueKeys: [],
+                                tagKeys: [], // was previously tagValueKeys for some reason
                                 tagKeysAndValues: {},
-                            };
+                            } as TagKeysSearchResults;
                             const message = err.error.error
                                 ? err.error.error.message
                                 : err.message;
@@ -450,6 +470,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
             tagValSearch = search;
         }
         this.selectedTag = tag;
+        this.selectedTagIndex = index;
         /* eslint-disable max-len */
         this.tagValueSearchControl.setValue(tagValSearch, {
             emitEvent:
@@ -476,6 +497,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
 
     unsetTag() {
         this.selectedTag = '';
+        this.selectedTagIndex = -1;
         setTimeout(() => {
             this.searchInput.nativeElement.focus();
         });

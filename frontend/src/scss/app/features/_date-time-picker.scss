@@ -40,11 +40,11 @@
     // when it is in the navbar
     .navbar-item.nav-date-time-picker {
         .mat-raised-button {
-            background-color: mat.get-color-from-palette($background, navbar-button);
-            color: mat.get-color-from-palette($foreground, navbar-text);
+            background-color: mat-get-color-from-palette($background, navbar-button);
+            color: mat-get-color-from-palette($foreground, navbar-text);
 
             &:hover {
-            background-color: mat.get-color-from-palette($background, navbar-button-hover);
+            background-color: mat-get-color-from-palette($background, navbar-button-hover);
             }
         }
     }

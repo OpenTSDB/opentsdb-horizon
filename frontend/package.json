@@ -95,6 +95,7 @@
         "protractor": "~7.0.0",
         "rxjs": "^6.4.0",
         "rxjs-tslint": "^0.1.6",
+        "sass": "^1.71.1",
         "ts-node": "~8.10.1",
         "tslib": "^2.0.0",
         "typeface-ubuntu": "0.0.65",

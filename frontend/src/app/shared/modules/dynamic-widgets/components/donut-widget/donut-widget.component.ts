@@ -40,7 +40,6 @@ import {
     MatDialog,
     MatDialogConfig,
     MatDialogRef,
-    DialogPosition,
 } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';

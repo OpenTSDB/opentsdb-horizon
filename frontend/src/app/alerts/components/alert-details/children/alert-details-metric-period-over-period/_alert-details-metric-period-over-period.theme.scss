@@ -4,13 +4,13 @@
     .period-over-period {
 
         .blue-background {
-            background: mat.get-color-from-palette($primary, default, 0.08);
+            background: mat-get-color-from-palette($primary, default, 0.08);
         }
 
         .threshold-type {
 
             .mat-button-toggle {
-                background: mat.get-color-from-palette($primary, default, 0.08);
+                background: mat-get-color-from-palette($primary, default, 0.08);
             }
 
             .mat-button-toggle-checked {

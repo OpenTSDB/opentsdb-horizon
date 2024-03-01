@@ -55,7 +55,7 @@ import { DebugDialogComponent } from '../../../sharedcomponents/components/debug
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConfigService } from '../../../../../core/services/config.service';
 import { InfoIslandService } from '../../../info-island/services/info-island.service';
@@ -2424,6 +2424,10 @@ implements OnInit, AfterViewInit, OnDestroy {
             groupByTags,
             this.widget.settings.multigraph,
         );
+    }
+
+    coerceSortDirection(dir: string) {
+        return dir as SortDirection;
     }
 
     private isIn(pBounding: any, cCord: any) {

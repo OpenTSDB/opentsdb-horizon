@@ -1,33 +1,39 @@
-<!--
-  This file is part of OpenTSDB.
+<!-- This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
- -->
+  limitations under the License. -->
 <form [formGroup]="formGroups">
-<p class="config-control config-widget-title">
-    <mat-form-field appearance="fill">
-        <mat-label>Widget Title</mat-label>
-        <input matInput placeholder="Please enter a title for this widget" maxlength="100" formControlName="title" required>
-        <mat-hint>Max 100 characters</mat-hint>
-        <mat-hint align="end">{{widget.settings.title?.length || 0}}/100</mat-hint>
+  <p class="config-control config-widget-title">
+        <mat-form-field appearance="fill"><mat-label>Widget Title</mat-label><input
+        matInput
+        placeholder="Please enter a title for this widget"
+        maxlength="100"
+        formControlName="title"
+        required><mat-hint>Max 100 characters</mat-hint><mat-hint align="end">
+        {{widget.settings.title?.length || 0}}/100
+      </mat-hint>
     </mat-form-field>
-</p>
-<p class="config-control config-widget-description">
-    <mat-form-field appearance="fill">
-        <mat-label>Description</mat-label>
-        <textarea matInput matTextareaAutosize matAutosizeMinRows=4 matAutosizeMaxRows=8 placeholder="Please enter a description for this widget" formControlName="description"></textarea>
-        <mat-hint>Add an optional description of your widget</mat-hint>
+    </p>
+  <p class="config-control config-widget-description">
+        <mat-form-field appearance="fill"><mat-label>Description</mat-label><textarea
+        matInput
+        [matTextareaAutosize]="true"
+        [matAutosizeMinRows]="4"
+        [matAutosizeMaxRows]="8"
+        placeholder="Please enter a description for this widget"
+        formControlName="description"></textarea><mat-hint>
+        Add an optional description of your widget
+      </mat-hint>
     </mat-form-field>
-</p>
+    </p>
 </form>

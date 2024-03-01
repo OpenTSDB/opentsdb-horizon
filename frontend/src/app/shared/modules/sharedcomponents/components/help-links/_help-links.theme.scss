@@ -8,7 +8,7 @@
 
     .mat-raised-button {
         background-color: darken($navbar-bg, 4%);
-        color: mat.get-color-from-palette($foreground, navbar-text);
+        color: mat-get-color-from-palette($foreground, navbar-text);
 
         &:hover {
             background-color: lighten($navbar-bg, 8%);

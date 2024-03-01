@@ -3,7 +3,7 @@
     .widget-config-tab.multigraph-configuration {
         .form-field-group.table-output {
             .mat-row:hover {
-                background: mat.get-color-from-palette($foreground, lighter-divider);
+                background: mat-get-color-from-palette($foreground, lighter-divider);
             }
         }
     }

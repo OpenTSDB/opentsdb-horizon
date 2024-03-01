@@ -27,7 +27,7 @@ import {
     IntercomService,
     IMessage,
 } from '../../../../../core/services/intercom.service';
-import { Subscription, BehaviorSubject, of } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -124,7 +124,9 @@ export class MarkdownWidgetComponent implements OnInit, OnDestroy {
         }
     }
 
-    textChanged(txt: string) {
+    textChanged(e: Event) {
+        const target: HTMLInputElement = e.target as HTMLInputElement;
+        const txt = target.value;
         this.widget.settings.visual.text = txt;
         this.displayText$.next(
             this.resolveTplMacro(

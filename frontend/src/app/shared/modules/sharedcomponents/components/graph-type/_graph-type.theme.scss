@@ -2,22 +2,22 @@
 @mixin graph-type-component-theme() {
     .graph-type {
         .mat-button-toggle-group{
-            border: 1px solid mat.get-color-from-palette($foreground, divider, .08);
+            border: 1px solid mat-get-color-from-palette($foreground, divider, .08);
 
             .mat-button-toggle + .mat-button-toggle {
-                border-left: 1px solid mat.get-color-from-palette($foreground, divider, .08);
+                border-left: 1px solid mat-get-color-from-palette($foreground, divider, .08);
             }
 
             .mat-button-toggle-appearance-standard {
                 &.mat-button-toggle-checked {
-                    background: mat.get-color-from-palette($background, card);
+                    background: mat-get-color-from-palette($background, card);
                     position: relative;
 
                     &::after {
                         content: '';
                         display: block;
                         height: 2px;
-                        background-color: mat.get-color-from-palette($background, ink-bar);
+                        background-color: mat-get-color-from-palette($background, ink-bar);
                         position: absolute;
                         top: 100%;
                         left: 0;

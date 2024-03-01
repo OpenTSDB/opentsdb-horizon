@@ -128,7 +128,7 @@
                                         <table mat-table matSort [dataSource]="legendDataSource"
                                         matSort
                                         [matSortActive]="widget.settings.legend.sortBy"
-                                        [matSortDirection]="widget.settings.legend.sortDir"
+                                        [matSortDirection]="coerceSortDirection(widget.settings.legend.sortDir)"
                                         matSortDisableClear="true"
                                         (matSortChange)="setSortOrder($event)">
                                             <ng-container matColumnDef="color">

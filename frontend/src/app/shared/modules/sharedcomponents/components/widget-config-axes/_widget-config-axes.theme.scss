@@ -1,14 +1,14 @@
 @use '~@angular/material' as mat;
 @mixin widget-config-axes-component-theme() {
 
-    $good-green: if($is-dark, mat.get-color-from-palette($success, default), mat.get-color-from-palette($success, 600));
+    $good-green: if($is-dark, mat-get-color-from-palette($success, default), mat-get-color-from-palette($success, 600));
 
     .widget-config-tab.axes-configuration {
         // style rules here
 
         .mat-form-field.inline-hint {
             .mat-hint {
-                color: mat.get-color-from-palette($foreground, hint-text);
+                color: mat-get-color-from-palette($foreground, hint-text);
             }
         }
     }

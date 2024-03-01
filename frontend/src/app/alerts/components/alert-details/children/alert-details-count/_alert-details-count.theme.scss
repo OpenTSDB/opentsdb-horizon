@@ -15,19 +15,19 @@
 
         .cdk-column-good {
             .count-amount {
-                background-color: mat.get-color-from-palette($other, status-success);
+                background-color: mat-get-color-from-palette($other, status-success);
             }
         }
 
         .cdk-column-bad {
             .count-amount {
-                background-color: mat.get-color-from-palette($other, status-error);
+                background-color: mat-get-color-from-palette($other, status-error);
             }
         }
 
         .cdk-column-warn {
             .count-amount {
-                background-color: mat.get-color-from-palette($other, status-warning);
+                background-color: mat-get-color-from-palette($other, status-warning);
             }
         }
 

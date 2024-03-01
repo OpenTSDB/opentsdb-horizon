@@ -27,14 +27,48 @@
             </div>
         </div>
         <!-- query alias editor -->
+        <ng-container *ngIf="queryAliasEdit; then queryAliasFormControls else queryNamespaceBlock"></ng-container>
+        <ng-template #queryAliasFormControls>
+            <div class="toolbar-item query-alias-edit-form" *ngIf="queryAliasEdit; else queryNamespaceBlock;" style="padding-left: 16px;">
+                <mat-form-field floatLabel="always">
+                    <input matInput placeholder="Query Alias:" [formControl]="queryAliasFormControl">
+                </mat-form-field>
+                <button mat-button color="primary" (click)="saveQueryAliasForm()">Save</button>
+                <button mat-button color="secondary" (click)="toggleQueryAliasEditForm()">Cancel</button>
+            </div>
+        </ng-template>
+        <ng-template #queryNamespaceBlock>
+            <!-- normal query namespace -->
+            <ng-container *ngIf="options.enableNamespace" #queryNamespaceBlock>
+                <div class="toolbar-item">
+                    <span class="title"> Namespace:</span>
+                </div>
+                <div class="toolbar-item displayed-namespace" *ngIf="!editNamespace && query.namespace && query.namespace.length > 0" (click)="editNamespace=true;">
+                    <span class="namespace-value">
+                        {{ query.namespace }}
+                    </span>
+                    <div class="mat-select-arrow-wrapper">
+                        <div class="mat-select-arrow"></div>
+                    </div>
+                </div>
+                <div class="toolbar-item edit-namespace" *ngIf="editNamespace || !query.namespace || !query.namespace.trim() ">
+                    <span class="value">
+                        <namespace-autocomplete [value]="query.namespace" [options]="options" [initFocus]="editNamespace" (nschange)="saveNamespace($event)"
+                            (blurFocus)="cancelSaveNamespace($event)"></namespace-autocomplete>
+                    </span>
+                </div>
+            </ng-container>
+        </ng-template>
+        <!-- TODO: cleanup if works
         <div class="toolbar-item query-alias-edit-form" *ngIf="queryAliasEdit; else queryNamespaceBlock;" style="padding-left: 16px;">
             <mat-form-field floatLabel="always">
                 <input matInput placeholder="Query Alias:" [formControl]="queryAliasFormControl">
             </mat-form-field>
             <button mat-button color="primary" (click)="saveQueryAliasForm()">Save</button>
             <button mat-button color="secondary" (click)="toggleQueryAliasEditForm()">Cancel</button>
-        </div>
+        </div>-->
         <!-- normal query namespace -->
+        <!-- TODO: cleanup if works
         <ng-container *ngIf="options.enableNamespace" #queryNamespaceBlock>
             <div class="toolbar-item">
                 <span class="title"> Namespace:</span>
@@ -54,6 +88,7 @@
                 </span>
             </div>
         </ng-container>
+        -->
         <span class="flex-spacer"></span>
         <div class="toolbar-item action-icons" *ngIf="query.metrics.length">
             <mat-icon style="cursor: move;">reorder</mat-icon>

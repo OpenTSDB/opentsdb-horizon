@@ -1,17 +1,17 @@
 @use '~@angular/material' as mat;
 @mixin activity-panel-component-theme() {
 
-    $d-blue: mat.get-color-from-palette($denali-blue, 500);
-    $d-purple: mat.get-color-from-palette($denali-purple, 500);
-    $d-red: mat.get-color-from-palette($denali-red, 500);
-    $d-green: mat.get-color-from-palette($denali-green, 500);
-    $d-orange: mat.get-color-from-palette($denali-orange, 500);
+    $d-blue: mat-get-color-from-palette($denali-blue, 500);
+    $d-purple: mat-get-color-from-palette($denali-purple, 500);
+    $d-red: mat-get-color-from-palette($denali-red, 500);
+    $d-green: mat-get-color-from-palette($denali-green, 500);
+    $d-orange: mat-get-color-from-palette($denali-orange, 500);
 
-    $d-blue-accent: mat.get-color-from-palette($denali-blue, 'A100');
-    $d-purple-accent: mat.get-color-from-palette($denali-purple, 'A100');
-    $d-red-accent: mat.get-color-from-palette($denali-red, 'A100');
-    $d-green-accent: mat.get-color-from-palette($denali-green, 'A100');
-    $d-orange-accent: mat.get-color-from-palette($denali-orange, 'A100');
+    $d-blue-accent: mat-get-color-from-palette($denali-blue, 'A100');
+    $d-purple-accent: mat-get-color-from-palette($denali-purple, 'A100');
+    $d-red-accent: mat-get-color-from-palette($denali-red, 'A100');
+    $d-green-accent: mat-get-color-from-palette($denali-green, 'A100');
+    $d-orange-accent: mat-get-color-from-palette($denali-orange, 'A100');
 
     $activityTypes: (
         namespace: ($d-blue, $d-blue-accent),

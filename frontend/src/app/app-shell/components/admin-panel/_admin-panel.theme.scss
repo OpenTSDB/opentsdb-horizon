@@ -5,23 +5,23 @@
             .mat-tab-header {
                 background: if(
                     $is-dark,
-                    mat.get-color-from-palette($background, navbar, .5),
-                    mat.get-color-from-palette($background, navbar, .1)
+                    mat-get-color-from-palette($background, navbar, .5),
+                    mat-get-color-from-palette($background, navbar, .1)
                 );
 
                 .mat-tab-label {
                     color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, navbar-text),
-                        mat.get-color-from-palette($background, navbar)
+                        mat-get-color-from-palette($foreground, navbar-text),
+                        mat-get-color-from-palette($background, navbar)
                     );
 
                     &.mat-tab-label-active {
                         opacity: 1;
                         color: if(
                             $is-dark,
-                            mat.get-color-from-palette($foreground, navbar-text),
-                            mat.get-color-from-palette($background, navbar)
+                            mat-get-color-from-palette($foreground, navbar-text),
+                            mat-get-color-from-palette($background, navbar)
                         );
                     }
                 }
@@ -29,7 +29,7 @@
 
             &.mat-primary {
                 .mat-ink-bar {
-                    background: mat.get-color-from-palette($background, navbar);
+                    background: mat-get-color-from-palette($background, navbar);
                 }
             }
         }

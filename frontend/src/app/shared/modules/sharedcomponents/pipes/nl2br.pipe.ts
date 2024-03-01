@@ -18,7 +18,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'nl2br' })
 export class Nl2BrPipe implements PipeTransform {
-    transform(value: string, args: string[]): any {
+    transform(value: string, args?: string[]): any {
         if (!value) {
             return value;
         }

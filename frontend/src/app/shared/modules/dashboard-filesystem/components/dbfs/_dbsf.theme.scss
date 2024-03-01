@@ -5,31 +5,31 @@
 
     .dashboard-navigator {
         .panel-toolbar {
-            background: mat.get-color-from-palette($background, card);
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, .07);
+            background: mat-get-color-from-palette($background, card);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider, .07);
             color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, navbar-text),
-                mat.get-color-from-palette($background, navbar)
+                mat-get-color-from-palette($foreground, navbar-text),
+                mat-get-color-from-palette($background, navbar)
             );
 
             .nav-item.icon-nav {
                 background: if(
                     $is-dark,
-                    mat.get-color-from-palette($background, navbar, .5),
-                    mat.get-color-from-palette($background, navbar, .1)
+                    mat-get-color-from-palette($background, navbar, .5),
+                    mat-get-color-from-palette($background, navbar, .1)
                 );
             }
 
             .nav-item.icon-nav:not(:last-child) {
-                border-right: 1px solid mat.get-color-from-palette($foreground, divider, .07);
+                border-right: 1px solid mat-get-color-from-palette($foreground, divider, .07);
             }
 
             .nav-item:hover {
                 background: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text, .1),
-                    mat.get-color-from-palette($background, navbar, .2)
+                    mat-get-color-from-palette($foreground, navbar-text, .1),
+                    mat-get-color-from-palette($background, navbar, .2)
                 );
                 cursor: pointer;
             }
@@ -38,14 +38,14 @@
                 background: transparent;
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text),
-                    mat.get-color-from-palette($background, navbar)
+                    mat-get-color-from-palette($foreground, navbar-text),
+                    mat-get-color-from-palette($background, navbar)
                 );
             }
 
             &.is-master-panel {
                 .header-label {
-                    color: mat.get-color-from-palette($background, navbar, .85);
+                    color: mat-get-color-from-palette($background, navbar, .85);
                 }
             }
         }
@@ -55,8 +55,8 @@
         .mat-nav-list .mat-list-item {
             color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, navbar-text, .6),
-                mat.get-color-from-palette($background, navbar, .85)
+                mat-get-color-from-palette($foreground, navbar-text, .6),
+                mat-get-color-from-palette($background, navbar, .85)
             );
         }
 
@@ -68,25 +68,25 @@
                 margin-right: 8px;
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text, .6),
-                    mat.get-color-from-palette($background, navbar, .85)
+                    mat-get-color-from-palette($foreground, navbar-text, .6),
+                    mat-get-color-from-palette($background, navbar, .85)
                 );
             }
 
             &.is-active {
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text, .85),
-                    mat.get-color-from-palette($background, navbar, .85)
+                    mat-get-color-from-palette($foreground, navbar-text, .85),
+                    mat-get-color-from-palette($background, navbar, .85)
                 );
             }
         }
 
         .breadcrumb-path {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, .07);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider, .07);
 
             .mat-chip:hover {
-                background: mat.get-color-from-palette($foreground, link);
+                background: mat-get-color-from-palette($foreground, link);
                 color: find-color-invert(
                     _mat-convert-variable-to-color(
                         map-get($foreground, link),
@@ -101,8 +101,8 @@
                 color: $white;
                 background-color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text, .4),
-                    mat.get-color-from-palette($background, navbar, .4)
+                    mat-get-color-from-palette($foreground, navbar-text, .4),
+                    mat-get-color-from-palette($background, navbar, .4)
                 );
             }
         }
@@ -110,16 +110,16 @@
         .block-header {
             background-color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, navbar-text, .1),
-                mat.get-color-from-palette($background, navbar, .1)
+                mat-get-color-from-palette($foreground, navbar-text, .1),
+                mat-get-color-from-palette($background, navbar, .1)
             );
 
             .counter {
                 .chip-count {
                     background-color: if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, navbar-text, .3),
-                        mat.get-color-from-palette($background, navbar, .3)
+                        mat-get-color-from-palette($foreground, navbar-text, .3),
+                        mat-get-color-from-palette($background, navbar, .3)
                     );
                 }
             }
@@ -127,13 +127,13 @@
 
         .create-dashboard {
             .mat-flat-button {
-                background-color: mat.get-color-from-palette($background, navbar);
-                color: mat.get-color-from-palette($foreground, navbar-text);
+                background-color: mat-get-color-from-palette($background, navbar);
+                color: mat-get-color-from-palette($foreground, navbar-text);
             }
         }
 
         .filter-list-control {
-            border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, .07);
+            border-bottom: 1px solid mat-get-color-from-palette($foreground, divider, .07);
         }
 
         // COMMON STYLES
@@ -147,16 +147,16 @@
             &.dnav-menu-opened {
                 background: if(
                     $is-dark,
-                    mat.get-color-from-palette($background, navbar, .20),
-                    mat.get-color-from-palette($background, navbar, .05)
+                    mat-get-color-from-palette($background, navbar, .20),
+                    mat-get-color-from-palette($background, navbar, .05)
                 );
-                box-shadow: inset 0 1px 0 0 mat.get-color-from-palette($background, navbar, .15), inset 0 -1px 0 0 mat.get-color-from-palette($background, navbar, .15);
+                box-shadow: inset 0 1px 0 0 mat-get-color-from-palette($background, navbar, .15), inset 0 -1px 0 0 mat-get-color-from-palette($background, navbar, .15);
 
                 &::after {
                     border-color: transparent if(
                         $is-dark,
-                        mat.get-color-from-palette($background, navbar, .80),
-                        mat.get-color-from-palette($background, navbar, .15)
+                        mat-get-color-from-palette($background, navbar, .80),
+                        mat-get-color-from-palette($background, navbar, .15)
                     ) transparent transparent;
                 }
             }
@@ -170,7 +170,7 @@
             }
 
             .remove-folders-button.is-active {
-                color: mat.get-color-from-palette($other, status-error);
+                color: mat-get-color-from-palette($other, status-error);
             }
         }
 
@@ -187,25 +187,25 @@
         // FOLDER ITEM
         .dnav-folder-item {
             .save-folder-name {
-                color: mat.get-color-from-palette($other, status-success);
+                color: mat-get-color-from-palette($other, status-success);
             }
 
             .mat-checkbox {
                 .mat-checkbox-frame {
                     border-color:if(
                         $is-dark,
-                        mat.get-color-from-palette($foreground, navbar-text, .54),
-                        mat.get-color-from-palette($background, navbar, .54)
+                        mat-get-color-from-palette($foreground, navbar-text, .54),
+                        mat-get-color-from-palette($background, navbar, .54)
                     );
                 }
 
                 &.mat-checkbox-checked {
                     .mat-checkbox-frame {
-                        border-color: mat.get-color-from-palette($other, status-error);
+                        border-color: mat-get-color-from-palette($other, status-error);
                     }
 
                     .mat-checkbox-background {
-                        background-color: mat.get-color-from-palette($other, status-error);
+                        background-color: mat-get-color-from-palette($other, status-error);
                     }
                 }
             }
@@ -215,8 +215,8 @@
                     .mat-input-element::placeholder {
                         color: if(
                             $is-dark,
-                            mat.get-color-from-palette($foreground, navbar-text, .25),
-                            mat.get-color-from-palette($background, navbar, .25)
+                            mat-get-color-from-palette($foreground, navbar-text, .25),
+                            mat-get-color-from-palette($background, navbar, .25)
                         );
                     }
                 }
@@ -227,7 +227,7 @@
         // DASHBOARD ITEM
         .dnav-dashboard-item {
             &.matched-dashboard {
-                background: mat.get-color-from-palette($primary, default, .15);
+                background: mat-get-color-from-palette($primary, default, .15);
                 box-shadow: inset 3px 0 0 rgb(34,122,236); //TODO: plug this into theme
             }
         }
@@ -236,7 +236,7 @@
         .dnav-favorite-item,
         .dnav-recent-item {
             &.matched-dashboard {
-                background: mat.get-color-from-palette($primary, default, .15);
+                background: mat-get-color-from-palette($primary, default, .15);
                 box-shadow: inset 3px 0 0 rgb(34,122,236); //TODO: plug this into theme
             }
         }
@@ -247,8 +247,8 @@
     .dnav-cdk-folder-menu,
     .dnav-cdk-dashboard-menu,
     .dnav-cdk-favorite-menu {
-        background-color: mat.get-color-from-palette($background, card);
-        border: 1px solid mat.get-color-from-palette($background, navbar, .15);
+        background-color: mat-get-color-from-palette($background, card);
+        border: 1px solid mat-get-color-from-palette($background, navbar, .15);
         @if ($is-dark) {
             filter: brighten(1.15);
 
@@ -260,23 +260,23 @@
         .mat-menu-item {
             color: if(
                 $is-dark,
-                mat.get-color-from-palette($foreground, navbar-text, .5),
-                mat.get-color-from-palette($background, navbar, .5)
+                mat-get-color-from-palette($foreground, navbar-text, .5),
+                mat-get-color-from-palette($background, navbar, .5)
             );
 
             .mat-icon {
                 color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, navbar-text, .5),
-                    mat.get-color-from-palette($background, navbar, .5)
+                    mat-get-color-from-palette($foreground, navbar-text, .5),
+                    mat-get-color-from-palette($background, navbar, .5)
                 );
             }
 
             &:hover {
                 background-color: if(
                     $is-dark,
-                    mat.get-color-from-palette($foreground, text, .12),
-                    mat.get-color-from-palette($foreground, text, .08)
+                    mat-get-color-from-palette($foreground, text, .12),
+                    mat-get-color-from-palette($foreground, text, .08)
                 );
             }
         }

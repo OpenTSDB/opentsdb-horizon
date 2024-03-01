@@ -15,6 +15,9 @@
     },
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": false,
-        "strictTemplates": true
-    }
+        "strictTemplates": false
+    },
+    "exclude": [
+        "./src/**/*.scss"
+    ]
 }

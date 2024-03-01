@@ -2,7 +2,7 @@
 @mixin landing-page-container-component-theme() {
     .landing-page-main {
         .sidebar {
-            background-color: mat.get-color-from-palette($background, card);
+            background-color: mat-get-color-from-palette($background, card);
         }
     }
 }

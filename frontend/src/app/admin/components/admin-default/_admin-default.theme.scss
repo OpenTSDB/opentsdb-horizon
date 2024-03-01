@@ -1,6 +1,6 @@
 @use '~@angular/material' as mat;
 @mixin admin-default-component-theme() {
     .app-admin-section.app-admin-default {
-        background-color: mat.get-color-from-palette($background, card);
+        background-color: mat-get-color-from-palette($background, card);
     }
 }

@@ -83,6 +83,10 @@ export class EventTimelineComponent implements OnInit, OnChanges {
         }
     }
 
+    useUtil() {
+        return this.util;
+    }
+
     drawEvents() {
         // manually set width
         (<HTMLCanvasElement>this.eventsOverlayCanvas.nativeElement).width =

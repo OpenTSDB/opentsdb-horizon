@@ -3,14 +3,14 @@
 
     // tooltip color
     .dtp-tooltip-text {
-        background-color: mat.get-color-from-palette($accent, default);
+        background-color: mat-get-color-from-palette($accent, default);
     }
 
     // dropdown menu container
     .timerange-picker-menu.mat-menu-panel {
         &::after {
             border-color: rgba($white, 0);
-            border-bottom-color: mat.get-color-from-palette($background, menu); // actual color of arrow
+            border-bottom-color: mat-get-color-from-palette($background, menu); // actual color of arrow
         }
     }
 
