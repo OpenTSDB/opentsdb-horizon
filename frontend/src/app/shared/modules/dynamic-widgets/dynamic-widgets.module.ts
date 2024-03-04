@@ -109,20 +109,6 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         HeatmapWidgetComponent,
         EventsWidgetComponent,
         TableWidgetComponent,
-    ],
-    entryComponents: [
-        PlaceholderWidgetComponent,
-        LinechartWidgetComponent,
-        HeatmapWidgetComponent,
-        BarchartWidgetComponent,
-        DeveloperWidgetComponent,
-        BignumberWidgetComponent,
-        DonutWidgetComponent,
-        TopnWidgetComponent,
-        StatusWidgetComponent,
-        MarkdownWidgetComponent,
-        EventsWidgetComponent,
-        TableWidgetComponent,
-    ],
+    ]
 })
 export class DynamicWidgetsModule {}

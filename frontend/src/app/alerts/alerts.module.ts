@@ -81,7 +81,6 @@ import { UniversalDataTooltipDirectivesModule } from '../shared/modules/universa
         AlertDetailsCountComponent,
         AlertDetailsSuppressConfigComponent,
     ],
-    providers: [AlertsService],
-    entryComponents: [NameAlertDialogComponent],
+    providers: [AlertsService]
 })
 export class AlertsModule {}

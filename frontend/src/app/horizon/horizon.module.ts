@@ -19,12 +19,11 @@ import { TooltipComponentService } from '../shared/modules/universal-data-toolti
         UniversalDataTooltipDirectivesModule,
     ],
     declarations: [HorizonComponent],
-    entryComponents: [HorizonComponent],
     providers: [
         UnitConverterService,
         TooltipDataService,
         TooltipComponentService,
-    ],
+    ]
 })
 export class HorizonModule implements DoBootstrap {
     constructor(private injector: Injector) {}

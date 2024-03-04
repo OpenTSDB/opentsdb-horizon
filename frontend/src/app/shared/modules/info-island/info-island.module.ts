@@ -57,13 +57,6 @@ import { D3Module } from '../d3/d3.module';
         InfoIslandToolbarComponent,
         HeatmapBucketDetailComponent,
     ],
-    providers: [InfoIslandService],
-    entryComponents: [
-        InfoIslandComponent,
-        IslandTestComponent,
-        EventStreamComponent,
-        TimeseriesLegendComponent,
-        HeatmapBucketDetailComponent,
-    ],
+    providers: [InfoIslandService]
 })
 export class InfoIslandModule {}

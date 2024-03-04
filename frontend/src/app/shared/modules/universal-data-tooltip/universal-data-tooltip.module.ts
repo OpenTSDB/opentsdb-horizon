@@ -37,14 +37,7 @@ import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/h
         BarchartDataTooltipComponent,
         HeatmapDataTooltipComponent,
     ],
-    exports: [],
-    entryComponents: [
-        LinechartDataTooltipComponent,
-        TopnDataTooltipComponent,
-        DonutDataTooltipComponent,
-        BarchartDataTooltipComponent,
-        HeatmapDataTooltipComponent,
-    ],
+    exports: []
 })
 export class UniversalDataTooltipModule {
     static forRoot(): ModuleWithProviders<UniversalDataTooltipModule> {

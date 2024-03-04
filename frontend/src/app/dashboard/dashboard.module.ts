@@ -115,13 +115,6 @@ import { DashboardFilesystemModule } from '../shared/modules/dashboard-filesyste
         TemplateVariablePanelComponent,
         DashboardToAlertDialogComponent,
     ],
-    providers: [DashboardService, DashboardConverterService],
-    entryComponents: [
-        DashboardSettingsDialogComponent,
-        DashboardSaveDialogComponent,
-        DashboardDeleteDialogComponent,
-        DashboardToAlertDialogComponent,
-        WidgetDeleteDialogComponent,
-    ],
+    providers: [DashboardService, DashboardConverterService]
 })
 export class DashboardModule {}

@@ -24,9 +24,8 @@ import { LoginExpireDialogComponent } from './components/login-expire-dialog/log
     declarations: [LoginExpireDialogComponent],
     exports: [CommonModule, HttpClientModule, LoginExpireDialogComponent],
     providers: [
-        // set in service itself already
-    ],
-    entryComponents: [LoginExpireDialogComponent],
+    // set in service itself already
+    ]
 })
 export class CoreModule {
     constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
