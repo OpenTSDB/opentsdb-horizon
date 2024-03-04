@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin heatmap-bucket-detail-component-theme() {
 
     $cdk-window-bg: if($is-dark, mat-get-color-from-palette($background, menu, .75), mat-get-color-from-palette($background, menu));

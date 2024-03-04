@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin widget-loader-component-theme() {
 
     $divider: mat-get-color-from-palette($foreground, divider);

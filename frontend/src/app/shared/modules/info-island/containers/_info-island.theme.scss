@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin info-island-container-component-theme() {
 
     $cdk-window-bg: if(

@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin dbs-variables-component-theme() {
     $bg-color: mat-get-color-from-palette($background, background);
 

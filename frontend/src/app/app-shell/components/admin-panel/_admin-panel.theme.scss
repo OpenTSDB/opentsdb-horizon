@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin admin-panel-component-theme() {
     .admin-navigator {
         .admin-function-tabs.mat-tab-group ::ng-deep {

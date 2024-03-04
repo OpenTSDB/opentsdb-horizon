@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin template-variable-panel-component-theme() {
     .template-variable-panel-component {
         background-color: mat-get-color-from-palette($background, card);

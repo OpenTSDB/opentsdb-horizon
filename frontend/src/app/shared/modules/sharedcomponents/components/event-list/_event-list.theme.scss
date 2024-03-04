@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin event-list-component-theme() {
     .event-list {
         .event-panel.mat-expansion-panel {
