@@ -197,13 +197,6 @@ import { FormControlPipe } from './pipes/form-control.pipe';
         FormControlPipe,
         ResizableDirective,
         HelpLinksComponent,
-    ],
-    entryComponents: [
-        InlineFilterEditorComponent,
-        MetricAutocompleteComponent,
-        ErrorDialogComponent,
-        AuraDialogComponent,
-        DebugDialogComponent,
-    ],
+    ]
 })
 export class SharedcomponentsModule {}
