@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin event-stream-component-theme() {
     .event-stream {
         .event-stream-list {

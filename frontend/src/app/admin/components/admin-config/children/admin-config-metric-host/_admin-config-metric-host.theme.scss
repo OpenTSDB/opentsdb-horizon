@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin admin-config-metric-host-component-theme() {
     .app-admin-config-metric-host {
         .host-display-wrap {

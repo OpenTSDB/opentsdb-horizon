@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin activity-panel-component-theme() {
 
     $d-blue: mat-get-color-from-palette($denali-blue, 500);

@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin generic-message-bar-component-theme() {
     .generic-message-bar {
         .generic-message-item {

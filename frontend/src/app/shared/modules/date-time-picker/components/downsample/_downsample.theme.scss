@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin downsample-component-theme() {
 
     $fill-background: mat-get-color-from-palette($foreground, base, if($is-dark, 0.1, 0.04));

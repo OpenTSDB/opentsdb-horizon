@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin topn-widget-component-theme() {
     //$theme-name: map-get($theme-config, $theme-name);
     $cssText: get-theme-css-text($theme-name);

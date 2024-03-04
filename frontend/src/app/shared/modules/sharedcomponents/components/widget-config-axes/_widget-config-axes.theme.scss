@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin widget-config-axes-component-theme() {
 
     $good-green: if($is-dark, mat-get-color-from-palette($success, default), mat-get-color-from-palette($success, 600));

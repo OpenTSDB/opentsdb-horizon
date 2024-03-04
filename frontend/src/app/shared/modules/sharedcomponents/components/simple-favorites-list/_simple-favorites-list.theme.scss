@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin simple-favorites-list-component-theme() {
     $row-hover-bg: if(
         $is-dark,

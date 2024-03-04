@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin big-number-visual-appearance-component-theme() {
 
     $chip-bg: mat-get-color-from-palette($primary, default, .1);

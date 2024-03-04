@@ -1,5 +1,5 @@
 // **
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -43,7 +43,7 @@
 
 // NOTE: OPTION 1 - import a predefined angular theme. Kind of sucks if you really don't want any of the predefined themes.
 // * Recommended only if you plan on using one of the themes, otherwise it just adds weight to your css load
-// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // NOTE: OPTION 2 - Looks like the check that triggers the console warning may be looking for this class.
 // * Recommended method - definitely much lighter for the css load;

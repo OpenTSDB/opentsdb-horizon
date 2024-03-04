@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin admin-config-help-link-component-theme() {
     .app-admin-config-help-link {
         .help-link-wrap {

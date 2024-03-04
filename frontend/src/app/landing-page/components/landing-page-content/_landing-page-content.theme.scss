@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin landing-page-content-component-theme() {
     .landing-page-content {
         border-right: 2px solid mat-get-color-from-palette($foreground, divider);

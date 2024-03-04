@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 
 $type-config: mat.define-typography-config();
 $font-family: mat.font-family($type-config);

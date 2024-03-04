@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @mixin barchart-data-tooltip-component-theme() {
 
     $primary-accent-contrast: mat-get-color-from-palette($primary, A100-contrast);
