@@ -24,7 +24,7 @@ import {
     HostBinding,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 interface AggregatorHelpData {
@@ -116,7 +116,7 @@ export class TagAggregatorComponent implements OnInit {
         },
     ];
 
-    aggregatorControl: FormControl;
+    aggregatorControl: UntypedFormControl;
     defaultAggregator = 'sum';
     selectedIndex = -1;
 

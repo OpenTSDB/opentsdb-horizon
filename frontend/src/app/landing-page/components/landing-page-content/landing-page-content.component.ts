@@ -23,7 +23,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { IntercomService } from '../../../core/services/intercom.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppConfigService } from '../../../core/services/config.service';
@@ -119,7 +119,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
     ];
 
     /** Form Group */
-    searchFormGroup: FormGroup;
+    searchFormGroup: UntypedFormGroup;
 
     appName;
 
@@ -128,7 +128,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
         private interCom: IntercomService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private snackBar: MatSnackBar,
         private store: Store,
         private appConfig: AppConfigService,
@@ -159,8 +159,8 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
 
     createSearchForm() {
         this.searchFormGroup = this.fb.group({
-            searchQuery: new FormControl(this.searchQuery),
-            searchContext: new FormControl(this.searchContext),
+            searchQuery: new UntypedFormControl(this.searchQuery),
+            searchContext: new UntypedFormControl(this.searchContext),
         });
     }
 

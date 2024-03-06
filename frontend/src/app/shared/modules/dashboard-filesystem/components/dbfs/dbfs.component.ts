@@ -31,9 +31,9 @@ import {
 
 import { Router } from '@angular/router';
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
     Validators,
 } from '@angular/forms';
 
@@ -129,24 +129,24 @@ export class DbfsComponent implements OnInit, OnDestroy {
     >;
     namespacesList: any[] = [];
     namespacesDataSource = new MatTableDataSource([]);
-    namespaceFilter: FormControl = new FormControl('');
+    namespaceFilter: UntypedFormControl = new UntypedFormControl('');
 
     @Select(DbfsResourcesState.getUsersList) usersData$: Observable<any[]>;
     usersList: any[] = [];
     usersDataSource = new MatTableDataSource([]);
-    usersFilter: FormControl = new FormControl('');
+    usersFilter: UntypedFormControl = new UntypedFormControl('');
 
     @Select(DbfsResourcesState.getUserFavorites) userFavorites$: Observable<
     any[]
     >;
     userFavorites: any[] = [];
     userFavoritesDataSource = new MatTableDataSource([]);
-    userFavoritesFilter: FormControl = new FormControl('');
+    userFavoritesFilter: UntypedFormControl = new UntypedFormControl('');
 
     @Select(DbfsResourcesState.getUserRecents) userRecents$: Observable<any[]>;
     userRecents: any[] = [];
     userRecentsDataSource = new MatTableDataSource([]);
-    userRecentsFilter: FormControl = new FormControl('');
+    userRecentsFilter: UntypedFormControl = new UntypedFormControl('');
 
     @Select(DbfsResourcesState.getResourcesLoaded)
     resourcesLoaded$: Observable<any>;
@@ -187,8 +187,8 @@ export class DbfsComponent implements OnInit, OnDestroy {
     @Output() toggleDrawer: EventEmitter<any> = new EventEmitter();
 
     /* FORM GROUP STUFF */
-    fileForm: FormGroup;
-    folderForm: FormGroup;
+    fileForm: UntypedFormGroup;
+    folderForm: UntypedFormGroup;
 
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     bulkEdit: boolean = false;
@@ -223,13 +223,13 @@ export class DbfsComponent implements OnInit, OnDestroy {
         private store: Store,
         private interCom: IntercomService,
         private router: Router,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject('WINDOW') private window: any,
     ) {}
 
     ngOnInit() {
         this.folderForm = this.fb.group({
-            fc_FolderName: new FormControl('', [Validators.required]),
+            fc_FolderName: new UntypedFormControl('', [Validators.required]),
         });
 
         this.subscription.add(

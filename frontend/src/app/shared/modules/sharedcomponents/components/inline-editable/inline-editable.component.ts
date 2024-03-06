@@ -32,7 +32,7 @@ import {
     AfterViewInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
@@ -62,7 +62,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
     isRequired = true;
     isEditView = false;
-    fieldFormControl: FormControl;
+    fieldFormControl: UntypedFormControl;
     placeholder = 'placeholder';
 
     private showEditableEventListener: any;
@@ -78,7 +78,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
             this.fieldValue = this.placeholder;
         }
 
-        this.fieldFormControl = new FormControl('', []);
+        this.fieldFormControl = new UntypedFormControl('', []);
         this.fieldFormControl.setValue(this.fieldValue);
         const validators: any[] = [];
         validators.push(Validators.required, this.noWhitespaceValidator);
@@ -120,7 +120,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
         formFieldInfix.dataset.value = this.fieldValue;
     }
 
-    noWhitespaceValidator(control: FormControl) {
+    noWhitespaceValidator(control: UntypedFormControl) {
         const isWhitespace = (control.value || '').trim().length === 0;
         const isValid = !isWhitespace;
         return isValid ? null : { whitespace: true };

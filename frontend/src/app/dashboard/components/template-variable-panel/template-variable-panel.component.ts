@@ -31,10 +31,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
-    FormArray,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
+    UntypedFormArray,
     Validators,
     AbstractControl,
 } from '@angular/forms';
@@ -73,8 +73,8 @@ implements OnInit, OnChanges, OnDestroy {
     @Output() modeChange: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('focusEl', { static: true }) focusEl: ElementRef;
 
-    editForm: FormGroup;
-    listForm: FormGroup;
+    editForm: UntypedFormGroup;
+    listForm: UntypedFormGroup;
     listenSub: Subscription;
     filteredKeyOptions: Observable<string[]>; // options for key autosuggest
     filteredValueOptions: string[][];
@@ -104,7 +104,7 @@ implements OnInit, OnChanges, OnDestroy {
 
     tagValueScopeSub: Subscription;
     rebuildScopeSub: Subscription;
-    tagValueSearchInputControl: FormControl = new FormControl('');
+    tagValueSearchInputControl: UntypedFormControl = new UntypedFormControl('');
     scopeIndex = -1;
     tagValueSearch: string[] = [];
     tagScope: string[] = [];
@@ -114,7 +114,7 @@ implements OnInit, OnChanges, OnDestroy {
     scopeMenuNavSelection = 'tagscope';
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private interCom: IntercomService,
         private dbService: DashboardService,
         private utils: UtilsService,
@@ -217,8 +217,8 @@ implements OnInit, OnChanges, OnDestroy {
 
     buildTagValuesQuery(val: string, index: number): any {
         const arrayControl = this.mode.view
-            ? (this.listForm.get('listVariables') as FormArray)
-            : (this.editForm.get('formTplVariables') as FormArray);
+            ? (this.listForm.get('listVariables') as UntypedFormArray)
+            : (this.editForm.get('formTplVariables') as UntypedFormArray);
         const selControl = arrayControl.at(index);
         const alias = selControl.get('alias').value;
         const tagk = selControl.get('tagk').value;
@@ -274,8 +274,8 @@ implements OnInit, OnChanges, OnDestroy {
     // @mode: from input, view or edit
     manageFilterControl(index: number) {
         const arrayControl = this.mode.view
-            ? (this.listForm.get('listVariables') as FormArray)
-            : (this.editForm.get('formTplVariables') as FormArray);
+            ? (this.listForm.get('listVariables') as UntypedFormArray)
+            : (this.editForm.get('formTplVariables') as UntypedFormArray);
         const name = this.mode.view ? 'view' : 'edit';
         const selControl = arrayControl.at(index);
         if (selControl.invalid) {
@@ -463,19 +463,19 @@ implements OnInit, OnChanges, OnDestroy {
             this.tplVariables.viewTplVariables.tvars.forEach((data, index) => {
                 const res = data.filter.match(/^regexp\((.*)\)$/);
                 const vardata = {
-                    tagk: new FormControl(data.tagk ? data.tagk : '', []),
-                    alias: new FormControl(data.alias ? data.alias : '', []),
-                    filter: new FormControl(data.filter ? data.filter : '', []),
-                    mode: new FormControl(data.mode ? data.mode : 'auto'),
-                    display: new FormControl(
+                    tagk: new UntypedFormControl(data.tagk ? data.tagk : '', []),
+                    alias: new UntypedFormControl(data.alias ? data.alias : '', []),
+                    filter: new UntypedFormControl(data.filter ? data.filter : '', []),
+                    mode: new UntypedFormControl(data.mode ? data.mode : 'auto'),
+                    display: new UntypedFormControl(
                         res ? res[1] : data.filter ? data.filter : '',
                         [],
                     ),
-                    scope: new FormControl(data.scope ? data.scope : []),
+                    scope: new UntypedFormControl(data.scope ? data.scope : []),
                     applied: data.applied,
                     isNew: data.isNew,
                 };
-                const control = <FormArray>(
+                const control = <UntypedFormArray>(
                     this.listForm.controls['listVariables']
                 );
                 control.push(this.fb.group(vardata));
@@ -550,24 +550,24 @@ implements OnInit, OnChanges, OnDestroy {
             res = data.filter.match(/^regexp\((.*)\)$/);
         }
         const varData = {
-            tagk: new FormControl(data.tagk ? data.tagk : '', [
+            tagk: new UntypedFormControl(data.tagk ? data.tagk : '', [
                 Validators.required,
             ]),
-            alias: new FormControl(data.alias ? data.alias : '', [
+            alias: new UntypedFormControl(data.alias ? data.alias : '', [
                 Validators.required,
             ]),
-            filter: new FormControl(data.filter ? data.filter : '', []),
-            mode: new FormControl(data.mode ? data.mode : 'auto'),
-            display: new FormControl(
+            filter: new UntypedFormControl(data.filter ? data.filter : '', []),
+            mode: new UntypedFormControl(data.mode ? data.mode : 'auto'),
+            display: new UntypedFormControl(
                 res ? res[1] : data.filter ? data.filter : '',
                 [],
             ),
-            scope: new FormControl(data.scope ? data.scope : []),
+            scope: new UntypedFormControl(data.scope ? data.scope : []),
             applied: data.applied,
             isNew: data.isNew,
         };
 
-        const control = <FormArray>this.editForm.controls['formTplVariables'];
+        const control = <UntypedFormArray>this.editForm.controls['formTplVariables'];
         control.push(this.fb.group(varData));
     }
 
@@ -583,7 +583,7 @@ implements OnInit, OnChanges, OnDestroy {
             this.isSecondBlur = false;
             return;
         }
-        const control = <FormArray>this.listForm.controls['listVariables'];
+        const control = <UntypedFormArray>this.listForm.controls['listVariables'];
         const selControl = control.at(index);
         // if it's a different value from viewlist
         this.tagValueViewBlurTimeout = setTimeout(() => {
@@ -705,9 +705,9 @@ implements OnInit, OnChanges, OnDestroy {
     ) {
         let control = null;
         if (formArrayName === 'listVariables') {
-            control = <FormArray>this.listForm.controls[formArrayName];
+            control = <UntypedFormArray>this.listForm.controls[formArrayName];
         } else {
-            control = <FormArray>this.editForm.controls[formArrayName];
+            control = <UntypedFormArray>this.editForm.controls[formArrayName];
         }
         return control.at(index);
     }
@@ -1068,7 +1068,7 @@ implements OnInit, OnChanges, OnDestroy {
     }
 
     deleteTemplateVariable(index: number) {
-        const control = <FormArray>this.editForm.controls['formTplVariables'];
+        const control = <UntypedFormArray>this.editForm.controls['formTplVariables'];
         const selControl = control.at(index);
         control.removeAt(index);
         // check in case they delete the one that not in state yet
@@ -1135,7 +1135,7 @@ implements OnInit, OnChanges, OnDestroy {
         );
     }
 
-    calculateVariableDisplayWidth(item: FormGroup | AbstractControl, options?: any): string {
+    calculateVariableDisplayWidth(item: UntypedFormGroup | AbstractControl, options?: any): string {
         let minSize = options && options.minSize ? options.minSize : '50px';
         const filter = item.get('display').value;
         const alias = item.get('alias').value;
@@ -1199,7 +1199,7 @@ implements OnInit, OnChanges, OnDestroy {
 
     removeFilterFromAll(index: number) {
         // remove filter from all
-        const control = <FormArray>this.editForm.controls['formTplVariables'];
+        const control = <UntypedFormArray>this.editForm.controls['formTplVariables'];
         const removeTvar = control.at(index);
         if (removeTvar.valid) {
             // remove this tag out of widget if there
@@ -1428,12 +1428,12 @@ implements OnInit, OnChanges, OnDestroy {
             this.rebuildScopeSub.unsubscribe();
         }
     }
-    get listVariables(): FormArray {
-        return this.listForm.get('listVariables') as FormArray;
+    get listVariables(): UntypedFormArray {
+        return this.listForm.get('listVariables') as UntypedFormArray;
     }
-    get formTplVariables(): FormArray {
+    get formTplVariables(): UntypedFormArray {
         return this.editForm
-            ? (this.editForm.get('formTplVariables') as FormArray)
-            : new FormArray([]);
+            ? (this.editForm.get('formTplVariables') as UntypedFormArray)
+            : new UntypedFormArray([]);
     }
 }

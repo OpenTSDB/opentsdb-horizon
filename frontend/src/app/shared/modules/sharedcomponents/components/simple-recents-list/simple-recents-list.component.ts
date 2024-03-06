@@ -26,7 +26,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -46,7 +46,7 @@ export class SimpleRecentsListComponent implements OnInit, OnDestroy {
     @Select(DbfsResourcesState.getUserRecents) userRecents$: Observable<any[]>;
     userRecents: any[] = [];
     userRecentsDataSource = new MatTableDataSource([]);
-    userRecentsFilter: FormControl = new FormControl('');
+    userRecentsFilter: UntypedFormControl = new UntypedFormControl('');
 
     constructor(private store: Store) {}
 

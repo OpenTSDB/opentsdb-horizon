@@ -27,7 +27,7 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
     selector: 'alert-details-suppress-config',
@@ -45,9 +45,9 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     @Input() config: any = null;
     @Output() configChange = new EventEmitter();
     metricEdit = false;
-    suppressForm: FormGroup;
+    suppressForm: UntypedFormGroup;
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private utils: UtilsService,
     ) {}
 

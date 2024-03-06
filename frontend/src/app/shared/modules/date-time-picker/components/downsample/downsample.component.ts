@@ -29,10 +29,10 @@ import {
 } from '@angular/core';
 
 import {
-    FormBuilder,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormGroup,
     Validators,
-    FormControl,
+    UntypedFormControl,
 } from '@angular/forms';
 
 import {
@@ -80,7 +80,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     /** Local Variables */
 
     /** Form Group */
-    widgetConfigTime: FormGroup;
+    widgetConfigTime: UntypedFormGroup;
 
     // subscriptions
     selectedDownsample_Sub: Subscription; // check formcontrol value change to see if it is 'custom'
@@ -187,7 +187,7 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
     totPeriod = '';
     totValue = '0';
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private cdRef: ChangeDetectorRef,
     ) {}
 
@@ -297,12 +297,12 @@ export class DownsampleComponent implements OnInit, OnDestroy, OnChanges {
         const customUnit = this.downsample.customUnit;
 
         this.widgetConfigTime = this.fb.group({
-            aggregators: new FormControl(this.selectedAggregators),
-            downsample: new FormControl(
+            aggregators: new UntypedFormControl(this.selectedAggregators),
+            downsample: new UntypedFormControl(
                 this.downsample.value || this.selectedDownsample,
             ),
-            customDownsampleValue: new FormControl(this.downsample.customValue),
-            customDownsampleUnit: new FormControl(customUnit),
+            customDownsampleValue: new UntypedFormControl(this.downsample.customValue),
+            customDownsampleUnit: new UntypedFormControl(customUnit),
         });
         this.customDownsampleUnitSub =
             this.widgetConfigTime.controls.customDownsampleUnit.valueChanges

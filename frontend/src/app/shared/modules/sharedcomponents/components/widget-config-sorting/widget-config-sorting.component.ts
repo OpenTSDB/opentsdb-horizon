@@ -24,12 +24,12 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormGroup,
-    FormBuilder,
+    UntypedFormGroup,
+    UntypedFormBuilder,
     Validators,
     ValidatorFn,
     AbstractControl,
-    FormControl,
+    UntypedFormControl,
 } from '@angular/forms';
 
 @Component({
@@ -48,13 +48,13 @@ export class WidgetConfigSortingComponent implements OnInit {
     /** Outputs */
     @Output() widgetChange = new EventEmitter();
 
-    limitForm: FormGroup;
-    searchField: FormControl;
+    limitForm: UntypedFormGroup;
+    searchField: UntypedFormControl;
     order: string;
     limit: number;
     decimals: number;
 
-    constructor(private formBuilder: FormBuilder) {}
+    constructor(private formBuilder: UntypedFormBuilder) {}
 
     ngOnInit() {
         this.limitForm = this.formBuilder.group({

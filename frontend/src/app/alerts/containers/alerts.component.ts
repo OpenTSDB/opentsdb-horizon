@@ -95,7 +95,7 @@ import { UtilsService } from '../../core/services/utils.service';
 import { URLOverrideService } from '../../core/services/urlOverride.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { SnoozeDetailsComponent } from '../components/snooze-details/snooze-details.component';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DataShareService } from '../../core/services/data-share.service';
 import { InfoIslandService } from '../../shared/modules/info-island/services/info-island.service';
 const moment = _moment;
@@ -213,8 +213,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         'updatedBy',
         // 'sparkline' // hidden for now
     ];
-    alertSearch: FormControl;
-    snoozeSearch: FormControl;
+    alertSearch: UntypedFormControl;
+    snoozeSearch: UntypedFormControl;
     defaultDebounceTime = 500; // ms
     alertSearchDebounceTime = this.defaultDebounceTime; // ms
     snoozeSearchDebounceTime = this.defaultDebounceTime; // ms
@@ -410,8 +410,8 @@ export class AlertsComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.auraUrl = this.appConfig.getConfig().auraUI
             ? this.appConfig.getConfig().auraUI + '/#/aura/newquery'
             : '';
-        this.alertSearch = new FormControl();
-        this.snoozeSearch = new FormControl();
+        this.alertSearch = new UntypedFormControl();
+        this.snoozeSearch = new UntypedFormControl();
         const config = this.appConfig.getConfig();
         this.showNamespace =
             config.namespace && config.namespace.enabled !== undefined

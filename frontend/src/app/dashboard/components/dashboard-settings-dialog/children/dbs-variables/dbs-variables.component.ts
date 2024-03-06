@@ -25,10 +25,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
-    FormArray
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
+    UntypedFormArray
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -49,16 +49,16 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
     @Output() dataModified: any = new EventEmitter();
 
     /** Local Variables */
-    varForm: FormGroup;
+    varForm: UntypedFormGroup;
     varFormSub: Subscription;
 
     selectedKeys: string[] = [];
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
         this.varForm = this.fb.group({
-            enabled: new FormControl(this.dbData.variables.enabled),
+            enabled: new UntypedFormControl(this.dbData.variables.enabled),
             tplVariables: this.fb.array([]),
         });
 
@@ -130,12 +130,12 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
             type: data.type ? data.type : 'literalor',
         };
 
-        const control = <FormArray>this.varForm.controls['tplVariables'];
+        const control = <UntypedFormArray>this.varForm.controls['tplVariables'];
         control.push(this.fb.group(varData));
     }
 
     removeTemplateVariable(i: number) {
-        const control = <FormArray>this.varForm.controls['tplVariables'];
+        const control = <UntypedFormArray>this.varForm.controls['tplVariables'];
         control.removeAt(i);
     }
 

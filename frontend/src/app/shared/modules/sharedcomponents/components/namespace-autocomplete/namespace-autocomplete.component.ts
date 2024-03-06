@@ -28,7 +28,7 @@ import {
     HostListener,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { HttpService } from '../../../../../core/http/http.service';
@@ -55,7 +55,7 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
     destroy = false;
     filteredNamespaceOptions = [];
     namespaces = [];
-    namespaceControl: FormControl;
+    namespaceControl: UntypedFormControl;
     selectedNamespace;
 
     constructor(
@@ -65,7 +65,7 @@ export class NamespaceAutocompleteComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         let showFullList = true;
-        this.namespaceControl = new FormControl(this.value || '');
+        this.namespaceControl = new UntypedFormControl(this.value || '');
         this.namespaceControl.valueChanges
             .pipe(debounceTime(100))
             .subscribe((search) => {

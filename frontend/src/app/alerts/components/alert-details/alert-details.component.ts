@@ -31,10 +31,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormArray,
-    FormControl,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormArray,
+    UntypedFormControl,
     Validators,
     FormsModule,
     NgForm,
@@ -185,8 +185,8 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
 
     // FORM STUFF
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-    alertName: FormControl = new FormControl('');
-    alertForm: FormGroup;
+    alertName: UntypedFormControl = new UntypedFormControl('');
+    alertForm: UntypedFormGroup;
 
     // Period Over Period STUFF
     periodOverPeriodConfig: any = {};
@@ -342,7 +342,7 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     };
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private queryService: QueryService,
         private metaService: MetaService,
         private httpService: HttpService,
@@ -2762,7 +2762,7 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     }
 
     removeNotificationLabelValue(i: number) {
-        const control = <FormArray>this.notificationLabelValues;
+        const control = <UntypedFormArray>this.notificationLabelValues;
         control.removeAt(i);
     }
 
@@ -2772,8 +2772,8 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
 
         // Add our fruit
         if ((value || '').trim()) {
-            const control = <FormArray>this.notificationLabelValues;
-            control.push(new FormControl(value.trim()));
+            const control = <UntypedFormArray>this.notificationLabelValues;
+            control.push(new UntypedFormControl(value.trim()));
         }
 
         // Reset the input value
@@ -2783,7 +2783,7 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     }
 
     removeOpsgenieTagValue(i: number) {
-        const control = <FormArray>(
+        const control = <UntypedFormArray>(
             this.alertForm.get('notification').get('opsgenieTags')
         );
         control.removeAt(i);
@@ -2794,10 +2794,10 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
         const value = event.value ? event.value.trim() : '';
 
         if (value) {
-            const control = <FormArray>(
+            const control = <UntypedFormArray>(
                 this.alertForm.get('notification').get('opsgenieTags')
             );
-            control.push(new FormControl(value));
+            control.push(new UntypedFormControl(value));
         }
 
         if (input) {
@@ -2851,7 +2851,7 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     }
 
     recoveryTypeChange(event: any) {
-        const control = <FormControl>(
+        const control = <UntypedFormControl>(
             this.thresholdSingleMetricControls.recoveryType
         );
         if (event.value === 'minimum') {

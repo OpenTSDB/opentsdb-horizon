@@ -25,7 +25,7 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import {
-    FormControl,
+    UntypedFormControl,
     Validators,
     ValidatorFn,
     AbstractControl,
@@ -56,13 +56,13 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
     maxSlidingWindow = 3600 * 24; // 1 day
 
     // form control
-    lookbacks = new FormControl('');
-    badUpperThreshold = new FormControl('');
-    warnUpperThreshold = new FormControl('');
-    badLowerThreshold = new FormControl('');
-    warnLowerThreshold = new FormControl('');
-    highestOutliersToRemove = new FormControl('');
-    lowestOutliersToRemove = new FormControl('');
+    lookbacks = new UntypedFormControl('');
+    badUpperThreshold = new UntypedFormControl('');
+    warnUpperThreshold = new UntypedFormControl('');
+    badLowerThreshold = new UntypedFormControl('');
+    warnLowerThreshold = new UntypedFormControl('');
+    highestOutliersToRemove = new UntypedFormControl('');
+    lowestOutliersToRemove = new UntypedFormControl('');
 
     get anyErrors(): boolean {
         if (this.lookbacks.errors) {
@@ -194,7 +194,7 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
     }
 
     updateValidators() {
-        this.lookbacks = new FormControl(
+        this.lookbacks = new UntypedFormControl(
             this.config.periodOverPeriod['lookbacks'],
             [
                 Validators.max(10),
@@ -202,39 +202,39 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
                 this.positiveNumberValidator(),
             ],
         );
-        this.badUpperThreshold = new FormControl(
+        this.badUpperThreshold = new UntypedFormControl(
             this.config.periodOverPeriod['badUpperThreshold'],
             [
                 this.positiveNumberValidator(),
                 this.thresholdValidator('warnUpperThreshold'),
             ],
         );
-        this.warnUpperThreshold = new FormControl(
+        this.warnUpperThreshold = new UntypedFormControl(
             this.config.periodOverPeriod['warnUpperThreshold'],
             [
                 this.positiveNumberValidator(),
                 this.thresholdValidator('badUpperThreshold'),
             ],
         );
-        this.badLowerThreshold = new FormControl(
+        this.badLowerThreshold = new UntypedFormControl(
             this.config.periodOverPeriod['badLowerThreshold'],
             [
                 this.positiveNumberValidator(),
                 this.thresholdValidator('warnLowerThreshold'),
             ],
         );
-        this.warnLowerThreshold = new FormControl(
+        this.warnLowerThreshold = new UntypedFormControl(
             this.config.periodOverPeriod['warnLowerThreshold'],
             [
                 this.positiveNumberValidator(),
                 this.thresholdValidator('badLowerThreshold'),
             ],
         );
-        this.highestOutliersToRemove = new FormControl(
+        this.highestOutliersToRemove = new UntypedFormControl(
             this.config.periodOverPeriod['highestOutliersToRemove'],
             [this.integerValidator(), this.outliersValidator()],
         );
-        this.lowestOutliersToRemove = new FormControl(
+        this.lowestOutliersToRemove = new UntypedFormControl(
             this.config.periodOverPeriod['lowestOutliersToRemove'],
             [this.integerValidator(), this.outliersValidator()],
         );

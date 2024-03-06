@@ -32,7 +32,7 @@ import { IntercomService } from '../../../../../core/services/intercom.service';
 import { fromEvent, Subscription } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { InfoIslandComponent } from '../../containers/info-island.component';
 import { UtilsService } from '../../../../../core/services/utils.service';
@@ -89,7 +89,7 @@ implements OnInit, OnDestroy, AfterContentInit {
     dataLimitTypes: string[] = ['Top', 'Bottom', 'All'];
 
     dataLimitType = 'All'; // all || top |\ bottom
-    showAmount: FormControl = new FormControl(50);
+    showAmount: UntypedFormControl = new UntypedFormControl(50);
 
     logScaleY1 = false;
     logScaleY2 = false;

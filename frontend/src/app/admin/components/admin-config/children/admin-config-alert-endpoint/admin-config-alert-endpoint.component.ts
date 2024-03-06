@@ -5,7 +5,7 @@ import {
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-alert-endpoint',
@@ -18,7 +18,7 @@ export class AdminConfigAlertEndpointComponent implements OnInit {
     'app-admin-config-alert-endpoint';
     @HostBinding('class.edit-mode') private tplEdit = false;
 
-    @Input() endpoint: FormGroup;
+    @Input() endpoint: UntypedFormGroup;
     @Input() index: number;
 
     _editMode = false;

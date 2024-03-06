@@ -25,7 +25,7 @@ import {
     HostBinding,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
@@ -56,7 +56,7 @@ export class TimeSelectorComponent implements OnInit {
     @Output() newTimeInSeconds = new EventEmitter();
 
     regexValidator = /^\d+\s*(min|h|d)$/i;
-    inputVal: FormControl;
+    inputVal: UntypedFormControl;
 
     ngOnInit() {
         if (!this.presets.length) {
@@ -96,16 +96,16 @@ export class TimeSelectorComponent implements OnInit {
         ) {
             this.timeInSecondsAsNumber = 300;
         }
-        this.inputVal = new FormControl();
+        this.inputVal = new UntypedFormControl();
     }
 
     menuOpened() {
         if (!this.presets.includes(this.timeInSecondsAsNumber)) {
-            this.inputVal = new FormControl(
+            this.inputVal = new UntypedFormControl(
                 this.secondsToLabel(this.timeInSecondsAsNumber),
             );
         } else {
-            this.inputVal = new FormControl();
+            this.inputVal = new UntypedFormControl();
         }
     }
 
@@ -215,7 +215,7 @@ export class TimeSelectorComponent implements OnInit {
     }
 
     updateValidators() {
-        this.inputVal = new FormControl(this.inputVal.value, [
+        this.inputVal = new UntypedFormControl(this.inputVal.value, [
             this.forbiddenNameValidator(),
             this.maxValidator(),
             this.minValidator(),

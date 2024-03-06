@@ -30,7 +30,7 @@ import {
 import { HttpService } from '../../../../../core/http/http.service';
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 import { UtilsService } from '../../../../../core/services/utils.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -59,7 +59,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
     tagOptions: any[] = [];
 
     filteredTagOptions: any[] = [];
-    filterTagInputFC: FormControl = new FormControl('');
+    filterTagInputFC: UntypedFormControl = new UntypedFormControl('');
 
     get filterTagInput(): string {
         return this.filterTagInputFC.value;

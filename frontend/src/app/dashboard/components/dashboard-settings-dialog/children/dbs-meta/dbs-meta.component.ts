@@ -27,10 +27,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
-    FormArray
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
+    UntypedFormArray
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -52,19 +52,19 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
     @Output() dataModified: any = new EventEmitter();
 
     /** Local Variables */
-    metaForm: FormGroup;
+    metaForm: UntypedFormGroup;
     metaFormSub: Subscription;
 
     @ViewChild('newLabelInput', { static: true }) newLabelInput: ElementRef;
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
         this.metaForm = this.fb.group({
-            title: new FormControl(this.dbData.meta.title),
-            namespace: new FormControl(this.dbData.meta.namespace),
-            isPersonal: new FormControl(this.dbData.meta.isPersonal),
-            description: new FormControl(this.dbData.meta.description),
+            title: new UntypedFormControl(this.dbData.meta.title),
+            namespace: new UntypedFormControl(this.dbData.meta.namespace),
+            isPersonal: new UntypedFormControl(this.dbData.meta.isPersonal),
+            description: new UntypedFormControl(this.dbData.meta.description),
             labels: this.fb.array([]),
         });
 
@@ -99,7 +99,7 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
     }
 
     intializeLabels(values: any) {
-        const control = <FormArray>this.metaForm.controls['labels'];
+        const control = <UntypedFormArray>this.metaForm.controls['labels'];
 
         for (const item of values) {
             control.push(this.fb.group(item));
@@ -119,7 +119,7 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
      * Method to push an item in the form labels array
      */
     addDbLabel(label: any) {
-        const control = <FormArray>this.metaForm.controls['labels'];
+        const control = <UntypedFormArray>this.metaForm.controls['labels'];
         control.push(this.fb.group({ label: label }));
     }
 
@@ -128,7 +128,7 @@ export class DbsMetaComponent implements OnInit, OnDestroy {
      */
     removeDbLabel(i: number) {
         // remove address from the list
-        const control = <FormArray>this.metaForm.controls['labels'];
+        const control = <UntypedFormArray>this.metaForm.controls['labels'];
         control.removeAt(i);
     }
 }

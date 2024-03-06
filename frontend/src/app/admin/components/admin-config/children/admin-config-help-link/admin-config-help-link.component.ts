@@ -5,7 +5,7 @@ import {
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-help-link',
@@ -22,7 +22,7 @@ export class AdminConfigHelpLinkComponent implements OnInit {
         return !this.editMode;
     }
 
-    @Input() link: FormGroup;
+    @Input() link: UntypedFormGroup;
     @Input() index: number;
 
     _editMode = false;
@@ -39,14 +39,14 @@ export class AdminConfigHelpLinkComponent implements OnInit {
 
     ngOnInit() { /* do nothing */ }
 
-    get helpLabel(): FormControl {
-        return <FormControl>this.link.get('label');
+    get helpLabel(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('label');
     }
-    get helpHref(): FormControl {
-        return <FormControl>this.link.get('href');
+    get helpHref(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('href');
     }
-    get helpIcon(): FormControl {
-        return <FormControl>this.link.get('icon');
+    get helpIcon(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('icon');
     }
 
     toggleEditMode() {
@@ -54,7 +54,7 @@ export class AdminConfigHelpLinkComponent implements OnInit {
     }
 
     editHelpLink() {
-        const formGroup = <FormGroup>this.link;
+        const formGroup = <UntypedFormGroup>this.link;
         console.log('EDIT HELP LINK', this.index, formGroup.getRawValue());
     }
 

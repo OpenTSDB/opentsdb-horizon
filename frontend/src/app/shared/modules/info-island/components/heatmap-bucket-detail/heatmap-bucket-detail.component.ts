@@ -31,7 +31,7 @@ import { IntercomService } from '../../../../../core/services/intercom.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 
 import { InfoIslandComponent } from '../../containers/info-island.component';
@@ -92,7 +92,7 @@ implements OnInit, AfterViewInit, OnDestroy {
     dataLimitTypes: string[] = ['Top', 'Bottom', 'All'];
 
     dataLimitType = 'All'; // all || top |\ bottom
-    showAmount: FormControl = new FormControl(50);
+    showAmount: UntypedFormControl = new UntypedFormControl(50);
 
     /** Table Stuff */
     tableColumns = [];

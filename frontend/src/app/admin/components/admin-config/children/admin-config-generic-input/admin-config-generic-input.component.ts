@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import {
     ControlValueAccessor,
-    FormControl,
+    UntypedFormControl,
     NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
@@ -64,7 +64,7 @@ implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
     @Input() horizontalAlign = false;
 
     inputValue: any;
-    inputValueControl: FormControl = new FormControl(null);
+    inputValueControl: UntypedFormControl = new UntypedFormControl(null);
 
     disabled = false;
     // eslint-disable-next-line @typescript-eslint/ban-types

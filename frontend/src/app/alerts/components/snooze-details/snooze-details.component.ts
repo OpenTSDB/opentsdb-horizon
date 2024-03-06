@@ -37,8 +37,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 import {
-    FormBuilder,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormGroup,
     FormControl,
     FormGroupDirective,
 } from '@angular/forms';
@@ -108,7 +108,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     /** Form  */
-    snoozeForm: FormGroup;
+    snoozeForm: UntypedFormGroup;
     dateType = 'preset';
     timePreset = '1hr';
 
@@ -132,7 +132,7 @@ export class SnoozeDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
     constructor(
         private elRef: ElementRef,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private utils: UtilsService,
         private interCom: IntercomService,
         private metaService: MetaService,

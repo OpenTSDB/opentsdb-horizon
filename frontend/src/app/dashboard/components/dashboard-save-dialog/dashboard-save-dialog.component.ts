@@ -29,9 +29,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
     Validators,
 } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
@@ -85,15 +85,15 @@ implements OnInit, OnDestroy, AfterViewInit {
 
     /** Form Variables */
 
-    saveForm: FormGroup = new FormGroup({
-        title: new FormControl('', [
+    saveForm: UntypedFormGroup = new UntypedFormGroup({
+        title: new UntypedFormControl('', [
             Validators.required,
             Validators.minLength(3),
             Validators.maxLength(50),
         ]),
         // namespace: new FormControl(''), // NOTE: may not need anymore
         // isPersonal: new FormControl(false), // NOTE: may not need anymore
-        dbSaveLocation: new FormControl(''),
+        dbSaveLocation: new UntypedFormControl(''),
     });
 
     // listenSub: Subscription;
@@ -111,7 +111,7 @@ implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(
         private store: Store,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         public dialogRef: MatDialogRef<DashboardSaveDialogComponent>,
         private utils: UtilsService,
         @Inject(MAT_DIALOG_DATA) public dbData: any,
@@ -193,7 +193,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     // of either the personal folder or namespace folder
     duplicateDashboard() {
         // const self = this;
-        return (group: FormGroup): { [key: string]: any } => {
+        return (group: UntypedFormGroup): { [key: string]: any } => {
             const dbName = group['controls']['title']
                 ? (<string>group['controls']['title'].value)
                     .toLowerCase()
