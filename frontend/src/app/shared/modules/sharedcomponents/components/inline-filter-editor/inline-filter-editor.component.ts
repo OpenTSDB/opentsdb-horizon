@@ -28,7 +28,7 @@ import {
     ChangeDetectorRef,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { startWith, debounceTime, catchError } from 'rxjs/operators';
@@ -91,10 +91,10 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     selectedTag = '';
     selectedTagIndex = -1;
     loadFirstTagValues = false;
-    tagValueTypeControl = new FormControl('literalor');
-    searchControl: FormControl;
-    tagSearchControl: FormControl;
-    tagValueSearchControl: FormControl;
+    tagValueTypeControl = new UntypedFormControl('literalor');
+    searchControl: UntypedFormControl;
+    tagSearchControl: UntypedFormControl;
+    tagValueSearchControl: UntypedFormControl;
     message: any = {
         searchControl: { message: '' },
         tagControl: { message: '' },
@@ -154,7 +154,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     initFormControls() {
-        this.tagSearchControl = new FormControl('');
+        this.tagSearchControl = new UntypedFormControl('');
         this.tagSearchControl.valueChanges
             .pipe(debounceTime(100))
             .subscribe((search) => {
@@ -279,7 +279,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     setSearch() {
-        this.searchControl = new FormControl('');
+        this.searchControl = new UntypedFormControl('');
         this.searchControl.valueChanges
             .pipe(
                 // startWith(''),
@@ -371,7 +371,7 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     setTagValueSearch() {
-        this.tagValueSearchControl = new FormControl('');
+        this.tagValueSearchControl = new UntypedFormControl('');
 
         // need to include switchMap to cancel the previous call
         this.tagValueSearchControl.valueChanges

@@ -26,7 +26,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -59,12 +59,12 @@ implements OnInit, OnChanges {
 
     dataSources = [];
 
-    gForms = new FormGroup({});
+    gForms = new UntypedFormGroup({});
 
-    displayControl: FormControl;
-    stackOrderControl: FormControl;
-    layoutControl: FormControl;
-    decimalControl: FormControl;
+    displayControl: UntypedFormControl;
+    stackOrderControl: UntypedFormControl;
+    layoutControl: UntypedFormControl;
+    decimalControl: UntypedFormControl;
 
     gSubscriptions: Subscription;
     formInitialized = false;
@@ -99,7 +99,7 @@ implements OnInit, OnChanges {
         },
     ];
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
         // do nothing
@@ -129,19 +129,19 @@ implements OnInit, OnChanges {
         if (this.widget.settings.component_type === 'TableWidgetComponent') {
             if (!this.formInitialized) {
                 this.gForms = this.fb.group({
-                    layout: new FormControl(
+                    layout: new UntypedFormControl(
                         this.widget.settings.visual.layout || 'time:metrics',
                     ),
-                    fontSize: new FormControl(
+                    fontSize: new UntypedFormControl(
                         this.widget.settings.visual.fontSize || 12,
                     ),
-                    padding: new FormControl(
+                    padding: new UntypedFormControl(
                         this.widget.settings.visual.padding || 5,
                     ),
-                    decimals: new FormControl(
+                    decimals: new UntypedFormControl(
                         this.widget.settings.visual.decimals || 'auto',
                     ),
-                    colWidth: new FormControl(
+                    colWidth: new UntypedFormControl(
                         this.widget.settings.visual.colWidth || 'auto',
                     ),
                 });
@@ -164,12 +164,12 @@ implements OnInit, OnChanges {
                 this.widget.settings.component_type === 'DonutWidgetComponent'
                     ? 'doughnut'
                     : 'vertical';
-            this.displayControl = new FormControl(
+            this.displayControl = new UntypedFormControl(
                 this.widget.settings.visual.type || displayControlDefault,
             );
         } else {
             if (!this.stackOrderControl) {
-                this.stackOrderControl = new FormControl(
+                this.stackOrderControl = new UntypedFormControl(
                     this.widget.settings.visual.stackOrder || 'metric',
                 );
             }

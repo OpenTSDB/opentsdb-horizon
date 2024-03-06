@@ -13,7 +13,7 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
@@ -39,7 +39,7 @@ implements OnInit, OnChanges, AfterViewInit {
     @ViewChild(MatFormField, { read: ElementRef })
     private formFieldEl: ElementRef;
 
-    @Input() host: FormControl;
+    @Input() host: UntypedFormControl;
     @Input() index: number;
 
     @Output() metricHostUpdate: EventEmitter<any> = new EventEmitter();

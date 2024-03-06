@@ -27,10 +27,10 @@ import {
 } from '@angular/core';
 
 import {
-    FormBuilder,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormGroup,
     Validators,
-    FormControl,
+    UntypedFormControl,
 } from '@angular/forms';
 import { TimeRangePickerOptions } from '../../../../modules/date-time-picker/models/models';
 
@@ -81,7 +81,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     /** Local Variables */
 
     /** Form Group */
-    widgetConfigTime: FormGroup;
+    widgetConfigTime: UntypedFormGroup;
 
     // subscriptions
     selectedDownsample_Sub: Subscription; // check formcontrol value change to see if it is 'custom'
@@ -287,7 +287,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     canOverrideTime = true;
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private appConfig: AppConfigService,
     ) {}
 
@@ -434,35 +434,35 @@ implements OnInit, OnDestroy, AfterViewInit {
         reportingInterval = reportingInterval.match(/^([0-9]+)(s|m|h)$/);
 
         this.widgetConfigTime = this.fb.group({
-            aggregators: new FormControl(this.selectedAggregators),
-            multiple: new FormControl({
+            aggregators: new UntypedFormControl(this.selectedAggregators),
+            multiple: new UntypedFormControl({
                 value:
                     this.widget.settings.time.downsample.multiple ||
                     this.multipleAggregators,
             }),
-            minInterval: new FormControl(
+            minInterval: new UntypedFormControl(
                 minInterval ? minInterval[1] : this.minInterval,
             ),
-            minIntervalUnit: new FormControl(
+            minIntervalUnit: new UntypedFormControl(
                 minInterval ? minInterval[2] : 's',
             ),
-            reportingInterval: new FormControl(
+            reportingInterval: new UntypedFormControl(
                 reportingInterval
                     ? reportingInterval[1]
                     : this.reportingInterval,
             ),
-            reportingIntervalUnit: new FormControl(
+            reportingIntervalUnit: new UntypedFormControl(
                 reportingInterval ? reportingInterval[2] : 's',
             ),
-            overrideRelativeTime: new FormControl(
+            overrideRelativeTime: new UntypedFormControl(
                 this.widget.settings.time.overrideRelativeTime,
             ),
-            shiftTime: new FormControl(this.widget.settings.time.shiftTime),
-            downsample: new FormControl(
+            shiftTime: new UntypedFormControl(this.widget.settings.time.shiftTime),
+            downsample: new UntypedFormControl(
                 this.widget.settings.time.downsample.value ||
                     this.selectedDownsample,
             ),
-            customDownsampleValue: new FormControl(
+            customDownsampleValue: new UntypedFormControl(
                 {
                     value:
                         this.widget.settings.time.downsample.customValue ||
@@ -479,7 +479,7 @@ implements OnInit, OnDestroy, AfterViewInit {
                 start: this.startTime,
                 end: this.endTime,
             },
-            customDownsampleUnit: new FormControl({
+            customDownsampleUnit: new UntypedFormControl({
                 value: customUnit,
                 disabled: isCustomDownsample ? false : true,
             }),

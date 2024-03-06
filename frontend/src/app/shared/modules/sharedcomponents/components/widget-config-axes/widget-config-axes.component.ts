@@ -27,7 +27,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -66,7 +66,7 @@ implements OnChanges, OnDestroy, AfterViewInit {
     y1AxisEnabledToggleDisplay = true;
 
     /** Form Group */
-    widgetConfigAxes: FormGroup;
+    widgetConfigAxes: UntypedFormGroup;
 
     // subscriptions
     widgetConfigAxes_Sub: Subscription;
@@ -125,7 +125,7 @@ implements OnChanges, OnDestroy, AfterViewInit {
     ];
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private unit: UnitConverterService,
     ) {}
 
@@ -258,13 +258,13 @@ implements OnChanges, OnDestroy, AfterViewInit {
 
     getAxisFormGroup(axis) {
         return this.fb.group({
-            enabled: new FormControl(axis.enabled),
-            unit: new FormControl(axis.unit),
-            scale: new FormControl(axis.scale),
-            min: new FormControl(axis.min),
-            max: new FormControl(axis.max),
-            decimals: new FormControl(axis.decimals),
-            label: new FormControl(axis.label),
+            enabled: new UntypedFormControl(axis.enabled),
+            unit: new UntypedFormControl(axis.unit),
+            scale: new UntypedFormControl(axis.scale),
+            min: new UntypedFormControl(axis.min),
+            max: new UntypedFormControl(axis.max),
+            decimals: new UntypedFormControl(axis.decimals),
+            label: new UntypedFormControl(axis.label),
         });
     }
 

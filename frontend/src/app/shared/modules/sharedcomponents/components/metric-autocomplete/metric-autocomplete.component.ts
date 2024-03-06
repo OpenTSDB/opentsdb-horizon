@@ -31,7 +31,7 @@ import {
 } from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { startWith, debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -63,7 +63,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
     metricOptions = [];
-    metricSearchControl: FormControl;
+    metricSearchControl: UntypedFormControl;
     message: any = { metricSearchControl: { message: '' } };
     Object = Object;
 
@@ -153,7 +153,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     /** METHODS */
 
     setMetricSearch() {
-        this.metricSearchControl = new FormControl(
+        this.metricSearchControl = new UntypedFormControl(
             this.multiple ? '' : this.metrics[0],
         );
         this.metricSearchControl.valueChanges

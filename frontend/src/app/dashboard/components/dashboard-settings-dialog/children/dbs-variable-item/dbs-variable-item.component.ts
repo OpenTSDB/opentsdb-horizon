@@ -29,7 +29,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, UntypedFormArray } from '@angular/forms';
 import {
     MatAutocompleteSelectedEvent,
     MatAutocomplete,
@@ -57,7 +57,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     @HostBinding('class.template-variable-item') private _hostClass = true;
     @HostBinding('class.is-disabled') private _itemDisabled = false;
 
-    @Input() formGroup: FormGroup;
+    @Input() formGroup: UntypedFormGroup;
     @Input() formGroupName: number;
     @Input() dbTagKeys: string[] = []; // all available tags from dashboard
     @Input() selectedKeys: string[] = []; // keys that have already been added. Comes from parent
@@ -80,7 +80,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     /** form variables */
     separatorKeysCodes: number[] = [ENTER, COMMA];
 
-    allowedValuesInput: FormControl = new FormControl(); // form control for adding allowed value item
+    allowedValuesInput: UntypedFormControl = new UntypedFormControl(); // form control for adding allowed value item
 
     @ViewChild('filterValueInput', {
         read: MatAutocompleteTrigger,
@@ -93,7 +93,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     valueAutocomplete: MatAutocomplete; // autocomplete component for allowed values
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private interCom: IntercomService,
     ) {}
 
@@ -201,7 +201,7 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
 
     // remove a filter value option
     removeValue(i: number) {
-        const control = <FormArray>this.allowedValues;
+        const control = <UntypedFormArray>this.allowedValues;
         control.removeAt(i);
     }
 
@@ -254,8 +254,8 @@ export class DbsVariableItemComponent implements OnInit, OnDestroy {
     /** private functions */
 
     private createAllowedValue(val: string) {
-        const control = <FormArray>this.allowedValues;
-        control.push(new FormControl(val));
+        const control = <UntypedFormArray>this.allowedValues;
+        control.push(new UntypedFormControl(val));
     }
 
     private filterTagKeyOptions(val: string) {

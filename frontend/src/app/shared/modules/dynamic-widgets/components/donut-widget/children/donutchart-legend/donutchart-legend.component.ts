@@ -24,7 +24,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -45,7 +45,7 @@ export class DonutchartLegendComponent implements OnInit {
     /** Outputs */
     @Output() widgetChange = new EventEmitter();
 
-    gForm: FormGroup;
+    gForm: UntypedFormGroup;
 
     subs: Subscription;
 
@@ -93,20 +93,20 @@ export class DonutchartLegendComponent implements OnInit {
         },
     ];
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
-        this.gForm = new FormGroup({
-            display: new FormControl(
+        this.gForm = new UntypedFormGroup({
+            display: new UntypedFormControl(
                 this.widget.settings.legend.display || false,
             ),
-            position: new FormControl(
+            position: new UntypedFormControl(
                 this.widget.settings.legend.position || 'right',
             ),
-            showPercentages: new FormControl(
+            showPercentages: new UntypedFormControl(
                 this.widget.settings.legend.showPercentages || false,
             ),
-            showValue: new FormControl(
+            showValue: new UntypedFormControl(
                 this.widget.settings.legend.showValue || false,
             ),
         });

@@ -50,7 +50,7 @@ import {
     SetHideProgress,
     UniversalClipboardState,
 } from '../../state/clipboard.state';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
 import { MatMenuTrigger } from '@angular/material/menu';
 import {
@@ -215,7 +215,7 @@ export class ClipboardDrawerComponent implements OnInit, OnDestroy {
     widgetTypesMap: any = {};
 
     creatingNewClipboard = false;
-    FC_clipboardName: FormControl = new FormControl('', [Validators.required]);
+    FC_clipboardName: UntypedFormControl = new UntypedFormControl('', [Validators.required]);
 
     expandAll = false;
 

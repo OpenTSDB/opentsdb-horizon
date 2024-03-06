@@ -24,7 +24,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -38,7 +38,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class NameAlertDialogComponent implements OnInit {
     @HostBinding('class.name-alert-dialog-component') private _hostClass = true;
 
-    alertName = new FormControl('', Validators.required);
+    alertName = new UntypedFormControl('', Validators.required);
 
     constructor(public dialogRef: MatDialogRef<NameAlertDialogComponent>) {
         dialogRef.disableClose = true;

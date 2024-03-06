@@ -34,7 +34,7 @@ import { MatInput } from '@angular/material/input';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Mode, RecipientType, Recipient } from './models';
-import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 // eslint-disable-next-line max-len
 import {
@@ -102,19 +102,19 @@ implements OnInit, OnChanges, OnDestroy {
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
     // form control
-    opsGenieName = new FormControl('');
-    opsGenieApiKey = new FormControl('');
-    slackName = new FormControl('');
-    slackWebhook = new FormControl('');
-    ocName = new FormControl('');
-    ocDisplayCount = new FormControl('');
-    ocContext = new FormControl('');
-    ocProperty = new FormControl('');
-    httpName = new FormControl('');
-    httpEndpoint = new FormControl('');
-    emailAddress = new FormControl('');
-    pagerDutyName = new FormControl('');
-    pagerDutyRoutingKey = new FormControl('');
+    opsGenieName = new UntypedFormControl('');
+    opsGenieApiKey = new UntypedFormControl('');
+    slackName = new UntypedFormControl('');
+    slackWebhook = new UntypedFormControl('');
+    ocName = new UntypedFormControl('');
+    ocDisplayCount = new UntypedFormControl('');
+    ocContext = new UntypedFormControl('');
+    ocProperty = new UntypedFormControl('');
+    httpName = new UntypedFormControl('');
+    httpEndpoint = new UntypedFormControl('');
+    emailAddress = new UntypedFormControl('');
+    pagerDutyName = new UntypedFormControl('');
+    pagerDutyRoutingKey = new UntypedFormControl('');
 
     // state control
     private nsRecipientSub: Subscription;
@@ -820,49 +820,49 @@ implements OnInit, OnChanges, OnDestroy {
 
     updateValidators() {
         /* eslint-disable max-len */
-        this.opsGenieName = new FormControl('', [
+        this.opsGenieName = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.opsgenie),
                 this.recipientsFormData[this.recipientType],
             ),
         ]);
-        this.opsGenieApiKey = new FormControl('', [
+        this.opsGenieApiKey = new UntypedFormControl('', [
             this.opsGenieApiKeyValidator(),
         ]);
-        this.httpEndpoint = new FormControl('', [this.urlValidator()]);
-        this.slackName = new FormControl('', [
+        this.httpEndpoint = new UntypedFormControl('', [this.urlValidator()]);
+        this.slackName = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.slack),
                 this.recipientsFormData[this.recipientType],
             ),
         ]);
-        this.slackWebhook = new FormControl('', [this.slackWebookValidator()]);
-        this.ocName = new FormControl('', [
+        this.slackWebhook = new UntypedFormControl('', [this.slackWebookValidator()]);
+        this.ocName = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.oc),
                 this.recipientsFormData[this.recipientType],
             ),
         ]);
-        this.httpName = new FormControl('', [
+        this.httpName = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.http),
                 this.recipientsFormData[this.recipientType],
             ),
         ]);
-        this.emailAddress = new FormControl('', [
+        this.emailAddress = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.email),
                 this.recipientsFormData[this.recipientType],
             ),
             this.emailValidator(),
         ]);
-        this.pagerDutyName = new FormControl('', [
+        this.pagerDutyName = new UntypedFormControl('', [
             this.forbiddenNameValidator(
                 this.getAllRecipientsForType(RecipientType.pagerduty),
                 this.recipientsFormData[this.recipientType],
             ),
         ]);
-        this.pagerDutyRoutingKey = new FormControl('', [
+        this.pagerDutyRoutingKey = new UntypedFormControl('', [
             this.pagerDutyRoutingKeyValidator(),
         ]);
     }

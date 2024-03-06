@@ -25,9 +25,9 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormControl,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
     Validators,
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -50,17 +50,17 @@ export class WidgetConfigGeneralComponent implements OnInit, OnDestroy {
     @Output() widgetChange = new EventEmitter();
 
     /** Local variables */
-    formGroups: FormGroup;
+    formGroups: UntypedFormGroup;
     formGroupSub: Subscription;
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
         this.formGroups = this.fb.group({
-            title: new FormControl(this.widget.settings.title, [
+            title: new UntypedFormControl(this.widget.settings.title, [
                 Validators.required,
             ]),
-            description: new FormControl(this.widget.settings.description),
+            description: new UntypedFormControl(this.widget.settings.description),
         });
 
         this.formGroupSub = this.formGroups.valueChanges.subscribe((data) => {

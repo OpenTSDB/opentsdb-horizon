@@ -24,10 +24,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
-    FormArray,
-    FormControl,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormArray,
+    UntypedFormControl,
     Validators,
     FormsModule,
     NgForm,
@@ -57,14 +57,14 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
     // FORM STUFF
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-    adminConfigForm: FormGroup;
+    adminConfigForm: UntypedFormGroup;
 
     private configValues: any;
 
     private subscription: Subscription = new Subscription();
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private appConfig: AppConfigService,
         private cdr: ChangeDetectorRef,
     ) {
@@ -77,7 +77,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     private setupForm() {
-        this.adminConfigForm = <FormGroup>this.fb.group({});
+        this.adminConfigForm = <UntypedFormGroup>this.fb.group({});
 
         const application = this.fb.group({
             name: this.configValues.name || 'OpenTSDB',
@@ -100,18 +100,18 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         const endpoints = this.fb.group({
             tsdb_host: this.configValues.tsdb_host || '',
-            tsdb_hosts: new FormArray([]),
+            tsdb_hosts: new UntypedFormArray([]),
             webUI: this.configValues.webUI || '',
             configdb: this.configValues.configdb || '',
             metaApi: this.configValues.metaApi || '',
             auraUI: this.configValues.auraUI || '',
         });
 
-        const thostsControl = <FormArray>endpoints.get('tsdb_hosts');
+        const thostsControl = <UntypedFormArray>endpoints.get('tsdb_hosts');
         const thosts = this.configValues.tsdb_hosts || [];
 
         for (let i = 0; i < thosts.length; i++) {
-            thostsControl.push(new FormControl(thosts[i]));
+            thostsControl.push(new UntypedFormControl(thosts[i]));
         }
 
         this.adminConfigForm.addControl('endpoints', endpoints);
@@ -125,7 +125,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         recipients = ['http', 'email'].concat(recipients);
 
-        const recipientControl = <FormGroup>alert.get('recipient');
+        const recipientControl = <UntypedFormGroup>alert.get('recipient');
 
         for (let i = 0; i < recipients.length; i++) {
             const rKey = recipients[i];
@@ -138,7 +138,7 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
         this.adminConfigForm.addControl('alert', alert);
 
-        const helpLinks = new FormArray([]);
+        const helpLinks = new UntypedFormArray([]);
 
         const configHelpLinks = this.configValues.helpLinks;
 
@@ -189,23 +189,23 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
     }
 
     // quick form accessors
-    get uiBranding(): FormGroup {
-        return <FormGroup>this.adminConfigForm.get('uiBranding');
+    get uiBranding(): UntypedFormGroup {
+        return <UntypedFormGroup>this.adminConfigForm.get('uiBranding');
     }
-    get auth(): FormGroup {
-        return <FormGroup>this.adminConfigForm.get('auth');
+    get auth(): UntypedFormGroup {
+        return <UntypedFormGroup>this.adminConfigForm.get('auth');
     }
-    get alert(): FormGroup {
-        return <FormGroup>this.adminConfigForm.get('alert');
+    get alert(): UntypedFormGroup {
+        return <UntypedFormGroup>this.adminConfigForm.get('alert');
     }
-    get endpoints(): FormGroup {
-        return <FormGroup>this.adminConfigForm.get('endpoints');
+    get endpoints(): UntypedFormGroup {
+        return <UntypedFormGroup>this.adminConfigForm.get('endpoints');
     }
-    get helpLinks(): FormArray {
-        return <FormArray>this.adminConfigForm.get('helpLinks');
+    get helpLinks(): UntypedFormArray {
+        return <UntypedFormArray>this.adminConfigForm.get('helpLinks');
     }
-    get modules(): FormGroup {
-        return <FormGroup>this.adminConfigForm.get('modules');
+    get modules(): UntypedFormGroup {
+        return <UntypedFormGroup>this.adminConfigForm.get('modules');
     }
 
     // MODULE HELPERS
@@ -217,18 +217,18 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
     getModuleSections(moduleKey: string) {
         const modules = this.modules;
-        const module = <FormGroup>modules.get(moduleKey);
+        const module = <UntypedFormGroup>modules.get(moduleKey);
         const sections = Object.keys(module.controls);
     }
 
     // TSDB METRIC HOSTS
     addTsdbMetricHost(hostData: any) {
-        const control = <FormArray>this.endpoints.get('tsdb_hosts');
-        control.push(new FormControl(hostData));
+        const control = <UntypedFormArray>this.endpoints.get('tsdb_hosts');
+        control.push(new UntypedFormControl(hostData));
     }
 
     removeTsdbMetricHost(hostIndex: number) {
-        const control = <FormArray>this.endpoints.get('tsdb_hosts');
+        const control = <UntypedFormArray>this.endpoints.get('tsdb_hosts');
         control.removeAt(hostIndex);
     }
 
@@ -244,37 +244,37 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
 
     // HELP LINKS
     addHelpLink(linkData: any) {
-        const control = <FormArray>this.helpLinks;
-        control.push(new FormControl(linkData));
+        const control = <UntypedFormArray>this.helpLinks;
+        control.push(new UntypedFormControl(linkData));
     }
 
     removeHelpLink(linkIndex: number) {
-        const control = <FormArray>this.helpLinks;
+        const control = <UntypedFormArray>this.helpLinks;
         control.removeAt(linkIndex);
     }
 
     editHelpLink(linkIndex: number) {
-        const control = <FormArray>this.helpLinks;
-        const formGroup = <FormGroup>control.controls[linkIndex];
+        const control = <UntypedFormArray>this.helpLinks;
+        const formGroup = <UntypedFormGroup>control.controls[linkIndex];
         console.log('EDIT HELP LINK', linkIndex, formGroup.getRawValue());
     }
 
     // ALERT RECIPIENT TYPES
     addAlertRecipient(recipientData: any) {
-        const control = <FormGroup>this.alert.get('recipient');
+        const control = <UntypedFormGroup>this.alert.get('recipient');
         control.addControl(
             recipientData.label.toLowerCase(),
-            new FormControl(recipientData),
+            new UntypedFormControl(recipientData),
         );
     }
 
     removeAlertRecipient(recipientLabel: any) {
-        const control = <FormGroup>this.alert.get('recipient');
+        const control = <UntypedFormGroup>this.alert.get('recipient');
         control.removeControl(recipientLabel);
     }
 
     get alertRecipientKeys(): any[] {
-        const recipientControl: FormGroup = <FormGroup>(
+        const recipientControl: UntypedFormGroup = <UntypedFormGroup>(
             this.alert.get('recipient')
         );
         const keys = Object.keys(recipientControl['controls']);
@@ -295,11 +295,11 @@ export class AdminConfigComponent implements OnInit, OnDestroy {
         return recipientKeys.concat(keys);
     }
 
-    getAlertRecipientGroup(key: string): FormGroup {
-        const recipientControl: FormGroup = <FormGroup>(
+    getAlertRecipientGroup(key: string): UntypedFormGroup {
+        const recipientControl: UntypedFormGroup = <UntypedFormGroup>(
             this.alert.get('recipient')
         );
-        const recipientGroup = <FormGroup>recipientControl['controls'][key];
+        const recipientGroup = <UntypedFormGroup>recipientControl['controls'][key];
         return recipientGroup;
     }
 

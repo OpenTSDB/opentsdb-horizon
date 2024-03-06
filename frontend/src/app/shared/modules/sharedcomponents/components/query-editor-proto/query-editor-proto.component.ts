@@ -34,7 +34,7 @@ import {
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -134,9 +134,9 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     editExpressionId = -1;
     editMetricId = -1;
     editAliasId = -1;
-    fg: FormGroup;
-    expressionControl: FormControl;
-    expressionControls: FormGroup;
+    fg: UntypedFormGroup;
+    expressionControl: UntypedFormControl;
+    expressionControls: UntypedFormGroup;
     idRegex = /(q[0-9]+\.)*(m|e)[0-9]+/gi;
     handleBarsRegex = /\{\{(.+?)\}\}/;
     tagFilters = [];
@@ -936,12 +936,12 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
 
     // QUERY ALIAS EDITING
     queryAliasEdit = false;
-    queryAliasFormControl: FormControl;
+    queryAliasFormControl: UntypedFormControl;
 
     constructor(
         private elRef: ElementRef,
         private utils: UtilsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private dialog: MatDialog,
         private interCom: IntercomService,
         private multiService: MultigraphService,
@@ -1055,17 +1055,17 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     initFormControls() {
-        this.fg = new FormGroup({});
+        this.fg = new UntypedFormGroup({});
         const expressions = this.getMetricsByType('expression');
         for (let i = 0; i < expressions.length; i++) {
             this.fg.addControl(
                 expressions[i].id,
-                new FormControl(
+                new UntypedFormControl(
                     this.getExpressionUserInput(expressions[i].expression),
                 ),
             );
         }
-        this.fg.addControl('-1', new FormControl(''));
+        this.fg.addControl('-1', new UntypedFormControl(''));
     }
 
     initSummarizerValue() {
@@ -1441,7 +1441,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             if (index === -1) {
                 this.query.metrics.push(expConfig);
                 this.isAddExpressionProgress = false;
-                this.fg.addControl(expConfig.id, new FormControl(expression));
+                this.fg.addControl(expConfig.id, new UntypedFormControl(expression));
                 index = this.query.metrics.length - 1;
             } else {
                 expConfig.id = id;
@@ -1773,7 +1773,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
             this.utils.getIDs(this.utils.getAllMetrics(this.queries)),
         );
         if (nMetric.expression) {
-            this.fg.addControl(nMetric.id, new FormControl(nMetric.expression));
+            this.fg.addControl(nMetric.id, new UntypedFormControl(nMetric.expression));
         }
 
         if (
@@ -1898,7 +1898,7 @@ export class QueryEditorProtoComponent implements OnInit, OnChanges, OnDestroy {
     // QUERY ALIAS EDITING
     toggleQueryAliasEditForm() {
         if (!this.queryAliasEdit) {
-            this.queryAliasFormControl = new FormControl(
+            this.queryAliasFormControl = new UntypedFormControl(
                 this.query.settings.visual.label,
             );
             this.queryAliasEdit = true;

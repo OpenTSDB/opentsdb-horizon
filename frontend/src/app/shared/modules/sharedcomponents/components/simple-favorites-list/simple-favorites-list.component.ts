@@ -28,7 +28,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -50,7 +50,7 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
     >;
     userFavorites: any[] = [];
     userFavoritesDataSource = new MatTableDataSource([]);
-    userFavoritesFilter: FormControl = new FormControl('');
+    userFavoritesFilter: UntypedFormControl = new UntypedFormControl('');
 
     constructor(
         private store: Store,

@@ -25,7 +25,7 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { debounceTime } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -46,7 +46,7 @@ export class WidgetConfigEventsComponent implements OnInit {
     /** Outputs */
     @Output() widgetChange = new EventEmitter();
 
-    seachControl: FormControl = new FormControl('');
+    seachControl: UntypedFormControl = new UntypedFormControl('');
 
     ngOnInit() {
         if (this.allowEventToggling === undefined) {
@@ -69,7 +69,7 @@ export class WidgetConfigEventsComponent implements OnInit {
             this.widget.settings.visual.showEvents = false;
         }
 
-        this.seachControl = new FormControl(this.widget.eventQueries[0].search);
+        this.seachControl = new UntypedFormControl(this.widget.eventQueries[0].search);
         this.seachControl.valueChanges
             .pipe(debounceTime(300))
             .subscribe((search) => {

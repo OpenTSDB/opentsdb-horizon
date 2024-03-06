@@ -30,11 +30,11 @@ import {
 } from '@angular/core';
 
 import {
-    FormBuilder,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormGroup,
     Validators,
-    FormControl,
-    FormArray,
+    UntypedFormControl,
+    UntypedFormArray,
 } from '@angular/forms';
 import { Subscription, Subject } from 'rxjs';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -76,10 +76,10 @@ implements OnInit, OnChanges, OnDestroy {
     isWidgetTagsLoaded = false;
     isWidgetTagsLoaded$ = new Subject();
     needRequery = false;
-    tagKeyControlInput = new FormControl('');
+    tagKeyControlInput = new UntypedFormControl('');
 
     /** Form Group */
-    widgetConfigMultigraph: FormGroup = new FormGroup({});
+    widgetConfigMultigraph: UntypedFormGroup = new UntypedFormGroup({});
     // form control options
     layoutPresetOptions: Array<any> = [
         {
@@ -134,7 +134,7 @@ implements OnInit, OnChanges, OnDestroy {
     multigraphSubs: any = false;
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private httpService: HttpService,
         private utilService: UtilsService,
         private multiService: MultigraphService,
@@ -217,13 +217,13 @@ implements OnInit, OnChanges, OnDestroy {
         // setup the group
         this.widgetConfigMultigraph = this.fb.group({
             chart: this.fb.array([]),
-            layout: new FormControl('', [Validators.required]),
-            enabled: new FormControl('', [Validators.required]),
+            layout: new UntypedFormControl('', [Validators.required]),
+            enabled: new UntypedFormControl('', [Validators.required]),
             gridOptions: this.fb.group({
-                viewportDisplay: new FormControl('', [Validators.required]),
+                viewportDisplay: new UntypedFormControl('', [Validators.required]),
                 custom: this.fb.group({
-                    x: new FormControl(1, [Validators.required]),
-                    y: new FormControl(1, [Validators.required]),
+                    x: new UntypedFormControl(1, [Validators.required]),
+                    y: new UntypedFormControl(1, [Validators.required]),
                 }),
             }),
         });
@@ -304,12 +304,12 @@ implements OnInit, OnChanges, OnDestroy {
     addChartItem(data: any) {
         // this.needRequery = true;
         const chartItem = this.fb.group(data);
-        const control = <FormArray>this.FC_chart;
+        const control = <UntypedFormArray>this.FC_chart;
         control.push(chartItem);
     }
 
     addTagKeyChartItem(key: string) {
-        const control = <FormArray>this.FC_chart;
+        const control = <UntypedFormArray>this.FC_chart;
         const chartItem = {
             key,
             displayAs: 'g',
@@ -335,7 +335,7 @@ implements OnInit, OnChanges, OnDestroy {
     setChartDataOrder() {
         const controls = this.FC_chart['controls'];
         for (let i; i < controls.length; i++) {
-            const formGroup = <FormGroup>controls[i];
+            const formGroup = <UntypedFormGroup>controls[i];
             formGroup.get('order').setValue(i);
         }
         this.FC_chart.updateValueAndValidity({
@@ -365,7 +365,7 @@ implements OnInit, OnChanges, OnDestroy {
 
     removeMultigraphTag(index: number) {
         this.needRequery = true;
-        const control = <FormArray>this.FC_chart;
+        const control = <UntypedFormArray>this.FC_chart;
         control.removeAt(index);
         this.chartTable.renderRows();
     }

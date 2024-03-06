@@ -25,7 +25,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 
 import { Subscription } from 'rxjs';
@@ -48,7 +48,7 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
     @Output() widgetChange = new EventEmitter();
 
     /** Form Group */
-    widgetConfigLegend: FormGroup;
+    widgetConfigLegend: UntypedFormGroup;
 
     // subscriptions
     subscription: Subscription;
@@ -101,7 +101,7 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
         },
     ];
     tags = [];
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
         this.widget.settings.legend.columns =
@@ -120,14 +120,14 @@ export class WidgetConfigLegendComponent implements OnInit, OnDestroy {
 
     createForm() {
         this.widgetConfigLegend = this.fb.group({
-            display: new FormControl(
+            display: new UntypedFormControl(
                 this.widget.settings.legend.display || false,
             ),
-            position: new FormControl(
+            position: new UntypedFormControl(
                 this.widget.settings.legend.position || 'bottom',
             ),
-            columns: new FormControl(this.widget.settings.legend.columns),
-            tags: new FormControl(this.widget.settings.legend.tags || []),
+            columns: new UntypedFormControl(this.widget.settings.legend.columns),
+            tags: new UntypedFormControl(this.widget.settings.legend.tags || []),
         });
 
         this.subscription = this.widgetConfigLegend.valueChanges

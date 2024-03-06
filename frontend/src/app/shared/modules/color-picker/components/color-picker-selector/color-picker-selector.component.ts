@@ -36,9 +36,9 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormControl,
+    UntypedFormGroup,
     Validators
 } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -181,13 +181,13 @@ export class ColorPickerSelectorComponent implements AfterViewInit, OnInit, OnCh
     /**
      * Form of the color in hexa
      */
-    hexForm: FormGroup;
+    hexForm: UntypedFormGroup;
 
     /**
      * Form and keys of the fields in RGB
      */
     rgbKeys = ['R', 'G', 'B'];
-    rgbForm: FormGroup;
+    rgbForm: UntypedFormGroup;
 
     /**
      * Original Color Selcted
@@ -219,7 +219,7 @@ export class ColorPickerSelectorComponent implements AfterViewInit, OnInit, OnCh
     ];
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private render: Renderer2,
         private cs: ColorService,
         @Inject(EMPTY_COLOR) private emptyColor: string
@@ -271,7 +271,7 @@ export class ColorPickerSelectorComponent implements AfterViewInit, OnInit, OnCh
         const rgbValue: number[] = this._getRGB();
         this.rgbKeys.forEach(
             (key, index) =>
-                (rgbGroup[key] = new FormControl(rgbValue[index], {
+                (rgbGroup[key] = new UntypedFormControl(rgbValue[index], {
                     validators: [
                         Validators.min(0),
                         Validators.max(256),

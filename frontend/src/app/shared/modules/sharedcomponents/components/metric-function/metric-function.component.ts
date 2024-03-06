@@ -26,7 +26,7 @@ import {
     AfterViewInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 
 @Component({
@@ -46,7 +46,7 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
     @Input() optionalData: any = {};
     @Output() fxOut = new EventEmitter();
     @Output() fxDel = new EventEmitter();
-    inputVal: FormControl;
+    inputVal: UntypedFormControl;
     isEdit = false;
     groupBy: any = { aggregator: '', tags: [] };
     tagAggregatorIconMap: any = {
@@ -92,7 +92,7 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
             this.groupBy.aggregator = arr[0];
             this.groupBy.tags = arr.slice(1);
         } else {
-            this.inputVal = new FormControl(this.fx.val);
+            this.inputVal = new UntypedFormControl(this.fx.val);
         }
     }
 
@@ -154,7 +154,7 @@ export class MetricFunctionComponent implements OnInit, AfterViewInit {
         };
     }
     updateValidators() {
-        this.inputVal = new FormControl(this.inputVal.value, [
+        this.inputVal = new UntypedFormControl(this.inputVal.value, [
             this.forbiddenNameValidator(),
         ]);
     }

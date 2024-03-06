@@ -30,10 +30,10 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import {
-    FormBuilder,
+    UntypedFormBuilder,
     ValidatorFn,
     AbstractControl,
-    FormControl,
+    UntypedFormControl,
 } from '@angular/forms';
 import { HostBinding } from '@angular/core';
 
@@ -98,7 +98,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
     calendarTitleFormat: string = 'MMMM YYYY';
     dateFormat = 'YYYY-MM-DD';
     displayDayCalendar: boolean = true;
-    dateCntrl: FormControl;
+    dateCntrl: UntypedFormControl;
     submitted = false;
     shouldUpdateTimestamp: boolean = true;
     calendarButtonEntered = false;
@@ -107,7 +107,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     constructor(
         private utilsService: DateUtilsService,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
     ) {
         this.dayNames = [];
         this.monthNames = [];
@@ -143,7 +143,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
                 .timeToMoment(this.tempUnixTimestamp.toString(), this.timezone)
                 .year()
                 .toString();
-            this.dateCntrl = new FormControl(this.date, [
+            this.dateCntrl = new UntypedFormControl(this.date, [
                 this.formatValidator(),
                 this.maxDateValidator(),
                 this.minDateValidator(),

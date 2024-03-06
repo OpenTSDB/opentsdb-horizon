@@ -24,7 +24,7 @@ import {
     HostBinding,
     ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 interface JoinTypeOptionData {
@@ -65,7 +65,7 @@ export class DropdownJoinTypeComponent implements OnInit {
         { value: 'CROSS', label: 'cross' },
     ];
 
-    aggregatorControl: FormControl;
+    aggregatorControl: UntypedFormControl;
     defaultJoin = 'NATURAL_OUTER';
     selectedLabel = 'NATURAL';
     selectedIndex = -1;
