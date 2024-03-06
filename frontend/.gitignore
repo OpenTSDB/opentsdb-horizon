@@ -17,6 +17,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+horizon-theme-map-output.scss
 
 # IDE - VSCode
 .vscode
