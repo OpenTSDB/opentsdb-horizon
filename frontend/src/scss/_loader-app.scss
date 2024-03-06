@@ -22,12 +22,14 @@
 // * includes Material base
 // * includes global app styles
 // *
-@charset "utf-8";
+// @charset "utf-8";
 
 // import loader base
 @import './loader-base.scss';
 
 @import './component-theming.scss';
+
+@import './css-variable-support/material-component-themes';
 
 // generate font-face imports
 @each $font-face, $font-config in $app-available-typefaces {
@@ -73,6 +75,7 @@
 // NEW: CSS VARIANTS
 @each $theme-name, $theme-config in $app-themes {
     @include init-mat-theme($theme-name);
+    @include material-component-themes($theme-name);
 }
 
 @include init-component-themes();

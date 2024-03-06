@@ -1,0 +1,40 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+
+    .mat-card {
+        background: mat-get-color-from-palette($background, card);
+        color: mat-get-color-from-palette($foreground, text);
+    }
+
+    .mat-card-subtitle {
+        color: mat-get-color-from-palette($foreground, secondary-text);
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

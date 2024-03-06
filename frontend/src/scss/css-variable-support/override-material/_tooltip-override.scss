@@ -1,0 +1,42 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:math';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+$target-height: 22px;
+$font-size: 10px;
+$vertical-padding: math.div($target-height - $font-size, 2);
+
+$handset-target-height: 30px;
+$handset-font-size: 14px;
+$handset-vertical-padding: math.div($handset-target-height - $handset-font-size, 2);
+
+@mixin color($config) {
+
+    $background: map.get($config, background);
+
+    .mat-tooltip {
+        background: mat-get-color-from-palette($background, tooltip, 0.9);
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+}

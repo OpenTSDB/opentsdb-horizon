@@ -9,9 +9,11 @@
     $defaultCheck: to-lower-case($theme-name);
 
     @if ($theme-name and $defaultCheck != 'default') {
-        //@at-root :root .#{$theme-name}-theme,
+        // @at-root :root .#{$theme-name}-theme,
         @at-root :root [theme="#{$theme-name}"] {
             @each $varName, $varValue in $varMap {
+
+                // @debug '['+$varName+'] vartype: ' + type-of($varValue);
                 @if (type_of($varValue) == string) {
                     #{$varName}: $varValue;
                 } @else {
@@ -45,7 +47,6 @@
             }
         }
     }
-
 }
 
 @mixin init-mat-theme($theme-name) {

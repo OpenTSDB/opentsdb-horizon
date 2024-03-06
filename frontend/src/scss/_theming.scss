@@ -30,6 +30,8 @@ $app-themes: () !global;
 // Custom themes
 @import "themes/horizon-theme.scss";
 
+
+
 @each $theme-name, $config in $theme-configs {
     $variants: generate-theme-variant-configs($config, $theme-name);
     $app-themes: map-merge(
