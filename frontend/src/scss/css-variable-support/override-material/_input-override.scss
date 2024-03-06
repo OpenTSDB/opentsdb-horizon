@@ -1,0 +1,81 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
+    $foreground: map.get($config, foreground);
+
+    .mat-form-field-type-mat-native-select .mat-form-field-infix::after {
+        color: mat-get-color-from-palette($foreground, secondary-text);
+    }
+
+    .mat-input-element:disabled,
+    .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+        color: mat-get-color-from-palette($foreground, disabled-text);
+    }
+
+    .mat-input-element {
+        caret-color: mat-get-color-from-palette($primary, text);
+
+        /* NOTE: may add in if it is necessary
+        @include vendor-prefixes.input-placeholder {
+            color: form-common.private-control-placeholder-color($config);
+        }
+        */
+
+        // On dark themes we set the native `select` color to some shade of white,
+        // however the color propagates to all of the `option` elements, which are
+        // always on a white background inside the dropdown, causing them to blend in.
+        // Since we can't change background of the dropdown, we need to explicitly
+        // reset the color of the options to something dark.
+        @if (map.get($config, is-dark)) {
+            &:not(.mat-native-select-inline) {
+                option {
+                    color: $dark-primary-text;
+                }
+
+                option:disabled {
+                    color: $dark-disabled-text;
+                }
+            }
+        }
+    }
+
+    .mat-form-field.mat-accent .mat-input-element {
+        caret-color: mat-get-color-from-palette($accent, text);
+    }
+
+    .mat-form-field.mat-warn .mat-input-element,
+    .mat-form-field-invalid .mat-input-element {
+        caret-color: mat-get-color-from-palette($warn, text);
+    }
+
+    .mat-form-field-type-mat-native-select.mat-form-field-invalid .mat-form-field-infix::after {
+        color: mat-get-color-from-palette($warn, text);
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+}

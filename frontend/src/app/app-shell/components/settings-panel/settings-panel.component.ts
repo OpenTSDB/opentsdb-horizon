@@ -34,7 +34,7 @@ import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.comp
     encapsulation: ViewEncapsulation.None
 })
 export class SettingsPanelComponent implements OnInit {
-    @HostBinding('class.test-navigator') private _hostClass = true;
+    @HostBinding('class.settings-navigator') private _hostClass = true;
     @HostBinding('class.panelContent') private _panelContentClass = true;
 
     @ViewChild(NavigatorPanelComponent)

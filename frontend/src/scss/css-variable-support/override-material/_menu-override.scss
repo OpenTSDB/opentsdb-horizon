@@ -1,0 +1,62 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+
+    .mat-menu-panel {
+        background: mat-get-color-from-palette($background, 'card');
+    }
+
+    .mat-menu-item {
+        background: transparent;
+        color: mat-get-color-from-palette($foreground, 'text');
+
+        &[disabled] {
+
+            &,
+            .mat-menu-submenu-icon,
+            .mat-icon-no-color {
+                color: mat-get-color-from-palette($foreground, 'disabled');
+            }
+        }
+    }
+
+    .mat-menu-item .mat-icon-no-color,
+    .mat-menu-submenu-icon {
+        color: mat-get-color-from-palette($foreground, 'icon');
+    }
+
+    .mat-menu-item:hover,
+    .mat-menu-item.cdk-program-focused,
+    .mat-menu-item.cdk-keyboard-focused,
+    .mat-menu-item-highlighted {
+        &:not([disabled]) {
+            background: mat-get-color-from-palette($background, 'hover');
+        }
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

@@ -959,6 +959,7 @@ export class DbfsResourcesState {
         ctx: StateContext<DbfsResourcesModel>,
         { resourceAction }: DbfsLoadUsersList,
     ) {
+        // console.log('%cDBFS: loadUsersList','background: white;padding: 6px;');
         return this.service.getUsersList().pipe(
             map((payload: any) => ctx.dispatch(
                 new DbfsLoadUsersListSuccess(payload, resourceAction),
@@ -986,6 +987,10 @@ export class DbfsResourcesState {
         for (let i = 0; i < response.length; i++) {
             const usr = response[i];
             usr.alias = usr.userid.slice(5);
+            // skip user names starting with '.'
+            if (usr.alias[0] === '.') {
+                continue;
+            }
             userList.push(usr.alias);
             if (!users[usr.alias]) {
                 users[usr.alias] = <DbfsUserModel>usr;

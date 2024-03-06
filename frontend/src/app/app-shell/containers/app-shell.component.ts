@@ -52,6 +52,8 @@ import {
     DbfsInitialized,
     DbfsResourcesState,
     DbfsLoadUserRecents,
+    DbfsLoadUsersList,
+    DbfsLoadNamespacesList
 } from '../../shared/modules/dashboard-filesystem/state';
 
 import {
@@ -147,6 +149,9 @@ export class AppShellComponent implements OnInit, OnChanges, OnDestroy {
         if (this.readonly) {
             return;
         }
+        // prefetch users and namespaces
+        this.store.dispatch(new DbfsLoadUsersList({}));
+        this.store.dispatch(new DbfsLoadNamespacesList({}));
         // prefetch the navigator first data
         this.store
             .dispatch(new DbfsLoadResources())

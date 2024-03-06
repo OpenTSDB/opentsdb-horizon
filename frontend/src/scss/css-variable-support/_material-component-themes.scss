@@ -1,0 +1,32 @@
+@use './override-material';
+
+/**
+* NOTE: refactor this to be more efficient for the available theme variants
+*/
+
+@mixin material-component-themes($theme) {
+    @include override-material.ripple-theme($theme);
+    @include override-material.option-theme($theme);
+
+    @include override-material.button-theme($theme);
+    @include override-material.button-toggle-theme($theme);
+    @include override-material.card-theme($theme);
+    @include override-material.checkbox-theme($theme);
+    @include override-material.chips-theme($theme);
+    @include override-material.datepicker-theme($theme);
+    @include override-material.dialog-theme($theme);
+    @include override-material.divider-theme($theme);
+    @include override-material.icon-theme($theme);
+    @include override-material.input-theme($theme);
+    @include override-material.list-theme($theme);
+    @include override-material.menu-theme($theme);
+    @include override-material.paginator-theme($theme);
+    @include override-material.radio-theme($theme);
+    @include override-material.select-theme($theme);
+    @include override-material.slide-toggle-theme($theme);
+    @include override-material.slider-theme($theme);
+    @include override-material.table-theme($theme);
+    @include override-material.tabs-theme($theme);
+    @include override-material.toolbar-theme($theme);
+    @include override-material.tooltip-theme($theme);
+}

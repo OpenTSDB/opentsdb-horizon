@@ -11,8 +11,11 @@
     .app-shell {
         .app-navigator-drawer {
             background-color: mat-get-color-from-palette($background, card);
-            border-top: 1px solid transparent;
+            // border-top: 1px solid transparent;
             color: $drawer-text;
+
+            border-right: 1px solid rgba(var(--palette-foreground-divider),var(--palette-foreground-divider-alpha));
+
             @if ($is-dark) {
                 filter: brighten(1.1);
                 * {
