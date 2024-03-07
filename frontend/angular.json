@@ -23,7 +23,10 @@
                             "hammerjs",
                             "dygraphs",
                             "css-element-queries",
-                            "chart.js"
+                            "chart.js",
+                            "moment",
+                            "fast-deep-equal",
+                            "dom-to-image-more"
                         ],
                         "assets": [
                             "src/assets",
@@ -182,7 +185,7 @@
                         "main": "src/app/horizon/horizon.main.ts",
                         "tsConfig": "src/app/horizon/tsconfig.horizon.json",
                         "polyfills": "src/polyfills.ts",
-                        "allowedCommonJsDependencies": ["dygraphs"],
+                        "allowedCommonJsDependencies": ["dygraphs","moment"],
                         "stylePreprocessorOptions": {
                             "includePaths": [
                                 "./src/app/horizon",

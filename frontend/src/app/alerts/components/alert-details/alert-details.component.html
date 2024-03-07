@@ -1235,7 +1235,7 @@
         </div>
     </mat-card-content>
     <mat-card-actions *ngIf="!readOnly">
-        <button mat-flat-button color="primary" type="submit" (click)="validate()" [disabled]="!( data.type === 'event' || data.type === 'simple' && queries[0].metrics.length > 0 || data.type === 'healthcheck' && queries[0].filters.length > 0 )">Save Alert</button>
+        <button mat-flat-button color="primary" type="button" (click)="validate()" [disabled]="!( data.type === 'event' || data.type === 'simple' && queries[0].metrics.length > 0 || data.type === 'healthcheck' && queries[0].filters.length > 0 )">Save Alert</button>
         <button mat-stroked-button (click)="cancelEdit()" color="primary">Cancel</button>
     </mat-card-actions>
     <mat-card-actions *ngIf="readOnly">

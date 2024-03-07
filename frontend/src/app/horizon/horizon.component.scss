@@ -4,11 +4,11 @@ $type-config: mat.define-typography-config();
 $font-family: mat.font-family($type-config);
 
 .hrzn-chart {
-    @include mat-typography-font-shorthand(12px, 300, 18px, $font-family);
+    @include mat.font-shorthand(12px, 300, 18px, $font-family);
     display: inline-block;
     position: relative;
 }
 
 .data-tooltip {
-    @include mat-typography-font-shorthand(12px, 300, 18px, $font-family);
+    @include mat.font-shorthand(12px, 300, 18px, $font-family);
 }

@@ -36,7 +36,7 @@ import {
     GridsterItemComponent,
     IGridsterOptions,
     IGridsterDraggableOptions,
-} from 'angular2gridster';
+} from '@hyperviewhq/angular2gridster';
 import { WidgetViewDirective } from '../../directives/widgetview.directive';
 import { WidgetComponentModel } from '../../widgets/models/widgetcomponent';
 import { DashboardService } from '../../services/dashboard.service';
