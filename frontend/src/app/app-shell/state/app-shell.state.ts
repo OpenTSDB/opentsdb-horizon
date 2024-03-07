@@ -95,9 +95,11 @@ export class AppShellState {
         private store: Store,
         private mediaObserver: MediaObserver,
     ) {
-        this.mediaWatcher$ = mediaObserver.media$.subscribe(
-            (change: MediaChange) => {
-                const currentMediaQuery = change ? change.mqAlias : '';
+        // Change to how MediaObserver works
+        // see: https://stackoverflow.com/questions/75433318/angular-error-when-using-mediaobserver-in-angular-14
+        this.mediaWatcher$ = mediaObserver.asObservable().subscribe(
+            (change: MediaChange[]) => {
+                const currentMediaQuery = change[0] ? change[0].mqAlias : '';
                 this.store.dispatch(
                     new SetCurrentMediaQuery(currentMediaQuery),
                 );

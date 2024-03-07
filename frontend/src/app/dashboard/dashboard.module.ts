@@ -20,7 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // modules
 import { MaterialModule } from '../shared/modules/material/material.module';
-import { GridsterModule } from 'angular2gridster';
+import { GridsterModule } from '@hyperviewhq/angular2gridster';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/sharedcomponents.module';
 import { DynamicWidgetsModule } from '../shared/modules/dynamic-widgets/dynamic-widgets.module';

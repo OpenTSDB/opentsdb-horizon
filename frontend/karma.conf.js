@@ -25,20 +25,23 @@ module.exports = function (config) {
         frameworks: ["jasmine", "@angular-devkit/build-angular"],
         plugins: [
             require("karma-jasmine"),
-            require("karma-phantomjs-launcher"),
+            // require("karma-phantomjs-launcher"),
+            require("karma-chrome-launcher"),
             require("karma-jasmine-html-reporter"),
             require("karma-junit-reporter"),
-            require("karma-coverage-istanbul-reporter"),
+            // require("karma-coverage-istanbul-reporter"),
+            require("karma-coverage"),
             require("@angular-devkit/build-angular/plugins/karma"),
         ],
         client: {
             clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },
-        coverageIstanbulReporter: {
+        // coverageIstanbulReporter: {
+        coverageReporter: {
             reports: ["html", "lcov", "json-summary", "text-summary"],
             dir: path.join(__dirname, "../artifacts/coverage"),
             skipFilesWithNoCoverage: true,
-            fixWebpackSourcePaths: true,
+            fixWebpackSourcePaths: true
         },
         junitReporter: {
             outputDir: "../artifacts/test/",
@@ -48,12 +51,15 @@ module.exports = function (config) {
         angularCli: {
             environment: "dev",
         },
-        reporters: ["progress", "kjhtml", "coverage-istanbul", "junit"],
+        // reporters: ["progress", "kjhtml", "coverage-istanbul", "junit"],
+        reporters: ["progress", "kjhtml", "coverage", "junit"],
+        maximumSpecCallbackDepth: 100,
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ["PhantomJS"],
+        // browsers: ["PhantomJS"],
+        browsers: ["Chrome"],
         singleRun: false,
     });
 };

@@ -35,10 +35,13 @@ describe('AppComponent', () => {
 
     // just flag to run test again
 
+    beforeEach(async () => {
+        window.onbeforeunload = jasmine.createSpy();
+    });
+
+
     it('should create the app', waitForAsync(() => {
-        // const fixture = TestBed.createComponent(AppComponent);
-        // const app = fixture.debugElement.componentInstance;
-        expect(true);
+        expect(true).toBeTruthy();
     }));
     /*
   it(`should have as title 'app'`, async(() => {

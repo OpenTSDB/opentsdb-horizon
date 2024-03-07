@@ -135,7 +135,7 @@
         </div>
     </div>
     <mat-card-actions>
-        <button mat-flat-button color="primary" type="submit" (click)="validate()" *ngIf="!readOnly">Save
+        <button mat-flat-button color="primary" type="button" (click)="validate()" *ngIf="!readOnly">Save
             Snooze</button>
         <button mat-stroked-button color="primary" (click)="cancelEdit()">{{ readOnly ? 'Close' : 'Cancel' }}</button>
     </mat-card-actions>
