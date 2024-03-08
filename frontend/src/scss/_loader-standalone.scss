@@ -58,8 +58,17 @@
 
 // RENDER MATERIAL CORE (structure)
 // NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
-$typography-config: mat.define-typography-config();
-@include mat.core($typography-config);
+$typography-config: mat.define-legacy-typography-config();
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy($typography-config);`
+@include mat.all-legacy-component-typographies($typography-config);
+@include mat.legacy-core();
 
 // APPLICATION CORE (structure)
 //@include standalone-core();

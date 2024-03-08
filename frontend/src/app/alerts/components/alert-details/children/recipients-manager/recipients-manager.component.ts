@@ -29,9 +29,9 @@ import {
     SimpleChanges,
     ViewEncapsulation,
 } from '@angular/core';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatInput } from '@angular/material/input';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
+import { MatLegacyInput as MatInput } from '@angular/material/legacy-input';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Mode, RecipientType, Recipient } from './models';
 import { UntypedFormControl, ValidatorFn, AbstractControl } from '@angular/forms';

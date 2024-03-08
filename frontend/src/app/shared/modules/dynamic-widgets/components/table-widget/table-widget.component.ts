@@ -40,15 +40,15 @@ import {
     Axis,
 } from '../../../../../dashboard/state/widgets.state';
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-} from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource, MatLegacyTable as MatTable } from '@angular/material/legacy-table';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { AppConfigService } from '../../../../../core/services/config.service';

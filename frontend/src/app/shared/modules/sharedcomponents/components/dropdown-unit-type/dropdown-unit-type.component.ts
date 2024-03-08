@@ -25,7 +25,7 @@ import {
     HostBinding,
     ViewEncapsulation,
 } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 
 // NOTE: This component needs more work. Just don't have time at the moment.
 // NOTE: This feature is used in many places. So need to come back to it.

@@ -31,11 +31,11 @@ import {
 
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, UntypedFormArray } from '@angular/forms';
 import {
-    MatAutocompleteSelectedEvent,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
+    MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
+    MatLegacyAutocomplete as MatAutocomplete,
+    MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
+} from '@angular/material/legacy-autocomplete';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 
 import { Observable } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';

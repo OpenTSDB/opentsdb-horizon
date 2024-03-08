@@ -25,7 +25,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { UntypedFormControl } from '@angular/forms';
 
 @Component({

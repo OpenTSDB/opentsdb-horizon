@@ -33,12 +33,12 @@ import {
 } from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger, MatLegacyMenu as MatMenu } from '@angular/material/legacy-menu';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { IntercomService } from '../../../../../core/services/intercom.service';
 import { MultigraphService } from '../../../../../core/services/multigraph.service';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyDialogRef as MatDialogRef, MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 
 import {
     animate,

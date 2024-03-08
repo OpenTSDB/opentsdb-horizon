@@ -26,7 +26,7 @@ import {
 
 import { UntypedFormControl, Validators } from '@angular/forms';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

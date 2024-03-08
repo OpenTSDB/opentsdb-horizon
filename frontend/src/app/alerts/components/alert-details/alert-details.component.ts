@@ -41,13 +41,13 @@ import {
 } from '@angular/forms';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 import { Subscription, BehaviorSubject } from 'rxjs';

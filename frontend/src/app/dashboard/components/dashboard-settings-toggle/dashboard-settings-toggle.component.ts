@@ -23,11 +23,11 @@ import {
 } from '@angular/core';
 
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-    DialogPosition,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+    LegacyDialogPosition as DialogPosition,
+} from '@angular/material/legacy-dialog';
 
 import { DashboardSettingsDialogComponent } from '../dashboard-settings-dialog/dashboard-settings-dialog.component';
 

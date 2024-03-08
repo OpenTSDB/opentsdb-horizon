@@ -26,11 +26,11 @@ import {
 } from '@angular/core';
 
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-} from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 
 import { DashboardSaveDialogComponent } from '../dashboard-save-dialog/dashboard-save-dialog.component';
 import {

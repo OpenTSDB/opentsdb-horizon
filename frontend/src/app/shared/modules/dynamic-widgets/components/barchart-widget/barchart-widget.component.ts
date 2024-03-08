@@ -44,11 +44,11 @@ import {
     Axis,
 } from '../../../../../dashboard/state/widgets.state';
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-    DialogPosition,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+    LegacyDialogPosition as DialogPosition,
+} from '@angular/material/legacy-dialog';
 import { ErrorDialogComponent } from '../../../sharedcomponents/components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from '../../../sharedcomponents/components/debug-dialog/debug-dialog.component';
 import { AppConfigService } from '../../../../../core/services/config.service';

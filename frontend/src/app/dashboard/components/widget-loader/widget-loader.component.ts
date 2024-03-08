@@ -39,13 +39,13 @@ import {
     IntercomService,
     IMessage,
 } from '../../../core/services/intercom.service';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenu as MatMenu, MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import {
-    MatDialog,
-    MatDialogConfig,
-    MatDialogRef,
-    DialogPosition,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+    LegacyDialogPosition as DialogPosition,
+} from '@angular/material/legacy-dialog';
 import { WidgetDeleteDialogComponent } from '../widget-delete-dialog/widget-delete-dialog.component';
 import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
 import { TemplatePortal, ComponentPortal } from '@angular/cdk/portal';
