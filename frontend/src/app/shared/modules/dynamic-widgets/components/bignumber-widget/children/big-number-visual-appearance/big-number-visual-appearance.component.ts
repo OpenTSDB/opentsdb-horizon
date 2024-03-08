@@ -24,7 +24,7 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

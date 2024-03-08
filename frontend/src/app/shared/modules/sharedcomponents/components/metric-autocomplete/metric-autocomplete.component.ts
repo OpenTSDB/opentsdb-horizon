@@ -29,8 +29,8 @@ import {
     ChangeDetectorRef,
     ViewEncapsulation,
 } from '@angular/core';
-import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import { UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { startWith, debounceTime } from 'rxjs/operators';

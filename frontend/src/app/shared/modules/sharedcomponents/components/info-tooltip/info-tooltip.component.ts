@@ -23,7 +23,7 @@ import {
     HostListener,
     ViewEncapsulation,
 } from '@angular/core';
-import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger, MatLegacyMenu as MatMenu } from '@angular/material/legacy-menu';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

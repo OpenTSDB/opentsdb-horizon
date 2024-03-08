@@ -33,8 +33,8 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatLegacyFormField as MatFormField } from '@angular/material/legacy-form-field';
+import { MatLegacyInput as MatInput } from '@angular/material/legacy-input';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

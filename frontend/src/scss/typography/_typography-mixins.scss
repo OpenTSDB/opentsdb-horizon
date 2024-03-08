@@ -77,7 +77,7 @@
     $input:         mat.define-typography-level(inherit, 1.125, map-get($weight-maps, regular));
 
 
-    @return mat.define-typography-config(
+    @return mat.define-legacy-typography-config(
         $font-family,
         $display-4,
         $display-3,

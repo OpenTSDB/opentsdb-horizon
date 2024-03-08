@@ -24,7 +24,7 @@ import {
 } from '@angular/core';
 import { AuthState } from './shared/state/auth.state';
 import { Observable, interval, Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { AppConfigService } from './core/services/config.service';

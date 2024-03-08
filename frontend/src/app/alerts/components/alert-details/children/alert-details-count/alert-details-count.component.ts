@@ -22,10 +22,10 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    MatDialogConfig,
-    MatDialogRef,
-    MatDialog,
-} from '@angular/material/dialog';
+    MatLegacyDialogConfig as MatDialogConfig,
+    MatLegacyDialogRef as MatDialogRef,
+    MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import { AppConfigService } from '../../../../../core/services/config.service';
 import { AuraDialogComponent } from '../../../../../shared/modules/sharedcomponents/components/aura-dialog/aura-dialog.component';
 

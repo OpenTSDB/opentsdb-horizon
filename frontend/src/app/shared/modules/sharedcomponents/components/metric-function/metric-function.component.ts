@@ -27,7 +27,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormControl, ValidatorFn, AbstractControl } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
+import { MatLegacyFormField as MatFormField } from '@angular/material/legacy-form-field';
 
 @Component({
     selector: 'metric-function',

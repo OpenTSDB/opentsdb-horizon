@@ -32,7 +32,7 @@ import {
 } from '@angular/core';
 import { TimeRangePickerComponent } from '../time-range-picker/time-range-picker.component';
 import { TimeRangePickerOptions, ISelectedTime } from '../../models/models';
-import { MatMenuTrigger, MenuPositionX } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger, LegacyMenuPositionX as MenuPositionX } from '@angular/material/legacy-menu';
 import { DateUtilsService } from '../../../../../core/services/dateutils.service';
 import { Subscription, Observable, interval, BehaviorSubject } from 'rxjs';
 import { take, withLatestFrom, filter } from 'rxjs/operators';

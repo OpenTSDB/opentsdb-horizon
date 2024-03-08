@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-$type-config: mat.define-typography-config();
+$type-config: mat.define-legacy-typography-config();
 $font-family: mat.font-family($type-config);
 
 .hrzn-chart {

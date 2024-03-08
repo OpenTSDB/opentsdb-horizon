@@ -30,7 +30,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 import { IntercomService } from '../../../../../core/services/intercom.service';
 

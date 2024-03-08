@@ -63,7 +63,7 @@
         //@at-root .#{$theme-name}-theme,
         @at-root [theme="#{$theme-name}"] {
             &[variant="light"] {
-                @include mat.all-component-themes($light-theme);
+                @include mat.all-legacy-component-themes($light-theme);
                 @content;
             }
 
@@ -71,7 +71,7 @@
                 $mat-css-theme: $dark-theme !global;
                 //&#{$dark-theme-selector},
                 &[variant="dark"] {
-                    @include mat.all-component-themes($dark-theme);
+                    @include mat.all-legacy-component-themes($dark-theme);
                     @content;
                 }
             }
@@ -79,14 +79,14 @@
     } @else {
         // DEFAULT theme
         @at-root {
-            @include mat.all-component-themes($light-theme);
+            @include mat.all-legacy-component-themes($light-theme);
             @content;
 
             @if $dark-theme-selector {
                 $mat-css-theme: $dark-theme !global;
                 //#{$dark-theme-selector},
                 [variant="dark"] {
-                    @include mat.all-component-themes($dark-theme);
+                    @include mat.all-legacy-component-themes($dark-theme);
                     @content;
                 }
             }
@@ -127,7 +127,7 @@
 }
 
 @mixin standalone-angular-material-theme($theme) {
-    @include mat.core-theme($theme);
+    @include mat.legacy-core-theme($theme);
     //@include mat-autocomplete-theme($theme);
     //@include mat-badge-theme($theme);
     //@include mat-bottom-sheet-theme($theme);

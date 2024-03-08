@@ -52,7 +52,7 @@ import {
 } from '../../state/clipboard.state';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import {
     IMessage,
     IntercomService,

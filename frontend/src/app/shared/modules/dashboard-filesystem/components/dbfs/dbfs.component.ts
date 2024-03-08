@@ -75,9 +75,9 @@ import {
     DbfsAddUserFav,
 } from '../../state/dbfs-resources.state';
 
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import { DBState, LoadDashboard } from '../../../../../dashboard/state';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
