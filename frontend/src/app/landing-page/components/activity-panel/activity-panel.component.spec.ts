@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ActivityPanelComponent } from './activity-panel.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('ActivityPanelComponent', () => {
     let component: ActivityPanelComponent;
@@ -25,6 +26,9 @@ describe('ActivityPanelComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ActivityPanelComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

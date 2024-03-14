@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PinPanelComponent } from './pin-panel.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('PinPanelComponent', () => {
     let component: PinPanelComponent;
@@ -25,6 +26,9 @@ describe('PinPanelComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PinPanelComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

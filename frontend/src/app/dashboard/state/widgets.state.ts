@@ -27,12 +27,12 @@ import { UtilsService } from '../../core/services/utils.service';
 
 export interface Axis {
     type: string;
-    min: number;
-    max: number;
+    min: number | 'auto';
+    max: number | 'auto';
     label: string;
     unit: string;
     scale: string;
-    decimals: number;
+    decimals: number | 'auto';
     enabled: boolean;
 }
 

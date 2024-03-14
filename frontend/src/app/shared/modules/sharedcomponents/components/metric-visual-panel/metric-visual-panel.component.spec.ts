@@ -17,20 +17,30 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MetricVisualPanelComponent } from './metric-visual-panel.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('MetricVisualPanelComponent', () => {
     let component: MetricVisualPanelComponent;
     let fixture: ComponentFixture<MetricVisualPanelComponent>;
 
+    const DATA = LINECHART_WIDGET_MOCK_DATA;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [MetricVisualPanelComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MetricVisualPanelComponent);
         component = fixture.componentInstance;
+
+        component.data = DATA.queries[0].metrics[0].settings;
+
         fixture.detectChanges();
     });
 

@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SimpleNamespacesListComponent } from './simple-namespaces-list.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('SimpleNamespacesListComponent', () => {
     let component: SimpleNamespacesListComponent;
@@ -25,6 +26,9 @@ describe('SimpleNamespacesListComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [SimpleNamespacesListComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

@@ -16,12 +16,36 @@
  */
 import { TestBed, inject } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+
+
 import { ConsoleService } from './console.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
+
+import { AppConfigService } from '../../core/services/config.service';
 
 describe('ConsoleService', () => {
+
+    let mockAppConfigService;
+
     beforeEach(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
-            providers: [ConsoleService],
+            imports: CORE_SERVICES_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                ConsoleService
+            ],
         });
     });
 

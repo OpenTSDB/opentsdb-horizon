@@ -89,7 +89,7 @@ export class AdminComponent implements OnInit {
     ];
 
     constructor(
-        private store: Store,
+        // private store: Store,
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private location: Location,

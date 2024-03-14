@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PlaceholderWidgetComponent } from './placeholder-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
 
 describe('PlaceholderWidgetComponent', () => {
     let component: PlaceholderWidgetComponent;
@@ -25,6 +26,9 @@ describe('PlaceholderWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PlaceholderWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

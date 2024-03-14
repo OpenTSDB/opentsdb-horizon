@@ -16,10 +16,37 @@
  */
 import { TestBed } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+
 import { QueryService } from './query.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
+import { OpenTSDBService } from './opentsdb.service';
+import { AppConfigService } from './config.service';
 
 describe('QueryService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    let mockAppConfigService;
+
+    beforeEach(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            imports: CORE_SERVICES_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                OpenTSDBService,
+                QueryService
+            ]
+        });
+    });
 
     it('should be created', () => {
         const service: QueryService = TestBed.inject(QueryService);

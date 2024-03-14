@@ -62,7 +62,7 @@ implements OnInit, OnDestroy, AfterViewInit {
     @Input() mode = 'view'; // view/explore/edit
     @Input() readonly = true;
     @ViewChild('widgetoutput', { static: true })
-    private widgetOutputElement: ElementRef;
+    widgetOutputElement: ElementRef;
 
     Object = Object;
     /* eslint-disable @typescript-eslint/no-inferrable-types */
@@ -139,7 +139,7 @@ implements OnInit, OnDestroy, AfterViewInit {
         public util: UtilsService,
         public UN: UnitConverterService,
         private cdRef: ChangeDetectorRef,
-        private elRef: ElementRef,
+        public elRef: ElementRef,
         private dateUtil: DateUtilsService,
         private appConfig: AppConfigService,
     ) {}

@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardDeleteDialogComponent } from './dashboard-delete-dialog.component';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
 describe('DashboardDeleteDialogComponent', () => {
     let component: DashboardDeleteDialogComponent;
@@ -25,12 +26,19 @@ describe('DashboardDeleteDialogComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DashboardDeleteDialogComponent],
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DashboardDeleteDialogComponent);
         component = fixture.componentInstance;
+
+        component.dialogRef.disableClose = false;
+
         fixture.detectChanges();
     });
 

@@ -38,7 +38,7 @@ import { DbfsState } from '../../../shared/modules/dashboard-filesystem/state';
     templateUrl: './landing-page-content.component.html',
     styleUrls: ['./landing-page-content.component.scss'],
     encapsulation: ViewEncapsulation.None,
-})
+    })
 export class LandingPageContentComponent implements OnInit, OnDestroy {
     @HostBinding('class.landing-page-content') private _hostClass = true;
 
@@ -152,6 +152,7 @@ export class LandingPageContentComponent implements OnInit, OnDestroy {
 
         this.subscription.add(
             this.user$.subscribe((user) => {
+                // console.log('%cUSER','background: red; color white; padding: 10px;', user);
                 this.user = user;
             }),
         );

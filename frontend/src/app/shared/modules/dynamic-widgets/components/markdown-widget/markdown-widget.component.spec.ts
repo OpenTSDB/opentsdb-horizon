@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MarkdownWidgetComponent } from './markdown-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { MARKDOWN_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/markdown-widget';
 
 describe('MarkdownWidgetComponent', () => {
     let component: MarkdownWidgetComponent;
@@ -25,12 +27,19 @@ describe('MarkdownWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [MarkdownWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MarkdownWidgetComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = MARKDOWN_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

@@ -17,18 +17,34 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { UserComponent } from './user.component';
+import { USER_TESTING_IMPORTS } from '../../user-testing.utils';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../../shared/state/auth.state';
 
 describe('UserComponent', () => {
     let component: UserComponent;
     let fixture: ComponentFixture<UserComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [UserComponent],
+            imports: [
+                ...USER_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(UserComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

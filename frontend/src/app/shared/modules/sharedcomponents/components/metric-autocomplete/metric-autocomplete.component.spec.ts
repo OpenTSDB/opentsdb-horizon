@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MetricAutocompleteComponent } from './metric-autocomplete.component';
+import { HttpService } from '../../../../../core/http/http.service';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('MetricAutocompleteComponent', () => {
     let component: MetricAutocompleteComponent;
@@ -25,6 +27,12 @@ describe('MetricAutocompleteComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [MetricAutocompleteComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                HttpService
+            ]
         }).compileComponents();
     }));
 

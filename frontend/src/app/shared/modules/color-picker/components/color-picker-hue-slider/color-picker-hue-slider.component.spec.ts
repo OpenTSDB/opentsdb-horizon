@@ -17,6 +17,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ColorPickerHueSliderComponent } from './color-picker-hue-slider.component';
+import { ColorService } from '../../services/color.service';
+import { EMPTY_COLOR } from '../../color-picker';
+import { ColorPickerService } from '../../services/color-picker.service';
 
 describe('ColorPickerHueSliderComponent', () => {
     let component: ColorPickerHueSliderComponent;
@@ -25,12 +28,21 @@ describe('ColorPickerHueSliderComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ColorPickerHueSliderComponent],
+            providers: [
+                ColorPickerService,
+                ColorService,
+                { provide: EMPTY_COLOR, useValue: 'none' }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ColorPickerHueSliderComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.selectedColor = '#000000';
+
         fixture.detectChanges();
     });
 

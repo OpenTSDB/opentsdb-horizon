@@ -19,7 +19,9 @@ import { TestBed } from '@angular/core/testing';
 import { DataShareService } from './data-share.service';
 
 describe('DataShareService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        providers: [DataShareService]
+    }));
 
     it('should be created', () => {
         const service: DataShareService = TestBed.inject(DataShareService);

@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardSettingsToggleComponent } from './dashboard-settings-toggle.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
 
 describe('DashboardSettingsToggleComponent', () => {
     let component: DashboardSettingsToggleComponent;
@@ -25,6 +26,7 @@ describe('DashboardSettingsToggleComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DashboardSettingsToggleComponent],
+            imports: DASHBOARD_TESTING_IMPORTS
         }).compileComponents();
     }));
 

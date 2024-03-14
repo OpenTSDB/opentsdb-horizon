@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigVisualAppearanceComponent } from './widget-config-visual-appearance.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('BigNumberVisualAppearanceComponent', () => {
     let component: WidgetConfigVisualAppearanceComponent;
@@ -25,6 +27,9 @@ describe('BigNumberVisualAppearanceComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetConfigVisualAppearanceComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
@@ -33,6 +38,10 @@ describe('BigNumberVisualAppearanceComponent', () => {
             WidgetConfigVisualAppearanceComponent,
         );
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = LINECHART_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

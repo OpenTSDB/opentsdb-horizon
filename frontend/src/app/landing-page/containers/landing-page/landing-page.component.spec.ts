@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LandingPageComponent } from './landing-page.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('LandingPageComponent', () => {
     let component: LandingPageComponent;
@@ -24,7 +25,10 @@ describe('LandingPageComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [LandingPageComponent]
+            declarations: [LandingPageComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

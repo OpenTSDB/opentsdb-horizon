@@ -70,9 +70,7 @@ import { UniversalDataTooltipDirectivesModule } from '../universal-data-tooltip/
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
-                useValue: {
-                    sanitize: true,
-                },
+                useValue: {},
             },
         }),
     ],

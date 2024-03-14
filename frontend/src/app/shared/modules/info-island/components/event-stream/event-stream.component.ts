@@ -73,11 +73,16 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
         private interCom: IntercomService,
         @Inject(ISLAND_DATA) private _data: any,
     ) {
+
+        // TODO: Cleanup
+        //console.log('%cEVENT ISLAND', 'background: red; color: white; padding: 10px;', _data);
+
         this.title = _data.data.title;
 
         this.subscription.add(
             _data.data.timeRange$.subscribe((time) => {
                 // this.logger.log('TIME RANGE RECEIVED', {time});
+                //console.log('%cES TIME RANGE','background: purple',time);
                 this.startTime = time.startTime;
                 this.endTime = time.endTime;
             }),
@@ -86,6 +91,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
         this.subscription.add(
             _data.data.timezone$.subscribe((timezone) => {
                 // this.logger.log('TIME ZONE RECEIVED', {timezone});
+                //console.log('%cES TIME ZONE','background: purple',timezone);
                 this.timezone = timezone;
             }),
         );
@@ -94,6 +100,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
             this._data.data.expandedBucketIndex$
                 .pipe(distinctUntilChanged())
                 .subscribe((index) => {
+                    //console.log('%cES BUCKET INDEX','background: purple',index);
                     this.expandedBucketIndex = index;
 
                     if (this.displayReady) {
@@ -117,6 +124,7 @@ implements OnInit, OnChanges, OnDestroy, AfterViewInit {
             _data.data.buckets$
                 .pipe(distinctUntilChanged())
                 .subscribe((buckets) => {
+                    //console.log('%cES BUCKETS','background: purple',buckets);
                     this.buckets = buckets.map((bucket) => {
                         if (bucket.events.length > 1) {
                             bucket.displayTime = this.util.buildDisplayTime(

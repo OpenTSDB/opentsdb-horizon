@@ -17,20 +17,48 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TimeseriesLegendComponent } from './timeseries-legend.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { ISLAND_DATA } from '../../info-island.tokens';
+import { TIMESERIES_LEGEND_ISLAND_MOCK_DATA } from '../../../../mockdata/info-island/timeseries-legend-island';
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'info-island-toolbar',
+    template: '<div>Mock Info Island Toolbar Component</div>'
+  })
+  class MockInfoIslandToolbarComponent {}
 
 describe('TimeseriesLegendComponent', () => {
     let component: TimeseriesLegendComponent;
     let fixture: ComponentFixture<TimeseriesLegendComponent>;
 
+    let mockIslandRef;
+
     beforeEach(waitForAsync(() => {
+
+
+        mockIslandRef = jasmine.createSpyObj(['updateSize']);
+
         TestBed.configureTestingModule({
-            declarations: [TimeseriesLegendComponent],
+            declarations: [
+                TimeseriesLegendComponent,
+                MockInfoIslandToolbarComponent
+            ],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+                ...INFO_ISLAND_TESTING_PROVIDERS,
+                { provide: ISLAND_DATA, useValue: TIMESERIES_LEGEND_ISLAND_MOCK_DATA }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TimeseriesLegendComponent);
-        component = fixture.componentInstance;
+        component = fixture.debugElement.componentInstance;
+        component.islandRef = mockIslandRef;
+
         fixture.detectChanges();
     });
 

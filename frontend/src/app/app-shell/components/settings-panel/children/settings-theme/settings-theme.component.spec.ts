@@ -16,6 +16,10 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../../../app-shell-testing.utils';
+
 import { SettingsThemeComponent } from './settings-theme.component';
 
 describe('SettingsThemeComponent', () => {
@@ -25,6 +29,9 @@ describe('SettingsThemeComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [SettingsThemeComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

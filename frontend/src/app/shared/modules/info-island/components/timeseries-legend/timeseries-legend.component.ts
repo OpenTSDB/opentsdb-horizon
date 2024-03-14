@@ -1176,7 +1176,7 @@ implements OnInit, OnDestroy, AfterContentInit {
 
     /** OnDestory - Always Last */
     ngOnDestroy() {
-        console.log('%cTS LEGEND DESTROY', 'color: white; background: red;');
+        // console.log('%cTS LEGEND DESTROY', 'color: white; background: red;');
         this.subscription.unsubscribe();
         this._legendTableObserve.ngOnDestroy();
 

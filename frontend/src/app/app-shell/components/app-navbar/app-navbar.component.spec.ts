@@ -16,6 +16,10 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { AppNavbarComponent } from './app-navbar.component';
 
 describe('AppNavbarComponent', () => {
@@ -25,6 +29,9 @@ describe('AppNavbarComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AppNavbarComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigSortingComponent } from './widget-config-sorting.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('WidgetConfigSortingComponent', () => {
     let component: WidgetConfigSortingComponent;
@@ -25,12 +27,19 @@ describe('WidgetConfigSortingComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetConfigSortingComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(WidgetConfigSortingComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = LINECHART_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

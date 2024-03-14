@@ -18,17 +18,37 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClipboardDrawerComponent } from './clipboard-drawer.component';
 
+import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { AuthState } from '../../../../state/auth.state';
+import { UNIVERSAL_CLIPBOARD_TESTING_IMPORTS } from '../../universal-clipboard-testing.utils';
+import { ClipboardService } from '../../services/clipboard.service';
+import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
+
 describe('ClipboardDrawerComponent', () => {
     let component: ClipboardDrawerComponent;
     let fixture: ComponentFixture<ClipboardDrawerComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ClipboardDrawerComponent],
+            imports: [
+                ...UNIVERSAL_CLIPBOARD_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                ClipboardService,
+                DashboardService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
         fixture = TestBed.createComponent(ClipboardDrawerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

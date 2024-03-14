@@ -17,6 +17,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TableWidgetComponent } from './table-widget.component';
+import { AppConfigService } from '../../../../../core/services/config.service';
+
+import {
+    WidgetModel,
+} from '../../../../../dashboard/state/widgets.state';
+
+import {
+    TABLE_WIDGET_MOCK_DATA
+} from '../../../../mockdata/dynamic-widgets/table-widget';
+
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { TooltipComponentService } from '../../../universal-data-tooltip/services/tooltip-component.service';
 
 describe('TableWidgetComponent', () => {
     let component: TableWidgetComponent;
@@ -25,12 +37,25 @@ describe('TableWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [TableWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ],
+            providers: [
+                AppConfigService,
+                TooltipComponentService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TableWidgetComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        const widget: WidgetModel = TABLE_WIDGET_MOCK_DATA;
+
+        component.widget = widget;
+
         fixture.detectChanges();
     });
 

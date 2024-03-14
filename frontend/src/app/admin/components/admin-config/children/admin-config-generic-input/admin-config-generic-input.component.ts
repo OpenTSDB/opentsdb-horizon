@@ -16,7 +16,7 @@ import {
 import {
     ControlValueAccessor,
     UntypedFormControl,
-    NG_VALUE_ACCESSOR,
+    NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { MatLegacyFormField as MatFormField } from '@angular/material/legacy-form-field';
 import { MatLegacyInput as MatInput } from '@angular/material/legacy-input';
@@ -77,8 +77,8 @@ implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
     constructor(
         @Attribute('class') public classNames: string,
         private renderer: Renderer2,
-        private eRef: ElementRef,
-    ) {}
+        private eRef: ElementRef
+    ) { }
 
     ngOnInit() {
         this.subscription.add(

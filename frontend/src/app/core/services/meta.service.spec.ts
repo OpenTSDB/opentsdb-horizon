@@ -16,10 +16,36 @@
  */
 import { TestBed } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+
+import { AppConfigService } from '../../core/services/config.service';
+
 import { MetaService } from './meta.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
 
 describe('MetaService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    let mockAppConfigService;
+
+    beforeEach(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            imports: CORE_SERVICES_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                MetaService
+            ]
+        });
+    });
 
     it('should be created', () => {
         const service: MetaService = TestBed.inject(MetaService);

@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { KeypadComponent } from './keypad.component';
+import { DATE_TIME_PICKER_TESTING_IMPORTS } from '../../date-time-picker-testing.utils';
 
 describe('KeypadComponent', () => {
     let component: KeypadComponent;
@@ -25,12 +26,23 @@ describe('KeypadComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [KeypadComponent],
+            imports: [
+                ...DATE_TIME_PICKER_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(KeypadComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.preset = {
+            name: 'month',
+            buttonName: 'mo',
+            abbr: 'mo',
+        }
+
         fixture.detectChanges();
     });
 

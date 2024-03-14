@@ -16,19 +16,40 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../../shared/state/auth.state';
+
 import { DashboardSaveDialogComponent } from './dashboard-save-dialog.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
 describe('DashboardSaveDialogComponent', () => {
     let component: DashboardSaveDialogComponent;
     let fixture: ComponentFixture<DashboardSaveDialogComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DashboardSaveDialogComponent],
+            imports: [
+                ...DASHBOARD_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(DashboardSaveDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

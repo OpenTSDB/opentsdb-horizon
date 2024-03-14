@@ -29,7 +29,7 @@
         <!--
             NOTE: Maybe build as normal table so we can use lazy loading
         -->
-        <cdk-virtual-scroll-viewport tvsItemSize="33" headerHeight="32" [style.height.px]="virtualScrollHeight">
+        <cdk-virtual-scroll-viewport tvsItemSize="33" itemSize="33" headerHeight="32" [style.height.px]="virtualScrollHeight">
         <table #legendTable class="ts-legend-table"
             mat-table
             [dataSource]="tableDataSource"

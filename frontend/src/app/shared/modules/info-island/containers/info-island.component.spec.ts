@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InfoIslandComponent } from './info-island.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../info-island-testing.utils';
 
 describe('InfoIslandComponent', () => {
     let component: InfoIslandComponent;
@@ -25,6 +26,12 @@ describe('InfoIslandComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [InfoIslandComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+                ...INFO_ISLAND_TESTING_PROVIDERS
+            ]
         }).compileComponents();
     }));
 

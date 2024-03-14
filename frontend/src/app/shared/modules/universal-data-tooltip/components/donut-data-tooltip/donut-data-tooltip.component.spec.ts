@@ -16,14 +16,24 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { UniversalDataTooltipModule } from '../../universal-data-tooltip.module';
+
 import { DonutDataTooltipComponent } from './donut-data-tooltip.component';
 
 describe('DonutDataTooltipComponent', () => {
     let component: DonutDataTooltipComponent;
     let fixture: ComponentFixture<DonutDataTooltipComponent>;
 
+    let mockRenderer = jasmine.createSpyObj({
+        removeClass: () => {},
+        listen: () => {}
+    });
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
+            imports: [
+                UniversalDataTooltipModule.forRoot()
+            ],
             declarations: [DonutDataTooltipComponent],
         }).compileComponents();
     }));
@@ -31,6 +41,8 @@ describe('DonutDataTooltipComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DonutDataTooltipComponent);
         component = fixture.componentInstance;
+        component.renderer = mockRenderer;
+
         fixture.detectChanges();
     });
 

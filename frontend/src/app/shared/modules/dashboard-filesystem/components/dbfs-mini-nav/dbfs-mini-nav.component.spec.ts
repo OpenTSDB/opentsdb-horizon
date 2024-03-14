@@ -15,20 +15,123 @@
  * limitations under the License.
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { Store } from '@ngxs/store';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+
+import { MaterialModule } from '../../../material/material.module';
+import { AppShellSharedModule } from '../../../../../app-shell/app-shell-shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+// import { AuthState } from './shared/state/auth.state';
+
+import { AuthState } from '../../../../state/auth.state';
 
 import { DbfsMiniNavComponent } from './dbfs-mini-nav.component';
+import { DbfsService } from '../../services/dbfs.service';
 
 describe('DbfsMiniNavComponent', () => {
     let component: DbfsMiniNavComponent;
     let fixture: ComponentFixture<DbfsMiniNavComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DbfsMiniNavComponent],
+            imports: [
+                HttpClientTestingModule,
+                BrowserAnimationsModule,
+                MaterialModule,
+                AppShellSharedModule,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                DbfsService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
+        store.reset({
+            ...store,
+            DBFS: {
+                NavPanels: {
+                    'panelTab': 'personal',
+                    'personalTab': {
+                        'curPanel': 0,
+                        'panels': [
+                            {
+                                'index': 0,
+                                'folderResource': ':panel-root:',
+                                'root': true,
+                                'synthetic': true,
+                                'locked': true
+                            }
+                        ]
+                    },
+                    'favoritesTab': {
+                        'curPanel': 0,
+                        'panels': [
+                            {
+                                'index': 0,
+                                'folderResource': ':user-favorites:',
+                                'root': true,
+                                'dynamic': true,
+                                'synthetic': true,
+                                'locked': true
+                            }
+                        ]
+                    },
+                    'recentTab': {
+                        'curPanel': 0,
+                        'panels': [
+                            {
+                                'index': 0,
+                                'folderResource': ':user-recent:',
+                                'root': true,
+                                'dynamic': true,
+                                'synthetic': true,
+                                'locked': true
+                            }
+                        ]
+                    },
+                    'usersTab': {
+                        'curPanel': 0,
+                        'panels': [
+                            {
+                                'index': 0,
+                                'folderResource': ':list-users:',
+                                'root': true,
+                                'dynamic': true,
+                                'synthetic': true,
+                                'locked': true
+                            }
+                        ]
+                    },
+                    'namespacesTab': {
+                        'curPanel': 0,
+                        'panels': [
+                            {
+                                'index': 0,
+                                'folderResource': ':list-namespaces:',
+                                'root': true,
+                                'dynamic': true,
+                                'synthetic': true,
+                                'locked': true
+                            }
+                        ]
+                    },
+                    'panelAction': {},
+                    'initialized': true
+                }
+            }
+        });
+
         fixture = TestBed.createComponent(DbfsMiniNavComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

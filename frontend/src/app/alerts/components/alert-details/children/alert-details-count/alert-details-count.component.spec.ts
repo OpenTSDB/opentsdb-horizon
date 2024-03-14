@@ -16,15 +16,40 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../../../shared/mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
+
 import { AlertDetailsCountComponent } from './alert-details-count.component';
 
 describe('AlertDetailsCountComponent', () => {
     let component: AlertDetailsCountComponent;
     let fixture: ComponentFixture<AlertDetailsCountComponent>;
 
+    let mockAppConfigService;
+
     beforeEach(waitForAsync(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [AlertDetailsCountComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ],
         }).compileComponents();
     }));
 

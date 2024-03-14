@@ -364,6 +364,8 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
         private dbConverterSrv: DashboardConverterService,
         private appConfig: AppConfigService,
     ) {
+
+
         // this.data = dialogData;
         if (this.data.name) {
             this.alertName.setValue(this.data.name);
@@ -378,7 +380,14 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.alertForm = this.fb.group({});
         const config = this.appConfig.getConfig();
+
+        console.log('%cDATA', 'background: red; color: white; padding: 10px;', this.data);
+        console.log('%cCONFIG', 'background: red; color: white; padding: 10px;', config);
+        console.log('%cQUERIES', 'background: red; color: white; padding: 10px;', this.queries);
+        console.log('%cTAGS', 'background: red; color: white; padding: 10px;', this.tags);
+
         this.alertspageNavbarPortal = new TemplatePortal(
             this.alertDateTimeNavbarItemTmpl,
             undefined,

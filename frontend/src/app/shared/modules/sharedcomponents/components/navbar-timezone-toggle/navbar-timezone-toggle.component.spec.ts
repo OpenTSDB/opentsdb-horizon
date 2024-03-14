@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavbarTimezoneToggleComponent } from './navbar-timezone-toggle.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('NavbarTimezoneToggleComponent', () => {
     let component: NavbarTimezoneToggleComponent;
@@ -25,6 +26,9 @@ describe('NavbarTimezoneToggleComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [NavbarTimezoneToggleComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

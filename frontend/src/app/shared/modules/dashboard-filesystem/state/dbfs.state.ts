@@ -42,26 +42,27 @@ export interface DbfsStateModel {
 /** Actions */
 export class DbfsInitialized {
     public static type = '[DBFS] Initialized';
-    constructor() {}
+    constructor() { }
 }
 
 /** State */
 @Injectable()
-@State<DbfsStateModel>({
+@State<DbfsStateModel>
+({
     name: 'DBFS',
     defaults: {
-        initialized: false,
-        error: {},
+    initialized: false,
+    error: {},
     },
     children: [DbfsPanelsState, DbfsResourcesState],
-})
+    })
 
 // state
 export class DbfsState {
     constructor(
         private store: Store,
         private util: UtilsService,
-    ) {}
+    ) { }
 
     /** SELECTORS */
     @Selector() static getError(state: DbfsStateModel) {
@@ -211,7 +212,7 @@ export class DbfsState {
     /** ACTIONS */
 
     @Action(DbfsInitialized)
-    setInitialized(ctx: StateContext<DbfsStateModel>, {}: DbfsInitialized) {
+    setInitialized(ctx: StateContext<DbfsStateModel>, { }: DbfsInitialized) {
         ctx.patchState({
             initialized: true,
         });

@@ -16,6 +16,10 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
 import { AlertDetailsMetricPeriodOverPeriodComponent } from './alert-details-metric-period-over-period.component';
 
 describe('AlertDetailsMetricPeriodOverPeriodComponent', () => {
@@ -25,6 +29,7 @@ describe('AlertDetailsMetricPeriodOverPeriodComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AlertDetailsMetricPeriodOverPeriodComponent],
+            imports: ALERTS_TESTING_IMPORTS
         }).compileComponents();
     }));
 

@@ -134,6 +134,7 @@ export class AlertDetailsMetricPeriodOverPeriodComponent implements OnInit {
             this.config.periodOverPeriod.lowestOutliersToRemove || '1';
         this.config.periodOverPeriod.algorithm =
             this.config.periodOverPeriod.algorithm || 'simple-average';
+        // TODO: cleanup
         console.log('this.config', this.config);
     }
 

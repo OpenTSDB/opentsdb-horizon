@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {
+    ADMIN_TESTING_IMPORTS
+} from '../../admin-testing.utils';
 
 import { AdminUsersComponent } from './admin-users.component';
 
@@ -9,6 +12,7 @@ describe('AdminUsersComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AdminUsersComponent],
+            imports: ADMIN_TESTING_IMPORTS
         }).compileComponents();
     }));
 

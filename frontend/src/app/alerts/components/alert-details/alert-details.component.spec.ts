@@ -16,21 +16,59 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../alerts-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../shared/mockdata/config/app-config';
+
+import {
+    ALERT_DETAILS_TESTING_DATA
+} from '../../../shared/mockdata/alerts/alert-details';
+
 import { AlertDetailsComponent } from './alert-details.component';
+import { QueryService } from '../../../core/services/query.service';
+import { InfoIslandService } from '../../../shared/modules/info-island/services/info-island.service';
+import { AppConfigService } from '../../../core/services/config.service';
 
 describe('AlertConfigurationDialogComponent', () => {
     let component: AlertDetailsComponent;
     let fixture: ComponentFixture<AlertDetailsComponent>;
 
+    let mockAppConfigService;
+
     beforeEach(waitForAsync(() => {
+
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig','getDefaultNamespace']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+        mockAppConfigService.getDefaultNamespace.and.returnValue(configValues.namespace.default);
+
         TestBed.configureTestingModule({
             declarations: [AlertDetailsComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [
+                InfoIslandService,
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ],
+            // providers: [QueryService]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AlertDetailsComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.data = ALERT_DETAILS_TESTING_DATA;
+
         fixture.detectChanges();
     });
 

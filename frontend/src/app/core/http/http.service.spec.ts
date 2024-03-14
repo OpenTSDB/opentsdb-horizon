@@ -17,10 +17,12 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { HttpService } from './http.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
 
 describe('HttpService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: CORE_SERVICES_TESTING_IMPORTS,
             providers: [HttpService],
         });
     });

@@ -17,20 +17,42 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TemplateVariablePanelComponent } from './template-variable-panel.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { DashboardService } from '../../services/dashboard.service';
+import { HttpService } from '../../../core/http/http.service';
+import { Observable, of } from 'rxjs';
 
 describe('TemplateVariablePanelComponent', () => {
     let component: TemplateVariablePanelComponent;
     let fixture: ComponentFixture<TemplateVariablePanelComponent>;
 
+    let mockHttpService;
+
     beforeEach(waitForAsync(() => {
+
+        mockHttpService = jasmine.createSpyObj(['getNamespaces']);
+        mockHttpService.getNamespaces.and.returnValue(of(['namespace01', 'namespace02', 'namespace03']));
+
         TestBed.configureTestingModule({
             declarations: [TemplateVariablePanelComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: HttpService,
+                    useValue: mockHttpService
+                },
+                DashboardService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TemplateVariablePanelComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.mode = 'view';
+
         fixture.detectChanges();
     });
 

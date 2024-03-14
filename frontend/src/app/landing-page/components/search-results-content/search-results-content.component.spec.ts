@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SearchResultsContentComponent } from './search-results-content.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('SearchResultsContentComponent', () => {
     let component: SearchResultsContentComponent;
@@ -25,6 +26,9 @@ describe('SearchResultsContentComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [SearchResultsContentComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
