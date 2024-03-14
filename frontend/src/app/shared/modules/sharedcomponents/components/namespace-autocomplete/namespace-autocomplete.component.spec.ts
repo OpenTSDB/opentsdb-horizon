@@ -17,14 +17,41 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NamespaceAutocompleteComponent } from './namespace-autocomplete.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import {
+    APP_TESTING_CONFIG
+} from '../../../../mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
+
+import { HttpService } from '../../../../../core/http/http.service';
 
 describe('NamespaceAutocompleteComponent', () => {
     let component: NamespaceAutocompleteComponent;
     let fixture: ComponentFixture<NamespaceAutocompleteComponent>;
 
+    let mockAppConfigService;
+
     beforeEach(waitForAsync(() => {
+
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [NamespaceAutocompleteComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                HttpService
+            ]
         }).compileComponents();
     }));
 

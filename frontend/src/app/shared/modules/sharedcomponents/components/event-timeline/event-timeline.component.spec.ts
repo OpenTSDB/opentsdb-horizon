@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EventTimelineComponent } from './event-timeline.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('EventTimelineComponent', () => {
     let component: EventTimelineComponent;
@@ -25,6 +26,9 @@ describe('EventTimelineComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [EventTimelineComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

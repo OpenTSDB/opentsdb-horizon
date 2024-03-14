@@ -49,10 +49,17 @@ export class AlertDetailsSuppressConfigComponent implements OnInit, OnChanges {
     constructor(
         private fb: UntypedFormBuilder,
         private utils: UtilsService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.setupForm();
+
+        /*
+        console.log('%cDATA', 'background: red; color: white; padding: 10px;', this.data);
+        console.log('%cCONFIG', 'background: red; color: white; padding: 10px;', this.config);
+        console.log('%cQUERIES', 'background: red; color: white; padding: 10px;', this.queries);
+        console.log('%cTAGS', 'background: red; color: white; padding: 10px;', this.tags);
+        */
     }
 
     ngOnChanges(changes: SimpleChanges) {

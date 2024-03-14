@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 export class SetAuth {
@@ -32,6 +33,7 @@ export interface AuthStateModel {
         auth: 'unknown',
     },
 })
+@Injectable()
 export class AuthState {
     @Selector()
     static getAuth(state: AuthStateModel): string {

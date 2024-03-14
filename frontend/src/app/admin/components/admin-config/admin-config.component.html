@@ -6,11 +6,9 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <app-admin-config-generic-input class="form-group app-name"
-                    inputLabel="App name"
-                    formControlName="name"
+                <app-admin-config-generic-input class="form-group app-name" inputLabel="App name" formControlName="name"
                     [hasErrors]="adminConfigForm.touched && adminConfigForm['controls'].application.errors && adminConfigForm['controls'].application.errors.required"
-                    errorMsg="App name should not be empty"></app-admin-config-generic-input>
+                    errorMsg="App name should not be empty" ngDefaultControl></app-admin-config-generic-input>
                 <div class="form-group production-enabled">
                     <mat-checkbox formControlName="production">Production enabled</mat-checkbox>
                 </div>
@@ -22,13 +20,11 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content" formGroupName="logo">
-                <app-admin-config-generic-input class="form-group logo-img-url"
-                    inputLabel="App Logo Image URL"
-                    formControlName="imageUrl"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group logo-img-url" inputLabel="App Logo Image URL"
+                    formControlName="imageUrl" ngDefaultControl></app-admin-config-generic-input>
 
-                <app-admin-config-generic-input class="form-group logo-home-url"
-                    inputLabel="App Home URL"
-                    formControlName="homeUrl"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group logo-home-url" inputLabel="App Home URL"
+                    formControlName="homeUrl" ngDefaultControl></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-endpoints" formGroupName="endpoints">
@@ -37,36 +33,31 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <app-admin-config-generic-input class="form-group tsdb-host"
-                    inputLabel="TSDB Host"
-                    formControlName="tsdb_host"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group tsdb-host" inputLabel="TSDB Host"
+                    formControlName="tsdb_host" ngDefaultControl></app-admin-config-generic-input>
                 <div class="form-group tsdb-metric-hosts">
                     <div class="form-label">
                         <span>TSDB Metric Hosts</span>
-                        <a mat-button (click)="addTsdbMetricHost('_new_')" class="add-new-metric-host">add metric host</a>
+                        <a mat-button (click)="addTsdbMetricHost('_new_')" class="add-new-metric-host">add metric
+                            host</a>
                     </div>
                     <div class="form-control-wrap auto-width">
                         <div class="metric-hosts-list">
                             <app-admin-config-metric-host
                                 *ngFor="let metricHost of endpoints.get('tsdb_hosts')['controls']; let i = index;"
-                                [index]="i"
-                                [host]="metricHost"
+                                [index]="i" [host]="metricHost"
                                 (metricHostUpdate)="tsdbMetricHostListener($event)"></app-admin-config-metric-host>
                         </div>
                     </div>
                 </div>
-                <app-admin-config-generic-input class="form-group webui-host"
-                    inputLabel="WebUI Host"
-                    formControlName="webUI"></app-admin-config-generic-input>
-                <app-admin-config-generic-input class="form-group configdb-host"
-                    inputLabel="ConfigDB Host"
-                    formControlName="configdb"></app-admin-config-generic-input>
-                <app-admin-config-generic-input class="form-group metaapi-host"
-                    inputLabel="MetaAPI Host"
-                    formControlName="metaApi"></app-admin-config-generic-input>
-                <app-admin-config-generic-input class="form-group auraui-host"
-                    inputLabel="AuraUI Host"
-                    formControlName="auraUI"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group webui-host" inputLabel="WebUI Host"
+                    formControlName="webUI" ngDefaultControl></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group configdb-host" inputLabel="ConfigDB Host"
+                    formControlName="configdb" ngDefaultControl></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group metaapi-host" inputLabel="MetaAPI Host"
+                    formControlName="metaApi" ngDefaultControl></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group auraui-host" inputLabel="AuraUI Host"
+                    formControlName="auraUI" ngDefaultControl></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-alerts" formGroupName="alert">
@@ -75,9 +66,8 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <app-admin-config-generic-input class="form-group alert-history-url"
-                    inputLabel="Alert History URL"
-                    formControlName="alert_history_url"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group alert-history-url" inputLabel="Alert History URL"
+                    formControlName="alert_history_url" ngDefaultControl></app-admin-config-generic-input>
                 <!-- TODO Alert endpoints-->
                 <div class="alert-endpoints-wrap">
                     <div class="form-label">
@@ -85,7 +75,9 @@
                     </div>
                     <mat-divider></mat-divider>
                     <div class="alert-endpoint-list">
-                        <app-admin-config-alert-endpoint *ngFor="let recipient of alertRecipientKeys" [endpoint]="alert['controls'].recipient['controls'][recipient]" [index]="i"></app-admin-config-alert-endpoint>
+                        <app-admin-config-alert-endpoint *ngFor="let recipient of alertRecipientKeys"
+                            [endpoint]="alert['controls'].recipient['controls'][recipient]"
+                            [index]="i"></app-admin-config-alert-endpoint>
                     </div>
                 </div>
             </div>
@@ -131,9 +123,8 @@
                 <div class="form-group namespaces-enabled">
                     <mat-checkbox formControlName="enabled">Enable namespaces</mat-checkbox>
                 </div>
-                <app-admin-config-generic-input class="form-group default-namespace"
-                    inputLabel="Default Namespace"
-                    formControlName="default"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group default-namespace" inputLabel="Default Namespace"
+                    formControlName="default" ngDefaultControl></app-admin-config-generic-input>
             </div>
         </section>
         <section class="config-section config-section-namespaces" formGroupName="auth">
@@ -142,20 +133,15 @@
             </div>
             <mat-divider></mat-divider>
             <div class="config-section-content">
-                <app-admin-config-generic-input class="form-group login-url"
-                    inputLabel="Login URL"
-                    formControlName="loginURL"></app-admin-config-generic-input>
-                <app-admin-config-generic-input class="form-group heartbeat-url"
-                    inputLabel="Heartbeat URL"
-                    formControlName="heartbeatURL"></app-admin-config-generic-input>
-                <app-admin-config-generic-input class="form-group heartbeat-img-url"
-                    inputLabel="Heartbeat Image URL"
-                    formControlName="heartbeatImgURL"></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group login-url" inputLabel="Login URL"
+                    formControlName="loginURL" ngDefaultControl></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group heartbeat-url" inputLabel="Heartbeat URL"
+                    formControlName="heartbeatURL" ngDefaultControl></app-admin-config-generic-input>
+                <app-admin-config-generic-input class="form-group heartbeat-img-url" inputLabel="Heartbeat Image URL"
+                    formControlName="heartbeatImgURL" ngDefaultControl></app-admin-config-generic-input>
                 <app-admin-config-generic-input class="form-group heartbeat-interval"
-                    inputLabel="Heartbeat Interval (ms)"
-                    inputType="number"
-                    inputPlaceholder="Enter numerical value"
-                    formControlName="heartbeatInterval"></app-admin-config-generic-input>
+                    inputLabel="Heartbeat Interval (ms)" inputType="number" inputPlaceholder="Enter numerical value"
+                    formControlName="heartbeatInterval" ngDefaultControl></app-admin-config-generic-input>
             </div>
         </section>
     </div>

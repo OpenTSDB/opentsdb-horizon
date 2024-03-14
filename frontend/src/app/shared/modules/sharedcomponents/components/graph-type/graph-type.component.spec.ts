@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GraphTypeComponent } from './graph-type.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('GraphTypeComponent', () => {
     let component: GraphTypeComponent;
@@ -25,6 +26,9 @@ describe('GraphTypeComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GraphTypeComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS,
+            ]
         }).compileComponents();
     }));
 

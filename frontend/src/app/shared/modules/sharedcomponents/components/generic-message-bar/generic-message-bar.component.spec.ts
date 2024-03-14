@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GenericMessageBarComponent } from './generic-message-bar.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('GenericMessageBarComponent', () => {
     let component: GenericMessageBarComponent;
@@ -25,6 +26,9 @@ describe('GenericMessageBarComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GenericMessageBarComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

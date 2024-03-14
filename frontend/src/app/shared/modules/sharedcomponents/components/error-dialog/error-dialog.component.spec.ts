@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ErrorDialogComponent } from './error-dialog.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
 describe('ErrorDialogComponent', () => {
     let component: ErrorDialogComponent;
@@ -25,12 +27,28 @@ describe('ErrorDialogComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ErrorDialogComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {
+                    error: {
+                        error: {
+                            message: 'uh oh'
+                        }
+                    }
+                } }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ErrorDialogComponent);
         component = fixture.componentInstance;
+
+        component.dialogRef.disableClose = false;
+
         fixture.detectChanges();
     });
 

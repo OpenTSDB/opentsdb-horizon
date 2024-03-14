@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardToAlertDialogComponent } from './dashboard-to-alert-dialog.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
 describe('DashboardToAlertDialogComponent', () => {
     let component: DashboardToAlertDialogComponent;
@@ -25,6 +27,13 @@ describe('DashboardToAlertDialogComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DashboardToAlertDialogComponent],
+            imports: [
+                ...DASHBOARD_TESTING_IMPORTS
+            ],
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ]
         }).compileComponents();
     }));
 

@@ -16,6 +16,10 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
 import { AlertDetailsTransitionsComponent } from './alert-details-transitions.component';
 
 describe('AlertDetailsTransitionsComponent', () => {
@@ -25,6 +29,7 @@ describe('AlertDetailsTransitionsComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AlertDetailsTransitionsComponent],
+            imports: ALERTS_TESTING_IMPORTS
         }).compileComponents();
     }));
 

@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DropdownLineWeightComponent } from './dropdown-line-weight.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('DropdownLineWeightComponent', () => {
     let component: DropdownLineWeightComponent;
@@ -25,6 +26,9 @@ describe('DropdownLineWeightComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DropdownLineWeightComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

@@ -16,19 +16,68 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../app-shell-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { Store } from '@ngxs/store';
+import { AuthState } from '../../shared/state/auth.state';
+
 import { AppShellComponent } from './app-shell.component';
+
+import { AppConfigService } from '../../core/services/config.service';
+import { AppNavbarComponent } from '../components/app-navbar/app-navbar.component';
+import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AppShellComponent', () => {
     let component: AppShellComponent;
     let fixture: ComponentFixture<AppShellComponent>;
 
+    let mockAppConfigService;
+
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
+
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
-            declarations: [AppShellComponent],
+            declarations: [
+                AppShellComponent,
+                AppNavbarComponent,
+                NavigatorSidenavComponent
+            ],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(AppShellComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

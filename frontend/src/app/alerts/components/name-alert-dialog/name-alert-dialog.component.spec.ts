@@ -16,7 +16,12 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../alerts-testing.utils';
+
 import { NameAlertDialogComponent } from './name-alert-dialog.component';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 describe('NameAlertDialogComponent', () => {
     let component: NameAlertDialogComponent;
@@ -25,6 +30,13 @@ describe('NameAlertDialogComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [NameAlertDialogComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: MatDialogRef,
+                    useValue: {}
+                }
+            ]
         }).compileComponents();
     }));
 

@@ -17,6 +17,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LinechartWidgetComponent } from './linechart-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { InfoIslandService } from '../../../info-island/services/info-island.service';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
+import { TooltipComponentService } from '../../../universal-data-tooltip/services/tooltip-component.service';
+import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
 
 describe('LinechartWidgetComponent', () => {
     let component: LinechartWidgetComponent;
@@ -25,12 +30,24 @@ describe('LinechartWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [LinechartWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ],
+            providers: [
+                InfoIslandService,
+                TooltipComponentService,
+                TooltipDataService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(LinechartWidgetComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = LINECHART_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

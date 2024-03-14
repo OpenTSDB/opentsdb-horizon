@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigGeneralComponent } from './widget-config-general.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('WidgetConfigGeneralComponent', () => {
     let component: WidgetConfigGeneralComponent;
@@ -25,12 +27,19 @@ describe('WidgetConfigGeneralComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetConfigGeneralComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(WidgetConfigGeneralComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = LINECHART_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

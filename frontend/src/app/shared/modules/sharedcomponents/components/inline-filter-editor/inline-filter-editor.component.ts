@@ -133,6 +133,19 @@ export class InlineFilterEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+
+        // TODO: cleanup
+        /*
+        console.log(
+            '%cINLINE FILTER EDITOR',
+            'background: magenta; color: white; padding: 10px;',
+            {
+                query: this.query,
+                options: this.options,
+                tplVariables: this.tplVariables
+            }
+        );*/
+
         this.tplVariables = this.tplVariables || {};
         this.namespace = this.query.namespace;
         this.metrics = this.query.metrics;

@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { MaterialModule } from '../../../../../shared/modules/material/material.module';
+
+import { FormControl } from '@angular/forms';
+
 import { AdminConfigMetricHostComponent } from './admin-config-metric-host.component';
 
 describe('AdminConfigMetricHostComponent', () => {
@@ -8,6 +12,9 @@ describe('AdminConfigMetricHostComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
+            imports: [
+                MaterialModule
+            ],
             declarations: [AdminConfigMetricHostComponent],
         }).compileComponents();
     }));
@@ -15,6 +22,10 @@ describe('AdminConfigMetricHostComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AdminConfigMetricHostComponent);
         component = fixture.componentInstance;
+
+        // component inputs
+        component.host = new FormControl<string>('');
+
         fixture.detectChanges();
     });
 

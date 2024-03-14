@@ -16,10 +16,33 @@
  */
 import { TestBed } from '@angular/core/testing';
 
+import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { AuthState } from '../../../state/auth.state';
+
 import { ClipboardService } from './clipboard.service';
+import { DashboardService } from '../../../../dashboard/services/dashboard.service';
+
+import { UNIVERSAL_CLIPBOARD_SERVICES_TESTING_IMPORTS } from '../universal-clipboard-testing.utils';
 
 describe('ClipboardService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+
+    let store: Store;
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                ...UNIVERSAL_CLIPBOARD_SERVICES_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                ClipboardService,
+                DashboardService
+            ]
+        });
+        store = TestBed.inject(Store);
+    });
 
     it('should be created', () => {
         const service: ClipboardService = TestBed.inject(ClipboardService);

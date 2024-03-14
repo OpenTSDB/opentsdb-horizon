@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { StatusWidgetComponent } from './status-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
 
 describe('StatusWidgetComponent', () => {
     let component: StatusWidgetComponent;
@@ -25,6 +26,9 @@ describe('StatusWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [StatusWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

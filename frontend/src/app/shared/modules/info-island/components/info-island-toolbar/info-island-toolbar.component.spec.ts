@@ -17,14 +17,36 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InfoIslandToolbarComponent } from './info-island-toolbar.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { InfoIslandService } from '../../services/info-island.service';
 
 describe('InfoIslandToolbarComponent', () => {
     let component: InfoIslandToolbarComponent;
     let fixture: ComponentFixture<InfoIslandToolbarComponent>;
 
+    let mockInfoIslandService = {
+        islandToolbarRef: {
+            insert: () => {}
+        }
+    };
+
     beforeEach(waitForAsync(() => {
+
+
+        mockInfoIslandService.islandToolbarRef = jasmine.createSpyObj(['insert']);
+        // mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [InfoIslandToolbarComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: InfoIslandService,
+                    useValue: mockInfoIslandService
+                }
+            ]
         }).compileComponents();
     }));
 

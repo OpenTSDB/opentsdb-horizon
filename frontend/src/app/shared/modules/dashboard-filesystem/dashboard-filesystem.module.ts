@@ -43,4 +43,4 @@ import { DbfsState, DbfsPanelsState, DbfsResourcesState } from './state';
     declarations: [DbfsComponent, DbfsMiniNavComponent],
     exports: [DbfsComponent, DbfsMiniNavComponent],
 })
-export class DashboardFilesystemModule {}
+export class DashboardFilesystemModule { }

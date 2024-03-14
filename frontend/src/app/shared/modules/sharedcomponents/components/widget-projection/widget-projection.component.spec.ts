@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetProjectionComponent } from './widget-projection.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('WidgetProjectionComponent', () => {
     let component: WidgetProjectionComponent;
@@ -25,6 +26,9 @@ describe('WidgetProjectionComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetProjectionComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

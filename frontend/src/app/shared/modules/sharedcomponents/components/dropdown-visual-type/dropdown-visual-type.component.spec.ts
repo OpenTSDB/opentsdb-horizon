@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DropdownVisualTypeComponent } from './dropdown-visual-type.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('DropdownVisualTypeComponent', () => {
     let component: DropdownVisualTypeComponent;
@@ -25,6 +26,9 @@ describe('DropdownVisualTypeComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DropdownVisualTypeComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

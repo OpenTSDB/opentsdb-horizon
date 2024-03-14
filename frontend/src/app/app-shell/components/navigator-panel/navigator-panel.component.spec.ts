@@ -16,6 +16,10 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { NavigatorPanelComponent } from './navigator-panel.component';
 
 describe('NavigatorPanelComponent', () => {
@@ -25,6 +29,9 @@ describe('NavigatorPanelComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [NavigatorPanelComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ADMIN_TESTING_IMPORTS
+} from '../../admin-testing.utils';
+
 import { AdminNamespacesComponent } from './admin-namespaces.component';
 
 describe('AdminNamespacesComponent', () => {
@@ -8,6 +12,7 @@ describe('AdminNamespacesComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
+            imports: ADMIN_TESTING_IMPORTS,
             declarations: [AdminNamespacesComponent],
         }).compileComponents();
     }));

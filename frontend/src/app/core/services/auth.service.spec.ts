@@ -16,13 +16,28 @@
  */
 import { TestBed, inject } from '@angular/core/testing';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../shared/state/auth.state';
+
 import { AuthService } from './auth.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
 
 describe('AuthService', () => {
+    let store: Store;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [
+                ...CORE_SERVICES_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
             providers: [AuthService],
         });
+        store = TestBed.inject(Store);
     });
 
     it('should be created', inject([AuthService], (service: AuthService) => {

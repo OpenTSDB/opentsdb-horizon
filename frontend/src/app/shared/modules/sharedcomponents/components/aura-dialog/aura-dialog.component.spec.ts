@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AuraDialogComponent } from './aura-dialog.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
 describe('AuraDialogComponent', () => {
     let component: AuraDialogComponent;
@@ -25,12 +27,22 @@ describe('AuraDialogComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AuraDialogComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AuraDialogComponent);
         component = fixture.componentInstance;
+
+        component.dialogRef.disableClose = false;
+
         fixture.detectChanges();
     });
 

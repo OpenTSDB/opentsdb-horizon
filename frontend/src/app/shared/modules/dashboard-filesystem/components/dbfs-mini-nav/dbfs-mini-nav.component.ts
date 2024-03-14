@@ -101,12 +101,12 @@ export class DbfsMiniNavComponent implements OnInit, OnDestroy {
 
     get moveEnabled(): boolean {
         if (this.mode === 'move') {
-            if (!this.panels[this.panelIndex].moveEnabled) {
+            if (!this.panels[this.panelIndex]?.moveEnabled) {
                 if (this.selected && this.selected.split('/').length >= 3) {
                     return true;
                 }
             }
-            return this.panels[this.panelIndex].moveEnabled;
+            return this.panels[this.panelIndex]?.moveEnabled;
         }
         return false;
     }

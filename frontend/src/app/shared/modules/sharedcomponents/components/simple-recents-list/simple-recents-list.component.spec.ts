@@ -17,18 +17,39 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SimpleRecentsListComponent } from './simple-recents-list.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+
+import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { AuthState } from '../../../../state/auth.state';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../../mockdata/config/app-config';
+
 
 describe('SimpleRecentsListComponent', () => {
     let component: SimpleRecentsListComponent;
     let fixture: ComponentFixture<SimpleRecentsListComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [SimpleRecentsListComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(SimpleRecentsListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

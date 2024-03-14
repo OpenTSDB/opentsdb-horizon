@@ -16,19 +16,63 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../alerts-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
 import { AlertsComponent } from './alerts.component';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../shared/state/auth.state';
+
+import { InfoIslandService } from '../../shared/modules/info-island/services/info-island.service';
+import { AppConfigService } from '../../core/services/config.service';
 
 describe('AlertsComponent', () => {
     let component: AlertsComponent;
     let fixture: ComponentFixture<AlertsComponent>;
 
+    let mockAppConfigService;
+
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
+
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [AlertsComponent],
+            imports: [
+                ...ALERTS_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                InfoIslandService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(AlertsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

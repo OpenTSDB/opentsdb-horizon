@@ -18,17 +18,35 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DbfsComponent } from './dbfs.component';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../../../../shared/state/auth.state';
+import { DASHBOARD_FILESYSTEM_TESTING_IMPORTS, DASHBOARD_FILESYSTEM_TESTING_PROVIDERS } from '../../dashboard-filesystem-testing.utils';
+
 describe('DbfsComponent', () => {
     let component: DbfsComponent;
     let fixture: ComponentFixture<DbfsComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DbfsComponent],
+            imports: [
+                ...DASHBOARD_FILESYSTEM_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: DASHBOARD_FILESYSTEM_TESTING_PROVIDERS
         }).compileComponents();
     }));
 
     beforeEach(() => {
+
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(DbfsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

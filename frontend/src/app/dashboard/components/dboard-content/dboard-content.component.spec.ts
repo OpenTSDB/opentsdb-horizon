@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DboardContentComponent } from './dboard-content.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { DashboardService } from '../../services/dashboard.service';
 
 describe('DboardContentComponent', () => {
     let component: DboardContentComponent;
@@ -25,6 +27,10 @@ describe('DboardContentComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DboardContentComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            providers: [
+                DashboardService
+            ]
         }).compileComponents();
     }));
 

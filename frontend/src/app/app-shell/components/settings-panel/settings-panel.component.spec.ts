@@ -16,7 +16,12 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { SettingsPanelComponent } from './settings-panel.component';
+import { SettingsThemeComponent } from './children/settings-theme/settings-theme.component';
 
 describe('SettingsPanelComponent', () => {
     let component: SettingsPanelComponent;
@@ -24,7 +29,13 @@ describe('SettingsPanelComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [SettingsPanelComponent],
+            declarations: [
+                SettingsPanelComponent,
+                SettingsThemeComponent
+            ],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

@@ -19,7 +19,9 @@ import { TestBed } from '@angular/core/testing';
 import { DomService } from './dom.service';
 
 describe('DomService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        providers: [DomService]
+    }));
 
     it('should be created', () => {
         const service: DomService = TestBed.inject(DomService);

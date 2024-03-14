@@ -17,6 +17,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DeveloperWidgetComponent } from './developer-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
 
 describe('DeveloperWidgetComponent', () => {
     let component: DeveloperWidgetComponent;
@@ -25,6 +26,9 @@ describe('DeveloperWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DeveloperWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 

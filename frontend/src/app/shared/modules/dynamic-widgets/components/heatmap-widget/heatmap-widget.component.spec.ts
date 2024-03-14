@@ -17,6 +17,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HeatmapWidgetComponent } from './heatmap-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { InfoIslandService } from '../../../info-island/services/info-island.service';
+import { TooltipDataService } from '../../../universal-data-tooltip/services/tooltip-data.service';
+import { HEATMAP_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/heatmap-widget';
+import { TooltipComponentService } from '../../../universal-data-tooltip/services/tooltip-component.service';
 
 describe('HeatmapWidgetComponent', () => {
     let component: HeatmapWidgetComponent;
@@ -25,12 +30,24 @@ describe('HeatmapWidgetComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [HeatmapWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ],
+            providers: [
+                InfoIslandService,
+                TooltipDataService,
+                TooltipComponentService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(HeatmapWidgetComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = HEATMAP_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

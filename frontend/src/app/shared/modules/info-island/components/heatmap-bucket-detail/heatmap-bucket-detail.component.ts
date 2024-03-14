@@ -109,6 +109,7 @@ implements OnInit, AfterViewInit, OnDestroy {
         private unitConvertor: UnitConverterService,
         @Inject(ISLAND_DATA) private _islandData: any,
     ) {
+        // console.log('[TSL] Constructor', { ISLAND_DATA: _islandData });
         this.dialogOptions.open = true;
         this.setData(_islandData.data);
     }

@@ -17,20 +17,29 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MetricFunctionComponent } from './metric-function.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('MetricFunctionComponent', () => {
     let component: MetricFunctionComponent;
     let fixture: ComponentFixture<MetricFunctionComponent>;
 
+    const MOCK_FX = { id: '123', fxCall: 'CounterToRate', val: 'enter val'};
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [MetricFunctionComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MetricFunctionComponent);
         component = fixture.componentInstance;
+
+        component.fx = MOCK_FX;
+
         fixture.detectChanges();
     });
 

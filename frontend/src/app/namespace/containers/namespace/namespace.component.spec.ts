@@ -18,17 +18,35 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NamespaceComponent } from './namespace.component';
 
+import { NAMESPACE_TESTING_IMPORTS } from '../../namespace-testing.utils';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../../shared/state/auth.state';
+
 describe('NamespaceComponent', () => {
     let component: NamespaceComponent;
     let fixture: ComponentFixture<NamespaceComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [NamespaceComponent],
+            imports: [
+                ...NAMESPACE_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(NamespaceComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

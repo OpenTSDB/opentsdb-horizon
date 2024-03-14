@@ -57,8 +57,12 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
     constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
+
+        // TODO: cleanup
+        // console.log('%cDB DATA', 'background: red; color: white; padding: 10px;', this.dbData);
+
         this.varForm = this.fb.group({
-            enabled: new UntypedFormControl(this.dbData.variables.enabled),
+            enabled: new UntypedFormControl(this.dbData.variables.enabled || true),
             tplVariables: this.fb.array([]),
         });
 

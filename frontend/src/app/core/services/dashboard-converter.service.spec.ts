@@ -17,9 +17,13 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DashboardConverterService } from './dashboard-converter.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
 
 describe('DashboardConverterService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: CORE_SERVICES_TESTING_IMPORTS,
+        providers: [DashboardConverterService]
+    }));
 
     it('should be created', () => {
         const service: DashboardConverterService = TestBed.inject(

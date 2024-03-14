@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigAxesComponent } from './widget-config-axes.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('WidgetConfigAxesComponent', () => {
     let component: WidgetConfigAxesComponent;
@@ -25,12 +27,20 @@ describe('WidgetConfigAxesComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetConfigAxesComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(WidgetConfigAxesComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = LINECHART_WIDGET_MOCK_DATA;
+        component.createForm();
+
         fixture.detectChanges();
     });
 

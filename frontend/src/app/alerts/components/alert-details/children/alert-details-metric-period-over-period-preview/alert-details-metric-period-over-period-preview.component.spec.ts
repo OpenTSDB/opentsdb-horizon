@@ -16,7 +16,13 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
 import { AlertDetailsMetricPeriodOverPeriodPreviewComponent } from './alert-details-metric-period-over-period-preview.component';
+import { InfoIslandService } from '../../../../../shared/modules/info-island/services/info-island.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AlertDetailsMetricPeriodOverPeriodPreviewComponent', () => {
     let component: AlertDetailsMetricPeriodOverPeriodPreviewComponent;
@@ -25,6 +31,9 @@ describe('AlertDetailsMetricPeriodOverPeriodPreviewComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [AlertDetailsMetricPeriodOverPeriodPreviewComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [InfoIslandService],
+            schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
     }));
 
@@ -33,6 +42,14 @@ describe('AlertDetailsMetricPeriodOverPeriodPreviewComponent', () => {
             AlertDetailsMetricPeriodOverPeriodPreviewComponent,
         );
         component = fixture.componentInstance;
+
+        // component inputs
+        component.size = {
+            width: 200,
+            height: 100
+        };
+
+
         fixture.detectChanges();
     });
 

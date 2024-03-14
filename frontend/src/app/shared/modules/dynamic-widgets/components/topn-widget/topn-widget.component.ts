@@ -60,8 +60,10 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() readonly = true;
 
     @ViewChild('widgetoutput', { static: true })
-    private widgetOutputElement: ElementRef;
-    @ViewChild('container', { static: true }) private container: ElementRef;
+    widgetOutputElement: ElementRef;
+
+    @ViewChild('container', { static: true })
+    container: ElementRef;
 
     Object = Object;
     private listenSub: Subscription;
@@ -102,7 +104,7 @@ export class TopnWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
         public dialog: MatDialog,
         private util: UtilsService,
         private cdRef: ChangeDetectorRef,
-        private elRef: ElementRef,
+        public elRef: ElementRef,
         private dateUtil: DateUtilsService,
         private appConfig: AppConfigService,
     ) {}

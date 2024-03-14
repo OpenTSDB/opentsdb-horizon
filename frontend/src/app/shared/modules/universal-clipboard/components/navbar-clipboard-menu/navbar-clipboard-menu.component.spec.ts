@@ -16,19 +16,38 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { AuthState } from '../../../../state/auth.state';
+
 import { NavbarClipboardMenuComponent } from './navbar-clipboard-menu.component';
+import { UNIVERSAL_CLIPBOARD_TESTING_IMPORTS } from '../../universal-clipboard-testing.utils';
+import { ClipboardService } from '../../services/clipboard.service';
+import { DashboardService } from '../../../../../dashboard/services/dashboard.service';
 
 describe('NavbarClipboardMenuComponent', () => {
     let component: NavbarClipboardMenuComponent;
     let fixture: ComponentFixture<NavbarClipboardMenuComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [NavbarClipboardMenuComponent],
+            imports: [
+                ...UNIVERSAL_CLIPBOARD_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ],
+            providers: [
+                ClipboardService,
+                DashboardService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
         fixture = TestBed.createComponent(NavbarClipboardMenuComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

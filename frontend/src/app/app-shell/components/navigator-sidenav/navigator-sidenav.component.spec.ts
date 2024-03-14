@@ -16,15 +16,44 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../../shared/mockdata/config/app-config';
+
+
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { NavigatorSidenavComponent } from './navigator-sidenav.component';
+
+import { AppConfigService } from '../../../core/services/config.service';
 
 describe('NavigatorSidenavComponent', () => {
     let component: NavigatorSidenavComponent;
     let fixture: ComponentFixture<NavigatorSidenavComponent>;
 
+    let mockAppConfigService;
+
     beforeEach(waitForAsync(() => {
+
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [NavigatorSidenavComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ]
         }).compileComponents();
     }));
 

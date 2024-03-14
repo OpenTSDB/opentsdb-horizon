@@ -16,19 +16,70 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    LANDING_PAGE_TESTING_IMPORTS
+} from '../../landing-page-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../shared/mockdata/config/app-config';
+
+import {
+    DBFS_STATE_TESTING
+} from '../../../shared/mockdata/dbfs/dbfs-state';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { Store } from '@ngxs/store';
+
+import { AuthState } from '../../../shared/state/auth.state';
+
 import { LandingPageContentComponent } from './landing-page-content.component';
+
+import { AppConfigService } from '../../../core/services/config.service';
+import { DbfsState, DbfsPanelsState, DbfsResourcesState } from '../../../shared/modules/dashboard-filesystem/state';
+
 
 describe('LandingPageContentComponent', () => {
     let component: LandingPageContentComponent;
     let fixture: ComponentFixture<LandingPageContentComponent>;
 
+    let mockAppConfigService;
+
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [LandingPageContentComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot(),
+                NgxsModule.forFeature([DbfsState, DbfsPanelsState, DbfsResourcesState]),
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
+        store.reset({
+            ...store.snapshot(),
+            DBFS: DBFS_STATE_TESTING
+        });
+
         fixture = TestBed.createComponent(LandingPageContentComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

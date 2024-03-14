@@ -17,6 +17,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HeatmapBucketDetailComponent } from './heatmap-bucket-detail.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { ISLAND_DATA } from '../../info-island.tokens';
+import { HEATMAP_BUCKET_ISLAND_MOCK_DATA } from '../../../../mockdata/info-island/heatmap-bucket-island';
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'info-island-toolbar',
+    template: '<div>Mock Info Island Toolbar Component</div>'
+  })
+  class MockInfoIslandToolbarComponent {}
 
 describe('HeatmapBucketDetailComponent', () => {
     let component: HeatmapBucketDetailComponent;
@@ -24,7 +34,17 @@ describe('HeatmapBucketDetailComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [HeatmapBucketDetailComponent],
+            declarations: [
+                HeatmapBucketDetailComponent,
+                MockInfoIslandToolbarComponent
+            ],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS,
+            ],
+            providers: [
+                ...INFO_ISLAND_TESTING_PROVIDERS,
+                { provide: ISLAND_DATA, useValue: HEATMAP_BUCKET_ISLAND_MOCK_DATA}
+            ]
         }).compileComponents();
     }));
 

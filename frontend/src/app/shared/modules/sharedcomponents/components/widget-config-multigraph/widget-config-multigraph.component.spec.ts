@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetConfigMultigraphComponent } from './widget-config-multigraph.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import { MULTIGRAPH_LINECHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/linechart-widget';
 
 describe('WidgetConfigMultigraphComponent', () => {
     let component: WidgetConfigMultigraphComponent;
@@ -25,12 +27,21 @@ describe('WidgetConfigMultigraphComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [WidgetConfigMultigraphComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(WidgetConfigMultigraphComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = MULTIGRAPH_LINECHART_WIDGET_MOCK_DATA;
+        component.isDataLoaded = true;
+        component.setupMultigraph();
+
         fixture.detectChanges();
     });
 

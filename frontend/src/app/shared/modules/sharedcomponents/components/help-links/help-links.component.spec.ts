@@ -17,14 +17,38 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HelpLinksComponent } from './help-links.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../../mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 describe('HelpLinksComponent', () => {
     let component: HelpLinksComponent;
     let fixture: ComponentFixture<HelpLinksComponent>;
 
+    let mockAppConfigService;
+
     beforeEach(waitForAsync(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
         TestBed.configureTestingModule({
             declarations: [HelpLinksComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ]
         }).compileComponents();
     }));
 

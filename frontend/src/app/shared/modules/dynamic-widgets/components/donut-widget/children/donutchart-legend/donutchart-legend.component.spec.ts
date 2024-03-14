@@ -17,6 +17,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DonutchartLegendComponent } from './donutchart-legend.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../../../dynamic-widgets-testing.utils';
+import { TooltipDataService } from '../../../../../universal-data-tooltip/services/tooltip-data.service';
+import { DONUT_WIDGET_MOCK_DATA } from '../../../../../../mockdata/dynamic-widgets/donut-widget';
 
 describe('DonutchartLegendComponent', () => {
     let component: DonutchartLegendComponent;
@@ -25,12 +28,22 @@ describe('DonutchartLegendComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DonutchartLegendComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ],
+            providers: [
+                TooltipDataService
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DonutchartLegendComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = DONUT_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

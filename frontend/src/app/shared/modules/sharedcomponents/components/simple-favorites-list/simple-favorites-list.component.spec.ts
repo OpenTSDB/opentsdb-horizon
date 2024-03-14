@@ -17,18 +17,33 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SimpleFavoritesListComponent } from './simple-favorites-list.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+
+import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsLoggerPluginModule, NgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { AuthState } from '../../../../state/auth.state';
 
 describe('SimpleFavoritesListComponent', () => {
     let component: SimpleFavoritesListComponent;
     let fixture: ComponentFixture<SimpleFavoritesListComponent>;
 
+    let store: Store;
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [SimpleFavoritesListComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS,
+                NgxsModule.forRoot([AuthState], { developmentMode: false }),
+                NgxsLoggerPluginModule.forRoot()
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        store = TestBed.inject(Store);
+
         fixture = TestBed.createComponent(SimpleFavoritesListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

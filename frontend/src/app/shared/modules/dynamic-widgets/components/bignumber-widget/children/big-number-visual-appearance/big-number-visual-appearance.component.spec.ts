@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BignumberVisualAppearanceComponent } from './big-number-visual-appearance.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../../../dynamic-widgets-testing.utils';
+import { BIG_NUMBER_WIDGET_MOCK_DATA } from '../../../../../../mockdata/dynamic-widgets/bignumber-widget';
 
 describe('BigNumberVisualAppearanceComponent', () => {
     let component: BignumberVisualAppearanceComponent;
@@ -25,12 +27,19 @@ describe('BigNumberVisualAppearanceComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [BignumberVisualAppearanceComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(BignumberVisualAppearanceComponent);
         component = fixture.componentInstance;
+
+        // inputs
+        component.widget = BIG_NUMBER_WIDGET_MOCK_DATA;
+
         fixture.detectChanges();
     });
 

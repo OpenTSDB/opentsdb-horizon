@@ -17,6 +17,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { IslandTestComponent } from './island-test.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { ISLAND_DATA } from '../../info-island.tokens';
 
 describe('IslandTestComponent', () => {
     let component: IslandTestComponent;
@@ -25,6 +27,13 @@ describe('IslandTestComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [IslandTestComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+               ...INFO_ISLAND_TESTING_PROVIDERS,
+               { provide: ISLAND_DATA, useValue: {} }
+            ]
         }).compileComponents();
     }));
 
