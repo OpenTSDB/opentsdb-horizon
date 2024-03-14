@@ -17,25 +17,30 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavbarDashboardActionsMenuComponent } from './navbar-dashboard-actions-menu.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { MatLegacyDialog } from '@angular/material/legacy-dialog';
 
 describe('NavbarDashboardActionsMenuComponent', () => {
-  let component: NavbarDashboardActionsMenuComponent;
-  let fixture: ComponentFixture<NavbarDashboardActionsMenuComponent>;
+    let component: NavbarDashboardActionsMenuComponent;
+    let fixture: ComponentFixture<NavbarDashboardActionsMenuComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavbarDashboardActionsMenuComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavbarDashboardActionsMenuComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            providers: [
+                MatLegacyDialog
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarDashboardActionsMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavbarDashboardActionsMenuComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

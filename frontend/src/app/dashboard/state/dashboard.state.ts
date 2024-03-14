@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { State , Action, Selector, StateContext, createSelector, Store } from '@ngxs/store';
+import {
+    State,
+    Action,
+    Selector,
+    StateContext,
+    Store,
+} from '@ngxs/store';
 import { UserSettingsState } from './user.settings.state';
 import { DBSettingsState, UpdateMeta } from './settings.state';
 import { WidgetsState, UpdateWidgets } from './widgets.state';
@@ -47,13 +53,16 @@ export class LoadDashboard {
     static readonly type = '[Dashboard] Load Dashboard';
     constructor(
         public id: string,
-        public clipboardItems?: any[]
+        public clipboardItems?: any[],
     ) {}
 }
 
 export class MigrateAndLoadDashboard {
     static readonly type = '[Dashboard] Migrate and Load Dashboard';
-    constructor(public id: string, public payload: any) {}
+    constructor(
+        public id: string,
+        public payload: any,
+    ) {}
 }
 
 export class LoadDashboardSuccess {
@@ -63,12 +72,15 @@ export class LoadDashboardSuccess {
 
 export class LoadDashboardFail {
     static readonly type = '[Dashboard] Load Dashboard Fail';
-    constructor(public readonly error: any) { }
+    constructor(public readonly error: any) {}
 }
 
 export class SaveDashboard {
     static readonly type = '[Dashboard] Save Dashboard';
-    constructor(public id: string, public payload: any) {}
+    constructor(
+        public id: string,
+        public payload: any,
+    ) {}
 }
 
 export class SaveDashboardSuccess {
@@ -78,7 +90,7 @@ export class SaveDashboardSuccess {
 
 export class SaveDashboardFail {
     static readonly type = '[Dashboard] Save Dashboard Fail';
-    constructor(public readonly error: any) { }
+    constructor(public readonly error: any) {}
 }
 
 export class LoadSnapshot {
@@ -88,7 +100,10 @@ export class LoadSnapshot {
 
 export class MigrateAndLoadSnapshot {
     static readonly type = '[Dashboard] Migrate and Load Snapshot';
-    constructor(public id: string, public payload: any) {}
+    constructor(
+        public id: string,
+        public payload: any,
+    ) {}
 }
 
 export class LoadSnapshotSuccess {
@@ -98,12 +113,15 @@ export class LoadSnapshotSuccess {
 
 export class LoadSnapshotFail {
     static readonly type = '[Dashboard] Load Snapshot Fail';
-    constructor(public readonly error: any) { }
+    constructor(public readonly error: any) {}
 }
 
 export class SaveSnapshot {
     static readonly type = '[Dashboard] Save Snapshot';
-    constructor(public id: string, public payload: any) {}
+    constructor(
+        public id: string,
+        public payload: any,
+    ) {}
 }
 
 export class SaveSnapshotSuccess {
@@ -113,12 +131,15 @@ export class SaveSnapshotSuccess {
 
 export class SaveSnapshotFail {
     static readonly type = '[Dashboard] Save Snapshot Fail';
-    constructor(public readonly error: any) { }
+    constructor(public readonly error: any) {}
 }
 
 export class SetDashboardStatus {
-  static readonly type = '[Dashboard] Set Dashboard Status';
-  constructor(public status: string, public resetError: boolean = false) {}
+    static readonly type = '[Dashboard] Set Dashboard Status';
+    constructor(
+        public status: string,
+        public resetError: boolean = false,
+    ) {}
 }
 
 export class DeleteDashboard {
@@ -133,12 +154,12 @@ export class DeleteDashboardSuccess {
 
 export class DeleteDashboardFail {
     static readonly type = '[Dashboard] Delete Dashboard Fail';
-    constructor(public readonly error: any) { }
+    constructor(public readonly error: any) {}
 }
 
 export class ResetDBtoDefault {
     static readonly type = '[Dashboard] Reset dashboard to default state';
-    constructor() { }
+    constructor() {}
 }
 
 /* state define */
@@ -157,11 +178,16 @@ export class ResetDBtoDefault {
         path: '_new_',
         fullPath: '',
         loadedDB: {},
-        lastSnapshotId: ''
+        lastSnapshotId: '',
     },
-    children: [ UserSettingsState, DBSettingsState, WidgetsState, ClientSizeState, WidgetsRawdataState ]
+    children: [
+        UserSettingsState,
+        DBSettingsState,
+        WidgetsState,
+        ClientSizeState,
+        WidgetsRawdataState,
+    ],
 })
-
 export class DBState {
     constructor(
         private httpService: HttpService,
@@ -169,7 +195,7 @@ export class DBState {
         private urlOverrideService: URLOverrideService,
         private dbConverterService: DashboardConverterService,
         private store: Store,
-        private utils: UtilsService
+        private utils: UtilsService,
     ) {}
 
     @Selector() static getDashboardId(state: DBStateModel) {
@@ -189,7 +215,7 @@ export class DBState {
     }
 
     @Selector() static getDashboardFullPath(state: DBStateModel) {
-      return state.fullPath;
+        return state.fullPath;
     }
 
     @Selector() static getCreator(state: DBStateModel) {
@@ -212,30 +238,44 @@ export class DBState {
     }
 
     @Action(LoadDashboard)
-    loadDashboard(ctx: StateContext<DBStateModel>, { id, clipboardItems }: LoadDashboard) {
+    loadDashboard(
+        ctx: StateContext<DBStateModel>,
+        { id, clipboardItems }: LoadDashboard,
+    ) {
         // id is the path
-        if ( id !== '_new_' ) {
-            ctx.patchState({ loading: true});
+        if (id !== '_new_') {
+            ctx.patchState({ loading: true });
             return this.httpService.getDashboardById(id).pipe(
-                map(res => {
+                map((res) => {
                     const dashboard: any = res.body;
                     // reset the url override, when newly go with url then id id empty
-                    if (this.urlOverrideService.activeDashboardId !== '' && this.urlOverrideService.activeDashboardId !== id) {
+                    if (
+                        this.urlOverrideService.activeDashboardId !== '' &&
+                        this.urlOverrideService.activeDashboardId !== id
+                    ) {
                         this.urlOverrideService.clearOverrides();
                     }
                     this.urlOverrideService.activeDashboardId = id;
                     // update grister info for UI only
                     this.dbService.addGridterInfo(dashboard.content.widgets);
                     this.dbService.updateTimeFromURL(dashboard);
-                    if (dashboard.content.version && dashboard.content.version === this.dbConverterService.currentVersion) {
+                    if (
+                        dashboard.content.version &&
+                        dashboard.content.version ===
+                            this.dbConverterService.currentVersion
+                    ) {
                         this.dbService.updateTplVariablesFromURL(dashboard);
                         ctx.dispatch(new LoadDashboardSuccess(dashboard));
                     } else {
-                        ctx.dispatch(new MigrateAndLoadDashboard(id, dashboard));
+                        ctx.dispatch(
+                            new MigrateAndLoadDashboard(id, dashboard),
+                        );
                     }
                     // NOTE: maybe add recent tracking here?
                 }),
-                catchError( error => ctx.dispatch(new LoadDashboardFail(error)))
+                catchError((error) =>
+                    ctx.dispatch(new LoadDashboardFail(error)),
+                ),
             );
         } else {
             const payload = {
@@ -243,7 +283,7 @@ export class DBState {
                 id: '_new_',
                 name: 'Untitled Dashboard',
                 path: '',
-                fullPath: ''
+                fullPath: '',
             };
             if (clipboardItems) {
                 payload.content.widgets = clipboardItems;
@@ -253,15 +293,17 @@ export class DBState {
     }
 
     @Action(MigrateAndLoadDashboard)
-    migrateAndLoadDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadDashboard) {
-
+    migrateAndLoadDashboard(
+        ctx: StateContext<DBStateModel>,
+        { id: id, payload: payload }: MigrateAndLoadDashboard,
+    ) {
         this.dbConverterService.convert(payload).subscribe((res) => {
             this.dbService.updateTplVariablesFromURL(res);
             ctx.dispatch(new LoadDashboardSuccess(res));
         });
         // we dont want to save after conversion but return the conversion version
         // since user might have no permission to save
-        /*return this.httpService.saveDashboard(id, payload).pipe(
+        /* return this.httpService.saveDashboard(id, payload).pipe(
             map( (res: any) => {
                 ctx.dispatch(new LoadDashboardSuccess(payload));
             }),
@@ -271,7 +313,10 @@ export class DBState {
     }
 
     @Action(LoadDashboardSuccess)
-    loadDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadDashboardSuccess) {
+    loadDashboardSuccess(
+        ctx: StateContext<DBStateModel>,
+        { payload }: LoadDashboardSuccess,
+    ) {
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -280,64 +325,89 @@ export class DBState {
             loading: false,
             path: '/' + payload.id + payload.fullPath,
             fullPath: payload.fullPath,
-            loadedDB: payload
+            loadedDB: payload,
         });
     }
 
     @Action(LoadDashboardFail)
-    loadDashboardFail(ctx: StateContext<DBStateModel>, { error }: LoadDashboardFail) {
-        ctx.dispatch({ loading: false, loaded: false, error: error, loadedDB: {} });
+    loadDashboardFail(
+        ctx: StateContext<DBStateModel>,
+        { error }: LoadDashboardFail,
+    ) {
+        ctx.dispatch({
+            loading: false,
+            loaded: false,
+            error: error,
+            loadedDB: {},
+        });
     }
 
     @Action(SaveDashboard)
-    saveDashboard(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveDashboard) {
-            ctx.patchState({ status: 'save-progress', error: {} });
-            return this.httpService.saveDashboard(id, payload).pipe(
-                map( (res: any) => {
-                    ctx.dispatch(new SaveDashboardSuccess(res.body));
-                }),
-                catchError( error => ctx.dispatch(new SaveDashboardFail(error)))
-            );
+    saveDashboard(
+        ctx: StateContext<DBStateModel>,
+        { id: id, payload: payload }: SaveDashboard,
+    ) {
+        ctx.patchState({ status: 'save-progress', error: {} });
+        return this.httpService.saveDashboard(id, payload).pipe(
+            map((res: any) => {
+                ctx.dispatch(new SaveDashboardSuccess(res.body));
+            }),
+            catchError((error) => ctx.dispatch(new SaveDashboardFail(error))),
+        );
     }
 
     @Action(SaveDashboardSuccess)
-    saveDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveDashboardSuccess) {
+    saveDashboardSuccess(
+        ctx: StateContext<DBStateModel>,
+        { payload }: SaveDashboardSuccess,
+    ) {
         const state = ctx.getState();
         // we dont need to upload loadedDB here, do that will cause its state updated.
-        ctx.patchState({...state,
+        ctx.patchState({
+            ...state,
             id: payload.id,
             path: '/' + payload.id + payload.fullPath,
             fullPath: payload.fullPath,
-            status: 'save-success'
+            status: 'save-success',
         });
     }
 
     @Action(SaveDashboardFail)
-    saveDashboardFail(ctx: StateContext<DBStateModel>, { error }: LoadDashboardFail) {
+    saveDashboardFail(
+        ctx: StateContext<DBStateModel>,
+        { error }: LoadDashboardFail,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state, status: 'save-failed', error: error });
+        ctx.patchState({ ...state, status: 'save-failed', error: error });
     }
 
     @Action(LoadSnapshot)
     loadSnapshot(ctx: StateContext<DBStateModel>, { id }: LoadSnapshot) {
-        ctx.patchState({ loading: true});
+        ctx.patchState({ loading: true });
         return this.httpService.getSnapshotById(id).pipe(
-            map(res => {
+            map((res) => {
                 const dashboard: any = res.body;
                 this.dbService.updateTimeFromURL(dashboard);
-                if (dashboard.content.version && dashboard.content.version === this.dbConverterService.currentVersion) {
+                if (
+                    dashboard.content.version &&
+                    dashboard.content.version ===
+                        this.dbConverterService.currentVersion
+                ) {
                     this.dbService.updateTplVariablesFromURL(dashboard);
                     ctx.dispatch(new LoadSnapshotSuccess(dashboard));
                 } else {
                     ctx.dispatch(new MigrateAndLoadSnapshot(id, dashboard));
                 }
             }),
-            catchError( error => ctx.dispatch(new LoadSnapshotFail(error)))
+            catchError((error) => ctx.dispatch(new LoadSnapshotFail(error))),
         );
     }
 
     @Action(MigrateAndLoadSnapshot)
-    migrateAndLoadSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: MigrateAndLoadSnapshot) {
+    migrateAndLoadSnapshot(
+        ctx: StateContext<DBStateModel>,
+        { id: id, payload: payload }: MigrateAndLoadSnapshot,
+    ) {
         this.dbConverterService.convert(payload).subscribe((res) => {
             this.dbService.updateTplVariablesFromURL(res);
             ctx.dispatch(new LoadSnapshotSuccess(res));
@@ -345,7 +415,10 @@ export class DBState {
     }
 
     @Action(LoadSnapshotSuccess)
-    loadSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: LoadSnapshotSuccess) {
+    loadSnapshotSuccess(
+        ctx: StateContext<DBStateModel>,
+        { payload }: LoadSnapshotSuccess,
+    ) {
         ctx.patchState({
             id: payload.id,
             version: payload.content.version,
@@ -354,73 +427,108 @@ export class DBState {
             loading: false,
             path: payload.path,
             fullPath: '/' + payload.path.split('/')[2],
-            loadedDB: payload
+            loadedDB: payload,
         });
     }
 
     @Action(LoadSnapshotFail)
-    loadSnapshotFail(ctx: StateContext<DBStateModel>, { error }: LoadSnapshotFail) {
-        ctx.dispatch({ loading: false, loaded: false, error: error, loadedDB: {} });
+    loadSnapshotFail(
+        ctx: StateContext<DBStateModel>,
+        { error }: LoadSnapshotFail,
+    ) {
+        ctx.dispatch({
+            loading: false,
+            loaded: false,
+            error: error,
+            loadedDB: {},
+        });
     }
 
     @Action(SaveSnapshot)
-    saveSnapshot(ctx: StateContext<DBStateModel>, { id: id, payload: payload }: SaveSnapshot) {
+    saveSnapshot(
+        ctx: StateContext<DBStateModel>,
+        { id: id, payload: payload }: SaveSnapshot,
+    ) {
         ctx.patchState({ status: 'save-progress', error: {} });
         return this.httpService.saveSnapshot(id, payload).pipe(
-            map( (res: any) => {
+            map((res: any) => {
                 ctx.dispatch(new SaveSnapshotSuccess(res.body));
             }),
-            catchError( error => ctx.dispatch(new SaveSnapshotFail(error)))
+            catchError((error) => ctx.dispatch(new SaveSnapshotFail(error))),
         );
     }
 
     @Action(SaveSnapshotSuccess)
-    saveSnapshotSuccess(ctx: StateContext<DBStateModel>, { payload }: SaveSnapshotSuccess) {
+    saveSnapshotSuccess(
+        ctx: StateContext<DBStateModel>,
+        { payload }: SaveSnapshotSuccess,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state,
+        ctx.patchState({
+            ...state,
             lastSnapshotId: payload.id,
-            status: 'save-snapshot-success'
+            status: 'save-snapshot-success',
         });
     }
 
     @Action(SaveSnapshotFail)
-    saveSnapshotFail(ctx: StateContext<DBStateModel>, { error }: SaveSnapshotFail) {
+    saveSnapshotFail(
+        ctx: StateContext<DBStateModel>,
+        { error }: SaveSnapshotFail,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state, status: 'save-snapshot-failed', error: error });
+        ctx.patchState({
+            ...state,
+            status: 'save-snapshot-failed',
+            error: error,
+        });
     }
 
     @Action(DeleteDashboard)
-    deleteDashboard(ctx: StateContext<DBStateModel>, { id: id }: DeleteDashboard) {
+    deleteDashboard(
+        ctx: StateContext<DBStateModel>,
+        { id: id }: DeleteDashboard,
+    ) {
         ctx.patchState({ status: 'delete-progress', error: {} });
         return this.httpService.deleteDashboard(id).pipe(
-            map( (dashboard: any) => {
+            map((dashboard: any) => {
                 ctx.dispatch(new DeleteDashboardSuccess(dashboard));
             }),
-            catchError( error => ctx.dispatch(new DeleteDashboardFail(error)))
+            catchError((error) => ctx.dispatch(new DeleteDashboardFail(error))),
         );
     }
 
     @Action(DeleteDashboardSuccess)
-    deleteDashboardSuccess(ctx: StateContext<DBStateModel>, { payload }: DeleteDashboardSuccess) {
+    deleteDashboardSuccess(
+        ctx: StateContext<DBStateModel>,
+        { payload }: DeleteDashboardSuccess,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state,
-          path: '/' + payload.id + payload.fullPath,
-          fullPath: payload.fullPath,
-          status: 'delete-success'
+        ctx.patchState({
+            ...state,
+            path: '/' + payload.id + payload.fullPath,
+            fullPath: payload.fullPath,
+            status: 'delete-success',
         });
     }
 
     @Action(DeleteDashboardFail)
-    deleteDashboardFail(ctx: StateContext<DBStateModel>, { error }: DeleteDashboardFail) {
+    deleteDashboardFail(
+        ctx: StateContext<DBStateModel>,
+        { error }: DeleteDashboardFail,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state, status: 'delete-failed', error: error });
+        ctx.patchState({ ...state, status: 'delete-failed', error: error });
     }
 
     @Action(SetDashboardStatus)
-    setDashboardStatus(ctx: StateContext<DBStateModel>, { status, resetError }: SetDashboardStatus) {
+    setDashboardStatus(
+        ctx: StateContext<DBStateModel>,
+        { status, resetError }: SetDashboardStatus,
+    ) {
         const patchData: any = { status };
         if (resetError) {
-          patchData.error = {};
+            patchData.error = {};
         }
         ctx.patchState(patchData);
     }
@@ -438,14 +546,14 @@ export class DBState {
             path: '_new_',
             fullPath: '',
             loadedDB: {},
-            lastSnapshotId: ''
+            lastSnapshotId: '',
         });
 
         // reset some children states
         ctx.dispatch([
             new UpdateWidgets([]),
             new ClearWidgetsData(),
-            new UpdateMeta({title: '', description: '', labels: []})
+            new UpdateMeta({ title: '', description: '', labels: [] }),
         ]);
     }
 }

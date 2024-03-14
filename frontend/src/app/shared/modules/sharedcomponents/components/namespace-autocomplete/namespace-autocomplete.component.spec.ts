@@ -17,25 +17,51 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NamespaceAutocompleteComponent } from './namespace-autocomplete.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+import {
+    APP_TESTING_CONFIG
+} from '../../../../mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
+
+import { HttpService } from '../../../../../core/http/http.service';
 
 describe('NamespaceAutocompleteComponent', () => {
-  let component: NamespaceAutocompleteComponent;
-  let fixture: ComponentFixture<NamespaceAutocompleteComponent>;
+    let component: NamespaceAutocompleteComponent;
+    let fixture: ComponentFixture<NamespaceAutocompleteComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NamespaceAutocompleteComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockAppConfigService;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NamespaceAutocompleteComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [NamespaceAutocompleteComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                HttpService
+            ]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NamespaceAutocompleteComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -29,31 +29,29 @@ import { LandingPageContentComponent } from './components/landing-page-content/l
 // components
 import { SearchResultsContentComponent } from './components/search-results-content/search-results-content.component';
 
-
 import { ActivityPanelComponent } from './components/activity-panel/activity-panel.component';
 import { PinPanelComponent } from './components/pin-panel/pin-panel.component';
 
 // components
 
-
 @NgModule({
-  imports: [
-    CommonModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedcomponentsModule,
-    LandingPageRoutingModule
-  ],
-  declarations: [
-    // container
-    LandingPageComponent,
+    imports: [
+        CommonModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedcomponentsModule,
+        LandingPageRoutingModule,
+    ],
+    declarations: [
+        // container
+        LandingPageComponent,
 
-    // content components (and children)
-    SearchResultsContentComponent,
-    LandingPageContentComponent,
-    ActivityPanelComponent,
-    PinPanelComponent
-  ]
+        // content components (and children)
+        SearchResultsContentComponent,
+        LandingPageContentComponent,
+        ActivityPanelComponent,
+        PinPanelComponent,
+    ],
 })
-export class LandingPageModule { }
+export class LandingPageModule {}

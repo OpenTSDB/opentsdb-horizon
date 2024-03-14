@@ -16,7 +16,7 @@
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../material/material.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -30,7 +30,7 @@ import { EventStreamComponent } from './components/event-stream/event-stream.com
 
 import { TimeseriesLegendComponent } from './components/timeseries-legend/timeseries-legend.component';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { InfoIslandToolbarComponent } from './components/info-island-toolbar/info-island-toolbar.component';
 import { HeatmapBucketDetailComponent } from './components/heatmap-bucket-detail/heatmap-bucket-detail.component';
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
@@ -47,7 +47,7 @@ import { D3Module } from '../d3/d3.module';
         MatTableModule,
         MatSortModule,
         D3Module,
-        TableVirtualScrollModule
+        TableVirtualScrollModule,
     ],
     declarations: [
         InfoIslandComponent,
@@ -55,17 +55,8 @@ import { D3Module } from '../d3/d3.module';
         EventStreamComponent,
         TimeseriesLegendComponent,
         InfoIslandToolbarComponent,
-        HeatmapBucketDetailComponent
+        HeatmapBucketDetailComponent,
     ],
-    providers: [
-        InfoIslandService
-    ],
-    entryComponents: [
-        InfoIslandComponent,
-        IslandTestComponent,
-        EventStreamComponent,
-        TimeseriesLegendComponent,
-        HeatmapBucketDetailComponent
-    ]
+    providers: [InfoIslandService]
 })
-export class InfoIslandModule { }
+export class InfoIslandModule {}

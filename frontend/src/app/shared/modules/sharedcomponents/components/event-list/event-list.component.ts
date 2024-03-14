@@ -14,7 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, Input, SimpleChanges, OnChanges, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    SimpleChanges,
+    OnChanges,
+    ViewEncapsulation,
+} from '@angular/core';
 import { UtilsService } from '../../../../../core/services/utils.service';
 
 @Component({
@@ -22,7 +30,7 @@ import { UtilsService } from '../../../../../core/services/utils.service';
     selector: 'event-list',
     templateUrl: './event-list.component.html',
     styleUrls: ['./event-list.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class EventListComponent implements OnInit, OnChanges {
     @HostBinding('class.event-list') private _componentClass = true;
@@ -42,12 +50,9 @@ export class EventListComponent implements OnInit, OnChanges {
     slicedList = [];
     additionalProps = [];
 
-    constructor(
-        private util: UtilsService
-    ) { }
+    constructor(private util: UtilsService) {}
 
     ngOnInit() {
-
         if (!this.events) {
             this.events = [];
         }
@@ -64,18 +69,22 @@ export class EventListComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['events'] && changes.events.currentValue) {
-          this.generateTitlesTagsList();
-          this.collapseExpansion();
+            this.generateTitlesTagsList();
+            this.collapseExpansion();
         }
-      }
+    }
 
     getSlicedList() {
-        if (Number.isInteger(this.previewLimit) && this.events.length - 1 > this.previewLimit && this.previewLimit > 0 ) {
+        if (
+            Number.isInteger(this.previewLimit) &&
+            this.events.length - 1 > this.previewLimit &&
+            this.previewLimit > 0
+        ) {
             return this.events.slice(0, this.previewLimit);
         } else {
             return this.events;
         }
-      }
+    }
 
     openExpansion(index) {
         this.expandedBucketIndex = index;
@@ -91,7 +100,7 @@ export class EventListComponent implements OnInit, OnChanges {
 
     getTags(tags) {
         const arr = this.util.transformTagMapToArray(tags);
-        const sArr = arr.sort(function(a, b) {
+        const sArr = arr.sort(function (a, b) {
             if (a['key'] > b['key']) {
                 return 1;
             } else if (b['key'] > a['key']) {
@@ -109,7 +118,15 @@ export class EventListComponent implements OnInit, OnChanges {
         this.tags = [];
         this.additionalProps = [];
         for (const e of this.events) {
-            this.titles.push(this.util.buildDisplayTime(e.timestamp, this.startTime, this.endTime, true, this.timezone));
+            this.titles.push(
+                this.util.buildDisplayTime(
+                    e.timestamp,
+                    this.startTime,
+                    this.endTime,
+                    true,
+                    this.timezone,
+                ),
+            );
             this.tags.push(this.getTags(e.tags));
             this.additionalProps.push(this.getTags(e.additionalProps));
         }

@@ -17,25 +17,46 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InfoIslandToolbarComponent } from './info-island-toolbar.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { InfoIslandService } from '../../services/info-island.service';
 
 describe('InfoIslandToolbarComponent', () => {
-  let component: InfoIslandToolbarComponent;
-  let fixture: ComponentFixture<InfoIslandToolbarComponent>;
+    let component: InfoIslandToolbarComponent;
+    let fixture: ComponentFixture<InfoIslandToolbarComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ InfoIslandToolbarComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockInfoIslandService = {
+        islandToolbarRef: {
+            insert: () => {}
+        }
+    };
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InfoIslandToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+
+        mockInfoIslandService.islandToolbarRef = jasmine.createSpyObj(['insert']);
+        // mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [InfoIslandToolbarComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: InfoIslandService,
+                    useValue: mockInfoIslandService
+                }
+            ]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InfoIslandToolbarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

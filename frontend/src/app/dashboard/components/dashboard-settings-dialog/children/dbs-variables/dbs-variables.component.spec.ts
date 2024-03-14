@@ -17,25 +17,41 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DbsVariablesComponent } from './dbs-variables.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../../../dashboard-testing.utils';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('DbsVariablesComponent', () => {
-  let component: DbsVariablesComponent;
-  let fixture: ComponentFixture<DbsVariablesComponent>;
+    let component: DbsVariablesComponent;
+    let fixture: ComponentFixture<DbsVariablesComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DbsVariablesComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DbsVariablesComponent],
+            imports: [
+                ...DASHBOARD_TESTING_IMPORTS
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DbsVariablesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DbsVariablesComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        // NOTE: Probably need better test data with actual tpl var data
+        // see: DbsVariablesComponent.addTemplateVariable for structure
+        component.dbData = {
+            variables: {
+                enabled: true,
+                tplVariables: []
+            }
+        };
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -16,16 +16,24 @@
  */
 import { TestBed, inject } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_SERVICES_IMPORTS
+} from '../alerts-testing.utils';
+
 import { AlertsService } from './alerts.service';
 
 describe('AlertsService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [AlertsService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: ALERTS_TESTING_SERVICES_IMPORTS,
+            providers: [AlertsService],
+        });
     });
-  });
 
-  it('should be created', inject([AlertsService], (service: AlertsService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should be created', inject(
+        [AlertsService],
+        (service: AlertsService) => {
+            expect(service).toBeTruthy();
+        },
+    ));
 });

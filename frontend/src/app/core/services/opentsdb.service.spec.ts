@@ -15,14 +15,19 @@
  * limitations under the License.
  */
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+
 
 import { OpenTSDBService } from './opentsdb.service';
 
 describe('OpenTSDBService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [OpenTSDBService]
+    }));
 
-  it('should be created', () => {
-    const service: OpenTSDBService = TestBed.inject(OpenTSDBService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: OpenTSDBService = TestBed.inject(OpenTSDBService);
+        expect(service).toBeTruthy();
+    });
 });

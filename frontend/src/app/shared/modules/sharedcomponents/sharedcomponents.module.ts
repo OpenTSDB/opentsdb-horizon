@@ -29,13 +29,13 @@ import { ColorPickerModule } from '../color-picker/color-picker.module';
 
 /** public items from Sharedcomponents */
 
- // other components
- /* eslint-disable max-len */
+// other components
+/* eslint-disable max-len */
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { InlineEditableComponent } from './components/inline-editable/inline-editable.component';
 import { ResizableDirective } from '../directives/resizable.directive';
 
- // widget config components
+// widget config components
 import { WidgetConfigAxesComponent } from './components/widget-config-axes/widget-config-axes.component';
 import { WidgetConfigGeneralComponent } from './components/widget-config-general/widget-config-general.component';
 import { WidgetConfigMetricQueriesComponent } from './components/widget-config-metric-queries/widget-config-metric-queries.component';
@@ -49,7 +49,6 @@ import { DropdownVisualTypeComponent } from './components/dropdown-visual-type/d
 import { NavbarTimezoneToggleComponent } from './components/navbar-timezone-toggle/navbar-timezone-toggle.component';
 import { DropdownUnitTypeComponent } from './components/dropdown-unit-type/dropdown-unit-type.component';
 import { GenericMessageBarComponent } from './components/generic-message-bar/generic-message-bar.component';
-import { SimpleDashboardListComponent } from './components/simple-dashboard-list/simple-dashboard-list.component';
 import { NamespaceAutocompleteComponent } from './components/namespace-autocomplete/namespace-autocomplete.component';
 import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
 import { DebugDialogComponent } from './components/debug-dialog/debug-dialog.component';
@@ -70,7 +69,7 @@ import { SimpleFavoritesListComponent } from './components/simple-favorites-list
 import { SimpleRecentsListComponent } from './components/simple-recents-list/simple-recents-list.component';
 import { SimpleNamespacesListComponent } from './components/simple-namespaces-list/simple-namespaces-list.component';
 import { WidgetProjectionComponent } from './components/widget-projection/widget-projection.component';
-
+import { HelpLinksComponent } from './components/help-links/help-links.component';
 import { GraphTypeComponent } from './components/graph-type/graph-type.component';
 import { AuraDialogComponent } from './components/aura-dialog/aura-dialog.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
@@ -85,8 +84,9 @@ import { DropdownJoinTypeComponent } from './components/dropdown-join-type/dropd
 import { AliasDisplayPipe } from './pipes/aliasdisplay.pipe';
 import { HighlightStripTextPipe } from './pipes/highlightstriptext.pipe';
 import { SafePipe } from './pipes/safe.pipe';
-import {  Nl2BrPipe } from './pipes/nl2br.pipe';
-import { HelpLinksComponent } from './components/help-links/help-links.component';
+import { Nl2BrPipe } from './pipes/nl2br.pipe';
+import { FormControlPipe } from './pipes/form-control.pipe';
+
 
 @NgModule({
     imports: [
@@ -98,7 +98,7 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         ChartjsModule,
         DateTimePickerModule,
         ColorPickerModule,
-        RouterModule
+        RouterModule,
     ],
     declarations: [
         ThemePickerComponent,
@@ -116,7 +116,6 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         NavbarTimezoneToggleComponent,
         DropdownUnitTypeComponent,
         GenericMessageBarComponent,
-        SimpleDashboardListComponent,
         NamespaceAutocompleteComponent,
         ErrorDialogComponent,
         DebugDialogComponent,
@@ -149,8 +148,9 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         HighlightStripTextPipe,
         SafePipe,
         Nl2BrPipe,
+        FormControlPipe,
         ResizableDirective,
-        HelpLinksComponent
+        HelpLinksComponent,
     ],
     exports: [
         ThemePickerComponent,
@@ -170,7 +170,6 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         NavbarTimezoneToggleComponent,
         DropdownMetricTagsComponent,
         GenericMessageBarComponent,
-        SimpleDashboardListComponent,
         InlineFilterEditorComponent,
         WidgetConfigSortingComponent,
         ConditionalFormatterComponent,
@@ -195,15 +194,9 @@ import { HelpLinksComponent } from './components/help-links/help-links.component
         TagAggregatorComponent,
         AliasDisplayPipe,
         HighlightStripTextPipe,
+        FormControlPipe,
         ResizableDirective,
-        HelpLinksComponent
-    ],
-    entryComponents: [
-        InlineFilterEditorComponent,
-        MetricAutocompleteComponent,
-        ErrorDialogComponent,
-        AuraDialogComponent,
-        DebugDialogComponent
-    ],
+        HelpLinksComponent,
+    ]
 })
-export class SharedcomponentsModule { }
+export class SharedcomponentsModule {}

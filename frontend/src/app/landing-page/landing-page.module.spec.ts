@@ -17,13 +17,13 @@
 import { LandingPageModule } from './landing-page.module';
 
 describe('LandingPageModule', () => {
-  let landingPageModule: LandingPageModule;
+    let landingPageModule: LandingPageModule;
 
-  beforeEach(() => {
-    landingPageModule = new LandingPageModule();
-  });
+    beforeEach(() => {
+        landingPageModule = new LandingPageModule();
+    });
 
-  it('should create an instance', () => {
-    expect(landingPageModule).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(landingPageModule).toBeTruthy();
+    });
 });

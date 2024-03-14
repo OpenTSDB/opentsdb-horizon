@@ -17,25 +17,36 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetDeleteDialogComponent } from './widget-delete-dialog.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
+
 
 describe('WidgetDeleteDialogComponent', () => {
-  let component: WidgetDeleteDialogComponent;
-  let fixture: ComponentFixture<WidgetDeleteDialogComponent>;
+    let component: WidgetDeleteDialogComponent;
+    let fixture: ComponentFixture<WidgetDeleteDialogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WidgetDeleteDialogComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [WidgetDeleteDialogComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetDeleteDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        fixture = TestBed.createComponent(WidgetDeleteDialogComponent);
+        component = fixture.componentInstance;
+
+        component.dialogRef.disableClose = false;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -14,7 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, ElementRef, Renderer2, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewChild,
+    ElementRef,
+    Renderer2,
+    OnDestroy,
+    ViewEncapsulation,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { DataTooltipComponent } from '../data-tooltip/data-tooltip';
@@ -24,26 +33,24 @@ import { TooltipDataService } from '../../services/tooltip-data.service';
     selector: 'topn-data-tooltip',
     templateUrl: './topn-data-tooltip.component.html',
     styleUrls: ['./topn-data-tooltip.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class TopnDataTooltipComponent extends DataTooltipComponent implements OnInit, OnDestroy {
-
+export class TopnDataTooltipComponent
+    extends DataTooltipComponent
+    implements OnInit, OnDestroy {
     @HostBinding('class.topn-data-tooltip') private _hostClass = true;
 
-    @ViewChild('tooltipOutput', { read: ElementRef }) public ttOutputEl: ElementRef;
+    @ViewChild('tooltipOutput', { read: ElementRef })
+    public ttOutputEl: ElementRef;
 
-    positionStrategy: string = 'sticky';
+    positionStrategy = 'sticky';
 
     constructor(
         ttDataSvc: TooltipDataService,
         renderer: Renderer2,
-        sanitizer: DomSanitizer
+        sanitizer: DomSanitizer,
     ) {
-        super(
-            ttDataSvc,
-            renderer,
-            sanitizer
-        );
+        super(ttDataSvc, renderer, sanitizer);
     }
 
     ngOnInit() {
@@ -53,7 +60,6 @@ export class TopnDataTooltipComponent extends DataTooltipComponent implements On
 
     /* Last */
     ngOnDestroy() {
-       super.ngOnDestroy();
+        super.ngOnDestroy();
     }
-
 }

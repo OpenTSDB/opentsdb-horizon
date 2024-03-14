@@ -17,25 +17,33 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MetricFunctionComponent } from './metric-function.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
 
 describe('MetricFunctionComponent', () => {
-  let component: MetricFunctionComponent;
-  let fixture: ComponentFixture<MetricFunctionComponent>;
+    let component: MetricFunctionComponent;
+    let fixture: ComponentFixture<MetricFunctionComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MetricFunctionComponent ]
-    })
-    .compileComponents();
-  }));
+    const MOCK_FX = { id: '123', fxCall: 'CounterToRate', val: 'enter val'};
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MetricFunctionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [MetricFunctionComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(MetricFunctionComponent);
+        component = fixture.componentInstance;
+
+        component.fx = MOCK_FX;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

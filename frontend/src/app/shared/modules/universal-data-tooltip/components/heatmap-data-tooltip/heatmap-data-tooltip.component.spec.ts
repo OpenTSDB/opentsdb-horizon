@@ -16,26 +16,37 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { UniversalDataTooltipModule } from '../../universal-data-tooltip.module';
+
 import { HeatmapDataTooltipComponent } from './heatmap-data-tooltip.component';
 
 describe('HeatmapDataTooltipComponent', () => {
-  let component: HeatmapDataTooltipComponent;
-  let fixture: ComponentFixture<HeatmapDataTooltipComponent>;
+    let component: HeatmapDataTooltipComponent;
+    let fixture: ComponentFixture<HeatmapDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HeatmapDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockRenderer = jasmine.createSpyObj({
+        removeClass: () => {},
+        listen: () => {}
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeatmapDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [HeatmapDataTooltipComponent],
+            imports: [
+                UniversalDataTooltipModule.forRoot()
+            ],
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HeatmapDataTooltipComponent);
+        component = fixture.componentInstance;
+        component.renderer = mockRenderer;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

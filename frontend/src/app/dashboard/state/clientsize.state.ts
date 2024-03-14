@@ -36,18 +36,21 @@ export class UpdateGridsterUnitSize {
         width: 120,
         height: 80,
         winSize: 'md'
-    }
+    },
 })
-
 export class ClientSizeState {
-
-    @Selector() static getUpdatedGridsterUnitSize(state: GridsterUnitSizeModel) {
+    @Selector() static getUpdatedGridsterUnitSize(
+        state: GridsterUnitSizeModel
+    ) {
         return state;
     }
 
     @Action(UpdateGridsterUnitSize)
-    updateGridsterUnitSize(ctx: StateContext<GridsterUnitSizeModel>, { payload }: UpdateGridsterUnitSize) {
+    updateGridsterUnitSize(
+        ctx: StateContext<GridsterUnitSizeModel>,
+        { payload }: UpdateGridsterUnitSize
+    ) {
         const state = ctx.getState();
-        ctx.setState({...state, ...payload});
+        ctx.setState({ ...state, ...payload });
     }
 }

@@ -17,25 +17,45 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DbsVariableItemComponent } from './dbs-variable-item.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../../../dashboard-testing.utils';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('DbsVariableItemComponent', () => {
-  let component: DbsVariableItemComponent;
-  let fixture: ComponentFixture<DbsVariableItemComponent>;
+    let component: DbsVariableItemComponent;
+    let fixture: ComponentFixture<DbsVariableItemComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DbsVariableItemComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DbsVariableItemComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            schemas: [NO_ERRORS_SCHEMA]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DbsVariableItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DbsVariableItemComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // TODO: move this to mockdata
+        const dbVarItem = {
+            tagk: new UntypedFormControl(''),
+            alias: new UntypedFormControl(''),
+            allowedValues: new UntypedFormArray([]),
+            filter: new UntypedFormArray([]),
+            enabled: new UntypedFormControl(true),
+            type: new UntypedFormControl('literalor')
+        };
+
+        const fg = new UntypedFormGroup(dbVarItem);
+
+        component.formGroup = fg;
+        component.formGroupName = 0;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

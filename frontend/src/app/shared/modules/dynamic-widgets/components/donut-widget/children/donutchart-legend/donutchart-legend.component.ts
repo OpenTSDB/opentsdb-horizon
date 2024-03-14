@@ -14,103 +14,127 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit,  HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'donutchart-legend',
-  templateUrl: './donutchart-legend.component.html',
-  styleUrls: ['./donutchart-legend.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'donutchart-legend',
+    templateUrl: './donutchart-legend.component.html',
+    styleUrls: ['./donutchart-legend.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DonutchartLegendComponent implements OnInit {
-
     @HostBinding('class.widget-config-tab') private _hostClass = true;
-    @HostBinding('class.donutchart-legend-configuration') private _tabClass = true;
+    @HostBinding('class.donutchart-legend-configuration') private _tabClass =
+    true;
 
     /** Inputs */
     @Input() widget: any;
 
     /** Outputs */
-    @Output() widgetChange = new EventEmitter;
+    @Output() widgetChange = new EventEmitter();
 
-
-    gForm: FormGroup;
+    gForm: UntypedFormGroup;
 
     subs: Subscription;
 
     visibilityOptions: any[] = [
         {
             label: 'Visible',
-            value: true
+            value: true,
         },
         {
             label: 'Hidden',
-            value: false
-        }
+            value: false,
+        },
     ];
 
     percentagesOptions: any[] = [
         {
             label: 'Show',
-            value: true
+            value: true,
         },
         {
             label: 'Hide',
-            value: false
-        }
+            value: false,
+        },
     ];
 
     valueOptions: any[] = [
         {
             label: 'Show',
-            value: true
+            value: true,
         },
         {
             label: 'Hide',
-            value: false
-        }
+            value: false,
+        },
     ];
 
     positionOptions: any[] = [
         {
             label: 'Right',
-            value: 'right'
+            value: 'right',
         },
         {
             label: 'Left',
-            value: 'left'
-        }
+            value: 'left',
+        },
     ];
 
-    constructor(private fb: FormBuilder) { }
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
-        this.gForm = new FormGroup({
-            display : new FormControl(this.widget.settings.legend.display || false),
-            position: new FormControl(this.widget.settings.legend.position ||  'right'),
-            showPercentages: new FormControl( this.widget.settings.legend.showPercentages || false),
-            showValue: new FormControl( this.widget.settings.legend.showValue || false)
+        this.gForm = new UntypedFormGroup({
+            display: new UntypedFormControl(
+                this.widget.settings.legend.display || false,
+            ),
+            position: new UntypedFormControl(
+                this.widget.settings.legend.position || 'right',
+            ),
+            showPercentages: new UntypedFormControl(
+                this.widget.settings.legend.showPercentages || false,
+            ),
+            showValue: new UntypedFormControl(
+                this.widget.settings.legend.showValue || false,
+            ),
         });
 
-        this.subs = this.gForm.valueChanges.subscribe(data => {
-            this.widgetChange.emit( {action: 'SetLegend', payload: {data: data} } );
+        this.subs = this.gForm.valueChanges.subscribe((data) => {
+            this.widgetChange.emit({
+                action: 'SetLegend',
+                payload: { data: data },
+            });
         });
     }
 
     setPercentage(isVisible) {
-        if ( isVisible && this.gForm.controls['showValue'].value ) {
-            this.gForm['controls']['showValue'].setValue(!isVisible, { emitEvent: false, onlySelf: true });
+        if (isVisible && this.gForm.controls['showValue'].value) {
+            this.gForm['controls']['showValue'].setValue(!isVisible, {
+                emitEvent: false,
+                onlySelf: true,
+            });
         }
         this.gForm['controls']['showPercentages'].setValue(isVisible);
     }
 
     setValue(isVisible) {
-        if ( isVisible && this.gForm.controls['showPercentages'].value ) {
-            this.gForm['controls']['showPercentages'].setValue(!isVisible, { emitEvent: false, onlySelf: true });
+        if (isVisible && this.gForm.controls['showPercentages'].value) {
+            this.gForm['controls']['showPercentages'].setValue(!isVisible, {
+                emitEvent: false,
+                onlySelf: true,
+            });
         }
         this.gForm['controls']['showValue'].setValue(isVisible);
     }

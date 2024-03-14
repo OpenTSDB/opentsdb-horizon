@@ -19,24 +19,23 @@ import {
     OnInit,
     HostBinding,
     OnDestroy,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-recents-list',
     templateUrl: './simple-recents-list.component.html',
     styleUrls: ['./simple-recents-list.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class SimpleRecentsListComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.simple-recents-list') private _componentClass = true;
 
@@ -47,26 +46,26 @@ export class SimpleRecentsListComponent implements OnInit, OnDestroy {
     @Select(DbfsResourcesState.getUserRecents) userRecents$: Observable<any[]>;
     userRecents: any[] = [];
     userRecentsDataSource = new MatTableDataSource([]);
-    userRecentsFilter: FormControl = new FormControl('');
+    userRecentsFilter: UntypedFormControl = new UntypedFormControl('');
 
-    constructor(
-        private store: Store
-    ) { }
+    constructor(private store: Store) {}
 
     ngOnInit() {
-        this.subscription.add(this.userRecents$.subscribe(recs => {
-            this.userRecents = recs || [];
-            this.userRecentsDataSource.data = this.userRecents;
-        }));
+        this.subscription.add(
+            this.userRecents$.subscribe((recs) => {
+                this.userRecents = recs || [];
+                this.userRecentsDataSource.data = this.userRecents;
+            }),
+        );
 
-        this.subscription.add(this.userRecentsFilter.valueChanges.subscribe(val => {
-            this.userRecentsDataSource.filter = val;
-        }));
+        this.subscription.add(
+            this.userRecentsFilter.valueChanges.subscribe((val) => {
+                this.userRecentsDataSource.filter = val;
+            }),
+        );
     }
-
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

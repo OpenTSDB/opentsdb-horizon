@@ -1,0 +1,60 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+
+    $foreground: map.get($config, foreground);
+    $background: map.get($config, background);
+
+    .mat-paginator {
+      background: mat-get-color-from-palette($background, 'card');
+    }
+
+    .mat-paginator,
+    .mat-paginator-page-size .mat-select-trigger {
+      color: mat-get-color-from-palette($foreground, secondary-text);
+    }
+
+    .mat-paginator-decrement,
+    .mat-paginator-increment {
+      border-top: 2px solid mat-get-color-from-palette($foreground, 'icon');
+      border-right: 2px solid mat-get-color-from-palette($foreground, 'icon');
+    }
+
+    .mat-paginator-first,
+    .mat-paginator-last {
+      border-top: 2px solid mat-get-color-from-palette($foreground, 'icon');
+    }
+
+    .mat-icon-button[disabled] {
+      .mat-paginator-decrement,
+      .mat-paginator-increment,
+      .mat-paginator-first,
+      .mat-paginator-last {
+        border-color: mat-get-color-from-palette($foreground, 'disabled');
+      }
+    }
+  }
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

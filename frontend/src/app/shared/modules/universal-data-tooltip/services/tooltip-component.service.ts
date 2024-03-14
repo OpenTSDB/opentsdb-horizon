@@ -17,13 +17,12 @@
 import {
     Injectable,
     ComponentRef,
-    ElementRef,
     ApplicationRef,
     ComponentFactoryResolver,
     Injector,
     RendererFactory2,
     ComponentFactory,
-    EmbeddedViewRef
+    EmbeddedViewRef,
 } from '@angular/core';
 
 import {
@@ -31,23 +30,22 @@ import {
     BarchartDataTooltipComponent,
     DonutDataTooltipComponent,
     LinechartDataTooltipComponent,
-    TopnDataTooltipComponent
+    TopnDataTooltipComponent,
 } from '../components';
 
 const TOOLTIP_TYPES: any = {
-    'barchart':     BarchartDataTooltipComponent,
-    'donut':        DonutDataTooltipComponent,
-    'heatmap':      HeatmapDataTooltipComponent,
-    'linechart':    LinechartDataTooltipComponent,
-    'topn':         TopnDataTooltipComponent
+    barchart: BarchartDataTooltipComponent,
+    donut: DonutDataTooltipComponent,
+    heatmap: HeatmapDataTooltipComponent,
+    linechart: LinechartDataTooltipComponent,
+    topn: TopnDataTooltipComponent,
 };
 
-/*@Injectable({
+/* @Injectable({
     providedIn: 'root'
 })*/
 @Injectable()
 export class TooltipComponentService {
-
     /* ELEMENTS */
     private _componentRef: ComponentRef<any>;
     private _domElem: HTMLElement;
@@ -65,23 +63,23 @@ export class TooltipComponentService {
         private appRef: ApplicationRef,
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
-        private rendererFactory: RendererFactory2
-    ) { }
+        private rendererFactory: RendererFactory2,
+    ) {}
 
     /*
         Listeners for directive watchers
     */
 
     // comes from tt-scroll-listener
-    boundaryRegister(elRef: HTMLElement) {
+    boundaryRegister(elRef: HTMLElement): void {
         this._boundaryElRef = elRef;
     }
 
-    boundaryUnregister() {
+    boundaryUnregister(): void {
         this._boundaryElRef = null;
     }
 
-    boundaryScroll(scrolling: boolean = false) {
+    boundaryScroll(scrolling: boolean = false): void {
         // hide tooltip while scrolling
         if (this._componentRef) {
             if (scrolling) {
@@ -92,7 +90,7 @@ export class TooltipComponentService {
     }
 
     // comes from tt-mouse-listener
-    tooltipType(type: string, mouseBoundaryEl: HTMLElement) {
+    tooltipType(type: string, mouseBoundaryEl: HTMLElement): void {
         if (this._mouseElRef !== mouseBoundaryEl) {
             this._mouseElRef = mouseBoundaryEl;
         }
@@ -105,23 +103,23 @@ export class TooltipComponentService {
         this.createComponent(type);
     }
 
-    tooltipListen() {
+    tooltipListen(): void {
         if (this._componentRef) {
             this._componentRef.instance.show();
         }
     }
 
-    tooltipMute() {
+    tooltipMute(): void {
         if (this._componentRef) {
             this._componentRef.instance.hide();
         }
     }
 
-    /**** PRIVATES ****/
+    /** ** PRIVATES ****/
 
     // tooltip component (type)
 
-    private createComponent(type: string) {
+    private createComponent(type: string): void {
         // create new tooltip component
         this._prevTtType = type;
         const ttType = this.getTooltipToLoad(type);
@@ -130,22 +128,21 @@ export class TooltipComponentService {
             const factory: ComponentFactory<any> =
                 this.resolver.resolveComponentFactory(ttType);
 
-            this._componentRef =
-                factory.create(this.injector);
+            this._componentRef = factory.create(this.injector);
 
             this._componentRef.instance.mouseBoundaryEl = this._mouseElRef;
             this._componentRef.instance.scrollBoundaryEl = this._boundaryElRef;
 
-            this._domElem =
-                (this._componentRef.hostView as EmbeddedViewRef<any>)
-                .rootNodes[0] as HTMLElement;
+            this._domElem = (
+                this._componentRef.hostView as EmbeddedViewRef<any>
+            ).rootNodes[0] as HTMLElement;
 
             this.appRef.attachView(this._componentRef.hostView);
             document.body.appendChild(this._domElem);
         }
     }
 
-    private detachComponent() {
+    private detachComponent(): void {
         if (this._componentRef && this._domElem) {
             // remove dom from body befreo appRef
             document.body.removeChild(this._domElem);

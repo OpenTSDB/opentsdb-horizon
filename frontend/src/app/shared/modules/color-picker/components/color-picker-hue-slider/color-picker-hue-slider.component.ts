@@ -27,7 +27,7 @@ import {
     Renderer2,
     ViewChild,
     AfterViewInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import { EMPTY_COLOR, coerceHexaColor, isValidColor } from '../../color-picker';
 import { ColorService } from '../../services/color.service';
@@ -37,10 +37,9 @@ import { ColorService } from '../../services/color.service';
     selector: 'color-picker-hue-slider',
     templateUrl: './color-picker-hue-slider.component.html',
     styleUrls: ['./color-picker-hue-slider.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
-
     @HostBinding('class.color-picker-hue-slider') private _hostClass = true;
 
     @Input()
@@ -69,8 +68,8 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
     constructor(
         private cs: ColorService,
         private renderer: Renderer2,
-        @Inject(EMPTY_COLOR) private emptyColor: string
-    ) { }
+        @Inject(EMPTY_COLOR) private emptyColor: string,
+    ) {}
 
     ngOnInit() {
         // calculate the hue angle
@@ -82,17 +81,20 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
         const left = hsv.h * hsCoords.width;
 
         this.sliderLeft = left;
-        this.renderer.setStyle(this._hueSlider.nativeElement, 'left', left + 'px');
+        this.renderer.setStyle(
+            this._hueSlider.nativeElement,
+            'left',
+            left + 'px',
+        );
 
         // this.setSliderPosition();
     }
 
     ngAfterViewInit() {
-
         const hstripEl = this._hueStrip.nativeElement;
         const hslideEl = this._hueSlider.nativeElement;
 
-        this.renderer.listen(hstripEl, 'mousedown', e => {
+        this.renderer.listen(hstripEl, 'mousedown', (e) => {
             if (!this.isSliding) {
                 this.isSliding = true;
                 if (!e.target.classList.contains('hue-slider')) {
@@ -103,7 +105,7 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
             }
         });
 
-        this.renderer.listen(hstripEl, 'mouseup', e => {
+        this.renderer.listen(hstripEl, 'mouseup', (e) => {
             if (this.isSliding) {
                 this.isSliding = false;
                 if (!e.target.classList.contains('hue-slider')) {
@@ -114,7 +116,7 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
             }
         });
 
-        this.renderer.listen(hstripEl, 'mousemove', e => {
+        this.renderer.listen(hstripEl, 'mousemove', (e) => {
             if (this.isSliding && !e.target.classList.contains('hue-slider')) {
                 this.sliderLeft = e.offsetX;
                 this.renderer.setStyle(hslideEl, 'left', e.offsetX + 'px');
@@ -149,8 +151,11 @@ export class ColorPickerHueSliderComponent implements OnInit, AfterViewInit {
             const left = hsv.h * hsCoords.width;
 
             this.sliderLeft = left;
-            this.renderer.setStyle(this._hueSlider.nativeElement, 'left', left + 'px');
+            this.renderer.setStyle(
+                this._hueSlider.nativeElement,
+                'left',
+                left + 'px',
+            );
         }
     }
-
 }

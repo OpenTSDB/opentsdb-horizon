@@ -56,10 +56,10 @@ export interface DBSettingsModel {
         customUnit: string;
         customValue: string;
         value: string;
-    }
+    };
 }
 
-const defaultInitialZoomTime = {start: '', end: '', zone: ''};
+const defaultInitialZoomTime = { start: '', end: '', zone: '' };
 
 export class UpdateMode {
     public static type = '[Dashboard] Update Mode';
@@ -114,12 +114,12 @@ export class UpdateMeta {
 }
 
 export class UpdateDownsample {
-    public static type ='[Dashboard] Update Downsample';
+    public static type = '[Dashboard] Update Downsample';
     constructor(public readonly payload: any) {}
 }
 
 export class UpdateToT {
-    public static type ='[Dashboard] Update ToT';
+    public static type = '[Dashboard] Update ToT';
     constructor(public readonly payload: any) {}
 }
 
@@ -131,40 +131,43 @@ export class UpdateToT {
         time: {
             start: '1h',
             end: 'now',
-            zone: 'local'
+            zone: 'local',
         },
         initialZoomTime: defaultInitialZoomTime,
         refresh: {
             auto: 0,
-            duration: 0
+            duration: 0,
         },
         meta: {
             title: '',
             description: '',
-            labels: []
+            labels: [],
         },
         tplVariables: {
             namespaces: [],
-            tvars: []
+            tvars: [],
         },
         tot: {
             period: '',
-            value: 0
+            value: 0,
         },
         downsample: {
             aggregators: [''],
             customUnit: '',
             customValue: '',
-            value: 'auto'
-        }
-    }
+            value: 'auto',
+        },
+    },
 })
-
 export class DBSettingsState {
-    constructor( private httpService: HttpService, private dbService: DashboardService,
-        private dateUtilsService: DateUtilsService, private utilsService: UtilsService ) {}
+    constructor(
+        private httpService: HttpService,
+        private dbService: DashboardService,
+        private dateUtilsService: DateUtilsService,
+        private utilsService: UtilsService
+    ) {}
 
-    @Selector() static getDashboardSettings(state: DBSettingsModel ) {
+    @Selector() static getDashboardSettings(state: DBSettingsModel) {
         return state;
     }
 
@@ -201,104 +204,144 @@ export class DBSettingsState {
     }
 
     @Action(UpdateDownsample)
-    updateDownsample(ctx: StateContext<DBSettingsModel>, { payload }: UpdateDownsample) {
+    updateDownsample(
+        ctx: StateContext<DBSettingsModel>,
+        { payload }: UpdateDownsample
+    ) {
         const state = ctx.getState();
 
-        let downsample = {
+        const downsample = {
             aggregators: payload.aggregators,
             value: payload.downsample,
             customUnit: '',
-            customValue: ''
-        }
+            customValue: '',
+        };
         if (payload.downsample === 'custom') {
             downsample.customUnit = payload.customDownsampleUnit;
             downsample.customValue = payload.customDownsampleValue;
         }
-        ctx.patchState({...state, downsample: downsample});
+        ctx.patchState({ ...state, downsample: downsample });
     }
 
     @Action(UpdateToT)
     updateToT(ctx: StateContext<DBSettingsModel>, { payload }: UpdateToT) {
-        ctx.patchState({tot: payload});
+        ctx.patchState({ tot: payload });
     }
 
     @Action(UpdateMode)
     updateMode(ctx: StateContext<DBSettingsModel>, { mode }: UpdateMode) {
         const state = ctx.getState();
-        ctx.patchState({...state, mode: mode});
+        ctx.patchState({ ...state, mode: mode });
     }
 
     @Action(UpdateDashboardTime)
-    updateDashboardTime(ctx: StateContext<DBSettingsModel>, { time }: UpdateDashboardTime) {
+    updateDashboardTime(
+        ctx: StateContext<DBSettingsModel>,
+        { time }: UpdateDashboardTime,
+    ) {
         const state = ctx.getState();
-        const newTime = {... time};
+        const newTime = { ...time };
         newTime.zone = state.time.zone;
-        ctx.patchState({...state, time: newTime, initialZoomTime: defaultInitialZoomTime });
+        ctx.patchState({
+            ...state,
+            time: newTime,
+            initialZoomTime: defaultInitialZoomTime,
+        });
     }
 
     @Action(UpdateDashboardTimeZone)
-    updateDashboardTimeZone(ctx: StateContext<DBSettingsModel>, { zone }: UpdateDashboardTimeZone) {
+    updateDashboardTimeZone(
+        ctx: StateContext<DBSettingsModel>,
+        { zone }: UpdateDashboardTimeZone,
+    ) {
         const state = ctx.getState();
-        const time = {...state.time};
+        const time = { ...state.time };
         time.zone = zone;
         ctx.patchState({ time: time });
     }
 
     @Action(UpdateDashboardTimeOnZoom)
-    updateDashboardTimeOnZoom(ctx: StateContext<DBSettingsModel>, { zoomTime }: UpdateDashboardTimeOnZoom) {
+    updateDashboardTimeOnZoom(
+        ctx: StateContext<DBSettingsModel>,
+        { zoomTime }: UpdateDashboardTimeOnZoom,
+    ) {
         const state = ctx.getState();
-        let t;
         let zTime;
 
         if (this.utilsService.hasInitialZoomTimeSet(state.initialZoomTime)) {
-            zTime = {...state.initialZoomTime};
-        } else { // first time zooming
-            zTime = {...state.time};
+            zTime = { ...state.initialZoomTime };
+        } else {
+            // first time zooming
+            zTime = { ...state.time };
         }
 
-        t = {...zoomTime};
+        const t = { ...zoomTime };
         t.zone = state.time.zone;
-        ctx.setState({...state, time: {...t}, initialZoomTime: {...zTime} });
+        ctx.setState({
+            ...state,
+            time: { ...t },
+            initialZoomTime: { ...zTime },
+        });
     }
 
     @Action(UpdateDashboardTimeOnZoomOut)
-    updateDashboardTimeOnZoomOut(ctx: StateContext<DBSettingsModel>, { }: UpdateDashboardTimeOnZoomOut) {
+    updateDashboardTimeOnZoomOut(
+        ctx: StateContext<DBSettingsModel>,
+        {}: UpdateDashboardTimeOnZoomOut
+    ) {
         const state = ctx.getState();
         let t;
         if (this.utilsService.hasInitialZoomTimeSet(state.initialZoomTime)) {
             t = state.initialZoomTime;
-        } else { // backup
+        } else {
+            // backup
             t = state.time;
         }
-        ctx.setState({...state, time: {...t}, initialZoomTime: defaultInitialZoomTime});
+        ctx.setState({
+            ...state,
+            time: { ...t },
+            initialZoomTime: defaultInitialZoomTime,
+        });
     }
 
     @Action(UpdateDashboardAutoRefresh)
-    UpdateDashboardAutoRefresh(ctx: StateContext<DBSettingsModel>, { refresh }: UpdateDashboardAutoRefresh) {
-        ctx.patchState({refresh: refresh});
+    UpdateDashboardAutoRefresh(
+        ctx: StateContext<DBSettingsModel>,
+        { refresh }: UpdateDashboardAutoRefresh,
+    ) {
+        ctx.patchState({ refresh: refresh });
     }
 
     @Action(UpdateDashboardTitle)
-    updateDashboardTitle(ctx: StateContext<DBSettingsModel>, { title }: UpdateDashboardTitle) {
+    updateDashboardTitle(
+        ctx: StateContext<DBSettingsModel>,
+        { title }: UpdateDashboardTitle,
+    ) {
         const state = ctx.getState();
-        const meta = {...state.meta};
+        const meta = { ...state.meta };
         meta.title = title;
-        ctx.patchState({...state, meta: meta});
+        ctx.patchState({ ...state, meta: meta });
     }
 
     @Action(UpdateVariables)
-    updateVariables(ctx: StateContext<DBSettingsModel>, { tplVars }: UpdateVariables) {
+    updateVariables(
+        ctx: StateContext<DBSettingsModel>,
+        { tplVars }: UpdateVariables,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state, tplVariables: tplVars});
+        ctx.patchState({ ...state, tplVariables: tplVars });
     }
 
     @Action(UpdateMeta)
     updateMeta(ctx: StateContext<DBSettingsModel>, { meta }: UpdateMeta) {
         const state = ctx.getState();
-        ctx.patchState({...state, meta: meta});
+        ctx.patchState({ ...state, meta: meta });
     }
     @Action(LoadDashboardSettings)
-    loadDashboardSettings(ctx: StateContext<DBSettingsModel>, { settings }: LoadDashboardSettings) {
+    loadDashboardSettings(
+        ctx: StateContext<DBSettingsModel>,
+        { settings }: LoadDashboardSettings,
+    ) {
         // just load the settings, not as new object
         // to avoid other settings listeners to fire off.
         ctx.setState(settings);

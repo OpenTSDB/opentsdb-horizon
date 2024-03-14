@@ -16,13 +16,22 @@
  */
 import { TestBed } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_SERVICES_IMPORTS
+} from '../alerts-testing.utils';
+
 import { AlertConverterService } from './alert-converter.service';
 
 describe('AlertConverterService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: ALERTS_TESTING_SERVICES_IMPORTS,
+        providers: [AlertConverterService]
+    }));
 
-  it('should be created', () => {
-    const service: AlertConverterService = TestBed.inject(AlertConverterService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: AlertConverterService = TestBed.inject(
+            AlertConverterService,
+        );
+        expect(service).toBeTruthy();
+    });
 });

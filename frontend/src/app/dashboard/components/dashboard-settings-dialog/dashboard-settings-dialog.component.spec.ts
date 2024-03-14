@@ -17,25 +17,36 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardSettingsDialogComponent } from './dashboard-settings-dialog.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('DashboardSettingsDialogComponent', () => {
-  let component: DashboardSettingsDialogComponent;
-  let fixture: ComponentFixture<DashboardSettingsDialogComponent>;
+    let component: DashboardSettingsDialogComponent;
+    let fixture: ComponentFixture<DashboardSettingsDialogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardSettingsDialogComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DashboardSettingsDialogComponent],
+            imports: DASHBOARD_TESTING_IMPORTS,
+            providers: [
+                { provide: MatLegacyDialogRef, useValue: {} },
+                { provide: MAT_DIALOG_DATA, useValue: {} }
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardSettingsDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DashboardSettingsDialogComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        component.dialogRef.disableClose = false;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

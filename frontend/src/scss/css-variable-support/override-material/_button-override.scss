@@ -1,0 +1,138 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+$_ripple-opacity: 0.1;
+
+// Applies a focus style to an mat-button element for each of the supported palettes.
+@mixin _focus-overlay-color($config) {
+  $primary: map.get($config, primary);
+  $accent: map.get($config, accent);
+  $warn: map.get($config, warn);
+
+  &.mat-primary .mat-button-focus-overlay {
+    background-color: mat-get-color-from-palette($primary, default);
+  }
+
+  &.mat-accent .mat-button-focus-overlay {
+    background-color: mat-get-color-from-palette($accent, default);
+  }
+
+  &.mat-warn .mat-button-focus-overlay {
+    background-color: mat-get-color-from-palette($warn, default);
+  }
+
+  &.mat-button-disabled .mat-button-focus-overlay {
+    background-color: transparent;
+  }
+}
+
+// Applies the background color for a ripple. If the value provided is not a Sass color,
+// we assume that we've been given a CSS variable. Since we can't perform alpha-blending
+// on a CSS variable, we instead add the opacity directly to the ripple element.
+@mixin _ripple-background($palette, $hue, $opacity) {
+  $background-color: mat-get-color-from-palette($palette, $hue, $opacity);
+  background-color: $background-color;
+  @if (meta.type-of($background-color) != color) {
+    opacity: $opacity;
+  }
+}
+
+@mixin _ripple-color($theme, $hue, $opacity: $_ripple-opacity) {
+  $primary: map.get($theme, primary);
+  $accent: map.get($theme, accent);
+  $warn: map.get($theme, warn);
+
+  &.mat-primary .mat-ripple-element {
+    @include _ripple-background($primary, $hue, $opacity);
+  }
+
+  &.mat-accent .mat-ripple-element {
+    @include _ripple-background($accent, $hue, $opacity);
+  }
+
+  &.mat-warn .mat-ripple-element {
+    @include _ripple-background($warn, $hue, $opacity);
+  }
+}
+
+// Applies a property to an mat-button element for each of the supported palettes.
+@mixin _theme-property($config, $property, $hue) {
+
+  $primary: map.get($config, primary);
+  $accent: map.get($config, accent);
+  $warn: map.get($config, warn);
+  $background: map.get($config, background);
+  $foreground: map.get($config, foreground);
+
+  &.mat-primary {
+    #{$property}: mat-get-color-from-palette($primary, $hue);
+  }
+  &.mat-accent {
+    #{$property}: mat-get-color-from-palette($accent, $hue);
+  }
+  &.mat-warn {
+    #{$property}: mat-get-color-from-palette($warn, $hue);
+  }
+
+  &.mat-primary, &.mat-accent, &.mat-warn, &.mat-button-disabled {
+    &.mat-button-disabled {
+      $palette: if($property == 'color', $foreground, $background);
+      #{$property}: mat-get-color-from-palette($palette, disabled-button);
+    }
+  }
+}
+
+@mixin color($config) {
+  //$primary: mat-get-color-from-palette($config, primary);
+  //$accent: mat-get-color-from-palette($config, accent);
+  //$warn: mat-get-color-from-palette($config, warn);
+
+  $background: map.get($config, background);
+  $foreground: map.get($config, foreground);
+
+  .mat-button, .mat-icon-button, .mat-stroked-button {
+    @include _theme-property($config, 'color', text);
+    @include _focus-overlay-color($config);
+  }
+
+  .mat-button-focus-overlay {
+    background: mat-get-color-from-palette($foreground, base);
+  }
+
+  // Note: this needs a bit extra specificity, because we're not guaranteed the inclusion
+  // order of the theme styles and the button reset may end up resetting this as well.
+  .mat-stroked-button:not(.mat-button-disabled) {
+    border-color: mat-get-color-from-palette($foreground, divider);
+  }
+
+  .mat-flat-button, .mat-raised-button, .mat-fab, .mat-mini-fab {
+    // Default font and background color when not using any color palette.
+    color: mat-get-color-from-palette($foreground, text);
+    background-color: mat-get-color-from-palette($background, raised-button);
+
+    @include _theme-property($config, 'color', default-contrast);
+    @include _theme-property($config, 'background', default);
+    @include _ripple-color($config, darker);
+  }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+}

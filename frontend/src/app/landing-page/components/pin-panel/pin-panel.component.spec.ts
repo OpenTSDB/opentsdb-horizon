@@ -17,25 +17,28 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PinPanelComponent } from './pin-panel.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('PinPanelComponent', () => {
-  let component: PinPanelComponent;
-  let fixture: ComponentFixture<PinPanelComponent>;
+    let component: PinPanelComponent;
+    let fixture: ComponentFixture<PinPanelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PinPanelComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [PinPanelComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PinPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PinPanelComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

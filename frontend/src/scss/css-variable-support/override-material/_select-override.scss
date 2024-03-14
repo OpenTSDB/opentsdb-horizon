@@ -1,0 +1,83 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+
+    $foreground: map.get($config, foreground);
+    $background: map.get($config, background);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
+
+    .mat-select-value {
+      color: mat-get-color-from-palette($foreground, text);
+    }
+
+    /* may add this in if needed
+    .mat-select-placeholder {
+      color: form-common.private-control-placeholder-color($config);
+    }*/
+
+    .mat-select-disabled .mat-select-value {
+      color: mat-get-color-from-palette($foreground, disabled-text);
+    }
+
+    .mat-select-arrow {
+      color: mat-get-color-from-palette($foreground, secondary-text);
+    }
+
+    .mat-select-panel {
+      background: mat-get-color-from-palette($background, card);
+
+      .mat-option.mat-selected:not(.mat-option-multiple) {
+        background: mat-get-color-from-palette($background, hover, 0.12);
+      }
+    }
+
+    .mat-form-field {
+      &.mat-focused {
+        &.mat-primary .mat-select-arrow {
+          color: mat-get-color-from-palette($primary, text);
+        }
+
+        &.mat-accent .mat-select-arrow {
+          color: mat-get-color-from-palette($accent, text);
+        }
+
+        &.mat-warn .mat-select-arrow {
+          color: mat-get-color-from-palette($warn, text);
+        }
+      }
+
+      .mat-select.mat-select-invalid .mat-select-arrow {
+        color: mat-get-color-from-palette($warn, text);
+      }
+
+      .mat-select.mat-select-disabled .mat-select-arrow {
+        color: mat-get-color-from-palette($foreground, disabled-text);
+      }
+    }
+  }
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

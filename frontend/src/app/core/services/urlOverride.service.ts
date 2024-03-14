@@ -18,13 +18,13 @@
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { Subscription, Observable } from 'rxjs';
-import { Router,  NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AppConfigService } from './config.service';
-import { UtilsService} from './utils.service';
+import { UtilsService } from './utils.service';
 import { DateUtilsService } from './dateutils.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class URLOverrideService {
     version = 1;
@@ -35,17 +35,37 @@ export class URLOverrideService {
 
     getTimeOverrides(tz = 'utc') {
         if (this.overrides['time']) {
-            const otz = this.overrides['time']['zone'] ? this.overrides['time']['zone'] : 'utc';
-            if ( this.overrides['time']['start'] ) {
+            const otz = this.overrides['time']['zone']
+                ? this.overrides['time']['zone']
+                : 'utc';
+            if (this.overrides['time']['start']) {
                 const t = this.overrides['time']['start'];
                 const m = this.dateUtil.timeToMoment(t, otz);
                 /* eslint-disable max-len */
-                this.overrides['time']['start'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
+                this.overrides['time']['start'] =
+                    m === undefined
+                        ? ''
+                        : t.toLowerCase() === 'now' ||
+                            this.dateUtil.relativeTimeToMoment(t)
+                            ? t
+                            : this.dateUtil.timestampToTime(
+                                m.unix().toString(),
+                                tz,
+                            );
             }
-            if ( this.overrides['time']['end'] ) {
+            if (this.overrides['time']['end']) {
                 const t = this.overrides['time']['end'];
                 const m = this.dateUtil.timeToMoment(t, otz);
-                this.overrides['time']['end'] = m === undefined ? '' : ( t.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(t) ? t : this.dateUtil.timestampToTime(m.unix().toString(), tz));
+                this.overrides['time']['end'] =
+                    m === undefined
+                        ? ''
+                        : t.toLowerCase() === 'now' ||
+                            this.dateUtil.relativeTimeToMoment(t)
+                            ? t
+                            : this.dateUtil.timestampToTime(
+                                m.unix().toString(),
+                                tz,
+                            );
             }
             return this.overrides['time'];
         }
@@ -59,7 +79,7 @@ export class URLOverrideService {
 
     clearOverrides() {
         this.overrides = {};
-        var url = this.getLocationURLandQueryParams();
+        const url = this.getLocationURLandQueryParams();
         if (url['queryParams']) {
             url['queryParams'] = {};
         }
@@ -71,49 +91,61 @@ export class URLOverrideService {
     }
 
     applyURLParamsToDB(p) {
-        var time = {};
-        var tags = {};
-        for (var k in p) {
-            var v = p[k];
-            if (!v) continue;
+        const time = {};
+        const tags = {};
+        for (const k in p) {
+            if (!p[k]) {
+                continue;
+            }
+            const v = p[k];
+
             switch (k) {
                 case '__start':
-                    time['start'] = decodeURIComponent(v); break;
+                    time['start'] = decodeURIComponent(v);
+                    break;
                 case '__end':
-                    time['end'] = decodeURIComponent(v); break;
+                    time['end'] = decodeURIComponent(v);
+                    break;
                 case '__tz':
-                    time['zone'] = decodeURIComponent(v.toLowerCase()); break;
+                    time['zone'] = decodeURIComponent(v.toLowerCase());
+                    break;
                 default:
-                    if (k.startsWith('__'))
+                    if (k.startsWith('__')) {
                         break;
-                    // key doesn't start with '__' 
+                    }
+                    // key doesn't start with '__'
                     // treat it like tag key
                     const decodeKey = decodeURIComponent(k);
                     tags[decodeKey] = decodeURIComponent(v);
                     break;
             }
         }
-        if (Object.keys(time).length)
+        if (Object.keys(time).length) {
             this.overrides['time'] = time;
-        if (Object.keys(tags).length)
+        }
+        if (Object.keys(tags).length) {
             this.overrides['tags'] = tags;
+        }
     }
 
     getLocationURLandQueryParams() {
-        var currentFullUrl = this.location.path();
-        var urlParts = currentFullUrl.split('?');
-        var queryParams = {};
-        var urlObj = {};
+        const currentFullUrl = this.location.path();
+        const urlParts = currentFullUrl.split('?');
+        const queryParams = {};
+        const urlObj = {};
         urlObj['path'] = urlParts[0];
         urlObj['queryParams'] = queryParams;
         if (urlParts.length > 1) {
             // split query params
             // at this moment, do not decode before the split
-            let qp = urlParts[1].split('&');
-            for(let p in qp) {
-                let s = qp[p].split('=');
+            const qp = urlParts[1].split('&');
+            for (const p in qp) {
+                if (!qp[p]) {
+                    continue;
+                }
+                const s = qp[p].split('=');
                 if (s.length > 1) {
-                    queryParams[s[0]]  = s[1];
+                    queryParams[s[0]] = s[1];
                 }
             }
         }
@@ -124,11 +156,16 @@ export class URLOverrideService {
         if (url.path) {
             if (url.queryParams) {
                 // create param string
-                var params: string[] = [];
-                for (var q in url['queryParams']) {
-                    params.push(q + "=" + encodeURIComponent(url['queryParams'][q]));
+                const params: string[] = [];
+                for (const q in url['queryParams']) {
+                    if (!url['queryParams'][q]) {
+                        continue;
+                    }
+                    params.push(
+                        q + '=' + encodeURIComponent(url['queryParams'][q]),
+                    );
                 }
-                var paramString = params.join('&');
+                const paramString = params.join('&');
                 this.location.replaceState(url.path, paramString);
             }
         }
@@ -139,20 +176,26 @@ export class URLOverrideService {
         private router: Router,
         private utils: UtilsService,
         private dateUtil: DateUtilsService,
-        private appConfig: AppConfigService
-    ) {
-        
-    }
+        private appConfig: AppConfigService,
+    ) {}
 
-    initialize(options = null ) {
+    initialize(options = null) {
         const url = this.getLocationURLandQueryParams();
-        let otherParams = {};
+        const otherParams = {};
         for (const k in url['queryParams']) {
+            if (!url['queryParams'][k]) {
+                continue;
+            }
             const v = url['queryParams'][k];
             switch (k.toLowerCase()) {
                 case '__tsdb_host':
-                    this.appConfig.setConfig('tsdb_host', decodeURIComponent(v));
-                    this.appConfig.setConfig('tsdb_hosts', [decodeURIComponent(v)]);
+                    this.appConfig.setConfig(
+                        'tsdb_host',
+                        decodeURIComponent(v),
+                    );
+                    this.appConfig.setConfig('tsdb_hosts', [
+                        decodeURIComponent(v),
+                    ]);
                     break;
                 case '__config_host':
                     this.appConfig.setConfig('configdb', decodeURIComponent(v));
@@ -163,8 +206,11 @@ export class URLOverrideService {
                 case '__debug_level':
                     this.appConfig.setConfig('debugLevel', v);
                     break;
-                    case '__tsdb_source':
-                    this.appConfig.setConfig('tsdbSource', decodeURIComponent(v));
+                case '__tsdb_source':
+                    this.appConfig.setConfig(
+                        'tsdbSource',
+                        decodeURIComponent(v),
+                    );
                     break;
                 case '__tsdb_cache':
                     this.appConfig.setConfig('tsdbCacheMode', v);
@@ -173,15 +219,19 @@ export class URLOverrideService {
                     otherParams[k] = v;
             }
         }
-        if ( options && options.dbOverride && Object.keys(otherParams).length > 0) {
+        if (
+            options &&
+            options.dbOverride &&
+            Object.keys(otherParams).length > 0
+        ) {
             this.applyURLParamsToDB(otherParams);
         }
     }
 
     applyParamstoURL(params) {
-        let url: any = this.getLocationURLandQueryParams();
-        let decodeQueryParams = {};
-        for (let key in url.queryParams) {
+        const url: any = this.getLocationURLandQueryParams();
+        const decodeQueryParams = {};
+        for (const key in url.queryParams) {
             if (url.queryParams.hasOwnProperty(key)) {
                 const decodeKey = decodeURIComponent(key);
                 const decodeVal = decodeURIComponent(url.queryParams[key]);
@@ -189,13 +239,35 @@ export class URLOverrideService {
             }
         }
         url.queryParams = decodeQueryParams;
-        let tags: any = {};
+        const tags: any = {};
         if (params.start) {
             /* eslint-disable max-len */
-            url['queryParams']['__start'] = params.start.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.start) ? params.start : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.start, params.zone).unix().toString(), 'UTC', 'YYYYMMDDTHHmmss');
+            url['queryParams']['__start'] =
+                params.start.toLowerCase() === 'now' ||
+                this.dateUtil.relativeTimeToMoment(params.start)
+                    ? params.start
+                    : this.dateUtil.timestampToTime(
+                        this.dateUtil
+                            .timeToMoment(params.start, params.zone)
+                            .unix()
+                            .toString(),
+                        'UTC',
+                        'YYYYMMDDTHHmmss',
+                    );
         }
         if (params.end) {
-            url['queryParams']['__end'] = params.end.toLowerCase() === 'now' || this.dateUtil.relativeTimeToMoment(params.end) ? params.end : this.dateUtil.timestampToTime(this.dateUtil.timeToMoment(params.end, params.zone).unix().toString(), 'UTC', 'YYYYMMDDTHHmmss');
+            url['queryParams']['__end'] =
+                params.end.toLowerCase() === 'now' ||
+                this.dateUtil.relativeTimeToMoment(params.end)
+                    ? params.end
+                    : this.dateUtil.timestampToTime(
+                        this.dateUtil
+                            .timeToMoment(params.end, params.zone)
+                            .unix()
+                            .toString(),
+                        'UTC',
+                        'YYYYMMDDTHHmmss',
+                    );
         }
         /*
         if (params.zone) {
@@ -203,7 +275,10 @@ export class URLOverrideService {
         }
         */
         if (params.tags) {
-            for (let i in params.tags) {
+            for (const i in params.tags) {
+                if (!params.tags[i]) {
+                    continue;
+                }
                 const tk = params.tags[i].alias;
                 const tv = params.tags[i].filter;
                 if (tk && tv) {

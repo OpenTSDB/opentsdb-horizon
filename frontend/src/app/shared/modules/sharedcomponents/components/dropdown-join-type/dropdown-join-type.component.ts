@@ -14,64 +14,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef, HostBinding, ViewEncapsulation } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    forwardRef,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
+interface JoinTypeOptionData {
+    label: string;
+    value: string;
+}
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dropdown-join-type',
     templateUrl: './dropdown-join-type.component.html',
     styleUrls: ['./dropdown-join-type.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => DropdownJoinTypeComponent),
-        multi: true,
-    }]
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DropdownJoinTypeComponent),
+            multi: true,
+        },
+    ],
 })
 export class DropdownJoinTypeComponent implements OnInit {
-
     @HostBinding('class.dropdown-join-type') private _hostClass = true;
 
     @Input() value;
 
     @Output()
-    change = new EventEmitter<string>();
+    valueChange = new EventEmitter<string>();
 
-    joinOptions: Array<any> = [
-      { value: 'INNER', label: 'inner' },
-      { value: 'LEFT', label: 'left' },
-      { value: 'LEFT_DISJOINT', label: 'left disjoint' },
-      { value: 'NATURAL_OUTER', label: 'natural' },
-      { value: 'OUTER', label: 'outer' },
-      { value: 'OUTER_DISJOINT', label: 'outer disjoint' },
-      { value: 'RIGHT', label: 'right' },
-      { value: 'RIGHT_DISJOINT', label: 'right disjoint' },
-      { value: 'CROSS', label: 'cross' }
+    joinOptions: Array<JoinTypeOptionData> = [
+        { value: 'INNER', label: 'inner' },
+        { value: 'LEFT', label: 'left' },
+        { value: 'LEFT_DISJOINT', label: 'left disjoint' },
+        { value: 'NATURAL_OUTER', label: 'natural' },
+        { value: 'OUTER', label: 'outer' },
+        { value: 'OUTER_DISJOINT', label: 'outer disjoint' },
+        { value: 'RIGHT', label: 'right' },
+        { value: 'RIGHT_DISJOINT', label: 'right disjoint' },
+        { value: 'CROSS', label: 'cross' },
     ];
 
-    aggregatorControl: FormControl;
+    aggregatorControl: UntypedFormControl;
     defaultJoin = 'NATURAL_OUTER';
     selectedLabel = 'NATURAL';
     selectedIndex = -1;
 
     subscription: Subscription;
 
-    constructor() { }
+    constructor() {}
 
     ngOnInit() {
         if (!this.value) {
             this.value = this.defaultJoin;
         }
-        this.selectedLabel = this.joinOptions.find(d => d.value === this.value ).label;
+        this.selectedLabel = this.joinOptions.find(
+            (d) => d.value === this.value,
+        ).label;
     }
 
-    selectOption(value) {
+    selectOption(value): void{
         this.value = value;
-        this.selectedLabel = this.joinOptions.find(d => d.value === this.value ).label;
-        this.change.emit(this.value);
+        this.selectedLabel = this.joinOptions.find(
+            (d) => d.value === this.value,
+        ).label;
+        this.valueChange.emit(this.value);
     }
-
 }
-

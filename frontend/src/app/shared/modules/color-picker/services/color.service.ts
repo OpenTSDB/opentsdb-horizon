@@ -15,27 +15,39 @@
  * limitations under the License.
  */
 import { Injectable, Inject } from '@angular/core';
-import { coerceHexaColor, isValidColor, EMPTY_COLOR, DEFAULT_COLORS } from '../color-picker';
+import {
+    coerceHexaColor,
+    isValidColor,
+    EMPTY_COLOR,
+    DEFAULT_COLORS,
+} from '../color-picker';
 
 @Injectable()
 export class ColorService {
-
-    constructor() { }
+    constructor() {}
 
     rgbToHex(r, g, b) {
-        const hexValue = '#' + [r, g, b].map(x => {
-            const hex = x.toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        }).join('');
+        const hexValue =
+            '#' +
+            [r, g, b]
+                .map((x) => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                })
+                .join('');
         return hexValue;
     }
 
     rgbToHsl(r, g, b) {
-        r /= 255, g /= 255, b /= 255;
+        r /= 255;
+        g /= 255;
+        b /= 255;
 
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        // eslint-disable-next-line prefer-const
-        let h, s, l = (max + min) / 2;
+        const max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+
+        let h, s;
+        const l = (max + min) / 2;
 
         if (max === min) {
             h = s = 0; // achromatic
@@ -44,9 +56,15 @@ export class ColorService {
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
             switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
             }
 
             h /= 6;
@@ -55,29 +73,36 @@ export class ColorService {
         return {
             h: h,
             s: s,
-            l: l
+            l: l,
         };
     }
 
     rgbToHsv(r, g, b) {
-        r /= 255, g /= 255, b /= 255;
+        r /= 255;
+        g /= 255;
+        b /= 255;
 
         const max = Math.max(r, g, b);
         const min = Math.min(r, g, b);
         let h;
-        let s;
         const v = max;
 
         const d = max - min;
-        s = max === 0 ? 0 : d / max;
+        const s = max === 0 ? 0 : d / max;
 
         if (max === min) {
             h = 0; // achromatic
         } else {
             switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
             }
 
             h /= 6;
@@ -86,17 +111,19 @@ export class ColorService {
         return {
             h: h,
             s: s,
-            v: v
+            v: v,
         };
     }
 
     hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
+        return result
+            ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16),
+            }
+            : null;
     }
 
     hexToHsl(hex) {
@@ -110,16 +137,15 @@ export class ColorService {
     }
 
     hslToRgb(h, s, l) {
-        h = (h > 1) ? h / 360 : h;
-        s = (s > 1) ? s / 100 : s;
-        l = (l > 1) ? l / 100 : l;
+        h = h > 1 ? h / 360 : h;
+        s = s > 1 ? s / 100 : s;
+        l = l > 1 ? l / 100 : l;
 
         let r, g, b;
 
         if (s === 0) {
             r = g = b = l; // achromatic
         } else {
-
             const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
             const p = 2 * l - q;
             r = this.hue2rgb(p, q, h + 1 / 3);
@@ -130,14 +156,14 @@ export class ColorService {
         return {
             r: Math.round(r * 255),
             g: Math.round(g * 255),
-            b: Math.round(b * 255)
+            b: Math.round(b * 255),
         };
     }
 
     hsvToRgb(h, s, v) {
-        h = (h > 1) ? h / 360 : h;
-        s = (s > 1) ? s / 100 : s;
-        v = (v > 1) ? v / 100 : v;
+        h = h > 1 ? h / 360 : h;
+        s = s > 1 ? s / 100 : s;
+        v = v > 1 ? v / 100 : v;
 
         let r, g, b;
 
@@ -148,30 +174,51 @@ export class ColorService {
         const t = v * (1 - (1 - f) * s);
 
         switch (i % 6) {
-            case 0: r = v, g = t, b = p; break;
-            case 1: r = q, g = v, b = p; break;
-            case 2: r = p, g = v, b = t; break;
-            case 3: r = p, g = q, b = v; break;
-            case 4: r = t, g = p, b = v; break;
-            case 5: r = v, g = p, b = q; break;
+            case 0:
+                r = v; g = t; b = p;
+                break;
+            case 1:
+                r = q; g = v; b = p;
+                break;
+            case 2:
+                r = p; g = v; b = t;
+                break;
+            case 3:
+                r = p; g = q; b = v;
+                break;
+            case 4:
+                r = t; g = p; b = v;
+                break;
+            case 5:
+                r = v; g = p; b = q;
+                break;
         }
 
         return {
             r: Math.round(r * 255),
             g: Math.round(g * 255),
-            b: Math.round(b * 255)
+            b: Math.round(b * 255),
         };
     }
 
     hue2rgb(p, q, t) {
-        if (t < 0) { t += 1; }
-        if (t > 1) { t -= 1; }
-        if (t < 1 / 6) { return p + (q - p) * 6 * t; }
-        if (t < 1 / 2) { return q; }
-        if (t < 2 / 3) { return p + (q - p) * (2 / 3 - t) * 6; }
+        if (t < 0) {
+            t += 1;
+        }
+        if (t > 1) {
+            t -= 1;
+        }
+        if (t < 1 / 6) {
+            return p + (q - p) * 6 * t;
+        }
+        if (t < 1 / 2) {
+            return q;
+        }
+        if (t < 2 / 3) {
+            return p + (q - p) * (2 / 3 - t) * 6;
+        }
         return p;
     }
-
 
     hexToColorName(hexColor: string): string {
         let colorName = hexColor;
@@ -184,5 +231,4 @@ export class ColorService {
         }
         return colorName;
     }
-
 }

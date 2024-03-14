@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 @Component({
-  selector: 'app-error-dialog',
-  templateUrl: './error-dialog.component.html',
-  styleUrls: ['./error-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-error-dialog',
+    templateUrl: './error-dialog.component.html',
+    styleUrls: ['./error-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class ErrorDialogComponent implements OnInit {
-
     constructor(
         public dialogRef: MatDialogRef<ErrorDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dialogData: any
-    ) { }
+        @Inject(MAT_DIALOG_DATA) public dialogData: any,
+    ) {}
 
     ngOnInit() {
+        // do nothing
     }
-
 }

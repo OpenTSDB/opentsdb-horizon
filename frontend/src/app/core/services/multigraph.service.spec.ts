@@ -19,10 +19,12 @@ import { TestBed } from '@angular/core/testing';
 import { MultigraphService } from './multigraph.service';
 
 describe('MultigraphService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({
+        providers: [MultigraphService]
+    }));
 
-  it('should be created', () => {
-    const service: MultigraphService = TestBed.inject(MultigraphService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: MultigraphService = TestBed.inject(MultigraphService);
+        expect(service).toBeTruthy();
+    });
 });

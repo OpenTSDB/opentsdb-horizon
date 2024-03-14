@@ -17,26 +17,54 @@
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+
+import {
+    ADMIN_TESTING_IMPORTS
+} from '../../admin-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../shared/mockdata/config/app-config';
+
 import { AdminConfigComponent } from './admin-config.component';
+import { AppConfigService } from '../../../core/services/config.service';
 
 describe('AdminConfigComponent', () => {
-  let component: AdminConfigComponent;
-  let fixture: ComponentFixture<AdminConfigComponent>;
+    let component: AdminConfigComponent;
+    let fixture: ComponentFixture<AdminConfigComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AdminConfigComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockAppConfigService;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AdminConfigComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [AdminConfigComponent],
+            imports: ADMIN_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AdminConfigComponent);
+        component = fixture.componentInstance;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

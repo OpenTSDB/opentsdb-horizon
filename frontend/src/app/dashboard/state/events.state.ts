@@ -17,7 +17,6 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { HttpService } from '../../core/http/http.service';
-import { map, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 export interface EventsModel {
@@ -42,7 +41,7 @@ export class EventsGenericError {
     static readonly type = '[Events] Error happened';
     constructor(
         public readonly error: any,
-        public readonly label: string = 'Generic Error'
+        public readonly label: string = 'Generic Error',
     ) {}
 }
 
@@ -52,15 +51,15 @@ export class GetEvents {
         public readonly time: any,
         public readonly eventQueries: any[],
         public readonly wid: string,
-        public readonly limit?: number
-    ) { }
+        public readonly limit?: number,
+    ) {}
 }
 
 export class GetEventsSuccess {
     public static type = '[Events] Get Events Success';
     constructor(
         public readonly response: any,
-        public readonly origParams: any
+        public readonly origParams: any,
     ) {}
 }
 
@@ -68,36 +67,28 @@ export class GetEventsFailed {
     public static type = '[Events] Get Events Failed';
     constructor(
         public readonly response: any,
-        public readonly wid: string
+        public readonly wid: string,
     ) {}
 }
 
 export class SetEventBuckets {
     public static type = '[Events] Set Event Buckets';
-    constructor (
-        public readonly buckets: any[]
-    ) {}
+    constructor(public readonly buckets: any[]) {}
 }
 
 export class SetEventsSelectedBucketIndex {
     public static type = '[Events] Set Selected Bucket Index';
-    constructor (
-        public readonly index: number
-    ) {}
+    constructor(public readonly index: number) {}
 }
 
 export class SetEventsTimeRange {
     public static type = '[Events] Set Time Range';
-    constructor (
-        public readonly time: any
-    ) {}
+    constructor(public readonly time: any) {}
 }
 
 export class SetEventsTimeZone {
     public static type = '[Events] Set Time Zone';
-    constructor (
-        public readonly timezone: any
-    ) {}
+    constructor(public readonly timezone: any) {}
 }
 
 // export class LoadEventsSuccess {
@@ -116,34 +107,30 @@ export class SetEventsTimeZone {
 //     ) { }
 // }
 
-
 @Injectable()
 @State<EventsStateModel>({
     name: 'Events',
     defaults: {
         events: {
             eventQueries: [],
-            events: []
+            events: [],
         },
         buckets: [],
         time: {
             startTime: 0,
-            endTime: 0
+            endTime: 0,
         },
         timezone: 'utc',
         selectedBucketIndex: -1,
         error: {},
         loading: false,
-        lastUpdated: {}
-    }
+        lastUpdated: {},
+    },
 })
-
 export class EventsState {
     subs: any = {};
     queryObserver: Observable<any>;
-    constructor(
-        private httpService: HttpService
-    ) { }
+    constructor(private httpService: HttpService) {}
 
     @Selector()
     static GetEvents(state: EventsStateModel) {
@@ -171,95 +158,138 @@ export class EventsState {
     }
 
     @Action(GetEvents)
-    getEvents(ctx: StateContext<EventsStateModel>, { time, eventQueries, wid, limit }: GetEvents) {
+    getEvents(
+        ctx: StateContext<EventsStateModel>,
+        { time, eventQueries, wid, limit }: GetEvents
+    ) {
+        ctx.patchState({ loading: true });
 
-        ctx.patchState({loading: true});
-
-        if (  this.subs[wid] ) {
+        if (this.subs[wid]) {
             this.subs[wid].unsubscribe();
         }
-        this.queryObserver = this.httpService.getEvents(wid, time, eventQueries, limit);
+        this.queryObserver = this.httpService.getEvents(
+            wid,
+            time,
+            eventQueries,
+            limit,
+        );
 
         this.subs[wid] = this.queryObserver.subscribe(
-            response => {
-                ctx.dispatch(new GetEventsSuccess(response, { time, eventQueries, wid, limit } ));
+            (response) => {
+                ctx.dispatch(
+                    new GetEventsSuccess(response, {
+                        time,
+                        eventQueries,
+                        wid,
+                        limit,
+                    }),
+                );
             },
-            err => {
-                ctx.dispatch(new GetEventsFailed(err, wid))
-            }
+            (err) => {
+                ctx.dispatch(new GetEventsFailed(err, wid));
+            },
         );
     }
 
     @Action(GetEventsSuccess)
-    getEventsSucess(ctx: StateContext<EventsStateModel>, { response, origParams }: GetEventsSuccess) {
-
+    getEventsSucess(
+        ctx: StateContext<EventsStateModel>,
+        { response, origParams }: GetEventsSuccess,
+    ) {
         const state = ctx.getState();
 
         const events = response;
 
-        ctx.setState({...state,
+        ctx.setState({
+            ...state,
             events,
             buckets: [],
             selectedBucketIndex: -1,
             time: origParams.time,
             loading: false,
-            error: null
+            error: null,
         });
-        if ( this.subs[origParams.wid]) {
+        if (this.subs[origParams.wid]) {
             this.subs[origParams.wid].unsubscribe();
         }
         this.queryObserver = null;
     }
 
     @Action(GetEventsFailed)
-    getEventsFailed(ctx: StateContext<EventsStateModel>, { response, wid }: GetEventsFailed) {
+    getEventsFailed(
+        ctx: StateContext<EventsStateModel>,
+        { response, wid }: GetEventsFailed,
+    ) {
         console.group(
             '%cERROR%c' + GetEventsFailed.type,
             'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            'color: #ff0000; padding: 4px 8px; font-weight: bold',
         );
         console.log('%cErrorMsg', 'font-weight: bold;', { response });
         console.groupEnd();
 
         const state = ctx.getState();
-        const events: any = { events: [], wid, error: response.error.error.message};
-        ctx.setState({ ...state, loading: false, error: response.error.error.message, events});
-        if ( this.subs[wid]) {
+        const events: any = {
+            events: [],
+            wid,
+            error: response.error.error.message,
+        };
+        ctx.setState({
+            ...state,
+            loading: false,
+            error: response.error.error.message,
+            events,
+        });
+        if (this.subs[wid]) {
             this.subs[wid].unsubscribe();
         }
         this.queryObserver = null;
     }
 
     @Action(SetEventBuckets)
-    setEventBuckets(ctx: StateContext<EventsStateModel>, { buckets }: SetEventBuckets) {
+    setEventBuckets(
+        ctx: StateContext<EventsStateModel>,
+        { buckets }: SetEventBuckets,
+    ) {
         ctx.patchState({ buckets });
     }
 
     @Action(SetEventsSelectedBucketIndex)
-    setSelectedBucketIndex(ctx: StateContext<EventsStateModel>, { index }: SetEventsSelectedBucketIndex) {
+    setSelectedBucketIndex(
+        ctx: StateContext<EventsStateModel>,
+        { index }: SetEventsSelectedBucketIndex,
+    ) {
         ctx.patchState({ selectedBucketIndex: index });
     }
 
     @Action(SetEventsTimeRange)
-    setTimeRange(ctx: StateContext<EventsStateModel>, { time }: SetEventsTimeRange) {
+    setTimeRange(
+        ctx: StateContext<EventsStateModel>,
+        { time }: SetEventsTimeRange,
+    ) {
         ctx.patchState({ time });
     }
 
     @Action(SetEventsTimeZone)
-    setTimeZone(ctx: StateContext<EventsStateModel>, { timezone }: SetEventsTimeZone) {
+    setTimeZone(
+        ctx: StateContext<EventsStateModel>,
+        { timezone }: SetEventsTimeZone,
+    ) {
         ctx.patchState({ timezone });
     }
 
     @Action(EventsGenericError)
-    eventsGenericError(ctx: StateContext<EventsStateModel>, { error, label }: EventsGenericError) {
+    eventsGenericError(
+        ctx: StateContext<EventsStateModel>,
+        { error, label }: EventsGenericError,
+    ) {
         console.group(
             '%cERROR%c' + label,
             'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            'color: #ff0000; padding: 4px 8px; font-weight: bold',
         );
         console.log('%cErrorMsg', 'font-weight: bold;', error);
         console.groupEnd();
         ctx.patchState({ error });
     }
-
 }

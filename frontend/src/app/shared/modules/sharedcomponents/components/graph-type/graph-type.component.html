@@ -1,25 +1,54 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<mat-button-toggle-group  (change)="changeWidgetType($event.value)" [value]="selected">
-    <mat-button-toggle value="LinechartWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-line-chart"></span></mat-button-toggle>
-    <mat-button-toggle value="BarchartWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-bar-graph"></span></mat-button-toggle>
-    <mat-button-toggle value="HeatmapWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-heatmap"></span></mat-button-toggle>
-    <mat-button-toggle value="BignumberWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-big-number"></span></mat-button-toggle>
-    <mat-button-toggle value="TopnWidgetComponent" aria-label="Text align left"><span class="widget-type-icon widget-icon-topn-chart"></span></mat-button-toggle>
-    <mat-button-toggle value="DonutWidgetComponent" aria-label="Text align center"><span class="widget-type-icon widget-icon-donut-chart"></span></mat-button-toggle>
-    <mat-button-toggle value="TableWidgetComponent" aria-label="Text align center"><span class="widget-type-icon widget-icon-table"></span></mat-button-toggle>
+<mat-button-toggle-group
+    (change)="changeWidgetType($event.value)"
+    [value]="selected"
+>
+    <mat-button-toggle
+        value="LinechartWidgetComponent"
+        aria-label="Text align left"
+        ><span class="widget-type-icon widget-icon-line-chart"></span
+    ></mat-button-toggle>
+    <mat-button-toggle
+        value="BarchartWidgetComponent"
+        aria-label="Text align left"
+        ><span class="widget-type-icon widget-icon-bar-graph"></span
+    ></mat-button-toggle>
+    <mat-button-toggle
+        value="HeatmapWidgetComponent"
+        aria-label="Text align left"
+        ><span class="widget-type-icon widget-icon-heatmap"></span
+    ></mat-button-toggle>
+    <mat-button-toggle
+        value="BignumberWidgetComponent"
+        aria-label="Text align left"
+        ><span class="widget-type-icon widget-icon-big-number"></span
+    ></mat-button-toggle>
+    <mat-button-toggle value="TopnWidgetComponent" aria-label="Text align left"
+        ><span class="widget-type-icon widget-icon-topn-chart"></span
+    ></mat-button-toggle>
+    <mat-button-toggle
+        value="DonutWidgetComponent"
+        aria-label="Text align center"
+        ><span class="widget-type-icon widget-icon-donut-chart"></span
+    ></mat-button-toggle>
+    <mat-button-toggle
+        value="TableWidgetComponent"
+        aria-label="Text align center"
+        ><span class="widget-type-icon widget-icon-table"></span
+    ></mat-button-toggle>
 </mat-button-toggle-group>

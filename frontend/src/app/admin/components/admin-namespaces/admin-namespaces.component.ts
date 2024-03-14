@@ -15,46 +15,48 @@
  * limitations under the License.
  */
 
- import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
     selector: 'app-admin-namespaces',
     templateUrl: './admin-namespaces.component.html',
     styleUrls: ['./admin-namespaces.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminNamespacesComponent implements OnInit {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-section app-admin-config';
+    @HostBinding('class') classAttribute =
+    'app-admin-section app-admin-config';
 
     // TEST sections links
     testSubLinks: any[] = [
         {
             label: 'Test Namespace 1',
-            path: 'test-1'
+            path: 'test-1',
         },
         {
             label: 'Test Namespace 2',
-            path: 'test-2'
+            path: 'test-2',
         },
         {
             label: 'Test Namespace 3',
-            path: 'test-3'
+            path: 'test-3',
         },
         {
             label: 'Test Namespace 4',
-            path: 'test-4'
+            path: 'test-4',
         },
         {
             label: 'Test Namespace 5',
-            path: 'test-5'
-        }
+            path: 'test-5',
+        },
     ];
 
+    constructor() {}
 
-    constructor() { }
-
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

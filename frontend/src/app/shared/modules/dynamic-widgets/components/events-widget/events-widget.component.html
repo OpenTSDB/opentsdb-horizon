@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@
         <div class="widget-title" *ngIf="mode === 'edit'" fxLayout="row" fxFlex="1 1 48px">
             <span fxFlex="1 1 100%">
                 <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
-                showEditIcon="true"
+                [showEditIcon]="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
@@ -39,7 +39,9 @@
         <div class="widget-controls-container" *ngIf="mode === 'edit'">
             <!-- tabs with config content -->
             <mat-tab-group class="widget-configs" selectedIndex="0" color="primary" [@.disabled]="'true'" mat-align-tabs="start">
-                <mat-tab label="Events" [disabled]="editQueryId">
+                <!-- TODO: cleanup? Not sure why there is a disabled here
+                <mat-tab label="Events" [disabled]="editQueryId">-->
+                <mat-tab label="Events">
                     <ng-template matTabContent>
                         <widget-config-events [widget]="widget" [allowEventToggling]="false" (widgetChange)="updateConfig($event);"></widget-config-events>
                     </ng-template>

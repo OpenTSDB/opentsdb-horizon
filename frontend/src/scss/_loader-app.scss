@@ -1,4 +1,5 @@
 // **
+@use '@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -21,12 +22,14 @@
 // * includes Material base
 // * includes global app styles
 // *
-@charset "utf-8";
+// @charset "utf-8";
 
 // import loader base
 @import './loader-base.scss';
 
 @import './component-theming.scss';
+
+@import './css-variable-support/material-component-themes';
 
 // generate font-face imports
 @each $font-face, $font-config in $app-available-typefaces {
@@ -42,7 +45,7 @@
 
 // NOTE: OPTION 1 - import a predefined angular theme. Kind of sucks if you really don't want any of the predefined themes.
 // * Recommended only if you plan on using one of the themes, otherwise it just adds weight to your css load
-// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // NOTE: OPTION 2 - Looks like the check that triggers the console warning may be looking for this class.
 // * Recommended method - definitely much lighter for the css load;
@@ -57,7 +60,16 @@
 
 // RENDER MATERIAL CORE (structure)
 // NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
-@include mat-core(map-get($app-fontface-config, sans));
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy(map-get($app-fontface-config, sans));`
+@include mat.all-legacy-component-typographies(map-get($app-fontface-config, sans));
+@include mat.legacy-core();
 
 // THEME RULES
 
@@ -72,6 +84,7 @@
 // NEW: CSS VARIANTS
 @each $theme-name, $theme-config in $app-themes {
     @include init-mat-theme($theme-name);
+    @include material-component-themes($theme-name);
 }
 
 @include init-component-themes();

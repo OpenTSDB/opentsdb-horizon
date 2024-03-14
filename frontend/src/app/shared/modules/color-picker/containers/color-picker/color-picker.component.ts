@@ -16,7 +16,6 @@
  */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
-
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -25,17 +24,21 @@ import {
     HostBinding,
     Inject,
     Input,
-
     OnInit,
     Output,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
-import { EMPTY_COLOR, IDefaultColor, IColor, DEFAULT_COLORS } from '../../color-picker';
+import {
+    EMPTY_COLOR,
+    IDefaultColor,
+    IColor,
+    DEFAULT_COLORS,
+} from '../../color-picker';
 import { ColorPickerService } from '../../services/color-picker.service';
 
-/*interface IDefaultColor {
+/* interface IDefaultColor {
     text: string;
     value: string;
 }
@@ -54,7 +57,6 @@ interface IColor {
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class ColorPickerComponent implements OnInit {
     @HostBinding('class.color-picker-component') private _hostClass = true;
 
@@ -108,75 +110,79 @@ export class ColorPickerComponent implements OnInit {
     mode = 'palette';
 
     palettes: any = [
-        {'name': 'auto', 'label': 'Auto'},
-        {'name': 'Category10', 'label': 'Category10'},
-        {'name': 'Accent', 'label': 'Accent'},
-        {'name': 'Dark2', 'label': 'Dark2'},
-        {'name': 'Paired', 'label': 'Paired'},
-        {'name': 'Set1', 'label': 'Set1'},
-        {'name': 'Set2', 'label': 'Set2'},
-        {'name': 'Set3', 'label': 'Set3'},
-        {'name': 'Tableau10', 'label': 'Tableau10'},
-        {'name': 'sinebow', 'label': 'Sinebow'},
-        {'name': 'rainbow', 'label': 'Rainbow'},
-        {'name': 'Spectral', 'label': 'Spectral'},
-        {'name': 'RdYlGn', 'label': 'RedYellowGreen'},
-        {'name': 'RdYlBu', 'label': 'RedYellowBlue'},
-        {'name': 'RdGy', 'label': 'RedGray'},
-        {'name': 'RdBu', 'label': 'RedBlue'},
-        {'name': 'PuOr', 'label': 'PurpleOrange'},
-        {'name': 'PiYG', 'label': 'PinkYellowGreen'},
-        {'name': 'PRGn', 'label': 'PurpleGreen'},
-        {'name': 'BrBG', 'label': 'BrownGreen'},
-        {'name': 'turbo', 'label': 'Turbo'},
-        {'name': 'CubehelixDefault', 'label': 'CubehelixDefault'},
-        {'name': 'cool', 'label': 'Cool'},
-        {'name': 'warm', 'label': 'Warm'},
-        {'name': 'plasma', 'label': 'Plasma'},
-        {'name': 'magma', 'label': 'Magma'},
-        {'name': 'inferno', 'label': 'Inferno'},
-        {'name': 'viridis', 'label': 'Viridis'},
-        {'name': 'cividis', 'label': 'Cividis'},
-        {'name': 'ylOrRd', 'label': 'YelllowOrangeRed'},
-        {'name': 'ylOrBr', 'label': 'YellowOrangeBrown'},
-        {'name': 'YlGn', 'label': 'YellowGreen'},
-        {'name': 'YlGnBu', 'label': 'YellowGreenBlue'},
-        {'name': 'RdPu', 'label': 'RedPurple'},
-        {'name': 'PuRd', 'label': 'PurpleRed'},
-        {'name': 'PuBu', 'label': 'PurpleBlue'},
-        {'name': 'PuBuGn', 'label': 'PurpleBlueGreen'},
-        {'name': 'OrRd', 'label': 'OrangeRed'},
-        {'name': 'GnBu', 'label': 'GreenBlue'},
-        {'name': 'BuPu', 'label': 'BluePurple'},
-        {'name': 'BuGn', 'label': 'BlueGreen'},
-        {'name': 'reds', 'label': 'Reds'},
-        {'name': 'purples', 'label': 'Purples'},
-        {'name': 'oranges', 'label': 'Oranges'},
-        {'name': 'greys', 'label': 'Greys'},
-        {'name': 'greens', 'label': 'Greens'},
-        {'name': 'blues', 'label': 'Blues'}
+        { name: 'auto', label: 'Auto' },
+        { name: 'Category10', label: 'Category10' },
+        { name: 'Accent', label: 'Accent' },
+        { name: 'Dark2', label: 'Dark2' },
+        { name: 'Paired', label: 'Paired' },
+        { name: 'Set1', label: 'Set1' },
+        { name: 'Set2', label: 'Set2' },
+        { name: 'Set3', label: 'Set3' },
+        { name: 'Tableau10', label: 'Tableau10' },
+        { name: 'sinebow', label: 'Sinebow' },
+        { name: 'rainbow', label: 'Rainbow' },
+        { name: 'Spectral', label: 'Spectral' },
+        { name: 'RdYlGn', label: 'RedYellowGreen' },
+        { name: 'RdYlBu', label: 'RedYellowBlue' },
+        { name: 'RdGy', label: 'RedGray' },
+        { name: 'RdBu', label: 'RedBlue' },
+        { name: 'PuOr', label: 'PurpleOrange' },
+        { name: 'PiYG', label: 'PinkYellowGreen' },
+        { name: 'PRGn', label: 'PurpleGreen' },
+        { name: 'BrBG', label: 'BrownGreen' },
+        { name: 'turbo', label: 'Turbo' },
+        { name: 'CubehelixDefault', label: 'CubehelixDefault' },
+        { name: 'cool', label: 'Cool' },
+        { name: 'warm', label: 'Warm' },
+        { name: 'plasma', label: 'Plasma' },
+        { name: 'magma', label: 'Magma' },
+        { name: 'inferno', label: 'Inferno' },
+        { name: 'viridis', label: 'Viridis' },
+        { name: 'cividis', label: 'Cividis' },
+        { name: 'ylOrRd', label: 'YelllowOrangeRed' },
+        { name: 'ylOrBr', label: 'YellowOrangeBrown' },
+        { name: 'YlGn', label: 'YellowGreen' },
+        { name: 'YlGnBu', label: 'YellowGreenBlue' },
+        { name: 'RdPu', label: 'RedPurple' },
+        { name: 'PuRd', label: 'PurpleRed' },
+        { name: 'PuBu', label: 'PurpleBlue' },
+        { name: 'PuBuGn', label: 'PurpleBlueGreen' },
+        { name: 'OrRd', label: 'OrangeRed' },
+        { name: 'GnBu', label: 'GreenBlue' },
+        { name: 'BuPu', label: 'BluePurple' },
+        { name: 'BuGn', label: 'BlueGreen' },
+        { name: 'reds', label: 'Reds' },
+        { name: 'purples', label: 'Purples' },
+        { name: 'oranges', label: 'Oranges' },
+        { name: 'greys', label: 'Greys' },
+        { name: 'greens', label: 'Greens' },
+        { name: 'blues', label: 'Blues' },
     ];
 
     constructor(
         private elementRef: ElementRef,
         private changeDetectorRef: ChangeDetectorRef,
         private colorPickerService: ColorPickerService,
-        @Inject(EMPTY_COLOR) public emptyColor: string
-    ) { }
+        @Inject(EMPTY_COLOR) public emptyColor: string,
+    ) {}
 
     ngOnInit() {
-
-        this.color =  this.color || ( this.enablePalette ? 'auto'  : '#000000' );
+        this.color = this.color || (this.enablePalette ? 'auto' : '#000000');
         this.colors = Array.isArray(this.color) ? this.color : [this.color];
 
         if (!this.pickerMode) {
             this.pickerMode = this.dropDown;
         }
 
-        if (this.pickerMode.toLowerCase().trim() === this.embedded.toLowerCase()) {
+        if (
+            this.pickerMode.toLowerCase().trim() === this.embedded.toLowerCase()
+        ) {
             this.pickerMode = this.embedded;
             this.isOpen = true;
-        } else if (this.pickerMode.toLowerCase().trim() === this.dropDownNoButton.toLowerCase()) {
+        } else if (
+            this.pickerMode.toLowerCase().trim() ===
+            this.dropDownNoButton.toLowerCase()
+        ) {
             this.pickerMode = this.dropDownNoButton;
         } else {
             this.pickerMode = this.dropDown;
@@ -188,8 +194,8 @@ export class ColorPickerComponent implements OnInit {
 
     /* Picker Behaviors */
     determineIfCustomColor() {
-        const index =  this.palettes.findIndex( d => d.name === this.colors[0] );
-        if ( this.enablePalette && index !== -1 ) {
+        const index = this.palettes.findIndex((d) => d.name === this.colors[0]);
+        if (this.enablePalette && index !== -1) {
             this.mode = 'palette';
         } else {
             this.mode = 'default';
@@ -222,12 +228,14 @@ export class ColorPickerComponent implements OnInit {
 
     colorSchemeSelected(scheme) {
         this.colors[0] = scheme;
-        this.newColor.emit( {'scheme': scheme} );
+        this.newColor.emit({ scheme: scheme });
     }
 
     emitColor() {
-        const colors = this.colors.filter(d => d);
-        this.newColor.emit( this.enableMultiSelection && colors.length > 1 ? colors : colors[0]);
+        const colors = this.colors.filter((d) => d);
+        this.newColor.emit(
+            this.enableMultiSelection && colors.length > 1 ? colors : colors[0],
+        );
     }
 
     setColorIndex(index) {
@@ -245,7 +253,6 @@ export class ColorPickerComponent implements OnInit {
         this.colors = [...this.colors];
         this.emitColor();
     }
-
 
     colorToName(hexColor: string): string {
         let colorName = '';
@@ -271,11 +278,11 @@ export class ColorPickerComponent implements OnInit {
     toggle() {
         // if closed, determine if custom color
         // if (!this._isOpen) {
-            // this.determineIfCustomColor();
+        // this.determineIfCustomColor();
         // }
         this._isOpen = !this._isOpen;
         // if (!this._isOpen && this._color !== this.emptyColor) {
-            // this.colorPickerService.addColor(this._color);
+        // this.colorPickerService.addColor(this._color);
         // }
     }
 
@@ -315,7 +322,7 @@ export class ColorPickerComponent implements OnInit {
     hexToColor(_hex): IColor {
         let color = {
             hex: _hex,
-            rgb: this.hexToRgb(_hex)
+            rgb: this.hexToRgb(_hex),
         };
         return color;
     }
@@ -328,14 +335,23 @@ export class ColorPickerComponent implements OnInit {
 
     rgbToHexHelper(r: string, g: string, b: string): string {
         // eslint-disable-next-line radix
-        return '#' + this.componentToHex(parseInt(r)) + this.componentToHex(parseInt(g)) + this.componentToHex(parseInt(b));
+        return (
+            '#' +
+            this.componentToHex(parseInt(r)) +
+            this.componentToHex(parseInt(g)) +
+            this.componentToHex(parseInt(b))
+        );
     }
 
     // ex: "20,50,70"
     rgbToHex(rgb: string) {
         let values: string[] = rgb.split(',');
         if (this.isRgbValid(rgb)) {
-            return this.rgbToHexHelper(values[0].trim(), values[1].trim(), values[2].trim());
+            return this.rgbToHexHelper(
+                values[0].trim(),
+                values[1].trim(),
+                values[2].trim(),
+            );
         }
     }
 

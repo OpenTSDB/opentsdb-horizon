@@ -48,7 +48,14 @@
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       imports: [FormsModule],
-//       declarations: [TimeRangePickerComponent, DayTimeCalendarComponent, DayCalendarComponent, MonthCalendarComponent, CalendarNavComponent, DatePickerComponent],
+//       declarations: [
+//            TimeRangePickerComponent,
+//            DayTimeCalendarComponent,
+//            DayCalendarComponent,
+//            MonthCalendarComponent,
+//            CalendarNavComponent,
+//            DatePickerComponent
+//       ],
 //       providers: [DayTimeCalendarService, DayCalendarService, MonthCalendarService, TimeSelectService, UtilsService, DatePickerService]
 //     })
 //     .compileComponents();
@@ -101,7 +108,7 @@
 //     tick();
 //     fixture.detectChanges();
 //     expect(spyCloseCall).toHaveBeenCalled();
-  
+
 //   }));
 
 //   it('should have default values', () => {
@@ -137,12 +144,11 @@
 //   //   startCalendarDe.triggerEventHandler('click', null);
 //   //   tick();
 //   //   fixture.detectChanges();
-  
+
 //   //   let selectedDayDe = fixture.debugElement.query(By.css("dp-day-calendar dp-selected"));
 //   //   expect(selectedDayDe).toBeTruthy();
 
 //   // }));
-
 
 //   it('should set relative format as relative format', () => {
 //     component.setStartTime("-2d");
@@ -220,7 +226,7 @@
 
 //       let _selectedTime: ISelectedTime;
 //       component.timeSelected.subscribe((time: ISelectedTime) => _selectedTime = time);
-    
+
 //       let expectedEnd = moment().unix().toString();
 //       let expectedStart = moment().subtract(1, "year").unix().toString();
 
@@ -596,7 +602,7 @@
 //   component.timeSelected.subscribe((time: ISelectedTime) => _selectedTime = time);
 //   let applyBtn = fixture.debugElement.query(By.css("#button-apply"));
 
-//   let expectedStart = moment().subtract(4,"minute").unix().toString(); 
+//   let expectedStart = moment().subtract(4,"minute").unix().toString();
 //   let expectedEnd = moment().subtract(1,"minute").unix().toString();
 
 //   applyBtn.triggerEventHandler('click', null);
@@ -632,7 +638,7 @@
 
 //   let formatValidationForEnd = fixture.debugElement.query(By.css("#formatValidationForEnd"));
 //   let formatValidationForStart = fixture.debugElement.query(By.css("#formatValidationForStart"));
-  
+
 //   expect(formatValidationForEnd).toBeTruthy();
 //   expect(formatValidationForStart).toBeTruthy();
 
@@ -650,10 +656,10 @@
 
 //     let formatValidationForEnd = fixture.debugElement.query(By.css("#formatValidationForEnd"));
 //     let formatValidationForStart = fixture.debugElement.query(By.css("#formatValidationForStart"));
-    
+
 //     expect(formatValidationForEnd).toBeTruthy();
 //     expect(formatValidationForStart).toBeTruthy();
-  
+
 //     expect(formatValidationForEnd.nativeElement.textContent.trim()).toEqual(validationError);
 //     expect(formatValidationForStart.nativeElement.textContent.trim()).toEqual(validationError);
 //   });
@@ -669,10 +675,10 @@
 
 //     let formatValidationForEnd = fixture.debugElement.query(By.css("#formatValidationForEnd"));
 //     let formatValidationForStart = fixture.debugElement.query(By.css("#formatValidationForStart"));
-    
+
 //     expect(formatValidationForEnd).toBeTruthy();
 //     expect(formatValidationForStart).toBeTruthy();
-  
+
 //     expect(formatValidationForEnd.nativeElement.textContent.trim()).toEqual(validationError);
 //     expect(formatValidationForStart.nativeElement.textContent.trim()).toEqual(validationError);
 //   });
@@ -686,10 +692,10 @@
 
 //     let formatValidationForEnd = fixture.debugElement.query(By.css("#maxDateValidationForStart"));
 //     let formatValidationForStart = fixture.debugElement.query(By.css("#maxDateValidationForEnd"));
-    
+
 //     expect(formatValidationForEnd).toBeTruthy();
 //     expect(formatValidationForStart).toBeTruthy();
-  
+
 //     expect(formatValidationForEnd.nativeElement.textContent.trim()).toEqual(futureDateError);
 //     expect(formatValidationForStart.nativeElement.textContent.trim()).toEqual(futureDateError);
 // }));

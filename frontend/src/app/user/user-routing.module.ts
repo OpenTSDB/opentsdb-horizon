@@ -20,29 +20,28 @@ import { Routes, RouterModule } from '@angular/router';
 // containers
 import { UserComponent } from './containers/user/user.component';
 
-
 const routes: Routes = [
     {
         path: 'list',
         component: UserComponent,
         data: {
-            userList: true
-        }
+            userList: true,
+        },
     },
     {
         path: ':useralias',
-        component: UserComponent
+        component: UserComponent,
     },
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'list'
+        redirectTo: 'list',
     },
-    { path: '**', component: UserComponent }
+    { path: '**', component: UserComponent },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class UserRoutingModule { }
+export class UserRoutingModule {}

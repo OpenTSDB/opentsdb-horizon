@@ -17,25 +17,34 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DbsMetaComponent } from './dbs-meta.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../../../dashboard-testing.utils';
+import { DASHBOARD_TESTING_SETTINGS } from '../../../../../shared/mockdata/dashboard/settings';
 
 describe('DbsMetaComponent', () => {
-  let component: DbsMetaComponent;
-  let fixture: ComponentFixture<DbsMetaComponent>;
+    let component: DbsMetaComponent;
+    let fixture: ComponentFixture<DbsMetaComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DbsMetaComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DbsMetaComponent],
+            imports: [
+                ...DASHBOARD_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DbsMetaComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DbsMetaComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        // TODO: need to move this to mockdata
+        component.dbData = DASHBOARD_TESTING_SETTINGS;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -14,17 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
+
+/**
+ * NOTE: this component is full of dummy data. Is it even being used?
+ * if not, should it be removed?
+ */
+
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 
 import * as moment from 'moment';
-
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'activity-panel',
     templateUrl: './activity-panel.component.html',
     styleUrls: ['./activity-panel.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class ActivityPanelComponent implements OnInit {
     @HostBinding('class.activity-panel') private _hostClass = true;
@@ -40,29 +50,34 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '02:45 PM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '02:32 PM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '02:13 PM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '02:02 PM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '02:01 PM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '12:00 PM',
@@ -70,19 +85,22 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '12:45 PM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:32 PM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:13 PM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '09:00 AM',
@@ -90,24 +108,28 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '09:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '07:00 AM',
@@ -115,31 +137,36 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '07:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:32 AM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
-                }
-            ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
+                },
+            ],
         },
         {
             day: 'YESTERDAY',
@@ -150,19 +177,22 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '12:45 PM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:32 PM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:13 PM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '09:00 AM',
@@ -170,24 +200,28 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '09:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '07:00 AM',
@@ -195,31 +229,36 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '07:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:32 AM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
-                }
-            ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
+                },
+            ],
         },
         {
             day: 'AUG 12',
@@ -230,19 +269,22 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '12:45 PM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:32 PM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '12:13 PM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '09:00 AM',
@@ -250,24 +292,28 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '09:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '09:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
                 },
                 {
                     hour: '07:00 AM',
@@ -275,39 +321,42 @@ export class ActivityPanelComponent implements OnInit {
                         {
                             time: '07:45 AM',
                             type: 'namespace',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:32 AM',
                             type: 'dashboard',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:13 AM',
                             type: 'bug',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:02 AM',
                             type: 'admin',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
                         },
                         {
                             time: '07:01 AM',
                             type: 'alert',
-                            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-                        }
-                    ]
-                }
-            ]
-        }
+                            message:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                        },
+                    ],
+                },
+            ],
+        },
     ];
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */}
 
     hourEventTypes(events: any) {
         const types = {};
@@ -319,7 +368,5 @@ export class ActivityPanelComponent implements OnInit {
         }
 
         return Object.keys(types);
-
     }
-
 }

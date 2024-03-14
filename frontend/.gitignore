@@ -17,6 +17,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+horizon-theme-map-output.scss
 
 # IDE - VSCode
 .vscode
@@ -27,6 +28,7 @@
 !.vscode/extensions.json
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage

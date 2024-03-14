@@ -17,25 +17,39 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BarchartWidgetComponent } from './barchart-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { BARCHART_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/barchart-widget';
+import { AppConfigService } from '../../../../../core/services/config.service';
+import { TooltipComponentService } from '../../../universal-data-tooltip/services/tooltip-component.service';
 
 describe('BarchartWidgetComponent', () => {
-  let component: BarchartWidgetComponent;
-  let fixture: ComponentFixture<BarchartWidgetComponent>;
+    let component: BarchartWidgetComponent;
+    let fixture: ComponentFixture<BarchartWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BarchartWidgetComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [BarchartWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ],
+            providers: [
+                AppConfigService,
+                TooltipComponentService
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BarchartWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(BarchartWidgetComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        component.widget = BARCHART_WIDGET_MOCK_DATA;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

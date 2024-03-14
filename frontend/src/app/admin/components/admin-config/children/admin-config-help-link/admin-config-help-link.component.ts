@@ -1,43 +1,60 @@
-import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+    Component,
+    HostBinding,
+    Input,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-config-help-link',
     templateUrl: './admin-config-help-link.component.html',
     styleUrls: ['./admin-config-help-link.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminConfigHelpLinkComponent implements OnInit {
-    @HostBinding('class') classAttribute: string = 'app-admin-config-help-link';
-    @HostBinding('class.editing-mode') private get tplEdit() { return this.editMode; };
-    @HostBinding('class.reading-mode') private get tplRead() { return !this.editMode; };
+    @HostBinding('class') classAttribute = 'app-admin-config-help-link';
+    @HostBinding('class.editing-mode') private get tplEdit() {
+        return this.editMode;
+    }
+    @HostBinding('class.reading-mode') private get tplRead() {
+        return !this.editMode;
+    }
 
-    @Input() link: FormGroup;
+    @Input() link: UntypedFormGroup;
     @Input() index: number;
 
-    _editMode: boolean = false;
+    _editMode = false;
 
-    get editMode() { return this._editMode; }
+    get editMode() {
+        return this._editMode;
+    }
 
     @Input() set editMode(mode: boolean) {
         this._editMode = mode;
-    };
-
-    constructor() { }
-
-    ngOnInit() {
     }
 
-    get helpLabel(): FormControl { return <FormControl>this.link.get('label'); }
-    get helpHref(): FormControl { return <FormControl>this.link.get('href'); }
-    get helpIcon(): FormControl { return <FormControl>this.link.get('icon'); }
+    constructor() {}
+
+    ngOnInit() { /* do nothing */ }
+
+    get helpLabel(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('label');
+    }
+    get helpHref(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('href');
+    }
+    get helpIcon(): UntypedFormControl {
+        return <UntypedFormControl>this.link.get('icon');
+    }
 
     toggleEditMode() {
         this.editMode = !this.editMode;
     }
 
     editHelpLink() {
-        const formGroup = <FormGroup>this.link;
+        const formGroup = <UntypedFormGroup>this.link;
         console.log('EDIT HELP LINK', this.index, formGroup.getRawValue());
     }
 
@@ -50,5 +67,4 @@ export class AdminConfigHelpLinkComponent implements OnInit {
         // do something... maybe revert?
         this.toggleEditMode();
     }
-
 }

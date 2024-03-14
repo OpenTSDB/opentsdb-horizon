@@ -21,34 +21,30 @@ import {
     Inject,
     HostBinding,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'name-alert-dialog',
     templateUrl: './name-alert-dialog.component.html',
     styleUrls: ['./name-alert-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NameAlertDialogComponent implements OnInit {
-
     @HostBinding('class.name-alert-dialog-component') private _hostClass = true;
 
-    alertName = new FormControl('', Validators.required);
+    alertName = new UntypedFormControl('', Validators.required);
 
-    constructor(
-        public dialogRef: MatDialogRef<NameAlertDialogComponent>
-    ) {
+    constructor(public dialogRef: MatDialogRef<NameAlertDialogComponent>) {
         dialogRef.disableClose = true;
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
     getErrorMessage() {
         if (this.alertName.hasError('required')) {
@@ -62,5 +58,4 @@ export class NameAlertDialogComponent implements OnInit {
             this.dialogRef.close({ alertName: this.alertName.value });
         }
     }
-
 }

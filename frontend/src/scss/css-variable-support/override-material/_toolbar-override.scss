@@ -1,0 +1,111 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+$minimum-height: 44px !default;
+
+$height-desktop: 64px !default;
+$maximum-height-desktop: $height-desktop !default;
+$minimum-height-desktop: $minimum-height !default;
+
+$height-mobile: 56px !default;
+$maximum-height-mobile: $height-mobile !default;
+$minimum-height-mobile: $minimum-height !default;
+
+$desktop-density-config: (
+    height: (default: $height-desktop,
+        maximum: $maximum-height-desktop,
+        minimum: $minimum-height-desktop,
+    )) !default;
+
+$mobile-density-config: (
+    height: (default: $height-mobile,
+        maximum: $maximum-height-mobile,
+        minimum: $minimum-height-mobile,
+    )) !default;
+
+@mixin _height($height) {
+    .mat-toolbar-multiple-rows {
+        min-height: $height;
+    }
+
+    .mat-toolbar-row,
+    .mat-toolbar-single-row {
+        height: $height;
+    }
+}
+
+@mixin _palette-styles($palette) {
+    background: mat-get-color-from-palette($palette);
+    color: mat-get-color-from-palette($palette, default-contrast);
+}
+
+@mixin _form-field-overrides {
+
+    .mat-form-field-underline,
+    .mat-form-field-ripple,
+    .mat-focused .mat-form-field-ripple {
+        background-color: currentColor;
+    }
+
+    .mat-form-field-label,
+    .mat-focused .mat-form-field-label,
+    .mat-select-value,
+    .mat-select-arrow,
+    .mat-form-field.mat-focused .mat-select-arrow {
+        color: inherit;
+    }
+
+    .mat-input-element {
+        caret-color: currentColor;
+    }
+}
+
+@mixin color($config) {
+
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+
+    .mat-toolbar {
+        background: mat-get-color-from-palette($background, app-bar);
+        color: mat-get-color-from-palette($foreground, text);
+
+        &.mat-primary {
+            @include _palette-styles($primary);
+        }
+
+        &.mat-accent {
+            @include _palette-styles($accent);
+        }
+
+        &.mat-warn {
+            @include _palette-styles($warn);
+        }
+
+        @include _form-field-overrides;
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+}

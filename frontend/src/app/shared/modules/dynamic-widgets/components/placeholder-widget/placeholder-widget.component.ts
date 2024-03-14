@@ -14,17 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'placeholder-widget',
     templateUrl: './placeholder-widget.component.html',
     styleUrls: ['./placeholder-widget.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class PlaceholderWidgetComponent  {
-
+export class PlaceholderWidgetComponent {
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.placeholder-widget') private _componentClass = true;
 
@@ -37,54 +43,54 @@ export class PlaceholderWidgetComponent  {
         {
             label: 'Bar Graph',
             type: 'BarchartWidgetComponent',
-            iconClass: 'widget-icon-bar-graph'
-        }, /*
+            iconClass: 'widget-icon-bar-graph',
+        } /*
         {
             label: 'Area Graph',
             type: 'WidgetAreaGraphComponent',
             iconClass: 'widget-icon-area-graph'
-        }, */
+        }, */,
         {
             label: 'Line Chart',
             type: 'LinechartWidgetComponent',
-            iconClass: 'widget-icon-line-chart'
+            iconClass: 'widget-icon-line-chart',
         },
         {
             label: 'Heatmap',
             type: 'HeatmapWidgetComponent',
-            iconClass: 'widget-icon-heatmap'
+            iconClass: 'widget-icon-heatmap',
         },
         {
             label: 'Big Number',
             type: 'BignumberWidgetComponent',
-            iconClass: 'widget-icon-big-number'
+            iconClass: 'widget-icon-big-number',
         },
         {
             label: 'Donut Chart',
             type: 'DonutWidgetComponent',
-            iconClass: 'widget-icon-donut-chart'
+            iconClass: 'widget-icon-donut-chart',
         },
         {
             label: 'Top N',
             type: 'TopnWidgetComponent',
-            iconClass: 'widget-icon-topn-chart'
+            iconClass: 'widget-icon-topn-chart',
         },
         {
             label: 'Notes',
             type: 'MarkdownWidgetComponent',
-            iconClass: 'widget-icon-notes'
+            iconClass: 'widget-icon-notes',
         },
         {
             label: 'Events',
             type: 'EventsWidgetComponent',
-            iconClass: 'widget-icon-events'
+            iconClass: 'widget-icon-events',
         },
         {
             label: 'Table',
             type: 'TableWidgetComponent',
-            iconClass: 'widget-icon-table'
-        }
-        /*,
+            iconClass: 'widget-icon-table',
+        },
+        /* ,
         {
             label: 'Statuses',
             type: 'WidgetStatusComponent',
@@ -95,5 +101,4 @@ export class PlaceholderWidgetComponent  {
     selectWidgetType(wtype: any) {
         this.loadNewWidget.emit(wtype);
     }
-
 }

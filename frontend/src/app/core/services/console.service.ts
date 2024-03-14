@@ -18,11 +18,10 @@ import { Injectable } from '@angular/core';
 import { AppConfigService } from './config.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ConsoleService {
-
-    constructor(private appConfig: AppConfigService) { }
+    constructor(private appConfig: AppConfigService) {}
 
     consoleOutput(type: string, label: string, params?: any) {
         if (!this.appConfig.getConfig().production) {
@@ -63,23 +62,39 @@ export class ConsoleService {
             if (params) {
                 console.group(
                     '%c' + type.toUpperCase() + '%c' + label,
-                    'color: ' + colorInverse + '; background-color: ' + color + '; padding: 6px 8px; font-weight: bold;',
-                    'color: black; padding: 4px 8px; font-weight: bold; border: 2px solid ' + color + ';'
+                    'color: ' +
+                        colorInverse +
+                        '; background-color: ' +
+                        color +
+                        '; padding: 6px 8px; font-weight: bold;',
+                    'color: black; padding: 4px 8px; font-weight: bold; border: 2px solid ' +
+                        color +
+                        ';',
                 );
                 if (type === 'log' || type === 'ng' || type === 'intercom') {
                     const keys = Object.keys(params);
                     for (const key of keys) {
-                        console.log('%c' + key, 'font-weight: bold;', params[key]);
+                        console.log(
+                            '%c' + key,
+                            'font-weight: bold;',
+                            params[key],
+                        );
                     }
-                 } else {
+                } else {
                     console.log('%cParams', 'font-weight: bold;', params);
                 }
                 console.groupEnd();
             } else {
                 console.log(
                     '%c' + type.toUpperCase() + '%c' + label,
-                    'color: ' + colorInverse + '; background-color: ' + color + '; padding: 6px 8px; font-weight: bold;',
-                    'color: black; padding: 4px 8px; font-weight: bold; border: 2px solid ' + color + ';'
+                    'color: ' +
+                        colorInverse +
+                        '; background-color: ' +
+                        color +
+                        '; padding: 6px 8px; font-weight: bold;',
+                    'color: black; padding: 4px 8px; font-weight: bold; border: 2px solid ' +
+                        color +
+                        ';',
                 );
             }
         }
@@ -121,10 +136,9 @@ export class ConsoleService {
         console.group(
             '%cERROR%c' + label,
             'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            'color: #ff0000; padding: 4px 8px; font-weight: bold',
         );
         console.log('%cErrorMsg', 'font-weight: bold;', errorMsg);
         console.groupEnd();
     }
-
 }

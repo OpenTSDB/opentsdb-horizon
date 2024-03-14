@@ -3,13 +3,7 @@
     "compilerOptions": {
         "outDir": "../../../out-tsc/horizon",
         "types": []
-,
     },
-    "files": [
-        "./horizon.main.ts",
-        "../../polyfills.ts"
-    ],
-    "include": [
-        "../../../src/**/*.d.ts"
-    ]
+    "files": ["./horizon.main.ts", "../../polyfills.ts"],
+    "include": ["../../../src/**/*.d.ts"]
 }

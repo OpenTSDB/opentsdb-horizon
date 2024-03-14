@@ -22,20 +22,23 @@ import {
     EventEmitter,
     Input,
     Output,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import {
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    UntypedFormControl,
+    UntypedFormArray
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'dbs-variables',
     templateUrl: './dbs-variables.component.html',
     styleUrls: ['./dbs-variables.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class DbsVariablesComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.dbs-variables-component') private _hostClass = true;
     @HostBinding('class.dbs-settings-tab') private _tabClass = true;
 
@@ -46,27 +49,28 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
     @Output() dataModified: any = new EventEmitter();
 
     /** Local Variables */
-    varForm: FormGroup;
+    varForm: UntypedFormGroup;
     varFormSub: Subscription;
 
     selectedKeys: string[] = [];
 
-    constructor(
-        private fb: FormBuilder
-    ) { }
+    constructor(private fb: UntypedFormBuilder) {}
 
     ngOnInit() {
 
+        // TODO: cleanup
+        // console.log('%cDB DATA', 'background: red; color: white; padding: 10px;', this.dbData);
+
         this.varForm = this.fb.group({
-            enabled: new FormControl(this.dbData.variables.enabled),
-            tplVariables: this.fb.array([])
+            enabled: new UntypedFormControl(this.dbData.variables.enabled || true),
+            tplVariables: this.fb.array([]),
         });
 
-        this.varFormSub = this.varForm.valueChanges.subscribe(val => {
+        this.varFormSub = this.varForm.valueChanges.subscribe((val) => {
             // need to remove unused variables (ones without keys)
             const pending = val;
             const pendingKeys = [];
-            pending.tplVariables = val.tplVariables.filter(item => {
+            pending.tplVariables = val.tplVariables.filter((item) => {
                 const keyCheck = item.tagk.trim();
                 if (keyCheck.length > 0) {
                     pendingKeys.push(keyCheck);
@@ -80,7 +84,7 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
 
             this.dataModified.emit({
                 type: 'variables',
-                data: pending
+                data: pending,
             });
         });
 
@@ -92,11 +96,14 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
     }
 
     // form control accessors (come after form has been setup)
-    get enabled() { return this.varForm.get('enabled'); }
-    get tplVariables() { return this.varForm.get('tplVariables'); }
+    get enabled() {
+        return this.varForm.get('enabled');
+    }
+    get tplVariables() {
+        return this.varForm.get('tplVariables');
+    }
 
     initializeTplVariables(values: any) {
-
         if (values.length === 0) {
             // add an empty one if there are no values
             this.addTemplateVariable();
@@ -110,26 +117,29 @@ export class DbsVariablesComponent implements OnInit, OnDestroy {
     }
 
     addTemplateVariable(data?: any) {
-
         // TODO: need to detect if filter contains '*' to change type to wildcard
 
-        data = (data) ? data : {};
+        data = data ? data : {};
 
         const varData = {
-            tagk: (data.tagk) ? data.tagk : '',
-            alias: (data.alias) ? data.alias : '',
-            allowedValues: (data.allowedValues) ? this.fb.array(data.allowedValues) : this.fb.array([]),
-            filter: (data.filter) ? this.fb.array(data.filter) : this.fb.array([]),
-            enabled: (data.enabled) ? data.enabled : true,
-            type: (data.type) ? data.type : 'literalor'
+            tagk: data.tagk ? data.tagk : '',
+            alias: data.alias ? data.alias : '',
+            allowedValues: data.allowedValues
+                ? this.fb.array(data.allowedValues)
+                : this.fb.array([]),
+            filter: data.filter
+                ? this.fb.array(data.filter)
+                : this.fb.array([]),
+            enabled: data.enabled ? data.enabled : true,
+            type: data.type ? data.type : 'literalor',
         };
 
-        const control = <FormArray>this.varForm.controls['tplVariables'];
+        const control = <UntypedFormArray>this.varForm.controls['tplVariables'];
         control.push(this.fb.group(varData));
     }
 
     removeTemplateVariable(i: number) {
-        const control = <FormArray>this.varForm.controls['tplVariables'];
+        const control = <UntypedFormArray>this.varForm.controls['tplVariables'];
         control.removeAt(i);
     }
 

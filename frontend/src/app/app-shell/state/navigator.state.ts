@@ -16,12 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import {
-    State,
-    Action,
-    Selector,
-    StateContext
-} from '@ngxs/store';
+import { State, Action, Selector, StateContext } from '@ngxs/store';
 
 import { MediaObserver } from '@angular/flex-layout';
 
@@ -55,23 +50,17 @@ export class ResetNavigator {
 
 export class SetDrawerOpen {
     static readonly type = '[Navigator] Toggle drawer open';
-    constructor(
-        public readonly drawerOpen: boolean
-    ) {}
+    constructor(public readonly drawerOpen: boolean) {}
 }
 
 export class SetSideNavMode {
     static readonly type = '[Navigator] Side Nav Mode';
-    constructor(
-        public readonly sideNavMode: string
-    ) {}
+    constructor(public readonly sideNavMode: string) {}
 }
 
 export class SetSideNavOpen {
     static readonly type = '[Navigator] Toggle side nav open';
-    constructor(
-        public readonly sideNavOpen: boolean
-    ) {}
+    constructor(public readonly sideNavOpen: boolean) {}
 }
 
 /** Define State
@@ -88,7 +77,7 @@ export class SetSideNavOpen {
  * - favorites
  * - namespaces
  * - resources
-*/
+ */
 
 @Injectable()
 @State<NavigatorStateModel>({
@@ -96,18 +85,15 @@ export class SetSideNavOpen {
     defaults: {
         currentApp: 'dashboard',
         sideNav: {
-            opened: false
+            opened: false,
         },
         sideNavOpen: true,
         sideNavMode: 'side',
-        drawerOpen: false
-    }
+        drawerOpen: false,
+    },
 })
-
 export class NavigatorState {
-    constructor (
-        public mediaObserver: MediaObserver,
-    ) {}
+    constructor(public mediaObserver: MediaObserver) {}
 
     /** Selectors */
     @Selector()
@@ -138,23 +124,29 @@ export class NavigatorState {
     /** Action */
 
     @Action(ChangeNavigatorApp)
-    changeNavigatorApp(ctx: StateContext<NavigatorStateModel>, { app }: ChangeNavigatorApp) {
+    changeNavigatorApp(
+        ctx: StateContext<NavigatorStateModel>,
+        { app }: ChangeNavigatorApp,
+    ) {
         const state = ctx.getState();
-        ctx.patchState({...state, currentApp: app });
+        ctx.patchState({ ...state, currentApp: app });
     }
 
     @Action(UpdateNavigatorSideNav)
-    updateNavigatorSide(ctx: StateContext<NavigatorStateModel>, { payload }: UpdateNavigatorSideNav) {
+    updateNavigatorSide(
+        ctx: StateContext<NavigatorStateModel>,
+        { payload }: UpdateNavigatorSideNav,
+    ) {
         const state = ctx.getState();
         const drawerOpen = payload.mode === 'side' && payload.currentApp !== '';
-        const sideNavOpen = !(this.mediaObserver.isActive('xs'));
+        const sideNavOpen = !this.mediaObserver.isActive('xs');
         const currentApp = payload.currentApp;
         ctx.setState({
             ...state,
             sideNavOpen,
             currentApp,
             drawerOpen,
-            sideNav: { opened: sideNavOpen }
+            sideNav: { opened: sideNavOpen },
         });
     }
 
@@ -163,37 +155,45 @@ export class NavigatorState {
         const state = ctx.getState();
         ctx.setState({
             ...state,
-            sideNavOpen: !(this.mediaObserver.isActive('xs')),
+            sideNavOpen: !this.mediaObserver.isActive('xs'),
             sideNavMode: 'side',
-            drawerOpen: false
+            drawerOpen: false,
         });
     }
 
     @Action(SetSideNavOpen)
-    SetSideNavOpen(ctx: StateContext<NavigatorStateModel>, { sideNavOpen }: SetSideNavOpen) {
+    SetSideNavOpen(
+        ctx: StateContext<NavigatorStateModel>,
+        { sideNavOpen }: SetSideNavOpen,
+    ) {
         const state = ctx.getState();
         ctx.setState({
             ...state,
-            sideNavOpen
+            sideNavOpen,
         });
     }
 
     @Action(SetSideNavMode)
-    SetSideNavMode(ctx: StateContext<NavigatorStateModel>, { sideNavMode }: SetSideNavMode) {
+    SetSideNavMode(
+        ctx: StateContext<NavigatorStateModel>,
+        { sideNavMode }: SetSideNavMode,
+    ) {
         const state = ctx.getState();
         ctx.setState({
             ...state,
-            sideNavMode
+            sideNavMode,
         });
     }
 
     @Action(SetDrawerOpen)
-    SetDrawerOpen(ctx: StateContext<NavigatorStateModel>, { drawerOpen }: SetDrawerOpen) {
+    SetDrawerOpen(
+        ctx: StateContext<NavigatorStateModel>,
+        { drawerOpen }: SetDrawerOpen,
+    ) {
         const state = ctx.getState();
         ctx.setState({
             ...state,
-            drawerOpen
+            drawerOpen,
         });
     }
-
 }

@@ -16,26 +16,50 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../../../shared/mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
+
 import { AlertDetailsCountComponent } from './alert-details-count.component';
 
 describe('AlertDetailsCountComponent', () => {
-  let component: AlertDetailsCountComponent;
-  let fixture: ComponentFixture<AlertDetailsCountComponent>;
+    let component: AlertDetailsCountComponent;
+    let fixture: ComponentFixture<AlertDetailsCountComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsCountComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockAppConfigService;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsCountComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsCountComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ],
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AlertDetailsCountComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -14,36 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 export class SetAuth {
-  static type = '[Auth] Set Auth';
+    static type = '[Auth] Set Auth';
 
-  constructor(public readonly payload: string) {}
+    constructor(public readonly payload: string) {}
 }
 
 export interface AuthStateModel {
-  auth: string; //valid/invalid/unknown
+    auth: string; // valid/invalid/unknown
 }
-
 
 @State<AuthStateModel>({
-  name: 'authState',
-  defaults: {
-      auth:'unknown'
-    }
+    name: 'authState',
+    defaults: {
+        auth: 'unknown',
+    },
 })
-
+@Injectable()
 export class AuthState {
-  @Selector()
-  static getAuth(state: AuthStateModel) {
-    return state.auth;
-  }
+    @Selector()
+    static getAuth(state: AuthStateModel): string {
+        return state.auth;
+    }
 
-  @Action(SetAuth)
-  setAuth( ctx : StateContext<AuthStateModel>, { payload }: SetAuth) {
-    const state = ctx.getState();
-    ctx.setState({...state, auth:payload});
-  }
+    @Action(SetAuth)
+    setAuth(ctx: StateContext<AuthStateModel>, { payload }: SetAuth): void {
+        const state = ctx.getState();
+        ctx.setState({ ...state, auth: payload });
+    }
 }
-

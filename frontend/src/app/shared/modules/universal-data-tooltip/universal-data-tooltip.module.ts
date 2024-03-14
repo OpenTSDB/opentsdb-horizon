@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NgModule, ModuleWithProviders, Injector, InjectionToken } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // services
@@ -29,34 +29,21 @@ import { BarchartDataTooltipComponent } from './components/barchart-data-tooltip
 import { HeatmapDataTooltipComponent } from './components/heatmap-data-tooltip/heatmap-data-tooltip.component';
 
 @NgModule({
-    imports: [
-        CommonModule
-    ],
+    imports: [CommonModule],
     declarations: [
         LinechartDataTooltipComponent,
         TopnDataTooltipComponent,
         DonutDataTooltipComponent,
         BarchartDataTooltipComponent,
-        HeatmapDataTooltipComponent
+        HeatmapDataTooltipComponent,
     ],
-    exports: [],
-    entryComponents: [
-        LinechartDataTooltipComponent,
-        TopnDataTooltipComponent,
-        DonutDataTooltipComponent,
-        BarchartDataTooltipComponent,
-        HeatmapDataTooltipComponent
-    ]
+    exports: []
 })
 export class UniversalDataTooltipModule {
     static forRoot(): ModuleWithProviders<UniversalDataTooltipModule> {
         return {
             ngModule: UniversalDataTooltipModule,
-            providers: [
-                TooltipDataService,
-                TooltipComponentService
-            ]
-        }
+            providers: [TooltipDataService, TooltipComponentService],
+        };
     }
 }
-

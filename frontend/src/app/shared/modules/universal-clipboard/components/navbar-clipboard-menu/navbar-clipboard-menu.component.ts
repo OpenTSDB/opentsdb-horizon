@@ -14,7 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, HostBinding, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ClipboardService } from '../../services/clipboard.service';
 
@@ -23,47 +29,45 @@ import { ClipboardService } from '../../services/clipboard.service';
     selector: 'navbar-clipboard-menu',
     templateUrl: './navbar-clipboard-menu.component.html',
     styleUrls: ['./navbar-clipboard-menu.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NavbarClipboardMenuComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.navbar-clipboard-menu') private _hostClass = true;
-    @HostBinding('class.is-open') get checkDrawerState() {
+    @HostBinding('class.is-open') get checkDrawerState(): boolean {
         return this.drawerState === 'opened';
     }
 
-    private drawerState: string = 'closed';
+    private drawerState = 'closed';
     private subscription = new Subscription();
 
-    constructor(
-        private cbService: ClipboardService
-    ) { }
+    constructor(private cbService: ClipboardService) {}
 
-    ngOnInit() {
-        this.subscription.add(this.cbService.$drawerState.subscribe(val => {
-            this.drawerState = val;
-        }));
+    ngOnInit(): void {
+        this.subscription.add(
+            this.cbService.$drawerState.subscribe((val) => {
+                this.drawerState = val;
+            }),
+        );
     }
 
-    toggleDrawerState(event) {
+    toggleDrawerState(event): void {
         const state = this.drawerState === 'closed' ? 'opened' : 'closed';
         this.cbService.setDrawerState(state);
     }
 
-    getDrawerState() {
+    getDrawerState(): string {
         return this.drawerState;
     }
 
-    setDrawerOpen() {
+    setDrawerOpen(): void {
         this.cbService.setDrawerState('opened');
     }
 
-    setDrawerClosed() {
+    setDrawerClosed(): void {
         this.cbService.setDrawerState('closed');
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
-
 }

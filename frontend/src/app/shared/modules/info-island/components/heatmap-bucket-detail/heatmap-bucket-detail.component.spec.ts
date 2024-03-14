@@ -17,25 +17,44 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HeatmapBucketDetailComponent } from './heatmap-bucket-detail.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { ISLAND_DATA } from '../../info-island.tokens';
+import { HEATMAP_BUCKET_ISLAND_MOCK_DATA } from '../../../../mockdata/info-island/heatmap-bucket-island';
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'info-island-toolbar',
+    template: '<div>Mock Info Island Toolbar Component</div>'
+  })
+  class MockInfoIslandToolbarComponent {}
 
 describe('HeatmapBucketDetailComponent', () => {
-  let component: HeatmapBucketDetailComponent;
-  let fixture: ComponentFixture<HeatmapBucketDetailComponent>;
+    let component: HeatmapBucketDetailComponent;
+    let fixture: ComponentFixture<HeatmapBucketDetailComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HeatmapBucketDetailComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [
+                HeatmapBucketDetailComponent,
+                MockInfoIslandToolbarComponent
+            ],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS,
+            ],
+            providers: [
+                ...INFO_ISLAND_TESTING_PROVIDERS,
+                { provide: ISLAND_DATA, useValue: HEATMAP_BUCKET_ISLAND_MOCK_DATA}
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeatmapBucketDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HeatmapBucketDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

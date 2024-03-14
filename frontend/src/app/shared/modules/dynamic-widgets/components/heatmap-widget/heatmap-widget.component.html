@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@
         </div>
         <span fxFlex="1 1 100%" fxLayout="row" class="title-content">
             <inline-editable class="navbar-item" *ngIf="mode === 'edit' || mode === 'explore'"
-                showEditIcon="true"
+                [showEditIcon]="true"
                 [fieldValue]="widget.settings.title"
                 [minLength]="3"
                 [maxLength]="100"
@@ -31,7 +31,7 @@
                 This snapshot is created from the {{ meta.source | lowercase }} <a target="_blank" routerLink="/{{ meta.source === 'DASHBOARD' ? 'd': meta.source === 'ALERT'? 'a' : 'snap'}}/{{meta.sourceId}}">{{ meta.sourceName }}</a> by {{ meta.createdBy }} on {{ meta.createdTime }}
             </span>
         </span>
-        <graph-type (change)="changeWidgetType($event)" selected="HeatmapWidgetComponent"></graph-type>
+        <graph-type (valueChange)="changeWidgetType($event)" selected="HeatmapWidgetComponent"></graph-type>
         <button mat-flat-button *ngIf="!readonly" class="snapshot-button" (click)="saveAsSnapshot()" matTooltip="Snapshot" matTooltipPosition="below">
             <mat-icon fontSet="denali" fontIcon="d-camera"></mat-icon>
         </button>
@@ -64,7 +64,7 @@
             <div class="step-section query-section is-visible" #stepqueries>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('queries', $event);scrollToElement(stepqueries)">
+                        (click)="toggleConfigSection('queries');scrollToElement(stepqueries)">
                         <span>1. Queries </span>
                         <mat-icon fontSet="denali"
                             [fontIcon]="visibleSections.queries ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>
@@ -79,7 +79,7 @@
             <div class="step-section query-section is-visible" #steptime>
                 <div class="step-section-label">
                     <span class="step-section-label-text"
-                        (click)="toggleConfigSection('time', $event);scrollToElement(steptime);">
+                        (click)="toggleConfigSection('time');scrollToElement(steptime);">
                         <span>2. Time Configuration </span>
                         <mat-icon fontSet="denali"
                             [fontIcon]="visibleSections.time ? 'd-arrowhead-down': 'd-arrowhead-right'"></mat-icon>

@@ -17,25 +17,33 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EventsWidgetComponent } from './events-widget.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../dynamic-widgets-testing.utils';
+import { EVENTS_WIDGET_MOCK_DATA } from '../../../../mockdata/dynamic-widgets/events-widget';
 
 describe('EventsWidgetComponent', () => {
-  let component: EventsWidgetComponent;
-  let fixture: ComponentFixture<EventsWidgetComponent>;
+    let component: EventsWidgetComponent;
+    let fixture: ComponentFixture<EventsWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EventsWidgetComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [EventsWidgetComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EventsWidgetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(EventsWidgetComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        component.widget = EVENTS_WIDGET_MOCK_DATA;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

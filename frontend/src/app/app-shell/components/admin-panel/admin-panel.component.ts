@@ -14,43 +14,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewChild, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewChild,
+    Input,
+    Output,
+    EventEmitter,
+    ViewEncapsulation,
+} from '@angular/core';
 import { NavigatorPanelComponent } from '../navigator-panel/navigator-panel.component';
 
 @Component({
-  selector: 'admin-panel',
-  templateUrl: './admin-panel.component.html',
-  styleUrls: ['./admin-panel.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  host: {
-      '[class.admin-navigator]': 'true',
-      '[class.panel-content]': 'true'
-  }
+    selector: 'admin-panel',
+    templateUrl: './admin-panel.component.html',
+    styleUrls: ['./admin-panel.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AdminPanelComponent implements OnInit {
     @HostBinding('class.admin-navigator') private _hostClass = true;
+    @HostBinding('class.panelContent') private _panelContentClass = true;
 
-    @ViewChild(NavigatorPanelComponent) private navPanel: NavigatorPanelComponent;
+    @ViewChild(NavigatorPanelComponent)
+    private navPanel: NavigatorPanelComponent;
 
     @Input() activeNavSection: any = '';
     @Input() drawerMode: any = 'over';
-    @Input() adminMember: boolean = false;
+    @Input() adminMember = false;
 
     @Output() toggleDrawer: EventEmitter<any> = new EventEmitter();
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
+    ngOnInit() { /* do nothing */ }
 
-    closeDrawer() {
+    closeDrawer(): void {
         this.toggleDrawer.emit({
-            closeNavigator: true
+            closeNavigator: true,
         });
     }
 
-    toggleDrawerMode() {
+    toggleDrawerMode(): void {
         this.toggleDrawer.emit(true);
     }
-
 }

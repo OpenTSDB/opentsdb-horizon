@@ -17,25 +17,26 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardSettingsToggleComponent } from './dashboard-settings-toggle.component';
+import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
 
 describe('DashboardSettingsToggleComponent', () => {
-  let component: DashboardSettingsToggleComponent;
-  let fixture: ComponentFixture<DashboardSettingsToggleComponent>;
+    let component: DashboardSettingsToggleComponent;
+    let fixture: ComponentFixture<DashboardSettingsToggleComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardSettingsToggleComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [DashboardSettingsToggleComponent],
+            imports: DASHBOARD_TESTING_IMPORTS
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardSettingsToggleComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DashboardSettingsToggleComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

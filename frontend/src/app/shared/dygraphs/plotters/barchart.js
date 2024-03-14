@@ -20,14 +20,13 @@
 var Dygraph = require("dygraphs/src/dygraph");
 var DygraphLayout = require("dygraphs/src/dygraph-layout");
 
-var barChartPlotter = function(e) {
+var barChartPlotter = function (e) {
     // We need to handle all the series simultaneously.
     var g = e.dygraph;
 
     var sets = e.allSeriesPoints;
     var ctx = e.drawingContext;
     var y_bottom = e.dygraph.toDomYCoord(0);
-
 
     //extracting and reducing the Dygraph.stackPoints_ function
     function stackPoints(points, cumulativeYval, fillMethod) {
@@ -65,18 +64,21 @@ var barChartPlotter = function(e) {
 
             var actualYval = point.yval;
             if (isNaN(actualYval) || actualYval === null) {
-                if (fillMethod == 'none') {
+                if (fillMethod == "none") {
                     actualYval = 0;
                 } else {
                     // Interpolate/extend for stacking purposes if possible.
                     updateNextPoint(i);
-                    if (prevPoint && nextPoint && fillMethod != 'none') {
+                    if (prevPoint && nextPoint && fillMethod != "none") {
                         // Use linear interpolation between prevPoint and nextPoint.
-                        actualYval = prevPoint.yval + (nextPoint.yval - prevPoint.yval) *
-                            ((xval - prevPoint.xval) / (nextPoint.xval - prevPoint.xval));
-                    } else if (prevPoint && fillMethod == 'all') {
+                        actualYval =
+                            prevPoint.yval +
+                            (nextPoint.yval - prevPoint.yval) *
+                                ((xval - prevPoint.xval) /
+                                    (nextPoint.xval - prevPoint.xval));
+                    } else if (prevPoint && fillMethod == "all") {
                         actualYval = prevPoint.yval;
-                    } else if (nextPoint && fillMethod == 'all') {
+                    } else if (nextPoint && fillMethod == "all") {
                         actualYval = nextPoint.yval;
                     } else {
                         actualYval = 0;
@@ -86,7 +88,7 @@ var barChartPlotter = function(e) {
                 prevPoint = point;
             }
 
-            const direction = actualYval >= 0 ? 'positive' : 'negative';
+            var direction = actualYval >= 0 ? "positive" : "negative";
             var stackedYval = cumulativeYval[xval][direction];
             if (lastXval != xval) {
                 // If an x-value is repeated, we ignore the duplicates.
@@ -97,9 +99,9 @@ var barChartPlotter = function(e) {
 
             point.yval_stacked = stackedYval;
         }
-    };
+    }
 
-    var setNames = g.getLabels().slice(1);  // remove x-axis
+    var setNames = g.getLabels().slice(1); // remove x-axis
 
     var points = e.points;
     var sets = e.allSeriesPoints;
@@ -118,9 +120,11 @@ var barChartPlotter = function(e) {
     var barChartSeries = {};
     var firstSeriesIndex = -1;
     for (var i in seriesInfo) {
-        if (seriesInfo[i].plotter !== undefined &&
-            seriesInfo[i].plotter === barChartPlotter) {
-            barChartSeries[i-1] = i;
+        if (
+            seriesInfo[i].plotter !== undefined &&
+            seriesInfo[i].plotter === barChartPlotter
+        ) {
+            barChartSeries[i - 1] = i;
             if (firstSeriesIndex === -1) {
                 firstSeriesIndex = i - 1;
             }
@@ -139,7 +143,7 @@ var barChartPlotter = function(e) {
         var sep = points[i].canvasx - points[i - 1].canvasx;
         if (sep < min_sep) min_sep = sep;
     }
-    var bar_width = Math.floor(2.0 / 3 * min_sep);
+    var bar_width = Math.floor((2.0 / 3) * min_sep);
 
     // set up cumulative records
     var cumulativeYval = [];
@@ -147,14 +151,17 @@ var barChartPlotter = function(e) {
     var seriesName;
 
     for (var j = sets.length - 1; j >= 0; j--) {
-
         if (!barChartSeries[j]) continue;
 
         points = sets[j];
         seriesName = setNames[j];
 
         //  stack the data
-        stackPoints(points, cumulativeYval, g.getBooleanOption("stackedGraphNaNFill"));
+        stackPoints(
+            points,
+            cumulativeYval,
+            g.getBooleanOption("stackedGraphNaNFill")
+        );
     }
 
     var axis;
@@ -166,12 +173,12 @@ var barChartPlotter = function(e) {
         if (!barChartSeries[j]) continue;
 
         seriesName = setNames[j];
-        connectSeparated = g.getOption('connectSeparatedPoints', seriesName);
+        connectSeparated = g.getOption("connectSeparatedPoints", seriesName);
         logscale = g.attributes_.getForSeries("logscale", seriesName);
         var color = g.getOption("color", seriesName);
 
         var seriesProp = g.getPropertiesForSeries(seriesName);
-        y_bottom = e.dygraph.toDomYCoord( logscale ? 1 : 0, seriesProp.axis - 1);
+        y_bottom = e.dygraph.toDomYCoord(logscale ? 1 : 0, seriesProp.axis - 1);
 
         axis = g.axisPropertiesForSeries(seriesName);
         points = sets[j];
@@ -182,7 +189,10 @@ var barChartPlotter = function(e) {
             }
 
             point.y_stacked = DygraphLayoutCalcYNormal_(
-                axis, point.yval_stacked, logscale);
+                axis,
+                point.yval_stacked,
+                logscale
+            );
 
             point.y = point.y_stacked;
             point.canvasx = g.plotter_.area.w * point.x + g.plotter_.area.x;
@@ -191,14 +201,22 @@ var barChartPlotter = function(e) {
             ctx.fillStyle = color;
             ctx.strokeStyle = color;
 
-            ctx.fillRect(center_x - bar_width / 2, point.canvasy,
-                bar_width, y_bottom - point.canvasy);
+            ctx.fillRect(
+                center_x - bar_width / 2,
+                point.canvasy,
+                bar_width,
+                y_bottom - point.canvasy
+            );
 
-            ctx.strokeRect(center_x - bar_width / 2, point.canvasy,
-                bar_width, y_bottom - point.canvasy);
+            ctx.strokeRect(
+                center_x - bar_width / 2,
+                point.canvasy,
+                bar_width,
+                y_bottom - point.canvasy
+            );
         }
     }
-}
+};
 
 var DygraphLayoutCalcYNormal_ = function (axis, value, logscale) {
     if (logscale) {

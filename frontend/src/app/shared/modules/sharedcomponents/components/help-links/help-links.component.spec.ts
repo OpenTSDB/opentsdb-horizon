@@ -17,25 +17,48 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HelpLinksComponent } from './help-links.component';
+import { SHAREDCOMPONENTS_TESTING_IMPORTS } from '../../sharedcomponents-testing.utils';
+
+import {
+    APP_TESTING_CONFIG
+} from '../../../../mockdata/config/app-config';
+
+import { AppConfigService } from '../../../../../core/services/config.service';
 
 describe('HelpLinksComponent', () => {
-  let component: HelpLinksComponent;
-  let fixture: ComponentFixture<HelpLinksComponent>;
+    let component: HelpLinksComponent;
+    let fixture: ComponentFixture<HelpLinksComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HelpLinksComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockAppConfigService;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HelpLinksComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [HelpLinksComponent],
+            imports: [
+                ...SHAREDCOMPONENTS_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HelpLinksComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

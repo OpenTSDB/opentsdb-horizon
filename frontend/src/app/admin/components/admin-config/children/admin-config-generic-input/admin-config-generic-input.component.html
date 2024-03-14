@@ -11,7 +11,8 @@
             [value]="inputValue"
             [formControl]="inputValueControl"
             [type]="inputType"
-            [placeholder]="inputPlaceholder">
+            [placeholder]="inputPlaceholder"
+            ngDefaultControl>
     </mat-form-field>
     <mat-error *ngIf="hasErrors">{{errorMsg || 'There was an error'}}</mat-error>
 </div>

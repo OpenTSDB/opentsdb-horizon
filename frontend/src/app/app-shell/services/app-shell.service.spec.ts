@@ -16,13 +16,24 @@
  */
 import { TestBed } from '@angular/core/testing';
 
+import { AppConfigService } from '../../core/services/config.service';
 import { AppShellService } from './app-shell.service';
 
-describe('AppShellService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-  it('should be created', () => {
-    const service: AppShellService = TestBed.inject(AppShellService);
-    expect(service).toBeTruthy();
-  });
+describe('AppShellService', () => {
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: [
+            HttpClientTestingModule
+        ],
+        providers: [
+            AppConfigService,
+            AppShellService
+        ]
+    }));
+
+    it('should be created', () => {
+        const service: AppShellService = TestBed.inject(AppShellService);
+        expect(service).toBeTruthy();
+    });
 });

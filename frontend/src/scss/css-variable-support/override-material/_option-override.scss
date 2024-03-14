@@ -1,0 +1,69 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+
+    $foreground: map.get($config, foreground);
+    $background: map.get($config, background);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
+
+    .mat-option {
+        color: mat-get-color-from-palette($foreground, text);
+
+        &:hover:not(.mat-option-disabled),
+        &:focus:not(.mat-option-disabled) {
+            background: mat-get-color-from-palette($background, hover);
+        }
+
+        // In multiple mode there is a checkbox to show that the option is selected.
+        &.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled) {
+            background: mat-get-color-from-palette($background, hover);
+        }
+
+        &.mat-active {
+            background: mat-get-color-from-palette($background, hover);
+            color: mat-get-color-from-palette($foreground, text);
+        }
+
+        &.mat-option-disabled {
+            color: mat-get-color-from-palette($foreground, hint-text);
+        }
+    }
+
+    .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: mat-get-color-from-palette($primary, text);
+    }
+
+    .mat-accent .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: mat-get-color-from-palette($accent, text);
+    }
+
+    .mat-warn .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: mat-get-color-from-palette($warn, text);
+    }
+}
+
+@mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

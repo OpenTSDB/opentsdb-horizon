@@ -14,27 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, Output, EventEmitter, Input, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Output,
+    EventEmitter,
+    Input,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
-  selector: 'graph-type',
-  templateUrl: './graph-type.component.html',
-  styleUrls: ['./graph-type.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'graph-type',
+    templateUrl: './graph-type.component.html',
+    styleUrls: ['./graph-type.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class GraphTypeComponent implements OnInit {
-  @HostBinding('class.graph-type') private _hostClass = true;
+    @HostBinding('class.graph-type') private _hostClass = true;
 
-  @Input() selected = 'LinechartWidgetComponent';
-  @Output() change = new EventEmitter<any>();
+    @Input() selected = 'LinechartWidgetComponent';
+    @Output() valueChange = new EventEmitter<any>();
 
-  constructor() { }
+    constructor() {}
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        // do nothing
+    }
 
-  changeWidgetType(value) {
-    this.change.emit(value);
-  }
-
+    changeWidgetType(value): void {
+        this.valueChange.emit(value);
+    }
 }

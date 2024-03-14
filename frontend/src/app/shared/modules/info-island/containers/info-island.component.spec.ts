@@ -17,25 +17,31 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InfoIslandComponent } from './info-island.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../info-island-testing.utils';
 
 describe('InfoIslandComponent', () => {
-  let component: InfoIslandComponent;
-  let fixture: ComponentFixture<InfoIslandComponent>;
+    let component: InfoIslandComponent;
+    let fixture: ComponentFixture<InfoIslandComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ InfoIslandComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [InfoIslandComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+                ...INFO_ISLAND_TESTING_PROVIDERS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InfoIslandComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InfoIslandComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

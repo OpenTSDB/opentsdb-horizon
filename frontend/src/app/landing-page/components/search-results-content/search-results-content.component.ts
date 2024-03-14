@@ -14,19 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * NOTE: This component doesn't really do anything. Maybe remove it?
+ */
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'app-search-results-content',
-  templateUrl: './search-results-content.component.html',
-  styleUrls: ['./search-results-content.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-search-results-content',
+    templateUrl: './search-results-content.component.html',
+    styleUrls: ['./search-results-content.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class SearchResultsContentComponent implements OnInit {
+    constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+    ngOnInit() { /* do nothing */ }
 }

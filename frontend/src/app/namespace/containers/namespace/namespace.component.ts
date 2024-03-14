@@ -15,12 +15,24 @@
  * limitations under the License.
  */
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DbfsLoadNamespacesList, DbfsLoadTopFolder, DbfsResourcesState } from '../../../shared/modules/dashboard-filesystem/state';
+import {
+    DbfsLoadNamespacesList,
+    DbfsLoadTopFolder,
+    DbfsResourcesState,
+} from '../../../shared/modules/dashboard-filesystem/state';
 import { CdkService } from '../../../core/services/cdk.service';
 import { IntercomService } from '../../../core/services/intercom.service';
 
@@ -28,33 +40,38 @@ import { IntercomService } from '../../../core/services/intercom.service';
     selector: 'app-namespace',
     templateUrl: './namespace.component.html',
     styleUrls: ['./namespace.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NamespaceComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.app-namespace') private hostClass = true;
 
-    @Select(DbfsResourcesState.getResourcesLoaded) dbfsReady$: Observable<boolean>;
-    @Select(DbfsResourcesState.getDynamicLoaded) dynamicLoaded$: Observable<any>;
-    @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<any[]>;
+    @Select(DbfsResourcesState.getResourcesLoaded)
+    dbfsReady$: Observable<boolean>;
+    @Select(DbfsResourcesState.getDynamicLoaded)
+    dynamicLoaded$: Observable<any>;
+    @Select(DbfsResourcesState.getNamespacesList) namespacesData$: Observable<
+    any[]
+    >;
 
     nsData$: Observable<any>;
-    dbfsReady: boolean = false;
-    namespacesLoaded: boolean = false;
-    activeMediaQuery: string = '';
+    dbfsReady = false;
+    namespacesLoaded = false;
+    activeMediaQuery = '';
 
-    namespaceListMode: boolean = false;
+    namespaceListMode = false;
     nsListItems: any[] = [];
 
-    nsAlias: string = '';
+    nsAlias = '';
     nsDbfs: any = {};
-    nsDbfsLoaded: boolean = false;
+    nsDbfsLoaded = false;
 
     private subscription: Subscription = new Subscription();
 
     // portal templates
-    @ViewChild('namespaceListNavbarTmpl', { static: true }) namespaceListNavbarTmpl: TemplateRef<any>;
-    @ViewChild('namespaceDetailNavbarTmpl', { static: true }) namespaceDetailNavbarTmpl: TemplateRef<any>;
+    @ViewChild('namespaceListNavbarTmpl', { static: true })
+    namespaceListNavbarTmpl: TemplateRef<any>;
+    @ViewChild('namespaceDetailNavbarTmpl', { static: true })
+    namespaceDetailNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     namespaceNavbarPortal: TemplatePortal;
@@ -64,99 +81,108 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
         private store: Store,
-        private interCom: IntercomService
+        private interCom: IntercomService,
     ) {
         const namespaceList = false;
-        this.subscription.add(this.dbfsReady$.subscribe(value => {
-            this.dbfsReady = value;
-        }));
+        this.subscription.add(
+            this.dbfsReady$.subscribe((value) => {
+                this.dbfsReady = value;
+            }),
+        );
 
         this.subscription.add(
-            this.router
-                .events.pipe(
-                    filter(event => event instanceof NavigationEnd),
+            this.router.events
+                .pipe(
+                    filter((event) => event instanceof NavigationEnd),
                     map(() => {
-                        if (this.activatedRoute.snapshot.data['namespaceList']) {
-                            return this.activatedRoute.snapshot.data['namespaceList'];
+                        if (
+                            this.activatedRoute.snapshot.data['namespaceList']
+                        ) {
+                            return this.activatedRoute.snapshot.data[
+                                'namespaceList'
+                            ];
                         }
                         return namespaceList;
-                    })
-                ).subscribe((nsList: boolean) => {
+                    }),
+                )
+                .subscribe((nsList: boolean) => {
                     this.namespaceListMode = nsList;
 
                     if (this.namespaceListMode) {
-                        this.namespaceNavbarPortal = new TemplatePortal(this.namespaceListNavbarTmpl, undefined, {});
+                        this.namespaceNavbarPortal = new TemplatePortal(
+                            this.namespaceListNavbarTmpl,
+                            undefined,
+                            {},
+                        );
                         // intercom here to open navigator to namepsace list
-                        this.interCom.requestSend( {
+                        this.interCom.requestSend({
                             action: 'changeToSpecificNamespaceView',
-                            payload: 'namespaceList'
+                            payload: 'namespaceList',
                         });
-
                     } else {
-                        this.namespaceNavbarPortal = new TemplatePortal(this.namespaceDetailNavbarTmpl, undefined, {});
+                        this.namespaceNavbarPortal = new TemplatePortal(
+                            this.namespaceDetailNavbarTmpl,
+                            undefined,
+                            {}
+                        );
                     }
                     this.cdkService.setNavbarPortal(this.namespaceNavbarPortal);
-                })
+                }),
         );
     }
 
     ngOnInit() {
-
         this.subscription.add(
-            this.activatedRoute.params.subscribe(params => {
-                //this.console.log('ROUTE PARAMS', params);
+            this.activatedRoute.params.subscribe((params) => {
+                // this.console.log('ROUTE PARAMS', params);
                 if (params && params['nsalias']) {
                     this.nsAlias = params['nsalias'];
                     if (!this.namespacesLoaded) {
-                        this.loadNamespaceList()
-                            .subscribe(
-                                () => {
-                                    setTimeout(() => {
-                                        this.loadNamespaceData();
-                                        // intercom here to open navigator to specific page
-                                        this.interCom.requestSend( {
-                                            action: 'changeToSpecificNamespaceView',
-                                            payload: this.nsAlias
-                                        });
-
-                                    }, 100);
-                                }
-                            )
+                        this.loadNamespaceList().subscribe(() => {
+                            setTimeout(() => {
+                                this.loadNamespaceData();
+                                // intercom here to open navigator to specific page
+                                this.interCom.requestSend({
+                                    action: 'changeToSpecificNamespaceView',
+                                    payload: this.nsAlias
+                                });
+                            }, 100);
+                        });
                     } else {
                         this.loadNamespaceData();
                         // intercom here to open navigator to specific page
-                        this.interCom.requestSend( {
+                        this.interCom.requestSend({
                             action: 'changeToSpecificNamespaceView',
-                            payload: this.nsAlias
+                            payload: this.nsAlias,
                         });
-
                     }
                 }
-            })
+            }),
         );
 
-        this.subscription.add(this.dynamicLoaded$.subscribe( data => {
-            if (!data.namespaces) {
-                this.loadNamespaceList()
-            } else {
-                this.namespacesLoaded = data.namespaces;
-            }
+        this.subscription.add(
+            this.dynamicLoaded$.subscribe((data) => {
+                if (!data.namespaces) {
+                    this.loadNamespaceList();
+                } else {
+                    this.namespacesLoaded = data.namespaces;
+                }
+            }),
+        );
 
-        }));
-
-        this.subscription.add(this.namespacesData$.subscribe( namespaces => {
-            this.nsListItems = namespaces;
-        }));
-
+        this.subscription.add(
+            this.namespacesData$.subscribe((namespaces) => {
+                this.nsListItems = namespaces;
+            }),
+        );
     }
-
 
     formattedFolderData(nsPath: string): any[] {
         const folderData: any = this.nsDbfs[nsPath];
         const data: any[] = [];
 
         for (let i = 0; i < folderData.subfolders.length; i++) {
-            let item: any = {...folderData.subfolders[i]};
+            const item: any = { ...folderData.subfolders[i] };
             if (!item.hidden && !item.trashFolder) {
                 item.dataType = 'folder';
                 data.push(item);
@@ -164,7 +190,7 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         }
 
         for (let i = 0; i < folderData.files.length; i++) {
-            let item: any = {...folderData.files[i]};
+            const item: any = { ...folderData.files[i] };
             if (!item.hidden) {
                 item.dataType = 'file';
                 data.push(item);
@@ -174,40 +200,36 @@ export class NamespaceComponent implements OnInit, OnDestroy {
         return data;
     }
 
-    navigateToNamespace(item: any) {
-        this.router.navigateByUrl('/d/namespace/'+item.alias);
+    navigateToNamespace(item: any): void {
+        this.router.navigateByUrl('/d/namespace/' + item.alias);
     }
 
-    navigateToFolder(item: any) {
+    navigateToFolder(item: any): void { /* empty */ }
 
-    }
-
-    dashboardDetails(item: any) {
-
-    }
+    dashboardDetails(item: any): void { /* empty */ }
 
     /* privates */
     private loadNamespaceList() {
-        return this.store.dispatch(
-            new DbfsLoadNamespacesList({})
-        );
+        return this.store.dispatch(new DbfsLoadNamespacesList({}));
     }
 
     private loadNamespaceData() {
-        this.store.dispatch(new DbfsLoadTopFolder('namespace', this.nsAlias, {}))
-            .subscribe(
-                () => {
-                    setTimeout(() => {
-                        this.nsDbfs[':nsroot:'] = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/namespace/' + this.nsAlias));
-                        this.nsDbfsLoaded = true;
-                    }, 200);
-                }
-            );
+        this.store
+            .dispatch(new DbfsLoadTopFolder('namespace', this.nsAlias, {}))
+            .subscribe(() => {
+                setTimeout(() => {
+                    this.nsDbfs[':nsroot:'] = this.store.selectSnapshot(
+                        DbfsResourcesState.getFolderResource(
+                            '/namespace/' + this.nsAlias
+                        )
+                    );
+                    this.nsDbfsLoaded = true;
+                }, 200);
+            });
     }
 
     /* ON DESTROY LAST */
     ngOnDestroy() {
-        this.subscription.unsubscribe()
+        this.subscription.unsubscribe();
     }
-
 }

@@ -17,16 +17,40 @@
 
 import { TestBed, inject } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../shared/mockdata/config/app-config';
+import { AppConfigService } from '../../core/services/config.service';
+
 import { URLOverrideService } from './urlOverride.service';
+import { CORE_SERVICES_TESTING_IMPORTS } from '../core-testing.utils';
 
 describe('URLOverrideService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [URLOverrideService]
-    });
-  });
+    let mockAppConfigService;
 
-  it('should be created', inject([URLOverrideService], (service: URLOverrideService) => {
-    expect(service).toBeTruthy();
-  }));
+    beforeEach(() => {
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            imports: CORE_SERVICES_TESTING_IMPORTS,
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                },
+                URLOverrideService
+            ],
+        });
+    });
+
+    it('should be created', inject(
+        [URLOverrideService],
+        (service: URLOverrideService) => {
+            expect(service).toBeTruthy();
+        },
+    ));
 });

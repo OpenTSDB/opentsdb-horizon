@@ -16,26 +16,51 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
 import { AlertDetailsSuppressConfigComponent } from './alert-details-suppress-config.component';
+import { InfoIslandService } from '../../../../../shared/modules/info-island/services/info-island.service';
 
 describe('AlertDetailsSuppressConfigComponent', () => {
-  let component: AlertDetailsSuppressConfigComponent;
-  let fixture: ComponentFixture<AlertDetailsSuppressConfigComponent>;
+    let component: AlertDetailsSuppressConfigComponent;
+    let fixture: ComponentFixture<AlertDetailsSuppressConfigComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsSuppressConfigComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsSuppressConfigComponent],
+            imports: ALERTS_TESTING_IMPORTS,
+            providers: [InfoIslandService]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsSuppressConfigComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AlertDetailsSuppressConfigComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+
+        component.config = {
+            metricId: 'metricId',
+            comparisonOperator: 'missing',
+            threshold: 0,
+            timeSampler: 'all_of_the_times',
+            reportingInterval: 60
+        };
+
+        component.data = {
+            threshold: {
+                singleMetric: {
+                    slidingWindow: '300'
+                }
+            }
+        };
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

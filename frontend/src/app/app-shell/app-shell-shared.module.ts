@@ -22,22 +22,19 @@ import { SharedcomponentsModule } from '../shared/modules/sharedcomponents/share
 
 // components
 import { NavigatorPanelItemDirective } from './directives/navigator-panel-item.directive';
-import { NavigatorPanelComponent, NavigatorPanelItemElement } from './components/navigator-panel/navigator-panel.component';
+import {
+    NavigatorPanelComponent,
+    NavigatorPanelItemElement,
+} from './components/navigator-panel/navigator-panel.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        SharedcomponentsModule,
-    ],
+    imports: [CommonModule, SharedcomponentsModule],
     declarations: [
         NavigatorPanelItemDirective,
         NavigatorPanelComponent,
-        NavigatorPanelItemElement
+        NavigatorPanelItemElement,
     ],
 
-    exports: [
-        NavigatorPanelItemDirective,
-        NavigatorPanelComponent
-    ]
+    exports: [NavigatorPanelItemDirective, NavigatorPanelComponent],
 })
-export class AppShellSharedModule { }
+export class AppShellSharedModule {}

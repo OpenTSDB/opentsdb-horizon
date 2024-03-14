@@ -15,42 +15,58 @@
  * limitations under the License.
  */
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { CdkService } from '../../../core/services/cdk.service';
 import { IntercomService } from '../../../core/services/intercom.service';
-import { DbfsLoadTopFolder, DbfsLoadUsersList, DbfsResourcesState, DbfsState } from '../../../shared/modules/dashboard-filesystem/state';
+import {
+    DbfsLoadTopFolder,
+    DbfsLoadUsersList,
+    DbfsResourcesState,
+    DbfsState,
+} from '../../../shared/modules/dashboard-filesystem/state';
 
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class UserComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.app-user') private hostClass = true;
 
-    @Select(DbfsResourcesState.getResourcesLoaded) dbfsReady$: Observable<boolean>;
-    @Select(DbfsResourcesState.getDynamicLoaded) dynamicLoaded$: Observable<any>;
+    @Select(DbfsResourcesState.getResourcesLoaded)
+    dbfsReady$: Observable<boolean>;
+    @Select(DbfsResourcesState.getDynamicLoaded)
+    dynamicLoaded$: Observable<any>;
 
-    userListMode: boolean = false;
-    dbfsReady: boolean = false;
-    usersLoaded: boolean = false;
+    userListMode = false;
+    dbfsReady = false;
+    usersLoaded = false;
 
-    userAlias: string = '';
+    userAlias = '';
     userDbfs: any = {};
     userData: any = {};
-    userDbfsLoaded: boolean = false;
+    userDbfsLoaded = false;
 
     private subscription: Subscription = new Subscription();
 
     // portal templates
-    @ViewChild('userListNavbarTmpl', { static: true }) userListNavbarTmpl: TemplateRef<any>;
-    @ViewChild('userDetailNavbarTmpl', { static: true }) userDetailNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userListNavbarTmpl', { static: true })
+    userListNavbarTmpl: TemplateRef<any>;
+    @ViewChild('userDetailNavbarTmpl', { static: true })
+    userDetailNavbarTmpl: TemplateRef<any>;
 
     // portal placeholders
     userNavbarPortal: TemplatePortal;
@@ -60,108 +76,118 @@ export class UserComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private cdkService: CdkService,
         private interCom: IntercomService,
-        private store: Store
+        private store: Store,
     ) {
         const userList = false;
 
-        this.subscription.add(this.dbfsReady$.subscribe(value => {
-            this.dbfsReady = value;
-        }));
+        this.subscription.add(
+            this.dbfsReady$.subscribe((value) => {
+                this.dbfsReady = value;
+            }),
+        );
 
         this.subscription.add(
-            this.router
-                .events.pipe(
-                    filter(event => event instanceof NavigationEnd),
+            this.router.events
+                .pipe(
+                    filter((event) => event instanceof NavigationEnd),
                     map(() => {
                         if (this.activatedRoute.snapshot.data['userList']) {
-                            return this.activatedRoute.snapshot.data['userList'];
+                            return this.activatedRoute.snapshot.data[
+                                'userList'
+                            ];
                         }
                         return userList;
-                    })
-                ).subscribe((nsList: boolean) => {
+                    }),
+                )
+                .subscribe((nsList: boolean) => {
                     this.userListMode = nsList;
 
                     if (this.userListMode) {
-                        this.userNavbarPortal = new TemplatePortal(this.userListNavbarTmpl, undefined, {});
+                        this.userNavbarPortal = new TemplatePortal(
+                            this.userListNavbarTmpl,
+                            undefined,
+                            {},
+                        );
                         // intercom here to go to user list page
-                        this.interCom.requestSend( {
+                        this.interCom.requestSend({
                             action: 'changeToSpecificUserView',
-                            payload: 'userList'
+                            payload: 'userList',
                         });
                     } else {
-                        this.userNavbarPortal = new TemplatePortal(this.userDetailNavbarTmpl, undefined, {});
+                        this.userNavbarPortal = new TemplatePortal(
+                            this.userDetailNavbarTmpl,
+                            undefined,
+                            {},
+                        );
                     }
                     this.cdkService.setNavbarPortal(this.userNavbarPortal);
-                })
+                }),
         );
     }
 
-    ngOnInit() {
-        this.subscription.add(this.dynamicLoaded$.subscribe( data => {
-            if (!data.users) {
-                this.loadUserList()
-            } else {
-                this.usersLoaded = data.users;
-            }
-
-        }));
+    ngOnInit(): void {
+        this.subscription.add(
+            this.dynamicLoaded$.subscribe((data) => {
+                if (!data.users) {
+                    this.loadUserList();
+                } else {
+                    this.usersLoaded = data.users;
+                }
+            }),
+        );
 
         this.subscription.add(
-            this.activatedRoute.params.subscribe(params => {
-                //this.console.log('ROUTE PARAMS', params);
+            this.activatedRoute.params.subscribe((params) => {
+                // this.console.log('ROUTE PARAMS', params);
                 if (params && params['useralias']) {
                     this.userAlias = params['useralias'];
                     if (!this.usersLoaded) {
-                        this.loadUserList()
-                            .subscribe(
-                                () => {
-                                    setTimeout(() => {
-                                        this.loadUserData();
-                                        // intercom here to open navigator to specific page
-                                        this.interCom.requestSend( {
-                                            action: 'changeToSpecificUserView',
-                                            payload: this.userAlias
-                                        });
-
-                                    }, 100);
-                                }
-                            )
+                        this.loadUserList().subscribe(() => {
+                            setTimeout(() => {
+                                this.loadUserData();
+                                // intercom here to open navigator to specific page
+                                this.interCom.requestSend({
+                                    action: 'changeToSpecificUserView',
+                                    payload: this.userAlias,
+                                });
+                            }, 100);
+                        });
                     } else {
                         this.loadUserData();
                         // intercom here to open navigator to specific page
-                        this.interCom.requestSend( {
+                        this.interCom.requestSend({
                             action: 'changeToSpecificUserView',
-                            payload: this.userAlias
+                            payload: this.userAlias,
                         });
-
                     }
                 }
-            })
+            }),
         );
     }
 
-
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
-    private loadUserList() {
-        return this.store.dispatch(
-            new DbfsLoadUsersList({})
-        );
+    private loadUserList(): Observable<any> {
+        return this.store.dispatch(new DbfsLoadUsersList({}));
     }
 
-    private loadUserData() {
-        this.store.dispatch(new DbfsLoadTopFolder('user', this.userAlias, {}))
-            .subscribe(
-                () => {
-                    setTimeout(() => {
-                        this.userData = this.store.selectSnapshot(DbfsState.getUser(this.userAlias));
-                        this.userDbfs[':userroot:'] = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/' + this.userAlias));
-                        this.userDbfsLoaded = true;
-                    }, 200);
-                }
-            );
+    private loadUserData(): void {
+        this.store
+            .dispatch(new DbfsLoadTopFolder('user', this.userAlias, {}))
+            .subscribe(() => {
+                setTimeout(() => {
+                    this.userData = this.store.selectSnapshot(
+                        DbfsState.getUser(this.userAlias),
+                    );
+                    this.userDbfs[':userroot:'] = this.store.selectSnapshot(
+                        DbfsResourcesState.getFolderResource(
+                            '/user/' + this.userAlias,
+                        ),
+                    );
+                    this.userDbfsLoaded = true;
+                }, 200);
+            });
     }
-
 }

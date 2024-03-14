@@ -21,21 +21,24 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './containers/dashboard/dashboard.component';
 import { DashboardCanDeactivateGuardService } from './containers/dashboard/dashboard-can-deactivate-guard.service';
 
-
 const routes: Routes = [
     {
         path: '',
         redirectTo: '/main',
-        pathMatch: 'full'
+        pathMatch: 'full',
     },
     // this setup to let the url path thru to DashboardComponent
     // since we dont want to manually define every possible path with folder tree
-    { path: '**', component: DashboardComponent, canDeactivate: [DashboardCanDeactivateGuardService] }
+    {
+        path: '**',
+        component: DashboardComponent,
+        canDeactivate: [DashboardCanDeactivateGuardService],
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
-    providers: [DashboardCanDeactivateGuardService]
+    providers: [DashboardCanDeactivateGuardService],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

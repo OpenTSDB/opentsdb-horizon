@@ -16,26 +16,32 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { NavigatorPanelComponent } from './navigator-panel.component';
 
 describe('NavigatorPanelComponent', () => {
-  let component: NavigatorPanelComponent;
-  let fixture: ComponentFixture<NavigatorPanelComponent>;
+    let component: NavigatorPanelComponent;
+    let fixture: ComponentFixture<NavigatorPanelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavigatorPanelComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [NavigatorPanelComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavigatorPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavigatorPanelComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

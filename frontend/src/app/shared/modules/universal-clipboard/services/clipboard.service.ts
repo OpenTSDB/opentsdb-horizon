@@ -23,14 +23,16 @@ import { DashboardConverterService } from '../../../../core/services/dashboard-c
 import { UtilsService } from '../../../../core/services/utils.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
-import { DbfsState, DbfsResourcesState} from '../../dashboard-filesystem/state';
+import {
+    DbfsState,
+    DbfsResourcesState,
+} from '../../dashboard-filesystem/state';
 import { DbfsService } from '../../dashboard-filesystem/services/dbfs.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ClipboardService {
-
     private clipboardResourcePath: string;
 
     /* STREAMS */
@@ -43,7 +45,7 @@ export class ClipboardService {
         private dbConverterService: DashboardConverterService,
         private store: Store,
         private http: HttpService,
-        private dbfs: DbfsService
+        private dbfs: DbfsService,
     ) {
         this.$drawerState = this._drawerState.asObservable();
         this.setDrawerState('closed');
@@ -58,27 +60,28 @@ export class ClipboardService {
     }
 
     handleError(error: HttpErrorResponse) {
-
         if (error.error instanceof ErrorEvent) {
             // a client-side or network error occured
             console.group(
                 '%cERROR%cWidgetClipboardService :: An API error occurred',
                 'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-                'color: #ff0000; padding: 4px 8px; font-weight: bold'
+                'color: #ff0000; padding: 4px 8px; font-weight: bold',
             );
-            console.log('%cErrorMsg', 'font-weight: bold;', error.error.message);
+            console.log(
+                '%cErrorMsg',
+                'font-weight: bold;',
+                error.error.message,
+            );
             console.groupEnd();
         } else {
             // the backend returned unsuccessful response code
             // the response body may contain clues of what went wrong
             console.error(
                 `backend return code ${error.status}, ` +
-                `body was: ${error.error}`
+                    `body was: ${error.error}`,
             );
         }
-        return throwError(
-            'Something bad happened; please try again later.'
-        );
+        return throwError('Something bad happened; please try again later.');
     }
 
     getNewUpdateValues(): any {
@@ -86,7 +89,7 @@ export class ClipboardService {
         const updatedBy = this.store.selectSnapshot(DbfsState.getUser());
         const updateValues: any = {
             updatedTime,
-            updatedBy
+            updatedBy,
         };
         return updateValues;
     }
@@ -96,18 +99,25 @@ export class ClipboardService {
         // get current logged in user
         const user = this.store.selectSnapshot(DbfsState.getUser());
         // get current user clipboard file
-        const cbResource = this.store.selectSnapshot(DbfsResourcesState.getFolderResource('/user/' + user.alias + '/_clipboard_'));
+        const cbResource = this.store.selectSnapshot(
+            DbfsResourcesState.getFolderResource(
+                '/user/' + user.alias + '/_clipboard_',
+            ),
+        );
         if (!cbResource || cbResource.notFound) {
-           return false;
+            return false;
         }
 
         return cbResource;
     }
 
     createClipboardResource(title: string) {
-        const clipboardProto: any = this.utils.deepClone(this.dbService.getDashboardPrototype());
+        const clipboardProto: any = this.utils.deepClone(
+            this.dbService.getDashboardPrototype(),
+        );
         clipboardProto.settings.meta.title = title || 'Default clipboard';
-        clipboardProto.settings.meta.description = 'storage for widget clipboard';
+        clipboardProto.settings.meta.description =
+            'storage for widget clipboard';
         clipboardProto.widgets = []; // reset widgets to empty
         clipboardProto.version = this.dbConverterService.getDBCurrentVersion();
 
@@ -117,7 +127,7 @@ export class ClipboardService {
         const payload: any = {
             name: title,
             parentId: cbFolder.id,
-            content: clipboardProto
+            content: clipboardProto,
         };
 
         return this.saveClipboard('_new_', payload);
@@ -132,12 +142,12 @@ export class ClipboardService {
     }
 
     sortClipboards(items: any[]): any[] {
-        const defaultIdx = items.findIndex(item => item.name === 'Default clipboard');
+        const defaultIdx = items.findIndex(
+            (item) => item.name === 'Default clipboard',
+        );
         const defaultClipboard = items.splice(defaultIdx, 1);
 
-        items.sort((a: any, b: any) => {
-            return this.utils.sortAlphaNum(a.name, b.name);
-        });
+        items.sort((a: any, b: any) => this.utils.sortAlphaNum(a.name, b.name));
 
         items.unshift(defaultClipboard[0]);
 

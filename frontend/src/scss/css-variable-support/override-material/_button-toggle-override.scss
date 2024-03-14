@@ -1,0 +1,102 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@angular/material' as mat;
+@import '../../loader-base';
+
+@mixin color($config) {
+    //$cssVarMap: get-theme-css-variables($theme-name);
+    $foreground: map.get($config, foreground);
+    $background: map.get($config, background);
+    $divider-color: mat-get-color-from-palette($foreground, divider);
+    $theme-divider-color: map.get($foreground, divider);
+
+    // By default the theme usually has an rgba color for the dividers, which can
+    // stack up with the background of a button toggle. This can cause the border
+    // of a selected toggle to look different from an deselected one. We use a solid
+    // color to ensure that the border always stays the same.
+    $divider-color: if(type-of($theme-divider-color) == color,
+      _mat-rgba-to-hex($theme-divider-color, map.get($background, card)),
+      $theme-divider-color
+    );
+
+    .mat-button-toggle {
+      color: mat-get-color-from-palette($foreground, hint-text);
+
+      .mat-button-toggle-focus-overlay {
+        background-color: mat-get-color-from-palette($background, focused-button);
+      }
+    }
+
+    .mat-button-toggle-appearance-standard {
+      color: mat-get-color-from-palette($foreground, text);
+      background: mat-get-color-from-palette($background, card);
+
+      .mat-button-toggle-focus-overlay {
+        background-color: mat-get-color-from-palette($background, focused-button, 1);
+      }
+    }
+
+    .mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
+      border-left: solid 1px $divider-color;
+    }
+
+    [dir='rtl'] .mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
+      border-left: none;
+      border-right: solid 1px $divider-color;
+    }
+
+    .mat-button-toggle-group-appearance-standard.mat-button-toggle-vertical {
+      .mat-button-toggle + .mat-button-toggle {
+        border-left: none;
+        border-right: none;
+        border-top: solid 1px $divider-color;
+      }
+    }
+
+    .mat-button-toggle-checked {
+      background-color: mat-get-color-from-palette($background, selected-button);
+      color: mat-get-color-from-palette($foreground, secondary-text);
+
+      &.mat-button-toggle-appearance-standard {
+        color: mat-get-color-from-palette($foreground, text);
+      }
+    }
+
+    .mat-button-toggle-disabled {
+      color: mat-get-color-from-palette($foreground, disabled-button);
+      background-color: mat-get-color-from-palette($background, disabled-button-toggle);
+
+      &.mat-button-toggle-appearance-standard {
+        background: mat-get-color-from-palette($background, card);
+      }
+
+      &.mat-button-toggle-checked {
+        background-color: mat-get-color-from-palette($background, selected-disabled-button);
+      }
+    }
+
+    .mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+    .mat-button-toggle-group-appearance-standard {
+      border: solid 1px $divider-color;
+    }
+  }
+
+  @mixin theme($theme-name) {
+
+    $light-theme: get-theme-light-variant($theme-name);
+    $dark-theme: get-theme-dark-variant($theme-name);
+
+    @at-root [theme="#{$theme-name}"] {
+        &[variant="light"] {
+            @include color($light-theme);
+        }
+
+        @if $dark-theme-selector {
+            $mat-css-theme: $dark-theme !global;
+            &[variant="dark"] {
+                @include color($dark-theme);
+            }
+        }
+    }
+
+}

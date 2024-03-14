@@ -14,7 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    HostBinding,
+    ViewEncapsulation,
+} from '@angular/core';
 import { ThemeService } from '../../../../../shared/modules/theme/services/theme.service';
 import { take } from 'rxjs/operators';
 
@@ -23,39 +28,44 @@ import { take } from 'rxjs/operators';
     selector: 'settings-theme',
     templateUrl: './settings-theme.component.html',
     styleUrls: ['./settings-theme.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class SettingsThemeComponent implements OnInit {
-
     @HostBinding('class.settings-theme') private _hostClass = true;
 
     themeOptions: any[] = [];
     variantOptions: any[] = [];
 
-    activeTheme: string = '';
-    activeVariant: string = '';
+    activeTheme = '';
+    activeVariant = '';
 
     get activeThemeLabel(): string {
-        const idx = this.themeOptions.findIndex(item => item.value === this.activeTheme);
-        return (idx >= 0) ? this.themeOptions[idx].label : '';
+        const idx = this.themeOptions.findIndex(
+            (item) => item.value === this.activeTheme,
+        );
+        return idx >= 0 ? this.themeOptions[idx].label : '';
     }
 
-    constructor(
-        private themeService: ThemeService
-    ) {
+    constructor(private themeService: ThemeService) {
         this.themeOptions = ThemeService.themeOptions;
         this.variantOptions = ThemeService.themeVariantOptions;
 
-        this.themeService.getActiveTheme().pipe(take(1)).subscribe( theme => {
-            this.activeTheme = theme;
-        });
+        this.themeService
+            .getActiveTheme()
+            .pipe(take(1))
+            .subscribe((theme) => {
+                this.activeTheme = theme;
+            });
 
-        this.themeService.getActiveVariant().pipe(take(1)).subscribe( variant => {
-            this.activeVariant= variant;
-        });
+        this.themeService
+            .getActiveVariant()
+            .pipe(take(1))
+            .subscribe((variant) => {
+                this.activeVariant = variant;
+            });
     }
 
-    ngOnInit() {}
+    ngOnInit() { /* do nothing */ }
 
     selectTheme(item) {
         this.activeTheme = item.value;
@@ -66,5 +76,4 @@ export class SettingsThemeComponent implements OnInit {
         this.activeVariant = item.value;
         this.themeService.setActiveVariant(item.value);
     }
-
 }

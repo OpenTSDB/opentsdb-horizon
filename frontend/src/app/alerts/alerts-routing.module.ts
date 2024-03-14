@@ -22,12 +22,12 @@ import { AlertsComponent } from './containers/alerts.component';
 
 // routes
 const routes: Routes = [
-    //{ path: '', redirectTo: '/main', pathMatch: 'full' },
-    { path: '**', component: AlertsComponent }
+    // { path: '', redirectTo: '/main', pathMatch: 'full' },
+    { path: '**', component: AlertsComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
 })
-export class AlertsRoutingModule { }
+export class AlertsRoutingModule {}

@@ -14,18 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Directive, ElementRef, OnDestroy, OnInit, Input, } from '@angular/core';
-//import { UniversalDataTooltipService } from '../services/universal-data-tooltip.service';
+import {
+    Directive,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    Input,
+    AfterViewInit,
+} from '@angular/core';
 import { TooltipComponentService } from '../services/tooltip-component.service';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[ttMouseListener]'
+    selector: '[ttMouseListener]',
 })
-export class TtMouseListenerDirective implements OnDestroy, OnInit {
-
-    @Input() ttType: string = 'linechart'; // line is default
-    @Input() ttMultigraph: boolean = false;
+export class TtMouseListenerDirective
+implements OnDestroy, OnInit, AfterViewInit {
+    @Input() ttType = 'linechart'; // line is default
+    @Input() ttMultigraph = false;
 
     // normal mouse listener
     private _mouseEnterListener: any;
@@ -38,73 +44,98 @@ export class TtMouseListenerDirective implements OnDestroy, OnInit {
     private _mouseBoundaryEl: any;
 
     constructor(
-        //private service: UniversalDataTooltipService,
+        // private service: UniversalDataTooltipService,
         private ttCompSvc: TooltipComponentService,
-        private elRef: ElementRef
+        private elRef: ElementRef,
     ) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        // do nothing
+    }
 
     ngAfterViewInit() {
         this.setupMouseListener();
     }
 
-    private setupMouseListener() {
+    private setupMouseListener(): void {
+        this._mouseEnterListener = this.elRef.nativeElement.addEventListener(
+            'mouseenter',
+            (event: any) => {
+                // find the outer boundary
+                const el = this.elRef.nativeElement;
+                let mBoundaryEl;
 
-        this._mouseEnterListener = this.elRef.nativeElement.addEventListener('mouseenter', (event: any) => {
-            // find the outer boundary
-            const el = this.elRef.nativeElement;
-            let mBoundaryEl;
-
-            if (this.ttMultigraph) {
-                this._mouseMoveListener = this.elRef.nativeElement.addEventListener('mousemove', (e: any) => {
-                    mBoundaryEl = e.target.closest('.graph-cell');
-                    if (mBoundaryEl && this._mouseBoundaryEl !== mBoundaryEl) {
-                        this._mouseBoundaryEl = mBoundaryEl;
-                        // tell service we are entering an element that has tooltips
-                        // so it can set up the correct tooltip layout
-                        this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
+                if (this.ttMultigraph) {
+                    this._mouseMoveListener =
+                        this.elRef.nativeElement.addEventListener(
+                            'mousemove',
+                            (e: any) => {
+                                mBoundaryEl = e.target.closest('.graph-cell');
+                                if (
+                                    mBoundaryEl &&
+                                    this._mouseBoundaryEl !== mBoundaryEl
+                                ) {
+                                    this._mouseBoundaryEl = mBoundaryEl;
+                                    // tell service we are entering an element that has tooltips
+                                    // so it can set up the correct tooltip layout
+                                    this.ttCompSvc.tooltipType(
+                                        this.ttType,
+                                        mBoundaryEl,
+                                    );
+                                }
+                            },
+                            { capture: true, passive: true },
+                        );
+                } else {
+                    if (el.closest('.gridster-stage')) {
+                        mBoundaryEl = el.closest('.widget-loader');
+                    } else if (el.closest('.edit-view-container')) {
+                        mBoundaryEl = this.elRef.nativeElement;
+                    } else if (el.closest('.alert-configuration-wrapper')) {
+                        // alerts page with chart
+                        mBoundaryEl = this.elRef.nativeElement;
+                    } else if (el.closest('.hrzn-chart')) {
+                        mBoundaryEl = this.elRef.nativeElement;
                     }
-                }, {capture: true, passive: true});
-
-            } else {
-                if (el.closest('.gridster-stage')) {
-                    mBoundaryEl = el.closest('.widget-loader');
+                    // tell service we are entering an element that has tooltips
+                    // so it can set up the correct tooltip layout
+                    this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
                 }
-                else if (el.closest('.edit-view-container')) {
-                    mBoundaryEl = this.elRef.nativeElement;
+            },
+            { capture: true, passive: true },
+        );
+
+        this._mouseOutListener = this.elRef.nativeElement.addEventListener(
+            'mouseout',
+            (event: any) => {
+                if (this.ttMultigraph && this._mouseMoveListener) {
+                    this.elRef.nativeElement.removeEventListener(
+                        'mousemove',
+                        this._mouseMoveListener,
+                    );
                 }
-                else if (el.closest('.alert-configuration-wrapper')) {
-                    // alerts page with chart
-                    mBoundaryEl = this.elRef.nativeElement;
-                }
-                else if (el.closest('.hrzn-chart')) {
-                    mBoundaryEl = this.elRef.nativeElement;
-                }
-                // tell service we are entering an element that has tooltips
-                // so it can set up the correct tooltip layout
-                this.ttCompSvc.tooltipType(this.ttType, mBoundaryEl);
-            } 
-        }, {capture: true, passive: true});
-
-        this._mouseOutListener = this.elRef.nativeElement.addEventListener('mouseout', (event: any) => {
-
-            if (this.ttMultigraph && this._mouseMoveListener) {
-                this.elRef.nativeElement.removeEventListener('mousemove', this._mouseMoveListener)
-            }
-            // tell service we are exiting an element that has tooltips
-            // we just hide it, in case the next one is the same type
-            this.ttCompSvc.tooltipMute();
-
-        }, {capture: true, passive: true});
-
+                // tell service we are exiting an element that has tooltips
+                // we just hide it, in case the next one is the same type
+                this.ttCompSvc.tooltipMute();
+            },
+            { capture: true, passive: true },
+        );
     }
 
-    private removeListeners() {
-        this.elRef.nativeElement.removeEventListener('mouseenter', this._mouseEnterListener);
-        this.elRef.nativeElement.removeEventListener('mouseout', this._mouseOutListener);
+    private removeListeners(): void {
+        this.elRef.nativeElement.removeEventListener(
+            'mouseenter',
+            this._mouseEnterListener,
+        );
+        this.elRef.nativeElement.removeEventListener(
+            'mouseout',
+            this._mouseOutListener,
+        );
         if (this.ttMultigraph && this._mouseMoveListener) {
-            this.elRef.nativeElement.removeEventListener('mousemove', this._mouseMoveListener);
+            this.elRef.nativeElement.removeEventListener(
+                'mousemove',
+                this._mouseMoveListener,
+            );
         }
     }
 

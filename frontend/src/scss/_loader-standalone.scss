@@ -1,4 +1,5 @@
 // **
+@use '@angular/material' as mat;
 // * This file is part of OpenTSDB.
 // * Copyright (C) 2021  Yahoo.
 // *
@@ -42,7 +43,7 @@
 
 // NOTE: OPTION 1 - import a predefined angular theme. Kind of sucks if you really don't want any of the predefined themes.
 // * Recommended only if you plan on using one of the themes, otherwise it just adds weight to your css load
-// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // NOTE: OPTION 2 - Looks like the check that triggers the console warning may be looking for this class.
 // * Recommended method - definitely much lighter for the css load;
@@ -57,8 +58,17 @@
 
 // RENDER MATERIAL CORE (structure)
 // NOTE: may move this inside init-mat-theme since typography could theoretically be part of a theme
-$typography-config: mat-typography-config();
-@include mat-core($typography-config);
+$typography-config: mat.define-legacy-typography-config();
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy($typography-config);`
+@include mat.all-legacy-component-typographies($typography-config);
+@include mat.legacy-core();
 
 // APPLICATION CORE (structure)
 //@include standalone-core();

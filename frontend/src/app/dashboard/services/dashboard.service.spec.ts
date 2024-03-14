@@ -17,15 +17,26 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { DashboardService } from './dashboard.service';
+import { DASHBOARD_SERVICES_TESTING_IMPORTS } from '../dashboard-testing.utils';
+import { HttpService } from '../../core/http/http.service';
+import { DashboardConverterService } from '../../core/services/dashboard-converter.service';
 
 describe('DashboardService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [DashboardService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: DASHBOARD_SERVICES_TESTING_IMPORTS,
+            providers: [
+                HttpService,
+                DashboardConverterService,
+                DashboardService,
+            ],
+        });
     });
-  });
 
-  it('should be created', inject([DashboardService], (service: DashboardService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should be created', inject(
+        [DashboardService],
+        (service: DashboardService) => {
+            expect(service).toBeTruthy();
+        },
+    ));
 });

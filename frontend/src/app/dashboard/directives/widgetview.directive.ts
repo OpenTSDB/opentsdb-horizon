@@ -16,11 +16,10 @@
  */
 import { Directive, ViewContainerRef } from '@angular/core';
 
-@Directive ({
+@Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[widget-view-container]'
+    selector: '[widget-view-container]',
 })
-
 export class WidgetViewDirective {
-    constructor(public viewContainerRef: ViewContainerRef) { }
+    constructor(public viewContainerRef: ViewContainerRef) {}
 }

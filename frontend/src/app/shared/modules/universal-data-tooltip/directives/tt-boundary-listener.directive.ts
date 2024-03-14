@@ -22,7 +22,6 @@ import { TooltipComponentService } from '../services/tooltip-component.service';
     selector: '[ttBoundaryListener]'
 })
 export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
-
     private _scrollListener: any;
     private _scrollTimeout: any;
 
@@ -37,29 +36,33 @@ export class TtBoundaryListenerDirective implements OnDestroy, OnInit {
         this.ttCompSvc.boundaryRegister(this.elRef.nativeElement);
 
         // watch for any scrolling, and disable tooltip if that happens
-        this._scrollListener = this.elRef.nativeElement.addEventListener('scroll', (event: any) => {
+        this._scrollListener = this.elRef.nativeElement.addEventListener(
+            'scroll',
+            (event: any) => {
+                // tell ttCompSvc that scrolling is happening
+                // so it can hide tooltip
+                this.ttCompSvc.boundaryScroll(true);
 
-            // tell ttCompSvc that scrolling is happening
-            // so it can hide tooltip
-            this.ttCompSvc.boundaryScroll(true);
-
-            // clear old timeout
-            clearTimeout(this._scrollTimeout);
-            this._scrollTimeout = setTimeout(() => {
-                // tell ttCompSvc that scrolling stopped
-                // so tooltips can show again
-                this.ttCompSvc.boundaryScroll(false);
-            }, 300);
-
-        }, {capture: true, passive: true});
+                // clear old timeout
+                clearTimeout(this._scrollTimeout);
+                this._scrollTimeout = setTimeout(() => {
+                    // tell ttCompSvc that scrolling stopped
+                    // so tooltips can show again
+                    this.ttCompSvc.boundaryScroll(false);
+                }, 300);
+            },
+            { capture: true, passive: true }
+        );
     }
 
     /* last */
     ngOnDestroy() {
         this.ttCompSvc.boundaryUnregister();
         if (this.elRef) {
-            this.elRef.nativeElement.removeEventListener('scroll', this._scrollListener);
+            this.elRef.nativeElement.removeEventListener(
+                'scroll',
+                this._scrollListener
+            );
         }
     }
-
 }

@@ -30,14 +30,14 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                component: LandingPageContentComponent
-            }
-        ]
-    }
+                component: LandingPageContentComponent,
+            },
+        ],
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class LandingPageRoutingModule { }
+export class LandingPageRoutingModule {}

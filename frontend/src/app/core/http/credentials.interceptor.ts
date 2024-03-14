@@ -14,16 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Injectable } from "@angular/core";
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import {
+    HttpInterceptor,
+    HttpRequest,
+    HttpHandler,
+    HttpEvent,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CredentialsInterceptor implements HttpInterceptor {
     constructor() {}
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(
+        request: HttpRequest<any>,
+        next: HttpHandler,
+    ): Observable<HttpEvent<any>> {
         request = request.clone({
-            withCredentials: true
+            withCredentials: true,
         });
         return next.handle(request);
     }

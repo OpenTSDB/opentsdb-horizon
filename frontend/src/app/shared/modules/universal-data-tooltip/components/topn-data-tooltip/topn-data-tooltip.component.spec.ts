@@ -16,26 +16,35 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { UniversalDataTooltipModule } from '../../universal-data-tooltip.module';
 import { TopnDataTooltipComponent } from './topn-data-tooltip.component';
 
 describe('TopnDataTooltipComponent', () => {
-  let component: TopnDataTooltipComponent;
-  let fixture: ComponentFixture<TopnDataTooltipComponent>;
+    let component: TopnDataTooltipComponent;
+    let fixture: ComponentFixture<TopnDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TopnDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockRenderer = jasmine.createSpyObj({
+        removeClass: () => {},
+        listen: () => {}
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TopnDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [TopnDataTooltipComponent],
+            imports: [
+                UniversalDataTooltipModule.forRoot()
+            ],
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TopnDataTooltipComponent);
+        component = fixture.componentInstance;
+        component.renderer = mockRenderer;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

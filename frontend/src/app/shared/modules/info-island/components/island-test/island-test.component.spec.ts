@@ -17,25 +17,33 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { IslandTestComponent } from './island-test.component';
+import { INFO_ISLAND_TESTING_IMPORTS, INFO_ISLAND_TESTING_PROVIDERS } from '../../info-island-testing.utils';
+import { ISLAND_DATA } from '../../info-island.tokens';
 
 describe('IslandTestComponent', () => {
-  let component: IslandTestComponent;
-  let fixture: ComponentFixture<IslandTestComponent>;
+    let component: IslandTestComponent;
+    let fixture: ComponentFixture<IslandTestComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ IslandTestComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [IslandTestComponent],
+            imports: [
+                ...INFO_ISLAND_TESTING_IMPORTS
+            ],
+            providers: [
+               ...INFO_ISLAND_TESTING_PROVIDERS,
+               { provide: ISLAND_DATA, useValue: {} }
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(IslandTestComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(IslandTestComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

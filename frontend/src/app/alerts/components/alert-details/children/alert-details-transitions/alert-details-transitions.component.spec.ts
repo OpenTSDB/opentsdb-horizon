@@ -16,26 +16,30 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    ALERTS_TESTING_IMPORTS
+} from '../../../../alerts-testing.utils';
+
 import { AlertDetailsTransitionsComponent } from './alert-details-transitions.component';
 
 describe('AlertDetailsTransitionsComponent', () => {
-  let component: AlertDetailsTransitionsComponent;
-  let fixture: ComponentFixture<AlertDetailsTransitionsComponent>;
+    let component: AlertDetailsTransitionsComponent;
+    let fixture: ComponentFixture<AlertDetailsTransitionsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AlertDetailsTransitionsComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [AlertDetailsTransitionsComponent],
+            imports: ALERTS_TESTING_IMPORTS
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AlertDetailsTransitionsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AlertDetailsTransitionsComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

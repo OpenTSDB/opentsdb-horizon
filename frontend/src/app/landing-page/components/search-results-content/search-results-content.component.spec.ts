@@ -17,25 +17,28 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SearchResultsContentComponent } from './search-results-content.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('SearchResultsContentComponent', () => {
-  let component: SearchResultsContentComponent;
-  let fixture: ComponentFixture<SearchResultsContentComponent>;
+    let component: SearchResultsContentComponent;
+    let fixture: ComponentFixture<SearchResultsContentComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SearchResultsContentComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [SearchResultsContentComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SearchResultsContentComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(SearchResultsContentComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

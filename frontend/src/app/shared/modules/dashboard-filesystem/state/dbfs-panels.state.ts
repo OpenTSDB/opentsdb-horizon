@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { State, StateContext, Action, Store, Selector, createSelector } from '@ngxs/store';
+import {
+    State,
+    StateContext,
+    Action,
+    Store,
+    Selector,
+    createSelector,
+} from '@ngxs/store';
 import { UtilsService } from '../../../../core/services/utils.service';
 
 /** INTERFACES */
@@ -36,28 +43,28 @@ export interface DbfsPanelModel {
 export interface DbfsPanelsModel {
     panelTab: string;
     personalTab: {
-      curPanel: number;
-      panels: DbfsPanelModel[];
+        curPanel: number;
+        panels: DbfsPanelModel[];
     };
     favoritesTab: {
-      curPanel: number;
-      panels: DbfsPanelModel[];
+        curPanel: number;
+        panels: DbfsPanelModel[];
     };
     recentTab: {
-      curPanel: number;
-      panels: DbfsPanelModel[];
+        curPanel: number;
+        panels: DbfsPanelModel[];
     };
     usersTab: {
-      curPanel: number;
-      panels: DbfsPanelModel[];
+        curPanel: number;
+        panels: DbfsPanelModel[];
     };
     namespacesTab: {
-      curPanel: number;
-      panels: DbfsPanelModel[];
+        curPanel: number;
+        panels: DbfsPanelModel[];
     };
     // panels: DbfsPanelModel[]; // panels for primary list
     // curPanel: number; // current panel index
-    panelAction: {};
+    panelAction: any;
     initialized: boolean;
 }
 
@@ -90,9 +97,7 @@ export class DbfsResetPanelAction {
 
 export class DbfsChangePanelTab {
     static readonly type = '[DBFS Panels] change panel root';
-    constructor(
-      public readonly payload: any,
-    ) {}
+    constructor(public readonly payload: any) {}
 }
 
 /** STATE */
@@ -102,35 +107,33 @@ export class DbfsChangePanelTab {
     defaults: {
         panelTab: 'personal', // personal, favorites, recent, users, namespaces
         personalTab: {
-          curPanel: 0,
-          panels: []
+            curPanel: 0,
+            panels: [],
         },
         favoritesTab: {
-          curPanel: 0,
-          panels: []
+            curPanel: 0,
+            panels: [],
         },
         recentTab: {
-          curPanel: 0,
-          panels: []
+            curPanel: 0,
+            panels: [],
         },
         usersTab: {
-          curPanel: 0,
-          panels: []
+            curPanel: 0,
+            panels: [],
         },
         namespacesTab: {
-          curPanel: 0,
-          panels: []
+            curPanel: 0,
+            panels: [],
         },
         // panels: [],
         // curPanel: 0,
         panelAction: {},
-        initialized: false
-    }
+        initialized: false,
+    },
 })
 export class DbfsPanelsState {
-    constructor(
-        private utils: UtilsService
-    ) {}
+    constructor(private utils: UtilsService) {}
 
     /** Selectors */
 
@@ -151,101 +154,111 @@ export class DbfsPanelsState {
     }
 
     @Selector() static getPanelTab(state: DbfsPanelsModel) {
-      return state.panelTab;
+        return state.panelTab;
     }
 
     /** Actions */
 
     @Action(DbfsResetPanelAction)
-    resetPanelAction(ctx: StateContext<DbfsPanelsModel>, { }: DbfsResetPanelAction) {
+    resetPanelAction(
+        ctx: StateContext<DbfsPanelsModel>,
+        {}: DbfsResetPanelAction,
+    ) {
         ctx.patchState({
-            panelAction: {}
+            panelAction: {},
         });
     }
 
     @Action(DbfsPanelsError)
-    panelsError(ctx: StateContext<DbfsPanelsModel>, {error}: DbfsPanelsError) {
+    panelsError(
+        ctx: StateContext<DbfsPanelsModel>,
+        { error }: DbfsPanelsError,
+    ) {
         console.group(
             '%cERROR%cState :: Panels Error',
             'color: #ffffff; background-color: #ff0000; padding: 4px 8px; font-weight: bold;',
-            'color: #ff0000; padding: 4px 8px; font-weight: bold'
+            'color: #ff0000; padding: 4px 8px; font-weight: bold',
         );
         console.log('%cErrorMsg', 'font-weight: bold;', error);
         console.groupEnd();
     }
 
     @Action(DbfsPanelsInitialize)
-    panelsInitialize(ctx: StateContext<DbfsPanelsModel>, {}: DbfsPanelsInitialize) {
+    panelsInitialize(
+        ctx: StateContext<DbfsPanelsModel>,
+        {}: DbfsPanelsInitialize,
+    ) {
         const state = ctx.getState();
 
         if (!state.initialized) {
-            ctx.setState({...state,
+            ctx.setState({
+                ...state,
                 personalTab: {
                     curPanel: 0,
                     panels: [
-                      {
-                          index: 0,
-                          folderResource: ':panel-root:', // maybe change this in resources to personal-root
-                          root: true,
-                          synthetic: true,
-                          locked: true
-                      }
-                    ]
+                        {
+                            index: 0,
+                            folderResource: ':panel-root:', // maybe change this in resources to personal-root
+                            root: true,
+                            synthetic: true,
+                            locked: true,
+                        },
+                    ],
                 },
                 favoritesTab: {
-                  curPanel: 0,
-                  panels: [
-                    {
-                        index: 0,
-                        folderResource: ':user-favorites:',
-                        root: true,
-                        dynamic: true,
-                        synthetic: true,
-                        locked: true
-                    }
-                  ]
+                    curPanel: 0,
+                    panels: [
+                        {
+                            index: 0,
+                            folderResource: ':user-favorites:',
+                            root: true,
+                            dynamic: true,
+                            synthetic: true,
+                            locked: true,
+                        },
+                    ],
                 },
                 recentTab: {
-                  curPanel: 0,
-                  panels: [
-                    {
-                        index: 0,
-                        folderResource: ':user-recent:',
-                        root: true,
-                        dynamic: true,
-                        synthetic: true,
-                        locked: true
-                    }
-                  ]
+                    curPanel: 0,
+                    panels: [
+                        {
+                            index: 0,
+                            folderResource: ':user-recent:',
+                            root: true,
+                            dynamic: true,
+                            synthetic: true,
+                            locked: true,
+                        },
+                    ],
                 },
                 usersTab: {
-                  curPanel: 0,
-                  panels: [
-                    {
-                        index: 0,
-                        folderResource: ':list-users:',
-                        root: true,
-                        dynamic: true,
-                        synthetic: true,
-                        locked: true
-                    }
-                  ]
+                    curPanel: 0,
+                    panels: [
+                        {
+                            index: 0,
+                            folderResource: ':list-users:',
+                            root: true,
+                            dynamic: true,
+                            synthetic: true,
+                            locked: true,
+                        },
+                    ],
                 },
                 namespacesTab: {
-                  curPanel: 0,
-                  panels: [
-                    {
-                        index: 0,
-                        folderResource: ':list-namespaces:',
-                        root: true,
-                        dynamic: true,
-                        synthetic: true,
-                        locked: true
-                    }
-                  ]
+                    curPanel: 0,
+                    panels: [
+                        {
+                            index: 0,
+                            folderResource: ':list-namespaces:',
+                            root: true,
+                            dynamic: true,
+                            synthetic: true,
+                            locked: true,
+                        },
+                    ],
                 },
                 // legacy panels -- to be removed eventually
-                /*panels: [
+                /* panels: [
                     {
                         index: 0,
                         folderResource: ':panel-root:',
@@ -254,7 +267,7 @@ export class DbfsPanelsState {
                         locked: true
                     }
                 ],*/
-                initialized: true
+                initialized: true,
             });
         }
     }
@@ -268,22 +281,22 @@ export class DbfsPanelsState {
 
         // check if panel with that path already exists
         // i.e. people click way too fast, too many times
-        const index = panels.findIndex(p => p.folderResource === payload.panel.folderResource);
+        const index = panels.findIndex(
+            (p) => p.folderResource === payload.panel.folderResource,
+        );
 
         if (index === -1) {
-            const newPanel = {...payload.panel,
-                index: panels.length
-            };
+            const newPanel = { ...payload.panel, index: panels.length };
 
             panels.push(newPanel);
 
-            const patchData: any  = {
-                panelAction: payload.panelAction
+            const patchData: any = {
+                panelAction: payload.panelAction,
             };
 
             patchData[curTab] = {
                 panels,
-                curPanel: (panels.length - 1)
+                curPanel: panels.length - 1,
             };
 
             ctx.patchState(patchData);
@@ -291,27 +304,32 @@ export class DbfsPanelsState {
     }
 
     @Action(DbfsUpdatePanels)
-    updatePanels(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsUpdatePanels) {
+    updatePanels(
+        ctx: StateContext<DbfsPanelsModel>,
+        { payload }: DbfsUpdatePanels,
+    ) {
         const state = ctx.getState();
         const curTab = state.panelTab + 'Tab';
 
-        const idx = (payload.panels.length - 1);
+        const idx = payload.panels.length - 1;
 
         const patchData: any = {
-            panelAction: (payload.panelAction) ? payload.panelAction : {}
+            panelAction: payload.panelAction ? payload.panelAction : {},
         };
 
         patchData[curTab] = {
             panels: payload.panels,
-            curPanel: (idx < 0) ? 0 : idx
+            curPanel: idx < 0 ? 0 : idx,
         };
 
         ctx.patchState(patchData);
     }
 
-
     @Action(DbfsChangePanelTab)
-    changePanelTab(ctx: StateContext<DbfsPanelsModel>, { payload }: DbfsChangePanelTab) {
+    changePanelTab(
+        ctx: StateContext<DbfsPanelsModel>,
+        { payload }: DbfsChangePanelTab,
+    ) {
         const state = ctx.getState();
 
         const panelAction = payload.panelAction;
@@ -330,8 +348,7 @@ export class DbfsPanelsState {
 
         ctx.patchState({
             panelTab: payload.panelTab,
-            panelAction: payload.panelAction
+            panelAction: payload.panelAction,
         });
     }
-
 }

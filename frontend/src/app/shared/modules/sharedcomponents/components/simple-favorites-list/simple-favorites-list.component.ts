@@ -19,7 +19,7 @@ import {
     OnInit,
     HostBinding,
     OnDestroy,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -27,18 +27,17 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { DbfsResourcesState } from '../../../dashboard-filesystem/state';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'simple-favorites-list',
     templateUrl: './simple-favorites-list.component.html',
     styleUrls: ['./simple-favorites-list.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
-
     @HostBinding('class.widget-panel-content') private _hostClass = true;
     @HostBinding('class.simple-favorites-list') private _componentClass = true;
 
@@ -46,30 +45,34 @@ export class SimpleFavoritesListComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
     // state
-    @Select(DbfsResourcesState.getUserFavorites) userFavorites$: Observable<any[]>;
+    @Select(DbfsResourcesState.getUserFavorites) userFavorites$: Observable<
+    any[]
+    >;
     userFavorites: any[] = [];
     userFavoritesDataSource = new MatTableDataSource([]);
-    userFavoritesFilter: FormControl = new FormControl('');
+    userFavoritesFilter: UntypedFormControl = new UntypedFormControl('');
 
     constructor(
         private store: Store,
-        private router: Router
-    ) { }
+        private router: Router,
+    ) {}
 
     ngOnInit() {
-        this.subscription.add(this.userFavorites$.subscribe(favs => {
-            this.userFavorites = favs || [];
-            this.userFavoritesDataSource.data = this.userFavorites;
-        }));
+        this.subscription.add(
+            this.userFavorites$.subscribe((favs) => {
+                this.userFavorites = favs || [];
+                this.userFavoritesDataSource.data = this.userFavorites;
+            }),
+        );
 
-        this.subscription.add(this.userFavoritesFilter.valueChanges.subscribe(val => {
-            this.userFavoritesDataSource.filter = val;
-        }));
+        this.subscription.add(
+            this.userFavoritesFilter.valueChanges.subscribe((val) => {
+                this.userFavoritesDataSource.filter = val;
+            }),
+        );
     }
-
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

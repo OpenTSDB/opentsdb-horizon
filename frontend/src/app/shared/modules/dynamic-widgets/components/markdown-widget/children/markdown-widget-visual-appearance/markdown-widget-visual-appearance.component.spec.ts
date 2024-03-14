@@ -17,25 +17,35 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MarkdownWidgetVisualAppearanceComponent } from './markdown-widget-visual-appearance.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../../../dynamic-widgets-testing.utils';
+import { MARKDOWN_WIDGET_MOCK_DATA } from '../../../../../../mockdata/dynamic-widgets/markdown-widget';
 
 describe('MarkdownWidgetVisualAppearanceComponent', () => {
-  let component: MarkdownWidgetVisualAppearanceComponent;
-  let fixture: ComponentFixture<MarkdownWidgetVisualAppearanceComponent>;
+    let component: MarkdownWidgetVisualAppearanceComponent;
+    let fixture: ComponentFixture<MarkdownWidgetVisualAppearanceComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MarkdownWidgetVisualAppearanceComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [MarkdownWidgetVisualAppearanceComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MarkdownWidgetVisualAppearanceComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(
+            MarkdownWidgetVisualAppearanceComponent,
+        );
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        component.widget = MARKDOWN_WIDGET_MOCK_DATA;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

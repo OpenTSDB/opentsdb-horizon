@@ -17,25 +17,28 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ActivityPanelComponent } from './activity-panel.component';
+import { LANDING_PAGE_TESTING_IMPORTS } from '../../landing-page-testing.utils';
 
 describe('ActivityPanelComponent', () => {
-  let component: ActivityPanelComponent;
-  let fixture: ComponentFixture<ActivityPanelComponent>;
+    let component: ActivityPanelComponent;
+    let fixture: ComponentFixture<ActivityPanelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ActivityPanelComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [ActivityPanelComponent],
+            imports: [
+                ...LANDING_PAGE_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ActivityPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ActivityPanelComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

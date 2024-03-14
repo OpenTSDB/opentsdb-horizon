@@ -17,25 +17,33 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BignumberVisualAppearanceComponent } from './big-number-visual-appearance.component';
+import { DYNAMIC_WIDGETS_TESTING_IMPORTS } from '../../../../dynamic-widgets-testing.utils';
+import { BIG_NUMBER_WIDGET_MOCK_DATA } from '../../../../../../mockdata/dynamic-widgets/bignumber-widget';
 
 describe('BigNumberVisualAppearanceComponent', () => {
-  let component: BignumberVisualAppearanceComponent;
-  let fixture: ComponentFixture<BignumberVisualAppearanceComponent>;
+    let component: BignumberVisualAppearanceComponent;
+    let fixture: ComponentFixture<BignumberVisualAppearanceComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BignumberVisualAppearanceComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [BignumberVisualAppearanceComponent],
+            imports: [
+                ...DYNAMIC_WIDGETS_TESTING_IMPORTS
+            ]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BignumberVisualAppearanceComponent );
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(BignumberVisualAppearanceComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // inputs
+        component.widget = BIG_NUMBER_WIDGET_MOCK_DATA;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

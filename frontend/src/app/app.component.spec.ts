@@ -19,28 +19,31 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 // import { AppComponent } from './app.component';
 // import { NavbarComponent } from './shared/modules/navbar/components/navbar/navbar.component';
 describe('AppComponent', () => {
-  // beforeEach(async(() => {
-  //   TestBed.configureTestingModule({
-  //     declarations: [
-  //       AppComponent, NavbarComponent
-  //     ],
-  //     imports: [RouterModule]
-  //   }).compileComponents();
-  // }));
-  // it('should create the app', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.debugElement.componentInstance;
-  //   expect(app).toBeTruthy();
-  // }));
+    // beforeEach(async(() => {
+    //   TestBed.configureTestingModule({
+    //     declarations: [
+    //       AppComponent, NavbarComponent
+    //     ],
+    //     imports: [RouterModule]
+    //   }).compileComponents();
+    // }));
+    // it('should create the app', async(() => {
+    //   const fixture = TestBed.createComponent(AppComponent);
+    //   const app = fixture.debugElement.componentInstance;
+    //   expect(app).toBeTruthy();
+    // }));
 
-  // just flag to run test again
-  
-  it('should create the app', waitForAsync(() => {
-    // const fixture = TestBed.createComponent(AppComponent);
-    // const app = fixture.debugElement.componentInstance;
-    expect(true);
-  }));
-  /*
+    // just flag to run test again
+
+    beforeEach(async () => {
+        window.onbeforeunload = jasmine.createSpy();
+    });
+
+
+    it('should create the app', waitForAsync(() => {
+        expect(true).toBeTruthy();
+    }));
+    /*
   it(`should have as title 'app'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;

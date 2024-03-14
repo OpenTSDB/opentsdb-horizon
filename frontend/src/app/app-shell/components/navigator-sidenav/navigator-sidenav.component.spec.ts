@@ -16,26 +16,54 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import {
+    APP_TESTING_CONFIG
+} from '../../../shared/mockdata/config/app-config';
+
+
+import {
+    APP_SHELL_TESTING_IMPORTS
+} from '../../app-shell-testing.utils';
+
 import { NavigatorSidenavComponent } from './navigator-sidenav.component';
 
+import { AppConfigService } from '../../../core/services/config.service';
+
 describe('NavigatorSidenavComponent', () => {
-  let component: NavigatorSidenavComponent;
-  let fixture: ComponentFixture<NavigatorSidenavComponent>;
+    let component: NavigatorSidenavComponent;
+    let fixture: ComponentFixture<NavigatorSidenavComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NavigatorSidenavComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockAppConfigService;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavigatorSidenavComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        // mocked app config
+        const configValues = APP_TESTING_CONFIG;
+
+        mockAppConfigService = jasmine.createSpyObj(['getConfig']);
+        mockAppConfigService.getConfig.and.returnValue(configValues);
+
+        TestBed.configureTestingModule({
+            declarations: [NavigatorSidenavComponent],
+            imports: [
+                ...APP_SHELL_TESTING_IMPORTS
+            ],
+            providers: [
+                {
+                    provide: AppConfigService,
+                    useValue: mockAppConfigService
+                }
+            ]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavigatorSidenavComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

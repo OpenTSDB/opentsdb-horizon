@@ -27,32 +27,24 @@ import { SharedcomponentsModule } from '../sharedcomponents/sharedcomponents.mod
 
 import {
     ClipboardDrawerComponent,
-    NavbarClipboardMenuComponent
+    NavbarClipboardMenuComponent,
 } from './components';
 
 import { UniversalClipboardState } from './state/clipboard.state';
 
-
 @NgModule({
-
-  imports: [
-    CommonModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedcomponentsModule,
-    NgxsModule.forFeature([
-        // TODO: add clipboard state
-        UniversalClipboardState
-    ])
-  ],
-  declarations: [
-    ClipboardDrawerComponent,
-    NavbarClipboardMenuComponent
-  ],
-  exports: [
-    ClipboardDrawerComponent,
-    NavbarClipboardMenuComponent
-  ]
+    imports: [
+        CommonModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedcomponentsModule,
+        NgxsModule.forFeature([
+            // TODO: add clipboard state
+            UniversalClipboardState,
+        ]),
+    ],
+    declarations: [ClipboardDrawerComponent, NavbarClipboardMenuComponent],
+    exports: [ClipboardDrawerComponent, NavbarClipboardMenuComponent],
 })
-export class UniversalClipboardModule { }
+export class UniversalClipboardModule {}

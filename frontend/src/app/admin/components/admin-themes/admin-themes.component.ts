@@ -15,45 +15,48 @@
  * limitations under the License.
  */
 
-import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
 
 @Component({
     selector: 'app-admin-themes',
     templateUrl: './admin-themes.component.html',
     styleUrls: ['./admin-themes.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class AdminThemesComponent implements OnInit {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-section app-admin-themes';
+    @HostBinding('class') classAttribute =
+    'app-admin-section app-admin-themes';
 
     // TEST sections links
     testSubLinks: any[] = [
         {
             label: 'Test Theme 1',
-            path: 'test-1'
+            path: 'test-1',
         },
         {
             label: 'Test Theme 2',
-            path: 'test-2'
+            path: 'test-2',
         },
         {
             label: 'Test Theme 3',
-            path: 'test-3'
+            path: 'test-3',
         },
         {
             label: 'Test Theme 4',
-            path: 'test-4'
+            path: 'test-4',
         },
         {
             label: 'Test Theme 5',
-            path: 'test-5'
-        }
+            path: 'test-5',
+        },
     ];
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { /* do nothing */ }
 }

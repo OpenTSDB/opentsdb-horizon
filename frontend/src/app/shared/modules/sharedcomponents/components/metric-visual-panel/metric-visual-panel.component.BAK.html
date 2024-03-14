@@ -1,13 +1,13 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,10 +30,10 @@
         </tr>
         <tr>
             <td *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">
-                <dropdown-line-weight [value]="data.visual.lineWeight || '1px'" (change)="setLineWeight(data.metric.id, $event)"></dropdown-line-weight>
+                <dropdown-line-weight [value]="data.visual.lineWeight || '1px'" (valueChange)="setLineWeight(data.metric.id, $event)"></dropdown-line-weight>
             </td>
             <td *ngIf="type === 'LinechartWidgetComponent' && (!this.mode || this.mode !=='bar')">
-                <dropdown-line-type [value]="data.visual.lineType || 'solid'" (change)="setLineType(data.metric.id, $event)"></dropdown-line-type>
+                <dropdown-line-type [value]="data.visual.lineType || 'solid'" (valueChange)="setLineType(data.metric.id, $event)"></dropdown-line-type>
             </td>
             <td class="has-columns"  *ngIf="type === 'BignumberWidgetComponent' || type === 'TopnWidgetComponent'">
                 <div class="column">
@@ -47,7 +47,7 @@
                 </div>
                 <div class="column" *ngIf="type === 'TopnWidgetComponent'">
                     <span class="mat-body-strong">Unit</span>
-                    <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
+                    <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (unitChangeEvent)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
                 </div>
                 <div class="column">
                     <span class="mat-body-strong">Conditional Background Color</span>
@@ -58,7 +58,7 @@
                 <color-picker (newColor)="setColor(data.metric.id, $event)" [pickerMode]="'embedded'" [color]="data.visual.color" [enableAuto]="'true'"></color-picker>
             </td>
             <td *ngIf="type === 'HeatmapWidgetComponent'">
-                <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (onUnitChange)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
+                <dropdown-unit-type [blackListedUnits]="['raw']" [unit]="data.visual.unit? data.visual.unit : 'auto'" (unitChangeEvent)="setUnit(data.metric.id, $event)"></dropdown-unit-type>
             </td>
 
             <td *ngIf="type === 'LinechartWidgetComponent'">

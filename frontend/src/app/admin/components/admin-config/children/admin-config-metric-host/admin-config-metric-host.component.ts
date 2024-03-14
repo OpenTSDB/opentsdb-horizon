@@ -1,53 +1,75 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    Renderer2,
+    SimpleChanges,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
+import { MatLegacyFormField as MatFormField } from '@angular/material/legacy-form-field';
+import { MatLegacyInput as MatInput } from '@angular/material/legacy-input';
 
 @Component({
     selector: 'app-admin-config-metric-host',
     templateUrl: './admin-config-metric-host.component.html',
     styleUrls: ['./admin-config-metric-host.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterViewInit {
-
-    @HostBinding('class') classAttribute: string = 'app-admin-config-metric-host';
-    @HostBinding('class.editing-mode') private get tplEdit() { return this.editMode; };
-    @HostBinding('class.reading-mode') private get tplRead() { return !this.editMode; };
+export class AdminConfigMetricHostComponent
+implements OnInit, OnChanges, AfterViewInit {
+    @HostBinding('class') classAttribute =
+    'app-admin-config-metric-host';
+    @HostBinding('class.editing-mode') private get tplEdit() {
+        return this.editMode;
+    }
+    @HostBinding('class.reading-mode') private get tplRead() {
+        return !this.editMode;
+    }
 
     @ViewChild(MatInput) inputControl: MatInput;
     @ViewChild(MatInput, { read: ElementRef }) inputControlEl: ElementRef;
-    @ViewChild(MatFormField, { read: ElementRef }) private formFieldEl: ElementRef;
+    @ViewChild(MatFormField, { read: ElementRef })
+    private formFieldEl: ElementRef;
 
-    @Input() host: FormControl;
+    @Input() host: UntypedFormControl;
     @Input() index: number;
 
     @Output() metricHostUpdate: EventEmitter<any> = new EventEmitter();
 
     hostValue: any;
 
-    needDeleteConfirm: boolean = false;
+    needDeleteConfirm = false;
 
     private _originalValue: any;
 
-    private _editMode: boolean = false;
+    private _editMode = false;
 
     @Input()
-    get editMode(): boolean { return this._editMode; }
+    get editMode(): boolean {
+        return this._editMode;
+    }
 
     set editMode(mode: boolean) {
         this._editMode = mode;
         if (this._editMode === true) {
             this._originalValue = this.host.value;
         }
-        //this.tplEdit = !this.editMode ? false : true;
-        //this.tplRead = !this.tplEdit;
-    };
+        // this.tplEdit = !this.editMode ? false : true;
+        // this.tplRead = !this.tplEdit;
+    }
 
     constructor(
         private renderer: Renderer2,
-        private eRef: ElementRef
-    ) { }
+        private eRef: ElementRef,
+    ) {}
 
     ngOnInit() {
         this.hostValue = this.host.value;
@@ -89,7 +111,6 @@ export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterV
     }
 
     apply() {
-
         // do something
         this.toggleEditMode();
     }
@@ -99,12 +120,11 @@ export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterV
         if (this._originalValue === '_new_') {
             this.metricHostUpdate.emit({
                 action: 'remove',
-                index: this.index
+                index: this.index,
             });
         }
         this.host.setValue(this._originalValue);
         this.toggleEditMode();
-
     }
 
     delete() {
@@ -114,7 +134,7 @@ export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterV
     deleteConfirm() {
         this.metricHostUpdate.emit({
             action: 'remove',
-            index: this.index
+            index: this.index,
         });
     }
 
@@ -129,9 +149,11 @@ export class AdminConfigMetricHostComponent implements OnInit, OnChanges, AfterV
             // set the initial data-value
             // needs to live on the .mat-form-field-infix
             // aka, the wrapper around the actual input field
-            const formFieldInfix: HTMLElement = this.formFieldEl.nativeElement.querySelector('.mat-form-field-infix');
+            const formFieldInfix: HTMLElement =
+                this.formFieldEl.nativeElement.querySelector(
+                    '.mat-form-field-infix',
+                );
             formFieldInfix.dataset.value = this.hostValue;
         }
     }
-
 }

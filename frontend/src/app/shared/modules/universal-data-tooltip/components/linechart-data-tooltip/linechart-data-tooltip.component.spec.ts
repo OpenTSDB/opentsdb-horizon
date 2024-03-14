@@ -16,26 +16,37 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
+import { UniversalDataTooltipModule } from '../../universal-data-tooltip.module';
+
 import { LinechartDataTooltipComponent } from './linechart-data-tooltip.component';
 
 describe('LinechartDataTooltipComponent', () => {
-  let component: LinechartDataTooltipComponent;
-  let fixture: ComponentFixture<LinechartDataTooltipComponent>;
+    let component: LinechartDataTooltipComponent;
+    let fixture: ComponentFixture<LinechartDataTooltipComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LinechartDataTooltipComponent ]
-    })
-    .compileComponents();
-  }));
+    let mockRenderer = jasmine.createSpyObj({
+        removeClass: () => {},
+        listen: () => {}
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LinechartDataTooltipComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [LinechartDataTooltipComponent],
+            imports: [
+                UniversalDataTooltipModule.forRoot()
+            ],
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LinechartDataTooltipComponent);
+        component = fixture.componentInstance;
+        component.renderer = mockRenderer;
+
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

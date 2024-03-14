@@ -1,26 +1,26 @@
 <!--
   This file is part of OpenTSDB.
   Copyright (C) 2021  Yahoo.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
     http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<canvas 
-  #eventsOverlayCanvas 
-  height="20" 
-  style="border:0px dotted lightgray;" 
-  (click)="clicked($event)" 
-  (mousemove)="canvasEnter($event)" 
-  (mouseleave)="canvasLeave($event)" 
+<canvas
+  #eventsOverlayCanvas
+  height="20"
+  style="border:0px dotted lightgray;"
+  (click)="clicked($event)"
+  (mousemove)="canvasEnter($event)"
+  (mouseleave)="canvasLeave($event)"
   [ngStyle]="{ 'width' : width}">
 </canvas>
 
@@ -36,7 +36,7 @@
     </div>
     <div>
       <span>
-          {{util.buildDisplayTime(toolTipData.bucket.events[0].timestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone )}}
+          {{useUtil().buildDisplayTime(toolTipData.bucket.events[0].timestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone )}}
       </span>
 
       <span *ngIf="toolTipData.bucket.events[0].endTime">
@@ -44,19 +44,19 @@
       </span>
 
       <span *ngIf="toolTipData.bucket.events[0].endTime">
-          {{util.buildDisplayTime(toolTipData.bucket.events[0].endTimestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone)}}
+          {{useUtil().buildDisplayTime(toolTipData.bucket.events[0].endTimestamp, startTime, endTime, toolTipData.bucket.width <= 1000 * 60, timezone)}}
       </span>
     </div>
   </div>
 
   <!-- Summarize the bucket by number of each type of event -->
   <div *ngIf="toolTipData.bucket.events.length > 1">
-    <div>{{util.buildDisplayTime(toolTipData.bucket.endTime, startTime, endTime, false, timezone)}}</div>
+    <div>{{useUtil().buildDisplayTime(toolTipData.bucket.endTime, startTime, endTime, false, timezone)}}</div>
     <div *ngFor="let summary of getBucketSummary(toolTipData.bucket)">
       {{summary[1]}} {{summary[0]}}
-      <span *ngIf="summary[1] === 1"> event </span> 
-      <span *ngIf="summary[1] > 1"> events</span>   
+      <span *ngIf="summary[1] === 1"> event </span>
+      <span *ngIf="summary[1] > 1"> events</span>
     </div>
   </div>
-  
+
 </div>
