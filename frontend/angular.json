@@ -180,7 +180,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "/Users/cesler/Stuffz/HORIZON",
+                        "outputPath": "/tmp/Stuffz/HORIZON",
                         "index": "src/app/horizon/index.html",
                         "main": "src/app/horizon/horizon.main.ts",
                         "tsConfig": "src/app/horizon/tsconfig.horizon.json",

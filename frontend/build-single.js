@@ -3,7 +3,7 @@ const concat = require("concat");
 
 (async function build() {
     //const prefix = '/Users/hilln/dev/www';
-    const prefix = "/Users/cesler/Stuffz/HORIZON";
+    const prefix = "/tmp/Stuffz/HORIZON";
     const files = [
         prefix + "/runtime.js",
         prefix + "/polyfills.js",
