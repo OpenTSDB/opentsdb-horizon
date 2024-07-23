@@ -60,11 +60,17 @@ module.exports = function (config) {
         autoWatch: true,
         // browsers: ["PhantomJS"],
         // browsers: ["Chrome"],
-        browsers: ['ChromeNoSandbox'],       // Use custom launcher
+        browsers: ['ChromeHeadlessNoSandbox'], // Use custom headless launcher
         customLaunchers: {
-            ChromeNoSandbox: {
-                base: 'Chrome',                  // Base browser (Google Chrome)
-                flags: ['--no-sandbox']          // Additional flags to launch Chrome
+            ChromeHeadlessNoSandbox: {
+                base: 'ChromeHeadless', // Use headless mode
+                flags: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--headless',
+                    '--disable-gpu',
+                    '--disable-dev-shm-usage' // Use /tmp instead of /dev/shm for shared memory
+                ]
             }
         },
         singleRun: false,
