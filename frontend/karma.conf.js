@@ -59,7 +59,14 @@ module.exports = function (config) {
         logLevel: config.LOG_INFO,
         autoWatch: true,
         // browsers: ["PhantomJS"],
-        browsers: ["Chrome"],
+        // browsers: ["Chrome"],
+        browsers: ['ChromeNoSandbox'],       // Use custom launcher
+        customLaunchers: {
+            ChromeNoSandbox: {
+                base: 'Chrome',                  // Base browser (Google Chrome)
+                flags: ['--no-sandbox']          // Additional flags to launch Chrome
+            }
+        },
         singleRun: false,
     });
 };
