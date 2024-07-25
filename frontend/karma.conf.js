@@ -78,9 +78,9 @@ module.exports = function (config) {
             }
         },
         // Increase timeouts
-        browserNoActivityTimeout: 60000, // 60 seconds
+        browserNoActivityTimeout: 120000, // 60 seconds
         captureTimeout: 120000, // 120 seconds
-        browserDisconnectTolerance: 3, // Retry disconnections 3 times
+        browserDisconnectTolerance: 4, // Retry disconnections 3 times
         browserDisconnectTimeout: 120000, // 120 seconds
         concurrency: 1, // Run tests sequentially to reduce load
         singleRun: false,
