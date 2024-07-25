@@ -56,7 +56,7 @@ module.exports = function (config) {
         maximumSpecCallbackDepth: 100,
         port: 9876,
         colors: true,
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
         autoWatch: true,
         // browsers: ["PhantomJS"],
         // browsers: ["Chrome"],
@@ -69,10 +69,20 @@ module.exports = function (config) {
                     '--disable-setuid-sandbox',
                     '--headless',
                     '--disable-gpu',
-                    '--disable-dev-shm-usage' // Use /tmp instead of /dev/shm for shared memory
+                    '--disable-dev-shm-usage', // Use /tmp instead of /dev/shm for shared memory
+                    '--remote-debugging-port=9222', // Sets remote debugging port
+                    '--enable-logging',
+                    '--v=1', // Verbose logging level
+                    '--disable-software-rasterizer' // Disables software rasterizer
                 ]
             }
         },
+        // Increase timeouts
+        browserNoActivityTimeout: 60000, // 60 seconds
+        captureTimeout: 120000, // 120 seconds
+        browserDisconnectTolerance: 3, // Retry disconnections 3 times
+        browserDisconnectTimeout: 120000, // 120 seconds
+        concurrency: 1, // Run tests sequentially to reduce load
         singleRun: false,
     });
 };
