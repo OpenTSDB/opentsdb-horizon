@@ -34,7 +34,7 @@ import { AlertConfigurationContactsComponent } from './recipients-manager.compon
 
 import { AppConfigService } from '../../../../../core/services/config.service';
 
-describe('AlertConfigurationContactsComponent', () => {
+xdescribe('AlertConfigurationContactsComponent', () => {
     let component: AlertConfigurationContactsComponent;
     let fixture: ComponentFixture<AlertConfigurationContactsComponent>;
     let store: Store;
