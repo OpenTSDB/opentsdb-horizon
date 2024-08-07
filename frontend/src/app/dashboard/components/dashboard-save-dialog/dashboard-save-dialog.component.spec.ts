@@ -26,7 +26,7 @@ import { DashboardSaveDialogComponent } from './dashboard-save-dialog.component'
 import { DASHBOARD_TESTING_IMPORTS } from '../../dashboard-testing.utils';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 
-xdescribe('DashboardSaveDialogComponent', () => {
+describe('DashboardSaveDialogComponent', () => {
     let component: DashboardSaveDialogComponent;
     let fixture: ComponentFixture<DashboardSaveDialogComponent>;
 

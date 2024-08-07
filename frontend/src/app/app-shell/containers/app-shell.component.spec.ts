@@ -37,7 +37,7 @@ import { AppNavbarComponent } from '../components/app-navbar/app-navbar.componen
 import { NavigatorSidenavComponent } from '../components/navigator-sidenav/navigator-sidenav.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-xdescribe('AppShellComponent', () => {
+describe('AppShellComponent', () => {
     let component: AppShellComponent;
     let fixture: ComponentFixture<AppShellComponent>;
 
