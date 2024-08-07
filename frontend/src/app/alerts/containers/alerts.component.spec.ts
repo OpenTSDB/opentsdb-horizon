@@ -36,7 +36,7 @@ import { AuthState } from '../../shared/state/auth.state';
 import { InfoIslandService } from '../../shared/modules/info-island/services/info-island.service';
 import { AppConfigService } from '../../core/services/config.service';
 
-xdescribe('AlertsComponent', () => {
+describe('AlertsComponent', () => {
     let component: AlertsComponent;
     let fixture: ComponentFixture<AlertsComponent>;
 
