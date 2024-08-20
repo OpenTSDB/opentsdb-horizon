@@ -162,7 +162,7 @@ export class DropdownMetricTagsComponent implements OnInit, OnChanges {
         let value;
         if (!this.multiple) {
             value = event.value ? [event.value] : [];
-        } else if (event.option.value === 'all' && event.option.selected) {
+        } else if (event.options[0].value === 'all' && event.options[0].selected) {
             value = [];
         } else if (this.filterTagInput) {
             // been searching

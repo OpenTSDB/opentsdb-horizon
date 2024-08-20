@@ -33,7 +33,7 @@
     <tag-aggregator [value]="groupBy.aggregator" (valueChange)="setGroupBy('aggregator', $event)"></tag-aggregator>
     <span class="by-spacer">By</span>
     <dropdown-metric-tags    [selected]="groupBy.tags" [tags]="optionalData.tags"
-      (change)="setGroupBy('tags', $event)" [enableGroupBy]="options.enableGroupBy">
+      (changeEvent)="setGroupBy('tags', $event)" [enableGroupBy]="options.enableGroupBy">
     </dropdown-metric-tags>
     <div class="mat-form-field-suffix">
       <button mat-mini-fab matSuffix class="delete-function-button" (click)="delFx(fx.id)">

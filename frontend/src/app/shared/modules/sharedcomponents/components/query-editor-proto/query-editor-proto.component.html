@@ -280,7 +280,7 @@
                                     [selected]="data.metric.groupByTags"
                                     [tags]=" data.type === 'expression' ? getGroupByTags(data.metric.id) : null"
                                     [excludeTags]=" options.excludeMetricGroupByTags && data.type !== 'expression' ? options.excludeMetricGroupByTags : []"
-                                    (change)="setMetricGroupByTags(data.metric.id, $event)"
+                                    (changeEvent)="setMetricGroupByTags(data.metric.id, $event)"
                                     [enableGroupBy]="options.enableGroupBy">
                                 </dropdown-metric-tags>
                             </div>
