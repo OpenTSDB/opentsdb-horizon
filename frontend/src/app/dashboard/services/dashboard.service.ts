@@ -631,7 +631,7 @@ export class DashboardService {
             if (doSearch) {
                 const tagk = tpl.tvars[i].tagk;
                 const alias = tpl.tvars[i].alias;
-                for (let ii = 0; i < widgets.length; ii++) {
+                for (let ii = 0; ii < widgets.length; ii++) {
                     const queries = widgets[ii].queries;
                     for (let j = 0; j < queries.length; j++) {
                         const filters = queries[j].filters;

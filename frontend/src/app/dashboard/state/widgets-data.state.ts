@@ -102,7 +102,7 @@ export class WidgetsRawdataState {
                 ctx.dispatch(new SetQueryDataByGroup(payload));
             },
             (err) => {
-                if (err.statusText !== 'Bad Request') {
+                if (err.status !== 400) {
                     payload.error = err;
                 }
                 ctx.dispatch(new SetQueryDataByGroup(payload));
