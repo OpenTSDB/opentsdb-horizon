@@ -588,7 +588,7 @@ implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
         if (this.alertForm && this.periodOverPeriodTransitionsSelected.length) {
             this.alertForm
                 .get('notification')
-                .get('transitionsToNotify')
+                ?.get('transitionsToNotify')
                 .setErrors(null);
         }
     }
