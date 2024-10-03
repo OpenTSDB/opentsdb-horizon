@@ -710,7 +710,7 @@
                                 <div class="alert-metric-tag-dropdown-wrapper">
                                     <dropdown-metric-tags [selected]="alertForm.get('alertGroupingRules').value"
                                         [tags]="tags" [all]="false"
-                                        (change)="setQueryGroupRules($event)"></dropdown-metric-tags>
+                                        (changeEvent)="setQueryGroupRules($event)"></dropdown-metric-tags>
                                 </div>
                             </div>
                             <div class="form-group alert-recipients">
@@ -934,7 +934,7 @@
                                         <dropdown-metric-tags
                                             [selected]="alertForm.get('queries').get('eventdb')['controls'][0].get('groupBy').value"
                                             [tags]="tags" [all]="false" [multiple]="false"
-                                            (change)="setEventAlertGroupBy($event)"></dropdown-metric-tags>
+                                            (changeEvent)="setEventAlertGroupBy($event)"></dropdown-metric-tags>
                                     </div>
                                 </div>
                             </div>
@@ -967,7 +967,7 @@
                                 <div class="alert-metric-tag-dropdown-wrapper">
                                     <dropdown-metric-tags [selected]="alertForm.get('alertGroupingRules').value"
                                         [tags]="alertForm.get('queries').get('eventdb')['controls'][0].get('groupBy').value"
-                                        [all]="false" (change)="setQueryGroupRules($event)"></dropdown-metric-tags>
+                                        [all]="false" (changeEvent)="setQueryGroupRules($event)"></dropdown-metric-tags>
                                 </div>
                             </div>
                             <div class="form-group alert-recipients">
