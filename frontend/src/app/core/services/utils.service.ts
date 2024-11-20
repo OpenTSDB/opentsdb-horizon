@@ -1867,13 +1867,14 @@ export class UtilsService {
         for (let i = 0; i < filters.length; i++) {
             const iFilter = filters[i];
             const ftype = filter.type;
+            let iFilterType = iFilter.type;
             if (ftype === 'Chain' && filter['op'] === 'OR') {
                 newFilters = newFilters.concat(
                     this.getFiltersTsdbToLocal(iFilter),
                 );
-            } else if (filterTypes.includes(ftype)) {
+            } else if (filterTypes.includes(iFilterType)) {
                 let values = [];
-                switch (ftype) {
+                switch (iFilterType) {
                     case 'TagValueLiteralOr':
                         values = iFilter.filter.split('|');
                         break;
