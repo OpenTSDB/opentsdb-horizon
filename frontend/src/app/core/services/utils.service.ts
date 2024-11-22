@@ -1868,7 +1868,7 @@ export class UtilsService {
             const iFilter = filters[i];
             const ftype = filter.type;
             let iFilterType = iFilter.type;
-            if (ftype === 'Chain' && filter['op'] === 'OR') {
+            if (ftype === 'Chain' && iFilter['op'] === 'OR') {
                 newFilters = newFilters.concat(
                     this.getFiltersTsdbToLocal(iFilter),
                 );
