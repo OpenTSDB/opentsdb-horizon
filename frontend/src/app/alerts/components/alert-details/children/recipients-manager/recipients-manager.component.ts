@@ -182,6 +182,7 @@ implements OnInit, OnChanges, OnDestroy {
     }
 
     types = [];
+    dropdownTypes = []; // types available in create new recipient dropdown
     config: any = {};
 
     /** ANGULAR INTERFACE METHODS */
@@ -191,6 +192,9 @@ implements OnInit, OnChanges, OnDestroy {
         this.types = Object.keys(RecipientType)
             .filter((t) => this.config.alert.recipient[t])
             .filter((t) => this.config.alert.recipient[t].enable);
+
+        // Create dropdown types excluding OpsGenie
+        this.dropdownTypes = this.types.filter((t) => t !== RecipientType.opsgenie);
 
         this.populateEmptyRecipients();
         if (!this.alertRecipients) {
